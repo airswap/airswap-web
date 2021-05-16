@@ -35,6 +35,15 @@
   dependencies:
     openzeppelin-solidity "2.4"
 
+"@airswap/light@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@airswap/light/-/light-2.2.1.tgz#dc9158ab3398f16eae09c433ff05dc2313cde446"
+  integrity sha512-JAznynA/Gdg1s9MNi1Cp5YFBX56I5otLH4Ul3f8JpSmyh2BEzS+FdjLsmFiTMmqhxd65NB5U4yza65+NFVnwGg==
+  dependencies:
+    "@airswap/transfers" "1.1.3"
+    "@airswap/types" "3.5.16"
+    "@openzeppelin/contracts" "^3.3.0"
+
 "@airswap/protocols@0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@airswap/protocols/-/protocols-0.5.0.tgz#80aba7d413ad61a894f86a031058b7718c37eeb6"
@@ -1898,6 +1907,11 @@
   dependencies:
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
+
+"@openzeppelin/contracts@^3.3.0":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.1.tgz#03c891fec7f93be0ae44ed74e57a122a38732ce7"
+  integrity sha512-cUriqMauq1ylzP2TxePNdPqkwI7Le3Annh4K9rrpvKfSBB/bdW+Iu1ihBaTIABTAAJ85LmKL5SSPPL9ry8d1gQ==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"

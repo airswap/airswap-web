@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@airswap/constants": "0.3.13",
+    "@airswap/light": "^2.2.1",
     "@airswap/protocols": "0.5.0",
     "@airswap/types": "3.5.16",
     "@reduxjs/toolkit": "^1.5.1",
