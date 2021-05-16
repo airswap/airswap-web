@@ -1,41 +1,40 @@
-import React, { useState } from 'react'
-import { toDecimalString, getEtherscanURL } from '@airswap/utils'
-import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
-import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { approve, request, take, selectOrder, selectTX } from './ordersSlice'
-import styles from './Orders.module.css'
+import React, { useState } from "react";
+import { toDecimalString, getEtherscanURL } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
+import styles from "./Orders.module.css";
 
 const tokens = {
-  WETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-}
+  WETH: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  USDT: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+};
 
 const makers = [
-  'aomcfsa7.altono.xyz',
-  'airswap.aquanow.io',
-  'ast.ngrok.io',
-  'wintermute-rfq.com:44442',
-]
+  "aomcfsa7.altono.xyz",
+  "airswap.aquanow.io",
+  "ast.ngrok.io",
+  "wintermute-rfq.com:44442",
+];
 
 export function Orders() {
-  const order: any = useAppSelector(selectOrder)
-  const tx: any = useAppSelector(selectTX)
-  const dispatch = useAppDispatch()
-  const [url, setURL] = useState(makers[1])
-  const [senderToken, setSenderToken] = useState(tokens.WETH)
-  const [signerToken, setSignerToken] = useState(tokens.USDT)
-  const [senderAmount, setSenderAmount] = useState('1')
-  const { chainId, account, library, active }: any = useWeb3React<
-    Web3Provider
-  >()
+  const order: any = useAppSelector(selectOrder);
+  const tx: any = useAppSelector(selectTX);
+  const dispatch = useAppDispatch();
+  const [url, setURL] = useState(makers[1]);
+  const [senderToken, setSenderToken] = useState(tokens.WETH);
+  const [signerToken, setSignerToken] = useState(tokens.USDT);
+  const [senderAmount, setSenderAmount] = useState("1");
+  const { chainId, account, library, active }: any =
+    useWeb3React<Web3Provider>();
 
-  let signerAmount = null
+  let signerAmount = null;
   if (order) {
-    signerAmount = toDecimalString(order.signerAmount, 6)
+    signerAmount = toDecimalString(order.signerAmount, 6);
   }
 
-  if (!active) return null
+  if (!active) return null;
 
   return (
     <div>
@@ -91,7 +90,7 @@ export function Orders() {
                 senderAmount,
                 signerToken,
                 senderWallet: account,
-              }),
+              })
             )
           }
         >
@@ -131,5 +130,5 @@ export function Orders() {
         )}
       </div>
     </div>
-  )
+  );
 }

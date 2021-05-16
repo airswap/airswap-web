@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
-import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
-import { InjectedConnector } from '@web3-react/injected-connector'
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -12,14 +12,14 @@ export const injectedConnector = new InjectedConnector({
     5, // Goerli
     42, // Kovan
   ],
-})
+});
 
 export const Wallet = () => {
-  const { chainId, account, activate, active } = useWeb3React<Web3Provider>()
+  const { chainId, account, activate, active } = useWeb3React<Web3Provider>();
 
   const onClick = () => {
-    activate(injectedConnector)
-  }
+    activate(injectedConnector);
+  };
 
   return (
     <div>
@@ -33,5 +33,5 @@ export const Wallet = () => {
         </button>
       )}
     </div>
-  )
-}
+  );
+};
