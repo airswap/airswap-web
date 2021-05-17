@@ -1,10 +1,10 @@
 import React from "react";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 import { Orders } from "./features/orders/Orders";
 import { Wallet } from "./features/wallet/Wallet";
 import "./App.css";
+import Balances from "./features/balances/Balances";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -19,6 +19,7 @@ function App() {
         <Wallet />
         <Orders />
         ☠️ Use at your own risk
+        <Balances />
       </div>
     </Web3ReactProvider>
   );
