@@ -2,12 +2,14 @@ import ordersReducer, { OrdersState } from "./ordersSlice";
 
 describe("orders reducer", () => {
   const initialState: OrdersState = {
-    value: null,
+    order: null,
+    tx: null,
     status: "idle",
   };
   it("should handle initial state", () => {
     expect(ordersReducer(undefined, { type: "unknown" })).toEqual({
-      value: 0,
+      order: null,
+      tx: null,
       status: "idle",
     });
   });
