@@ -1,10 +1,11 @@
+import { LightOrder } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { requestOrder, takeOrder, approveToken } from "./orderAPI";
 
 export interface OrdersState {
-  order: object | null;
-  tx: object | null;
+  order: LightOrder | null;
+  tx: null | string;
   status: "idle" | "requesting" | "taking" | "failed";
 }
 
@@ -16,7 +17,14 @@ const initialState: OrdersState = {
 
 export const request = createAsyncThunk(
   "orders/request",
-  async (params: any) => {
+  async (params: {
+    url: string;
+    chainId: string;
+    signerToken: string;
+    senderToken: string;
+    senderAmount: string;
+    senderWallet: string;
+  }) => {
     try {
       return await requestOrder(
         params.url,
@@ -66,14 +74,14 @@ export const ordersSlice = createSlice({
       })
       .addCase(request.fulfilled, (state, action) => {
         state.status = "idle";
-        state.order = action.payload;
+        state.order = action.payload!;
       })
       .addCase(take.pending, (state) => {
         state.status = "taking";
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
-        state.tx = action.payload;
+        state.tx = action.payload!;
       });
   },
 });

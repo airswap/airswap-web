@@ -3,7 +3,7 @@ import { Server, Light, ERC20 } from "@airswap/protocols";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
-export function requestOrder(
+export async function requestOrder(
   url: string,
   chainId: string,
   signerToken: string,
@@ -11,51 +11,35 @@ export function requestOrder(
   senderAmount: string,
   senderWallet: string
 ) {
-  return new Promise<any>(async (resolve, reject) => {
-    try {
-      const server = new Server(url, Light.getAddress(chainId));
-      resolve(
-        await server.getSignerSideOrder(
-          toAtomicString(senderAmount, 18),
-          signerToken,
-          senderToken,
-          senderWallet
-        )
-      );
-    } catch (e) {
-      reject(e);
-    }
-  });
+  const server = new Server(url, Light.getAddress(chainId));
+  const order = await server.getSignerSideOrder(
+    toAtomicString(senderAmount, 18),
+    signerToken,
+    senderToken,
+    senderWallet
+  );
+  return order as any as LightOrder;
 }
 
-export function approveToken(
+export async function approveToken(
   senderToken: string,
   provider: ethers.providers.Web3Provider
 ) {
-  return new Promise<any>(async (resolve, reject) => {
-    try {
-      const spender = Light.getAddress(String(provider.network.chainId));
-      resolve(new ERC20(senderToken).approve(spender, provider.getSigner()));
-    } catch (e) {
-      reject(e);
-    }
-  });
+  const spender = Light.getAddress(String(provider.network.chainId));
+  const approvalTxHash = await new ERC20(senderToken).approve(
+    spender,
+    provider.getSigner()
+  );
+  return approvalTxHash;
 }
 
-export function takeOrder(
+export async function takeOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
 ) {
-  return new Promise<any>(async (resolve, reject) => {
-    try {
-      resolve(
-        new Light(String(provider.network.chainId), provider).swap(
-          order,
-          provider.getSigner()
-        )
-      );
-    } catch (e) {
-      reject(e);
-    }
-  });
+  const txHash = await new Light(
+    String(provider.network.chainId),
+    provider
+  ).swap(order, provider.getSigner());
+  return txHash;
 }

@@ -19,15 +19,14 @@ const makers = [
 ];
 
 export function Orders() {
-  const order: any = useAppSelector(selectOrder);
-  const tx: any = useAppSelector(selectTX);
+  const order = useAppSelector(selectOrder);
+  const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
   const [url, setURL] = useState(makers[1]);
   const [senderToken, setSenderToken] = useState(tokens.WETH);
   const [signerToken, setSignerToken] = useState(tokens.USDT);
   const [senderAmount, setSenderAmount] = useState("1");
-  const { chainId, account, library, active }: any =
-    useWeb3React<Web3Provider>();
+  const { chainId, account, library, active } = useWeb3React<Web3Provider>();
 
   let signerAmount = null;
   if (order) {
@@ -85,11 +84,11 @@ export function Orders() {
             dispatch(
               request({
                 url,
-                chainId,
+                chainId: `${chainId}`,
                 senderToken,
                 senderAmount,
                 signerToken,
-                senderWallet: account,
+                senderWallet: account!,
               })
             )
           }
@@ -122,8 +121,12 @@ export function Orders() {
       )}
       <div className={styles.row}>
         {tx ? (
-          <a target="_blank" href={`${getEtherscanURL(chainId, tx.hash)}`}>
-            {tx.hash}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`${getEtherscanURL(`${chainId}`, tx)}`}
+          >
+            {tx}
           </a>
         ) : (
           <span />
