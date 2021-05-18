@@ -37,11 +37,15 @@ const initialState: BalancesState = {
 
 export const requestSavedTokenSetBalances = createAsyncThunk(
   "balances/requestForSavedTokenSet",
-  async (params: {
-    chainId: number;
-    provider: ethers.providers.Web3Provider;
-    walletAddress: string;
-  }) => {
+  async (
+    params: {
+      chainId: number;
+      provider: ethers.providers.Web3Provider;
+      walletAddress: string;
+    },
+    thunkApi
+  ) => {
+    // TODO: prevent dupe fetches?
     try {
       const tokenSetAddresses = (
         await getSavedTokenSetInfo(params.chainId)
