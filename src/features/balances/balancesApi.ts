@@ -1,4 +1,7 @@
 import { BigNumber, ethers } from "ethers";
+import { fetchTokens } from "@airswap/metadata";
+import { TokenInfo } from "@uniswap/token-lists";
+import uniqBy from "lodash.uniqby";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.json";
@@ -16,6 +19,39 @@ const getContract = (
     balancesInterface,
     provider
   );
+};
+
+const defaultTokenSet = ["WETH", "USDT", "USDC", "DAI", "AST"];
+
+export const getSavedTokenSet = (chainId: number) => {
+  return defaultTokenSet.concat(
+    (localStorage.getItem(`airswap/tokenSet/${chainId}`) || "")
+      .split(",")
+      .filter((symbol) => symbol.length)
+  );
+};
+
+const tokensCache: {
+  [chainId: number]: TokenInfo[];
+} = {};
+
+export const getAllTokens = async (chainId: number) => {
+  let tokens;
+  if (tokensCache[chainId]) {
+    tokens = tokensCache[chainId];
+  } else {
+    tokens = tokensCache[chainId] = await fetchTokens(chainId);
+  }
+  return tokens;
+};
+
+export const getSavedTokenSetInfo = async (chainId: number) => {
+  const tokens = await getAllTokens(chainId);
+  const tokenSet = getSavedTokenSet(chainId);
+  const matchingTokens = tokens.filter((tokenInfo) =>
+    tokenSet.includes(tokenInfo.symbol)
+  );
+  return uniqBy(matchingTokens, (token) => token.address.toLowerCase());
 };
 
 /**
