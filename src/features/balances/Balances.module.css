@@ -1,16 +1,11 @@
 .balancesGrid {
   font-size: 0.8rem;
   display: grid;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(3, auto);
   column-gap: 1rem;
   margin: 1rem;
 }
 
-.token {
-  justify-self: end;
+.bold {
   font-weight: bold;
-}
-
-.balance {
-  justify-self: start;
 }

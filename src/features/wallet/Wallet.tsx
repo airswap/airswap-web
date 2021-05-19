@@ -5,7 +5,10 @@ import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useAppDispatch } from "../../app/hooks";
 import { walletConnected } from "./walletActions";
-import { requestSavedTokenSetBalances } from "../balances/balancesSlice";
+import {
+  requestSavedTokenSetAllowances,
+  requestSavedTokenSetBalances,
+} from "../balances/balancesSlice";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -37,6 +40,13 @@ export const Wallet = () => {
       );
       dispatch(
         requestSavedTokenSetBalances({
+          chainId,
+          provider: library,
+          walletAddress: account,
+        })
+      );
+      dispatch(
+        requestSavedTokenSetAllowances({
           chainId,
           provider: library,
           walletAddress: account,

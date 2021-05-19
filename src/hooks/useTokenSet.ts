@@ -1,33 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
 import { TokenInfo } from "@uniswap/token-lists";
-import { getSavedTokenSetInfo } from "../features/balances/balancesApi";
+import {
+  getSavedTokenSet,
+  getSavedTokenSetInfo,
+} from "../features/balances/balancesApi";
 import uniqBy from "lodash.uniqby";
 import { useAppDispatch } from "../app/hooks";
 import { requestSavedTokenSetBalances } from "../features/balances/balancesSlice";
 import { useWeb3React } from "@web3-react/core";
 
-const DEFAULT_TOKEN_SET_SYMBOLS = ["WETH", "USDT", "USDC", "DAI", "AST"];
-
-// return defaultTokenSet.concat(
-//   (localStorage.getItem(`airswap/tokenSet/${chainId}`) || "")
-//     .split(",")
-//     .filter((symbol) => symbol.length)
-// );
-
 const useTokenSet = () => {
-  const [tokenSetAddresses, setTokenSetAddresses] = useState<string[]>(
-    DEFAULT_TOKEN_SET_SYMBOLS
-  );
-  const [tokenSet, setTokenSet] = useState<TokenInfo[]>([]);
   const dispatch = useAppDispatch();
   const { account, library, chainId } = useWeb3React();
+
+  // populated token set
+  const [tokenSet, setTokenSet] = useState<TokenInfo[]>([]);
+  // token set addresses.
+  const [tokenSetAddresses, setTokenSetAddresses] = useState<string[]>([]);
 
   const localStorageKey = `airswap/tokenSet/${chainId}`;
 
   useEffect(() => {
-    const savedTokenSetAddresses = (localStorage.getItem(localStorageKey) || "")
-      .split(",")
-      .filter((symbol) => symbol.length);
+    // Not sure when this can happen - perhaps local chain?
+    if (!chainId) return;
+
+    const savedTokenSetAddresses = getSavedTokenSet(chainId);
     if (savedTokenSetAddresses.length) {
       setTokenSetAddresses((currentSymbols) =>
         uniqBy(currentSymbols.concat(savedTokenSetAddresses), (i) => i)
@@ -56,29 +53,26 @@ const useTokenSet = () => {
 
   const addAddressToTokenSet = useCallback(
     (address: string) => {
+      const lowerCasedAddress = address.toLowerCase();
       const existingSavedAddressesString =
         localStorage.getItem(localStorageKey) || "";
       let existingSavedAddresses: string[] = [];
       if (existingSavedAddressesString.length) {
         existingSavedAddresses = existingSavedAddressesString.split(",");
       }
-      if (
-        !existingSavedAddresses
-          .map((s) => s.toLowerCase())
-          .includes(address.toLowerCase())
-      ) {
+      if (!existingSavedAddresses.includes(lowerCasedAddress)) {
         localStorage.setItem(
           localStorageKey,
           existingSavedAddresses +
-            `${existingSavedAddresses.length ? "," : ""}${address}`
+            `${existingSavedAddresses.length ? "," : ""}${lowerCasedAddress}`
         );
-        setTokenSetAddresses((prev) => [...prev, address]);
+        setTokenSetAddresses((prev) => [...prev, lowerCasedAddress]);
       }
     },
     [localStorageKey]
   );
 
-  return { tokenSet, addAddressToTokenSet: addAddressToTokenSet };
+  return { tokenSet, addAddressToTokenSet };
 };
 
 export default useTokenSet;

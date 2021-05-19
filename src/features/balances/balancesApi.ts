@@ -6,6 +6,7 @@ import uniqBy from "lodash.uniqby";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.json";
+import { Light } from "@airswap/protocols";
 
 const balancesInterface = new ethers.utils.Interface(
   JSON.stringify(BalanceChecker.abi)
@@ -22,7 +23,7 @@ const getContract = (
   );
 };
 
-const defaultTokenSet: {
+export const defaultTokenSets: {
   [chainId: number]: string[];
 } = {
   [chainIds.MAINNET]: [
@@ -32,10 +33,14 @@ const defaultTokenSet: {
     "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
     "0x27054b13b1b798b345b591a4d22e6562d47ea75a", // AST
   ],
+  [chainIds.RINKEBY]: [
+    "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea", // DAI
+    "0xc778417e063141139fce010982780140aa0cd5ab", // WETH
+  ],
 };
 
 export const getSavedTokenSet = (chainId: number) => {
-  return (defaultTokenSet[chainId] || []).concat(
+  return (defaultTokenSets[chainId] || []).concat(
     (localStorage.getItem(`airswap/tokenSet/${chainId}`) || "")
       .split(",")
       .filter((address) => address.length)
@@ -43,16 +48,16 @@ export const getSavedTokenSet = (chainId: number) => {
 };
 
 const tokensCache: {
-  [chainId: number]: TokenInfo[];
+  [chainId: number]: Promise<TokenInfo[]>;
 } = {};
 
 export const getAllTokens = async (chainId: number) => {
   let tokens;
-  if (tokensCache[chainId]) {
-    tokens = tokensCache[chainId];
-  } else {
-    tokens = tokensCache[chainId] = await fetchTokens(chainId);
+  if (!tokensCache[chainId]) {
+    tokensCache[chainId] = fetchTokens(chainId);
   }
+  // TODO: handle failure.
+  tokens = await tokensCache[chainId];
   return tokens;
 };
 
@@ -62,7 +67,7 @@ export const getSavedTokenSetInfo = async (chainId: number) => {
   const matchingTokens = tokens.filter((tokenInfo) =>
     tokenSet.includes(tokenInfo.address)
   );
-  return uniqBy(matchingTokens, (token) => token.address.toLowerCase());
+  return uniqBy(matchingTokens, (token) => token.address);
 };
 
 /**
@@ -82,11 +87,13 @@ const fetchBalancesOrAllowances: (
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
   const contract = getContract(chainId, provider);
-  const balances: BigNumber[] = await contract[method](
-    walletAddress,
-    tokenAddresses
-  );
-  return balances.map((balance) => balance.toString());
+  const args =
+    method === "walletBalances"
+      ? [walletAddress, tokenAddresses]
+      : // sender, spender, tokens.
+        [walletAddress, Light.getAddress(parseInt(chainId)), tokenAddresses];
+  const amounts: BigNumber[] = await contract[method].apply(null, args);
+  return amounts.map((amount) => amount.toString());
 };
 
 const fetchBalances = fetchBalancesOrAllowances.bind(null, "walletBalances");

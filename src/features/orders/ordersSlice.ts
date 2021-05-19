@@ -1,11 +1,12 @@
 import { LightOrder } from "@airswap/types";
+import { Transaction } from "@ethersproject/transactions";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { requestOrder, takeOrder, approveToken } from "./orderAPI";
 
 export interface OrdersState {
   orders: LightOrder[];
-  tx: null | string;
+  tx: null | Transaction;
   status: "idle" | "requesting" | "taking" | "failed";
 }
 

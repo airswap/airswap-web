@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, Transaction } from "ethers";
 import { Registry, Light, ERC20 } from "@airswap/protocols";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
@@ -46,9 +46,9 @@ export async function takeOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
 ) {
-  const txHash = await new Light(provider.network.chainId, provider).swap(
+  const tx = await new Light(provider.network.chainId, provider).swap(
     order,
     provider.getSigner()
   );
-  return txHash;
+  return tx as any as Transaction;
 }

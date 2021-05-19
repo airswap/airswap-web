@@ -1,38 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toDecimalString, getEtherscanURL } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
 import styles from "./Orders.module.css";
-
-const tokens = {
-  WETH: "0xc778417e063141139fce010982780140aa0cd5ab",
-  DAI: "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea",
-};
-
-const makers = [
-  "aomcfsa7.altono.xyz",
-  "airswap.aquanow.io",
-  "ast.ngrok.io",
-  "wintermute-rfq.com:44442",
-];
+import useTokenSet from "../../hooks/useTokenSet";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
-  const [senderToken, setSenderToken] = useState(tokens.WETH);
-  const [signerToken, setSignerToken] = useState(tokens.DAI);
+  const { tokenSet } = useTokenSet();
+  const [senderToken, setSenderToken] = useState<string>();
+  const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.1");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
+  const [url, setURL] = useState<string>();
 
   let signerAmount = null;
   if (order) {
     signerAmount = toDecimalString(order.signerAmount, 6);
   }
 
-  if (!active) return null;
+  if (!active || !chainId) return null;
 
   return (
     <div>
@@ -42,8 +33,12 @@ export function Orders() {
           value={senderToken}
           onChange={(e) => setSenderToken(e.target.value)}
         >
-          <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.DAI}>DAI</option>
+          <option>select...</option>
+          {tokenSet.map((token) => (
+            <option key={token.address} value={token.address}>
+              {token.symbol}
+            </option>
+          ))}
         </select>
       </div>
       <div className={styles.row}>
@@ -62,20 +57,27 @@ export function Orders() {
           value={signerToken}
           onChange={(e) => setSignerToken(e.target.value)}
         >
-          <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.DAI}>DAI</option>
+          <option>select...</option>
+          {tokenSet
+            .filter((token) => token.address !== senderToken)
+            .map((token) => (
+              <option key={token.address} value={token.address}>
+                {token.symbol}
+              </option>
+            ))}
         </select>
       </div>
       <div className={styles.row}>
         <button
+          disabled={!senderToken || !signerToken || !senderAmount || !url}
           className={styles.asyncButton}
           onClick={() =>
             dispatch(
               request({
                 chainId: chainId!,
-                senderToken,
+                senderToken: senderToken!,
                 senderAmount,
-                signerToken,
+                signerToken: signerToken!,
                 senderWallet: account!,
                 provider: library,
               })
@@ -113,9 +115,9 @@ export function Orders() {
           <a
             target="_blank"
             rel="noreferrer"
-            href={`${getEtherscanURL(`${chainId}`, tx)}`}
+            href={`${getEtherscanURL(`${chainId}`, tx.hash!)}`}
           >
-            {tx}
+            {tx.hash}
           </a>
         ) : (
           <span />
