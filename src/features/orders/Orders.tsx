@@ -16,7 +16,6 @@ export function Orders() {
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.1");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
-  const [url, setURL] = useState<string>();
 
   let signerAmount = null;
   if (order) {
@@ -69,7 +68,7 @@ export function Orders() {
       </div>
       <div className={styles.row}>
         <button
-          disabled={!senderToken || !signerToken || !senderAmount || !url}
+          disabled={!senderToken || !signerToken || !senderAmount}
           className={styles.asyncButton}
           onClick={() =>
             dispatch(
