@@ -9,7 +9,7 @@ import { formatUnits } from "@ethersproject/units";
 
 const Balances: FC<{}> = () => {
   const { active } = useWeb3React();
-  const { tokenSet, addSymbolToTokenSet } = useTokenSet();
+  const { tokenSet, addAddressToTokenSet: addSymbolToTokenSet } = useTokenSet();
   const balances = useAppSelector(selectBalances);
 
   const [addTokenField, setAddTokenField] = useState<string>("");

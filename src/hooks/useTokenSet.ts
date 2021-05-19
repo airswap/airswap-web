@@ -15,7 +15,7 @@ const DEFAULT_TOKEN_SET_SYMBOLS = ["WETH", "USDT", "USDC", "DAI", "AST"];
 // );
 
 const useTokenSet = () => {
-  const [tokenSetSymbols, setTokenSetSymbols] = useState<string[]>(
+  const [tokenSetAddresses, setTokenSetAddresses] = useState<string[]>(
     DEFAULT_TOKEN_SET_SYMBOLS
   );
   const [tokenSet, setTokenSet] = useState<TokenInfo[]>([]);
@@ -25,18 +25,18 @@ const useTokenSet = () => {
   const localStorageKey = `airswap/tokenSet/${chainId}`;
 
   useEffect(() => {
-    const savedTokenSetSymbols = (localStorage.getItem(localStorageKey) || "")
+    const savedTokenSetAddresses = (localStorage.getItem(localStorageKey) || "")
       .split(",")
       .filter((symbol) => symbol.length);
-    if (savedTokenSetSymbols.length) {
-      setTokenSetSymbols((currentSymbols) =>
-        uniqBy(currentSymbols.concat(savedTokenSetSymbols), (i) => i)
+    if (savedTokenSetAddresses.length) {
+      setTokenSetAddresses((currentSymbols) =>
+        uniqBy(currentSymbols.concat(savedTokenSetAddresses), (i) => i)
       );
     }
   }, [chainId, localStorageKey]);
 
   useEffect(() => {
-    if (!chainId || !tokenSetSymbols.length) {
+    if (!chainId || !tokenSetAddresses.length) {
       setTokenSet([]);
     } else {
       getSavedTokenSetInfo(chainId).then((tokenSetInfo) => {
@@ -52,33 +52,33 @@ const useTokenSet = () => {
         );
       }
     }
-  }, [chainId, tokenSetSymbols, account, dispatch, library]);
+  }, [chainId, tokenSetAddresses, account, dispatch, library]);
 
-  const addSymbolToTokenSet = useCallback(
-    (symbol: string) => {
-      const existingSavedSymbolsString =
+  const addAddressToTokenSet = useCallback(
+    (address: string) => {
+      const existingSavedAddressesString =
         localStorage.getItem(localStorageKey) || "";
-      let existingSavedSymbols: string[] = [];
-      if (existingSavedSymbolsString.length) {
-        existingSavedSymbols = existingSavedSymbolsString.split(",");
+      let existingSavedAddresses: string[] = [];
+      if (existingSavedAddressesString.length) {
+        existingSavedAddresses = existingSavedAddressesString.split(",");
       }
       if (
-        !existingSavedSymbols
+        !existingSavedAddresses
           .map((s) => s.toLowerCase())
-          .includes(symbol.toLowerCase())
+          .includes(address.toLowerCase())
       ) {
         localStorage.setItem(
           localStorageKey,
-          existingSavedSymbols +
-            `${existingSavedSymbols.length ? "," : ""}${symbol}`
+          existingSavedAddresses +
+            `${existingSavedAddresses.length ? "," : ""}${address}`
         );
-        setTokenSetSymbols((prev) => [...prev, symbol]);
+        setTokenSetAddresses((prev) => [...prev, address]);
       }
     },
     [localStorageKey]
   );
 
-  return { tokenSet, addSymbolToTokenSet };
+  return { tokenSet, addAddressToTokenSet: addAddressToTokenSet };
 };
 
 export default useTokenSet;
