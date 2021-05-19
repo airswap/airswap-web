@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toDecimalString, getEtherscanURL } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -6,24 +6,34 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
 import styles from "./Orders.module.css";
 import useTokenSet from "../../hooks/useTokenSet";
+import { chainIds } from "@airswap/constants";
 
-const makers = [
-  "aomcfsa7.altono.xyz",
-  "airswap.aquanow.io",
-  "ast.ngrok.io",
-  "wintermute-rfq.com:44442",
-];
+const makers: {
+  [chainId: number]: string[];
+} = {
+  [chainIds.MAINNET]: [
+    "aomcfsa7.altono.xyz",
+    "airswap.aquanow.io",
+    "ast.ngrok.io",
+    "wintermute-rfq.com:44442",
+  ],
+  [chainIds.RINKEBY]: ["https://dummy-maker.vercel.app/api/hello"],
+};
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
-  const [url, setURL] = useState(makers[1]);
   const { tokenSet } = useTokenSet();
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("1");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
+  const [url, setURL] = useState<string>();
+
+  useEffect(() => {
+    if (chainId) setURL(makers[chainId][0]);
+  }, [chainId]);
 
   let signerAmount = null;
   if (order) {
@@ -86,12 +96,12 @@ export function Orders() {
       </div>
       <div className={styles.row}>
         <button
-          disabled={!senderToken || !signerToken || !senderAmount}
+          disabled={!senderToken || !signerToken || !senderAmount || !url}
           className={styles.asyncButton}
           onClick={() =>
             dispatch(
               request({
-                url,
+                url: url!,
                 chainId,
                 senderToken: senderToken!,
                 senderAmount,
@@ -132,9 +142,9 @@ export function Orders() {
           <a
             target="_blank"
             rel="noreferrer"
-            href={`${getEtherscanURL(`${chainId}`, tx)}`}
+            href={`${getEtherscanURL(`${chainId}`, tx.hash!)}`}
           >
-            {tx}
+            {tx.hash}
           </a>
         ) : (
           <span />
