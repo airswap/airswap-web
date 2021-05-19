@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@airswap/balances@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-1.1.1.tgz#3c9bc54e3f115cfdb2152269479cacc296ca5ee5"
-  integrity sha512-VdkU8nobQEVBfgwiq9tbt1y3so7ctWZ2IHxWK7Oq65OKod0eTZQzDmX8cY83tai6Ah6p9dMDKtHjmlO1ueEplg==
+"@airswap/balances@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-1.1.2.tgz#fd25a6ff23ab74c34a8ef81ec7b18d9f4b091061"
+  integrity sha512-79xZg1xnrsuwAAO81d8OSIII/i0Cu/uu3FD+0bLNm1V6ty8iyX4hd3QOH4WdL25izHwd+XulnBKGEx5KRuVCcw==
   dependencies:
     openzeppelin-solidity "2.4"
 
@@ -51,10 +51,10 @@
     "@airswap/types" "3.5.16"
     "@openzeppelin/contracts" "^3.3.0"
 
-"@airswap/metadata@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.0.tgz#de45264e184dd65cec60281f4a9f4bf23fe36fae"
-  integrity sha512-yTxMvwFgfLMd3rznoe6B0t1/zzO5ZALFRShaU6GVFM/XFFABkEJf0BzVkZ4xw70nOiulyHVqOSg2jcKgpnJKJA==
+"@airswap/metadata@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.2.tgz#ef5e9198702e855f1cccf6bdbed440430481ff38"
+  integrity sha512-7nCZXqdxTDfIklyb5HtE0GWHUjHCXQ3LK/l6uIBtvuAE1AB5seMR3IqGZY3V6q7oRyGgp/2Va32oVGsw0qkpLg==
   dependencies:
     "@airswap/constants" "0.4.0"
     "@airswap/types" "3.5.16"
@@ -123,6 +123,13 @@
   version "3.5.16"
   resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.5.16.tgz#9a218f4f6e043889ebb92d7fa4a38a04c6d89ef0"
   integrity sha512-JmaPjhS0ToaB3qYUt7AQIsPa8ml56ki7aBZCBvGwlPfX8yKXNc/CocWYuYqGBuHkCT/srcPgKi7u8sbA7jl+LQ==
+  dependencies:
+    openzeppelin-solidity "2.4"
+
+"@airswap/types@^3.5.17":
+  version "3.5.17"
+  resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.5.17.tgz#d2028efe88f83c32ec6346674a1078093caaf3ca"
+  integrity sha512-mQSoNy0GCQbuPdaB8HFCn/5rCMduGVE82f5Ub/0CU/bbPJVznJj6KnZnOlfPS/NYmqQOGmyrVJRyqPginTBWfg==
   dependencies:
     openzeppelin-solidity "2.4"
 

@@ -5,7 +5,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 import uniqBy from "lodash.uniqby";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
-import balancesDeploys from "@airswap/balances/deploys.json";
+import balancesDeploys from "@airswap/balances/deploys.js";
 import { Light } from "@airswap/protocols";
 
 const balancesInterface = new ethers.utils.Interface(
@@ -77,7 +77,7 @@ export const getSavedTokenSetInfo = async (chainId: number) => {
 const fetchBalancesOrAllowances: (
   method: "walletBalances" | "walletAllowances",
   params: {
-    chainId: keyof typeof balancesDeploys;
+    chainId: number;
     provider: ethers.providers.Web3Provider;
     walletAddress: string;
     tokenAddresses: string[];
@@ -91,7 +91,7 @@ const fetchBalancesOrAllowances: (
     method === "walletBalances"
       ? [walletAddress, tokenAddresses]
       : // sender, spender, tokens.
-        [walletAddress, Light.getAddress(parseInt(chainId)), tokenAddresses];
+        [walletAddress, Light.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());
 };

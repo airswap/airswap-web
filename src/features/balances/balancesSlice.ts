@@ -63,7 +63,7 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
         const tokenSetAddresses = getSavedTokenSet(params.chainId);
         const amounts = await methods[type]({
           ...params,
-          chainId: String(params.chainId) as "1" | "4" | "5" | "42",
+          chainId: params.chainId,
           tokenAddresses: tokenSetAddresses,
         });
         return tokenSetAddresses.map((address, i) => ({
