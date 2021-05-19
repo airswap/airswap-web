@@ -16,18 +16,15 @@ export async function requestOrder(
     senderToken
   );
   const orders = servers.map(async (server) => {
-    console.log(server);
     const order = await server.getSignerSideOrder(
       toAtomicString(senderAmount, 18),
       signerToken,
       senderToken,
       senderWallet
     );
-    console.log(order);
     return order as any as LightOrder;
   });
-
-  return [];
+  return Promise.all(orders);
 }
 
 export async function approveToken(
