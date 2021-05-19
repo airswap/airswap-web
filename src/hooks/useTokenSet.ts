@@ -6,7 +6,10 @@ import {
 } from "../features/balances/balancesApi";
 import uniqBy from "lodash.uniqby";
 import { useAppDispatch } from "../app/hooks";
-import { requestSavedTokenSetBalances } from "../features/balances/balancesSlice";
+import {
+  requestSavedTokenSetAllowances,
+  requestSavedTokenSetBalances,
+} from "../features/balances/balancesSlice";
 import { useWeb3React } from "@web3-react/core";
 
 const useTokenSet = () => {
@@ -42,6 +45,13 @@ const useTokenSet = () => {
       if (account) {
         dispatch(
           requestSavedTokenSetBalances({
+            chainId,
+            provider: library,
+            walletAddress: account,
+          })
+        );
+        dispatch(
+          requestSavedTokenSetAllowances({
             chainId,
             provider: library,
             walletAddress: account,
