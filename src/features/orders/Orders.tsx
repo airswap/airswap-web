@@ -7,8 +7,8 @@ import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
 import styles from "./Orders.module.css";
 
 const tokens = {
-  WETH: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  USDT: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  WETH: "0xc778417e063141139fce010982780140aa0cd5ab",
+  DAI: "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea",
 };
 
 const makers = [
@@ -22,10 +22,9 @@ export function Orders() {
   const order = useAppSelector(selectOrder);
   const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
-  const [url, setURL] = useState(makers[1]);
   const [senderToken, setSenderToken] = useState(tokens.WETH);
-  const [signerToken, setSignerToken] = useState(tokens.USDT);
-  const [senderAmount, setSenderAmount] = useState("1");
+  const [signerToken, setSignerToken] = useState(tokens.DAI);
+  const [senderAmount, setSenderAmount] = useState("0.1");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
 
   let signerAmount = null;
@@ -38,23 +37,13 @@ export function Orders() {
   return (
     <div>
       <div className={styles.row}>
-        <label>Request from </label>
-        <input
-          className={styles.textbox}
-          aria-label="Set URL"
-          value={url}
-          onChange={(e) => setURL(e.target.value)}
-          placeholder="https://..."
-        />
-      </div>
-      <div className={styles.row}>
         <label>Token to send</label>
         <select
           value={senderToken}
           onChange={(e) => setSenderToken(e.target.value)}
         >
           <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.USDT}>USDT</option>
+          <option value={tokens.DAI}>DAI</option>
         </select>
       </div>
       <div className={styles.row}>
@@ -74,7 +63,7 @@ export function Orders() {
           onChange={(e) => setSignerToken(e.target.value)}
         >
           <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.USDT}>USDT</option>
+          <option value={tokens.DAI}>DAI</option>
         </select>
       </div>
       <div className={styles.row}>
@@ -83,12 +72,12 @@ export function Orders() {
           onClick={() =>
             dispatch(
               request({
-                url,
-                chainId: `${chainId}`,
+                chainId: chainId!,
                 senderToken,
                 senderAmount,
                 signerToken,
                 senderWallet: account!,
+                provider: library,
               })
             )
           }

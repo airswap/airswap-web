@@ -4,13 +4,13 @@ import { RootState } from "../../app/store";
 import { requestOrder, takeOrder, approveToken } from "./orderAPI";
 
 export interface OrdersState {
-  order: LightOrder | null;
+  orders: LightOrder[];
   tx: null | string;
   status: "idle" | "requesting" | "taking" | "failed";
 }
 
 const initialState: OrdersState = {
-  order: null,
+  orders: [],
   tx: null,
   status: "idle",
 };
@@ -18,53 +18,39 @@ const initialState: OrdersState = {
 export const request = createAsyncThunk(
   "orders/request",
   async (params: {
-    url: string;
-    chainId: string;
+    chainId: number;
     signerToken: string;
     senderToken: string;
     senderAmount: string;
     senderWallet: string;
-  }) => {
-    try {
-      return await requestOrder(
-        params.url,
-        params.chainId,
-        params.signerToken,
-        params.senderToken,
-        params.senderAmount,
-        params.senderWallet
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  }
+    provider: any;
+  }) =>
+    await requestOrder(
+      params.chainId,
+      params.signerToken,
+      params.senderToken,
+      params.senderAmount,
+      params.senderWallet,
+      params.provider
+    )
 );
 
 export const approve = createAsyncThunk(
   "orders/approve",
-  async (params: any) => {
-    try {
-      return await approveToken(params.token, params.library);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  async (params: any) => await approveToken(params.token, params.library)
 );
 
-export const take = createAsyncThunk("orders/take", async (params: any) => {
-  try {
-    return await takeOrder(params.order, params.library);
-  } catch (e) {
-    console.error(e);
-  }
-});
+export const take = createAsyncThunk(
+  "orders/take",
+  async (params: any) => await takeOrder(params.order, params.library)
+);
 
 export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
     clear: (state) => {
-      state.order = null;
+      state.orders = [];
     },
   },
   extraReducers: (builder) => {
@@ -74,7 +60,7 @@ export const ordersSlice = createSlice({
       })
       .addCase(request.fulfilled, (state, action) => {
         state.status = "idle";
-        state.order = action.payload!;
+        state.orders = action.payload!;
       })
       .addCase(take.pending, (state) => {
         state.status = "taking";
@@ -88,7 +74,7 @@ export const ordersSlice = createSlice({
 
 export const { clear } = ordersSlice.actions;
 
-export const selectOrder = (state: RootState) => state.orders.order;
+export const selectOrder = (state: RootState) => state.orders.orders[0];
 export const selectTX = (state: RootState) => state.orders.tx;
 
 export default ordersSlice.reducer;
