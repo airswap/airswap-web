@@ -6,7 +6,7 @@
     "@airswap/balances": "^1.1.1",
     "@airswap/constants": "^0.4.0",
     "@airswap/metadata": "^0.3.2",
-    "@airswap/protocols": "^0.5.2",
+    "@airswap/protocols": "^0.5.4",
     "@airswap/types": "3.5.16",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",

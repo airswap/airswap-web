@@ -1,6 +1,10 @@
 import { ethers } from "ethers";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchBalances, getSavedTokenSet } from "./balancesApi";
+import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  fetchAllowances,
+  fetchBalances,
+  getSavedTokenSet,
+} from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
 import { walletConnected } from "../wallet/walletActions";
 
@@ -27,94 +31,123 @@ const initialState: BalancesState = {
   values: {},
 };
 
-export const requestSavedTokenSetBalances = createAsyncThunk<
-  { address: string; balance: string }[],
+const getThunk: (type: "balances" | "allowances") => AsyncThunk<
+  { address: string; amount: string }[],
   {
     chainId: number;
     provider: ethers.providers.Web3Provider;
     walletAddress: string;
   },
-  {
-    // Optional fields for defining thunkApi field types
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->(
-  "balances/requestForSavedTokenSet",
-  async (params) => {
-    // TODO: prevent dupe fetches?
-    try {
-      const tokenSetAddresses = getSavedTokenSet(params.chainId);
-      const balances = await fetchBalances({
-        ...params,
-        chainId: String(params.chainId) as "1" | "4" | "5" | "42",
-        tokenAddresses: tokenSetAddresses,
-      });
-      return tokenSetAddresses.map((address, i) => ({
-        address,
-        balance: balances[i],
-      }));
-    } catch (e) {
-      console.error("Error fetching balances: " + e.message);
-      // TODO: error handling
-      return [];
+  {}
+> = (type: "balances" | "allowances") => {
+  const methods = {
+    balances: fetchBalances,
+    allowances: fetchAllowances,
+  };
+  return createAsyncThunk<
+    { address: string; amount: string }[],
+    {
+      chainId: number;
+      provider: ethers.providers.Web3Provider;
+      walletAddress: string;
+    },
+    {
+      // Optional fields for defining thunkApi field types
+      dispatch: AppDispatch;
+      state: RootState;
     }
-  },
-  {
-    // Logic to prevent fetching again if we're already fetching the same or more tokens.
-    condition: (params, { getState, extra }) => {
-      const { balances } = getState();
-      // If we're not fetching, definitely continue
-      if (balances.status !== "fetching") return true;
-      if (balances.inFlightFetchTokens) {
-        const tokensToFetch = getSavedTokenSet(params.chainId);
-        // only fetch if new list is larger.
-        return tokensToFetch.length > balances.inFlightFetchTokens.length;
+  >(
+    `${type}/requestForSavedTokenSet`,
+    async (params) => {
+      try {
+        const tokenSetAddresses = getSavedTokenSet(params.chainId);
+        const amounts = await methods[type]({
+          ...params,
+          chainId: String(params.chainId) as "1" | "4" | "5" | "42",
+          tokenAddresses: tokenSetAddresses,
+        });
+        return tokenSetAddresses.map((address, i) => ({
+          address,
+          amount: amounts[i],
+        }));
+      } catch (e) {
+        console.error(`Error fetching ${type}: ` + e.message);
+        // TODO: error handling
+        return [];
       }
     },
-  }
-);
-
-export const balancesSlice = createSlice({
-  name: "balances",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      // Reset to initial state if a new account is connected.
-      .addCase(walletConnected, () => initialState)
-
-      // Handle requesting balances
-      .addCase(requestSavedTokenSetBalances.pending, (state, action) => {
-        state.status = "fetching";
-        state.inFlightFetchTokens = getSavedTokenSet(action.meta.arg.chainId);
-      })
-      .addCase(requestSavedTokenSetBalances.fulfilled, (state, action) => {
-        state.lastFetch = Date.now();
-        const tokenBalances = action.payload;
-
-        tokenBalances?.forEach(({ address, balance }) => {
-          state.values[address] = balance;
-        });
-
-        // Only clear fetching status if this request contained the largest
-        // list of tokens (which will be stored in inFlightFetchTokens)
-        if (
-          state.inFlightFetchTokens &&
-          tokenBalances.every(
-            (result, i) => state.inFlightFetchTokens![i] === result.address
-          )
-        ) {
-          state.inFlightFetchTokens = null;
-          state.status = "idle";
+    {
+      // Logic to prevent fetching again if we're already fetching the same or more tokens.
+      condition: (params, { getState, extra }) => {
+        const sliceState = getState()[type];
+        // If we're not fetching, definitely continue
+        if (sliceState.status !== "fetching") return true;
+        if (sliceState.inFlightFetchTokens) {
+          const tokensToFetch = getSavedTokenSet(params.chainId);
+          // only fetch if new list is larger.
+          return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
         }
-      })
-      .addCase(requestSavedTokenSetBalances.rejected, (state, action) => {
-        state.status = "failed";
-      });
-  },
-});
+      },
+    }
+  );
+};
+
+const getSlice = (
+  type: "balances" | "allowances",
+  asyncThunk: ReturnType<typeof getThunk>
+) => {
+  return createSlice({
+    name: type,
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+      builder
+        // Reset to initial state if a new account is connected.
+        .addCase(walletConnected, () => initialState)
+
+        // Handle requesting balances
+        .addCase(asyncThunk.pending, (state, action) => {
+          state.status = "fetching";
+          state.inFlightFetchTokens = getSavedTokenSet(action.meta.arg.chainId);
+        })
+        .addCase(asyncThunk.fulfilled, (state, action) => {
+          state.lastFetch = Date.now();
+          const tokenBalances = action.payload;
+
+          tokenBalances?.forEach(({ address, amount }) => {
+            state.values[address] = amount;
+          });
+
+          // Only clear fetching status if this request contained the largest
+          // list of tokens (which will be stored in inFlightFetchTokens)
+          if (
+            state.inFlightFetchTokens &&
+            tokenBalances.every(
+              (result, i) => state.inFlightFetchTokens![i] === result.address
+            )
+          ) {
+            state.inFlightFetchTokens = null;
+            state.status = "idle";
+          }
+        })
+        .addCase(asyncThunk.rejected, (state, action) => {
+          state.status = "failed";
+        });
+    },
+  });
+};
 
 export const selectBalances = (state: RootState) => state.balances;
+export const selectAllowances = (state: RootState) => state.allowances;
 
-export default balancesSlice.reducer;
+export const requestSavedTokenSetBalances = getThunk("balances");
+export const requestSavedTokenSetAllowances = getThunk("allowances");
+
+export const balancesSlice = getSlice("balances", requestSavedTokenSetBalances);
+export const allowancesSlice = getSlice(
+  "allowances",
+  requestSavedTokenSetAllowances
+);
+
+export const balancesReducer = balancesSlice.reducer;
+export const allowancesReducer = allowancesSlice.reducer;

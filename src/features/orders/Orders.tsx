@@ -5,11 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
 import styles from "./Orders.module.css";
-
-const tokens = {
-  WETH: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  USDT: "0xdac17f958d2ee523a2206206994597c13d831ec7",
-};
+import useTokenSet from "../../hooks/useTokenSet";
 
 const makers = [
   "aomcfsa7.altono.xyz",
@@ -23,8 +19,9 @@ export function Orders() {
   const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
   const [url, setURL] = useState(makers[1]);
-  const [senderToken, setSenderToken] = useState(tokens.WETH);
-  const [signerToken, setSignerToken] = useState(tokens.USDT);
+  const { tokenSet } = useTokenSet();
+  const [senderToken, setSenderToken] = useState<string>();
+  const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("1");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
 
@@ -33,7 +30,7 @@ export function Orders() {
     signerAmount = toDecimalString(order.signerAmount, 6);
   }
 
-  if (!active) return null;
+  if (!active || !chainId) return null;
 
   return (
     <div>
@@ -53,8 +50,12 @@ export function Orders() {
           value={senderToken}
           onChange={(e) => setSenderToken(e.target.value)}
         >
-          <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.USDT}>USDT</option>
+          <option>select...</option>
+          {tokenSet.map((token) => (
+            <option key={token.address} value={token.address}>
+              {token.symbol}
+            </option>
+          ))}
         </select>
       </div>
       <div className={styles.row}>
@@ -73,21 +74,28 @@ export function Orders() {
           value={signerToken}
           onChange={(e) => setSignerToken(e.target.value)}
         >
-          <option value={tokens.WETH}>WETH</option>
-          <option value={tokens.USDT}>USDT</option>
+          <option>select...</option>
+          {tokenSet
+            .filter((token) => token.address !== senderToken)
+            .map((token) => (
+              <option key={token.address} value={token.address}>
+                {token.symbol}
+              </option>
+            ))}
         </select>
       </div>
       <div className={styles.row}>
         <button
+          disabled={!senderToken || !signerToken || !senderAmount}
           className={styles.asyncButton}
           onClick={() =>
             dispatch(
               request({
                 url,
-                chainId: `${chainId}`,
-                senderToken,
+                chainId,
+                senderToken: senderToken!,
                 senderAmount,
-                signerToken,
+                signerToken: signerToken!,
                 senderWallet: account!,
               })
             )

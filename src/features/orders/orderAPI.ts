@@ -5,7 +5,7 @@ import { toAtomicString } from "@airswap/utils";
 
 export async function requestOrder(
   url: string,
-  chainId: string,
+  chainId: number,
   signerToken: string,
   senderToken: string,
   senderAmount: string,
@@ -25,7 +25,7 @@ export async function approveToken(
   senderToken: string,
   provider: ethers.providers.Web3Provider
 ) {
-  const spender = Light.getAddress(String(provider.network.chainId));
+  const spender = Light.getAddress(provider.network.chainId);
   const approvalTxHash = await new ERC20(senderToken).approve(
     spender,
     provider.getSigner()
@@ -37,9 +37,9 @@ export async function takeOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
 ) {
-  const txHash = await new Light(
-    String(provider.network.chainId),
-    provider
-  ).swap(order, provider.getSigner());
+  const txHash = await new Light(provider.network.chainId, provider).swap(
+    order,
+    provider.getSigner()
+  );
   return txHash;
 }

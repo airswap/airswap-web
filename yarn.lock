@@ -14,11 +14,6 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.3.10.tgz#29d4d44dbdd36c98034f8b76ba21a779da5c5051"
   integrity sha512-74kT4lncU++lyXDUJC6j1V8uasMshyhRDhiSKnV/88Ll6S0d2MyvjARaKkCfp8JqFnMbcbWl5zUyzMmSoimuIA==
 
-"@airswap/constants@0.3.13":
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.3.13.tgz#35c3eda51084259eba5f722122b8748155e1ad25"
-  integrity sha512-VYZDleiaPBvKXY3I7yrQgT9qrzGHCS+Y11Ebg+mXjac4SoBNqB2z3P8IYjWNUnnqYQCdI9UWSHH/NyKc0/uztg==
-
 "@airswap/constants@0.4.0", "@airswap/constants@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.0.tgz#8db04ff3b6e607ac21c5593ddc5fb78826c9241c"
@@ -69,16 +64,16 @@
     ethereumjs-abi "^0.6.8"
     ethers "^5.0.25"
 
-"@airswap/protocols@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@airswap/protocols/-/protocols-0.5.2.tgz#003dec527da35668d4949f48121f4079b2ae35ea"
-  integrity sha512-jhDyZARFSZV6rfpuTcFnLj4rmZyKOf4NG+mMWQW6+gjM9NxPxHg9jsH3zlGMkU6e3wSaNrscbXJ9MDKN3kq7uA==
+"@airswap/protocols@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@airswap/protocols/-/protocols-0.5.4.tgz#20acc96b7ac5487641add8b969f64e6c39312b9a"
+  integrity sha512-xL45boqOalvdfRVO62GKbACVt5RpcG4euwOEhXzEJLdb8phyZi3KUn5P5u0oupB9gfndR6NWdyNF+PAtFnl0mQ==
   dependencies:
-    "@airswap/constants" "0.3.13"
+    "@airswap/constants" "0.4.0"
     "@airswap/delegate" "2.6.9"
     "@airswap/indexer" "3.6.10"
     "@airswap/light" "2.2.1"
-    "@airswap/registry" "0.4.0"
+    "@airswap/registry" "2.4.0"
     "@airswap/swap" "5.4.8"
     "@airswap/tokens" "0.1.4"
     "@airswap/types" "3.5.16"
@@ -89,10 +84,10 @@
     ethers "^5.0.25"
     jayson "^3.2.0"
 
-"@airswap/registry@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-0.4.0.tgz#0c8c17c2025220ceac5374f4764f80d2851376d3"
-  integrity sha512-wtgknLXI9XtiS6QTQknU2xHjkoXNPisRYLTOJicsRF3b9YT9FLL/VzuHElfeRJecv+p3+bwRCjONh9eGeO3gIQ==
+"@airswap/registry@2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-2.4.0.tgz#2fd351b514e22dca003baa9f439e834df4a61b24"
+  integrity sha512-dk8/l/AKC/4auTSFrDsOuDXfPKKdS8L3334IXpgJ221AMgodpxaQ/kPOzddnqiRd9ghgVf9XOxG21i2vF3jpnQ==
 
 "@airswap/swap@5.4.8":
   version "5.4.8"

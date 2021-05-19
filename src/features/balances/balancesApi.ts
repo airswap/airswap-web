@@ -6,6 +6,7 @@ import uniqBy from "lodash.uniqby";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.json";
+import { Light } from "@airswap/protocols";
 
 const balancesInterface = new ethers.utils.Interface(
   JSON.stringify(BalanceChecker.abi)
@@ -47,16 +48,16 @@ export const getSavedTokenSet = (chainId: number) => {
 };
 
 const tokensCache: {
-  [chainId: number]: TokenInfo[];
+  [chainId: number]: Promise<TokenInfo[]>;
 } = {};
 
 export const getAllTokens = async (chainId: number) => {
   let tokens;
-  if (tokensCache[chainId]) {
-    tokens = tokensCache[chainId];
-  } else {
-    tokens = tokensCache[chainId] = await fetchTokens(chainId);
+  if (!tokensCache[chainId]) {
+    tokensCache[chainId] = fetchTokens(chainId);
   }
+  // TODO: handle failure.
+  tokens = await tokensCache[chainId];
   return tokens;
 };
 
@@ -86,11 +87,13 @@ const fetchBalancesOrAllowances: (
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
   const contract = getContract(chainId, provider);
-  const balances: BigNumber[] = await contract[method](
-    walletAddress,
-    tokenAddresses
-  );
-  return balances.map((balance) => balance.toString());
+  const args =
+    method === "walletBalances"
+      ? [walletAddress, tokenAddresses]
+      : // sender, spender, tokens.
+        [walletAddress, Light.getAddress(parseInt(chainId)), tokenAddresses];
+  const amounts: BigNumber[] = await contract[method].apply(null, args);
+  return amounts.map((amount) => amount.toString());
 };
 
 const fetchBalances = fetchBalancesOrAllowances.bind(null, "walletBalances");

@@ -19,7 +19,7 @@ export const request = createAsyncThunk(
   "orders/request",
   async (params: {
     url: string;
-    chainId: string;
+    chainId: number;
     signerToken: string;
     senderToken: string;
     senderAmount: string;
