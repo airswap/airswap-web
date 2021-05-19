@@ -22,7 +22,7 @@ const getContract = (
   );
 };
 
-const defaultTokenSet: {
+export const defaultTokenSets: {
   [chainId: number]: string[];
 } = {
   [chainIds.MAINNET]: [
@@ -32,10 +32,14 @@ const defaultTokenSet: {
     "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
     "0x27054b13b1b798b345b591a4d22e6562d47ea75a", // AST
   ],
+  [chainIds.RINKEBY]: [
+    "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea", // DAI
+    "0xc778417e063141139fce010982780140aa0cd5ab", // WETH
+  ],
 };
 
 export const getSavedTokenSet = (chainId: number) => {
-  return (defaultTokenSet[chainId] || []).concat(
+  return (defaultTokenSets[chainId] || []).concat(
     (localStorage.getItem(`airswap/tokenSet/${chainId}`) || "")
       .split(",")
       .filter((address) => address.length)
