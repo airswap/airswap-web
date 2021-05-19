@@ -56,10 +56,10 @@
     "@airswap/types" "3.5.16"
     "@openzeppelin/contracts" "^3.3.0"
 
-"@airswap/metadata@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.0.tgz#de45264e184dd65cec60281f4a9f4bf23fe36fae"
-  integrity sha512-yTxMvwFgfLMd3rznoe6B0t1/zzO5ZALFRShaU6GVFM/XFFABkEJf0BzVkZ4xw70nOiulyHVqOSg2jcKgpnJKJA==
+"@airswap/metadata@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.2.tgz#ef5e9198702e855f1cccf6bdbed440430481ff38"
+  integrity sha512-7nCZXqdxTDfIklyb5HtE0GWHUjHCXQ3LK/l6uIBtvuAE1AB5seMR3IqGZY3V6q7oRyGgp/2Va32oVGsw0qkpLg==
   dependencies:
     "@airswap/constants" "0.4.0"
     "@airswap/types" "3.5.16"

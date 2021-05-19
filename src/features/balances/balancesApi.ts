@@ -66,7 +66,7 @@ export const getSavedTokenSetInfo = async (chainId: number) => {
   const matchingTokens = tokens.filter((tokenInfo) =>
     tokenSet.includes(tokenInfo.address)
   );
-  return uniqBy(matchingTokens, (token) => token.address.toLowerCase());
+  return uniqBy(matchingTokens, (token) => token.address);
 };
 
 /**

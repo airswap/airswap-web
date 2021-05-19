@@ -53,29 +53,26 @@ const useTokenSet = () => {
 
   const addAddressToTokenSet = useCallback(
     (address: string) => {
+      const lowerCasedAddress = address.toLowerCase();
       const existingSavedAddressesString =
         localStorage.getItem(localStorageKey) || "";
       let existingSavedAddresses: string[] = [];
       if (existingSavedAddressesString.length) {
         existingSavedAddresses = existingSavedAddressesString.split(",");
       }
-      if (
-        !existingSavedAddresses
-          .map((s) => s.toLowerCase())
-          .includes(address.toLowerCase())
-      ) {
+      if (!existingSavedAddresses.includes(lowerCasedAddress)) {
         localStorage.setItem(
           localStorageKey,
           existingSavedAddresses +
-            `${existingSavedAddresses.length ? "," : ""}${address}`
+            `${existingSavedAddresses.length ? "," : ""}${lowerCasedAddress}`
         );
-        setTokenSetAddresses((prev) => [...prev, address]);
+        setTokenSetAddresses((prev) => [...prev, lowerCasedAddress]);
       }
     },
     [localStorageKey]
   );
 
-  return { tokenSet, addAddressToTokenSet: addAddressToTokenSet };
+  return { tokenSet, addAddressToTokenSet };
 };
 
 export default useTokenSet;
