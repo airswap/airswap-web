@@ -4,10 +4,12 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useAppDispatch } from "../../app/hooks";
-import { walletConnected } from "./walletActions";
+import { subscribeToTransfers } from "../balances/balancesApi";
+import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
+import { fetchAllTokens } from "../metadata/metadataSlice";
 import {
-  requestSavedTokenSetAllowances,
-  requestSavedTokenSetBalances,
+  requestSavedActiveTokensAllowances,
+  requestSavedActiveTokensBalances,
 } from "../balances/balancesSlice";
 
 export const injectedConnector = new InjectedConnector({
@@ -30,28 +32,71 @@ export const Wallet = () => {
   };
 
   useEffect(() => {
+    console.log(
+      JSON.stringify({
+        active,
+        account,
+        chainId,
+        library: !!library,
+        dispatch: !!dispatch,
+      })
+    );
     if (active && account && chainId && library) {
       // Dispatch a general action to indicate wallet has changed
       dispatch(
-        walletConnected({
+        setWalletConnected({
           chainId,
-          account,
+          address: account,
         })
       );
+      dispatch(fetchAllTokens());
+      // TODO: determine if we should remove some of these params
       dispatch(
-        requestSavedTokenSetBalances({
+        requestSavedActiveTokensAllowances({
           chainId,
           provider: library,
           walletAddress: account,
         })
       );
       dispatch(
-        requestSavedTokenSetAllowances({
+        requestSavedActiveTokensBalances({
           chainId,
           provider: library,
           walletAddress: account,
         })
       );
+
+      // Fetch token set balances and allowances.
+      // fetchBalancesAndAllowances();
+
+      // Subscribe to changes in balance
+      // let tearDowns: (() => void)[];
+      // if (activeTokens.length) {
+      //   tearDowns = activeTokens.map((tokenInfo) => {
+      //     console.log(`subscribing to ${tokenInfo.symbol} transfers`);
+      //     return subscribeToTransfers({
+      //       tokenAddress: tokenInfo.address,
+      //       provider: library,
+      //       walletAddress: account!,
+      //       onBalanceChange: (amount, direction) => {
+      //         console.log(
+      //           `${amount.toString()} ${tokenInfo.symbol} ${
+      //             direction === "out" ? "sent" : "received"
+      //           }`
+      //         );
+      //       },
+      //     });
+      //   });
+      // }
+
+      // return () => {
+      //   if (tearDowns) {
+      //     console.log(`tearing down ${tearDowns.length} subs`);
+      //     tearDowns.forEach((fn) => fn());
+      //   }
+      // };
+    } else {
+      dispatch(setWalletDisconnected());
     }
   }, [active, account, chainId, dispatch, library]);
 

@@ -1,12 +1,8 @@
 import { ethers } from "ethers";
 import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  fetchAllowances,
-  fetchBalances,
-  getSavedTokenSet,
-} from "./balancesApi";
+import { fetchAllowances, fetchBalances } from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
-import { walletConnected } from "../wallet/walletActions";
+import { setWalletConnected } from "../wallet/walletSlice";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -57,16 +53,16 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
       state: RootState;
     }
   >(
-    `${type}/requestForSavedTokenSet`,
-    async (params) => {
+    `${type}/requestForSavedActiveTokens`,
+    async (params, { getState }) => {
       try {
-        const tokenSetAddresses = getSavedTokenSet(params.chainId);
+        const activeTokensAddresses = getState().metadata.tokens.active;
         const amounts = await methods[type]({
           ...params,
           chainId: params.chainId,
-          tokenAddresses: tokenSetAddresses,
+          tokenAddresses: activeTokensAddresses,
         });
-        return tokenSetAddresses.map((address, i) => ({
+        return activeTokensAddresses.map((address, i) => ({
           address,
           amount: amounts[i],
         }));
@@ -78,12 +74,12 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
     },
     {
       // Logic to prevent fetching again if we're already fetching the same or more tokens.
-      condition: (params, { getState, extra }) => {
+      condition: (params, { getState }) => {
         const sliceState = getState()[type];
         // If we're not fetching, definitely continue
         if (sliceState.status !== "fetching") return true;
         if (sliceState.inFlightFetchTokens) {
-          const tokensToFetch = getSavedTokenSet(params.chainId);
+          const tokensToFetch = getState().metadata.tokens.active;
           // only fetch if new list is larger.
           return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
         }
@@ -103,12 +99,15 @@ const getSlice = (
     extraReducers: (builder) => {
       builder
         // Reset to initial state if a new account is connected.
-        .addCase(walletConnected, () => initialState)
+        .addCase(setWalletConnected, () => initialState)
 
         // Handle requesting balances
         .addCase(asyncThunk.pending, (state, action) => {
           state.status = "fetching";
-          state.inFlightFetchTokens = getSavedTokenSet(action.meta.arg.chainId);
+          // FIXME:
+          // state.inFlightFetchTokens = getSavedActiveTokens(
+          //   action.meta.arg.chainId
+          // );
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
           state.lastFetch = Date.now();
@@ -140,13 +139,16 @@ const getSlice = (
 export const selectBalances = (state: RootState) => state.balances;
 export const selectAllowances = (state: RootState) => state.allowances;
 
-export const requestSavedTokenSetBalances = getThunk("balances");
-export const requestSavedTokenSetAllowances = getThunk("allowances");
+export const requestSavedActiveTokensBalances = getThunk("balances");
+export const requestSavedActiveTokensAllowances = getThunk("allowances");
 
-export const balancesSlice = getSlice("balances", requestSavedTokenSetBalances);
+export const balancesSlice = getSlice(
+  "balances",
+  requestSavedActiveTokensBalances
+);
 export const allowancesSlice = getSlice(
   "allowances",
-  requestSavedTokenSetAllowances
+  requestSavedActiveTokensAllowances
 );
 
 export const balancesReducer = balancesSlice.reducer;

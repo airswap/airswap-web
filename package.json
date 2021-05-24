@@ -19,6 +19,7 @@
     "@types/react-redux": "^7.1.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
+    "erc-20-abi": "^1.0.0",
     "ethers": "^5.1.4",
     "jayson": "^3.6.2",
     "lodash.uniqby": "^4.7.0",
