@@ -1,13 +1,15 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   AsyncThunk,
   createAction,
   createAsyncThunk,
   createSlice,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { fetchAllowances, fetchBalances } from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
+import { stakingTokenAddresses } from "@airswap/constants";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -106,7 +108,30 @@ const getSlice = (
   return createSlice({
     name: type,
     initialState,
-    reducers: {},
+    reducers: {
+      incrementBy: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        const currentAmount = BigNumber.from(
+          state.values[action.payload.tokenAddress] || 0
+        );
+        state.values[action.payload.tokenAddress] = currentAmount
+          .add(action.payload.amount)
+          .toString();
+      },
+      decrementBy: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        const currentAmount = BigNumber.from(
+          state.values[action.payload.tokenAddress] || 0
+        );
+        state.values[action.payload.tokenAddress] = currentAmount
+          .sub(action.payload.amount)
+          .toString();
+      },
+    },
     extraReducers: (builder) => {
       builder
         // Reset to initial state if a new account is connected.
@@ -157,6 +182,15 @@ export const allowancesSlice = getSlice(
   "allowances",
   requestActiveTokenAllowances
 );
+
+export const {
+  incrementBy: incrementBalanceBy,
+  decrementBy: decrementBalanceBy,
+} = balancesSlice.actions;
+export const {
+  incrementBy: incrementAllowanceBy,
+  decrementBy: decreementAllowanceBy,
+} = allowancesSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;
 export const allowancesReducer = allowancesSlice.reducer;
