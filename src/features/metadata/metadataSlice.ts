@@ -1,5 +1,10 @@
 import { fetchTokens } from "@airswap/metadata";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { TokenInfo } from "@uniswap/token-lists";
 import { AppDispatch, RootState } from "../../app/store";
 import {
@@ -88,10 +93,16 @@ export const metadataSlice = createSlice({
 
 export const { addActiveToken } = metadataSlice.actions;
 
-export const selectActiveTokens = (state: RootState) => {
-  return Object.values(state.metadata.tokens.all).filter((tokenInfo) =>
-    state.metadata.tokens.active.includes(tokenInfo.address)
-  );
-};
+const selectActiveTokenAddresses = (state: RootState) =>
+  state.metadata.tokens.active;
+const selectAllTokenInfo = (state: RootState) => state.metadata.tokens.all;
+export const selectActiveTokens = createSelector(
+  [selectActiveTokenAddresses, selectAllTokenInfo],
+  (activeTokenAddresses, allTokenInfo) => {
+    return Object.values(allTokenInfo).filter((tokenInfo) =>
+      activeTokenAddresses.includes(tokenInfo.address)
+    );
+  }
+);
 
 export default metadataSlice.reducer;
