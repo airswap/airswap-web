@@ -23,8 +23,9 @@ const tokensCache: {
   [chainId: number]: Promise<TokenInfo[]>;
 } = {};
 
-export const getLocalStorageKey: (chainId: number) => string = (chainId) =>
-  `airswap/activeTokens/${chainId}`;
+export const getActiveTokensLocalStorageKey: (chainId: number) => string = (
+  chainId
+) => `airswap/activeTokens/${chainId}`;
 
 export const getAllTokens = async (chainId: number) => {
   let tokens;
@@ -36,17 +37,20 @@ export const getAllTokens = async (chainId: number) => {
   return tokens;
 };
 
-export const getSavedActiveTokens = (chainId: number) => {
-  return (defaultActiveTokenss[chainId] || []).concat(
-    (localStorage.getItem(getLocalStorageKey(chainId)) || "")
-      .split(",")
-      .filter((address) => address.length)
+export const getActiveTokensFromLocalStorage = (chainId: number) => {
+  const savedTokens = (
+    localStorage.getItem(getActiveTokensLocalStorageKey(chainId)) || ""
+  )
+    .split(",")
+    .filter((address) => address.length);
+  return (
+    (savedTokens.length && savedTokens) || defaultActiveTokenss[chainId] || []
   );
 };
 
 export const getSavedActiveTokensInfo = async (chainId: number) => {
   const tokens = await getAllTokens(chainId);
-  const activeTokens = getSavedActiveTokens(chainId);
+  const activeTokens = getActiveTokensFromLocalStorage(chainId);
   const matchingTokens = tokens.filter((tokenInfo) =>
     activeTokens.includes(tokenInfo.address)
   );

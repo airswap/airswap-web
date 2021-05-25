@@ -10,7 +10,6 @@ import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 const Balances: FC<{}> = () => {
   const { active } = useWeb3React();
   const activeTokens = useAppSelector(selectActiveTokens);
-  console.log(activeTokens);
   const dispatch = useAppDispatch();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);

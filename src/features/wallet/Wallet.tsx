@@ -4,7 +4,6 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useAppDispatch } from "../../app/hooks";
-import { subscribeToTransfers } from "../balances/balancesApi";
 import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
 import { fetchAllTokens } from "../metadata/metadataSlice";
 import {
@@ -32,15 +31,6 @@ export const Wallet = () => {
   };
 
   useEffect(() => {
-    console.log(
-      JSON.stringify({
-        active,
-        account,
-        chainId,
-        library: !!library,
-        dispatch: !!dispatch,
-      })
-    );
     if (active && account && chainId && library) {
       // Dispatch a general action to indicate wallet has changed
       dispatch(

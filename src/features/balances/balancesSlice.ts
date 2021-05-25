@@ -1,5 +1,10 @@
 import { ethers } from "ethers";
-import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  AsyncThunk,
+  createAction,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { fetchAllowances, fetchBalances } from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
@@ -25,6 +30,10 @@ const initialState: BalancesState = {
   lastFetch: null,
   inFlightFetchTokens: null,
   values: {},
+};
+
+const getSetInFlightRequestTokensAction = (type: "balances" | "allowances") => {
+  return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
 const getThunk: (type: "balances" | "allowances") => AsyncThunk<
@@ -53,10 +62,13 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
       state: RootState;
     }
   >(
-    `${type}/requestForSavedActiveTokens`,
-    async (params, { getState }) => {
+    `${type}/requestForActiveTokens`,
+    async (params, { getState, dispatch }) => {
       try {
         const activeTokensAddresses = getState().metadata.tokens.active;
+        dispatch(
+          getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
+        );
         const amounts = await methods[type]({
           ...params,
           chainId: params.chainId,
@@ -102,12 +114,11 @@ const getSlice = (
         .addCase(setWalletConnected, () => initialState)
 
         // Handle requesting balances
-        .addCase(asyncThunk.pending, (state, action) => {
+        .addCase(asyncThunk.pending, (state) => {
           state.status = "fetching";
-          // FIXME:
-          // state.inFlightFetchTokens = getSavedActiveTokens(
-          //   action.meta.arg.chainId
-          // );
+        })
+        .addCase(getSetInFlightRequestTokensAction(type), (state, action) => {
+          state.inFlightFetchTokens = action.payload;
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
           state.lastFetch = Date.now();

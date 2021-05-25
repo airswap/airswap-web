@@ -6,7 +6,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { getSavedActiveTokens } from "./metadataApi";
+import { getActiveTokensFromLocalStorage } from "./metadataApi";
 
 export interface MetadataState {
   tokens: {
@@ -34,7 +34,6 @@ export const fetchAllTokens = createAsyncThunk<
 >("metadata/fetchTokens", async (unused, thunkApi) => {
   const { wallet } = thunkApi.getState();
   if (!wallet.connected) return [];
-  console.log("fetch all");
   return await fetchTokens(wallet.chainId!);
 });
 
@@ -78,7 +77,7 @@ export const metadataSlice = createSlice({
       })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId } = action.payload;
-        state.tokens.active = getSavedActiveTokens(chainId);
+        state.tokens.active = getActiveTokensFromLocalStorage(chainId);
       })
       .addCase(setWalletDisconnected, (state) => {
         state.tokens.active = [];

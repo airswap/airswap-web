@@ -1,5 +1,5 @@
 import { store } from "../../app/store";
-import { getLocalStorageKey } from "./metadataApi";
+import { getActiveTokensLocalStorageKey } from "./metadataApi";
 
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const cache: {
@@ -13,7 +13,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       // active tokens have changed, persist to local storage.
       cache[wallet.chainId!] = metadata.tokens.active;
       localStorage.setItem(
-        getLocalStorageKey(wallet.chainId!),
+        getActiveTokensLocalStorageKey(wallet.chainId!),
         metadata.tokens.active.join(",")
       );
     }
