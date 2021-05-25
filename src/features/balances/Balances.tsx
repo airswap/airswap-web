@@ -2,13 +2,18 @@ import { Fragment, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAllowances, selectBalances } from "./balancesSlice";
+import {
+  requestActiveTokenAllowances,
+  requestActiveTokenBalances,
+  selectAllowances,
+  selectBalances,
+} from "./balancesSlice";
 import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
 import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 
 const Balances: FC<{}> = () => {
-  const { active } = useWeb3React();
+  const { active, library } = useWeb3React();
   const activeTokens = useAppSelector(selectActiveTokens);
   const dispatch = useAppDispatch();
   const balances = useAppSelector(selectBalances);
@@ -46,6 +51,7 @@ const Balances: FC<{}> = () => {
       </div>
       <input
         type="text"
+        value={addTokenField}
         onChange={(e) => {
           setAddTokenField(e.target.value);
         }}
@@ -54,6 +60,8 @@ const Balances: FC<{}> = () => {
         type="button"
         onClick={() => {
           dispatch(addActiveToken(addTokenField));
+          dispatch(requestActiveTokenBalances({ provider: library }));
+          dispatch(requestActiveTokenAllowances({ provider: library }));
           setAddTokenField("");
         }}
       >

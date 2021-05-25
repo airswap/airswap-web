@@ -7,8 +7,8 @@ import { useAppDispatch } from "../../app/hooks";
 import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
 import { fetchAllTokens } from "../metadata/metadataSlice";
 import {
-  requestSavedActiveTokensAllowances,
-  requestSavedActiveTokensBalances,
+  requestActiveTokenAllowances,
+  requestActiveTokenBalances,
 } from "../balances/balancesSlice";
 
 export const injectedConnector = new InjectedConnector({
@@ -42,17 +42,13 @@ export const Wallet = () => {
       dispatch(fetchAllTokens());
       // TODO: determine if we should remove some of these params
       dispatch(
-        requestSavedActiveTokensAllowances({
-          chainId,
+        requestActiveTokenAllowances({
           provider: library,
-          walletAddress: account,
         })
       );
       dispatch(
-        requestSavedActiveTokensBalances({
-          chainId,
+        requestActiveTokenBalances({
           provider: library,
-          walletAddress: account,
         })
       );
 

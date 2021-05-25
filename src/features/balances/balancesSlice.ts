@@ -39,9 +39,7 @@ const getSetInFlightRequestTokensAction = (type: "balances" | "allowances") => {
 const getThunk: (type: "balances" | "allowances") => AsyncThunk<
   { address: string; amount: string }[],
   {
-    chainId: number;
     provider: ethers.providers.Web3Provider;
-    walletAddress: string;
   },
   {}
 > = (type: "balances" | "allowances") => {
@@ -52,9 +50,7 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
   return createAsyncThunk<
     { address: string; amount: string }[],
     {
-      chainId: number;
       provider: ethers.providers.Web3Provider;
-      walletAddress: string;
     },
     {
       // Optional fields for defining thunkApi field types
@@ -65,13 +61,16 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
     `${type}/requestForActiveTokens`,
     async (params, { getState, dispatch }) => {
       try {
-        const activeTokensAddresses = getState().metadata.tokens.active;
+        const state = getState();
+        const activeTokensAddresses = state.metadata.tokens.active;
+        const { chainId, address } = state.wallet;
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
         );
         const amounts = await methods[type]({
           ...params,
-          chainId: params.chainId,
+          chainId: chainId!,
+          walletAddress: address!,
           tokenAddresses: activeTokensAddresses,
         });
         return activeTokensAddresses.map((address, i) => ({
@@ -150,16 +149,13 @@ const getSlice = (
 export const selectBalances = (state: RootState) => state.balances;
 export const selectAllowances = (state: RootState) => state.allowances;
 
-export const requestSavedActiveTokensBalances = getThunk("balances");
-export const requestSavedActiveTokensAllowances = getThunk("allowances");
+export const requestActiveTokenBalances = getThunk("balances");
+export const requestActiveTokenAllowances = getThunk("allowances");
 
-export const balancesSlice = getSlice(
-  "balances",
-  requestSavedActiveTokensBalances
-);
+export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSlice = getSlice(
   "allowances",
-  requestSavedActiveTokensAllowances
+  requestActiveTokenAllowances
 );
 
 export const balancesReducer = balancesSlice.reducer;

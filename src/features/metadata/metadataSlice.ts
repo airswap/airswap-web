@@ -42,8 +42,9 @@ export const metadataSlice = createSlice({
   initialState,
   reducers: {
     addActiveToken: (state, action: PayloadAction<string>) => {
-      if (!state.tokens.active.includes(action.payload)) {
-        state.tokens.active.push(action.payload);
+      const lowerCasedToken = action.payload.trim().toLowerCase();
+      if (!state.tokens.active.includes(lowerCasedToken)) {
+        state.tokens.active.push(lowerCasedToken);
       }
     },
     removeActiveToken: (state, action: PayloadAction<string>) => {
