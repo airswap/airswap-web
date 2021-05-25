@@ -81,4 +81,40 @@ const subscribeToTransfers: (params: {
   };
 };
 
-export { fetchBalances, fetchAllowances, subscribeToTransfers };
+const subscribeToApprovals: (params: {
+  tokenAddress: string;
+  walletAddress: string;
+  spenderAddress: string;
+  provider: ethers.providers.Web3Provider;
+  onApproval: (amount: BigNumber) => void;
+}) => () => void = ({
+  tokenAddress,
+  walletAddress,
+  spenderAddress,
+  provider,
+  onApproval,
+}) => {
+  const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
+
+  // event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+  const listener = (owner: string, spender: string, value: BigNumber) => {
+    if (
+      owner.toLowerCase() === walletAddress.toLowerCase() &&
+      spender.toLowerCase() === spenderAddress.toLowerCase()
+    ) {
+      onApproval(value);
+    }
+  };
+
+  contract.once("Approval", listener);
+  return () => {
+    contract.off("Approval", listener);
+  };
+};
+
+export {
+  fetchBalances,
+  fetchAllowances,
+  subscribeToTransfers,
+  subscribeToApprovals,
+};

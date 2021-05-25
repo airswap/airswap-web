@@ -9,7 +9,6 @@ import {
 import { fetchAllowances, fetchBalances } from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
-import { stakingTokenAddresses } from "@airswap/constants";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -131,6 +130,13 @@ const getSlice = (
           .sub(action.payload.amount)
           .toString();
       },
+      set: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        state.values[action.payload.tokenAddress] =
+          action.payload.amount.toString();
+      },
     },
     extraReducers: (builder) => {
       builder
@@ -186,10 +192,12 @@ export const allowancesSlice = getSlice(
 export const {
   incrementBy: incrementBalanceBy,
   decrementBy: decrementBalanceBy,
+  set: setBalance,
 } = balancesSlice.actions;
 export const {
   incrementBy: incrementAllowanceBy,
   decrementBy: decreementAllowanceBy,
+  set: setAllowance,
 } = allowancesSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;

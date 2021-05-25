@@ -11,8 +11,15 @@ import {
   incrementBalanceBy,
   requestActiveTokenAllowances,
   requestActiveTokenBalances,
+  selectAllowances,
+  selectBalances,
+  setAllowance,
 } from "../balances/balancesSlice";
-import { subscribeToTransfers } from "../balances/balancesApi";
+import {
+  subscribeToApprovals,
+  subscribeToTransfers,
+} from "../balances/balancesApi";
+import { Light } from "@airswap/protocols";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -29,6 +36,8 @@ export const Wallet = () => {
     useWeb3React<Web3Provider>();
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
+  const balances = useAppSelector(selectBalances);
+  const allowances = useAppSelector(selectAllowances);
 
   const onClick = () => {
     activate(injectedConnector);
@@ -61,12 +70,20 @@ export const Wallet = () => {
   }, [active, account, chainId, dispatch, library]);
 
   useEffect(() => {
-    if (!library || !account || !activeTokens.length) return;
+    if (
+      !library ||
+      !account ||
+      chainId === undefined ||
+      !activeTokens.length ||
+      balances.lastFetch === null ||
+      balances.status !== "idle"
+    )
+      return;
 
     // Subscribe to changes in balance
-    let tearDowns: (() => void)[];
+    let transferSubTeardowns: (() => void)[];
     if (activeTokens.length) {
-      tearDowns = activeTokens.map((tokenInfo) => {
+      transferSubTeardowns = activeTokens.map((tokenInfo) => {
         console.log(`subscribing to ${tokenInfo.symbol} transfers`);
         return subscribeToTransfers({
           tokenAddress: tokenInfo.address,
@@ -92,12 +109,73 @@ export const Wallet = () => {
       });
     }
     return () => {
-      if (tearDowns) {
-        console.log(`tearing down ${tearDowns.length} subs`);
-        tearDowns.forEach((fn) => fn());
+      if (transferSubTeardowns) {
+        console.log(
+          `tearing down ${transferSubTeardowns.length} transfer subs`
+        );
+        transferSubTeardowns.forEach((fn) => fn());
       }
     };
-  }, [activeTokens, account, library, dispatch]);
+  }, [
+    activeTokens,
+    account,
+    library,
+    dispatch,
+    chainId,
+    balances.lastFetch,
+    balances.status,
+  ]);
+
+  useEffect(() => {
+    if (
+      !library ||
+      !account ||
+      chainId === undefined ||
+      !activeTokens.length ||
+      allowances.lastFetch === null ||
+      allowances.status !== "idle"
+    )
+      return;
+
+    let approvalSubTeardowns: (() => void)[];
+
+    approvalSubTeardowns = activeTokens
+      .filter((tokenInfo) => allowances.values[tokenInfo.address] === "0")
+      .map((tokenInfo) => {
+        console.log(`subscribing to ${tokenInfo.symbol} approvals`);
+        return subscribeToApprovals({
+          tokenAddress: tokenInfo.address,
+          provider: library,
+          walletAddress: account,
+          spenderAddress: Light.getAddress(chainId),
+          onApproval: (amount) => {
+            dispatch(
+              setAllowance({
+                tokenAddress: tokenInfo.address,
+                amount,
+              })
+            );
+          },
+        });
+      });
+    return () => {
+      if (approvalSubTeardowns) {
+        console.log(
+          `tearing down ${approvalSubTeardowns.length} approval subs`
+        );
+        approvalSubTeardowns.forEach((fn) => fn());
+      }
+    };
+  }, [
+    account,
+    activeTokens,
+    allowances.lastFetch,
+    allowances.status,
+    allowances.values,
+    chainId,
+    library,
+    dispatch,
+  ]);
 
   return (
     <div>
