@@ -56,30 +56,38 @@ const fetchAllowances = fetchBalancesOrAllowances.bind(
 );
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)
-const subscribeToTransfers: (params: {
+// event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+const subscribeToTransfersAndApprovals: (params: {
   activeTokenAddresses: string[];
   walletAddress: string;
+  spenderAddress: string;
   provider: ethers.providers.Web3Provider;
   onBalanceChange: (
     tokenAddress: string,
     amount: BigNumber,
     direction: "in" | "out"
   ) => void;
+  onApproval: (tokenAddress: string, amount: BigNumber) => void;
 }) => () => void = ({
   activeTokenAddresses,
   walletAddress,
   provider,
   onBalanceChange,
+  spenderAddress,
+  onApproval,
 }) => {
   // event Transfer(address indexed _from, address indexed _to, uint256 _value)
   const filters: {
     in: EventFilter;
     out: EventFilter;
   } = {
-    // Tokens being transferred out of our account
+    // Tokens being transferred out of our account or approved by our account
     out: {
       topics: [
-        id("Transfer(address,address,uint256)"), // event name
+        [
+          id("Transfer(address,address,uint256)"),
+          id("Approval(address,address,uint256)"),
+        ], // event name
         hexZeroPad(walletAddress, 32), // from
       ],
     },
@@ -95,17 +103,30 @@ const subscribeToTransfers: (params: {
   };
 
   const tearDowns: (() => void)[] = [];
+
   Object.keys(filters).forEach((direction) => {
+    // in or out?
     const typedDirection = direction as keyof typeof filters;
     const filter = filters[typedDirection];
+
     function listener(event: Event) {
       const { address } = event;
       const lowerCasedAddress = address.toLowerCase();
+
+      // Ignore transactions for non-active tokens.
       if (!activeTokenAddresses.includes(lowerCasedAddress)) return;
 
       const parsedEvent = erc20Interface.parseLog(event);
+      const isApproval = parsedEvent.name === "Approval";
+
+      // Ignore approvals for other spenders.
+      if (isApproval && parsedEvent.args[1].toLowerCase() !== spenderAddress)
+        return;
+
       const amount: BigNumber = parsedEvent.args[2];
-      onBalanceChange(lowerCasedAddress, amount, typedDirection);
+      isApproval
+        ? onApproval(lowerCasedAddress, amount)
+        : onBalanceChange(lowerCasedAddress, amount, typedDirection);
     }
     provider.on(filter, listener);
     tearDowns.push(provider.off.bind(provider, filter, listener));
@@ -116,46 +137,4 @@ const subscribeToTransfers: (params: {
   };
 };
 
-const subscribeToApprovals: (params: {
-  tokenAddresses: string[];
-  walletAddress: string;
-  spenderAddress: string;
-  provider: ethers.providers.Web3Provider;
-  onApproval: (tokenAddress: string, amount: BigNumber) => void;
-}) => () => void = ({
-  tokenAddresses,
-  walletAddress,
-  spenderAddress,
-  provider,
-  onApproval,
-}) => {
-  const filter: EventFilter = {
-    topics: [
-      id("Approval(address,address,uint256)"), // event name
-      hexZeroPad(walletAddress, 32), // owner
-      hexZeroPad(spenderAddress, 32), // spender
-    ],
-  };
-
-  // event Approval(address indexed _owner, address indexed _spender, uint256 _value)
-  const listener = (event: Event) => {
-    const { address } = event;
-    const lowerCasedAddress = address.toLowerCase();
-    if (!tokenAddresses.includes(lowerCasedAddress)) return;
-    const parsedEvent = erc20Interface.parseLog(event);
-    const amount: BigNumber = parsedEvent.args[2];
-    onApproval(lowerCasedAddress, amount);
-  };
-
-  provider.on(filter, listener);
-
-  // return a teardown function.
-  return provider.off.bind(provider, filter, listener);
-};
-
-export {
-  fetchBalances,
-  fetchAllowances,
-  subscribeToTransfers,
-  subscribeToApprovals,
-};
+export { fetchBalances, fetchAllowances, subscribeToTransfersAndApprovals };

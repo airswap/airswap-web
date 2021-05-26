@@ -15,10 +15,7 @@ import {
   selectBalances,
   setAllowance,
 } from "../balances/balancesSlice";
-import {
-  subscribeToApprovals,
-  subscribeToTransfers,
-} from "../balances/balancesApi";
+import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 
 export const injectedConnector = new InjectedConnector({
@@ -37,7 +34,6 @@ export const Wallet = () => {
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
 
   const onClick = () => {
     activate(injectedConnector);
@@ -83,15 +79,24 @@ export const Wallet = () => {
 
     let teardownTransferListener: () => void;
     if (activeTokens.length) {
-      subscribeToTransfers({
+      subscribeToTransfersAndApprovals({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
+        spenderAddress: Light.getAddress(),
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
           dispatch(
             actionCreator({
+              tokenAddress,
+              amount: amount.toString(),
+            })
+          );
+        },
+        onApproval: (tokenAddress, amount) => {
+          dispatch(
+            setAllowance({
               tokenAddress,
               amount: amount.toString(),
             })
@@ -113,46 +118,6 @@ export const Wallet = () => {
     chainId,
     balances.lastFetch,
     balances.status,
-  ]);
-
-  // Subscribe to token approvals.
-  useEffect(() => {
-    if (
-      !library ||
-      !account ||
-      chainId === undefined ||
-      !activeTokens.length ||
-      allowances.lastFetch === null ||
-      allowances.status !== "idle"
-    )
-      return;
-
-    const approvalSubTeardown = subscribeToApprovals({
-      tokenAddresses: activeTokens.map((t) => t.address),
-      provider: library,
-      walletAddress: account,
-      spenderAddress: Light.getAddress(chainId),
-      onApproval: (address, amount) => {
-        dispatch(
-          setAllowance({
-            tokenAddress: address,
-            amount: amount.toString(),
-          })
-        );
-      },
-    });
-    return () => {
-      if (approvalSubTeardown) approvalSubTeardown();
-    };
-  }, [
-    account,
-    activeTokens,
-    allowances.lastFetch,
-    allowances.status,
-    allowances.values,
-    chainId,
-    library,
-    dispatch,
   ]);
 
   return (
