@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { toDecimalString, getEtherscanURL } from "@airswap/utils";
+import React, { useState } from "react";
+import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { approve, request, take, selectOrder, selectTX } from "./ordersSlice";
+import { approve, request, take, selectOrder } from "./ordersSlice";
 import styles from "./Orders.module.css";
 import useTokenSet from "../../hooks/useTokenSet";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
-  const tx = useAppSelector(selectTX);
   const dispatch = useAppDispatch();
   const { tokenSet } = useTokenSet();
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
-  const [senderAmount, setSenderAmount] = useState("0.1");
+  const [senderAmount, setSenderAmount] = useState("0.01");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
 
   let signerAmount = null;
@@ -109,19 +108,6 @@ export function Orders() {
       ) : (
         <span />
       )}
-      <div className={styles.row}>
-        {tx ? (
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href={`${getEtherscanURL(`${chainId}`, tx.hash!)}`}
-          >
-            {tx.hash}
-          </a>
-        ) : (
-          <span />
-        )}
-      </div>
     </div>
   );
 }

@@ -1,18 +1,22 @@
 import { LightOrder } from "@airswap/types";
-import { Transaction } from "@ethersproject/transactions";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { requestOrder, takeOrder, approveToken } from "./orderAPI";
+import {
+  submitTransaction,
+  mineTransaction,
+  revertTransaction,
+  declineTransaction,
+} from "../transactions/transactionActions";
+import { Transaction } from "ethers";
 
 export interface OrdersState {
   orders: LightOrder[];
-  tx: null | Transaction;
   status: "idle" | "requesting" | "taking" | "failed";
 }
 
 const initialState: OrdersState = {
   orders: [],
-  tx: null,
   status: "idle",
 };
 
@@ -43,7 +47,26 @@ export const approve = createAsyncThunk(
 
 export const take = createAsyncThunk(
   "orders/take",
-  async (params: any) => await takeOrder(params.order, params.library)
+  async (params: any, { dispatch }) => {
+    let tx: Transaction;
+    try {
+      tx = await takeOrder(params.order, params.library);
+      if (tx.hash) {
+        dispatch(submitTransaction({ order: params.order, hash: tx.hash }));
+        params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch(declineTransaction(e.message));
+    }
+  }
 );
 
 export const ordersSlice = createSlice({
@@ -68,14 +91,10 @@ export const ordersSlice = createSlice({
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
-        state.tx = action.payload!;
       });
   },
 });
 
 export const { clear } = ordersSlice.actions;
-
 export const selectOrder = (state: RootState) => state.orders.orders[0];
-export const selectTX = (state: RootState) => state.orders.tx;
-
 export default ordersSlice.reducer;

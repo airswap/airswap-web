@@ -2,8 +2,7 @@ import ordersReducer, { OrdersState } from "./ordersSlice";
 
 describe("orders reducer", () => {
   const initialState: OrdersState = {
-    order: null,
-    tx: null,
+    orders: [],
     status: "idle",
   };
   it("should handle initial state", () => {

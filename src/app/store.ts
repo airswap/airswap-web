@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import ordersReducer from "../features/orders/ordersSlice";
+import transactionsReducer from "../features/transactions/transactionsSlice";
 import {
   balancesReducer,
   allowancesReducer,
@@ -10,6 +11,7 @@ export const store = configureStore({
     orders: ordersReducer,
     balances: balancesReducer,
     allowances: allowancesReducer,
+    transactions: transactionsReducer,
   },
 });
 

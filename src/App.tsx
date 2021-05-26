@@ -5,6 +5,7 @@ import { Orders } from "./features/orders/Orders";
 import { Wallet } from "./features/wallet/Wallet";
 import "./App.css";
 import Balances from "./features/balances/Balances";
+import { Transactions } from "./features/transactions/Transactions";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -18,6 +19,7 @@ function App() {
       <div className="App">
         <Wallet />
         <Orders />
+        <Transactions />
         ☠️ Use at your own risk
         <Balances />
       </div>
