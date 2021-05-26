@@ -1,13 +1,17 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, ethers, EventFilter, Event } from "ethers";
+import { TokenInfo } from "@uniswap/token-lists";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
 import { Light } from "@airswap/protocols";
 import erc20Abi from "erc-20-abi";
+import { hexZeroPad, id } from "ethers/lib/utils";
 
 const balancesInterface = new ethers.utils.Interface(
   JSON.stringify(BalanceChecker.abi)
 );
+
+const erc20Interface = new ethers.utils.Interface(erc20Abi);
 
 const getContract = (
   chainId: keyof typeof balancesDeploys,
@@ -54,30 +58,64 @@ const fetchAllowances = fetchBalancesOrAllowances.bind(
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)
 const subscribeToTransfers: (params: {
-  tokenAddress: string;
+  activeTokens: TokenInfo[];
   walletAddress: string;
   provider: ethers.providers.Web3Provider;
-  onBalanceChange: (amount: BigNumber, direction: "in" | "out") => void;
+  onBalanceChange: (
+    tokenAddress: string,
+    amount: BigNumber,
+    direction: "in" | "out"
+  ) => void;
 }) => () => void = ({
-  tokenAddress,
+  activeTokens,
   walletAddress,
   provider,
   onBalanceChange,
 }) => {
-  const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
   // event Transfer(address indexed _from, address indexed _to, uint256 _value)
+  const filters: {
+    in: EventFilter;
+    out: EventFilter;
+  } = {
+    // Tokens being transferred out of our account
+    out: {
+      topics: [
+        id("Transfer(address,address,uint256)"), // event name
+        hexZeroPad(walletAddress, 32), // from
+      ],
+    },
 
-  const listener = (from: string, to: string, value: BigNumber) => {
-    if (from === walletAddress) {
-      onBalanceChange(value, "out");
-    } else if (to === walletAddress) {
-      onBalanceChange(value, "in");
-    }
+    // Tokens being transferred in to our account
+    in: {
+      topics: [
+        id("Transfer(address,address,uint256)"), // event name
+        [],
+        hexZeroPad(walletAddress, 32), // to
+      ],
+    },
   };
 
-  contract.on("Transfer", listener);
+  const activeTokenAddresses = activeTokens.map((t) => t.address);
+
+  const tearDowns: (() => void)[] = [];
+  Object.keys(filters).forEach((direction) => {
+    const typedDirection = direction as keyof typeof filters;
+    const filter = filters[typedDirection];
+    function listener(event: Event) {
+      const { address } = event;
+      const lowerCasedAddress = address.toLowerCase();
+      if (!activeTokenAddresses.includes(lowerCasedAddress)) return;
+
+      const parsedEvent = erc20Interface.parseLog(event);
+      const amount: BigNumber = parsedEvent.args[2];
+      onBalanceChange(lowerCasedAddress, amount, typedDirection);
+    }
+    provider.on(filter, listener);
+    tearDowns.push(provider.off.bind(provider, filter, listener));
+  });
+
   return () => {
-    contract.off("Transfer", listener);
+    tearDowns.forEach((fn) => fn());
   };
 };
 

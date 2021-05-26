@@ -81,39 +81,28 @@ export const Wallet = () => {
       return;
 
     // Subscribe to changes in balance
-    let transferSubTeardowns: (() => void)[];
+    let teardownTransferListener: () => void;
     if (activeTokens.length) {
-      transferSubTeardowns = activeTokens.map((tokenInfo) => {
-        console.log(`subscribing to ${tokenInfo.symbol} transfers`);
-        return subscribeToTransfers({
-          tokenAddress: tokenInfo.address,
-          provider: library,
-          walletAddress: account,
-          onBalanceChange: (amount, direction) => {
-            console.log(
-              `${amount.toString()} ${tokenInfo.symbol} ${
-                direction === "out" ? "sent" : "received"
-              }`
-            );
-            const payload: Parameters<typeof decrementBalanceBy>[0] = {
-              tokenAddress: tokenInfo.address,
-              amount,
-            };
-            dispatch(
-              direction === "out"
-                ? decrementBalanceBy(payload)
-                : incrementBalanceBy(payload)
-            );
-          },
-        });
+      subscribeToTransfers({
+        activeTokens,
+        provider: library,
+        walletAddress: account,
+        onBalanceChange: (tokenAddress, amount, direction) => {
+          const actionCreator =
+            direction === "in" ? incrementBalanceBy : decrementBalanceBy;
+          dispatch(
+            actionCreator({
+              tokenAddress,
+              amount: amount.toString(),
+            })
+          );
+        },
       });
     }
     return () => {
-      if (transferSubTeardowns) {
-        console.log(
-          `tearing down ${transferSubTeardowns.length} transfer subs`
-        );
-        transferSubTeardowns.forEach((fn) => fn());
+      if (teardownTransferListener) {
+        console.log(`tearing down Transfer listener`);
+        teardownTransferListener();
       }
     };
   }, [
@@ -142,7 +131,6 @@ export const Wallet = () => {
     approvalSubTeardowns = activeTokens
       .filter((tokenInfo) => allowances.values[tokenInfo.address] === "0")
       .map((tokenInfo) => {
-        console.log(`subscribing to ${tokenInfo.symbol} approvals`);
         return subscribeToApprovals({
           tokenAddress: tokenInfo.address,
           provider: library,
@@ -152,7 +140,7 @@ export const Wallet = () => {
             dispatch(
               setAllowance({
                 tokenAddress: tokenInfo.address,
-                amount,
+                amount: amount.toString(),
               })
             );
           },
@@ -160,9 +148,6 @@ export const Wallet = () => {
       });
     return () => {
       if (approvalSubTeardowns) {
-        console.log(
-          `tearing down ${approvalSubTeardowns.length} approval subs`
-        );
         approvalSubTeardowns.forEach((fn) => fn());
       }
     };

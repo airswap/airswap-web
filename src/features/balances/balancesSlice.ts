@@ -110,7 +110,7 @@ const getSlice = (
     reducers: {
       incrementBy: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
         const currentAmount = BigNumber.from(
           state.values[action.payload.tokenAddress] || 0
@@ -121,7 +121,7 @@ const getSlice = (
       },
       decrementBy: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
         const currentAmount = BigNumber.from(
           state.values[action.payload.tokenAddress] || 0
@@ -132,7 +132,7 @@ const getSlice = (
       },
       set: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
         state.values[action.payload.tokenAddress] =
           action.payload.amount.toString();
