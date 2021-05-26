@@ -5,12 +5,12 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { approve, request, take, selectOrder } from "./ordersSlice";
 import styles from "./Orders.module.css";
-import useTokenSet from "../../hooks/useTokenSet";
+import { selectActiveTokens } from "../metadata/metadataSlice";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const dispatch = useAppDispatch();
-  const { tokenSet } = useTokenSet();
+  const activeTokens = useAppSelector(selectActiveTokens);
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.01");
@@ -32,7 +32,7 @@ export function Orders() {
           onChange={(e) => setSenderToken(e.target.value)}
         >
           <option>select...</option>
-          {tokenSet.map((token) => (
+          {activeTokens.map((token) => (
             <option key={token.address} value={token.address}>
               {token.symbol}
             </option>
@@ -56,7 +56,7 @@ export function Orders() {
           onChange={(e) => setSignerToken(e.target.value)}
         >
           <option>select...</option>
-          {tokenSet
+          {activeTokens
             .filter((token) => token.address !== senderToken)
             .map((token) => (
               <option key={token.address} value={token.address}>

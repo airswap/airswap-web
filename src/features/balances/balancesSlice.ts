@@ -1,12 +1,14 @@
-import { ethers } from "ethers";
-import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { BigNumber, ethers } from "ethers";
 import {
-  fetchAllowances,
-  fetchBalances,
-  getSavedTokenSet,
-} from "./balancesApi";
+  AsyncThunk,
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import { fetchAllowances, fetchBalances } from "./balancesApi";
 import { AppDispatch, RootState } from "../../app/store";
-import { walletConnected } from "../wallet/walletActions";
+import { setWalletConnected } from "../wallet/walletSlice";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -31,12 +33,14 @@ const initialState: BalancesState = {
   values: {},
 };
 
+const getSetInFlightRequestTokensAction = (type: "balances" | "allowances") => {
+  return createAction<string[]>(`${type}/setInFlightRequestTokens`);
+};
+
 const getThunk: (type: "balances" | "allowances") => AsyncThunk<
   { address: string; amount: string }[],
   {
-    chainId: number;
     provider: ethers.providers.Web3Provider;
-    walletAddress: string;
   },
   {}
 > = (type: "balances" | "allowances") => {
@@ -47,9 +51,7 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
   return createAsyncThunk<
     { address: string; amount: string }[],
     {
-      chainId: number;
       provider: ethers.providers.Web3Provider;
-      walletAddress: string;
     },
     {
       // Optional fields for defining thunkApi field types
@@ -57,16 +59,22 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
       state: RootState;
     }
   >(
-    `${type}/requestForSavedTokenSet`,
-    async (params) => {
+    `${type}/requestForActiveTokens`,
+    async (params, { getState, dispatch }) => {
       try {
-        const tokenSetAddresses = getSavedTokenSet(params.chainId);
+        const state = getState();
+        const activeTokensAddresses = state.metadata.tokens.active;
+        const { chainId, address } = state.wallet;
+        dispatch(
+          getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
+        );
         const amounts = await methods[type]({
           ...params,
-          chainId: params.chainId,
-          tokenAddresses: tokenSetAddresses,
+          chainId: chainId!,
+          walletAddress: address!,
+          tokenAddresses: activeTokensAddresses,
         });
-        return tokenSetAddresses.map((address, i) => ({
+        return activeTokensAddresses.map((address, i) => ({
           address,
           amount: amounts[i],
         }));
@@ -78,12 +86,12 @@ const getThunk: (type: "balances" | "allowances") => AsyncThunk<
     },
     {
       // Logic to prevent fetching again if we're already fetching the same or more tokens.
-      condition: (params, { getState, extra }) => {
+      condition: (params, { getState }) => {
         const sliceState = getState()[type];
         // If we're not fetching, definitely continue
         if (sliceState.status !== "fetching") return true;
         if (sliceState.inFlightFetchTokens) {
-          const tokensToFetch = getSavedTokenSet(params.chainId);
+          const tokensToFetch = getState().metadata.tokens.active;
           // only fetch if new list is larger.
           return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
         }
@@ -99,16 +107,48 @@ const getSlice = (
   return createSlice({
     name: type,
     initialState,
-    reducers: {},
+    reducers: {
+      incrementBy: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        const currentAmount = BigNumber.from(
+          state.values[action.payload.tokenAddress] || 0
+        );
+        state.values[action.payload.tokenAddress] = currentAmount
+          .add(action.payload.amount)
+          .toString();
+      },
+      decrementBy: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        const currentAmount = BigNumber.from(
+          state.values[action.payload.tokenAddress] || 0
+        );
+        state.values[action.payload.tokenAddress] = currentAmount
+          .sub(action.payload.amount)
+          .toString();
+      },
+      set: (
+        state,
+        action: PayloadAction<{ tokenAddress: string; amount: BigNumber }>
+      ) => {
+        state.values[action.payload.tokenAddress] =
+          action.payload.amount.toString();
+      },
+    },
     extraReducers: (builder) => {
       builder
         // Reset to initial state if a new account is connected.
-        .addCase(walletConnected, () => initialState)
+        .addCase(setWalletConnected, () => initialState)
 
         // Handle requesting balances
-        .addCase(asyncThunk.pending, (state, action) => {
+        .addCase(asyncThunk.pending, (state) => {
           state.status = "fetching";
-          state.inFlightFetchTokens = getSavedTokenSet(action.meta.arg.chainId);
+        })
+        .addCase(getSetInFlightRequestTokensAction(type), (state, action) => {
+          state.inFlightFetchTokens = action.payload;
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
           state.lastFetch = Date.now();
@@ -140,14 +180,25 @@ const getSlice = (
 export const selectBalances = (state: RootState) => state.balances;
 export const selectAllowances = (state: RootState) => state.allowances;
 
-export const requestSavedTokenSetBalances = getThunk("balances");
-export const requestSavedTokenSetAllowances = getThunk("allowances");
+export const requestActiveTokenBalances = getThunk("balances");
+export const requestActiveTokenAllowances = getThunk("allowances");
 
-export const balancesSlice = getSlice("balances", requestSavedTokenSetBalances);
+export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSlice = getSlice(
   "allowances",
-  requestSavedTokenSetAllowances
+  requestActiveTokenAllowances
 );
+
+export const {
+  incrementBy: incrementBalanceBy,
+  decrementBy: decrementBalanceBy,
+  set: setBalance,
+} = balancesSlice.actions;
+export const {
+  incrementBy: incrementAllowanceBy,
+  decrementBy: decreementAllowanceBy,
+  set: setAllowance,
+} = allowancesSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;
 export const allowancesReducer = allowancesSlice.reducer;

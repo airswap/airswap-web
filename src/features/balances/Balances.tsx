@@ -1,15 +1,21 @@
 import { Fragment, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { FC } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { selectAllowances, selectBalances } from "./balancesSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  requestActiveTokenAllowances,
+  requestActiveTokenBalances,
+  selectAllowances,
+  selectBalances,
+} from "./balancesSlice";
 import classes from "./Balances.module.css";
-import useTokenSet from "../../hooks/useTokenSet";
 import { formatUnits } from "@ethersproject/units";
+import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 
 const Balances: FC<{}> = () => {
-  const { active } = useWeb3React();
-  const { tokenSet, addAddressToTokenSet } = useTokenSet();
+  const { active, library } = useWeb3React();
+  const activeTokens = useAppSelector(selectActiveTokens);
+  const dispatch = useAppDispatch();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
 
@@ -23,7 +29,7 @@ const Balances: FC<{}> = () => {
         <span className={classes.bold}>Symbol</span>
         <span className={classes.bold}>Balance</span>
         <span className={classes.bold}>Allowance</span>
-        {tokenSet.map((tokenInfo) => {
+        {activeTokens.map((tokenInfo) => {
           const tokenBalance = balances.values[tokenInfo.address];
           const tokenAllowance = allowances.values[tokenInfo.address];
           return (
@@ -45,6 +51,7 @@ const Balances: FC<{}> = () => {
       </div>
       <input
         type="text"
+        value={addTokenField}
         onChange={(e) => {
           setAddTokenField(e.target.value);
         }}
@@ -52,12 +59,17 @@ const Balances: FC<{}> = () => {
       <button
         type="button"
         onClick={() => {
-          addAddressToTokenSet(addTokenField);
+          dispatch(addActiveToken(addTokenField));
+          dispatch(requestActiveTokenBalances({ provider: library }));
+          dispatch(requestActiveTokenAllowances({ provider: library }));
           setAddTokenField("");
         }}
       >
         Add to token set
       </button>
+      {/* <button type="button" onClick={fetchBalancesAndAllowances}>
+        Update balances
+      </button> */}
       <hr />
     </div>
   ) : null;
