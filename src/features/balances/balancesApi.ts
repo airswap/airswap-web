@@ -1,5 +1,4 @@
 import { BigNumber, ethers, EventFilter, Event } from "ethers";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
@@ -58,7 +57,7 @@ const fetchAllowances = fetchBalancesOrAllowances.bind(
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)
 const subscribeToTransfers: (params: {
-  activeTokens: TokenInfo[];
+  activeTokenAddresses: string[];
   walletAddress: string;
   provider: ethers.providers.Web3Provider;
   onBalanceChange: (
@@ -67,7 +66,7 @@ const subscribeToTransfers: (params: {
     direction: "in" | "out"
   ) => void;
 }) => () => void = ({
-  activeTokens,
+  activeTokenAddresses,
   walletAddress,
   provider,
   onBalanceChange,
@@ -95,8 +94,6 @@ const subscribeToTransfers: (params: {
     },
   };
 
-  const activeTokenAddresses = activeTokens.map((t) => t.address);
-
   const tearDowns: (() => void)[] = [];
   Object.keys(filters).forEach((direction) => {
     const typedDirection = direction as keyof typeof filters;
@@ -120,34 +117,40 @@ const subscribeToTransfers: (params: {
 };
 
 const subscribeToApprovals: (params: {
-  tokenAddress: string;
+  tokenAddresses: string[];
   walletAddress: string;
   spenderAddress: string;
   provider: ethers.providers.Web3Provider;
-  onApproval: (amount: BigNumber) => void;
+  onApproval: (tokenAddress: string, amount: BigNumber) => void;
 }) => () => void = ({
-  tokenAddress,
+  tokenAddresses,
   walletAddress,
   spenderAddress,
   provider,
   onApproval,
 }) => {
-  const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
+  const filter: EventFilter = {
+    topics: [
+      id("Approval(address,address,uint256)"), // event name
+      hexZeroPad(walletAddress, 32), // owner
+      hexZeroPad(spenderAddress, 32), // spender
+    ],
+  };
 
   // event Approval(address indexed _owner, address indexed _spender, uint256 _value)
-  const listener = (owner: string, spender: string, value: BigNumber) => {
-    if (
-      owner.toLowerCase() === walletAddress.toLowerCase() &&
-      spender.toLowerCase() === spenderAddress.toLowerCase()
-    ) {
-      onApproval(value);
-    }
+  const listener = (event: Event) => {
+    const { address } = event;
+    const lowerCasedAddress = address.toLowerCase();
+    if (!tokenAddresses.includes(lowerCasedAddress)) return;
+    const parsedEvent = erc20Interface.parseLog(event);
+    const amount: BigNumber = parsedEvent.args[2];
+    onApproval(lowerCasedAddress, amount);
   };
 
-  contract.once("Approval", listener);
-  return () => {
-    contract.off("Approval", listener);
-  };
+  provider.on(filter, listener);
+
+  // return a teardown function.
+  return provider.off.bind(provider, filter, listener);
 };
 
 export {

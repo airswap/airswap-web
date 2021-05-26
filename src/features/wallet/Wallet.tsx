@@ -69,6 +69,7 @@ export const Wallet = () => {
     }
   }, [active, account, chainId, dispatch, library]);
 
+  // Subscribe to changes in balance
   useEffect(() => {
     if (
       !library ||
@@ -80,11 +81,10 @@ export const Wallet = () => {
     )
       return;
 
-    // Subscribe to changes in balance
     let teardownTransferListener: () => void;
     if (activeTokens.length) {
       subscribeToTransfers({
-        activeTokens,
+        activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
         onBalanceChange: (tokenAddress, amount, direction) => {
@@ -115,6 +115,7 @@ export const Wallet = () => {
     balances.status,
   ]);
 
+  // Subscribe to token approvals.
   useEffect(() => {
     if (
       !library ||
@@ -126,30 +127,22 @@ export const Wallet = () => {
     )
       return;
 
-    let approvalSubTeardowns: (() => void)[];
-
-    approvalSubTeardowns = activeTokens
-      .filter((tokenInfo) => allowances.values[tokenInfo.address] === "0")
-      .map((tokenInfo) => {
-        return subscribeToApprovals({
-          tokenAddress: tokenInfo.address,
-          provider: library,
-          walletAddress: account,
-          spenderAddress: Light.getAddress(chainId),
-          onApproval: (amount) => {
-            dispatch(
-              setAllowance({
-                tokenAddress: tokenInfo.address,
-                amount: amount.toString(),
-              })
-            );
-          },
-        });
-      });
+    const approvalSubTeardown = subscribeToApprovals({
+      tokenAddresses: activeTokens.map((t) => t.address),
+      provider: library,
+      walletAddress: account,
+      spenderAddress: Light.getAddress(chainId),
+      onApproval: (address, amount) => {
+        dispatch(
+          setAllowance({
+            tokenAddress: address,
+            amount: amount.toString(),
+          })
+        );
+      },
+    });
     return () => {
-      if (approvalSubTeardowns) {
-        approvalSubTeardowns.forEach((fn) => fn());
-      }
+      if (approvalSubTeardown) approvalSubTeardown();
     };
   }, [
     account,
