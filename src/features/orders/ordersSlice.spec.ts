@@ -6,10 +6,6 @@ describe("orders reducer", () => {
     status: "idle",
   };
   it("should handle initial state", () => {
-    expect(ordersReducer(undefined, { type: "unknown" })).toEqual({
-      order: null,
-      tx: null,
-      status: "idle",
-    });
+    expect(ordersReducer(undefined, { type: "unknown" })).toEqual(initialState);
   });
 });

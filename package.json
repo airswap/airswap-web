@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@airswap/balances": "^1.1.2",
-    "@airswap/constants": "0.4.0",
+    "@airswap/constants": "^0.4.0",
     "@airswap/metadata": "^0.3.2",
     "@airswap/protocols": "0.5.5",
     "@airswap/types": "^3.5.17",

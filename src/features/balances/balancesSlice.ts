@@ -26,7 +26,7 @@ export interface BalancesState {
 }
 
 // Initially empty.
-const initialState: BalancesState = {
+export const initialState: BalancesState = {
   status: "idle",
   lastFetch: null,
   inFlightFetchTokens: null,
@@ -113,9 +113,9 @@ const getSlice = (
         action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
         const currentAmount = BigNumber.from(
-          state.values[action.payload.tokenAddress] || 0
+          state.values[action.payload.tokenAddress.toLowerCase()] || 0
         );
-        state.values[action.payload.tokenAddress] = currentAmount
+        state.values[action.payload.tokenAddress.toLowerCase()] = currentAmount
           .add(action.payload.amount)
           .toString();
       },
@@ -124,18 +124,19 @@ const getSlice = (
         action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
         const currentAmount = BigNumber.from(
-          state.values[action.payload.tokenAddress] || 0
+          state.values[action.payload.tokenAddress.toLowerCase()] || 0
         );
-        state.values[action.payload.tokenAddress] = currentAmount
-          .sub(action.payload.amount)
-          .toString();
+        let newAmount = currentAmount.sub(action.payload.amount);
+        if (newAmount.lt("0")) newAmount = BigNumber.from("0");
+        state.values[action.payload.tokenAddress.toLowerCase()] =
+          newAmount.toString();
       },
       set: (
         state,
         action: PayloadAction<{ tokenAddress: string; amount: string }>
       ) => {
-        state.values[action.payload.tokenAddress] =
-          action.payload.amount.toString();
+        state.values[action.payload.tokenAddress.toLowerCase()] =
+          action.payload.amount;
       },
     },
     extraReducers: (builder) => {
@@ -199,6 +200,9 @@ export const {
   decrementBy: decreementAllowanceBy,
   set: setAllowance,
 } = allowancesSlice.actions;
+
+export const balancesActions = balancesSlice.actions;
+export const allowancesActions = allowancesSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;
 export const allowancesReducer = allowancesSlice.reducer;

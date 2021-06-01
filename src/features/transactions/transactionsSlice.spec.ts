@@ -5,8 +5,6 @@ describe("orders reducer", () => {
     all: [],
   };
   it("should handle initial state", () => {
-    expect(ordersReducer(undefined, { type: "unknown" })).toEqual({
-      transactions: [],
-    });
+    expect(ordersReducer(undefined, { type: "unknown" })).toEqual(initialState);
   });
 });
