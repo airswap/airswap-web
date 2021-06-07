@@ -3,7 +3,7 @@ import { fetchTokens } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 import uniqBy from "lodash.uniqby";
 
-export const defaultActiveTokenss: {
+export const defaultActiveTokens: {
   [chainId: number]: string[];
 } = {
   [chainIds.MAINNET]: [
@@ -44,7 +44,7 @@ export const getActiveTokensFromLocalStorage = (chainId: number) => {
     .split(",")
     .filter((address) => address.length);
   return (
-    (savedTokens.length && savedTokens) || defaultActiveTokenss[chainId] || []
+    (savedTokens.length && savedTokens) || defaultActiveTokens[chainId] || []
   );
 };
 
