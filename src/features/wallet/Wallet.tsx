@@ -79,7 +79,7 @@ export const Wallet = () => {
 
     let teardownTransferListener: () => void;
     if (activeTokens.length) {
-      subscribeToTransfersAndApprovals({
+      teardownTransferListener = subscribeToTransfersAndApprovals({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
