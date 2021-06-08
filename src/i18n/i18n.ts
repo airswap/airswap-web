@@ -5,9 +5,6 @@ import Backend from "i18next-chained-backend";
 import LocalStorageBackend from "i18next-localstorage-backend"; // primary use cache
 import HttpApi from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
-// don't want to use this?
-// have a look at the Quick start guide
-// for passing in lng and translations on init
 
 i18n
   // load translation using http -> see /public/locales
@@ -49,7 +46,6 @@ i18n
         },
         // HTTP options
         {
-          // No need to parse as axios does it for us.
           loadPath: "/locales/{{lng}}/{{ns}}.json",
         },
       ],
