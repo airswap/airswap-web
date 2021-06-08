@@ -52,7 +52,7 @@ export const take = createAsyncThunk(
     try {
       tx = await takeOrder(params.order, params.library);
       if (tx.hash) {
-        dispatch(submitTransaction({ order: params.order, hash: tx.hash }));
+        dispatch(submitTransaction({ order: params.order, hash: tx.hash, status: 'processing' }));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
