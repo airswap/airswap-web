@@ -44,10 +44,7 @@ export const ordersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
-      state.all.push({
-        status: "processing",
-        ...action.payload,
-      });
+      state.all.push(action.payload);
     });
     builder.addCase(declineTransaction, (state, action) => {
       console.error(action.payload);

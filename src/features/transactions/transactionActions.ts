@@ -1,10 +1,7 @@
-import { LightOrder } from "@airswap/types";
 import { createAction } from "@reduxjs/toolkit";
+import { SubmittedOrder } from './transactionsSlice'
 
-const submitTransaction = createAction<{
-  order: LightOrder;
-  hash: string;
-}>("transaction/submitTransaction");
+const submitTransaction = createAction<SubmittedOrder>("transaction/submitTransaction");
 
 const declineTransaction = createAction<{
   hash: string;
