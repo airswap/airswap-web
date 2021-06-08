@@ -1,11 +1,12 @@
-import React from "react";
+import { Suspense } from "react";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";
 import { Wallet } from "./features/wallet/Wallet";
-import "./App.css";
-import Balances from "./features/balances/Balances";
 import { Transactions } from "./features/transactions/Transactions";
+import Balances from "./features/balances/Balances";
+import "./App.css";
+import "./i18n/i18n";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -16,13 +17,16 @@ function getLibrary(provider: any): Web3Provider {
 function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <div className="App">
-        <Wallet />
-        <Orders />
-        <Transactions />
-        ☠️ Use at your own risk
-        <Balances />
-      </div>
+      {/* Suspense needed here for loading i18n resources */}
+      <Suspense fallback={"Loading..."}>
+        <div className="App">
+          <Wallet />
+          <Orders />
+          <Transactions />
+          ☠️ Use at your own risk
+          <Balances />
+        </div>
+      </Suspense>
     </Web3ReactProvider>
   );
 }

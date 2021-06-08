@@ -11,6 +11,7 @@ import {
 import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
 import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
+import { useTranslation } from "react-i18next";
 
 const Balances: FC<{}> = () => {
   const { active, library } = useWeb3React();
@@ -21,14 +22,16 @@ const Balances: FC<{}> = () => {
 
   const [addTokenField, setAddTokenField] = useState<string>("");
 
+  const { t } = useTranslation(["balances", "common"]);
+
   return active ? (
     <div>
       <hr />
-      <h4>Token Balances</h4>
+      <h4>{t("balances:tokenBalances")}</h4>
       <div className={classes.balancesGrid}>
-        <span className={classes.bold}>Symbol</span>
-        <span className={classes.bold}>Balance</span>
-        <span className={classes.bold}>Allowance</span>
+        <span className={classes.bold}>{t("balances:symbol")}</span>
+        <span className={classes.bold}>{t("balances:balance")}</span>
+        <span className={classes.bold}>{t("balances:allowance")}</span>
         {activeTokens.map((tokenInfo) => {
           const tokenBalance = balances.values[tokenInfo.address];
           const tokenAllowance = allowances.values[tokenInfo.address];
@@ -38,12 +41,12 @@ const Balances: FC<{}> = () => {
               <span>
                 {tokenBalance != null
                   ? formatUnits(tokenBalance, tokenInfo.decimals)
-                  : "fetching"}
+                  : t("common:fetching")}
               </span>
               <span>
                 {tokenAllowance != null
                   ? formatUnits(tokenAllowance, tokenInfo.decimals)
-                  : "fetching"}
+                  : t("common:fetching")}
               </span>
             </Fragment>
           );
@@ -65,7 +68,7 @@ const Balances: FC<{}> = () => {
           setAddTokenField("");
         }}
       >
-        Add to token set
+        {t("balances:addToTokenSet")}
       </button>
       {/* <button type="button" onClick={fetchBalancesAndAllowances}>
         Update balances

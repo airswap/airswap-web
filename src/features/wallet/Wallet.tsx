@@ -16,6 +16,7 @@ import {
 } from "../balances/balancesSlice";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
+import { useTranslation } from "react-i18next";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -33,6 +34,8 @@ export const Wallet = () => {
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
+
+  const { t } = useTranslation(["common", "wallet"]);
 
   const onClick = () => {
     activate(injectedConnector);
@@ -121,13 +124,17 @@ export const Wallet = () => {
 
   return (
     <div>
-      <div>ChainId: {chainId}</div>
-      <div>Account: {account}</div>
+      <div>
+        {t("common:chainId")}: {chainId}
+      </div>
+      <div>
+        {t("common:account")}: {account}
+      </div>
       {active ? (
         <div>✅</div>
       ) : (
         <button type="button" onClick={onClick}>
-          Connect
+          {t("wallet:connectWallet")}
         </button>
       )}
     </div>
