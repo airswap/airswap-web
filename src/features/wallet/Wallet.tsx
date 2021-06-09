@@ -1,11 +1,13 @@
-import { useEffect } from "react";
-
+import { Light } from "@airswap/protocols";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
-import { fetchAllTokens, selectActiveTokens } from "../metadata/metadataSlice";
+import WalletButton from "../../components/WalletButton/WalletButton";
+import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
@@ -14,11 +16,9 @@ import {
   selectBalances,
   setAllowance,
 } from "../balances/balancesSlice";
-import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
-import { Light } from "@airswap/protocols";
-import { useTranslation } from "react-i18next";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
-import Button from "../../components/Button/Button";
+import { fetchAllTokens, selectActiveTokens } from "../metadata/metadataSlice";
+import { browserHasPreviouslyConnected, saveLastAccount } from "./walletAPI";
+import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -48,6 +48,13 @@ export const Wallet = () => {
     activate(injectedConnector);
   };
 
+  // Auto-activate if user has connected before on first load.
+  useEffect(() => {
+    if (browserHasPreviouslyConnected()) {
+      activate(injectedConnector);
+    }
+  }, [activate]);
+
   useEffect(() => {
     trackPageView({ documentTitle: "wallet", href: "https://airswap.io" });
 
@@ -59,6 +66,7 @@ export const Wallet = () => {
           address: account,
         })
       );
+      saveLastAccount(account);
       dispatch(fetchAllTokens());
       // TODO: determine if we should remove some of these params
       dispatch(
@@ -136,16 +144,7 @@ export const Wallet = () => {
       <div>
         {t("common:chainId")}: {chainId}
       </div>
-      <div>
-        {t("common:account")}: {account}
-      </div>
-      {active ? (
-        <div>✅</div>
-      ) : (
-        <Button type="button" intent="primary" onClick={onClick}>
-          {t("wallet:connectWallet")}
-        </Button>
-      )}
+      <WalletButton address={account} onConnectWalletClicked={onClick} />
     </div>
   );
 };
