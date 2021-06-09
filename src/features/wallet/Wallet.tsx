@@ -11,7 +11,6 @@ import {
   incrementBalanceBy,
   requestActiveTokenAllowances,
   requestActiveTokenBalances,
-  selectAllowances,
   selectBalances,
   setAllowance,
 } from "../balances/balancesSlice";
