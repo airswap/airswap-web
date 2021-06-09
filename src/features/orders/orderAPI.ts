@@ -15,7 +15,7 @@ export async function requestOrder(
     signerToken,
     senderToken
   );
-  const orders = servers.map(async (server) => {
+  const orderPromises = servers.map(async (server) => {
     const order = await server.getSignerSideOrder(
       toAtomicString(senderAmount, 18),
       signerToken,
@@ -24,7 +24,11 @@ export async function requestOrder(
     );
     return order as any as LightOrder;
   });
-  return Promise.all(orders);
+  const orders = await Promise.allSettled(orderPromises);
+  const successfulOrders = orders
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value);
+  return successfulOrders;
 }
 
 export async function approveToken(
