@@ -1,6 +1,5 @@
 import { Fragment, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   requestActiveTokenAllowances,
@@ -12,8 +11,9 @@ import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
 import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
+import Button from "../../Components/Button/Button";
 
-const Balances: FC<{}> = () => {
+const Balances = () => {
   const { active, library } = useWeb3React();
   const activeTokens = useAppSelector(selectActiveTokens);
   const dispatch = useAppDispatch();
@@ -59,7 +59,7 @@ const Balances: FC<{}> = () => {
           setAddTokenField(e.target.value);
         }}
       />
-      <button
+      <Button
         type="button"
         onClick={() => {
           dispatch(addActiveToken(addTokenField));
@@ -69,7 +69,7 @@ const Balances: FC<{}> = () => {
         }}
       >
         {t("balances:addToTokenSet")}
-      </button>
+      </Button>
       {/* <button type="button" onClick={fetchBalancesAndAllowances}>
         Update balances
       </button> */}

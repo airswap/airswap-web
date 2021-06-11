@@ -52,7 +52,13 @@ export const take = createAsyncThunk(
     try {
       tx = await takeOrder(params.order, params.library);
       if (tx.hash) {
-        dispatch(submitTransaction({ order: params.order, hash: tx.hash, status: 'processing' }));
+        dispatch(
+          submitTransaction({
+            order: params.order,
+            hash: tx.hash,
+            status: "processing",
+          })
+        );
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -97,4 +103,5 @@ export const ordersSlice = createSlice({
 
 export const { clear } = ordersSlice.actions;
 export const selectOrder = (state: RootState) => state.orders.orders[0];
+export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;

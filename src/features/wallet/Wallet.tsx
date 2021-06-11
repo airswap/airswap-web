@@ -17,6 +17,7 @@ import {
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 import { useTranslation } from "react-i18next";
+import Button from "../../Components/Button/Button";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -133,9 +134,9 @@ export const Wallet = () => {
       {active ? (
         <div>✅</div>
       ) : (
-        <button type="button" onClick={onClick}>
+        <Button type="button" intent="primary" onClick={onClick}>
           {t("wallet:connectWallet")}
-        </button>
+        </Button>
       )}
     </div>
   );
