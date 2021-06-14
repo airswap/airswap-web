@@ -7,13 +7,16 @@ import { approve, request, take, selectOrder } from "./ordersSlice";
 import styles from "./Orders.module.css";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
-  const [senderToken, setSenderToken] = useState<string>();
-  const [signerToken, setSignerToken] = useState<string>();
+  const { senderToken, signerToken } =
+    useParams<{ senderToken: string; signerToken: string }>();
+  const history = useHistory();
   const [senderAmount, setSenderAmount] = useState("0.01");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
@@ -31,9 +34,11 @@ export function Orders() {
         <label>{t("orders:tokenToSend")}</label>
         <select
           value={senderToken}
-          onChange={(e) => setSenderToken(e.target.value)}
+          onChange={(e) => {
+            history.push(`/${e.target.value}/${signerToken || "-"}`);
+          }}
         >
-          <option>{t("common:select")}...</option>
+          <option value="-">{t("common:select")}...</option>
           {activeTokens.map((token) => (
             <option key={token.address} value={token.address}>
               {token.symbol}
@@ -55,9 +60,11 @@ export function Orders() {
         <label>{t("orders:tokenToRecieve")}</label>
         <select
           value={signerToken}
-          onChange={(e) => setSignerToken(e.target.value)}
+          onChange={(e) => {
+            history.push(`/${senderToken || "-"}/${e.target.value}`);
+          }}
         >
-          <option>{t("common:select")}...</option>
+          <option value="-">{t("common:select")}...</option>
           {activeTokens
             .filter((token) => token.address !== senderToken)
             .map((token) => (
