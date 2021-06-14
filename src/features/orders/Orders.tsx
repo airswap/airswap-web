@@ -7,6 +7,7 @@ import { approve, request, take, selectOrder } from "./ordersSlice";
 import styles from "./Orders.module.css";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
@@ -17,6 +18,7 @@ export function Orders() {
   const [senderAmount, setSenderAmount] = useState("0.01");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
+  const { trackEvent } = useMatomo();
 
   let signerAmount = null;
   if (order) {
@@ -71,7 +73,7 @@ export function Orders() {
         <button
           disabled={!senderToken || !signerToken || !senderAmount}
           className={styles.asyncButton}
-          onClick={() =>
+          onClick={() => {
             dispatch(
               request({
                 chainId: chainId!,
@@ -81,8 +83,9 @@ export function Orders() {
                 senderWallet: account!,
                 provider: library,
               })
-            )
-          }
+            );
+            trackEvent({ category: "order", action: "request" });
+          }}
         >
           {t("orders:request")}
         </button>

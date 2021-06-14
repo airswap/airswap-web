@@ -17,6 +17,7 @@ import {
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 import { useTranslation } from "react-i18next";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -34,7 +35,7 @@ export const Wallet = () => {
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
-
+  const { trackPageView } = useMatomo();
   const { t } = useTranslation(["common", "wallet"]);
 
   const onClick = () => {
@@ -42,6 +43,8 @@ export const Wallet = () => {
   };
 
   useEffect(() => {
+    trackPageView({ documentTitle: "wallet", href: "https://airswap.io" });
+
     if (active && account && chainId && library) {
       // Dispatch a general action to indicate wallet has changed
       dispatch(
