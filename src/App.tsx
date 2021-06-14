@@ -4,7 +4,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";
 import { Wallet } from "./features/wallet/Wallet";
 import { Transactions } from "./features/transactions/Transactions";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Balances from "./features/balances/Balances";
 import "./App.css";

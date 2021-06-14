@@ -35,7 +35,13 @@ export function Orders() {
         <select
           value={senderToken}
           onChange={(e) => {
-            history.push(`/${e.target.value}/${signerToken || "-"}`);
+            history.push(
+              `/${e.target.value}/${
+                !!signerToken && signerToken !== e.target.value
+                  ? signerToken
+                  : "-"
+              }`
+            );
           }}
         >
           <option value="-">{t("common:select")}...</option>
