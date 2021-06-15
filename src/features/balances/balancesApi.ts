@@ -6,6 +6,26 @@ import { Light } from "@airswap/protocols";
 import erc20Abi from "erc-20-abi";
 import { hexZeroPad, id } from "ethers/lib/utils";
 
+interface SubscribeParams {
+  activeTokenAddresses: string[];
+  walletAddress: string;
+  spenderAddress: string;
+  provider: ethers.providers.Web3Provider;
+  onBalanceChange: (
+    tokenAddress: string,
+    amount: BigNumber,
+    direction: "in" | "out"
+  ) => void;
+  onApproval: (tokenAddress: string, amount: BigNumber) => void;
+}
+
+interface WalletParams {
+  chainId: number;
+  provider: ethers.providers.Web3Provider;
+  walletAddress: string;
+  tokenAddresses: string[];
+}
+
 const balancesInterface = new ethers.utils.Interface(
   JSON.stringify(BalanceChecker.abi)
 );
@@ -29,12 +49,7 @@ const getContract = (
  */
 const fetchBalancesOrAllowances: (
   method: "walletBalances" | "walletAllowances",
-  params: {
-    chainId: number;
-    provider: ethers.providers.Web3Provider;
-    walletAddress: string;
-    tokenAddresses: string[];
-  }
+  params: WalletParams
 ) => Promise<string[]> = async (
   method,
   { chainId, provider, tokenAddresses, walletAddress }
@@ -57,18 +72,8 @@ const fetchAllowances = fetchBalancesOrAllowances.bind(
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)
 // event Approval(address indexed _owner, address indexed _spender, uint256 _value)
-const subscribeToTransfersAndApprovals: (params: {
-  activeTokenAddresses: string[];
-  walletAddress: string;
-  spenderAddress: string;
-  provider: ethers.providers.Web3Provider;
-  onBalanceChange: (
-    tokenAddress: string,
-    amount: BigNumber,
-    direction: "in" | "out"
-  ) => void;
-  onApproval: (tokenAddress: string, amount: BigNumber) => void;
-}) => () => void = ({
+let subscribeToTransfersAndApprovals: (params: SubscribeParams) => () => void;
+subscribeToTransfersAndApprovals = ({
   activeTokenAddresses,
   walletAddress,
   provider,
