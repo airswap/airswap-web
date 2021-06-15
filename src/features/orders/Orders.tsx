@@ -1,19 +1,22 @@
-import React, { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { approve, request, take, selectOrder } from "./ordersSlice";
-import styles from "./Orders.module.css";
-import { selectActiveTokens } from "../metadata/metadataSlice";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectAllowances } from "../balances/balancesSlice";
+import { selectActiveTokens } from "../metadata/metadataSlice";
+import { BigNumber } from "ethers";
+import styles from "./Orders.module.css";
+import { approve, request, selectOrder, take } from "./ordersSlice";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
+  const allowances = useAppSelector(selectAllowances);
   const { senderToken, signerToken } =
     useParams<{ senderToken: string; signerToken: string }>();
   const history = useHistory();
@@ -104,20 +107,27 @@ export function Orders() {
         <div>
           <div className={styles.row}>Amount to receive: {signerAmount}</div>
           <div className={styles.row}>
-            <button
-              className={styles.button}
-              aria-label={t("orders:approve", { context: "aria" })}
-              onClick={() => dispatch(approve({ token: senderToken, library }))}
-            >
-              {t("orders:approve")}
-            </button>
-            <button
-              className={styles.button}
-              aria-label={t("orders:take", { context: "aria" })}
-              onClick={() => dispatch(take({ order, library }))}
-            >
-              {t("orders:take")}
-            </button>
+            {BigNumber.from(allowances.values[senderToken]).gt(
+              BigNumber.from(0)
+            ) ? (
+              <button
+                className={styles.button}
+                aria-label={t("orders:approve", { context: "aria" })}
+                onClick={() =>
+                  dispatch(approve({ token: senderToken, library }))
+                }
+              >
+                {t("orders:approve")}
+              </button>
+            ) : (
+              <button
+                className={styles.button}
+                aria-label={t("orders:take", { context: "aria" })}
+                onClick={() => dispatch(take({ order, library }))}
+              >
+                {t("orders:take")}
+              </button>
+            )}
           </div>
         </div>
       ) : (
