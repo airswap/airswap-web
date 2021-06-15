@@ -6,7 +6,7 @@ import { Wallet } from "./features/wallet/Wallet";
 import { Transactions } from "./features/transactions/Transactions";
 import Balances from "./features/balances/Balances";
 import "./i18n/i18n";
-import DarkModeSwitch from "./Components/DarkModeSwitch/DarkModeSwitch";
+import DarkModeSwitch from "./components/DarkModeSwitch/DarkModeSwitch";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);

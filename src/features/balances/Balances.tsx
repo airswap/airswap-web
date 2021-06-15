@@ -11,7 +11,7 @@ import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
 import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
-import Button from "../../Components/Button/Button";
+import Button from "../../components/Button/Button";
 
 const Balances = () => {
   const { active, library } = useWeb3React();

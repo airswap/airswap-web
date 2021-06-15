@@ -12,9 +12,9 @@ import {
 } from "./ordersSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
-import Card from "../../Components/Card/Card";
-import TokenSelect from "../../Components/TokenSelect/TokenSelect";
-import Button from "../../Components/Button/Button";
+import Card from "../../components/Card/Card";
+import TokenSelect from "../../components/TokenSelect/TokenSelect";
+import Button from "../../components/Button/Button";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);

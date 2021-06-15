@@ -17,7 +17,7 @@ import {
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 import { useTranslation } from "react-i18next";
-import Button from "../../Components/Button/Button";
+import Button from "../../components/Button/Button";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
