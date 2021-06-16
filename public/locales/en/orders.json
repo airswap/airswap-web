@@ -1,4 +1,7 @@
 {
+  "swapTokensPageTitle": "Swap {{senderToken}} for {{signerToken}}",
+  "sellTokenPageTitle": "Sell {{senderToken}}",
+  "buyTokenPageTitle": "Buy {{signerToken}}",
   "request": "Request",
   "approve": "Approve",
   "approve_aria": "Approve token spend",

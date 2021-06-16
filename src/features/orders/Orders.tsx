@@ -1,24 +1,26 @@
-import { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { useParams, useHistory } from "react-router";
+import { BigNumber } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
+import { useHistory, useParams } from "react-router";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import Button from "../../components/Button/Button";
+import Card from "../../components/Card/Card";
+import TokenSelect from "../../components/TokenSelect/TokenSelect";
+import { selectAllowances } from "../balances/balancesSlice";
+import { selectActiveTokens } from "../metadata/metadataSlice";
 import {
   approve,
   request,
-  take,
   selectOrder,
   selectOrdersStatus,
+  take,
 } from "./ordersSlice";
-import { selectActiveTokens } from "../metadata/metadataSlice";
-import { useTranslation } from "react-i18next";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
-import Card from "../../components/Card/Card";
-import TokenSelect from "../../components/TokenSelect/TokenSelect";
-import Button from "../../components/Button/Button";
-import { selectAllowances } from "../balances/balancesSlice";
-import { BigNumber } from "ethers";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
@@ -43,13 +45,41 @@ export function Orders() {
 
   if (!active || !chainId) return null;
 
-  // TODO: need to check allowance is _enough_.
+  // Determine whether the user has allowed spend of enough sender token to
+  // take the order.
+  const senderTokenInfo = activeTokens.find(
+    (token) => token.address === senderToken
+  );
+  const signerTokenInfo = activeTokens.find(
+    (token) => token.address === signerToken
+  );
   const senderTokenHasAllowance = BigNumber.from(
     allowances.values[senderToken] || 0
-  ).gt(BigNumber.from(0));
+  ).gte(parseUnits(senderAmount || "0", senderTokenInfo?.decimals || "ether"));
+
+  let pageTitle: string | null = null;
+  if (senderTokenInfo && signerTokenInfo) {
+    pageTitle = t("orders:swapTokensPageTitle", {
+      senderToken: senderTokenInfo.symbol,
+      signerToken: signerTokenInfo.symbol,
+    });
+  } else if (senderTokenInfo) {
+    pageTitle = t("orders:sellTokenPageTitle", {
+      senderToken: senderTokenInfo.symbol,
+    });
+  } else if (signerTokenInfo) {
+    pageTitle = t("orders:buyTokenPageTitle", {
+      signerToken: signerTokenInfo.symbol,
+    });
+  }
 
   return (
     <Card className="flex-col m-4 w-72">
+      {pageTitle && (
+        <Helmet>
+          <title>{pageTitle}</title>
+        </Helmet>
+      )}
       <TokenSelect
         tokens={activeTokens}
         withAmount={true}
@@ -69,7 +99,7 @@ export function Orders() {
         }
       />
       <TokenSelect
-        tokens={activeTokens}
+        tokens={activeTokens.filter((t) => t.address !== senderToken)}
         withAmount={false}
         className="mb-2"
         label="Receive"
