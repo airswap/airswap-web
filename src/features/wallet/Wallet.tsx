@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -18,6 +18,7 @@ import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 import { useTranslation } from "react-i18next";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
+import Button from "../../components/Button/Button";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -30,8 +31,13 @@ export const injectedConnector = new InjectedConnector({
 });
 
 export const Wallet = () => {
-  const { chainId, account, activate, active, library } =
-    useWeb3React<Web3Provider>();
+  const {
+    chainId,
+    account,
+    activate,
+    active,
+    library,
+  } = useWeb3React<Web3Provider>();
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
@@ -68,7 +74,7 @@ export const Wallet = () => {
     } else {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library]);
+  }, [active, account, chainId, dispatch, library, trackPageView]);
 
   // Subscribe to changes in balance
   useEffect(() => {
@@ -136,9 +142,9 @@ export const Wallet = () => {
       {active ? (
         <div>✅</div>
       ) : (
-        <button type="button" onClick={onClick}>
+        <Button type="button" intent="primary" onClick={onClick}>
           {t("wallet:connectWallet")}
-        </button>
+        </Button>
       )}
     </div>
   );

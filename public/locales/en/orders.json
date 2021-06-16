@@ -4,9 +4,8 @@
   "approve_aria": "Approve token spend",
   "take": "Take",
   "take_aria": "Take swap",
-  "tokenToSend": "Token to send",
-  "tokenToRecieve": "Token to recieve",
-  "sendAmount": "Amount to send",
-  "sendAmount_aria": "Set amount to send",
-  "amount": "Amount"
+  "send": "Send",
+  "receive": "Receive",
+  "amount": "Amount",
+  "chooseToken": "Choose token"
 }

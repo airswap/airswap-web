@@ -9,6 +9,7 @@
     "@airswap/protocols": "0.5.5",
     "@airswap/types": "^3.5.17",
     "@datapunt/matomo-tracker-react": "^0.4.0",
+    "@craco/craco": "^6.1.2",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -20,6 +21,7 @@
     "@types/react-redux": "^7.1.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
+    "classnames": "^2.3.1",
     "erc-20-abi": "^1.0.0",
     "ethers": "^5.1.4",
     "i18next": "^20.3.1",
@@ -30,18 +32,32 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.10.0",
+    "react-icons": "^4.2.0",
     "react-redux": "^7.2.0",
     "react-scripts": "4.0.3",
     "typescript": "~4.1.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
@@ -55,7 +71,20 @@
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "babel-loader": "8.1.0"
+  },
   "devDependencies": {
-    "@types/lodash.uniqby": "^4.7.6"
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-links": "^6.2.9",
+    "@storybook/node-logger": "^6.2.9",
+    "@storybook/preset-create-react-app": "^3.1.7",
+    "@storybook/react": "^6.2.9",
+    "@types/lodash.uniqby": "^4.7.6",
+    "autoprefixer": "^9",
+    "postcss": "^7",
+    "storybook-tailwind-dark-mode": "^1.0.9",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }
