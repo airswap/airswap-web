@@ -1,28 +1,40 @@
+import { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAllowances } from "../balances/balancesSlice";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useParams, useHistory } from "react-router";
+import {
+  approve,
+  request,
+  take,
+  selectOrder,
+  selectOrdersStatus,
+} from "./ordersSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
+import { useTranslation } from "react-i18next";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
+import Card from "../../components/Card/Card";
+import TokenSelect from "../../components/TokenSelect/TokenSelect";
+import Button from "../../components/Button/Button";
+import { selectAllowances } from "../balances/balancesSlice";
 import { BigNumber } from "ethers";
-import styles from "./Orders.module.css";
-import { approve, request, selectOrder, take } from "./ordersSlice";
 
 export function Orders() {
   const order = useAppSelector(selectOrder);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const allowances = useAppSelector(selectAllowances);
-  const { senderToken, signerToken } =
-    useParams<{ senderToken: string; signerToken: string }>();
+  const { senderToken, signerToken } = useParams<{
+    senderToken: string;
+    signerToken: string;
+  }>();
   const history = useHistory();
   const [senderAmount, setSenderAmount] = useState("0.01");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
+  const { trackEvent } = useMatomo();
 
   let signerAmount = null;
   if (order) {
@@ -31,108 +43,86 @@ export function Orders() {
 
   if (!active || !chainId) return null;
 
+  // TODO: need to check allowance is _enough_.
+  const senderTokenHasAllowance = BigNumber.from(
+    allowances.values[senderToken] || 0
+  ).gt(BigNumber.from(0));
+
   return (
-    <div>
-      <div className={styles.row}>
-        <label>{t("orders:tokenToSend")}</label>
-        <select
-          value={senderToken}
-          onChange={(e) => {
-            history.push(
-              `/${e.target.value}/${
-                !!signerToken && signerToken !== e.target.value
-                  ? signerToken
-                  : "-"
-              }`
-            );
-          }}
-        >
-          <option value="-">{t("common:select")}...</option>
-          {activeTokens.map((token) => (
-            <option key={token.address} value={token.address}>
-              {token.symbol}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={styles.row}>
-        <label>{t("orders:sendAmount")}</label>
-        <input
-          className={styles.textbox}
-          aria-label={t("orders:sendAmount", { context: "aria" })}
-          value={senderAmount}
-          onChange={(e) => setSenderAmount(e.target.value)}
-          placeholder={`${t("orders:amount")}...`}
-        />
-      </div>
-      <div className={styles.row}>
-        <label>{t("orders:tokenToRecieve")}</label>
-        <select
-          value={signerToken}
-          onChange={(e) => {
-            history.push(`/${senderToken || "-"}/${e.target.value}`);
-          }}
-        >
-          <option value="-">{t("common:select")}...</option>
-          {activeTokens
-            .filter((token) => token.address !== senderToken)
-            .map((token) => (
-              <option key={token.address} value={token.address}>
-                {token.symbol}
-              </option>
-            ))}
-        </select>
-      </div>
-      <div className={styles.row}>
-        <button
-          disabled={!senderToken || !signerToken || !senderAmount}
-          className={styles.asyncButton}
-          onClick={() =>
-            dispatch(
-              request({
-                chainId: chainId!,
-                senderToken: senderToken!,
-                senderAmount,
-                signerToken: signerToken!,
-                senderWallet: account!,
-                provider: library,
-              })
-            )
-          }
-        >
-          {t("orders:request")}
-        </button>
-      </div>
+    <Card className="flex-col m-4 w-72">
+      <TokenSelect
+        tokens={activeTokens}
+        withAmount={true}
+        amount={senderAmount}
+        onAmountChange={(e) => setSenderAmount(e.currentTarget.value)}
+        className="mb-2"
+        label={t("orders:send")}
+        token={senderToken}
+        onTokenChange={(e) =>
+          history.push(
+            `/${e.currentTarget.value}/${
+              !!signerToken && signerToken !== e.currentTarget.value
+                ? signerToken
+                : "-"
+            }`
+          )
+        }
+      />
+      <TokenSelect
+        tokens={activeTokens}
+        withAmount={false}
+        className="mb-2"
+        label="Receive"
+        token={signerToken}
+        onTokenChange={(e) =>
+          history.push(`/${senderToken || "-"}/${e.currentTarget.value}`)
+        }
+      />
+      <Button
+        className="w-full mt-2"
+        intent="primary"
+        disabled={!senderToken || !signerToken || !senderAmount}
+        loading={ordersStatus === "requesting"}
+        onClick={() => {
+          dispatch(
+            request({
+              chainId: chainId!,
+              senderToken: senderToken!,
+              senderAmount,
+              signerToken: signerToken!,
+              senderWallet: account!,
+              provider: library,
+            })
+          );
+          trackEvent({ category: "order", action: "request" });
+        }}
+      >
+        {t("orders:request")}
+      </Button>
       {signerAmount ? (
         <div>
-          <div className={styles.row}>Amount to receive: {signerAmount}</div>
-          <div className={styles.row}>
-            {BigNumber.from(allowances.values[senderToken]).gt(
-              BigNumber.from(0)
-            ) ? (
-              <button
-                className={styles.button}
-                aria-label={t("orders:approve", { context: "aria" })}
-                onClick={() =>
-                  dispatch(approve({ token: senderToken, library }))
-                }
-              >
-                {t("orders:approve")}
-              </button>
-            ) : (
-              <button
-                className={styles.button}
-                aria-label={t("orders:take", { context: "aria" })}
-                onClick={() => dispatch(take({ order, library }))}
-              >
-                {t("orders:take")}
-              </button>
-            )}
-          </div>
+          <div>Amount to receive: {signerAmount}</div>
+          {senderTokenHasAllowance ? (
+            <Button
+              className="flex-1"
+              aria-label={t("orders:take", { context: "aria" })}
+              onClick={() => dispatch(take({ order, library }))}
+            >
+              {t("orders:take")}
+            </Button>
+          ) : (
+            <Button
+              className="flex-1"
+              aria-label={t("orders:approve", { context: "aria" })}
+              onClick={() => dispatch(approve({ token: senderToken, library }))}
+            >
+              {t("orders:approve")}
+            </Button>
+          )}
         </div>
       ) : (
         <span />
       )}
-    </div>
+    </Card>
   );
 }

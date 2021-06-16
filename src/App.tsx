@@ -7,8 +7,8 @@ import { Transactions } from "./features/transactions/Transactions";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Balances from "./features/balances/Balances";
-import "./App.css";
 import "./i18n/i18n";
+import DarkModeSwitch from "./components/DarkModeSwitch/DarkModeSwitch";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -22,13 +22,14 @@ function App() {
       {/* Suspense needed here for loading i18n resources */}
       <Suspense fallback={"Loading..."}>
         <Router>
-          <div className="App">
+          <div className="flex flex-col items-center">
             <Route path="/:senderToken?/:signerToken?">
               <Wallet />
               <Orders />
               <Transactions />
               ☠️ Use at your own risk
               <Balances />
+              <DarkModeSwitch className="m-4" />
             </Route>
           </div>
         </Router>
