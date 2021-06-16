@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -17,6 +17,7 @@ import {
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import { Light } from "@airswap/protocols";
 import { useTranslation } from "react-i18next";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import Button from "../../components/Button/Button";
 
 export const injectedConnector = new InjectedConnector({
@@ -30,12 +31,17 @@ export const injectedConnector = new InjectedConnector({
 });
 
 export const Wallet = () => {
-  const { chainId, account, activate, active, library } =
-    useWeb3React<Web3Provider>();
+  const {
+    chainId,
+    account,
+    activate,
+    active,
+    library,
+  } = useWeb3React<Web3Provider>();
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
-
+  const { trackPageView } = useMatomo();
   const { t } = useTranslation(["common", "wallet"]);
 
   const onClick = () => {
@@ -43,6 +49,8 @@ export const Wallet = () => {
   };
 
   useEffect(() => {
+    trackPageView({ documentTitle: "wallet", href: "https://airswap.io" });
+
     if (active && account && chainId && library) {
       // Dispatch a general action to indicate wallet has changed
       dispatch(
@@ -66,7 +74,7 @@ export const Wallet = () => {
     } else {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library]);
+  }, [active, account, chainId, dispatch, library, trackPageView]);
 
   // Subscribe to changes in balance
   useEffect(() => {

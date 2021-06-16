@@ -8,6 +8,7 @@
     "@airswap/metadata": "^0.3.2",
     "@airswap/protocols": "0.5.5",
     "@airswap/types": "^3.5.17",
+    "@datapunt/matomo-tracker-react": "^0.4.0",
     "@craco/craco": "^6.1.2",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",

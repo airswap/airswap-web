@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -12,6 +12,7 @@ import {
 } from "./ordersSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import Card from "../../components/Card/Card";
 import TokenSelect from "../../components/TokenSelect/TokenSelect";
 import Button from "../../components/Button/Button";
@@ -26,6 +27,7 @@ export function Orders() {
   const [senderAmount, setSenderAmount] = useState("0.01");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
+  const { trackEvent } = useMatomo();
 
   let signerAmount = null;
   if (order) {
@@ -59,7 +61,7 @@ export function Orders() {
         intent="primary"
         disabled={!senderToken || !signerToken || !senderAmount}
         loading={ordersStatus === "requesting"}
-        onClick={() =>
+        onClick={() => {
           dispatch(
             request({
               chainId: chainId!,
@@ -69,8 +71,9 @@ export function Orders() {
               senderWallet: account!,
               provider: library,
             })
-          )
-        }
+          );
+          trackEvent({ category: "order", action: "request" });
+        }}
       >
         {t("orders:request")}
       </Button>
