@@ -3,11 +3,22 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 
-type ButtonProps = {
+export type ButtonProps = {
   children: React.ReactNode;
   className?: string;
+  /**
+   * Intent affects the appearance of the button
+   */
   intent?: ButtonIntent;
+  /**
+   * Whether or not the button should be disabled. Clicking a disabled button
+   * has no effect.
+   */
   disabled?: boolean;
+  /**
+   * Whether or not to show a loading spinner within the button. This also
+   * prevents further clicks on the button
+   */
   loading?: boolean;
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -21,7 +32,7 @@ const colorClasses: Record<ButtonIntent, string> = {
   destructive: "bg-red-700 text-white",
 };
 
-const Button = ({
+export const Button = ({
   children,
   className = "",
   intent = "neutral",
@@ -43,7 +54,6 @@ const Button = ({
         }
       )}
       onClick={(e) => {
-        console.log("activate");
         !loading && onClick && onClick(e);
       }}
       {...rest}

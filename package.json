@@ -41,10 +41,22 @@
     "build": "craco build",
     "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
@@ -58,10 +70,20 @@
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "babel-loader": "8.1.0"
+  },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-links": "^6.2.9",
+    "@storybook/node-logger": "^6.2.9",
+    "@storybook/preset-create-react-app": "^3.1.7",
+    "@storybook/react": "^6.2.9",
     "@types/lodash.uniqby": "^4.7.6",
     "autoprefixer": "^9",
     "postcss": "^7",
+    "storybook-tailwind-dark-mode": "^1.0.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }
