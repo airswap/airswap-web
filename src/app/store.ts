@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import ordersReducer from "../features/orders/ordersSlice";
+import ordersReducer, { tokenApprovalReducer } from "../features/orders/ordersSlice";
 import walletReducer from "../features/wallet/walletSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
@@ -17,6 +17,7 @@ export const store = configureStore({
     metadata: metadataReducer,
     orders: ordersReducer,
     wallet: walletReducer,
+    tokenApproval: tokenApprovalReducer,
   },
 });
 

@@ -20,6 +20,15 @@ const initialState: OrdersState = {
   status: "idle",
 };
 
+export interface TokenApprovalState {
+  status: "incomplete" | "pending" | "complete";
+}
+
+const initialTokenApprovalState: TokenApprovalState = {
+  status: "incomplete",
+}
+
+
 export const request = createAsyncThunk(
   "orders/request",
   async (params: {
@@ -101,7 +110,31 @@ export const ordersSlice = createSlice({
   },
 });
 
+export const tokenApprovalSlice = createSlice({
+  name: "tokenApproval",
+  initialState: initialTokenApprovalState,
+  reducers: {
+    clearApproval: (state) => {
+      state.status = "incomplete";
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(approve.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(approve.fulfilled, (state) => {
+        state.status = "complete";
+      })
+      .addCase(approve.rejected, (state) => {
+        state.status = "incomplete"
+      })
+  }
+})
+
 export const { clear } = ordersSlice.actions;
 export const selectOrder = (state: RootState) => state.orders.orders[0];
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
+export const selectTokenApprovalStatus = (state: RootState) => state.tokenApproval.status;
+export const tokenApprovalReducer = tokenApprovalSlice.reducer;
 export default ordersSlice.reducer;

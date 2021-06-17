@@ -9,6 +9,7 @@ import {
   take,
   selectOrder,
   selectOrdersStatus,
+  selectTokenApprovalStatus
 } from "./ordersSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
@@ -20,6 +21,7 @@ import Button from "../../components/Button/Button";
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
+  const tokenApprovalStatus = useAppSelector(selectTokenApprovalStatus);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const [senderToken, setSenderToken] = useState<string>();
@@ -84,6 +86,8 @@ export function Orders() {
             <Button
               className="flex-1"
               aria-label={t("orders:approve", { context: "aria" })}
+              loading={tokenApprovalStatus === "pending"}
+              disabled={tokenApprovalStatus === "complete"}
               onClick={() => dispatch(approve({ token: senderToken, library }))}
             >
               {t("orders:approve")}
