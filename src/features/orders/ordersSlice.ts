@@ -21,7 +21,7 @@ const initialState: OrdersState = {
 };
 
 export interface TokenApprovalState {
-  allTokenApprovalStatus: {[tokenAddress: string]: string},
+  allTokenApprovalStatus: {[tokenAddress: string]: "incomplete" | "pending" | "complete"},
 }
 
 const initialTokenApprovalState: TokenApprovalState = {
