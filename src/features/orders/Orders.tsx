@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -9,7 +9,8 @@ import {
   take,
   selectOrder,
   selectOrdersStatus,
-  selectTokenApprovalStatus
+  selectTokenApprovalStatus,
+  initialize
 } from "./ordersSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
@@ -30,6 +31,10 @@ export function Orders() {
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
   const { trackEvent } = useMatomo();
+
+  useEffect(() => {
+    dispatch(initialize());
+  }, []);
 
   let signerAmount = null;
   if (order) {
@@ -86,8 +91,8 @@ export function Orders() {
             <Button
               className="flex-1"
               aria-label={t("orders:approve", { context: "aria" })}
-              loading={tokenApprovalStatus === "pending"}
-              disabled={tokenApprovalStatus === "complete"}
+              loading={tokenApprovalStatus[senderToken ? senderToken : ""] === "pending"}
+              disabled={tokenApprovalStatus[senderToken ? senderToken : ""] === "complete"}
               onClick={() => dispatch(approve({ token: senderToken, library }))}
             >
               {t("orders:approve")}
