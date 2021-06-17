@@ -3,7 +3,7 @@ import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -44,16 +44,26 @@ export const Wallet = () => {
   const { trackPageView } = useMatomo();
   const { t } = useTranslation(["common", "wallet"]);
 
+  const [isActivating, setIsActivating] = useState<boolean>(false);
   const onClick = () => {
-    activate(injectedConnector);
+    setIsActivating(true);
+    activate(injectedConnector).finally(() => setIsActivating(false));
   };
 
   // Auto-activate if user has connected before on first load.
   useEffect(() => {
     if (browserHasPreviouslyConnected()) {
-      activate(injectedConnector);
+      setIsActivating(true);
+      activate(injectedConnector).finally(() => setIsActivating(false));
     }
   }, [activate]);
+
+  // Clear is activating flag once we're activated.
+  useEffect(() => {
+    if (active && isActivating) {
+      setIsActivating(false);
+    }
+  }, [active, isActivating]);
 
   useEffect(() => {
     trackPageView({ documentTitle: "wallet", href: "https://airswap.io" });
@@ -144,7 +154,11 @@ export const Wallet = () => {
       <div>
         {t("common:chainId")}: {chainId}
       </div>
-      <WalletButton address={account} onConnectWalletClicked={onClick} />
+      <WalletButton
+        address={account}
+        onConnectWalletClicked={onClick}
+        isConnecting={isActivating}
+      />
     </div>
   );
 };

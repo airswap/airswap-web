@@ -10,6 +10,7 @@ export default {
     // loading: { control: { type: "boolean" } },
     address: { control: { type: "text" } },
     className: { control: { type: "text" } },
+    isConnecting: { control: { type: "boolean" } },
   },
 } as Meta;
 

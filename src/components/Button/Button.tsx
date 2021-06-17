@@ -58,16 +58,20 @@ export const Button = ({
       }}
       {...rest}
     >
-      {loading ? (
-        // Note we keep children in here so the button doesn't change shape when
-        // it's loading.
-        <div className="flex flex-row items-center justify-center">
-          <div className="invisible">{children}</div>
-          <LoadingSpinner className="absolute" />
+      {/* // Note we keep children in here so the button doesn't change shape when
+        // it's loading. */}
+      <div className="flex flex-row items-center justify-center">
+        <div
+          key="children"
+          className={classNames("transition-opacity", {
+            "opacity-20": loading,
+            "opacity-100": !loading,
+          })}
+        >
+          {children}
         </div>
-      ) : (
-        children
-      )}
+        {loading && <LoadingSpinner className="absolute" />}
+      </div>
     </button>
   );
 };

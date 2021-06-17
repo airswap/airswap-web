@@ -11,6 +11,11 @@ export type WalletButtonProps = {
    */
   address?: string | null;
   /**
+   * Boolean to indicate if wallet is currently connecting. (Ignored if address
+   * is set)
+   */
+  isConnecting?: boolean;
+  /**
    * Additional classes applied to container
    */
   className?: string;
@@ -23,6 +28,7 @@ export type WalletButtonProps = {
 export const WalletButton = ({
   address,
   className,
+  isConnecting,
   onConnectWalletClicked,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
@@ -48,7 +54,11 @@ export const WalletButton = ({
           <span>{truncateEthAddress(address)}</span>
         </div>
       ) : (
-        <Button intent="primary" onClick={onConnectWalletClicked}>
+        <Button
+          intent="primary"
+          loading={isConnecting}
+          onClick={onConnectWalletClicked}
+        >
           {t("wallet:connectWallet")}
         </Button>
       )}
