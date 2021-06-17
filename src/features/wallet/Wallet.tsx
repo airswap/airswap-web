@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
+import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
+import { AbstractConnector } from "../../constants/supportedWalletProviders";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -45,11 +47,8 @@ export const Wallet = () => {
   const { trackPageView } = useMatomo();
   const { t } = useTranslation(["common", "wallet"]);
 
+  const [showConnectorList, setShowConnectorList] = useState<boolean>(false);
   const [isActivating, setIsActivating] = useState<boolean>(false);
-  const onClick = () => {
-    setIsActivating(true);
-    activate(injectedConnector).finally(() => setIsActivating(false));
-  };
 
   // Auto-activate if user has connected before on first load.
   useEffect(() => {
@@ -155,9 +154,20 @@ export const Wallet = () => {
       <div>
         {t("common:chainId")}: {chainId}
       </div>
+      {showConnectorList && (
+        <WalletProviderList
+          onProviderSelected={(connector) => {
+            setShowConnectorList(false);
+            setIsActivating(true);
+            activate(connector).finally(() => setIsActivating(false));
+          }}
+        />
+      )}
       <WalletButton
         address={account}
-        onConnectWalletClicked={onClick}
+        onConnectWalletClicked={() => {
+          setShowConnectorList(true);
+        }}
         onDisconnectWalletClicked={() => {
           deactivate();
         }}
