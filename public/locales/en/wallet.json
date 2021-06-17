@@ -1,3 +1,4 @@
 {
-  "connectWallet": "Connect your wallet"
+  "connectWallet": "Connect your wallet",
+  "disconnectWallet": "Disconnect wallet"
 }

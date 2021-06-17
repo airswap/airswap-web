@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { RiCloseLine } from "react-icons/ri";
 import truncateEthAddress from "truncate-eth-address";
 import Blockies from "react-blockies";
 
@@ -23,6 +24,10 @@ export type WalletButtonProps = {
    * Callback function for when connect button is clicked
    */
   onConnectWalletClicked: () => void;
+  /**
+   * Callback function for when disconnect button is clicked
+   */
+  onDisconnectWalletClicked: () => void;
 };
 
 export const WalletButton = ({
@@ -30,6 +35,7 @@ export const WalletButton = ({
   className,
   isConnecting,
   onConnectWalletClicked,
+  onDisconnectWalletClicked,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
   return (
@@ -52,6 +58,13 @@ export const WalletButton = ({
             color="#2b72ff"
           />
           <span>{truncateEthAddress(address)}</span>
+          <button
+            className="ml-2"
+            aria-label={t("wallet:disconnectWallet")}
+            onClick={onDisconnectWalletClicked}
+          >
+            <RiCloseLine />
+          </button>
         </div>
       ) : (
         <Button

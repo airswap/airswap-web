@@ -35,6 +35,7 @@ export const Wallet = () => {
     chainId,
     account,
     activate,
+    deactivate,
     active,
     library,
   } = useWeb3React<Web3Provider>();
@@ -157,6 +158,9 @@ export const Wallet = () => {
       <WalletButton
         address={account}
         onConnectWalletClicked={onClick}
+        onDisconnectWalletClicked={() => {
+          deactivate();
+        }}
         isConnecting={isActivating}
       />
     </div>
