@@ -5,7 +5,12 @@ import WalletButton from "./WalletButton";
 describe("WalletButton", () => {
   it("should render connect wallet button when no address is provided", () => {
     const onConnectWalletClicked = jest.fn();
-    render(<WalletButton onConnectWalletClicked={onConnectWalletClicked} />);
+    render(
+      <WalletButton
+        onConnectWalletClicked={onConnectWalletClicked}
+        onDisconnectWalletClicked={() => {}}
+      />
+    );
     userEvent.click(screen.getByText("wallet:connectWallet"));
     expect(onConnectWalletClicked).toHaveBeenCalled();
   });
@@ -17,6 +22,7 @@ describe("WalletButton", () => {
     const onConnectWalletClicked = jest.fn();
     render(
       <WalletButton
+        onDisconnectWalletClicked={() => {}}
         onConnectWalletClicked={onConnectWalletClicked}
         address={"0x73580000000000000000000000000000000bcBE5"}
       />
