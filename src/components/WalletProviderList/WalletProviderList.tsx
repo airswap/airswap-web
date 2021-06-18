@@ -1,10 +1,10 @@
 import SUPPORTED_WALLET_PROVIDERS, {
-  AbstractConnector,
+  WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import Button from "../Button/Button";
 
 export type WalletProviderListProps = {
-  onProviderSelected: (connector: AbstractConnector) => void;
+  onProviderSelected: (provider: WalletProvider) => void;
 };
 
 const WalletProviderList = ({
@@ -15,9 +15,10 @@ const WalletProviderList = ({
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <Button
           key={provider.name}
+          variant="left-justified"
           intent="neutral"
           onClick={() => {
-            onProviderSelected(provider.getConnector());
+            onProviderSelected(provider);
           }}
         >
           <div className="flex gap-2 items-center pr-2">

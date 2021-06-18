@@ -4,13 +4,13 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import metamaskLogo from "../assets/wallet-provider-logos/metamask.svg";
 import walletconnectLogo from "../assets/wallet-provider-logos/walletconnect.svg";
 
-export type WalletProviderInfo = {
+export type WalletProvider = {
   name: string;
   logo: string;
   getConnector: () => AbstractConnector;
 };
 
-const SUPPORTED_WALLET_PROVIDERS: WalletProviderInfo[] = [
+const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "MetaMask",
     logo: metamaskLogo,
@@ -31,8 +31,8 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProviderInfo[] = [
     getConnector: () =>
       new WalletConnectConnector({
         rpc: {
-          1: "https://mainnet.infura.io/v3/e0daf5eeb84a4b08a7bfb843a1386407",
-          4: "https://rinkeby.infura.io/v3/e0daf5eeb84a4b08a7bfb843a1386407",
+          1: process.env.REACT_APP_RPC_URL_1 || "",
+          4: process.env.REACT_APP_RPC_URL_4 || "",
         },
       }),
   },
