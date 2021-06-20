@@ -8,14 +8,22 @@ import {
   mineTransaction,
 } from "./transactionActions";
 
-export interface SubmittedOrder {
-  order: LightOrder;
+export interface SubmittedTransaction {
+  type: "Approval" | "Order";
   hash: string;
   status: "processing" | "succeeded" | "reverted";
 }
 
+export interface SubmittedOrder extends SubmittedTransaction {
+  order: LightOrder;
+}
+
+export interface SubmittedApproval extends SubmittedTransaction {
+  tokenAddress: string;
+}
+
 export interface TransactionsState {
-  all: SubmittedOrder[];
+  all: SubmittedTransaction[];
 }
 
 const initialState: TransactionsState = {

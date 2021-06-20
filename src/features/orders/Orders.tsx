@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -9,9 +9,11 @@ import {
   take,
   selectOrder,
   selectOrdersStatus,
-  selectTokenApprovalStatus,
-  initialize
 } from "./ordersSlice";
+import {
+  selectTransactions
+} from "../transactions/transactionsSlice";
+import { SubmittedOrder, SubmittedTransaction, SubmittedApproval } from "../transactions/transactionsSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
@@ -22,7 +24,7 @@ import Button from "../../components/Button/Button";
 export function Orders() {
   const order = useAppSelector(selectOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const tokenApprovalStatus = useAppSelector(selectTokenApprovalStatus);
+  const transactions = useAppSelector(selectTransactions);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const [senderToken, setSenderToken] = useState<string>();
@@ -32,13 +34,22 @@ export function Orders() {
   const { t } = useTranslation(["orders", "common"]);
   const { trackEvent } = useMatomo();
 
-  useEffect(() => {
-    dispatch(initialize());
-  }, []);
-
   let signerAmount = null;
   if (order) {
     signerAmount = toDecimalString(order.signerAmount, 6);
+  }
+
+  const tokenApprovalStatus = (tokenId: string | undefined) => {
+    if (tokenId === undefined)
+      return null
+    for (let i = 0; i < transactions.length; i++) {
+      if (transactions[i].type === 'Approval') {
+        const approvalTx: SubmittedApproval = transactions[i] as SubmittedApproval;
+        if (approvalTx.tokenAddress === tokenId)
+          return approvalTx.status;
+      }
+    }
+    return null;
   }
 
   if (!active || !chainId) return null;
@@ -91,8 +102,7 @@ export function Orders() {
             <Button
               className="flex-1"
               aria-label={t("orders:approve", { context: "aria" })}
-              loading={tokenApprovalStatus[senderToken ? senderToken : ""] === "pending"}
-              disabled={tokenApprovalStatus[senderToken ? senderToken : ""] === "complete"}
+              loading={tokenApprovalStatus(senderToken) === 'processing'}
               onClick={() => dispatch(approve({ token: senderToken, library }))}
             >
               {t("orders:approve")}

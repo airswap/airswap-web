@@ -8,6 +8,7 @@ import {
   revertTransaction,
   declineTransaction,
 } from "../transactions/transactionActions";
+import { SubmittedOrder, SubmittedApproval } from "../transactions/transactionsSlice";
 import { Transaction } from "ethers";
 
 export interface OrdersState {
@@ -19,15 +20,6 @@ const initialState: OrdersState = {
   orders: [],
   status: "idle",
 };
-
-export interface TokenApprovalState {
-  allTokenApprovalStatus: {[tokenAddress: string]: "incomplete" | "pending" | "complete"},
-}
-
-const initialTokenApprovalState: TokenApprovalState = {
-  allTokenApprovalStatus: {"": "incomplete"}, // dictionary key value pair of token and approval status
-}
-
 
 export const request = createAsyncThunk(
   "orders/request",
@@ -51,15 +43,32 @@ export const request = createAsyncThunk(
 
 export const approve = createAsyncThunk(
   "orders/approve",
-  async (params: any) => {
+  async (params: any, { dispatch }) => {
     let tx: Transaction;
     try {
       tx = await approveToken(params.token, params.library);
       if (tx.hash) {
-        console.log('tx:', tx);
+        const transaction: SubmittedApproval = {
+          type: "Approval",
+          hash: tx.hash,
+          status: "processing",
+          tokenAddress: params.token
+        }
+        dispatch(
+          submitTransaction(transaction)
+        );
+        params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+          }
+        });
       }
     } catch (e) {
       console.error(e);
+      dispatch(declineTransaction(e.message));
     }
   }
 );
@@ -71,12 +80,14 @@ export const take = createAsyncThunk(
     try {
       tx = await takeOrder(params.order, params.library);
       if (tx.hash) {
+        const transaction: SubmittedOrder = {
+          type: "Order",
+          order: params.order,
+          hash: tx.hash,
+          status: "processing",
+        }
         dispatch(
-          submitTransaction({
-            order: params.order,
-            hash: tx.hash,
-            status: "processing",
-          })
+          submitTransaction(transaction)
         );
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
@@ -120,48 +131,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const tokenApprovalSlice = createSlice({
-  name: "tokenApproval",
-  initialState: initialTokenApprovalState,
-  reducers: {
-    clearTokenApproval: (state) => {
-      localStorage.setItem("tokenApprovalStatus", JSON.stringify({"": "incomplete"}));
-      state.allTokenApprovalStatus = {"": "incomplete"};
-    },
-    initialize: (state) => {
-      const tokenApprovalStateLocalStorage = localStorage.getItem("tokenApprovalStatus");
-      if (typeof(tokenApprovalStateLocalStorage) === "string") {
-        state.allTokenApprovalStatus = JSON.parse(tokenApprovalStateLocalStorage);
-      } else {
-        state = initialTokenApprovalState;
-      }
-    }
-  },
-  extraReducers: (builder) => {
-    builder
-      // TODO: Error handling (try/catch)
-      .addCase(approve.pending, (state, action) => {
-        const currentTokenAddress: string = action.meta.arg.token;
-        state.allTokenApprovalStatus[currentTokenAddress] = "pending";
-        localStorage.setItem("tokenApprovalStatus", JSON.stringify(state.allTokenApprovalStatus));
-      })
-      .addCase(approve.fulfilled, (state, action) => {
-        const currentTokenAddress: string = action.meta.arg.token;
-        state.allTokenApprovalStatus[currentTokenAddress] = "complete";
-        localStorage.setItem("tokenApprovalStatus", JSON.stringify(state.allTokenApprovalStatus));
-      })
-      .addCase(approve.rejected, (state, action) => {
-        const currentTokenAddress: string = action.meta.arg.token;
-        state.allTokenApprovalStatus[currentTokenAddress] = "incomplete";
-        localStorage.setItem("tokenApprovalStatus", JSON.stringify(state.allTokenApprovalStatus));
-      });
-  }
-})
 
 export const { clear } = ordersSlice.actions;
-export const { initialize } = tokenApprovalSlice.actions;
 export const selectOrder = (state: RootState) => state.orders.orders[0];
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
-export const selectTokenApprovalStatus = (state: RootState) => state.tokenApproval.allTokenApprovalStatus;
-export const tokenApprovalReducer = tokenApprovalSlice.reducer;
 export default ordersSlice.reducer;
