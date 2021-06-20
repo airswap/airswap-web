@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import ordersReducer from "../features/orders/ordersSlice";
-import walletReducer from "../features/wallet/walletSlice";
+import walletReducer, { selectWallet } from "../features/wallet/walletSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
 import {

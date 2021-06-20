@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -11,9 +11,10 @@ import {
   selectOrdersStatus,
 } from "./ordersSlice";
 import {
-  selectTransactions
+  selectTransactions,
+  initialize
 } from "../transactions/transactionsSlice";
-import { SubmittedOrder, SubmittedTransaction, SubmittedApproval } from "../transactions/transactionsSlice";
+import { SubmittedApproval } from "../transactions/transactionsSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
@@ -34,12 +35,16 @@ export function Orders() {
   const { t } = useTranslation(["orders", "common"]);
   const { trackEvent } = useMatomo();
 
+  // useEffect(() => {
+  //   if (chainId) dispatch(initialize(chainId));
+  // }, [])
+
   let signerAmount = null;
   if (order) {
     signerAmount = toDecimalString(order.signerAmount, 6);
   }
 
-  const tokenApprovalStatus = (tokenId: string | undefined) => {
+  const getTokenApprovalStatus = (tokenId: string | undefined) => {
     if (tokenId === undefined)
       return null
     for (let i = 0; i < transactions.length; i++) {
@@ -102,7 +107,7 @@ export function Orders() {
             <Button
               className="flex-1"
               aria-label={t("orders:approve", { context: "aria" })}
-              loading={tokenApprovalStatus(senderToken) === 'processing'}
+              loading={getTokenApprovalStatus(senderToken) === 'processing'}
               onClick={() => dispatch(approve({ token: senderToken, library }))}
             >
               {t("orders:approve")}

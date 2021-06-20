@@ -49,6 +49,16 @@ export const ordersSlice = createSlice({
     clear: (state) => {
       state.all = [];
     },
+    initialize: (state, action) => {
+      try {
+        const transactionLocalStorageState = localStorage.getItem(`airswap/transactions/${action.payload}`);
+        const transactions: TransactionsState = JSON.parse(transactionLocalStorageState || '{all: [],}');
+        state.all = transactions.all;
+      } catch (err) {
+        console.log(err);
+        state.all = []
+      }
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
@@ -66,6 +76,6 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear } = ordersSlice.actions;
+export const { clear, initialize } = ordersSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
 export default ordersSlice.reducer;
