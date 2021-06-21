@@ -30,9 +30,9 @@ const initialState: TransactionsState = {
   all: [],
 };
 
-function updateTransaction(state: any, action: any, status: string) {
+function updateTransaction(state: TransactionsState, hash: string, status: "processing" | "succeeded" | "reverted") {
   for (let i in state.all) {
-    if (state.all[i].hash === action.payload) {
+    if (state.all[i].hash === hash) {
       state.all[i] = {
         ...state.all[i],
         status,
@@ -49,16 +49,14 @@ export const ordersSlice = createSlice({
     clear: (state) => {
       state.all = [];
     },
-    initialize: (state, action) => {
+    setTransaction: (state, action) => {
       try {
-        const transactionLocalStorageState = localStorage.getItem(`airswap/transactions/${action.payload}`);
-        const transactions: TransactionsState = JSON.parse(transactionLocalStorageState || '{all: [],}');
-        state.all = transactions.all;
+        state.all = action.payload.all;
       } catch (err) {
-        console.log(err);
-        state.all = []
+        console.error(err);
+        state.all = [];
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
@@ -68,14 +66,14 @@ export const ordersSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, action, "reverted");
+      updateTransaction(state, action.payload.hash, "reverted");
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(state, action, "succeeded");
+      updateTransaction(state, action.payload, "succeeded");
     });
   },
 });
 
-export const { clear, initialize } = ordersSlice.actions;
+export const { clear, setTransaction } = ordersSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
 export default ordersSlice.reducer;

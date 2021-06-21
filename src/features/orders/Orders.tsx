@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -10,10 +10,7 @@ import {
   selectOrder,
   selectOrdersStatus,
 } from "./ordersSlice";
-import {
-  selectTransactions,
-  initialize
-} from "../transactions/transactionsSlice";
+import { selectTransactions } from "../transactions/transactionsSlice";
 import { SubmittedApproval } from "../transactions/transactionsSlice";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
@@ -34,10 +31,6 @@ export function Orders() {
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
   const { trackEvent } = useMatomo();
-
-  // useEffect(() => {
-  //   if (chainId) dispatch(initialize(chainId));
-  // }, [])
 
   let signerAmount = null;
   if (order) {
