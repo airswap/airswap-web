@@ -2,6 +2,7 @@ import classNames from "classnames";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
+type ButtonVariant = "centered" | "left-justified";
 
 export type ButtonProps = {
   children: React.ReactNode;
@@ -10,6 +11,10 @@ export type ButtonProps = {
    * Intent affects the appearance of the button
    */
   intent?: ButtonIntent;
+  /**
+   * Intent affects the appearance of the button
+   */
+  variant?: ButtonVariant | ButtonVariant[];
   /**
    * Whether or not the button should be disabled. Clicking a disabled button
    * has no effect.
@@ -26,21 +31,28 @@ export type ButtonProps = {
 >;
 
 const colorClasses: Record<ButtonIntent, string> = {
-  neutral: "bg-black text-white dark:bg-white dark:text-black",
+  neutral: "bg-gray-200 text-black dark:bg-gray-700 dark:text-white",
   primary: "bg-primary text-white",
   positive: "bg-green-700 text-white",
   destructive: "bg-red-700 text-white",
+};
+
+const variantClasses: Record<ButtonVariant, string> = {
+  centered: "justify-center",
+  "left-justified": "justify-start",
 };
 
 export const Button = ({
   children,
   className = "",
   intent = "neutral",
+  variant = "centered",
   disabled = false,
   loading = false,
   onClick,
   ...rest
 }: ButtonProps) => {
+  const variants = Array.isArray(variant) ? variant : [variant];
   return (
     <button
       className={classNames(
@@ -58,16 +70,24 @@ export const Button = ({
       }}
       {...rest}
     >
-      {loading ? (
-        // Note we keep children in here so the button doesn't change shape when
-        // it's loading.
-        <div className="flex flex-row items-center justify-center">
-          <div className="invisible">{children}</div>
-          <LoadingSpinner className="absolute" />
+      {/* // Note we keep children in here so the button doesn't change shape when
+        // it's loading. */}
+      <div
+        className={classNames(
+          "flex flex-row items-center",
+          variants.map((v) => variantClasses[v])
+        )}
+      >
+        <div
+          className={classNames("transition-opacity", {
+            "opacity-20": loading,
+            "opacity-100": !loading,
+          })}
+        >
+          {children}
         </div>
-      ) : (
-        children
-      )}
+        {loading && <LoadingSpinner className="absolute" />}
+      </div>
     </button>
   );
 };
