@@ -39,7 +39,7 @@ const colorClasses: Record<ButtonIntent, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   centered: "justify-center",
-  "left-justified": "justif",
+  "left-justified": "justify-start",
 };
 
 export const Button = ({
