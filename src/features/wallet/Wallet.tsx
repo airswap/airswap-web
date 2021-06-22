@@ -65,6 +65,7 @@ export const Wallet = () => {
       setIsActivating(true);
       const connector = lastConnectedAccount.provider.getConnector();
       setConnector(connector);
+      setProvider(lastConnectedAccount.provider);
       activate(connector).finally(() => setIsActivating(false));
     }
   }, [activate, trackPageView]);
