@@ -19,11 +19,11 @@ export function Transactions() {
     // get transaction state from local storage and update the transactions
     if (chainId) {
       const transactionsLocalStorage = JSON.parse(localStorage.getItem(getTransactionsLocalStorageKey(chainId!))!);
-  
+
       dispatch(setTransaction(transactionsLocalStorage))
-  
-      // check from all responses if one is pending... if pending, call getTransaction 
-      // to see if it was a success/failure/pending. update accordingly. if pending: wait() 
+
+      // check from all responses if one is pending... if pending, call getTransaction
+      // to see if it was a success/failure/pending. update accordingly. if pending: wait()
       // and poll at a sensible interval.
       // TODO: Poll at sensible intervals
       transactions.forEach(tx => {
@@ -41,7 +41,7 @@ export function Transactions() {
         }
       });
     }
-  }, [chainId, dispatch, library]);
+  }, [chainId, dispatch, library, transactions]);
 
   if (!active || !chainId) return null;
 

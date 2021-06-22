@@ -1,5 +1,5 @@
 import { store } from "../../app/store";
-import { 
+import {
   getActiveTokensLocalStorageKey,
   getTransactionsLocalStorageKey } from "./metadataApi";
 import { SubmittedTransaction } from '../transactions/transactionsSlice';
@@ -16,8 +16,8 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     const { wallet, metadata, transactions } = store.getState();
     if (!wallet.connected) return;
     // persist all transactions to localStorage
-    const transactionCashed = transactionCache[wallet.chainId!];
-    if (transactions.all.length && transactionCashed !== transactions.all) {
+    const transactionCached = transactionCache[wallet.chainId!];
+    if (transactions.all.length && transactionCached !== transactions.all) {
       localStorage.setItem(
         getTransactionsLocalStorageKey(wallet.chainId!),
         JSON.stringify(transactions)
