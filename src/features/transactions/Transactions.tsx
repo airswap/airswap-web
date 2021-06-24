@@ -17,12 +17,14 @@ export function Transactions() {
   const { active, chainId, library, account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
+    // Create a flag we can set to handle wallet changing between async operations
+    let walletHasChanged = false;
     const updateTransactionsState = (txs: TransactionsState) => {
       dispatch(setTransactions(txs));
     };
 
     // get transaction state from local storage and update the transactions
-    if (chainId && account) {
+    if (chainId && account && library) {
       const transactionsLocalStorage: TransactionsState = JSON.parse(
         localStorage.getItem(
           getTransactionsLocalStorageKey(chainId!, account!)
@@ -36,33 +38,39 @@ export function Transactions() {
       // and poll at a sensible interval.
       transactionsLocalStorage.all.forEach(async (tx) => {
         if (tx.status === "processing") {
-          let receipt = await library?.getTransactionReceipt(tx.hash);
+          let receipt = await library.getTransactionReceipt(tx.hash);
           if (receipt !== null) {
-            const status = receipt!.status;
+            if (walletHasChanged) return;
+            const status = receipt.status;
             if (status === 1) dispatch(mineTransaction(tx.hash));
             // success
             else if (status === 0)
               dispatch(
                 revertTransaction({
                   hash: tx.hash,
-                  reason: "User has cancelled transaction.",
+                  reason: "Reverted",
                 })
               ); // reverted
             return;
           } else {
-            const transaction = await library?.getTransaction(tx.hash);
+            // Receipt was null, so the transaction is incomplete
+            // Try to get a reference to the transaction in the mem pool - this
+            // can sometimes also return null (e.g. gas price too low or tx only
+            // recently sent) depending on backend.
+            const transaction = await library.getTransaction(tx.hash);
             if (transaction) {
               try {
                 await transaction.wait(1);
-                dispatch(mineTransaction(tx.hash)); // success
+                if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
               } catch (err) {
                 console.error(err);
-                dispatch(
-                  revertTransaction({
-                    hash: tx.hash,
-                    reason: "User has cancelled transaction.",
-                  })
-                );
+                if (!walletHasChanged)
+                  dispatch(
+                    revertTransaction({
+                      hash: tx.hash,
+                      reason: "Reverted",
+                    })
+                  );
               }
               return;
             } else {
@@ -73,23 +81,29 @@ export function Transactions() {
                 // wait 30 seconds
                 await new Promise((res) => setTimeout(res, 30000));
                 receipt = await library!.getTransactionReceipt(tx.hash);
-                // TODO: exit loop if wallet or chainId changes
               }
               if (!receipt || receipt.status === 0) {
-                dispatch(
-                  revertTransaction({
-                    hash: tx.hash,
-                    reason: "User has cancelled transaction.",
-                  })
-                );
+                if (!walletHasChanged)
+                  dispatch(
+                    revertTransaction({
+                      hash: tx.hash,
+                      reason: "User has cancelled transaction.",
+                    })
+                  );
               } else {
-                dispatch(mineTransaction(tx.hash)); // success
+                if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
               }
             }
           }
         }
       });
     }
+    return () => {
+      // Library & dispatch won't change, so when we tear down it's because
+      // the wallet has changed. The useEffect will run after this and set up
+      // everything for the new wallet.
+      walletHasChanged = true;
+    };
   }, [chainId, dispatch, library, account]);
 
   if (!active || !chainId) return null;
