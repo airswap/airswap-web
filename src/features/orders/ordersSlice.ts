@@ -59,7 +59,6 @@ export const approve = createAsyncThunk(
         );
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
-          console.log(receipt);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
           } else {

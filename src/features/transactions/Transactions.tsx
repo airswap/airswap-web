@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { getEtherscanURL } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   selectTransactions,
+  setTransaction,
   TransactionsState,
 } from "./transactionsSlice";
 import { revertTransaction, mineTransaction } from "./transactionActions";
@@ -16,13 +17,20 @@ export function Transactions() {
   const { active, chainId, library, account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
+
+    const updateTransaction = (txs: TransactionsState) => {
+      dispatch(setTransaction(txs));
+    }
+
     // get transaction state from local storage and update the transactions
     if (chainId && account) {
       const transactionsLocalStorage: TransactionsState = JSON.parse(
         localStorage.getItem(
           getTransactionsLocalStorageKey(chainId!, account!)
         )!
-      );
+      ) || {all: []};
+
+      updateTransaction(transactionsLocalStorage);
 
       // check from all responses if one is pending... if pending, call getTransaction
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
@@ -81,7 +89,8 @@ export function Transactions() {
         } 
       });
     }
-  }, [chainId, dispatch, library]);
+
+  }, [chainId, dispatch, library, account]);
 
   if (!active || !chainId) return null;
 
