@@ -30,7 +30,11 @@ const initialState: TransactionsState = {
   all: [],
 };
 
-function updateTransaction(state: TransactionsState, hash: string, status: "processing" | "succeeded" | "reverted") {
+function updateTransaction(
+  state: TransactionsState,
+  hash: string,
+  status: "processing" | "succeeded" | "reverted"
+) {
   for (let i in state.all) {
     if (state.all[i].hash === hash) {
       state.all[i] = {
@@ -49,7 +53,7 @@ export const ordersSlice = createSlice({
     clear: (state) => {
       state.all = [];
     },
-    setTransaction: (state, action) => {
+    setTransactions: (state, action) => {
       try {
         state.all = action.payload.all;
       } catch (err) {
@@ -74,6 +78,6 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear, setTransaction } = ordersSlice.actions;
+export const { clear, setTransactions } = ordersSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
 export default ordersSlice.reducer;

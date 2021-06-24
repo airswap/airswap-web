@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   selectTransactions,
-  setTransaction,
+  setTransactions,
   TransactionsState,
 } from "./transactionsSlice";
 import { revertTransaction, mineTransaction } from "./transactionActions";
@@ -17,10 +17,9 @@ export function Transactions() {
   const { active, chainId, library, account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-
-    const updateTransaction = (txs: TransactionsState) => {
-      dispatch(setTransaction(txs));
-    }
+    const updateTransactionsState = (txs: TransactionsState) => {
+      dispatch(setTransactions(txs));
+    };
 
     // get transaction state from local storage and update the transactions
     if (chainId && account) {
@@ -28,9 +27,9 @@ export function Transactions() {
         localStorage.getItem(
           getTransactionsLocalStorageKey(chainId!, account!)
         )!
-      ) || {all: []};
+      ) || { all: [] };
 
-      updateTransaction(transactionsLocalStorage);
+      updateTransactionsState(transactionsLocalStorage);
 
       // check from all responses if one is pending... if pending, call getTransaction
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
@@ -40,7 +39,8 @@ export function Transactions() {
           let receipt = await library?.getTransactionReceipt(tx.hash);
           if (receipt !== null) {
             const status = receipt!.status;
-            if (status === 1) dispatch(mineTransaction(tx.hash)); // success
+            if (status === 1) dispatch(mineTransaction(tx.hash));
+            // success
             else if (status === 0)
               dispatch(
                 revertTransaction({
@@ -65,14 +65,15 @@ export function Transactions() {
                 );
               }
               return;
-            } else { // if transaction === null, we poll at intervals
+            } else {
+              // if transaction === null, we poll at intervals
               // assume failed after 30 mins
               const assumedFailureTime = Date.now() + 30 * 60 * 1000;
               while (receipt === null && Date.now() <= assumedFailureTime) {
-                  // wait 30 seconds
-                  await new Promise((res)=> setTimeout(res, 30000));
-                  receipt = await library!.getTransactionReceipt(tx.hash);
-                  // TODO: exit loop if wallet or chainId changes
+                // wait 30 seconds
+                await new Promise((res) => setTimeout(res, 30000));
+                receipt = await library!.getTransactionReceipt(tx.hash);
+                // TODO: exit loop if wallet or chainId changes
               }
               if (!receipt || receipt.status === 0) {
                 dispatch(
@@ -86,10 +87,9 @@ export function Transactions() {
               }
             }
           }
-        } 
+        }
       });
     }
-
   }, [chainId, dispatch, library, account]);
 
   if (!active || !chainId) return null;
