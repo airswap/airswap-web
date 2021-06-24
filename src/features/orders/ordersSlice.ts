@@ -103,12 +103,18 @@ export const ordersSlice = createSlice({
 
 export const { clear } = ordersSlice.actions;
 /**
- * Sorts orders and returns the best. Note: Could be improved to cover the
- * unlikely event that two makers produce exact same order, and could then
- * take into account expiry.
+ * Sorts orders and returns the best order based on tokens received or sent
+ * then falling back to expiry.
  */
 export const selectBestOrder = (state: RootState) =>
   state.orders.orders.sort((a, b) => {
+    // If tokens transferred are the same
+    if (
+      a.signerAmount === b.signerAmount &&
+      a.senderAmount === b.senderAmount
+    ) {
+      return parseInt(b.expiry) - parseInt(a.expiry);
+    }
     if (a.signerAmount === b.signerAmount) {
       // Likely senderSide
       // Sort orders by amount of senderToken sent (ascending).
