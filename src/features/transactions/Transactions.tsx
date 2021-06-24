@@ -19,9 +19,6 @@ export function Transactions() {
   useEffect(() => {
     // Create a flag we can set to handle wallet changing between async operations
     let walletHasChanged = false;
-    const updateTransactionsState = (txs: TransactionsState) => {
-      dispatch(setTransactions(txs));
-    };
 
     // get transaction state from local storage and update the transactions
     if (chainId && account && library) {
@@ -31,7 +28,7 @@ export function Transactions() {
         )!
       ) || { all: [] };
 
-      updateTransactionsState(transactionsLocalStorage);
+      dispatch(setTransactions(transactionsLocalStorage));
 
       // check from all responses if one is pending... if pending, call getTransaction
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
