@@ -19,7 +19,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     const transactionCashed = transactionCache[wallet.chainId!];
     if (transactions.all.length && transactionCashed !== transactions.all) {
       localStorage.setItem(
-        getTransactionsLocalStorageKey(wallet.chainId!),
+        getTransactionsLocalStorageKey(wallet.chainId!, wallet.address!),
         JSON.stringify(transactions)
       );
     }

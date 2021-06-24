@@ -57,6 +57,6 @@ export const getSavedActiveTokensInfo = async (chainId: number) => {
   return uniqBy(matchingTokens, (token) => token.address);
 };
 
-export const getTransactionsLocalStorageKey: (chainId: number) => string = (
-  chainId
-) => `airswap/transactions/${chainId}`;
+export const getTransactionsLocalStorageKey: (chainId: number, walletAddress: string) => string = (
+  chainId, walletAddress
+) => `airswap/transactions/${chainId}/${walletAddress}`;
