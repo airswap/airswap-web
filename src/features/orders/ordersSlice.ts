@@ -9,6 +9,10 @@ import {
   declineTransaction,
 } from "../transactions/transactionActions";
 import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
+import {
   SubmittedOrder,
   SubmittedApproval,
 } from "../transactions/transactionsSlice";
@@ -126,6 +130,14 @@ export const ordersSlice = createSlice({
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
+      })
+      .addCase(setWalletConnected, (state) => {
+        state.status = "idle";
+        state.orders = [];
+      })
+      .addCase(setWalletDisconnected, (state) => {
+        state.status = "idle";
+        state.orders = [];
       });
   },
 });

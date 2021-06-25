@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
 import Card from "../../components/Card/Card";
 import TokenSelect from "../../components/TokenSelect/TokenSelect";
+import Timer from "../../components/Timer/Timer";
 import Button from "../../components/Button/Button";
 
 export function Orders() {
@@ -97,7 +98,30 @@ export function Orders() {
       </Button>
       {signerAmount ? (
         <div>
-          <div>Amount to receive: {signerAmount}</div>
+          {order ? (
+            <>
+              <div>Amount to receive: {signerAmount}</div>
+              <p>
+                Quote expires in&nbsp;
+                <Timer
+                  expiryTime={parseInt(order.expiry)}
+                  onTimerComplete={() => {
+                    dispatch(
+                      request({
+                        chainId: chainId!,
+                        senderToken: senderToken!,
+                        senderAmount,
+                        signerToken: signerToken!,
+                        senderWallet: account!,
+                        provider: library,
+                      })
+                    );
+                    trackEvent({ category: "order", action: "request" });
+                  }}
+                />
+              </p>
+            </>
+          ) : null}
           <div className="flex gap-2">
             <Button
               className="flex-1"
@@ -110,7 +134,8 @@ export function Orders() {
             <Button
               className="flex-1"
               aria-label={t("orders:take", { context: "aria" })}
-              onClick={() => dispatch(take({ order, library }))}
+              loading={ordersStatus === "taking"}
+              onClick={async () => dispatch(take({ order, library }))}
             >
               {t("orders:take")}
             </Button>
