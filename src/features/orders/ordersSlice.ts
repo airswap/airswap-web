@@ -12,6 +12,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
+import {
   SubmittedOrder,
   SubmittedApproval,
 } from "../transactions/transactionsSlice";
