@@ -12,7 +12,10 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { Transaction } from "ethers";
+  SubmittedOrder,
+  SubmittedApproval,
+} from "../transactions/transactionsSlice";
+import { BigNumber, Transaction } from "ethers";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -46,7 +49,32 @@ export const request = createAsyncThunk(
 
 export const approve = createAsyncThunk(
   "orders/approve",
-  async (params: any) => await approveToken(params.token, params.library)
+  async (params: any, { dispatch }) => {
+    let tx: Transaction;
+    try {
+      tx = await approveToken(params.token, params.library);
+      if (tx.hash) {
+        const transaction: SubmittedApproval = {
+          type: "Approval",
+          hash: tx.hash,
+          status: "processing",
+          tokenAddress: params.token,
+        };
+        dispatch(submitTransaction(transaction));
+        params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch(declineTransaction(e.message));
+    }
+  }
 );
 
 export const take = createAsyncThunk(
@@ -56,13 +84,13 @@ export const take = createAsyncThunk(
     try {
       tx = await takeOrder(params.order, params.library);
       if (tx.hash) {
-        dispatch(
-          submitTransaction({
-            order: params.order,
-            hash: tx.hash,
-            status: "processing",
-          })
-        );
+        const transaction: SubmittedOrder = {
+          type: "Order",
+          order: params.order,
+          hash: tx.hash,
+          status: "processing",
+        };
+        dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -114,6 +142,34 @@ export const ordersSlice = createSlice({
 });
 
 export const { clear } = ordersSlice.actions;
-export const selectOrder = (state: RootState) => state.orders.orders[0];
+/**
+ * Sorts orders and returns the best order based on tokens received or sent
+ * then falling back to expiry.
+ */
+export const selectBestOrder = (state: RootState) =>
+  state.orders.orders.sort((a, b) => {
+    // If tokens transferred are the same
+    if (
+      a.signerAmount === b.signerAmount &&
+      a.senderAmount === b.senderAmount
+    ) {
+      return parseInt(b.expiry) - parseInt(a.expiry);
+    }
+    if (a.signerAmount === b.signerAmount) {
+      // Likely senderSide
+      // Sort orders by amount of senderToken sent (ascending).
+      const aAmount = BigNumber.from(a.senderAmount);
+      const bAmount = BigNumber.from(b.senderAmount);
+      if (bAmount.lt(aAmount)) return 1;
+      else return -1;
+    } else {
+      // Likely signerSide
+      // Sort orders by amount of signerToken received (descending).
+      const aAmount = BigNumber.from(a.signerAmount);
+      const bAmount = BigNumber.from(b.signerAmount);
+      if (bAmount.gt(aAmount)) return 1;
+      else return -1;
+    }
+  })[0];
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;

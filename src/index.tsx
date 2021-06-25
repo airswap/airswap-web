@@ -6,6 +6,7 @@ import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react";
+import Modal from "react-modal";
 
 const instance = createInstance({
   urlBase: "https://airswap.matomo.cloud/",
@@ -28,6 +29,8 @@ const instance = createInstance({
     setRequestMethod: "POST",
   },
 });
+
+Modal.setAppElement("#root");
 
 ReactDOM.render(
   <React.StrictMode>

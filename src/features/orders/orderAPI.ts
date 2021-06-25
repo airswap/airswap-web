@@ -40,7 +40,7 @@ export async function approveToken(
     spender,
     provider.getSigner()
   );
-  return approvalTxHash;
+  return approvalTxHash as any as Transaction;
 }
 
 export async function takeOrder(
