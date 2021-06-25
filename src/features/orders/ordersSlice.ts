@@ -8,7 +8,10 @@ import {
   revertTransaction,
   declineTransaction,
 } from "../transactions/transactionActions";
-import { SubmittedOrder, SubmittedApproval } from "../transactions/transactionsSlice";
+import {
+  SubmittedOrder,
+  SubmittedApproval,
+} from "../transactions/transactionsSlice";
 import { Transaction } from "ethers";
 
 export interface OrdersState {
@@ -52,11 +55,9 @@ export const approve = createAsyncThunk(
           type: "Approval",
           hash: tx.hash,
           status: "processing",
-          tokenAddress: params.token
-        }
-        dispatch(
-          submitTransaction(transaction)
-        );
+          tokenAddress: params.token,
+        };
+        dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -85,10 +86,8 @@ export const take = createAsyncThunk(
           order: params.order,
           hash: tx.hash,
           status: "processing",
-        }
-        dispatch(
-          submitTransaction(transaction)
-        );
+        };
+        dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -130,7 +129,6 @@ export const ordersSlice = createSlice({
       });
   },
 });
-
 
 export const { clear } = ordersSlice.actions;
 export const selectOrder = (state: RootState) => state.orders.orders[0];

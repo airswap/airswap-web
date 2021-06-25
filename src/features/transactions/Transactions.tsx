@@ -84,7 +84,7 @@ export function Transactions() {
                   dispatch(
                     revertTransaction({
                       hash: tx.hash,
-                      reason: "User has cancelled transaction.",
+                      reason: "Reverted",
                     })
                   );
               } else {
