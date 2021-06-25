@@ -80,26 +80,30 @@ export function Orders() {
       </Button>
       {signerAmount ? (
         <div>
-          <div>Amount to receive: {signerAmount}</div>
-          <p>
-            Quote expires in&nbsp;
-            <Timer
-              expiryTime={parseInt(order.expiry)}
-              onTimerComplete={() => {
-                dispatch(
-                  request({
-                    chainId: chainId!,
-                    senderToken: senderToken!,
-                    senderAmount,
-                    signerToken: signerToken!,
-                    senderWallet: account!,
-                    provider: library,
-                  })
-                );
-                trackEvent({ category: "order", action: "request" });
-              }}
-            />
-          </p>
+          {order ? (
+            <>
+              <div>Amount to receive: {signerAmount}</div>
+              <p>
+                Quote expires in&nbsp;
+                <Timer
+                  expiryTime={parseInt(order.expiry)}
+                  onTimerComplete={() => {
+                    dispatch(
+                      request({
+                        chainId: chainId!,
+                        senderToken: senderToken!,
+                        senderAmount,
+                        signerToken: signerToken!,
+                        senderWallet: account!,
+                        provider: library,
+                      })
+                    );
+                    trackEvent({ category: "order", action: "request" });
+                  }}
+                />
+              </p>
+            </>
+          ) : null}
           <div className="flex gap-2">
             <Button
               className="flex-1"

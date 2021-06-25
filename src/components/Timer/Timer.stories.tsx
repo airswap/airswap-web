@@ -15,10 +15,10 @@ const Template: Story<TimerProps> = (args) => <Timer {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  expiryTime: parseInt(((new Date().getTime() + 300000) / 1000).toFixed(0)),
+  expiryTime: parseInt((Date.now() / 1000 + 300).toFixed(0)),
 };
 
 export const Completed = Template.bind({});
 Completed.args = {
-  expiryTime: parseInt((new Date().getTime() / 1000).toFixed(0)),
+  expiryTime: parseInt((Date.now() / 1000).toFixed(0)),
 };

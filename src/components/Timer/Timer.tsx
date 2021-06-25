@@ -2,21 +2,22 @@ import { useState, useEffect } from "react";
 
 export type TimerProps = {
   className?: string;
-
+  /**
+   * Expiration time in unix timestamp (s)
+   */
   expiryTime: number;
   onTimerComplete: () => void;
 };
 
 export const Timer = ({
-  expiryTime = new Date().getTime() + 300000,
+  expiryTime = Date.now() / 1000 + 300,
   onTimerComplete,
 }: TimerProps) => {
   const [distance, setDistance] = useState<number>();
 
   useEffect(() => {
     let interval = setInterval(() => {
-      const now: Date = new Date();
-      const dist: number = Math.floor(expiryTime - now.getTime() / 1000);
+      const dist: number = Math.floor(expiryTime - Date.now() / 1000);
 
       if (dist <= 0) {
         setDistance(0);
