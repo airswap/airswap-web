@@ -81,8 +81,9 @@ export function Orders() {
       {signerAmount ? (
         <div>
           <div>Amount to receive: {signerAmount}</div>
-          <p>Quote expires in&nbsp;
-            <Timer 
+          <p>
+            Quote expires in&nbsp;
+            <Timer
               expiryTime={parseInt(order.expiry)}
               onTimerComplete={() => {
                 dispatch(
@@ -96,7 +97,8 @@ export function Orders() {
                   })
                 );
                 trackEvent({ category: "order", action: "request" });
-              }} />
+              }}
+            />
           </p>
           <div className="flex gap-2">
             <Button
@@ -110,7 +112,8 @@ export function Orders() {
               className="flex-1"
               aria-label={t("orders:take", { context: "aria" })}
               loading={ordersStatus === "taking"}
-              onClick={async () => dispatch(take({ order, library }))}>
+              onClick={async () => dispatch(take({ order, library }))}
+            >
               {t("orders:take")}
             </Button>
           </div>
