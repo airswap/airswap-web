@@ -8,7 +8,7 @@ export type TimerProps = {
 };
 
 export const Timer = ({
-  expiryTime = new Date().getTime() + 30000,
+  expiryTime = new Date().getTime() + 300000,
   onTimerComplete,
 }: TimerProps) => {
   const [distance, setDistance] = useState<number>();
@@ -27,7 +27,10 @@ export const Timer = ({
 
       setDistance(dist);
     }, 1000);
-  });
+    return () => {
+      clearInterval(interval);
+    };
+  }, [expiryTime, onTimerComplete]);
 
   return distance !== undefined ? (
     <span>
