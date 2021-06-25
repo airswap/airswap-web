@@ -1,11 +1,19 @@
-import { useEffect } from "react";
-
+import { Light } from "@airswap/protocols";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { InjectedConnector } from "@web3-react/injected-connector";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
-import { fetchAllTokens, selectActiveTokens } from "../metadata/metadataSlice";
+import WalletButton from "../../components/WalletButton/WalletButton";
+import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
+import Modal from "react-modal";
+import {
+  AbstractConnector,
+  WalletProvider,
+} from "../../constants/supportedWalletProviders";
+import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
@@ -14,44 +22,57 @@ import {
   selectBalances,
   setAllowance,
 } from "../balances/balancesSlice";
-import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
-import { Light } from "@airswap/protocols";
-import { useTranslation } from "react-i18next";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
-import Button from "../../components/Button/Button";
-
-export const injectedConnector = new InjectedConnector({
-  supportedChainIds: [
-    1, // Mainet
-    3, // Ropsten
-    4, // Rinkeby
-    5, // Goerli
-    42, // Kovan
-  ],
-});
+import { fetchAllTokens, selectActiveTokens } from "../metadata/metadataSlice";
+import {
+  clearLastAccount,
+  loadLastAccount,
+  saveLastAccount,
+} from "./walletAPI";
+import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
 
 export const Wallet = () => {
   const {
     chainId,
     account,
     activate,
+    deactivate,
     active,
     library,
   } = useWeb3React<Web3Provider>();
+
+  // Redux
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
+
+  // Analytics
   const { trackPageView } = useMatomo();
+
+  // i18n
   const { t } = useTranslation(["common", "wallet"]);
 
-  const onClick = () => {
-    activate(injectedConnector);
-  };
+  // Local component state
+  const [showConnectorList, setShowConnectorList] = useState<boolean>(false);
+  const [isActivating, setIsActivating] = useState<boolean>(false);
+  const [connector, setConnector] = useState<AbstractConnector>();
+  const [provider, setProvider] = useState<WalletProvider>();
 
+  // Auto-activate if user has connected before on (first render)
   useEffect(() => {
-    trackPageView({ documentTitle: "wallet", href: "https://airswap.io" });
+    trackPageView({ documentTitle: "Swap Page", href: "https://airswap.io" });
+    const lastConnectedAccount = loadLastAccount();
+    if (lastConnectedAccount) {
+      setIsActivating(true);
+      const connector = lastConnectedAccount.provider.getConnector();
+      setConnector(connector);
+      setProvider(lastConnectedAccount.provider);
+      activate(connector).finally(() => setIsActivating(false));
+    }
+  }, [activate, trackPageView]);
 
-    if (active && account && chainId && library) {
+  // Trigger request for balances and allowances once account is connected
+  useEffect(() => {
+    if (active && account && chainId && library && connector && provider) {
       // Dispatch a general action to indicate wallet has changed
       dispatch(
         setWalletConnected({
@@ -59,8 +80,8 @@ export const Wallet = () => {
           address: account,
         })
       );
+      saveLastAccount(account, provider);
       dispatch(fetchAllTokens());
-      // TODO: determine if we should remove some of these params
       dispatch(
         requestActiveTokenAllowances({
           provider: library,
@@ -74,13 +95,14 @@ export const Wallet = () => {
     } else {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library, trackPageView]);
+  }, [active, account, chainId, dispatch, library, connector, provider]);
 
   // Subscribe to changes in balance
   useEffect(() => {
     if (
       !library ||
       !account ||
+      !connector ||
       chainId === undefined ||
       !activeTokens.length ||
       balances.lastFetch === null ||
@@ -117,7 +139,6 @@ export const Wallet = () => {
     }
     return () => {
       if (teardownTransferListener) {
-        console.log(`tearing down Transfer listener`);
         teardownTransferListener();
       }
     };
@@ -125,6 +146,7 @@ export const Wallet = () => {
     activeTokens,
     account,
     library,
+    connector,
     dispatch,
     chainId,
     balances.lastFetch,
@@ -136,16 +158,38 @@ export const Wallet = () => {
       <div>
         {t("common:chainId")}: {chainId}
       </div>
-      <div>
-        {t("common:account")}: {account}
-      </div>
-      {active ? (
-        <div>✅</div>
-      ) : (
-        <Button type="button" intent="primary" onClick={onClick}>
-          {t("wallet:connectWallet")}
-        </Button>
-      )}
+
+      <Modal
+        isOpen={showConnectorList}
+        onRequestClose={() => setShowConnectorList(false)}
+        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
+        className="w-64 p-4 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
+      >
+        <WalletProviderList
+          onProviderSelected={(provider) => {
+            setProvider(provider);
+            const connector = provider.getConnector();
+            setConnector(connector);
+            setShowConnectorList(false);
+            setIsActivating(true);
+            activate(connector).finally(() => setIsActivating(false));
+          }}
+        />
+      </Modal>
+      <WalletButton
+        address={account}
+        onConnectWalletClicked={() => {
+          setShowConnectorList(true);
+        }}
+        onDisconnectWalletClicked={() => {
+          clearLastAccount();
+          deactivate();
+          if (connector instanceof WalletConnectConnector) {
+            connector.close();
+          }
+        }}
+        isConnecting={isActivating}
+      />
     </div>
   );
 };

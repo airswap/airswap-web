@@ -7,7 +7,7 @@ import {
   approve,
   request,
   take,
-  selectOrder,
+  selectBestOrder,
   selectOrdersStatus,
 } from "./ordersSlice";
 import {
@@ -22,7 +22,7 @@ import TokenSelect from "../../components/TokenSelect/TokenSelect";
 import Button from "../../components/Button/Button";
 
 export function Orders() {
-  const order = useAppSelector(selectOrder);
+  const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const transactions = useAppSelector(selectTransactions);
   const dispatch = useAppDispatch();

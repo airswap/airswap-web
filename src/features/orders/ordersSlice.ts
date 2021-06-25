@@ -12,7 +12,7 @@ import {
   SubmittedOrder,
   SubmittedApproval,
 } from "../transactions/transactionsSlice";
-import { Transaction } from "ethers";
+import { BigNumber, Transaction } from "ethers";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -131,6 +131,34 @@ export const ordersSlice = createSlice({
 });
 
 export const { clear } = ordersSlice.actions;
-export const selectOrder = (state: RootState) => state.orders.orders[0];
+/**
+ * Sorts orders and returns the best order based on tokens received or sent
+ * then falling back to expiry.
+ */
+export const selectBestOrder = (state: RootState) =>
+  state.orders.orders.sort((a, b) => {
+    // If tokens transferred are the same
+    if (
+      a.signerAmount === b.signerAmount &&
+      a.senderAmount === b.senderAmount
+    ) {
+      return parseInt(b.expiry) - parseInt(a.expiry);
+    }
+    if (a.signerAmount === b.signerAmount) {
+      // Likely senderSide
+      // Sort orders by amount of senderToken sent (ascending).
+      const aAmount = BigNumber.from(a.senderAmount);
+      const bAmount = BigNumber.from(b.senderAmount);
+      if (bAmount.lt(aAmount)) return 1;
+      else return -1;
+    } else {
+      // Likely signerSide
+      // Sort orders by amount of signerToken received (descending).
+      const aAmount = BigNumber.from(a.signerAmount);
+      const bAmount = BigNumber.from(b.signerAmount);
+      if (bAmount.gt(aAmount)) return 1;
+      else return -1;
+    }
+  })[0];
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;
