@@ -8,23 +8,35 @@ import {
   mineTransaction,
 } from "./transactionActions";
 
-export interface SubmittedOrder {
-  order: LightOrder;
+export interface SubmittedTransaction {
+  type: "Approval" | "Order";
   hash: string;
   status: "processing" | "succeeded" | "reverted";
 }
 
+export interface SubmittedOrder extends SubmittedTransaction {
+  order: LightOrder;
+}
+
+export interface SubmittedApproval extends SubmittedTransaction {
+  tokenAddress: string;
+}
+
 export interface TransactionsState {
-  all: SubmittedOrder[];
+  all: SubmittedTransaction[];
 }
 
 const initialState: TransactionsState = {
   all: [],
 };
 
-function updateTransaction(state: any, action: any, status: string) {
+function updateTransaction(
+  state: TransactionsState,
+  hash: string,
+  status: "processing" | "succeeded" | "reverted"
+) {
   for (let i in state.all) {
-    if (state.all[i].hash === action.payload) {
+    if (state.all[i].hash === hash) {
       state.all[i] = {
         ...state.all[i],
         status,
@@ -41,6 +53,14 @@ export const ordersSlice = createSlice({
     clear: (state) => {
       state.all = [];
     },
+    setTransactions: (state, action) => {
+      try {
+        state.all = action.payload.all;
+      } catch (err) {
+        console.error(err);
+        state.all = [];
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
@@ -50,14 +70,14 @@ export const ordersSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, action, "reverted");
+      updateTransaction(state, action.payload.hash, "reverted");
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(state, action, "succeeded");
+      updateTransaction(state, action.payload, "succeeded");
     });
   },
 });
 
-export const { clear } = ordersSlice.actions;
+export const { clear, setTransactions } = ordersSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
 export default ordersSlice.reducer;

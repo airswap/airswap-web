@@ -8,6 +8,10 @@ import {
   revertTransaction,
   declineTransaction,
 } from "../transactions/transactionActions";
+import {
+  SubmittedOrder,
+  SubmittedApproval,
+} from "../transactions/transactionsSlice";
 import { BigNumber, Transaction } from "ethers";
 
 export interface OrdersState {
@@ -42,7 +46,32 @@ export const request = createAsyncThunk(
 
 export const approve = createAsyncThunk(
   "orders/approve",
-  async (params: any) => await approveToken(params.token, params.library)
+  async (params: any, { dispatch }) => {
+    let tx: Transaction;
+    try {
+      tx = await approveToken(params.token, params.library);
+      if (tx.hash) {
+        const transaction: SubmittedApproval = {
+          type: "Approval",
+          hash: tx.hash,
+          status: "processing",
+          tokenAddress: params.token,
+        };
+        dispatch(submitTransaction(transaction));
+        params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch(declineTransaction(e.message));
+    }
+  }
 );
 
 export const take = createAsyncThunk(
@@ -52,13 +81,13 @@ export const take = createAsyncThunk(
     try {
       tx = await takeOrder(params.order, params.library);
       if (tx.hash) {
-        dispatch(
-          submitTransaction({
-            order: params.order,
-            hash: tx.hash,
-            status: "processing",
-          })
-        );
+        const transaction: SubmittedOrder = {
+          type: "Order",
+          order: params.order,
+          hash: tx.hash,
+          status: "processing",
+        };
+        dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
