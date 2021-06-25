@@ -83,8 +83,7 @@ export function Orders() {
           <div>Amount to receive: {signerAmount}</div>
           <p>Quote expires in&nbsp;
             <Timer 
-              timerDisabled={ordersStatus === "taking"} 
-              unixTimestamp={parseInt(order.expiry)}
+              expiryTime={parseInt(order.expiry)}
               onTimerComplete={() => {
                 dispatch(
                   request({

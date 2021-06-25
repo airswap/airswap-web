@@ -7,8 +7,7 @@ export default {
   component: Timer,
   argTypes: {
     className: { control: {type: "text"}},
-    unixTimestamp: { control: {type: "number"}},
-    timerDisabled: { control: {type: "boolean"}},
+    expiryTime: { control: {type: "number"}},
   },
 } as Meta
 
@@ -16,12 +15,10 @@ const Template: Story<TimerProps> = (args) => <Timer {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  unixTimestamp: parseInt(((new Date().getTime() + 300000) / 1000).toFixed(0)),
-  timerDisabled: false,
+  expiryTime: parseInt(((new Date().getTime() + 300000) / 1000).toFixed(0)),
 }
 
 export const Completed = Template.bind({});
 Completed.args = {
-  unixTimestamp: parseInt((new Date().getTime() / 1000).toFixed(0)),
-  timerDisabled: true,
+  expiryTime: parseInt((new Date().getTime() / 1000).toFixed(0)),
 }
