@@ -1,7 +1,7 @@
 import { createAction } from "@reduxjs/toolkit";
-import { SubmittedTransaction } from './transactionsSlice'
+import { SubmittedTransaction, SubmittedApproval } from './transactionsSlice'
 
-const submitTransaction = createAction<SubmittedTransaction>("transaction/submitTransaction");
+const submitTransaction = createAction<SubmittedTransaction | SubmittedApproval>("transaction/submitTransaction");
 
 const declineTransaction = createAction<{
   hash: string;
