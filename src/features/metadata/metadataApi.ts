@@ -66,7 +66,7 @@ export const getSavedActiveTokensInfo = async (
 };
 
 export const getTransactionsLocalStorageKey: (
-  chainId: number,
-  walletAddress: string
-) => string = (chainId, walletAddress) =>
-  `airswap/transactions/${chainId}/${walletAddress}`;
+  walletAddress: string,
+  chainId: number
+) => string = (walletAddress, chainId) =>
+  `airswap/transactions/${walletAddress}/${chainId}`;
