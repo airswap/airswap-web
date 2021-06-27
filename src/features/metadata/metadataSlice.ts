@@ -11,7 +11,10 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { getActiveTokensFromLocalStorage } from "./metadataApi";
+import {
+  defaultActiveTokens,
+  getActiveTokensFromLocalStorage,
+} from "./metadataApi";
 
 export interface MetadataState {
   tokens: {
@@ -82,8 +85,11 @@ export const metadataSlice = createSlice({
         // TODO: handle failure?
       })
       .addCase(setWalletConnected, (state, action) => {
-        const { chainId } = action.payload;
-        state.tokens.active = getActiveTokensFromLocalStorage(chainId);
+        const { chainId, address } = action.payload;
+        state.tokens.active =
+          getActiveTokensFromLocalStorage(address, chainId) ||
+          defaultActiveTokens[chainId] ||
+          [];
       })
       .addCase(setWalletDisconnected, (state) => {
         state.tokens.active = [];

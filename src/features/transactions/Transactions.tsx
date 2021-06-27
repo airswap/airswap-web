@@ -24,7 +24,7 @@ export function Transactions() {
     if (chainId && account && library) {
       const transactionsLocalStorage: TransactionsState = JSON.parse(
         localStorage.getItem(
-          getTransactionsLocalStorageKey(chainId!, account!)
+          getTransactionsLocalStorageKey(account!, chainId!)
         )!
       ) || { all: [] };
 
