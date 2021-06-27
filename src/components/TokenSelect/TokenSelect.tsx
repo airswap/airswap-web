@@ -4,8 +4,6 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
-export type AmountStatus = "initial" | "sufficient" | "insufficient";
-
 type TokenSelectPropTypes = {
   withAmount: boolean;
   label: string;
@@ -13,15 +11,9 @@ type TokenSelectPropTypes = {
   amount?: string;
   token?: string;
   tokens: TokenInfo[];
-  amountStatus?: AmountStatus;
+  hasError?: boolean;
   onAmountChange?: React.FormEventHandler<HTMLInputElement>;
   onTokenChange?: React.FormEventHandler<HTMLSelectElement>;
-};
-
-const colorClasses: Record<AmountStatus, string> = {
-  initial: "dark:text-white",
-  sufficient: "dark:text-white",
-  insufficient: "dark:text-red-700 text-red-700",
 };
 
 const TokenSelect = ({
@@ -33,7 +25,7 @@ const TokenSelect = ({
   onAmountChange,
   token,
   onTokenChange,
-  amountStatus = "initial",
+  hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
 
@@ -54,7 +46,7 @@ const TokenSelect = ({
             className={classNames(
               "bg-transparent border-0 px-0 py-0",
               "placeholder-gray-500 text-sm",
-              colorClasses[amountStatus]
+              hasError ? "dark:text-red-700 text-red-700": "dark:text-white"
             )}
             value={amount}
             onChange={onAmountChange}

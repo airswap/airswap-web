@@ -18,16 +18,14 @@ import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
 import Card from "../../components/Card/Card";
-import TokenSelect, {
-  AmountStatus,
-} from "../../components/TokenSelect/TokenSelect";
+import TokenSelect from "../../components/TokenSelect/TokenSelect";
 import Timer from "../../components/Timer/Timer";
 import Button from "../../components/Button/Button";
 import { toAtomicString } from "@airswap/utils";
-import { useEffect } from "react";
 import { selectBalances } from "../balances/balancesSlice";
 import { BigNumber } from "ethers";
 import { findTokenByAddress } from "@airswap/metadata";
+import { parseUnits } from "ethers/lib/utils";
 
 const floatRegExp = new RegExp("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
 
@@ -41,7 +39,6 @@ export function Orders() {
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState<string>("0.0");
-  const [amountStatus, setAmountStatus] = useState<AmountStatus>("initial");
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { t } = useTranslation(["orders", "common"]);
   const { trackEvent } = useMatomo();
@@ -51,23 +48,26 @@ export function Orders() {
     signerAmount = toDecimalString(order.signerAmount, 6);
   }
 
-  useEffect(() => {
-    if (senderAmount && senderToken && balances) {
-      if (parseFloat(senderAmount) === 0) {
-        setAmountStatus("initial");
-        return;
-      }
-      const amount = BigNumber.from(toAtomicString(senderAmount!, 18));
-      const currentBalance = BigNumber.from(
+  const getTokenDecimals = (tokenAddress: string) => {
+    activeTokens.forEach((token) => {
+      if (token.address === tokenAddress) return token.decimals;
+    });
+    return 18;
+  };
+
+  let parsedSenderAmount = null;
+  let insuffcientBalance: boolean = false;
+  if (senderAmount && senderToken && balances) {
+    if (parseFloat(senderAmount) === 0) {
+      insuffcientBalance = false;
+    } else {
+      const decimals = getTokenDecimals(senderToken);
+      parsedSenderAmount = parseUnits(senderAmount, decimals);
+      insuffcientBalance = BigNumber.from(
         balances.values[senderToken!] || toAtomicString("0", 18)
-      );
-      if (amount.lte(currentBalance)) {
-        setAmountStatus("sufficient"); // if senderAmount <= currentBalance, we have sufficient balance for transaction
-      } else {
-        setAmountStatus("insufficient"); // if senderAmount > currentBalance, we have insufficient balance for transaction
-      }
+      ).lt(parsedSenderAmount);
     }
-  }, [senderAmount, senderToken, balances]);
+  }
 
   // function to only allow numerical and dot values to be inputted
   const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
@@ -103,7 +103,7 @@ export function Orders() {
         label={t("orders:send")}
         token={senderToken}
         onTokenChange={(e) => setSenderToken(e.currentTarget.value)}
-        amountStatus={amountStatus}
+        hasError={insuffcientBalance}
       />
       <TokenSelect
         tokens={activeTokens}
@@ -120,7 +120,8 @@ export function Orders() {
           !senderToken ||
           !signerToken ||
           !senderAmount ||
-          amountStatus !== "sufficient"
+          insuffcientBalance ||
+          parseFloat(senderAmount) === 0
         }
         loading={ordersStatus === "requesting"}
         onClick={() => {
@@ -137,12 +138,13 @@ export function Orders() {
           trackEvent({ category: "order", action: "request" });
         }}
       >
-        {amountStatus === "initial" && "Enter an amount"}
-        {amountStatus === "sufficient" && t("orders:request")}
-        {amountStatus === "insufficient" &&
-          `Insufficient ${
-            findTokenByAddress(senderToken!, activeTokens).symbol
-          } balance`}
+        {!insuffcientBalance
+          ? !senderAmount || parseFloat(senderAmount) === 0
+            ? t("orders:enterAmount")
+            : t("orders:request")
+          : t("orders:insufficentBalance", {
+              symbol: findTokenByAddress(senderToken!, activeTokens).symbol,
+            })}
       </Button>
       {signerAmount ? (
         <div>
