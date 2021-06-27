@@ -23,9 +23,11 @@ const tokensCache: {
   [chainId: number]: Promise<TokenInfo[]>;
 } = {};
 
-export const getActiveTokensLocalStorageKey: (chainId: number) => string = (
-  chainId
-) => `airswap/activeTokens/${chainId}`;
+export const getActiveTokensLocalStorageKey: (
+  account: string,
+  chainId: number
+) => string = (account, chainId) =>
+  `airswap/activeTokens/${account}/${chainId}`;
 
 export const getAllTokens = async (chainId: number) => {
   let tokens;
@@ -37,9 +39,12 @@ export const getAllTokens = async (chainId: number) => {
   return tokens;
 };
 
-export const getActiveTokensFromLocalStorage = (chainId: number) => {
+export const getActiveTokensFromLocalStorage = (
+  account: string,
+  chainId: number
+) => {
   const savedTokens = (
-    localStorage.getItem(getActiveTokensLocalStorageKey(chainId)) || ""
+    localStorage.getItem(getActiveTokensLocalStorageKey(account, chainId)) || ""
   )
     .split(",")
     .filter((address) => address.length);
@@ -48,15 +53,20 @@ export const getActiveTokensFromLocalStorage = (chainId: number) => {
   );
 };
 
-export const getSavedActiveTokensInfo = async (chainId: number) => {
+export const getSavedActiveTokensInfo = async (
+  account: string,
+  chainId: number
+) => {
   const tokens = await getAllTokens(chainId);
-  const activeTokens = getActiveTokensFromLocalStorage(chainId);
+  const activeTokens = getActiveTokensFromLocalStorage(account, chainId);
   const matchingTokens = tokens.filter((tokenInfo) =>
     activeTokens.includes(tokenInfo.address)
   );
   return uniqBy(matchingTokens, (token) => token.address);
 };
 
-export const getTransactionsLocalStorageKey: (chainId: number, walletAddress: string) => string = (
-  chainId, walletAddress
-) => `airswap/transactions/${chainId}/${walletAddress}`;
+export const getTransactionsLocalStorageKey: (
+  chainId: number,
+  walletAddress: string
+) => string = (chainId, walletAddress) =>
+  `airswap/transactions/${chainId}/${walletAddress}`;

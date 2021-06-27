@@ -9,8 +9,10 @@ import {
 } from "../transactions/transactionsSlice";
 
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
-  const cache: {
-    [chainId: number]: string[];
+  const activeTokensCache: {
+    [chainId: number]: {
+      [address: string]: string[];
+    };
   } = {};
   const transactionCache: {
     [chainId: number]: {
@@ -27,44 +29,47 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     let previousTransaction = currentTransaction;
     currentTransaction = transactions;
 
-    if (wallet && transactions) {
-      if (previousTransaction !== currentTransaction) {
-        // handles change in transactions and persists all transactions to localStorage
-        // TODO: don't save all transactions (e.g. max 10 transactions)
-        const txs: TransactionsState = JSON.parse(
-          localStorage.getItem(
-            getTransactionsLocalStorageKey(wallet.chainId!, wallet.address!)
-          )!
-        ) || { all: [] };
+    if (previousTransaction !== currentTransaction) {
+      // handles change in transactions and persists all transactions to localStorage
+      // TODO: don't save all transactions (e.g. max 10 transactions)
+      const txs: TransactionsState = JSON.parse(
+        localStorage.getItem(
+          getTransactionsLocalStorageKey(wallet.chainId!, wallet.address!)
+        )!
+      ) || { all: [] };
 
-        if (transactionCache[wallet.chainId!] === undefined) {
-          transactionCache[wallet.chainId!] = {};
-          transactionCache[wallet.chainId!][wallet.address!] = txs.all;
-        }
-        if (
-          transactions.all.length &&
-          transactionCache[wallet.chainId!][wallet.address!] !==
-            transactions.all
-        ) {
-          transactionCache[wallet.chainId!][wallet.address!] = transactions.all;
-          localStorage.setItem(
-            getTransactionsLocalStorageKey(wallet.chainId!, wallet.address!),
-            JSON.stringify(transactions)
-          );
-        }
+      if (transactionCache[wallet.chainId!] === undefined) {
+        transactionCache[wallet.chainId!] = {};
+        transactionCache[wallet.chainId!][wallet.address!] = txs.all;
+      }
+      if (
+        transactions.all.length &&
+        transactionCache[wallet.chainId!][wallet.address!] !== transactions.all
+      ) {
+        transactionCache[wallet.chainId!][wallet.address!] = transactions.all;
+        localStorage.setItem(
+          getTransactionsLocalStorageKey(wallet.chainId!, wallet.address!),
+          JSON.stringify(transactions)
+        );
       }
     }
 
-    if (wallet && metadata) {
+    if (!activeTokensCache[wallet.chainId!]) {
+      activeTokensCache[wallet.chainId!] = {};
+    }
+    const cachedTokensForActiveWallet =
+      activeTokensCache[wallet.chainId!][wallet.address!];
+    if (
+      metadata.tokens.active.length &&
+      cachedTokensForActiveWallet !== metadata.tokens.active
+    ) {
       // active tokens have changed, persist to local storage.
-      const cached = cache[wallet.chainId!];
-      if (metadata.tokens.active.length && cached !== metadata.tokens.active) {
-        cache[wallet.chainId!] = metadata.tokens.active;
-        localStorage.setItem(
-          getActiveTokensLocalStorageKey(wallet.chainId!),
-          metadata.tokens.active.join(",")
-        );
-      }
+      activeTokensCache[wallet.chainId!][wallet.address!] =
+        metadata.tokens.active;
+      localStorage.setItem(
+        getActiveTokensLocalStorageKey(wallet.address!, wallet.chainId!),
+        metadata.tokens.active.join(",")
+      );
     }
   });
 };
