@@ -7,5 +7,7 @@
   "send": "Send",
   "receive": "Receive",
   "amount": "Amount",
-  "chooseToken": "Choose token"
+  "chooseToken": "Choose token",
+  "enterAmount": "Enter an amount",
+  "insufficentBalance": "Insufficient {{symbol}} balance"
 }
