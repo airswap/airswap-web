@@ -17,7 +17,7 @@ type TokenSelectPropTypes = {
   tokens: TokenInfo[];
   hasError?: boolean;
   onAmountChange?: React.FormEventHandler<HTMLInputElement>;
-  onTokenChange?: React.FormEventHandler<HTMLSelectElement>;
+  onSelectTokenClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 const TokenSelect = ({
@@ -29,15 +29,13 @@ const TokenSelect = ({
   amount,
   onAmountChange,
   token,
-  onTokenChange,
+  onSelectTokenClick,
   hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
   const { chainId } = useWeb3React<Web3Provider>();
-  const [
-    isDefaultOptionDisabled,
-    setIsDefaultOptionDisabled,
-  ] = useState<boolean>(false);
+  const [isDefaultOptionDisabled, setIsDefaultOptionDisabled] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setIsDefaultOptionDisabled(false);
@@ -75,8 +73,7 @@ const TokenSelect = ({
         {/* Token Selector */}
         <div className="flex font-bold items-center">
           {tokens ? (
-            <select
-              dir="rtl"
+            <button
               className={classNames(
                 "-mr-6 pr-6 border-0 bg-transparent appearance-none",
                 "text-sm",
@@ -85,21 +82,13 @@ const TokenSelect = ({
                   "text-gray-500": !token,
                 }
               )}
-              value={isDefaultOptionDisabled ? token : `…${t("common:select")}`}
-              onChange={(e) => {
-                if (onTokenChange) onTokenChange(e);
-                setIsDefaultOptionDisabled(true);
-              }}
+              onClick={onSelectTokenClick}
             >
-              <option disabled={isDefaultOptionDisabled}>
-                …{t("common:select")}
-              </option>
-              {tokens.map((token) => (
-                <option key={token.address} value={token.address}>
-                  {token.symbol}
-                </option>
-              ))}
-            </select>
+              {tokens.find((t) => t.address === token)?.symbol ||
+              isDefaultOptionDisabled
+                ? tokens.find((t) => t.address === token)?.symbol
+                : `${t("common:select")}…`}
+            </button>
           ) : (
             <LoadingSpinner className="mx-2" />
           )}
