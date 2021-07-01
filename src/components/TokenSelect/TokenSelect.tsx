@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
 import { HiOutlineChevronRight } from "react-icons/hi";
@@ -6,6 +7,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 type TokenSelectPropTypes = {
   withAmount: boolean;
+  quoteAmount?: string | null;
   label: string;
   className?: string;
   amount?: string;
@@ -17,6 +19,7 @@ type TokenSelectPropTypes = {
 
 const TokenSelect = ({
   withAmount,
+  quoteAmount,
   label,
   className,
   tokens,
@@ -26,6 +29,7 @@ const TokenSelect = ({
   onTokenChange,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
+  const [isDefaultOptionDisabled, setIsDefaultOptionDisabled] = useState<boolean>(false);
 
   return (
     <div className={classNames("flex flex-col", className)}>
@@ -52,7 +56,7 @@ const TokenSelect = ({
           ></input>
         ) : (
           <span className="text-gray-500 text-sm">
-            {!token ? t("orders:chooseToken") : ""}
+            {!token ? t("orders:chooseToken") : quoteAmount}
           </span>
         )}
 
@@ -70,9 +74,12 @@ const TokenSelect = ({
                 }
               )}
               value={token}
-              onChange={onTokenChange}
+              onChange={(e) => {
+                if (onTokenChange) onTokenChange(e)
+                setIsDefaultOptionDisabled(true);
+              }}
             >
-              <option>…{t("common:select")}</option>
+              <option disabled={isDefaultOptionDisabled}>…{t("common:select")}</option>
               {tokens.map((token) => (
                 <option key={token.address} value={token.address}>
                   {token.symbol}
