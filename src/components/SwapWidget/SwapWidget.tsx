@@ -16,7 +16,6 @@ import {
   selectBestOrder,
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
-import { selectWallet } from "../../features/wallet/walletSlice";
 import { selectActiveTokens } from "../../features/metadata/metadataSlice";
 import { selectBalances } from "../../features/balances/balancesSlice";
 import { Web3Provider } from "@ethersproject/providers";
@@ -39,7 +38,6 @@ const SwapWidget = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const transactions = useAppSelector(selectTransactions);
-  const wallet = useAppSelector(selectWallet);
   const balances = useAppSelector(selectBalances);
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
@@ -149,7 +147,7 @@ const SwapWidget = () => {
           {!insufficientBalance
             ? !senderAmount || parseFloat(senderAmount) === 0
               ? t("orders:enterAmount")
-              : t("orders:request")
+              : t("orders:continue")
             : t("orders:insufficentBalance", {
                 symbol: findTokenByAddress(senderToken!, activeTokens)?.symbol,
               })}
