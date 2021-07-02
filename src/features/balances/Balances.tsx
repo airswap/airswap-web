@@ -28,7 +28,6 @@ const Balances = () => {
   return active ? (
     <div>
       <hr />
-      <TokenSelection></TokenSelection>
       <h4>{t("balances:tokenBalances")}</h4>
       <div className={classes.balancesGrid}>
         <span className={classes.bold}>{t("balances:symbol")}</span>

@@ -17,7 +17,7 @@ type TokenSelectPropTypes = {
   tokens: TokenInfo[];
   hasError?: boolean;
   onAmountChange?: React.FormEventHandler<HTMLInputElement>;
-  onTokenChange?: React.FormEventHandler<HTMLSelectElement>;
+  onTokenChange?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 const TokenSelect = ({
@@ -75,8 +75,7 @@ const TokenSelect = ({
         {/* Token Selector */}
         <div className="flex font-bold items-center">
           {tokens ? (
-            <select
-              dir="rtl"
+            <button
               className={classNames(
                 "-mr-6 pr-6 border-0 bg-transparent appearance-none",
                 "text-sm",
@@ -85,21 +84,10 @@ const TokenSelect = ({
                   "text-gray-500": !token,
                 }
               )}
-              value={isDefaultOptionDisabled ? token : `…${t("common:select")}`}
-              onChange={(e) => {
-                if (onTokenChange) onTokenChange(e);
-                setIsDefaultOptionDisabled(true);
-              }}
-            >
-              <option disabled={isDefaultOptionDisabled}>
-                …{t("common:select")}
-              </option>
-              {tokens.map((token) => (
-                <option key={token.address} value={token.address}>
-                  {token.symbol}
-                </option>
-              ))}
-            </select>
+              onClick={onTokenChange}
+              >
+              {token || "Select..."}
+            </button>
           ) : (
             <LoadingSpinner className="mx-2" />
           )}
