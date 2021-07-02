@@ -1,5 +1,5 @@
 {
-  "request": "Continue",
+  "continue": "Continue",
   "approve": "Approve",
   "approve_aria": "Approve token spend",
   "take": "Take",
