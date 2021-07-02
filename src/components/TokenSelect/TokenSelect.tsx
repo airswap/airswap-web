@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
 import { HiOutlineChevronRight } from "react-icons/hi";
@@ -31,7 +31,10 @@ const TokenSelect = ({
   hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
-  const [isDefaultOptionDisabled, setIsDefaultOptionDisabled] = useState<boolean>(false);
+  const [
+    isDefaultOptionDisabled,
+    setIsDefaultOptionDisabled,
+  ] = useState<boolean>(false);
 
   return (
     <div className={classNames("flex flex-col", className)}>
@@ -50,7 +53,7 @@ const TokenSelect = ({
             className={classNames(
               "bg-transparent border-0 px-0 py-0",
               "placeholder-gray-500 text-sm",
-              hasError ? "dark:text-red-700 text-red-700": "dark:text-white"
+              hasError ? "dark:text-red-700 text-red-700" : "dark:text-white"
             )}
             value={amount}
             onChange={onAmountChange}
@@ -77,11 +80,13 @@ const TokenSelect = ({
               )}
               value={token}
               onChange={(e) => {
-                if (onTokenChange) onTokenChange(e)
+                if (onTokenChange) onTokenChange(e);
                 setIsDefaultOptionDisabled(true);
               }}
             >
-              <option disabled={isDefaultOptionDisabled}>…{t("common:select")}</option>
+              <option disabled={isDefaultOptionDisabled}>
+                …{t("common:select")}
+              </option>
               {tokens.map((token) => (
                 <option key={token.address} value={token.address}>
                   {token.symbol}

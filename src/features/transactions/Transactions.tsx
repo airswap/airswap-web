@@ -27,7 +27,6 @@ export function Transactions() {
           getTransactionsLocalStorageKey(account!, chainId!)
         )!
       ) || { all: [] };
-
       dispatch(setTransactions(transactionsLocalStorage));
 
       // check from all responses if one is pending... if pending, call getTransaction
@@ -104,6 +103,7 @@ export function Transactions() {
   }, [chainId, dispatch, library, account]);
 
   if (!active || !chainId) return null;
+
 
   const icons = {
     succeeded: "✅",
