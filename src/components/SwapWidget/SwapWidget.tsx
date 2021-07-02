@@ -29,7 +29,7 @@ import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 
-const floatRegExp = new RegExp("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
+const floatRegExp = new RegExp("^[+-]?([0-9]+([.|,][0-9]*)?|[.][0-9]+)$");
 
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
@@ -69,8 +69,10 @@ const SwapWidget = () => {
 
   // function to only allow numerical and dot values to be inputted
   const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
+    let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {
+      if (value[value.length - 1] === ",")
+        value = value.slice(0, value.length - 1) + ".";
       setSenderAmount(value);
     }
   };
