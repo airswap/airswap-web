@@ -143,8 +143,8 @@ const SwapWidget = () => {
             parseFloat(senderAmount) === 0
           }
           loading={ordersStatus === "requesting"}
-          onClick={() => {
-            dispatch(
+          onClick={async () => {
+            await dispatch(
               request({
                 chainId: chainId!,
                 senderToken: senderToken!,
