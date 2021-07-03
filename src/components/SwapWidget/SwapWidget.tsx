@@ -37,6 +37,7 @@ const SwapWidget = () => {
   const [senderAmount, setSenderAmount] = useState("0.01");
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
+  const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const order = useAppSelector(selectBestOrder);
@@ -75,6 +76,7 @@ const SwapWidget = () => {
         value = value.slice(0, value.length - 1) + ".";
       setSenderAmount(value);
     }
+    if (order) setIsRequestUpdated(true);
   };
 
   const DisplayedButton = () => {
@@ -91,6 +93,7 @@ const SwapWidget = () => {
       );
     } else if (
       signerAmount &&
+      !isRequestUpdated &&
       // change this to a balance check
       getTokenApprovalStatus(senderToken) === "succeeded" &&
       signerToken &&
@@ -102,12 +105,20 @@ const SwapWidget = () => {
           intent="primary"
           aria-label={t("orders:take", { context: "aria" })}
           loading={ordersStatus === "taking"}
-          onClick={async () => dispatch(take({ order, library }))}
+          onClick={async () => {
+            dispatch(take({ order, library }));
+            setIsRequestUpdated(false);
+          }}
         >
           {t("orders:take")}
         </Button>
       );
-    } else if (signerAmount && signerToken && senderToken) {
+    } else if (
+      signerAmount &&
+      !isRequestUpdated &&
+      signerToken &&
+      senderToken
+    ) {
       return (
         <Button
           className="w-full mt-2"
@@ -144,6 +155,7 @@ const SwapWidget = () => {
               })
             );
             trackEvent({ category: "order", action: "request" });
+            setIsRequestUpdated(false);
           }}
         >
           {!insufficientBalance
@@ -182,7 +194,7 @@ const SwapWidget = () => {
 
   return (
     <Card className="flex-col m-4 w-72">
-      {!order ? (
+      {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (
         <p className="mb-4">
@@ -213,7 +225,10 @@ const SwapWidget = () => {
         className="mb-2"
         label={t("orders:send")}
         token={senderToken}
-        onTokenChange={(e) => setSenderToken(e.currentTarget.value)}
+        onTokenChange={(e) => {
+          setSenderToken(e.currentTarget.value);
+          if (order) setIsRequestUpdated(true);
+        }}
         hasError={insufficientBalance}
       />
       <TokenSelect
@@ -222,8 +237,11 @@ const SwapWidget = () => {
         className="mb-2"
         label={t("orders:receive")}
         token={signerToken}
-        quoteAmount={signerAmount}
-        onTokenChange={(e) => setSignerToken(e.currentTarget.value)}
+        quoteAmount={isRequestUpdated ? "" : signerAmount}
+        onTokenChange={(e) => {
+          setSignerToken(e.currentTarget.value);
+          if (order) setIsRequestUpdated(true);
+        }}
       />
       <DisplayedButton />
       <Modal
