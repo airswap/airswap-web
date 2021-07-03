@@ -17,7 +17,10 @@ import {
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
 import { selectActiveTokens } from "../../features/metadata/metadataSlice";
-import { selectBalances } from "../../features/balances/balancesSlice";
+import {
+  selectBalances,
+  selectAllowances,
+} from "../../features/balances/balancesSlice";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
@@ -40,6 +43,7 @@ const SwapWidget = () => {
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
+  const allowances = useAppSelector(selectAllowances);
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const dispatch = useAppDispatch();
@@ -66,6 +70,12 @@ const SwapWidget = () => {
       }
     }
     return null;
+  };
+
+  const hasSufficientAllowance = (tokenAddress: string | undefined) => {
+    if (!tokenAddress) return false;
+    if (!allowances.values[tokenAddress]) return false;
+    return allowances.values[tokenAddress]! >= senderAmount;
   };
 
   // function to only allow numerical and dot values to be inputted
@@ -95,7 +105,7 @@ const SwapWidget = () => {
       signerAmount &&
       !isRequestUpdated &&
       // change this to a balance check
-      getTokenApprovalStatus(senderToken) === "succeeded" &&
+      hasSufficientAllowance(senderToken) &&
       signerToken &&
       senderToken
     ) {
