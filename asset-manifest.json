@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/airswap-web/static/css/main.c867c1b5.chunk.css",
+    "main.js": "/airswap-web/static/js/main.e6a43b29.chunk.js",
+    "main.js.map": "/airswap-web/static/js/main.e6a43b29.chunk.js.map",
+    "runtime-main.js": "/airswap-web/static/js/runtime-main.4b8b29cd.js",
+    "runtime-main.js.map": "/airswap-web/static/js/runtime-main.4b8b29cd.js.map",
+    "static/js/2.34ec4b9f.chunk.js": "/airswap-web/static/js/2.34ec4b9f.chunk.js",
+    "static/js/2.34ec4b9f.chunk.js.map": "/airswap-web/static/js/2.34ec4b9f.chunk.js.map",
+    "static/js/3.c4fb511b.chunk.js": "/airswap-web/static/js/3.c4fb511b.chunk.js",
+    "static/js/3.c4fb511b.chunk.js.map": "/airswap-web/static/js/3.c4fb511b.chunk.js.map",
+    "static/js/4.ea8fa2f9.chunk.js": "/airswap-web/static/js/4.ea8fa2f9.chunk.js",
+    "static/js/4.ea8fa2f9.chunk.js.map": "/airswap-web/static/js/4.ea8fa2f9.chunk.js.map",
+    "index.html": "/airswap-web/index.html",
+    "static/css/main.c867c1b5.chunk.css.map": "/airswap-web/static/css/main.c867c1b5.chunk.css.map",
+    "static/js/2.34ec4b9f.chunk.js.LICENSE.txt": "/airswap-web/static/js/2.34ec4b9f.chunk.js.LICENSE.txt",
+    "static/js/3.c4fb511b.chunk.js.LICENSE.txt": "/airswap-web/static/js/3.c4fb511b.chunk.js.LICENSE.txt",
+    "static/media/getFetch.cjs": "/airswap-web/static/media/getFetch.582d29c4.cjs",
+    "static/media/metamask.45038d58.svg": "/airswap-web/static/media/metamask.45038d58.svg",
+    "static/media/walletconnect.dfa25e47.svg": "/airswap-web/static/media/walletconnect.dfa25e47.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4b8b29cd.js",
+    "static/js/2.34ec4b9f.chunk.js",
+    "static/css/main.c867c1b5.chunk.css",
+    "static/js/main.e6a43b29.chunk.js"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "request": "Request",
+  "approve": "Approve",
+  "approve_aria": "Approve token spend",
+  "take": "Take",
+  "take_aria": "Take swap",
+  "send": "Send",
+  "receive": "Receive",
+  "amount": "Amount",
+  "chooseToken": "Choose token"
+}
