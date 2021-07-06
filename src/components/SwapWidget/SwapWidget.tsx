@@ -41,6 +41,7 @@ const SwapWidget = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
+  const [isApproving, setIsApproving] = useState<boolean>(false);
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
@@ -61,7 +62,7 @@ const SwapWidget = () => {
 
   const getTokenApprovalStatus = (tokenId: string | undefined) => {
     if (tokenId === undefined) return null;
-    for (let i = 0; i < transactions.length; i++) {
+    for (let i = transactions.length - 1; i >= 0; i--) {
       if (transactions[i].type === "Approval") {
         const approvalTx: SubmittedApproval = transactions[
           i
@@ -133,8 +134,14 @@ const SwapWidget = () => {
           className="w-full mt-2"
           intent="primary"
           aria-label={t("orders:approve", { context: "aria" })}
-          loading={getTokenApprovalStatus(senderToken) === "processing"}
-          onClick={() => dispatch(approve({ token: senderToken, library }))}
+          loading={
+            getTokenApprovalStatus(senderToken) === "processing" || isApproving
+          }
+          onClick={async () => {
+            setIsApproving(true);
+            await dispatch(approve({ token: senderToken, library }));
+            setIsApproving(false);
+          }}
         >
           {t("orders:approve")}
         </Button>
