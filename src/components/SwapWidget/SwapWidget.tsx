@@ -104,7 +104,6 @@ const SwapWidget = () => {
     } else if (
       signerAmount &&
       !isRequestUpdated &&
-      // change this to a balance check
       hasSufficientAllowance(senderToken) &&
       signerToken &&
       senderToken
