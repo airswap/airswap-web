@@ -13,12 +13,14 @@ type TokenRowPropTypes = {
   token: TokenInfo;
   balance: string;
   onClick?: any;
+  selected?: boolean;
+  disabled?: boolean;
 };
 
-const TokenRow = ({ token, balance, onClick }: TokenRowPropTypes) => {
+const TokenRow = ({ token, balance, onClick, selected, disabled }: TokenRowPropTypes) => {
   return (
     <div
-      className="grid items-center grid-flow-col hover:bg-gray-500 cursor-pointer"
+      className="grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
         gridGap: "16px",
@@ -42,33 +44,52 @@ const TokenRow = ({ token, balance, onClick }: TokenRowPropTypes) => {
 
 type TokenSelectionPropTypes = {
   closeModal: any;
-  disabled?: boolean;
-  selected?: boolean;
-  onClick: any;
+  signerToken: string;
+  senderToken: string;
+  setSignerToken: any;
+  setSenderToken: any;
+  tokenSelectType: "signerToken" | "senderToken";
 };
 
-const TokenSelection = ({ closeModal, onClick }: TokenSelectionPropTypes) => {
+const TokenSelection = ({
+  closeModal,
+  signerToken,
+  senderToken,
+  setSignerToken,
+  setSenderToken,
+  tokenSelectType,
+}: TokenSelectionPropTypes) => {
   const [tokenQuery, setTokenQuery] = useState<string>("");
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
 
-  // filter token
-
+  // handle user clicking row
   const handleClick = (address: string) => {
-    onClick(address);
+    if (tokenSelectType === "senderToken") {
+      // swap the token addresses
+      if (address === signerToken)
+        setSignerToken(senderToken);
+      setSenderToken(address);
+    } else {
+      if (address === senderToken)
+        setSenderToken(signerToken);
+      setSignerToken(address);
+    }
     closeModal();
-  }
+  };
 
+  // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(activeTokens), tokenQuery!)
-  }, [activeTokens, tokenQuery])
+    return filterTokens(Object.values(activeTokens), tokenQuery!);
+  }, [activeTokens, tokenQuery]);
 
+  // if senderToken !== null && signerToken !== null => signerToken chooses senderToken
   return (
     <div>
       <div className="flex flex-wrap align-middle justify-between">
         <h1 className="font-bold text-sm">Select token</h1>
         <HiX
-          className="text-black text-xl cursor-pointer"
+          className="light:text-black text-xl cursor-pointer"
           onClick={closeModal}
         />
       </div>
@@ -79,6 +100,7 @@ const TokenSelection = ({ closeModal, onClick }: TokenSelectionPropTypes) => {
         onChange={(e) => {
           setTokenQuery(e.target.value);
         }}
+        className="w-full"
       />
       <div>
         {filteredTokens.map((token) => {
@@ -90,6 +112,8 @@ const TokenSelection = ({ closeModal, onClick }: TokenSelectionPropTypes) => {
                 "0.0"
               }
               onClick={handleClick}
+              selected={tokenSelectType === "senderToken" ? token.address === signerToken : token.address === senderToken}
+              disabled={tokenSelectType === "senderToken" ? token.address === senderToken : token.address === signerToken}
             />
           );
         })}

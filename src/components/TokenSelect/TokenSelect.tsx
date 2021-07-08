@@ -86,7 +86,7 @@ const TokenSelect = ({
               )}
               onClick={onTokenChange}
               >
-              {token || "Select..."}
+              {tokens.find((t)=> t.address === token)?.symbol || "Select..."}
             </button>
           ) : (
             <LoadingSpinner className="mx-2" />

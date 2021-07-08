@@ -1,4 +1,5 @@
 import { TokenInfo } from "@uniswap/token-lists";
+import { ethers } from "ethers";
 
 /**
  * Create a filter function to apply to a token for whether it matches a particular search query
@@ -7,12 +8,12 @@ import { TokenInfo } from "@uniswap/token-lists";
 export function createTokenFilterFunction<T extends TokenInfo>(
   search: string
 ): (tokens: T) => boolean {
-  // const searchingAddress = isAddress(search)
+  const searchingAddress = ethers.utils.isAddress(search)
 
-  // if (searchingAddress) {
-  //   const lower = searchingAddress.toLowerCase()
-  //   return (t: T) => ('isToken' in t ? searchingAddress === t.address : lower === t.address.toLowerCase())
-  // }
+  if (searchingAddress) {
+    const lower = search.toLowerCase()
+    return (t: T) => ('isToken' in t ? search === t.address : lower === t.address.toLowerCase())
+  }
 
   const lowerSearchParts = search
     .toLowerCase()
