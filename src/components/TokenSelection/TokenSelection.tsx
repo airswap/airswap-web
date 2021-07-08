@@ -8,6 +8,7 @@ import { selectBalances } from "../../features/balances/balancesSlice";
 import { HiX } from "react-icons/hi";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
+import { sortTokensByBalance } from "./sort";
 
 type TokenRowPropTypes = {
   token: TokenInfo;
@@ -17,10 +18,20 @@ type TokenRowPropTypes = {
   disabled?: boolean;
 };
 
-const TokenRow = ({ token, balance, onClick, selected, disabled }: TokenRowPropTypes) => {
+const TokenRow = ({
+  token,
+  balance,
+  onClick,
+  selected,
+  disabled,
+}: TokenRowPropTypes) => {
   return (
     <div
-      className={classNames("grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer", selected && "bg-primary-400", disabled && "bg-red-400")}
+      className={classNames(
+        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer",
+        selected && "bg-primary-400",
+        disabled && "bg-red-400"
+      )}
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
         gridGap: "16px",
@@ -67,23 +78,25 @@ const TokenSelection = ({
   const handleClick = (address: string) => {
     if (tokenSelectType === "senderToken") {
       // swap the token addresses
-      if (address === signerToken)
-        setSignerToken(senderToken);
+      if (address === signerToken) setSignerToken(senderToken);
       setSenderToken(address);
     } else {
-      if (address === senderToken)
-        setSenderToken(signerToken);
+      if (address === senderToken) setSenderToken(signerToken);
       setSignerToken(address);
     }
     closeModal();
   };
 
+  // sort tokens based on balance
+  const sortedTokens: TokenInfo[] = useMemo(() => {
+    return sortTokensByBalance(activeTokens, balances);
+  }, [activeTokens, balances]);
+
   // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(activeTokens), tokenQuery!);
-  }, [activeTokens, tokenQuery]);
+    return filterTokens(Object.values(sortedTokens), tokenQuery!);
+  }, [sortedTokens, tokenQuery]);
 
-  // if senderToken !== null && signerToken !== null => signerToken chooses senderToken
   return (
     <div>
       <div className="flex flex-wrap align-middle justify-between">
@@ -112,8 +125,16 @@ const TokenSelection = ({
                 "0.0"
               }
               onClick={handleClick}
-              selected={tokenSelectType === "senderToken" ? token.address === signerToken : token.address === senderToken}
-              disabled={tokenSelectType === "senderToken" ? token.address === senderToken : token.address === signerToken} // shouldn't be able to select same duplicate token
+              selected={
+                tokenSelectType === "senderToken"
+                  ? token.address === signerToken
+                  : token.address === senderToken
+              } // should be grayed out, but still clickable
+              disabled={
+                tokenSelectType === "senderToken"
+                  ? token.address === senderToken
+                  : token.address === signerToken
+              } // shouldn't be able to select same duplicate token
             />
           );
         })}
