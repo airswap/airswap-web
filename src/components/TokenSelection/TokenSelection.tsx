@@ -20,12 +20,12 @@ type TokenRowPropTypes = {
 const TokenRow = ({ token, balance, onClick, selected, disabled }: TokenRowPropTypes) => {
   return (
     <div
-      className="grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
+      className={classNames("grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer", selected && "bg-primary-400", disabled && "bg-red-400")}
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
         gridGap: "16px",
       }}
-      onClick={() => onClick(token.address)}
+      onClick={() => !disabled && onClick(token.address)}
     >
       <img
         src={token.logoURI || "https://via.placeholder.com/150"}
@@ -113,7 +113,7 @@ const TokenSelection = ({
               }
               onClick={handleClick}
               selected={tokenSelectType === "senderToken" ? token.address === signerToken : token.address === senderToken}
-              disabled={tokenSelectType === "senderToken" ? token.address === senderToken : token.address === signerToken}
+              disabled={tokenSelectType === "senderToken" ? token.address === senderToken : token.address === signerToken} // shouldn't be able to select same duplicate token
             />
           );
         })}
