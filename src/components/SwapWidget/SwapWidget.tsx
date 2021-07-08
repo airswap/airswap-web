@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { BigNumber } from "ethers";
@@ -207,6 +207,12 @@ const SwapWidget = () => {
       ).lt(parsedSenderAmount);
     }
   }
+
+  useEffect(() => {
+    setSenderToken("");
+    setSignerToken("");
+    setSenderAmount("0.01");
+  }, [chainId]);
 
   return (
     <Card className="flex-col m-4 w-72">

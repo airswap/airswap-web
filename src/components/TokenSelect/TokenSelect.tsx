@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 
 type TokenSelectPropTypes = {
   withAmount: boolean;
@@ -31,10 +33,15 @@ const TokenSelect = ({
   hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
+  const { chainId } = useWeb3React<Web3Provider>();
   const [
     isDefaultOptionDisabled,
     setIsDefaultOptionDisabled,
   ] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsDefaultOptionDisabled(false);
+  }, [chainId]);
 
   return (
     <div className={classNames("flex flex-col", className)}>
@@ -78,7 +85,7 @@ const TokenSelect = ({
                   "text-gray-500": !token,
                 }
               )}
-              value={token}
+              value={isDefaultOptionDisabled ? token : `…${t("common:select")}`}
               onChange={(e) => {
                 if (onTokenChange) onTokenChange(e);
                 setIsDefaultOptionDisabled(true);
