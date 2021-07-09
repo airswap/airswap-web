@@ -196,7 +196,7 @@ const SwapWidget = () => {
     if (signerDecimals) {
       signerAmount = toDecimalString(order.signerAmount, signerDecimals);
     } else {
-      signerAmount = "ERROR: TOKEN DECIMALS NOT FOUND";
+      signerAmount = t("orders:decimalsNotFound");
     }
   }
 
