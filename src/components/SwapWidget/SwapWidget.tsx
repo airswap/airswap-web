@@ -31,6 +31,12 @@ import Timer from "../../components/Timer/Timer";
 import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
+import TokenSelection from "../../components/TokenSelection/TokenSelection";
+
+export interface TokenSelectionModalState {
+  status: "senderToken" | "signerToken";
+  modalOpen: boolean;
+}
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -41,6 +47,10 @@ const SwapWidget = () => {
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState(false);
+  const [tokenSelectType, setTokenSelectType] = useState<
+    "senderToken" | "signerToken"
+  >("senderToken");
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
@@ -223,6 +233,21 @@ const SwapWidget = () => {
 
   return (
     <Card className="flex-col m-4 w-72">
+      <Modal
+        isOpen={tokenSelectModalOpen}
+        onRequestClose={() => setTokenSelectModalOpen(false)}
+        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
+        className="w-80 p-6 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
+      >
+        <TokenSelection
+          closeModal={() => setTokenSelectModalOpen(false)}
+          signerToken={signerToken!}
+          senderToken={senderToken!}
+          setSignerToken={setSignerToken}
+          setSenderToken={setSenderToken}
+          tokenSelectType={tokenSelectType}
+        />
+      </Modal>
       {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (
@@ -255,7 +280,8 @@ const SwapWidget = () => {
         label={t("orders:send")}
         token={senderToken}
         onTokenChange={(e) => {
-          setSenderToken(e.currentTarget.value);
+          setTokenSelectType("senderToken");
+          setTokenSelectModalOpen(true);
           if (order) setIsRequestUpdated(true);
         }}
         hasError={insufficientBalance}
@@ -268,7 +294,8 @@ const SwapWidget = () => {
         token={signerToken}
         quoteAmount={isRequestUpdated ? "" : signerAmount}
         onTokenChange={(e) => {
-          setSignerToken(e.currentTarget.value);
+          setTokenSelectType("signerToken");
+          setTokenSelectModalOpen(true);
           if (order) setIsRequestUpdated(true);
         }}
       />

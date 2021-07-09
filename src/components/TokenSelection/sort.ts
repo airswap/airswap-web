@@ -7,14 +7,18 @@ export function sortTokensByBalance(
   balances: BalancesState
 ) {
   return tokens.sort((a, b) =>
-    formatUnits(balances.values[a.address]!, a.decimals) <
-    formatUnits(balances.values[b.address]!, b.decimals)
+    parseFloat(formatUnits(balances.values[a.address]!, a.decimals)) <
+    parseFloat(formatUnits(balances.values[b.address]!, b.decimals))
       ? 1
-      : formatUnits(balances.values[a.address]!, a.decimals) ===
-        formatUnits(balances.values[b.address]!, b.decimals)
+      : parseFloat(formatUnits(balances.values[a.address]!, a.decimals)) ===
+        parseFloat(formatUnits(balances.values[b.address]!, b.decimals))
       ? a.symbol > b.symbol
         ? 1
         : -1
       : -1
   );
+}
+
+export function sortTokensBySymbol(tokens: TokenInfo[]) {
+  return tokens.sort((a, b) => (a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1));
 }

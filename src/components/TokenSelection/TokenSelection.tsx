@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import { useState, useMemo } from "react";
 // import AutoSizer from 'react-virtualized-auto-sizer'
 import { useAppSelector } from "../../app/hooks";
@@ -8,57 +7,15 @@ import { selectBalances } from "../../features/balances/balancesSlice";
 import { HiX } from "react-icons/hi";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
-import { sortTokensByBalance } from "./sort";
+import { sortTokensByBalance, sortTokensBySymbol } from "./sort";
+import TokenRow from "./TokenRow";
 
-type TokenRowPropTypes = {
-  token: TokenInfo;
-  balance: string;
-  onClick?: any;
-  selected?: boolean;
-  disabled?: boolean;
-};
-
-const TokenRow = ({
-  token,
-  balance,
-  onClick,
-  selected,
-  disabled,
-}: TokenRowPropTypes) => {
-  return (
-    <div
-      className={classNames(
-        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer",
-        selected && "bg-primary-400",
-        disabled && "bg-red-400"
-      )}
-      style={{
-        gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
-        gridGap: "16px",
-      }}
-      onClick={() => !disabled && onClick(token.address)}
-    >
-      <img
-        src={token.logoURI || "https://via.placeholder.com/150"}
-        className="w-6"
-        alt="hello"
-      />
-      <div className="flex flex-col justify-start">
-        <h3 className="flex flex-col">{token.symbol}</h3>
-        <h3 className="text-gray-400">{token.name}</h3>
-      </div>
-      <span></span>
-      <div className="justify-self-end max-w-md">{balance}</div>
-    </div>
-  );
-};
-
-type TokenSelectionPropTypes = {
-  closeModal: any;
+export type TokenSelectionProps = {
+  closeModal: () => void;
   signerToken: string;
   senderToken: string;
-  setSignerToken: any;
-  setSenderToken: any;
+  setSignerToken: (val: string) => void;
+  setSenderToken: (val: string) => void;
   tokenSelectType: "signerToken" | "senderToken";
 };
 
@@ -69,7 +26,7 @@ const TokenSelection = ({
   setSignerToken,
   setSenderToken,
   tokenSelectType,
-}: TokenSelectionPropTypes) => {
+}: TokenSelectionProps) => {
   const [tokenQuery, setTokenQuery] = useState<string>("");
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
@@ -89,8 +46,8 @@ const TokenSelection = ({
 
   // sort tokens based on balance
   const sortedTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensByBalance(activeTokens, balances);
-  }, [activeTokens, balances]);
+    return sortTokensBySymbol(activeTokens);
+  }, [activeTokens]);
 
   // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {

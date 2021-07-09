@@ -12,7 +12,6 @@ import { formatUnits } from "@ethersproject/units";
 import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/Button/Button";
-import TokenSelection from "../../components/TokenSelection/TokenSelection";
 
 const Balances = () => {
   const { active, library } = useWeb3React();
