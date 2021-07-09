@@ -1,22 +1,28 @@
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 
 type TokenSelectPropTypes = {
   withAmount: boolean;
+  quoteAmount?: string | null;
   label: string;
   className?: string;
   amount?: string;
   token?: string;
   tokens: TokenInfo[];
+  hasError?: boolean;
   onAmountChange?: React.FormEventHandler<HTMLInputElement>;
   onTokenChange?: React.FormEventHandler<HTMLSelectElement>;
 };
 
 const TokenSelect = ({
   withAmount,
+  quoteAmount,
   label,
   className,
   tokens,
@@ -24,8 +30,18 @@ const TokenSelect = ({
   onAmountChange,
   token,
   onTokenChange,
+  hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
+  const { chainId } = useWeb3React<Web3Provider>();
+  const [
+    isDefaultOptionDisabled,
+    setIsDefaultOptionDisabled,
+  ] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsDefaultOptionDisabled(false);
+  }, [chainId]);
 
   return (
     <div className={classNames("flex flex-col", className)}>
@@ -44,7 +60,7 @@ const TokenSelect = ({
             className={classNames(
               "bg-transparent border-0 px-0 py-0",
               "placeholder-gray-500 text-sm",
-              "dark:text-white"
+              hasError ? "dark:text-red-700 text-red-700" : "dark:text-white"
             )}
             value={amount}
             onChange={onAmountChange}
@@ -52,7 +68,7 @@ const TokenSelect = ({
           ></input>
         ) : (
           <span className="text-gray-500 text-sm">
-            {!token ? t("orders:chooseToken") : ""}
+            {!token ? t("orders:chooseToken") : quoteAmount}
           </span>
         )}
 
@@ -69,10 +85,15 @@ const TokenSelect = ({
                   "text-gray-500": !token,
                 }
               )}
-              value={token}
-              onChange={onTokenChange}
+              value={isDefaultOptionDisabled ? token : `…${t("common:select")}`}
+              onChange={(e) => {
+                if (onTokenChange) onTokenChange(e);
+                setIsDefaultOptionDisabled(true);
+              }}
             >
-              <option>…{t("common:select")}</option>
+              <option disabled={isDefaultOptionDisabled}>
+                …{t("common:select")}
+              </option>
               {tokens.map((token) => (
                 <option key={token.address} value={token.address}>
                   {token.symbol}

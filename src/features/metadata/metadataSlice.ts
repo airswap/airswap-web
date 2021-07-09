@@ -74,7 +74,7 @@ export const metadataSlice = createSlice({
           (allTokens: { [address: string]: TokenInfo }, token) => {
             const { address } = token;
             if (!allTokens[address]) {
-              allTokens[address] = token;
+              allTokens[address] = { ...token };
             }
             return allTokens;
           },
