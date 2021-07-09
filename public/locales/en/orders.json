@@ -9,5 +9,6 @@
   "amount": "Amount",
   "chooseToken": "Choose token",
   "enterAmount": "Enter an amount",
-  "insufficentBalance": "Insufficient {{symbol}} balance"
+  "insufficentBalance": "Insufficient {{symbol}} balance",
+  "decimalsNotFound": "Token decimals not found"
 }

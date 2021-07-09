@@ -57,7 +57,7 @@ const SwapWidget = () => {
     for (const token of activeTokens) {
       if (token.address === tokenAddress) return token.decimals;
     }
-    return 18;
+    return null;
   };
 
   const getTokenApprovalStatus = (tokenId: string | undefined) => {
@@ -114,6 +114,7 @@ const SwapWidget = () => {
           className="w-full mt-2"
           intent="primary"
           aria-label={t("orders:take", { context: "aria" })}
+          disabled={isNaN(parseFloat(signerAmount))}
           loading={ordersStatus === "taking"}
           onClick={async () => {
             dispatch(take({ order, library }));
@@ -152,6 +153,7 @@ const SwapWidget = () => {
           className="w-full mt-2"
           intent="primary"
           disabled={
+            !decimalsFound ||
             !senderToken ||
             !signerToken ||
             !senderAmount ||
@@ -177,7 +179,9 @@ const SwapWidget = () => {
           {!insufficientBalance
             ? !senderAmount || parseFloat(senderAmount) === 0
               ? t("orders:enterAmount")
-              : t("orders:continue")
+              : decimalsFound
+              ? t("orders:continue")
+              : t("orders:decimalsNotFound")
             : t("orders:insufficentBalance", {
                 symbol: findTokenByAddress(senderToken!, activeTokens)?.symbol,
               })}
@@ -188,23 +192,28 @@ const SwapWidget = () => {
 
   let signerAmount: string | null = null;
   if (order) {
-    signerAmount = toDecimalString(
-      order.signerAmount,
-      getTokenDecimals(order.signerToken)
-    );
+    const signerDecimals = getTokenDecimals(order.signerToken);
+    if (signerDecimals) {
+      signerAmount = toDecimalString(order.signerAmount, signerDecimals);
+    } else {
+      signerAmount = "ERROR: TOKEN DECIMALS NOT FOUND";
+    }
   }
 
   let parsedSenderAmount = null;
   let insufficientBalance: boolean = false;
+  let decimalsFound: boolean = true;
   if (senderAmount && senderToken && Object.keys(balances.values).length) {
     if (parseFloat(senderAmount) === 0) {
       insufficientBalance = false;
     } else {
-      const decimals = getTokenDecimals(senderToken);
-      parsedSenderAmount = parseUnits(senderAmount, decimals);
-      insufficientBalance = BigNumber.from(
-        balances.values[senderToken!] || toAtomicString("0", 18)
-      ).lt(parsedSenderAmount);
+      const senderDecimals = getTokenDecimals(senderToken);
+      if (senderDecimals) {
+        parsedSenderAmount = parseUnits(senderAmount, senderDecimals);
+        insufficientBalance = BigNumber.from(
+          balances.values[senderToken!] || toAtomicString("0", 18)
+        ).lt(parsedSenderAmount);
+      } else decimalsFound = false;
     }
   }
 
