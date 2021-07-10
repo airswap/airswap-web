@@ -1,8 +1,17 @@
+import React from 'react';
 import classNames from "classnames";
+import styled from "styled-components";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 type ButtonVariant = "centered" | "left-justified";
+
+const StyledButton = styled.button`
+  width: 100%;
+  height: 3.5rem;
+  color: ${props => props.theme.white}
+  background: ${props => props.theme.primary}
+`;
 
 export type ButtonProps = {
   children: React.ReactNode;
@@ -25,17 +34,14 @@ export type ButtonProps = {
    * prevents further clicks on the button
    */
   loading?: boolean;
-} & React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const colorClasses: Record<ButtonIntent, string> = {
-  neutral: "bg-gray-200 text-black dark:bg-gray-700 dark:text-white",
-  primary: "bg-primary text-white",
-  positive: "bg-green-700 text-white",
-  destructive: "bg-red-700 text-white",
-};
+// const colorClasses: Record<ButtonIntent, string> = {
+//   neutral: "bg-gray-200 text-black dark:bg-gray-700 dark:text-white",
+//   primary: "bg-primary text-white",
+//   positive: "bg-green-700 text-white",
+//   destructive: "bg-red-700 text-white",
+// };
 
 const variantClasses: Record<ButtonVariant, string> = {
   centered: "justify-center",
@@ -54,17 +60,7 @@ export const Button = ({
 }: ButtonProps) => {
   const variants = Array.isArray(variant) ? variant : [variant];
   return (
-    <button
-      className={classNames(
-        "px-2 py-1 rounded-sm",
-        colorClasses[intent],
-        className,
-        {
-          "opacity-50": disabled,
-          "pointer-events-none": disabled || loading,
-          "cursor-wait": loading,
-        }
-      )}
+    <StyledButton
       onClick={(e) => {
         !loading && onClick && onClick(e);
       }}
@@ -88,7 +84,7 @@ export const Button = ({
         </div>
         {loading && <LoadingSpinner className="absolute" />}
       </div>
-    </button>
+    </StyledButton>
   );
 };
 
