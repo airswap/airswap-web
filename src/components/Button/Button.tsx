@@ -1,17 +1,9 @@
 import React from 'react';
-import classNames from "classnames";
-import styled from "styled-components";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { StyledButton, StyledText } from './Button.styles';
 
 type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
-type ButtonVariant = "centered" | "left-justified";
-
-const StyledButton = styled.button`
-  width: 100%;
-  height: 3.5rem;
-  color: ${props => props.theme.white}
-  background: ${props => props.theme.primary}
-`;
+type ButtonJustifyContent = "center" | "flex-start" | 'flex-end';
 
 export type ButtonProps = {
   children: React.ReactNode;
@@ -23,7 +15,7 @@ export type ButtonProps = {
   /**
    * Intent affects the appearance of the button
    */
-  variant?: ButtonVariant | ButtonVariant[];
+  justifyContent?: ButtonJustifyContent;
   /**
    * Whether or not the button should be disabled. Clicking a disabled button
    * has no effect.
@@ -43,47 +35,29 @@ export type ButtonProps = {
 //   destructive: "bg-red-700 text-white",
 // };
 
-const variantClasses: Record<ButtonVariant, string> = {
-  centered: "justify-center",
-  "left-justified": "justify-start",
-};
-
 export const Button = ({
   children,
   className = "",
   intent = "neutral",
-  variant = "centered",
+  justifyContent = "center",
   disabled = false,
   loading = false,
   onClick,
   ...rest
 }: ButtonProps) => {
-  const variants = Array.isArray(variant) ? variant : [variant];
   return (
     <StyledButton
+      loading={loading}
+      justifyContent={justifyContent}
       onClick={(e) => {
         !loading && onClick && onClick(e);
       }}
       {...rest}
     >
-      {/* // Note we keep children in here so the button doesn't change shape when
-        // it's loading. */}
-      <div
-        className={classNames(
-          "flex flex-row items-center",
-          variants.map((v) => variantClasses[v])
-        )}
-      >
-        <div
-          className={classNames("transition-opacity", {
-            "opacity-20": loading,
-            "opacity-100": !loading,
-          })}
-        >
-          {children}
-        </div>
-        {loading && <LoadingSpinner className="absolute" />}
-      </div>
+      <StyledText loading={loading}>
+        {children}
+      </StyledText>
+      {loading && <LoadingSpinner />}
     </StyledButton>
   );
 };
