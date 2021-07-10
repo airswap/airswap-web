@@ -1,4 +1,14 @@
-type Typography = 'title1' | 'title2' | 'title3' | 'title4' | 'subtitle' | 'paragraph' | 'formLabel' | 'nav' | 'small';
+type Typography =
+  'title1'
+  | 'title2'
+  | 'title3'
+  | 'title4'
+  | 'subtitle'
+  | 'paragraph'
+  | 'formLabel'
+  | 'nav'
+  | 'link'
+  | 'small';
 
 type FontProps = {
   fontSize: string;
@@ -58,9 +68,14 @@ const typography: Record<Typography, FontProps> = {
     lineHeight: 1.5,
     fontWeight: 700,
   },
-  nav: {
+  link: {
     fontSize: '1rem',
     lineHeight: 1.5,
+    fontWeight: 400,
+  },
+  nav: {
+    fontSize: '0.875rem',
+    lineHeight: 1.71,
     fontWeight: 700,
   },
   small: {

@@ -1,27 +1,14 @@
-import React, { FC, ReactElement } from 'react';
-import styled from 'styled-components';
-import { ThemeProps } from '../../style/themes';
-import SiteLogo from '../SiteLogo/SiteLogo';
-
-export const StyledPage = styled.div<{ theme: ThemeProps }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  min-height: 50rem;
-`;
-
-export const StyledSiteLogo = styled(SiteLogo)<{ theme: ThemeProps }>`
-  position: absolute;
-  top: 3.75rem;
-  left: 3.125rem;
-`;
+import React, { FC, ReactElement, useState } from 'react';
+import { StyledPage, StyledSiteLogo } from './Page.styles';
+import SideBar from '../SideBar/SideBar';
 
 const Page: FC = ({ children }): ReactElement => {
+  const [sideMenuIsOpen, setSideMenuIsOpen] = useState(false);
 
   return (
     <StyledPage>
       <StyledSiteLogo />
+      <SideBar open />
       { children }
     </StyledPage>
   )
