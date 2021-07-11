@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledSideBar, StyledWallet } from './SideBar.styles';
+import { StyledDarkModeSwitch, StyledSideBar, StyledWallet } from './SideBar.styles';
 import Navigation from '../Navigation/Navigation';
 
 export type SideBarProps = {
@@ -12,6 +12,7 @@ const SideBar: FC<SideBarProps> = ({ open }): ReactElement => {
     <StyledSideBar open={open}>
       <StyledWallet />
       <Navigation />
+      <StyledDarkModeSwitch />
     </StyledSideBar>
   );
 }

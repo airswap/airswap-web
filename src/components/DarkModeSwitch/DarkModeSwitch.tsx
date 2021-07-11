@@ -1,6 +1,5 @@
-import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { RiSunLine, RiMoonLine } from "react-icons/ri";
+import Icon from '../Icon/Icon';
 
 const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
 
@@ -45,13 +44,9 @@ const DarkModeSwitch = ({ className }: DarkModeProps): JSX.Element => {
         else enableDarkMode();
         setDarkModeEnabled((toggle) => !toggle);
       }}
-      className={classNames("px-4 py-2 text-2xl", className)}
+      className={className}
     >
-      {darkModeEnabled ? (
-        <RiMoonLine className="-m-2" />
-      ) : (
-        <RiSunLine className="-m-2" />
-      )}
+      <Icon name="dark-mode-switch" />
     </button>
   );
 };

@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { IconArrowLeft, IconArrowRight } from './icons';
+import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from './icons';
 import { StyledIcon } from './Icon.styles';
 
 type IconSet = {
@@ -14,6 +14,7 @@ export interface SvgIconProps {
 export const icons: IconSet = {
   'arrow-right': IconArrowRight,
   'arrow-left': IconArrowLeft,
+  'dark-mode-switch': IconDarkModeSwitch,
 }
 
 interface IconProps extends SvgIconProps {
