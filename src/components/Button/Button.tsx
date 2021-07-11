@@ -2,7 +2,7 @@ import React from 'react';
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { StyledButton, StyledText } from './Button.styles';
 
-type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
+export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 type ButtonJustifyContent = "center" | "flex-start" | 'flex-end';
 
 export type ButtonProps = {
@@ -27,13 +27,6 @@ export type ButtonProps = {
    */
   loading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
-
-// const colorClasses: Record<ButtonIntent, string> = {
-//   neutral: "bg-gray-200 text-black dark:bg-gray-700 dark:text-white",
-//   primary: "bg-primary text-white",
-//   positive: "bg-green-700 text-white",
-//   destructive: "bg-red-700 text-white",
-// };
 
 export const Button = ({
   children,

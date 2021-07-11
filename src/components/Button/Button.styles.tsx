@@ -1,6 +1,19 @@
 import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
-import { ButtonProps } from './Button';
+import { ButtonIntent, ButtonProps } from './Button';
+
+function getButtonBackground(theme: ThemeProps, intent?: ButtonIntent): string {
+  switch (intent) {
+    case 'destructive':
+      return theme.colors.red;
+    case 'positive':
+      return theme.colors.green;
+    case 'neutral':
+      return theme.colors.grey;
+    default:
+      return theme.colors.primary;
+  }
+}
 
 export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   display: flex;
@@ -14,8 +27,8 @@ export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${props => props.theme.colors.white};
-  background: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.color.white};
+  background: ${props => getButtonBackground(props.theme, props.intent)};
 `;
 
 export const StyledText = styled.div<{ theme: ThemeProps } & ButtonProps>`
