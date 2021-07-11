@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
-import { SideBarProps } from './SideBar';
 import IconButton from '../IconButton/IconButton';
 import { Wallet } from '../../features/wallet/Wallet';
 import DarkModeSwitch from '../DarkModeSwitch/DarkModeSwitch';
 import breakPoints from '../../style/breakpoints';
 
-export const StyledSideBar = styled.div<{ theme: ThemeProps } & SideBarProps>`
+export const StyledSideBar = styled.div<{ theme: ThemeProps } & { open: boolean }>`
   transition: transform 0.5s ease-out;
   transform: ${props => props.open ? 'none' : 'translateX(27rem)'} ;
   

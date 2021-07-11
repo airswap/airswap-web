@@ -85,7 +85,7 @@ const typography: Record<Typography, FontProps> = {
   }
 }
 
-export const theme: ThemeProps = {
+export const darkTheme: ThemeProps = {
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
@@ -93,6 +93,22 @@ export const theme: ThemeProps = {
     black: "#060607",
     grey: "#404040",
     darkGrey: "#111215",
+    lightGrey: "#C4C4C4",
+    red: "#FF004D",
+    orange: "#E7765A",
+    green: "green",
+  },
+  typography,
+}
+
+export const lightTheme: ThemeProps = {
+  colors: {
+    primary: "#2B71FF",
+    primaryDark: "#0F5FFF",
+    white: "#060607",
+    black: "#fff",
+    grey: "#404040",
+    darkGrey: "#fff",
     lightGrey: "#C4C4C4",
     red: "#FF004D",
     orange: "#E7765A",
