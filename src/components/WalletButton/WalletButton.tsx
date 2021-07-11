@@ -4,7 +4,7 @@ import truncateEthAddress from "truncate-eth-address";
 import Blockies from "react-blockies";
 
 import Button from "../Button/Button";
-import classNames from "classnames";
+import { StyledWalletButton } from './WalletButton.styles';
 
 export type WalletButtonProps = {
   /**
@@ -41,14 +41,7 @@ export const WalletButton = ({
   return (
     <div className={className}>
       {address ? (
-        <div
-          className={classNames(
-            "flex flex-row items-center",
-            "px-2 py-1",
-            "rounded-sm",
-            "bg-gray-200 dark:bg-gray-800"
-          )}
-        >
+        <StyledWalletButton>
           <Blockies
             size={8}
             scale={3}
@@ -65,7 +58,7 @@ export const WalletButton = ({
           >
             <RiCloseLine />
           </button>
-        </div>
+        </StyledWalletButton>
       ) : (
         <Button
           intent="primary"

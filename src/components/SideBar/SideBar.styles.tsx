@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
 import { SideBarProps } from './SideBar';
 import IconButton from '../IconButton/IconButton';
+import { Wallet } from '../../features/wallet/Wallet';
 
 export const StyledSideBar = styled.div<{ theme: ThemeProps } & SideBarProps>`
   transition: transform 0.5s ease-out;
@@ -26,4 +27,13 @@ export const StyledToggleButton = styled(IconButton)<{ theme: ThemeProps }>`
   position: absolute;
   top: 50%;
   left: 0;
+`;
+
+export const StyledWallet = styled(Wallet)<{ theme: ThemeProps }>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  top: 2.5rem;
+  right: 2.5rem;
 `;
