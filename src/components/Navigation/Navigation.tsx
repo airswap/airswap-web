@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledDarkModeSwitch, StyledNavigation, StyledNavigationAnchor } from './Navigation.styles';
+import { StyledNavigation, StyledNavigationAnchor, StyledNavigationIcon } from './Navigation.styles';
 import { routes } from '../../routes';
 
 const anchors = routes.filter(route => route.path !== '/');
@@ -9,11 +9,11 @@ const Navigation: FC = ({ children }): ReactElement => {
   return (
     <StyledNavigation>
       {anchors.map(route => (
-        <StyledNavigationAnchor href={route.path}>
+        <StyledNavigationAnchor>
+          <StyledNavigationIcon name="arrow-right" />
           {route.label}
         </StyledNavigationAnchor>
       ))}
-      <StyledDarkModeSwitch />
     </StyledNavigation>
   )
 };

@@ -3,7 +3,6 @@ import { ThemeProvider } from 'styled-components';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";
-import { Wallet } from "./features/wallet/Wallet";
 import { Transactions } from "./features/transactions/Transactions";
 import Balances from "./features/balances/Balances";
 import GlobalStyle from './style/GlobalStyle';
@@ -28,7 +27,6 @@ function App() {
           <Page>
             <TradeContainer>
               <Title type="h4">Swap now</Title>
-              <Wallet />
               <Orders />
               <Transactions />
               ☠️ Use at your own risk

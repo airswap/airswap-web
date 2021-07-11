@@ -1,30 +1,27 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledComponent } from 'styled-components';
 import { StyledH1, StyledH2, StyledH3, StyledH4 } from './Title.styles';
 
 type TitleType = 'h1' | 'h2' | 'h3' | 'h4';
 
-type SiteLogoProps = {
+type TitleProps = {
   className?: string;
-  type: 'h1' | 'h2' | 'h3' | 'h4';
+  type: TitleType;
 }
 
-function getComponent(type: TitleType): StyledComponent<any, any> {
-  switch (type) {
-    case 'h1':
-      return StyledH1
-    case 'h2':
-      return StyledH2
-    case 'h3':
-      return StyledH3
-    default:
-      return StyledH4
-  }
+const titles: Record<TitleType, FC<{ className?: string }>> = {
+  'h1': StyledH1,
+  'h2': StyledH2,
+  'h3': StyledH3,
+  'h4': StyledH4,
 }
 
-const Title: FC<SiteLogoProps> = ({ className, children, type }): ReactElement => {
+export interface SvgIconProps {
+  className?: string;
+}
 
-  const StyledTitle = getComponent(type);
+const Title: FC<TitleProps> = ({ className, children, type }): ReactElement => {
+
+  const StyledTitle = titles[type];
 
   return (
     <StyledTitle className={className}>

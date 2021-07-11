@@ -74,9 +74,9 @@ const typography: Record<Typography, FontProps> = {
     fontWeight: 400,
   },
   nav: {
-    fontSize: '0.875rem',
-    lineHeight: 1.71,
-    fontWeight: 700,
+    fontSize: '2rem',
+    lineHeight: 1.25,
+    fontWeight: 400,
   },
   small: {
     fontSize: '0.875rem',

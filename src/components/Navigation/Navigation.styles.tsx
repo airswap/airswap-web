@@ -1,29 +1,38 @@
 import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
-import DarkModeSwitch from '../DarkModeSwitch/DarkModeSwitch';
+import Icon from '../Icon/Icon';
 
-export const StyledNavigation = styled.div<{ theme: ThemeProps }>`
+export const StyledNavigation = styled.nav<{ theme: ThemeProps }>`
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   position: relative;
-  overflow: hidden;
+  width: 100%;
 `;
 
-export const StyledNavigationAnchor = styled.a<{ theme: ThemeProps }>`
+export const StyledNavigationAnchor = styled.button<{ theme: ThemeProps }>`
+  display: flex;
+  align-items: center;
+  border-top: 1px solid ${props => props.theme.colors.grey};
+  width: 100%;
+  height: 4.5rem;
+  padding-left: 2.625rem;
   font-size: ${props => props.theme.typography.nav.fontSize};
   font-weight: ${props => props.theme.typography.nav.fontWeight};
   line-height: ${props => props.theme.typography.nav.lineHeight};
   text-decoration: none;
   
-  & + & {
-    margin-left: 7.5%;
-  }
-  
   &:hover {
     opacity: 0.5;
   }
+  
+  &:last-of-type {
+    border-bottom: 1px solid ${props => props.theme.colors.grey};
+  }
 `;
 
-export const StyledDarkModeSwitch = styled(DarkModeSwitch)`
-  margin-left: 5%;
+export const StyledNavigationIcon = styled(Icon)<{ theme: ThemeProps }>`
+  margin-right: 1.5rem;
+  width: 0.75rem;
+  height: 1.25rem;
+  color: ${props => props.theme.colors.grey};
 `;
