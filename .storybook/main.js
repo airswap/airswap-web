@@ -16,7 +16,7 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
-    "storybook-tailwind-dark-mode",
+    "storybook-addon-styled-component-theme/dist/preset",
   ],
 
   // Tell webpack to apply tailwind to postcss loader

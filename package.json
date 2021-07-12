@@ -95,7 +95,7 @@
     "autoprefixer": "^9",
     "jest-canvas-mock": "^2.3.1",
     "postcss": "^7",
-    "storybook-tailwind-dark-mode": "^1.0.9",
+    "storybook-addon-styled-component-theme": "^2.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }

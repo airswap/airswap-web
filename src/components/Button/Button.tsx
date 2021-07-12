@@ -40,14 +40,17 @@ export const Button = ({
 }: ButtonProps) => {
   return (
     <StyledButton
+      className={className}
       loading={loading}
+      intent={intent}
+      disabled={disabled || loading}
       justifyContent={justifyContent}
       onClick={(e) => {
         !loading && onClick && onClick(e);
       }}
       {...rest}
     >
-      <StyledText loading={loading}>
+      <StyledText loading={loading} disabled={disabled || loading}>
         {children}
       </StyledText>
       {loading && <LoadingSpinner />}
