@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
+import breakPoints from '../../style/breakpoints';
 
 export const StyledTradeContainer = styled.div<{ theme: ThemeProps }>`
   display: flex;
@@ -13,6 +14,10 @@ export const StyledTradeContainer = styled.div<{ theme: ThemeProps }>`
   
   @media (min-resolution: 144dpi) {
     background-image: url("/images/bg-x2.png");
+  }
+  
+  @media ${breakPoints.phoneOnly} {
+    padding: 1.75rem;
   }
  `;
 
