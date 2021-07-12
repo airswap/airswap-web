@@ -1,22 +1,59 @@
 import { useState, useMemo } from "react";
 // import AutoSizer from 'react-virtualized-auto-sizer'
-import { useAppSelector } from "../../app/hooks";
-import { selectActiveTokens } from "../../features/metadata/metadataSlice";
 import { TokenInfo } from "@uniswap/token-lists";
-import { selectBalances } from "../../features/balances/balancesSlice";
 import { HiX } from "react-icons/hi";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
-import { sortTokensByBalance, sortTokensBySymbol } from "./sort";
+import { sortTokensBySymbol } from "./sort";
 import TokenRow from "./TokenRow";
+import TokenImportRow from "./TokenImportRow";
+import {
+  BalancesState,
+} from "../../features/balances/balancesSlice";
 
 export type TokenSelectionProps = {
+  /**
+   * Function to close modal
+   */
   closeModal: () => void;
+  /**
+   * signerToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
+   */
   signerToken: string;
+  /**
+   * senderToken contrat address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
+   */
   senderToken: string;
+  /**
+   * useState hook to set signer token
+   */
   setSignerToken: (val: string) => void;
+  /**
+   * useState hook to set sender token
+   */
   setSenderToken: (val: string) => void;
+  /**
+   * Request type incoming to token selection modal; modal handles setSignerToken/setSenderToken based off of this parameter
+   */
   tokenSelectType: "signerToken" | "senderToken";
+  /**
+   * Balances for current tokens in wallet
+   */
+  balances: BalancesState;
+  /**
+   * all Token address in metadata.
+   */
+  allTokens: {
+    [address: string]: TokenInfo;
+  };
+  /**
+   * All active tokens.
+   */
+  activeTokens: TokenInfo[];
+  /**
+   * function to handle adding active tokens (dispatches addActiveToken).
+   */
+  addActiveToken: (val: string) => void;
 };
 
 const TokenSelection = ({
@@ -26,10 +63,12 @@ const TokenSelection = ({
   setSignerToken,
   setSenderToken,
   tokenSelectType,
+  balances,
+  allTokens,
+  activeTokens = [],
+  addActiveToken,
 }: TokenSelectionProps) => {
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const activeTokens = useAppSelector(selectActiveTokens);
-  const balances = useAppSelector(selectBalances);
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -44,7 +83,7 @@ const TokenSelection = ({
     closeModal();
   };
 
-  // sort tokens based on balance
+  // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
     return sortTokensBySymbol(activeTokens);
   }, [activeTokens]);
@@ -53,6 +92,21 @@ const TokenSelection = ({
   const filteredTokens: TokenInfo[] = useMemo(() => {
     return filterTokens(Object.values(sortedTokens), tokenQuery!);
   }, [sortedTokens, tokenQuery]);
+
+  // sort inactive tokens based on symbol
+  const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
+    return sortTokensBySymbol(
+      Object.values(allTokens).filter((el) => {
+        return !activeTokens.includes(el);
+      })
+    );
+  }, [allTokens, activeTokens]);
+
+  // only take the top 10 tokens
+  const inactiveTokens: TokenInfo[] = useMemo(() => {
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
+  }, [sortedInactiveTokens, tokenQuery]);
+  inactiveTokens.length = 10;
 
   return (
     <div>
@@ -77,10 +131,10 @@ const TokenSelection = ({
           return (
             <TokenRow
               token={token}
-              balance={
-                formatUnits(balances.values[token.address]!, token.decimals) ||
-                "0.0"
-              }
+              balance={formatUnits(
+                balances.values[token.address] || 0,
+                token.decimals
+              )}
               onClick={handleClick}
               selected={
                 tokenSelectType === "senderToken"
@@ -95,6 +149,22 @@ const TokenSelection = ({
             />
           );
         })}
+        {filteredTokens.length < 5 && inactiveTokens && (
+          <>
+            <h1>Expanded results from inactive Token Lists</h1>
+            {inactiveTokens.map((token) => {
+              return (
+                <TokenImportRow
+                  token={token}
+                  onClick={() => {
+                    addActiveToken(token.address);
+                    setTokenQuery("");
+                  }}
+                />
+              );
+            })}
+          </>
+        )}
       </div>
     </div>
   );

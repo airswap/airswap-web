@@ -16,7 +16,15 @@ import {
   selectBestOrder,
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
-import { selectActiveTokens } from "../../features/metadata/metadataSlice";
+import {
+  selectActiveTokens,
+  selectAllTokenInfo,
+  addActiveToken
+} from "../../features/metadata/metadataSlice";
+import {
+  requestActiveTokenAllowances,
+  requestActiveTokenBalances,
+} from "../../features/balances/balancesSlice";
 import {
   selectBalances,
   selectAllowances,
@@ -58,6 +66,7 @@ const SwapWidget = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
+  const allTokens = useAppSelector(selectAllTokenInfo);
   const { t } = useTranslation(["orders", "common", "wallet"]);
   const { chainId, account, library, active } = useWeb3React<Web3Provider>();
   const { trackEvent } = useMatomo();
@@ -225,6 +234,14 @@ const SwapWidget = () => {
     }
   }
 
+  const handleAddActiveToken = (address: string) => {
+    if (library) {
+      dispatch(addActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowances({ provider: library! }));
+    }
+  };
+
   useEffect(() => {
     setSenderToken("");
     setSignerToken("");
@@ -246,6 +263,10 @@ const SwapWidget = () => {
           setSignerToken={setSignerToken}
           setSenderToken={setSenderToken}
           tokenSelectType={tokenSelectType}
+          balances={balances}
+          allTokens={allTokens}
+          activeTokens={activeTokens}
+          addActiveToken={handleAddActiveToken}
         />
       </Modal>
       {!order || isRequestUpdated ? (

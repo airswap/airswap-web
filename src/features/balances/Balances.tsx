@@ -1,22 +1,18 @@
 import { Fragment, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import {
-  requestActiveTokenAllowances,
-  requestActiveTokenBalances,
   selectAllowances,
   selectBalances,
 } from "./balancesSlice";
 import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
-import { addActiveToken, selectActiveTokens } from "../metadata/metadataSlice";
+import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
-import Button from "../../components/Button/Button";
 
 const Balances = () => {
-  const { active, library } = useWeb3React();
+  const { active } = useWeb3React();
   const activeTokens = useAppSelector(selectActiveTokens);
-  const dispatch = useAppDispatch();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
 
@@ -59,17 +55,6 @@ const Balances = () => {
           setAddTokenField(e.target.value);
         }}
       />
-      <Button
-        type="button"
-        onClick={() => {
-          dispatch(addActiveToken(addTokenField));
-          dispatch(requestActiveTokenBalances({ provider: library }));
-          dispatch(requestActiveTokenAllowances({ provider: library }));
-          setAddTokenField("");
-        }}
-      >
-        {t("balances:addToTokenSet")}
-      </Button>
       {/* <button type="button" onClick={fetchBalancesAndAllowances}>
         Update balances
       </button> */}
