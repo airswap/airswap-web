@@ -21,6 +21,7 @@ import {
   selectBalances,
   selectAllowances,
 } from "../../features/balances/balancesSlice";
+import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
@@ -41,6 +42,7 @@ const SwapWidget = () => {
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
@@ -49,7 +51,13 @@ const SwapWidget = () => {
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const { t } = useTranslation(["orders", "common", "wallet"]);
-  const { chainId, account, library, active } = useWeb3React<Web3Provider>();
+  const {
+    chainId,
+    account,
+    library,
+    active,
+    activate,
+  } = useWeb3React<Web3Provider>();
   const { trackEvent } = useMatomo();
 
   const getTokenDecimals = (tokenAddress: string) => {
@@ -95,6 +103,7 @@ const SwapWidget = () => {
         <Button
           className="w-full mt-2"
           intent="primary"
+          loading={isConnecting}
           onClick={() => setShowWalletList(true)}
         >
           {t("wallet:connectWallet")}
@@ -280,7 +289,16 @@ const SwapWidget = () => {
         className="w-64 p-4 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
       >
         {/* need to come back and fill out onProviderSelected */}
-        <WalletProviderList onProviderSelected={() => null} />
+        <WalletProviderList
+          onProviderSelected={(provider) => {
+            dispatch(setActiveProvider(provider.name));
+            setIsConnecting(true);
+            activate(provider.getConnector()).finally(() =>
+              setIsConnecting(false)
+            );
+            setShowWalletList(false);
+          }}
+        />
       </Modal>
     </Card>
   );
