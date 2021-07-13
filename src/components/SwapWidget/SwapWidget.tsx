@@ -41,11 +41,6 @@ import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
 
-export interface TokenSelectionModalState {
-  status: "senderToken" | "signerToken";
-  modalOpen: boolean;
-}
-
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 const SwapWidget = () => {
