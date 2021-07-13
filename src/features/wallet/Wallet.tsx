@@ -28,7 +28,12 @@ import {
   loadLastAccount,
   saveLastAccount,
 } from "./walletAPI";
-import { setWalletConnected, setWalletDisconnected } from "./walletSlice";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+  selectWallet,
+} from "./walletSlice";
+import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
 
 export const Wallet = () => {
   const {
@@ -44,6 +49,7 @@ export const Wallet = () => {
   const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
+  const { providerName } = useAppSelector(selectWallet);
 
   // Analytics
   const { trackPageView } = useMatomo();
@@ -69,6 +75,18 @@ export const Wallet = () => {
       activate(connector).finally(() => setIsActivating(false));
     }
   }, [activate, trackPageView]);
+
+  // Side effects for connecting a wallet from SwapWidget
+
+  useEffect(() => {
+    if (providerName) {
+      const provider = SUPPORTED_WALLET_PROVIDERS.find(
+        (provider) => provider.name === providerName
+      );
+      setProvider(provider);
+      setConnector(provider!.getConnector());
+    }
+  }, [providerName]);
 
   // Trigger request for balances and allowances once account is connected
   useEffect(() => {
