@@ -19,7 +19,8 @@ import {
 import {
   selectActiveTokens,
   selectAllTokenInfo,
-  addActiveToken
+  addActiveToken,
+  removeActiveToken
 } from "../../features/metadata/metadataSlice";
 import {
   requestActiveTokenAllowances,
@@ -46,20 +47,20 @@ const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
-  const [senderAmount, setSenderAmount] = useState("0.01");
+  const [senderAmount, setSenderAmount] = useState<string>("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState(false);
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(false);
   const [tokenSelectType, setTokenSelectType] = useState<
     "senderToken" | "signerToken"
   >("senderToken");
+  const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { t } = useTranslation(["orders", "common", "wallet"]);
@@ -237,6 +238,14 @@ const SwapWidget = () => {
     }
   };
 
+  const handleRemoveActiveToken = (address: string) => {
+    if (library) {
+      dispatch(removeActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowances({ provider: library! }));
+    }
+  };
+
   useEffect(() => {
     setSenderToken("");
     setSignerToken("");
@@ -249,7 +258,7 @@ const SwapWidget = () => {
         isOpen={tokenSelectModalOpen}
         onRequestClose={() => setTokenSelectModalOpen(false)}
         overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
-        className="w-80 p-6 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
+        className="w-120 p-6 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
       >
         <TokenSelection
           closeModal={() => setTokenSelectModalOpen(false)}
@@ -262,6 +271,8 @@ const SwapWidget = () => {
           allTokens={allTokens}
           activeTokens={activeTokens}
           addActiveToken={handleAddActiveToken}
+          removeActiveToken={handleRemoveActiveToken}
+          chainId={chainId!}
         />
       </Modal>
       {!order || isRequestUpdated ? (

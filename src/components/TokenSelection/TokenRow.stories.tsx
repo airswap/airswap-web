@@ -8,9 +8,11 @@ export default {
   argTypes: {
     token: { control: { type: "object" } },
     balance: { control: { type: "text" } },
-    onClick: { control: { type: "function" } },
     selected: { control: { type: "boolean" } },
     disabled: { control: { type: "boolean" } },
+    setToken: { control: { type: "function" } },
+    removeActiveToken: { control: { type: "function" } },
+    defaultToken: { control: { type: "boolean" } },
   },
 } as Meta;
 
@@ -26,7 +28,9 @@ Default.args = {
     symbol: "ETH",
   },
   balance: "230",
-  onClick: () => void 1,
+  setToken: () => void 1,
+  removeActiveToken: () => void 1,
+  defaultToken: true,
 };
 
 export const Selected = Template.bind({});
@@ -40,7 +44,9 @@ Selected.args = {
   },
   balance: "230",
   selected: true,
-  onClick: () => void 1,
+  setToken: () => void 1,
+  removeActiveToken: () => void 1,
+  defaultToken: true,
 };
 
 export const Disabled = Template.bind({});
@@ -54,5 +60,39 @@ Disabled.args = {
   },
   balance: "230",
   disabled: true,
-  onClick: () => void 1,
+  setToken: () => void 1,
+  removeActiveToken: () => void 1,
+  defaultToken: true,
+};
+
+export const DefaultToken = Template.bind({});
+DefaultToken.args = {
+  token: {
+    chainId: 1,
+    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+    name: "Ethereum",
+    decimals: 18,
+    symbol: "ETH",
+  },
+  balance: "230",
+  disabled: false,
+  setToken: () => void 1,
+  removeActiveToken: () => void 1,
+  defaultToken: true,
+};
+
+export const InactiveToken = Template.bind({});
+InactiveToken.args = {
+  token: {
+    chainId: 1,
+    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a3",
+    name: "Inactive",
+    decimals: 18,
+    symbol: "INA",
+  },
+  balance: "230",
+  disabled: false,
+  setToken: () => void 1,
+  removeActiveToken: () => void 1,
+  defaultToken: false,
 };

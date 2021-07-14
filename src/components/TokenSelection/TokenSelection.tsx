@@ -10,6 +10,9 @@ import TokenImportRow from "./TokenImportRow";
 import {
   BalancesState,
 } from "../../features/balances/balancesSlice";
+import {
+  defaultActiveTokens,
+} from "../../features/metadata/metadataApi";
 
 export type TokenSelectionProps = {
   /**
@@ -21,7 +24,7 @@ export type TokenSelectionProps = {
    */
   signerToken: string;
   /**
-   * senderToken contrat address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
+   * senderToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
    */
   senderToken: string;
   /**
@@ -41,7 +44,7 @@ export type TokenSelectionProps = {
    */
   balances: BalancesState;
   /**
-   * all Token address in metadata.
+   * all Token addresses in metadata.
    */
   allTokens: {
     [address: string]: TokenInfo;
@@ -54,6 +57,14 @@ export type TokenSelectionProps = {
    * function to handle adding active tokens (dispatches addActiveToken).
    */
   addActiveToken: (val: string) => void;
+  /**
+   * function to handle removing active tokens (dispatches removeActiveToken).
+   */
+   removeActiveToken: (val: string) => void;
+   /**
+   * currently connected chain id
+   */
+   chainId: number;
 };
 
 const TokenSelection = ({
@@ -67,6 +78,8 @@ const TokenSelection = ({
   allTokens,
   activeTokens = [],
   addActiveToken,
+  removeActiveToken,
+  chainId,
 }: TokenSelectionProps) => {
   const [tokenQuery, setTokenQuery] = useState<string>("");
 
@@ -104,9 +117,8 @@ const TokenSelection = ({
 
   // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(0, 10);
   }, [sortedInactiveTokens, tokenQuery]);
-  inactiveTokens.length = 10;
 
   return (
     <div>
@@ -127,7 +139,9 @@ const TokenSelection = ({
         className="w-full"
       />
       <div>
+        {console.log(defaultActiveTokens[chainId!])}
         {filteredTokens.map((token) => {
+          console.log(defaultActiveTokens[chainId!].includes(token.address));
           return (
             <TokenRow
               token={token}
@@ -135,7 +149,7 @@ const TokenSelection = ({
                 balances.values[token.address] || 0,
                 token.decimals
               )}
-              onClick={handleClick}
+              setToken={handleClick}
               selected={
                 tokenSelectType === "senderToken"
                   ? token.address === signerToken
@@ -146,12 +160,15 @@ const TokenSelection = ({
                   ? token.address === senderToken
                   : token.address === signerToken
               } // shouldn't be able to select same duplicate token
+              removeActiveToken={removeActiveToken}
+              defaultToken={defaultActiveTokens[chainId!].includes(token.address)}
             />
           );
         })}
-        {filteredTokens.length < 5 && inactiveTokens && (
+        {(chainId === 1 && tokenQuery && filteredTokens.length < 5 && inactiveTokens && inactiveTokens.length > 0) &&(
           <>
             <h1>Expanded results from inactive Token Lists</h1>
+            {console.log(inactiveTokens)}
             {inactiveTokens.map((token) => {
               return (
                 <TokenImportRow

@@ -86,7 +86,7 @@ const TokenSelect = ({
               )}
               onClick={onTokenChange}
               >
-              {tokens.find((t)=> t.address === token)?.symbol || isDefaultOptionDisabled ? tokens.find((t)=> t.address === token)?.symbol : `…${t("common:select")}`}
+              {tokens.find((t)=> t.address === token)?.symbol || isDefaultOptionDisabled ? tokens.find((t)=> t.address === token)?.symbol : `${t("common:select")}…`}
             </button>
           ) : (
             <LoadingSpinner className="mx-2" />
