@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { ThemeProvider } from 'styled-components';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -9,9 +9,10 @@ import GlobalStyle from './style/GlobalStyle';
 import TradeContainer from './components/TradeContainer/TradeContainer';
 import Page from './components/Page/Page';
 import Title from './components/Title/Title';
-import { THEME_LOCAL_STORAGE_KEY, ThemeType } from './components/DarkModeSwitch/DarkModeSwitch';
-import { darkTheme, lightTheme } from './style/themes';
 import "./i18n/i18n";
+import { useAppSelector } from './app/hooks';
+import { selectUserSettings, ThemeType } from './features/userSettings/userSettingsSlice';
+import { darkTheme, lightTheme } from './style/themes';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -20,14 +21,14 @@ function getLibrary(provider: any): Web3Provider {
 }
 
 const App = (): JSX.Element => {
-  const [theme, setTheme] = useState(localStorage[THEME_LOCAL_STORAGE_KEY] === "dark" ? ThemeType.dark : ThemeType.light);
+  const { theme } = useAppSelector(selectUserSettings);
 
   return (
-    <ThemeProvider theme={theme === ThemeType.dark ? darkTheme : lightTheme} >
+    <ThemeProvider theme={theme === ThemeType.dark ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={"Loading..."}>
-          <Page onChangeTheme={(theme) => setTheme(theme) }>
+          <Page>
             <TradeContainer>
               <Title type="h4">Swap now</Title>
               <Orders />

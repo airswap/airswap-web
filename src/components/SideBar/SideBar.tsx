@@ -1,15 +1,17 @@
 import React, { FC, ReactElement } from 'react';
 import { StyledSideBar } from './SideBar.styles';
 import Navigation from '../Navigation/Navigation';
-import DarkModeSwitch, { ThemeType } from '../DarkModeSwitch/DarkModeSwitch';
+import DarkModeSwitch from '../DarkModeSwitch/DarkModeSwitch';
 import { Wallet } from '../../features/wallet/Wallet';
+import { toggleTheme } from '../../features/userSettings/userSettingsSlice';
+import { useAppDispatch } from '../../app/hooks';
 
 export type SideBarProps = {
   open: boolean;
-  onChangeTheme: (theme: ThemeType) => void;
 }
 
-const SideBar: FC<SideBarProps> = ({ open, onChangeTheme }): ReactElement => {
+const SideBar: FC<SideBarProps> = ({ open }): ReactElement => {
+  const dispatch = useAppDispatch();
 
   return (
     <StyledSideBar open={open}>
@@ -17,7 +19,7 @@ const SideBar: FC<SideBarProps> = ({ open, onChangeTheme }): ReactElement => {
       <Navigation />
       <DarkModeSwitch
         className="dark-mode-switch"
-        onClick={onChangeTheme}
+        onClick={() => { dispatch(toggleTheme()) }}
       />
     </StyledSideBar>
   );

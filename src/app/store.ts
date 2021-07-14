@@ -3,6 +3,7 @@ import ordersReducer from "../features/orders/ordersSlice";
 import walletReducer from "../features/wallet/walletSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
+import userSettingsReducer from '../features/userSettings/userSettingsSlice';
 import {
   balancesReducer,
   allowancesReducer,
@@ -17,6 +18,7 @@ export const store = configureStore({
     metadata: metadataReducer,
     orders: ordersReducer,
     wallet: walletReducer,
+    userSettings: userSettingsReducer,
   },
 });
 
