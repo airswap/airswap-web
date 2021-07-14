@@ -24,6 +24,10 @@ When multiple people are working on the same body of code, it is important that 
 $ yarn lint
 ```
 
+## Styled components
+
+We use styled-components for styling. When styling a component put your scss in a separate *.styles.tsx file in the component folder. When styling children give them a className, don't turn them into a styled component.
+
 ## Pull Requests (PRs)
 
 It’s a good idea to make PRs early on. A PR represents the start of a discussion, and doesn’t necessarily need to be the final, completed submission. Create a [draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/) if you're looking for feedback but not ready for a final review. If the PR is in response to a GitHub issue, make sure to notate the issue as well.
