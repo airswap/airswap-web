@@ -1,6 +1,6 @@
 import React from 'react';
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { StyledButton, StyledText } from './Button.styles';
+import { StyledButton } from './Button.styles';
 
 export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 type ButtonJustifyContent = "center" | "flex-start" | 'flex-end';
@@ -50,9 +50,9 @@ export const Button = ({
       }}
       {...rest}
     >
-      <StyledText loading={loading} disabled={disabled || loading}>
+      <div className="text">
         {children}
-      </StyledText>
+      </div>
       {loading && <LoadingSpinner />}
     </StyledButton>
   );

@@ -19,13 +19,13 @@ export const StyledTradeContainer = styled.div<{ theme: ThemeProps }>`
   @media ${breakPoints.phoneOnly} {
     padding: 1.75rem;
   }
- `;
-
-export const StyledInnerContent = styled.div<{ theme: ThemeProps }>`
-  display: flex;
-  flex-direction: column;
-  padding: 2.25rem;
-  width: 100%;
-  background: ${props => props.theme.colors.black};
-  overflow: hidden;
+  
+  .container-children {
+    display: flex;
+    flex-direction: column;
+    padding: 2.25rem;
+    width: 100%;
+    background: ${props => props.theme.colors.black};
+    overflow: hidden;
+  }
  `;

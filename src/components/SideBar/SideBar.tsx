@@ -1,7 +1,8 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledDarkModeSwitch, StyledSideBar, StyledWallet } from './SideBar.styles';
+import { StyledSideBar } from './SideBar.styles';
 import Navigation from '../Navigation/Navigation';
-import { ThemeType } from '../DarkModeSwitch/DarkModeSwitch';
+import DarkModeSwitch, { ThemeType } from '../DarkModeSwitch/DarkModeSwitch';
+import { Wallet } from '../../features/wallet/Wallet';
 
 export type SideBarProps = {
   open: boolean;
@@ -12,9 +13,12 @@ const SideBar: FC<SideBarProps> = ({ open, onChangeTheme }): ReactElement => {
 
   return (
     <StyledSideBar open={open}>
-      <StyledWallet />
+      <Wallet className="wallet" />
       <Navigation />
-      <StyledDarkModeSwitch onClick={onChangeTheme} />
+      <DarkModeSwitch
+        className="dark-mode-switch"
+        onClick={onChangeTheme}
+      />
     </StyledSideBar>
   );
 }

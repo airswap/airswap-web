@@ -1,13 +1,13 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledInnerContent, StyledTradeContainer } from './TradeContainer.styles';
+import { StyledTradeContainer } from './TradeContainer.styles';
 
 const TradeContainer: FC = ({ children }): ReactElement => {
 
   return (
    <StyledTradeContainer>
-     <StyledInnerContent>
+     <div className="container-children">
        { children }
-     </StyledInnerContent>
+     </div>
    </StyledTradeContainer>
   )
 };

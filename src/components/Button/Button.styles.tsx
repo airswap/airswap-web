@@ -21,7 +21,7 @@ export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   justify-content: ${props => props.justifyContent || 'center'};
   width: 100%;
   height: 3.5rem;
-  padding: 0.5rem;
+  padding: 0 1rem;
   font-size: 1.125rem;
   font-weight: 700;
   white-space: nowrap;
@@ -31,10 +31,10 @@ export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   background: ${props => getButtonBackground(props.theme, props.intent)};
   pointer-events: ${props => props.disabled ? 'none' : 'visible'};
   cursor: ${props => props.disabled ? 'none' : 'pointer'};
-`;
-
-export const StyledText = styled.div<{ theme: ThemeProps } & ButtonProps>`
-  margin-right: ${props => props.loading ? '1rem' : 0};
-  transition: opacity 0.3s ease-out;
-  opacity: ${props => props.disabled ? 0.5 : 1};
+  
+  .text {
+    margin-right: ${props => props.loading ? '1rem' : 0};
+    transition: opacity 0.3s ease-out;
+    opacity: ${props => props.disabled ? 0.5 : 1};
+  }
 `;

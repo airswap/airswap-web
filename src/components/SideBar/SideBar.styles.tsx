@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 import { ThemeProps } from '../../style/themes';
-import IconButton from '../IconButton/IconButton';
-import { Wallet } from '../../features/wallet/Wallet';
-import DarkModeSwitch from '../DarkModeSwitch/DarkModeSwitch';
 import breakPoints from '../../style/breakpoints';
 
 export const StyledSideBar = styled.div<{ theme: ThemeProps } & { open: boolean }>`
@@ -23,28 +20,23 @@ export const StyledSideBar = styled.div<{ theme: ThemeProps } & { open: boolean 
   
   @media ${breakPoints.tabletLandscapeUp} {
     display: flex;
-  }  
+  }
+  
+  .wallet {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: absolute;
+    top: 2.5rem;
+    right: 2.5rem;
+  }
+  
+  .dark-mode-switch {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
-export const StyledToggleButton = styled(IconButton)<{ theme: ThemeProps }>`
-  position: absolute;
-  top: 50%;
-  left: 0;
-`;
-
-export const StyledWallet = styled(Wallet)<{ theme: ThemeProps }>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: absolute;
-  top: 2.5rem;
-  right: 2.5rem;
-`;
-
-export const StyledDarkModeSwitch = styled(DarkModeSwitch)<{ theme: ThemeProps }>`
-  position: absolute;
-  bottom: 2.5rem;
-  right: 2.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-`;
