@@ -77,7 +77,7 @@ const TokenSelection = ({
   removeActiveToken,
   chainId,
 }: TokenSelectionProps) => {
-  const [tokenQuery, setTokenQuery] = useState<string>("");
+  const [tokenQuery, setTokenQuery] = useState("");
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -122,13 +122,14 @@ const TokenSelection = ({
   return (
     <div>
       <div className="flex flex-wrap align-middle justify-between">
-        <h1 className="font-bold text-sm">Select token</h1>
+        <label className="font-bold text-sm" htmlFor="tokenQuery">Select token</label>
         <HiX
           className="light:text-black text-xl cursor-pointer"
           onClick={closeModal}
         />
       </div>
       <input
+        id="tokenQuery"
         type="text"
         value={tokenQuery}
         placeholder="Search name or paste address"
@@ -138,33 +139,29 @@ const TokenSelection = ({
         className="w-full"
       />
       <div>
-        {filteredTokens.map((token) => {
-          return (
-            <TokenRow
-              token={token}
-              balance={formatUnits(
-                balances.values[token.address] || 0,
-                token.decimals
-              )}
-              setToken={handleClick}
-              selected={
-                tokenSelectType === "senderToken"
-                  ? token.address === signerToken
-                  : token.address === senderToken
-              } // should be grayed out, but still clickable
-              disabled={
-                tokenSelectType === "senderToken"
-                  ? token.address === senderToken
-                  : token.address === signerToken
-              } // shouldn't be able to select same duplicate token
-              removeActiveToken={removeActiveToken}
-              defaultToken={defaultActiveTokens[chainId!].includes(
-                token.address
-              )}
-              key={`${token.address}`}
-            />
-          );
-        })}
+        {filteredTokens.map((token) => (
+          <TokenRow
+            token={token}
+            balance={formatUnits(
+              balances.values[token.address] || 0,
+              token.decimals
+            )}
+            setToken={handleClick}
+            selected={
+              tokenSelectType === "senderToken"
+                ? token.address === signerToken
+                : token.address === senderToken
+            } // should be grayed out, but still clickable
+            disabled={
+              tokenSelectType === "senderToken"
+                ? token.address === senderToken
+                : token.address === signerToken
+            } // shouldn't be able to select same duplicate token
+            removeActiveToken={removeActiveToken}
+            defaultToken={defaultActiveTokens[chainId!].includes(token.address)}
+            key={`${token.address}`}
+          />
+        ))}
         {chainId === 1 &&
           tokenQuery &&
           filteredTokens.length < 5 &&
@@ -172,18 +169,16 @@ const TokenSelection = ({
           inactiveTokens.length > 0 && (
             <>
               <h1>Expanded results from inactive Token Lists</h1>
-              {inactiveTokens.map((token) => {
-                return (
-                  <TokenImportRow
-                    token={token}
-                    onClick={() => {
-                      addActiveToken(token.address);
-                      setTokenQuery("");
-                    }}
-                    key={`${token.address}`}
-                  />
-                );
-              })}
+              {inactiveTokens.map((token) => (
+                <TokenImportRow
+                  token={token}
+                  onClick={() => {
+                    addActiveToken(token.address);
+                    setTokenQuery("");
+                  }}
+                  key={`${token.address}`}
+                />
+              ))}
             </>
           )}
       </div>

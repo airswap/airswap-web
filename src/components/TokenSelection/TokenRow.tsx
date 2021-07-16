@@ -42,9 +42,9 @@ const TokenRow = ({
   defaultToken,
 }: TokenRowProps) => {
   return (
-    <div
+    <button
       className={classNames(
-        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer",
+        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
         selected && "opacity-40",
         disabled && "opacity-40 cursor-not-allowed"
       )}
@@ -55,6 +55,7 @@ const TokenRow = ({
       onClick={(e) => {
         !disabled && setToken(token.address);
       }}
+      disabled={disabled}
     >
       <img
         src={token.logoURI || "https://via.placeholder.com/150"}
@@ -83,7 +84,7 @@ const TokenRow = ({
       </div>
       <span></span>
       <div className="justify-self-end max-w-md">{balance}</div>
-    </div>
+    </button>
   );
 };
 

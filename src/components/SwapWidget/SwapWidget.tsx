@@ -47,7 +47,7 @@ const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
-  const [senderAmount, setSenderAmount] = useState<string>("0.01");
+  const [senderAmount, setSenderAmount] = useState("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);

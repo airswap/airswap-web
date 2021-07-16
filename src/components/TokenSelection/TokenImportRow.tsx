@@ -30,9 +30,9 @@ const TokenImportRow = ({
   const { t } = useTranslation(["balances", "common"]);
 
   return (
-    <div
+    <button
       className={classNames(
-        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer",
+        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
         selected && "opacity-40",
         disabled && "opacity-40 pointer-events-none"
       )}
@@ -57,7 +57,7 @@ const TokenImportRow = ({
       >
         {t("balances:addToTokenSet")}
       </button>
-    </div>
+    </button>
   );
 };
 
