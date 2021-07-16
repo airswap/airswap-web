@@ -7,12 +7,8 @@ import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
 import TokenRow from "./TokenRow";
 import TokenImportRow from "./TokenImportRow";
-import {
-  BalancesState,
-} from "../../features/balances/balancesSlice";
-import {
-  defaultActiveTokens,
-} from "../../features/metadata/metadataApi";
+import { BalancesState } from "../../features/balances/balancesSlice";
+import { defaultActiveTokens } from "../../features/metadata/metadataApi";
 
 export type TokenSelectionProps = {
   /**
@@ -60,11 +56,11 @@ export type TokenSelectionProps = {
   /**
    * function to handle removing active tokens (dispatches removeActiveToken).
    */
-   removeActiveToken: (val: string) => void;
-   /**
+  removeActiveToken: (val: string) => void;
+  /**
    * currently connected chain id
    */
-   chainId: number;
+  chainId: number;
 };
 
 const TokenSelection = ({
@@ -117,7 +113,10 @@ const TokenSelection = ({
 
   // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(0, 10);
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
+      0,
+      10
+    );
   }, [sortedInactiveTokens, tokenQuery]);
 
   return (
@@ -139,9 +138,7 @@ const TokenSelection = ({
         className="w-full"
       />
       <div>
-        {console.log(defaultActiveTokens[chainId!])}
         {filteredTokens.map((token) => {
-          console.log(defaultActiveTokens[chainId!].includes(token.address));
           return (
             <TokenRow
               token={token}
@@ -161,27 +158,34 @@ const TokenSelection = ({
                   : token.address === signerToken
               } // shouldn't be able to select same duplicate token
               removeActiveToken={removeActiveToken}
-              defaultToken={defaultActiveTokens[chainId!].includes(token.address)}
+              defaultToken={defaultActiveTokens[chainId!].includes(
+                token.address
+              )}
+              key={`${token.address}`}
             />
           );
         })}
-        {(chainId === 1 && tokenQuery && filteredTokens.length < 5 && inactiveTokens && inactiveTokens.length > 0) &&(
-          <>
-            <h1>Expanded results from inactive Token Lists</h1>
-            {console.log(inactiveTokens)}
-            {inactiveTokens.map((token) => {
-              return (
-                <TokenImportRow
-                  token={token}
-                  onClick={() => {
-                    addActiveToken(token.address);
-                    setTokenQuery("");
-                  }}
-                />
-              );
-            })}
-          </>
-        )}
+        {chainId === 1 &&
+          tokenQuery &&
+          filteredTokens.length < 5 &&
+          inactiveTokens &&
+          inactiveTokens.length > 0 && (
+            <>
+              <h1>Expanded results from inactive Token Lists</h1>
+              {inactiveTokens.map((token) => {
+                return (
+                  <TokenImportRow
+                    token={token}
+                    onClick={() => {
+                      addActiveToken(token.address);
+                      setTokenQuery("");
+                    }}
+                    key={`${token.address}`}
+                  />
+                );
+              })}
+            </>
+          )}
       </div>
     </div>
   );

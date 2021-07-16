@@ -20,7 +20,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
   addActiveToken,
-  removeActiveToken
+  removeActiveToken,
 } from "../../features/metadata/metadataSlice";
 import {
   requestActiveTokenAllowances,
@@ -51,7 +51,9 @@ const SwapWidget = () => {
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(false);
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
+    false
+  );
   const [tokenSelectType, setTokenSelectType] = useState<
     "senderToken" | "signerToken"
   >("senderToken");
@@ -240,6 +242,10 @@ const SwapWidget = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
+      if (address === senderToken) {
+        setSenderToken("");
+        setSenderAmount("0.01");
+      } else if (address === signerToken) setSignerToken("");
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
       dispatch(requestActiveTokenAllowances({ provider: library! }));

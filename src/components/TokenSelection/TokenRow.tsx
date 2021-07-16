@@ -29,7 +29,7 @@ export type TokenRowProps = {
   /**
    * Flag that determines if this is a default token that is automatically active.
    */
-   defaultToken: boolean;
+  defaultToken: boolean;
 };
 
 const TokenRow = ({
@@ -46,13 +46,15 @@ const TokenRow = ({
       className={classNames(
         "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer",
         selected && "opacity-40",
-        disabled && "opacity-40 pointer-events-none"
+        disabled && "opacity-40 cursor-not-allowed"
       )}
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
         gridGap: "16px",
       }}
-      onClick={() => !disabled && setToken(token.address)}
+      onClick={(e) => {
+        !disabled && setToken(token.address);
+      }}
     >
       <img
         src={token.logoURI || "https://via.placeholder.com/150"}
@@ -61,7 +63,23 @@ const TokenRow = ({
       />
       <div className="flex flex-col justify-start">
         <h3 className="flex flex-col">{token.symbol}</h3>
-        <h3 className="text-gray-400">{token.name} {!defaultToken && <>• <span onClick={() => removeActiveToken(token.address)}>Remove from active</span></>}</h3>
+        <h3 className="text-gray-400">
+          {token.name}{" "}
+          {!defaultToken && (
+            <>
+              •{" "}
+              <span
+              className="cursor-pointer hover:underline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeActiveToken(token.address);
+                }}
+              >
+                Remove from active
+              </span>
+            </>
+          )}
+        </h3>
       </div>
       <span></span>
       <div className="justify-self-end max-w-md">{balance}</div>
