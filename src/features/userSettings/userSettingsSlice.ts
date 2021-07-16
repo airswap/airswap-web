@@ -11,6 +11,8 @@ export interface UserSettingsState {
   theme: ThemeType;
 }
 
+export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
+
 const initialState: UserSettingsState = {
   theme: getInitialThemeValue(),
 };
@@ -22,7 +24,9 @@ const userSettingsSlice = createSlice({
     toggleTheme: (
       state,
     ) => {
-      state.theme = state.theme === ThemeType.dark ? ThemeType.light : ThemeType.dark;
+      const theme  = state.theme === ThemeType.dark ? ThemeType.light : ThemeType.dark;
+      localStorage[THEME_LOCAL_STORAGE_KEY] = theme
+      state.theme = theme;
     },
   },
 });

@@ -1,6 +1,4 @@
-import { ThemeType } from '../userSettingsSlice';
-
-const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
+import { THEME_LOCAL_STORAGE_KEY, ThemeType } from '../userSettingsSlice';
 
 export default function getInitialThemeValue(): ThemeType {
   if (localStorage[THEME_LOCAL_STORAGE_KEY] === ThemeType.dark) {
