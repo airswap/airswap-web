@@ -1,4 +1,5 @@
-import { THEME_LOCAL_STORAGE_KEY, ThemeType } from '../userSettingsSlice';
+import { THEME_LOCAL_STORAGE_KEY } from '../userSettingsSlice';
+import { ThemeType } from '../../../style/themes';
 
 export default function getInitialThemeValue(): ThemeType {
   if (localStorage[THEME_LOCAL_STORAGE_KEY] === ThemeType.dark) {

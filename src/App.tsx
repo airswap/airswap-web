@@ -9,10 +9,10 @@ import GlobalStyle from './style/GlobalStyle';
 import TradeContainer from './components/TradeContainer/TradeContainer';
 import Page from './components/Page/Page';
 import Title from './components/Title/Title';
-import "./i18n/i18n";
 import { useAppSelector } from './app/hooks';
-import { selectUserSettings, ThemeType } from './features/userSettings/userSettingsSlice';
-import { darkTheme, lightTheme } from './style/themes';
+import { selectUserSettings } from './features/userSettings/userSettingsSlice';
+import { darkTheme, lightTheme, ThemeType } from './style/themes';
+import "./i18n/i18n";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);

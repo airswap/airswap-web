@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import getInitialThemeValue from './helpers/getInitialThemeValue';
-
-export enum ThemeType {
-  dark = "dark",
-  light = "light",
-}
+import { ThemeType } from '../../style/themes';
 
 export interface UserSettingsState {
   theme: ThemeType;

@@ -16,7 +16,13 @@ type FontProps = {
   lineHeight: number;
 }
 
+export enum ThemeType {
+  dark = "dark",
+  light = "light",
+}
+
 export interface ThemeProps {
+  name: ThemeType;
   colors: {
     primary: string;
     primaryDark: string;
@@ -86,6 +92,7 @@ const typography: Record<Typography, FontProps> = {
 }
 
 export const darkTheme: ThemeProps = {
+  name: ThemeType.dark,
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
@@ -102,6 +109,7 @@ export const darkTheme: ThemeProps = {
 }
 
 export const lightTheme: ThemeProps = {
+  name: ThemeType.light,
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
