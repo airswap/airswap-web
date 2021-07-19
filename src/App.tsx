@@ -12,6 +12,7 @@ import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
+import Toaster from "./components/Toasts/Toaster";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -32,6 +33,7 @@ const App = (): JSX.Element => {
               <Page />
             </Route>
           </Router>
+          <Toaster />
         </Suspense>
       </Web3ReactProvider>
       <GlobalStyle />
