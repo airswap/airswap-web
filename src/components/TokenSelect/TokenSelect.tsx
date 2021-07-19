@@ -17,7 +17,7 @@ type TokenSelectPropTypes = {
   tokens: TokenInfo[];
   hasError?: boolean;
   onAmountChange?: React.FormEventHandler<HTMLInputElement>;
-  onTokenChange?: React.MouseEventHandler<HTMLButtonElement>;
+  onSelectTokenClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 const TokenSelect = ({
@@ -29,7 +29,7 @@ const TokenSelect = ({
   amount,
   onAmountChange,
   token,
-  onTokenChange,
+  onSelectTokenClick,
   hasError = false,
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
@@ -84,9 +84,12 @@ const TokenSelect = ({
                   "text-gray-500": !token,
                 }
               )}
-              onClick={onTokenChange}
-              >
-              {tokens.find((t)=> t.address === token)?.symbol || isDefaultOptionDisabled ? tokens.find((t)=> t.address === token)?.symbol : `${t("common:select")}…`}
+              onClick={onSelectTokenClick}
+            >
+              {tokens.find((t) => t.address === token)?.symbol ||
+              isDefaultOptionDisabled
+                ? tokens.find((t) => t.address === token)?.symbol
+                : `${t("common:select")}…`}
             </button>
           ) : (
             <LoadingSpinner className="mx-2" />

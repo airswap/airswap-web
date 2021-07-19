@@ -15,17 +15,18 @@ export type TokenRowProps = {
    */
   setToken: (val: string) => void;
   /**
-   * Whether counterpart token is already selected; Still allows user to select that token
+   * Whether counterpart token is already selected;
+   * Still allows user to select that token
    */
   selected?: boolean;
   /**
-   * Whether current token is already selected; Prevents token row click
+   * Whether to disable selection of this token (e.g. if already selected)
    */
   disabled?: boolean;
   /**
    * Removes token from the active tokens list.
    */
-  removeActiveToken: any;
+  removeActiveToken: (tokenAddress: string)=> void;
   /**
    * Flag that determines if this is a default token that is automatically active.
    */

@@ -32,7 +32,8 @@ export type TokenSelectionProps = {
    */
   setSenderToken: (val: string) => void;
   /**
-   * Request type incoming to token selection modal; modal handles setSignerToken/setSenderToken based off of this parameter
+   * Request type incoming to token selection modal; modal handles
+   * setSignerToken/setSenderToken based off of this parameter
    */
   tokenSelectType: "signerToken" | "senderToken";
   /**
@@ -77,7 +78,7 @@ const TokenSelection = ({
   removeActiveToken,
   chainId,
 }: TokenSelectionProps) => {
-  const [tokenQuery, setTokenQuery] = useState("");
+  const [tokenQuery, setTokenQuery] = useState<string>("");
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -99,7 +100,7 @@ const TokenSelection = ({
 
   // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedTokens), tokenQuery!);
+    return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
 
   // sort inactive tokens based on symbol
@@ -122,7 +123,9 @@ const TokenSelection = ({
   return (
     <div>
       <div className="flex flex-wrap align-middle justify-between">
-        <label className="font-bold text-sm" htmlFor="tokenQuery">Select token</label>
+        <label className="font-bold text-sm" htmlFor="tokenQuery">
+          Select token
+        </label>
         <HiX
           className="light:text-black text-xl cursor-pointer"
           onClick={closeModal}
