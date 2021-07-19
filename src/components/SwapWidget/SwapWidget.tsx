@@ -42,6 +42,8 @@ import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
+import { Toaster } from "react-hot-toast";
+import { notifyApproval } from "../Toasts/ToastController";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -141,6 +143,7 @@ const SwapWidget = () => {
           onClick={async () => {
             dispatch(take({ order, library }));
             setIsRequestUpdated(false);
+            notifyApproval();
           }}
         >
           {t("orders:take")}
@@ -288,6 +291,19 @@ const SwapWidget = () => {
           chainId={chainId!}
         />
       </Modal>
+      <Toaster
+        position="bottom-left"
+        toastOptions={{
+          style: {
+            backgroundColor: "#060607",
+            padding: 0,
+            margin: 0,
+            borderRadius: 0,
+            border: "1px solid #2B2B2B"
+          },
+        }}
+      />
+      <button onClick={notifyApproval}>here</button>
       {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (
