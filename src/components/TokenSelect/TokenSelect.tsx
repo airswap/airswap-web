@@ -34,10 +34,8 @@ const TokenSelect = ({
 }: TokenSelectPropTypes) => {
   const { t } = useTranslation(["common", "orders"]);
   const { chainId } = useWeb3React<Web3Provider>();
-  const [
-    isDefaultOptionDisabled,
-    setIsDefaultOptionDisabled,
-  ] = useState<boolean>(false);
+  const [isDefaultOptionDisabled, setIsDefaultOptionDisabled] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setIsDefaultOptionDisabled(false);

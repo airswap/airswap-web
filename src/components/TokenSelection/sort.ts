@@ -20,5 +20,7 @@ export function sortTokensByBalance(
 }
 
 export function sortTokensBySymbol(tokens: TokenInfo[]) {
-  return tokens.sort((a, b) => (a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1));
+  return tokens.sort((a, b) =>
+    a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1
+  );
 }

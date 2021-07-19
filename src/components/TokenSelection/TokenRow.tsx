@@ -26,7 +26,7 @@ export type TokenRowProps = {
   /**
    * Removes token from the active tokens list.
    */
-  removeActiveToken: (tokenAddress: string)=> void;
+  removeActiveToken: (tokenAddress: string) => void;
   /**
    * Flag that determines if this is a default token that is automatically active.
    */
@@ -71,7 +71,7 @@ const TokenRow = ({
             <>
               •{" "}
               <span
-              className="cursor-pointer hover:underline"
+                className="cursor-pointer hover:underline"
                 onClick={(e) => {
                   e.stopPropagation();
                   removeActiveToken(token.address);

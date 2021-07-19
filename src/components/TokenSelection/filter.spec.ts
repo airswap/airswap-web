@@ -39,7 +39,10 @@ describe("Filter Tokens", () => {
   });
 
   it("should filter tokens by token address (0x2260fac5e5542a773aa44fbcfedf7c193bc2c599)", () => {
-    const filteredTokens = filterTokens(activeTokens, "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599");
+    const filteredTokens = filterTokens(
+      activeTokens,
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+    );
     expect(filteredTokens.length).toBe(1);
     expect(filteredTokens[0].symbol).toBe("WBTC");
   });

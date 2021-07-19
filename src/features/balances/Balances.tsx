@@ -1,10 +1,7 @@
 import { Fragment, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { useAppSelector } from "../../app/hooks";
-import {
-  selectAllowances,
-  selectBalances,
-} from "./balancesSlice";
+import { selectAllowances, selectBalances } from "./balancesSlice";
 import classes from "./Balances.module.css";
 import { formatUnits } from "@ethersproject/units";
 import { selectActiveTokens } from "../metadata/metadataSlice";

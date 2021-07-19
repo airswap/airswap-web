@@ -51,12 +51,10 @@ const SwapWidget = () => {
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
-    false
-  );
-  const [tokenSelectType, setTokenSelectType] = useState<
-    "senderToken" | "signerToken"
-  >("senderToken");
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
+    useState<boolean>(false);
+  const [tokenSelectType, setTokenSelectType] =
+    useState<"senderToken" | "signerToken">("senderToken");
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);

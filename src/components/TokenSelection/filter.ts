@@ -8,11 +8,12 @@ import { ethers } from "ethers";
 export function createTokenFilterFunction<T extends TokenInfo>(
   search: string
 ): (tokens: T) => boolean {
-  const searchingAddress = ethers.utils.isAddress(search)
+  const searchingAddress = ethers.utils.isAddress(search);
 
   if (searchingAddress) {
-    const lower = search.toLowerCase()
-    return (t: T) => ('isToken' in t ? search === t.address : lower === t.address.toLowerCase())
+    const lower = search.toLowerCase();
+    return (t: T) =>
+      "isToken" in t ? search === t.address : lower === t.address.toLowerCase();
   }
 
   const lowerSearchParts = search

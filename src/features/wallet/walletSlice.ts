@@ -31,9 +31,7 @@ const walletSlice = createSlice({
 
 export const selectWallet = (state: RootState) => state.wallet;
 
-export const {
-  setWalletConnected,
-  setWalletDisconnected,
-} = walletSlice.actions;
+export const { setWalletConnected, setWalletDisconnected } =
+  walletSlice.actions;
 
 export default walletSlice.reducer;
