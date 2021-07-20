@@ -1,4 +1,4 @@
-import Icon from '../Icon/Icon';
+import { StyledDarkModeSwitch } from './DarkModeSwitch.styles';
 
 type DarkModeProps = {
   className?: string;
@@ -8,12 +8,12 @@ type DarkModeProps = {
 const DarkModeSwitch = ({ className, onClick }: DarkModeProps): JSX.Element => {
 
   return (
-    <button
-      onClick={onClick}
+    <StyledDarkModeSwitch
       className={className}
-    >
-      <Icon name="dark-mode-switch" />
-    </button>
+      iconSize={1.5}
+      icon="dark-mode-switch"
+      onClick={onClick}
+    />
   );
 };
 

@@ -1,13 +1,12 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledPage } from './Page.styles';
+import { StyledPage, StyledSiteLogo } from './Page.styles';
 import SideBar from '../SideBar/SideBar';
-import SiteLogo from '../SiteLogo/SiteLogo';
 
 const Page: FC = ({ children }): ReactElement => {
 
   return (
     <StyledPage>
-      <SiteLogo className="site-logo" />
+      <StyledSiteLogo />
       <SideBar open />
       { children }
     </StyledPage>

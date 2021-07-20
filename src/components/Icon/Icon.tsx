@@ -8,6 +8,7 @@ type IconSet = {
 
 export interface SvgIconProps {
   className?: string;
+  iconSize?: number;
   color?: string;
 }
 
@@ -21,10 +22,14 @@ interface IconProps extends SvgIconProps {
   name: keyof typeof icons;
 }
 
-const Icon: FC<IconProps> = ({ name, className = '' }): ReactElement | null => {
+const Icon: FC<IconProps> = ({ name, iconSize = 1, className = '' }): ReactElement | null => {
   const IconComponent = icons[name];
 
-  return IconComponent ? <StyledIcon><IconComponent className={className} /></StyledIcon> : null;
+  return IconComponent ? (
+    <StyledIcon iconSize={iconSize} className={className}>
+      <IconComponent />
+    </StyledIcon>
+  ) : null;
 };
 
 

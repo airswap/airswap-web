@@ -16,6 +16,12 @@ const GlobalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
       monospace;
   }
+
+  p {
+    font-size: ${(props) => props.theme.typography.paragraph.fontSize};
+    font-weight: ${(props) => props.theme.typography.paragraph.fontWeight};
+    line-height: ${(props) => props.theme.typography.paragraph.lineHeight};
+  }
 `;
 
 export default GlobalStyle;

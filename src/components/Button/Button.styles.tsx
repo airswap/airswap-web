@@ -15,6 +15,10 @@ function getButtonBackground(theme: ThemeProps, intent?: ButtonIntent): string {
   }
 }
 
+export const Text = styled.div<{ theme: ThemeProps }>`
+  transition: opacity 0.3s ease-out;
+`;
+
 export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   display: flex;
   align-items: center;
@@ -32,9 +36,8 @@ export const StyledButton = styled.button<{ theme: ThemeProps } & ButtonProps>`
   pointer-events: ${props => props.disabled ? 'none' : 'visible'};
   cursor: ${props => props.disabled ? 'none' : 'pointer'};
   
-  .text {
+  ${Text} {
     margin-right: ${props => props.loading ? '1rem' : 0};
-    transition: opacity 0.3s ease-out;
     opacity: ${props => props.disabled ? 0.5 : 1};
   }
 `;

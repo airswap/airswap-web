@@ -1,8 +1,15 @@
 import styled from 'styled-components/macro';
 import { ThemeProps } from '../../style/themes';
-import { SvgIconProps } from './Icon';
 
-export const StyledIcon = styled.span<{ theme: ThemeProps & SvgIconProps }>`
+interface StyledIconProps {
+  iconSize: number;
+}
+
+export const StyledIcon = styled.div<{ theme: ThemeProps } & StyledIconProps>`  
+  svg {
+    width: ${props => `${props.iconSize}rem`};
+  }
+
   circle,
   path,
   polygon,

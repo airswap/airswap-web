@@ -1,8 +1,29 @@
 import styled from 'styled-components/macro';
 import { ThemeProps } from '../../style/themes';
 import breakPoints from '../../style/breakpoints';
+import DarkModeSwitch from '../DarkModeSwitch/DarkModeSwitch';
+import { Wallet } from '../../features/wallet/Wallet';
 
-export const StyledSideBar = styled.div<{ theme: ThemeProps } & { open: boolean }>`
+interface StyledSideBarProps {
+  open: boolean;
+}
+
+export const StyledDarkModeSwitch = styled(DarkModeSwitch)<{ theme: ThemeProps }>`
+  position: absolute;
+  bottom: 2.5rem;
+  right: 2.5rem;
+`;
+
+export const StyledWallet = styled(Wallet)<{ theme: ThemeProps }>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  top: 2.5rem;
+  right: 2.5rem;
+`;
+
+export const StyledSideBar = styled.div<{ theme: ThemeProps } & StyledSideBarProps>`
   transition: transform 0.5s ease-out;
   transform: ${props => props.open ? 'none' : 'translateX(27rem)'} ;
   
@@ -20,23 +41,6 @@ export const StyledSideBar = styled.div<{ theme: ThemeProps } & { open: boolean 
   
   @media ${breakPoints.tabletLandscapeUp} {
     display: flex;
-  }
-  
-  .wallet {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    position: absolute;
-    top: 2.5rem;
-    right: 2.5rem;
-  }
-  
-  .dark-mode-switch {
-    position: absolute;
-    bottom: 2.5rem;
-    right: 2.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
   }
 `;
 
