@@ -16,7 +16,16 @@ import {
   selectBestOrder,
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
-import { selectActiveTokens } from "../../features/metadata/metadataSlice";
+import {
+  selectActiveTokens,
+  selectAllTokenInfo,
+  addActiveToken,
+  removeActiveToken,
+} from "../../features/metadata/metadataSlice";
+import {
+  requestActiveTokenAllowances,
+  requestActiveTokenBalances,
+} from "../../features/balances/balancesSlice";
 import {
   selectBalances,
   selectAllowances,
@@ -32,6 +41,7 @@ import Timer from "../../components/Timer/Timer";
 import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
+import TokenSelection from "../../components/TokenSelection/TokenSelection";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -43,13 +53,18 @@ const SwapWidget = () => {
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
+    useState<boolean>(false);
+  const [tokenSelectType, setTokenSelectType] =
+    useState<"senderToken" | "signerToken">("senderToken");
+  const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const dispatch = useAppDispatch();
   const activeTokens = useAppSelector(selectActiveTokens);
+  const allTokens = useAppSelector(selectAllTokenInfo);
   const { t } = useTranslation(["orders", "common", "wallet"]);
   const {
     chainId,
@@ -224,6 +239,26 @@ const SwapWidget = () => {
     }
   }
 
+  const handleAddActiveToken = (address: string) => {
+    if (library) {
+      dispatch(addActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowances({ provider: library! }));
+    }
+  };
+
+  const handleRemoveActiveToken = (address: string) => {
+    if (library) {
+      if (address === senderToken) {
+        setSenderToken("");
+        setSenderAmount("0.01");
+      } else if (address === signerToken) setSignerToken("");
+      dispatch(removeActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowances({ provider: library! }));
+    }
+  };
+
   useEffect(() => {
     setSenderToken("");
     setSignerToken("");
@@ -232,6 +267,27 @@ const SwapWidget = () => {
 
   return (
     <Card className="flex-col m-4 w-72">
+      <Modal
+        isOpen={tokenSelectModalOpen}
+        onRequestClose={() => setTokenSelectModalOpen(false)}
+        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
+        className="w-120 p-6 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
+      >
+        <TokenSelection
+          closeModal={() => setTokenSelectModalOpen(false)}
+          signerToken={signerToken!}
+          senderToken={senderToken!}
+          setSignerToken={setSignerToken}
+          setSenderToken={setSenderToken}
+          tokenSelectType={tokenSelectType}
+          balances={balances}
+          allTokens={allTokens}
+          activeTokens={activeTokens}
+          addActiveToken={handleAddActiveToken}
+          removeActiveToken={handleRemoveActiveToken}
+          chainId={chainId!}
+        />
+      </Modal>
       {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (
@@ -263,8 +319,9 @@ const SwapWidget = () => {
         className="mb-2"
         label={t("orders:send")}
         token={senderToken}
-        onTokenChange={(e) => {
-          setSenderToken(e.currentTarget.value);
+        onSelectTokenClick={(e) => {
+          setTokenSelectType("senderToken");
+          setTokenSelectModalOpen(true);
           if (order) setIsRequestUpdated(true);
         }}
         hasError={insufficientBalance}
@@ -276,8 +333,9 @@ const SwapWidget = () => {
         label={t("orders:receive")}
         token={signerToken}
         quoteAmount={isRequestUpdated ? "" : signerAmount}
-        onTokenChange={(e) => {
-          setSignerToken(e.currentTarget.value);
+        onSelectTokenClick={(e) => {
+          setTokenSelectType("signerToken");
+          setTokenSelectModalOpen(true);
           if (order) setIsRequestUpdated(true);
         }}
       />

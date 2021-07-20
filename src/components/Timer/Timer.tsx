@@ -13,7 +13,9 @@ export const Timer = ({
   expiryTime = Date.now() / 1000 + 300,
   onTimerComplete,
 }: TimerProps) => {
-  const [distance, setDistance] = useState<number>(Math.floor(expiryTime - Date.now() / 1000));
+  const [distance, setDistance] = useState<number>(
+    Math.floor(expiryTime - Date.now() / 1000)
+  );
 
   useEffect(() => {
     let interval = setInterval(() => {

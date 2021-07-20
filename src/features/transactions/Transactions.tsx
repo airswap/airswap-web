@@ -104,7 +104,6 @@ export function Transactions() {
 
   if (!active || !chainId) return null;
 
-
   const icons = {
     succeeded: "✅",
     reverted: "🚫",
