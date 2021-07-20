@@ -7,7 +7,7 @@ const LoadingSpinner = ({ className }: LoadingSpinnerProps) => {
   return (
     <div
       className={classNames(
-        "flex items-center justify-center h-full w-full",
+        "flex items-center justify-center h-full",
         className
       )}
     >

@@ -15,7 +15,7 @@ const WalletProviderList = ({
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <Button
           key={provider.name}
-          variant="left-justified"
+          justifyContent="flex-start"
           intent="neutral"
           onClick={() => {
             onProviderSelected(provider);

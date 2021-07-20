@@ -3,7 +3,7 @@ import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -35,7 +35,11 @@ import {
 } from "./walletSlice";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
 
-export const Wallet = () => {
+type WalletProps = {
+  className?: string;
+}
+
+export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const {
     chainId,
     account,
@@ -172,11 +176,7 @@ export const Wallet = () => {
   ]);
 
   return (
-    <div>
-      <div>
-        {t("common:chainId")}: {chainId}
-      </div>
-
+    <div className={className}>
       <Modal
         isOpen={showConnectorList}
         onRequestClose={() => setShowConnectorList(false)}
@@ -208,6 +208,9 @@ export const Wallet = () => {
         }}
         isConnecting={isActivating}
       />
+      <div>
+        {t("common:chainId")}: {chainId}
+      </div>
     </div>
   );
 };
