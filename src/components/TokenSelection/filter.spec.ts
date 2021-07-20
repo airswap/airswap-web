@@ -46,4 +46,25 @@ describe("Filter Tokens", () => {
     expect(filteredTokens.length).toBe(1);
     expect(filteredTokens[0].symbol).toBe("WBTC");
   });
+
+  it("should not filter if search is nothing", () => {
+    const filteredTokens = filterTokens(activeTokens, "");
+    expect(filteredTokens.length).toBe(4);
+    expect(filteredTokens[0].symbol).toBe("ZRX");
+    expect(filteredTokens[1].symbol).toBe("cUSDC");
+    expect(filteredTokens[2].symbol).toBe("WBTC");
+    expect(filteredTokens[3].symbol).toBe("cLINK");
+  });
+
+  it("should filter with one character", () => {
+    const filteredTokens = filterTokens(activeTokens, "b");
+    expect(filteredTokens.length).toBe(1);
+    expect(filteredTokens[0].symbol).toBe("WBTC");
+  });
+
+  it("should match characters in the middle of the symbol", () => {
+    const filteredTokens = filterTokens(activeTokens, "cL");
+    expect(filteredTokens.length).toBe(1);
+    expect(filteredTokens[0].symbol).toBe("cLINK");
+  });
 });

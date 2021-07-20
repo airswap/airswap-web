@@ -11,30 +11,18 @@ export type TokenImportRowProps = {
    * onClick event, either setSignerToken or setSenderToken
    */
   onClick: (val: string) => void;
-  /**
-   * Whether counterpart token is already selected; Still allows user to select that token
-   */
-  selected?: boolean;
-  /**
-   * Whether current token is already selected; Prevents token row click
-   */
-  disabled?: boolean;
 };
 
 const TokenImportRow = ({
   token,
   onClick,
-  selected,
-  disabled,
 }: TokenImportRowProps) => {
   const { t } = useTranslation(["balances", "common"]);
 
   return (
-    <button
+    <div
       className={classNames(
         "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
-        selected && "opacity-40",
-        disabled && "opacity-40 pointer-events-none"
       )}
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
@@ -53,11 +41,11 @@ const TokenImportRow = ({
       <span></span>
       <button
         className="justify-self-end max-w-md"
-        onClick={() => !disabled && onClick(token.address)}
+        onClick={() => onClick(token.address)}
       >
         {t("balances:addToTokenSet")}
       </button>
-    </button>
+    </div>
   );
 };
 

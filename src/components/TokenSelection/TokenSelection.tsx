@@ -150,11 +150,6 @@ const TokenSelection = ({
               token.decimals
             )}
             setToken={handleClick}
-            selected={
-              tokenSelectType === "senderToken"
-                ? token.address === signerToken
-                : token.address === senderToken
-            } // should be grayed out, but still clickable
             disabled={
               tokenSelectType === "senderToken"
                 ? token.address === senderToken

@@ -8,7 +8,6 @@ export default {
   argTypes: {
     token: { control: { type: "object" } },
     balance: { control: { type: "text" } },
-    selected: { control: { type: "boolean" } },
     disabled: { control: { type: "boolean" } },
     setToken: { control: { type: "function" } },
     removeActiveToken: { control: { type: "function" } },
@@ -28,22 +27,6 @@ Default.args = {
     symbol: "ETH",
   },
   balance: "230",
-  setToken: () => void 1,
-  removeActiveToken: () => void 1,
-  defaultToken: true,
-};
-
-export const Selected = Template.bind({});
-Selected.args = {
-  token: {
-    chainId: 1,
-    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
-    name: "Ethereum",
-    decimals: 18,
-    symbol: "ETH",
-  },
-  balance: "230",
-  selected: true,
   setToken: () => void 1,
   removeActiveToken: () => void 1,
   defaultToken: true,

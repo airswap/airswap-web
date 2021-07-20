@@ -15,11 +15,6 @@ export type TokenRowProps = {
    */
   setToken: (val: string) => void;
   /**
-   * Whether counterpart token is already selected;
-   * Still allows user to select that token
-   */
-  selected?: boolean;
-  /**
    * Whether to disable selection of this token (e.g. if already selected)
    */
   disabled?: boolean;
@@ -33,20 +28,19 @@ export type TokenRowProps = {
   defaultToken: boolean;
 };
 
+// TODO: Make Container a button instead of a div
 const TokenRow = ({
   token,
   balance,
   setToken,
   removeActiveToken,
-  selected,
   disabled,
   defaultToken,
 }: TokenRowProps) => {
   return (
-    <button
+    <div
       className={classNames(
         "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
-        selected && "opacity-40",
         disabled && "opacity-40 cursor-not-allowed"
       )}
       style={{
@@ -56,7 +50,6 @@ const TokenRow = ({
       onClick={(e) => {
         !disabled && setToken(token.address);
       }}
-      disabled={disabled}
     >
       <img
         src={token.logoURI || "https://via.placeholder.com/150"}
@@ -85,7 +78,7 @@ const TokenRow = ({
       </div>
       <span></span>
       <div className="justify-self-end max-w-md">{balance}</div>
-    </button>
+    </div>
   );
 };
 
