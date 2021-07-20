@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components/macro';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";

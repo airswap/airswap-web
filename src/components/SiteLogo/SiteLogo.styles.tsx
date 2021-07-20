@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { ThemeProps } from '../../style/themes';
 
 export const StyledSiteLogo = styled.svg<{ theme: ThemeProps }>`

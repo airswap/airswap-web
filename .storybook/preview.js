@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components/macro";
 import { addDecorator } from "@storybook/react";
 import { withThemesProvider } from "storybook-addon-styled-component-theme";
 import { darkTheme, lightTheme } from "../src/style/themes";

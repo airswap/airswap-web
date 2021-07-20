@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components/macro';
 import { ThemeProps } from './themes';
 
 const GlobalStyle = createGlobalStyle<{ theme: ThemeProps }>`

@@ -1,6 +1,15 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { ThemeProps } from '../../style/themes';
 import breakPoints from '../../style/breakpoints';
+
+export const Container = styled.div<{ theme: ThemeProps }>`
+  display: flex;
+  flex-direction: column;
+  padding: 2.25rem;
+  width: 100%;
+  background: ${props => props.theme.colors.black};
+  overflow: hidden;
+`;
 
 export const StyledTradeContainer = styled.div<{ theme: ThemeProps }>`
   display: flex;
@@ -19,13 +28,6 @@ export const StyledTradeContainer = styled.div<{ theme: ThemeProps }>`
   @media ${breakPoints.phoneOnly} {
     padding: 1.75rem;
   }
-  
-  .container-children {
-    display: flex;
-    flex-direction: column;
-    padding: 2.25rem;
-    width: 100%;
-    background: ${props => props.theme.colors.black};
-    overflow: hidden;
-  }
- `;
+`;
+
+
