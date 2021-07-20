@@ -43,7 +43,7 @@ import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import toast, { Toaster } from "react-hot-toast";
-import ToastComponent from "../Toasts/Toast";
+import { notify } from "../Toasts/ToastController";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -113,17 +113,6 @@ const SwapWidget = () => {
     }
     if (order) setIsRequestUpdated(true);
   };
-
-  // toast for
-  const notify = () =>
-    toast(
-      (t) => (
-        <ToastComponent onClose={() => toast.dismiss(t.id)} duration={30}/>
-      ),
-      {
-        duration: 300000,
-      }
-    );
 
   const DisplayedButton = () => {
     if (!active || !chainId) {
@@ -314,6 +303,7 @@ const SwapWidget = () => {
           },
         }}
       />
+      <button onClick={notify}>here</button>
       {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (

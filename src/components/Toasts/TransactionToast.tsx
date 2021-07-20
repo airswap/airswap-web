@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BiInfoCircle } from "react-icons/bi";
 import { HiX } from "react-icons/hi";
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes } from 'styled-components/macro';
 
 const Container = styled.div`
   color: white;
