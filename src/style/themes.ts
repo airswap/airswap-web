@@ -1,98 +1,60 @@
-type Typography =
-  'title1'
-  | 'title2'
-  | 'title3'
-  | 'title4'
-  | 'subtitle'
-  | 'paragraph'
-  | 'formLabel'
-  | 'nav'
-  | 'link'
-  | 'small';
+import { DefaultTheme } from "styled-components/macro";
 
-type FontProps = {
-  fontSize: string;
-  fontWeight: number;
-  lineHeight: number;
-}
-
-export enum ThemeType {
-  dark = "dark",
-  light = "light",
-}
-
-export interface ThemeProps {
-  name: ThemeType;
-  colors: {
-    primary: string;
-    primaryDark: string;
-    white: string;
-    black: string;
-    grey: string;
-    darkGrey: string;
-    lightGrey: string;
-    red: string;
-    orange: string;
-    green: string;
-  }
-  typography: Record<Typography, FontProps>;
-}
-
-const typography: Record<Typography, FontProps> = {
+const typography: DefaultTheme["typography"] = {
   title1: {
-    fontSize: '3rem',
+    fontSize: "3rem",
     lineHeight: 1.167,
     fontWeight: 500,
   },
   title2: {
-    fontSize: '2.5rem',
+    fontSize: "2.5rem",
     lineHeight: 1.2,
     fontWeight: 500,
   },
   title3: {
-    fontSize: '2rem',
+    fontSize: "2rem",
     lineHeight: 1.25,
     fontWeight: 400,
   },
   title4: {
-    fontSize: '1.5rem',
+    fontSize: "1.5rem",
     lineHeight: 1.33,
     fontWeight: 700,
   },
   subtitle: {
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.5,
     fontWeight: 700,
   },
   paragraph: {
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.5,
     fontWeight: 400,
   },
   formLabel: {
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.5,
     fontWeight: 700,
   },
   link: {
-    fontSize: '1rem',
+    fontSize: "1rem",
     lineHeight: 1.5,
     fontWeight: 400,
   },
   nav: {
-    fontSize: '2rem',
+    fontSize: "2rem",
     lineHeight: 1.25,
     fontWeight: 400,
   },
   small: {
-    fontSize: '0.875rem',
+    fontSize: "0.875rem",
     lineHeight: 1.71,
     fontWeight: 400,
-  }
-}
+  },
+};
 
-export const darkTheme: ThemeProps = {
-  name: ThemeType.dark,
+export const darkTheme: DefaultTheme = {
+  name: "dark",
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
@@ -106,10 +68,10 @@ export const darkTheme: ThemeProps = {
     green: "green",
   },
   typography,
-}
+};
 
-export const lightTheme: ThemeProps = {
-  name: ThemeType.light,
+export const lightTheme: DefaultTheme = {
+  name: "light",
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
@@ -123,4 +85,4 @@ export const lightTheme: ThemeProps = {
     green: "green",
   },
   typography,
-}
+};
