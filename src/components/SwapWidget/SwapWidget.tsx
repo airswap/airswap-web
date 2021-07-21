@@ -117,7 +117,7 @@ const SwapWidget = () => {
     if (!active || !chainId) {
       return (
         <Button
-          className="w-full mt-2"
+          className="submit-button"
           intent="primary"
           loading={isConnecting}
           onClick={() => setShowWalletList(true)}
@@ -134,7 +134,7 @@ const SwapWidget = () => {
     ) {
       return (
         <Button
-          className="w-full mt-2"
+          className="submit-button"
           intent="primary"
           aria-label={t("orders:take", { context: "aria" })}
           disabled={isNaN(parseFloat(signerAmount))}
@@ -155,7 +155,7 @@ const SwapWidget = () => {
     ) {
       return (
         <Button
-          className="w-full mt-2"
+          className="submit-button"
           intent="primary"
           aria-label={t("orders:approve", { context: "aria" })}
           loading={
@@ -173,7 +173,7 @@ const SwapWidget = () => {
     } else {
       return (
         <Button
-          className="w-full mt-2"
+          className="submit-button"
           intent="primary"
           disabled={
             !decimalsFound ||
@@ -299,7 +299,7 @@ const SwapWidget = () => {
           withAmount={true}
           amount={senderAmount}
           onAmountChange={(e) => handleTokenAmountChange(e)}
-          className="mb-2"
+          className="token-select"
           label={t("orders:send")}
           token={senderToken}
           onTokenChange={() => {
@@ -312,7 +312,7 @@ const SwapWidget = () => {
         <TokenSelect
           tokens={activeTokens}
           withAmount={false}
-          className="mb-2"
+          className="token-select"
           label={t("orders:receive")}
           token={signerToken}
           quoteAmount={isRequestUpdated ? "" : signerAmount}

@@ -11,6 +11,14 @@ export const StyledSwapWidget = styled.div<{ theme: ThemeProps }>`
     display: flex;
     margin-bottom: 1rem;
   }
- `;
+
+  .token-select:last-of-type {
+    margin-bottom: 3rem;
+  }
+
+  .submit-button {
+    margin-bottom: 2.75rem;
+  }
+`;
 
 export default StyledSwapWidget;
