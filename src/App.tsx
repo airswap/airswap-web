@@ -1,17 +1,17 @@
 import { Suspense } from "react";
-import { ThemeProvider } from 'styled-components/macro';
+import { ThemeProvider } from "styled-components/macro";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";
 import { Transactions } from "./features/transactions/Transactions";
 import Balances from "./features/balances/Balances";
-import GlobalStyle from './style/GlobalStyle';
-import TradeContainer from './components/TradeContainer/TradeContainer';
-import Page from './components/Page/Page';
-import Title from './components/Title/Title';
-import { useAppSelector } from './app/hooks';
-import { selectUserSettings } from './features/userSettings/userSettingsSlice';
-import { darkTheme, lightTheme, ThemeType } from './style/themes';
+import GlobalStyle from "./style/GlobalStyle";
+import TradeContainer from "./components/TradeContainer/TradeContainer";
+import Page from "./components/Page/Page";
+import { Title } from "./components/Typography/Typography";
+import { useAppSelector } from "./app/hooks";
+import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
+import { darkTheme, lightTheme, ThemeType } from "./style/themes";
 import "./i18n/i18n";
 
 function getLibrary(provider: any): Web3Provider {
@@ -42,6 +42,6 @@ const App = (): JSX.Element => {
       <GlobalStyle />
     </ThemeProvider>
   );
-}
+};
 
 export default App;
