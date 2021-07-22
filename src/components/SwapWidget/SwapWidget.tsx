@@ -48,8 +48,6 @@ import {
   notifyTransactionSuccess,
   notifyTransactionFail,
 } from "../Toasts/ToastController";
-import toast from "react-hot-toast";
-import TransactionToast from "../Toasts/TransactionToast";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
