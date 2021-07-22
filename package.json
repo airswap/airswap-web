@@ -84,6 +84,7 @@
     "styled-components": "^5"
   },
   "devDependencies": {
+    "@react-theming/storybook-addon": "^1.1.1",
     "@storybook/addon-actions": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
@@ -95,7 +96,6 @@
     "autoprefixer": "^9",
     "jest-canvas-mock": "^2.3.1",
     "postcss": "^7",
-    "storybook-addon-styled-component-theme": "^2.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }

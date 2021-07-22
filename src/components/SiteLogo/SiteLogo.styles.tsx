@@ -1,8 +1,7 @@
-import styled from 'styled-components/macro';
-import { ThemeProps } from '../../style/themes';
+import styled from "styled-components/macro";
 
-export const StyledSiteLogo = styled.svg<{ theme: ThemeProps }>`
+export const StyledSiteLogo = styled.svg`
   width: 10rem;
   height: 3.125rem;
-  fill: ${props => props.theme.colors.white};
+  fill: ${(props) => props.theme.colors.white};
 `;
