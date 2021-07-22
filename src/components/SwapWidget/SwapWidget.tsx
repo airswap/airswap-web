@@ -302,7 +302,7 @@ const SwapWidget = () => {
           className="mb-2"
           label={t("orders:send")}
           token={senderToken}
-          onSelectTokenClick={(e) => {
+          onTokenChange={() => {
             setTokenSelectType("senderToken");
             setTokenSelectModalOpen(true);
             if (order) setIsRequestUpdated(true);
@@ -316,7 +316,7 @@ const SwapWidget = () => {
           label={t("orders:receive")}
           token={signerToken}
           quoteAmount={isRequestUpdated ? "" : signerAmount}
-          onSelectTokenClick={(e) => {
+          onTokenChange={() => {
             setTokenSelectType("signerToken");
             setTokenSelectModalOpen(true);
             if (order) setIsRequestUpdated(true);
