@@ -8,7 +8,7 @@ import Balances from "./features/balances/Balances";
 import GlobalStyle from "./style/GlobalStyle";
 import TradeContainer from "./components/TradeContainer/TradeContainer";
 import Page from "./components/Page/Page";
-import Title from "./components/Title/Title";
+import { Title } from "./components/Typography/Typography";
 import { useAppSelector } from "./app/hooks";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import { darkTheme, lightTheme } from "./style/themes";
