@@ -11,7 +11,7 @@ import Page from "./components/Page/Page";
 import { Title } from "./components/Typography/Typography";
 import { useAppSelector } from "./app/hooks";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
-import { darkTheme, lightTheme, ThemeType } from "./style/themes";
+import { darkTheme, lightTheme } from "./style/themes";
 import "./i18n/i18n";
 
 function getLibrary(provider: any): Web3Provider {
@@ -24,7 +24,7 @@ const App = (): JSX.Element => {
   const { theme } = useAppSelector(selectUserSettings);
 
   return (
-    <ThemeProvider theme={theme === ThemeType.dark ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={"Loading..."}>

@@ -1,24 +1,23 @@
-import styled from 'styled-components/macro';
-import { ThemeProps } from '../../style/themes';
+import styled from "styled-components/macro";
 
 interface StyledIconProps {
   iconSize: number;
 }
 
-export const StyledIcon = styled.div<{ theme: ThemeProps } & StyledIconProps>`  
+export const StyledIcon = styled.div<StyledIconProps>`
   svg {
-    width: ${props => `${props.iconSize}rem`};
+    width: ${(props) => `${props.iconSize}rem`};
   }
 
   circle,
   path,
   polygon,
   rect {
-   fill: ${props => props.color || 'currentColor'};
+    fill: ${(props) => props.color || "currentColor"};
   }
-  
+
   .stroke {
     fill: none;
-    stroke: ${props => props.color || 'currentColor'};
+    stroke: ${(props) => props.color || "currentColor"};
   }
 `;

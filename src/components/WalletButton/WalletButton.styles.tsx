@@ -1,7 +1,6 @@
-import styled from 'styled-components/macro';
-import { ThemeProps } from '../../style/themes';
+import styled from "styled-components/macro";
 
-export const StyledWalletButton = styled.div<{ theme: ThemeProps }>`
+export const StyledWalletButton = styled.div`
   display: flex;
   align-items: center;
 `;

@@ -12,8 +12,7 @@ import {
 } from "./Typography";
 
 export default {
-  title: "components/Typography/Title",
-  // component: Title
+  title: "components/Typography/Overview",
 } as Meta;
 
 const Grid = styled.div`
@@ -24,49 +23,54 @@ const Grid = styled.div`
   column-gap: 5rem;
 `;
 
+const FlexCol = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const Template: Story<TitleProps> = (args) => (
   <Grid>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Title</Subtitle>
       <Metadata>type: h1</Metadata>
-    </div>
+    </FlexCol>
     <Title type="h1">The quick brown fox jumps over the lazy dog</Title>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Title</Subtitle>
       <Metadata>type: h2</Metadata>
-    </div>
+    </FlexCol>
     <Title type="h2">The quick brown fox jumps over the lazy dog</Title>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Title</Subtitle>
       <Metadata>type: h3</Metadata>
-    </div>
+    </FlexCol>
     <Title type="h3">The quick brown fox jumps over the lazy dog</Title>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Title</Subtitle>
       <Metadata>type: h4</Metadata>
-    </div>
+    </FlexCol>
     <Title type="h4">The quick brown fox jumps over the lazy dog</Title>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Subtitle</Subtitle>
-    </div>
+    </FlexCol>
     <Subtitle>The quick brown fox jumps over the lazy dog</Subtitle>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Paragraph</Subtitle>
-    </div>
+    </FlexCol>
     <Paragraph>The quick brown fox jumps over the lazy dog</Paragraph>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Form Label</Subtitle>
-    </div>
+    </FlexCol>
     <FormLabel>The quick brown fox jumps over the lazy dog</FormLabel>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Navigation</Subtitle>
-    </div>
+    </FlexCol>
     <Navigation>The quick brown fox jumps over the lazy dog</Navigation>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <FlexCol>
       <Subtitle>Metadata</Subtitle>
-    </div>
+    </FlexCol>
     <Metadata>The quick brown fox jumps over the lazy dog</Metadata>
   </Grid>
 );
 
-export const Primary = Template.bind({});
+export const AllTypography = Template.bind({});

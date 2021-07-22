@@ -1,7 +1,7 @@
+import { ThemeType } from "styled-components/macro";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import getInitialThemeValue from './helpers/getInitialThemeValue';
-import { ThemeType } from '../../style/themes';
+import getInitialThemeValue from "./helpers/getInitialThemeValue";
 
 export interface UserSettingsState {
   theme: ThemeType;
@@ -17,11 +17,9 @@ const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState,
   reducers: {
-    toggleTheme: (
-      state,
-    ) => {
-      const theme  = state.theme === ThemeType.dark ? ThemeType.light : ThemeType.dark;
-      localStorage[THEME_LOCAL_STORAGE_KEY] = theme
+    toggleTheme: (state) => {
+      const theme: ThemeType = state.theme === "dark" ? "light" : "dark";
+      localStorage[THEME_LOCAL_STORAGE_KEY] = theme;
       state.theme = theme;
     },
   },
