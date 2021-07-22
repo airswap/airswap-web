@@ -3,10 +3,8 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { useTranslation } from "react-i18next";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import TextInput from '../TextInput/TextInput';
-import IconButton from '../IconButton/IconButton';
-import { StyledTokenSelect } from './TokenSelect.styles';
+import { StyledTokenSelect, TokenSelectorButton, TokenSelectorLoader } from './TokenSelect.styles';
 
 type TokenSelectProps = {
   withAmount: boolean;
@@ -82,19 +80,16 @@ const TokenSelect = ({
         />
       )}
 
-      <div className="token-selector">
-        {tokens ? (
-          <IconButton
-            className="token-selector-button"
-            iconSize={0.5}
-            icon="arrow-right"
-            text={tokenSelectorText}
-            onClick={() => onTokenChange && onTokenChange()}
-          />
-        ) : (
-          <LoadingSpinner />
-        )}
-      </div>
+      {tokens ? (
+        <TokenSelectorButton
+          iconSize={0.675}
+          icon="arrow-right"
+          text={tokenSelectorText}
+          onClick={() => onTokenChange && onTokenChange()}
+        />
+      ) : (
+        <TokenSelectorLoader />
+      )}
     </StyledTokenSelect>
   );
 };

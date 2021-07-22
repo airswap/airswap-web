@@ -4,7 +4,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Orders } from "./features/orders/Orders";
 import { Transactions } from "./features/transactions/Transactions";
-import Balances from "./features/balances/Balances";
+import Balances from './features/balances/Balances';
 import GlobalStyle from './style/GlobalStyle';
 import TradeContainer from './components/TradeContainer/TradeContainer';
 import Page from './components/Page/Page';

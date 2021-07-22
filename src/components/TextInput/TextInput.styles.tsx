@@ -10,6 +10,7 @@ type TextInputStyleProps = {
 export const StyledTextInput = styled.label<{ theme: ThemeProps } & TextInputStyleProps>`
   .label {
     display: ${(props) => props.hideLabel ? 'none' : 'block' };
+    margin-bottom: 0.125rem;
     width: 100%;
     font-size: ${(props) => props.theme.typography.formLabel.fontSize};
     font-weight: ${(props) => props.theme.typography.formLabel.fontWeight};

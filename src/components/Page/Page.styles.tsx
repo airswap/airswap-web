@@ -14,6 +14,7 @@ export const StyledPage = styled.div`
   justify-content: center;
   align-items: flex-start;
   position: relative;
+  min-width: 18rem;
   min-height: 100vh;
   padding: 2rem 0;
 
