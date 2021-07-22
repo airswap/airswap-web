@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ThemeProps } from '../../style/themes';
 import convertHexToRGBA from '../../helpers/transformHexToRgba';
 
 type TextInputStyleProps = {
@@ -7,7 +6,7 @@ type TextInputStyleProps = {
   hasError?: boolean;
 }
 
-export const StyledTextInput = styled.label<{ theme: ThemeProps } & TextInputStyleProps>`
+export const StyledTextInput = styled.label<TextInputStyleProps>`  
   .label {
     display: ${(props) => props.hideLabel ? 'none' : 'block' };
     margin-bottom: 0.125rem;
@@ -20,14 +19,16 @@ export const StyledTextInput = styled.label<{ theme: ThemeProps } & TextInputSty
   
   .input {
     position: relative;
+    border: 0;
     border-bottom: 1px solid ${(props) => props.hasError ? props.theme.colors.red : convertHexToRGBA(props.theme.colors.white, 0.1)};
     width: 100%;
     padding: 0 0 0.5rem;
-    font-size: ${(props) => props.theme.typography.formInput.fontSize};
-    font-weight: ${(props) => props.theme.typography.formInput.fontWeight};
-    line-height: ${(props) => props.theme.typography.formInput.lineHeight};
-    
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
     background: none;
+    
+    color: ${(props) => props.theme.colors.white};
         
     &:focus {
       outline: 0;

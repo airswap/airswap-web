@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ThemeProps } from '../../style/themes';
 import IconButton from '../IconButton/IconButton';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
@@ -7,7 +6,7 @@ type StyledTokenSelectProps = {
   hasToken: boolean;
 }
 
-export const TokenSelectorLoader = styled(LoadingSpinner)<{ theme: ThemeProps }>`
+export const TokenSelectorLoader = styled(LoadingSpinner)`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -16,9 +15,9 @@ export const TokenSelectorLoader = styled(LoadingSpinner)<{ theme: ThemeProps }>
   padding: 0.25rem;
 `;
 
-export const TokenSelectorButton = styled(IconButton)<{ theme: ThemeProps }>``;
+export const TokenSelectorButton = styled(IconButton)``;
 
-export const StyledTokenSelect = styled.div<{ theme: ThemeProps } & StyledTokenSelectProps>`
+export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
   position: relative;
   width: 100%;
   

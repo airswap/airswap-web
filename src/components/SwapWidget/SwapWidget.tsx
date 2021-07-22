@@ -39,10 +39,10 @@ import { useTranslation } from "react-i18next";
 import Button from "../Button/Button";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import Timer from "../../components/Timer/Timer";
+import { Title, Subtitle } from "../../components/Typography/Typography";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import StyledSwapWidget from "./SwapWidget.styles";
-import Title from '../Title/Title';
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -274,7 +274,7 @@ const SwapWidget = () => {
               <Title type="h4">Swap now</Title>
             ) : (
               <div className="quote-and-timer">
-                <Title type="subtitle">Quote expires in&nbsp;</Title>
+                <Subtitle>Quote expires in&nbsp;</Subtitle>
                 <Timer
                   expiryTime={parseInt(order.expiry)}
                   onTimerComplete={() => {

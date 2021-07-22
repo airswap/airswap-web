@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { ThemeProps } from '../../style/themes';
 
-export const StyledSwapWidget = styled.div<{ theme: ThemeProps }>`
+export const StyledSwapWidget = styled.div`
   .header {
     margin-bottom: 3rem;
     min-height: 2rem;

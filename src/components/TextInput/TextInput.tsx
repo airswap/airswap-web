@@ -1,12 +1,13 @@
 import React, { FC, ReactElement } from 'react';
 import { StyledTextInput } from './TextInput.styles';
+import { FormLabel } from '../Typography/Typography';
 
 type HTMLInputProps = JSX.IntrinsicElements['input'];
 
 export type TextInputProps = {
   label: string;
-  hideLabel?: boolean;
   hasError?: boolean;
+  hideLabel?: boolean;
 } & HTMLInputProps;
 
 const TextInput: FC<TextInputProps> = ({
@@ -24,7 +25,7 @@ const TextInput: FC<TextInputProps> = ({
       aria-label={label}
       className={className}
     >
-      <div className="label">{label}</div>
+      <FormLabel>{label}</FormLabel>
       <input
         {...inputProps}
         className="input"
