@@ -6,6 +6,7 @@ import balances from "../../public/locales/en/balances.json";
 import common from "../../public/locales/en/common.json";
 import wallet from "../../public/locales/en/wallet.json";
 import orders from "../../public/locales/en/orders.json";
+import toast from "../../public/locales/en/toast.json";
 
 declare module "react-i18next" {
   // Extend with new types.
@@ -14,5 +15,6 @@ declare module "react-i18next" {
     common: typeof common;
     wallet: typeof wallet;
     orders: typeof orders;
+    toast: typeof toast;
   }
 }

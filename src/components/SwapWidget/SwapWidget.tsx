@@ -42,8 +42,14 @@ import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
-import { Toaster } from "react-hot-toast";
-import { notifyApproval } from "../Toasts/ToastController";
+import {
+  notifyApproval,
+  notifyTransactionPending,
+  notifyTransactionSuccess,
+  notifyTransactionFail,
+} from "../Toasts/ToastController";
+import toast from "react-hot-toast";
+import TransactionToast from "../Toasts/TransactionToast";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -55,10 +61,12 @@ const SwapWidget = () => {
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
-    useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] =
-    useState<"senderToken" | "signerToken">("senderToken");
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
+    false
+  );
+  const [tokenSelectType, setTokenSelectType] = useState<
+    "senderToken" | "signerToken"
+  >("senderToken");
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
@@ -67,7 +75,7 @@ const SwapWidget = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
-  const { t } = useTranslation(["orders", "common", "wallet"]);
+  const { t } = useTranslation(["orders", "common", "wallet", "toast"]);
   const {
     chainId,
     account,
@@ -141,9 +149,9 @@ const SwapWidget = () => {
           disabled={isNaN(parseFloat(signerAmount))}
           loading={ordersStatus === "taking"}
           onClick={async () => {
-            dispatch(take({ order, library }));
+            await dispatch(take({ order, library }));
             setIsRequestUpdated(false);
-            notifyApproval();
+            notifyTransactionPending();
           }}
         >
           {t("orders:take")}
@@ -165,6 +173,7 @@ const SwapWidget = () => {
           }
           onClick={async () => {
             setIsApproving(true);
+            notifyApproval();
             await dispatch(approve({ token: senderToken, library }));
             setIsApproving(false);
           }}
@@ -291,19 +300,6 @@ const SwapWidget = () => {
           chainId={chainId!}
         />
       </Modal>
-      <Toaster
-        position="bottom-left"
-        toastOptions={{
-          style: {
-            backgroundColor: "#060607",
-            padding: 0,
-            margin: 0,
-            borderRadius: 0,
-            border: "1px solid #2B2B2B"
-          },
-        }}
-      />
-      <button onClick={notifyApproval}>here</button>
       {!order || isRequestUpdated ? (
         <h3 className="mb-4 font-bold">Swap now</h3>
       ) : (

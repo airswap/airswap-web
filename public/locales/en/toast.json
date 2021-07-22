@@ -1,0 +1,6 @@
+{
+  "approval": "Please approve {{amount}} {{symbol}} tokens for withdrawl.",
+  "transactionPending": "Your transaction has been sent to the network.",
+  "transactionSuccess": "Your transaction has successfully been completed.",
+  "transactionFail": "Transaction has failed! Offered expired."
+}

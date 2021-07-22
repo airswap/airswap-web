@@ -8,8 +8,9 @@ export default {
   argTypes: {
     onClose: { control: { type: "function" } },
     duration: { control: { type: "number" } },
-    startTime: { control: { type: "date" } },
-    text: { control: { type: "text" } },
+    startTime: { control: { type: "text" } },
+    type: { control: { type: "text" } },
+    error: { control: { type: "boolean" } },
   },
 } as Meta;
 
@@ -20,32 +21,35 @@ const Template: Story<TransactionToastProps> = (args) => (
 export const ApprovalTransaction = Template.bind({});
 ApprovalTransaction.args = {
   onClose: () => void 1,
-  duration: 30,
-  startTime: new Date(),
-  text: "Please approve 1434.25 AST for withdrawl."
+  duration: 30000,
+  startTime: "02:00am",
+  type: "toast:approval",
+  error: false,
 };
 
 export const TransactionPending = Template.bind({});
-ApprovalTransaction.args = {
+TransactionPending.args = {
   onClose: () => void 1,
-  duration: 30,
-  startTime: new Date(),
-  text: "Your transaction has been sent to the network."
+  duration: 30000,
+  startTime: "02:00am",
+  type: "toast:transactionPending",
+  error: false,
 };
 
-export const TransactionComplete = Template.bind({});
-ApprovalTransaction.args = {
+export const TransactionSuccess = Template.bind({});
+TransactionSuccess.args = {
   onClose: () => void 1,
-  duration: 30,
-  startTime: new Date(),
-  text: "Your transaction has successfully been complete."
+  duration: 30000,
+  startTime: "02:00am",
+  type: "toast:transactionSuccess",
+  error: false,
 };
 
-export const TransactionError = Template.bind({});
-ApprovalTransaction.args = {
+export const TransactionFail = Template.bind({});
+TransactionFail.args = {
   onClose: () => void 1,
-  duration: 30,
-  startTime: new Date(),
-  text: "Transaction has failed! Offer expired."
+  duration: 30000,
+  startTime: "02:00am",
+  type: "toast:transactionFail",
+  error: true,
 };
-

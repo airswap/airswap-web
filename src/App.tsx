@@ -13,6 +13,7 @@ import { useAppSelector } from "./app/hooks";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import { darkTheme, lightTheme, ThemeType } from "./style/themes";
 import "./i18n/i18n";
+import Toaster from "./components/Toasts/Toaster";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -28,6 +29,7 @@ const App = (): JSX.Element => {
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={"Loading..."}>
+          <Toaster />
           <Page>
             <TradeContainer>
               <Title type="h4">Swap now</Title>
