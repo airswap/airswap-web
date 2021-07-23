@@ -16,6 +16,7 @@ const TextInput: FC<TextInputProps> = ({
   className,
   hasError,
   hideLabel,
+  disabled,
   ...inputProps
 }): ReactElement => {
 
@@ -24,6 +25,7 @@ const TextInput: FC<TextInputProps> = ({
       hasError={hasError}
       hideLabel={hideLabel}
       aria-label={label}
+      disabled={disabled}
       className={className}
     >
       <StyledFormLabel>
@@ -31,6 +33,7 @@ const TextInput: FC<TextInputProps> = ({
       </StyledFormLabel>
       <StyledInput
         {...inputProps}
+        disabled={disabled}
         type={type}
       />
     </StyledTextInput>

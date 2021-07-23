@@ -1,6 +1,7 @@
 import { Story, Meta } from "@storybook/react";
 
 import TextInput, { TextInputProps } from "./TextInput";
+import styled from 'styled-components/macro';
 
 export default {
   title: "components/TextInput",
@@ -15,7 +16,13 @@ export default {
   },
 } as Meta;
 
-const Template: Story<TextInputProps> = (args) => <TextInput {...args} />;
+const StyledWrapper = styled.div`
+  padding: 1rem;
+  width: 20rem;
+  background: ${(props) => props.theme.colors.black};
+`;
+
+const Template: Story<TextInputProps> = (args) => <StyledWrapper><TextInput {...args} /></StyledWrapper>;
 
 
 export const Primary = Template.bind({});
@@ -23,3 +30,16 @@ Primary.args = {
   label: "Label",
   value: "text",
 };
+
+export const Disabled = Template.bind({});
+Disabled.args = {
+  ...Primary.args,
+  disabled: true,
+};
+
+export const HasError = Template.bind({});
+HasError.args = {
+  ...Primary.args,
+  hasError: true,
+};
+

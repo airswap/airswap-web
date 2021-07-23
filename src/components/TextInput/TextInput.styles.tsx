@@ -16,6 +16,7 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     display: ${(props) => props.hideLabel ? "none" : "block" };
     width: 100%;
     color: ${(props) => props.theme.colors.white};
+    opacity: ${(props) => props.disabled ? 0.5 : 1 };
     background: none;
   }
 
@@ -31,6 +32,10 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     &:focus {
       outline: 0;
       border-bottom: 1px solid ${(props) => props.hasError ? props.theme.colors.red : props.theme.colors.white};
+    }
+    
+    &:disabled {
+      opacity: 0.5;
     }
   }
 `;
