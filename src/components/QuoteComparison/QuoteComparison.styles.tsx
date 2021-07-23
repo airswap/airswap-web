@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
-import { ThemeProps } from "../../style/themes";
 
-export const QuoteRow = styled.div<{ theme: ThemeProps }>`
+export const QuoteRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -22,7 +21,7 @@ export const QuoteList = styled.div`
   }
 `;
 
-export const MakerAddress = styled.span<{ theme: ThemeProps }>`
+export const MakerAddress = styled.span`
   /* TODO: maybe replace this component with a standard typography one when
   it exists. */
   font-size: 1rem;
@@ -30,7 +29,7 @@ export const MakerAddress = styled.span<{ theme: ThemeProps }>`
   font-weight: 700;
 `;
 
-export const QuotedAmount = styled.span<{ theme: ThemeProps }>`
+export const QuotedAmount = styled.span`
   font-size: 1.125rem;
   line-height: 4/3;
   font-weight: 500;
@@ -39,7 +38,9 @@ export const QuotedAmount = styled.span<{ theme: ThemeProps }>`
 export const PriceInfo = styled.span<{ isBest?: boolean; isHeading?: boolean }>`
   color: ${(props) =>
     props.isHeading
-      ? props.theme.colors.grey
+      ? props.theme.name === "dark"
+        ? props.theme.colors.lightGrey
+        : props.theme.colors.grey
       : props.isBest
       ? props.theme.colors.white
       : props.theme.colors.red};
