@@ -43,3 +43,10 @@ HasError.args = {
   hasError: true,
 };
 
+export const NumberInput = Template.bind({});
+NumberInput.args = {
+  ...Primary.args,
+  label: "Number input",
+  type: 'number',
+  value: 9
+};
