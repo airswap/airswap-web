@@ -3,8 +3,12 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { useTranslation } from "react-i18next";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import TextInput from '../TextInput/TextInput';
-import { StyledTokenSelect, TokenSelectorButton, TokenSelectorLoader } from './TokenSelect.styles';
+import {
+  StyledTextInput,
+  StyledTokenSelect,
+  TokenSelectorButton,
+  TokenSelectorLoader,
+} from './TokenSelect.styles';
 
 type TokenSelectProps = {
   withAmount: boolean;
@@ -57,7 +61,7 @@ const TokenSelect = ({
       hasToken={!!token}
     >
       {withAmount ? (
-        <TextInput
+        <StyledTextInput
           label={label}
           inputMode="decimal"
           autoComplete="off"
@@ -71,7 +75,7 @@ const TokenSelect = ({
           placeholder="0.0"
         />
       ) : (
-        <TextInput
+        <StyledTextInput
           disabled
           label={label}
           autoComplete="off"

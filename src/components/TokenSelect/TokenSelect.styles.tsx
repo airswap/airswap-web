@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import IconButton from '../IconButton/IconButton';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import TextInput from '../TextInput/TextInput';
 
 type StyledTokenSelectProps = {
   hasToken: boolean;
@@ -16,6 +17,8 @@ export const TokenSelectorLoader = styled(LoadingSpinner)`
 `;
 
 export const TokenSelectorButton = styled(IconButton)``;
+
+export const StyledTextInput = styled(TextInput)``;
 
 export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
   position: relative;
@@ -40,6 +43,17 @@ export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
     svg {
       margin-left: 1rem;
       color: ${(props) => props.theme.colors.primary};
+    }
+  }
+
+  ${StyledTextInput} {
+
+    label {
+      margin-bottom: 0.125rem;
+    }
+
+    input {
+      padding-bottom: 0.5rem;
     }
   }
 `;

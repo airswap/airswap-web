@@ -14,9 +14,9 @@ export const StyledInput = styled(FormInput)<{ type: React.HTMLProps<HTMLInputEl
 export const StyledTextInput = styled.div<TextInputStyleProps>`  
   ${StyledFormLabel} {
     display: ${(props) => props.hideLabel ? "none" : "block" };
-    margin-bottom: 0.125rem;
     width: 100%;
     color: ${(props) => props.theme.colors.white};
+    background: none;
   }
 
   ${StyledInput} {
@@ -24,10 +24,7 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     border: 0;
     border-bottom: 1px solid ${(props) => props.hasError ? props.theme.colors.red : convertHexToRGBA(props.theme.colors.white, 0.1)};
     width: 100%;
-    padding-bottom: 0.5rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
+    padding: 0;
     color: ${(props) => props.theme.colors.white};
     background: none;
         
