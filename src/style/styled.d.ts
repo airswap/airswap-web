@@ -8,6 +8,7 @@ type Typography =
   | "subtitle"
   | "paragraph"
   | "formLabel"
+  | "formInput"
   | "nav"
   | "link"
   | "small";

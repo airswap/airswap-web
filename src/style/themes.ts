@@ -36,6 +36,11 @@ const typography: DefaultTheme["typography"] = {
     lineHeight: 1.5,
     fontWeight: 700,
   },
+  formInput: {
+    fontSize: "1rem",
+    lineHeight: 1.5,
+    fontWeight: 400,
+  },
   link: {
     fontSize: "1rem",
     lineHeight: 1.5,

@@ -1,17 +1,18 @@
 import React, { FC, ReactElement } from 'react';
-import { StyledTextInput } from './TextInput.styles';
-import { FormLabel } from '../Typography/Typography';
+import { StyledFormLabel, StyledInput, StyledTextInput } from './TextInput.styles';
 
-type HTMLInputProps = JSX.IntrinsicElements['input'];
+type HTMLInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as'>;
 
 export type TextInputProps = {
   label: string;
+  type?: string;
   hasError?: boolean;
   hideLabel?: boolean;
 } & HTMLInputProps;
 
 const TextInput: FC<TextInputProps> = ({
   label,
+  type = "text",
   className,
   hasError,
   hideLabel,
@@ -25,11 +26,12 @@ const TextInput: FC<TextInputProps> = ({
       aria-label={label}
       className={className}
     >
-      <FormLabel>{label}</FormLabel>
-      <input
+      <StyledFormLabel>
+        {label}
+      </StyledFormLabel>
+      <StyledInput
         {...inputProps}
-        className="input"
-        type="text"
+        type={type}
       />
     </StyledTextInput>
   )
