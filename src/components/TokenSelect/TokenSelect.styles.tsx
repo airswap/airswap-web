@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import IconButton from '../IconButton/IconButton';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import TextInput from '../TextInput/TextInput';
+import { StyledFormLabel, StyledInput } from '../TextInput/TextInput.styles';
 
 type StyledTokenSelectProps = {
   hasToken: boolean;
@@ -47,13 +48,13 @@ export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
   }
 
   ${StyledTextInput} {
-
-    label {
+    
+    ${StyledFormLabel} {
       margin-bottom: 0.125rem;
     }
-
-    input {
+    
+    ${StyledInput} {
       padding-bottom: 0.5rem;
-    }
+    }    
   }
 `;
