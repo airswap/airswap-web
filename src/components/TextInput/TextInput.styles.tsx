@@ -16,7 +16,6 @@ export const StyledFormLabel = styled(FormLabel)``;
 export const StyledInput = styled(FormInput)<StyledInputProps>``;
 
 export const StyledTextInput = styled.div<TextInputStyleProps>`
-  opacity: ${(props) => props.disabled ? 0.5 : 1 };
   
   ${StyledFormLabel} {
     display: ${(props) => props.hideLabel ? "none" : "block" };
@@ -32,6 +31,7 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     width: 100%;
     padding: 0;
     color: ${(props) => props.theme.colors.white};
+    opacity: ${(props) => props.disabled ? 0.5 : 1 };
     background: none;
         
     &:focus {
