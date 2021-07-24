@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import TransactionToast from "./TransactionToast";
+import GenericToast from "./GenericToast";
 
 const formatDate = (date: Date) => {
   const hours = date.getHours();
@@ -63,6 +64,20 @@ export const notifyTransactionFail = () =>
         startTime={formatDate(new Date())}
         type="toast:transactionFail"
         error={true}
+      />
+    ),
+    {
+      duration: 30000,
+    }
+  );
+
+export const notifyWalletBalanceError = () =>
+  toast(
+    (tst) => (
+      <GenericToast
+        onClose={() => toast.dismiss(tst.id)}
+        type="toast:insufficientWalletBalance"
+        intent="error"
       />
     ),
     {

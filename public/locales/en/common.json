@@ -3,5 +3,7 @@
   "chainId": "Chain ID",
   "account": "Account",
   "select": "Select",
-  "fetching": "Fetching"
+  "fetching": "Fetching",
+  "error": "Error",
+  "warning": "Warning"
 }

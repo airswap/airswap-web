@@ -16,7 +16,6 @@ const Toaster = () => (
           padding: 0,
           margin: 0,
           borderRadius: 0,
-          border: "1px solid #2B2B2B",
         },
       }}
     ></T>

@@ -42,12 +42,6 @@ import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
-import {
-  notifyApproval,
-  notifyTransactionPending,
-  notifyTransactionSuccess,
-  notifyTransactionFail,
-} from "../Toasts/ToastController";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -149,7 +143,6 @@ const SwapWidget = () => {
           onClick={async () => {
             await dispatch(take({ order, library }));
             setIsRequestUpdated(false);
-            notifyTransactionPending();
           }}
         >
           {t("orders:take")}
@@ -171,7 +164,6 @@ const SwapWidget = () => {
           }
           onClick={async () => {
             setIsApproving(true);
-            notifyApproval();
             await dispatch(approve({ token: senderToken, library }));
             setIsApproving(false);
           }}

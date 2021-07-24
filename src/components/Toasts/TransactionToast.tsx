@@ -95,16 +95,16 @@ const TransactionToast = ({
     >
       <InfoContainer>
         <IconContainer error={error}>
-          <BiInfoCircle style={{ width: "24px", height: "24px" }} />
+          <BiInfoCircle style={{ width: "1.5rem", height: "1.5rem" }} />
         </IconContainer>
         <TextContainer>{t(type)}</TextContainer>
         <HiXContainer>
           <HiX
             style={{
               float: "right",
-              margin: "0 16px 0 0",
-              width: "16px",
-              height: "16px",
+              margin: "0 1rem 0 0",
+              width: "1rem",
+              height: "1rem",
               cursor: "pointer",
             }}
             onClick={onClose}

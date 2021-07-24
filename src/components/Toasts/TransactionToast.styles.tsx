@@ -12,7 +12,7 @@ export const Container = styled.div<{ theme: ThemeProps }>`
 export const InfoContainer = styled.div<{ theme: ThemeProps }>`
   display: grid;
   grid-template-columns: auto auto auto;
-  margin-top: 16px;
+  margin-top: 1rem;
 `;
 
 type IconContainerProps = {
@@ -28,23 +28,23 @@ export const IconContainer = styled.div<
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 48px;
-  height: 48px;
-  margin: 0 0 0 16px;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 0 0 1rem;
   color: white;
 `;
 
 export const HiXContainer = styled.div<{ theme: ThemeProps }>``;
 
 export const TextContainer = styled.div<{ theme: ThemeProps }>`
-  margin: 0 16px;
+  margin: 0 1rem;
   font-weight: 700;
 `;
 
 export const TimeContainer = styled.div<{ theme: ThemeProps }>`
   display: flex;
   justify-content: space-between;
-  margin: 16px;
+  margin: 1rem;
 `;
 
 // Create the keyframes
@@ -69,7 +69,7 @@ export const TimerBarContainer = styled.div<
   background: ${(props) => props.theme.colors.lightGrey};
 
   ${TimerBar} {
-    height: 10px;
+    height: 0.75rem;
     width: 100%;
     animation: ${roundtime} calc(${(props) => props.duration || 30}s) forwards
       linear;
