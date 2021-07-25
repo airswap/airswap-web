@@ -17,7 +17,12 @@ import {
   SubmittedApproval,
 } from "../transactions/transactionsSlice";
 import { BigNumber, Transaction } from "ethers";
-import { notifyTransactionFail, notifyTransactionPending, notifyTransactionSuccess } from "../../components/Toasts/ToastController";
+import {
+  notifyOrderRequestError,
+  notifyTransactionFail,
+  notifyTransactionPending,
+  notifyTransactionSuccess,
+} from "../../components/Toasts/ToastController";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -38,15 +43,23 @@ export const request = createAsyncThunk(
     senderAmount: string;
     senderWallet: string;
     provider: any;
-  }) =>
-    await requestOrder(
-      params.chainId,
-      params.signerToken,
-      params.senderToken,
-      params.senderAmount,
-      params.senderWallet,
-      params.provider
-    )
+  }) => {
+    try {
+      return await requestOrder(
+        params.chainId,
+        params.signerToken,
+        params.senderToken,
+        params.senderAmount,
+        params.senderWallet,
+        params.provider
+      )
+    } catch (e) {
+      console.error(e);
+      notifyOrderRequestError();
+      return [];
+    }
+  }
+    
 );
 
 export const approve = createAsyncThunk(
@@ -77,8 +90,8 @@ export const approve = createAsyncThunk(
       }
     } catch (e) {
       console.error(e);
-      notifyTransactionFail();
       dispatch(declineTransaction(e.message));
+      notifyTransactionFail();
     }
   }
 );

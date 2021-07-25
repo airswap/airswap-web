@@ -19,7 +19,7 @@ const Template: Story<GenericToastProps> = (args) => (
 export const WalletBalanceError = Template.bind({});
 WalletBalanceError.args = {
   onClose: () => void 1,
-  type: "toast:insufficientWalletBalance",
+  type: "toast:orderRequestError",
   intent: "error"
 };
 

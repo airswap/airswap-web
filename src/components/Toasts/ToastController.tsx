@@ -10,7 +10,7 @@ const formatDate = (date: Date) => {
   return hrs + ":" + min + " " + (hours >= 12 ? "pm" : "am");
 };
 
-export const notifyApproval = () =>
+export const notifyApproval = (amount: string, token: string) =>
   toast(
     (tst) => (
       <TransactionToast
@@ -18,6 +18,8 @@ export const notifyApproval = () =>
         duration={30000}
         startTime={formatDate(new Date())}
         type="toast:approval"
+        amount={amount}
+        token={token}
       />
     ),
     {
@@ -71,12 +73,12 @@ export const notifyTransactionFail = () =>
     }
   );
 
-export const notifyWalletBalanceError = () =>
+export const notifyOrderRequestError = () =>
   toast(
     (tst) => (
       <GenericToast
         onClose={() => toast.dismiss(tst.id)}
-        type="toast:insufficientWalletBalance"
+        type="toast:orderRequestError"
         intent="error"
       />
     ),

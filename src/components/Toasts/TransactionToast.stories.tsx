@@ -11,6 +11,8 @@ export default {
     startTime: { control: { type: "text" } },
     type: { control: { type: "text" } },
     error: { control: { type: "boolean" } },
+    amount: { control: { type: "text" } },
+    token: { control: { type: "text" } },
   },
 } as Meta;
 
@@ -25,6 +27,8 @@ ApprovalTransaction.args = {
   startTime: "02:00am",
   type: "toast:approval",
   error: false,
+  amount: "10.2",
+  token: "AST",
 };
 
 export const TransactionPending = Template.bind({});

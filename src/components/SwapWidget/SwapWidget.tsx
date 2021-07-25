@@ -42,6 +42,7 @@ import Modal from "react-modal";
 import Card from "../Card/Card";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
+import { notifyApproval } from "../Toasts/ToastController";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -154,6 +155,7 @@ const SwapWidget = () => {
       signerToken &&
       senderToken
     ) {
+      notifyApproval(senderAmount, findTokenByAddress(senderToken, activeTokens).symbol)
       return (
         <Button
           className="w-full mt-2"

@@ -52,7 +52,7 @@ export type TransactionToastProps = {
    * Optional parameter for passing in token approval/transaction amount.
    * e.g. "Please approve {amount} AST tokens"
    */
-  amount?: number;
+  amount?: string;
   /**
    * Optional parameter for passing in token approval/transaction symbol.
    * e.g. "Please approve 1000 {symbol} tokens"
@@ -97,7 +97,11 @@ const TransactionToast = ({
         <IconContainer error={error}>
           <BiInfoCircle style={{ width: "1.5rem", height: "1.5rem" }} />
         </IconContainer>
-        <TextContainer>{t(type)}</TextContainer>
+        <TextContainer>
+          {type === "toast:approval"
+            ? t(type, { amount: amount, token: token })
+            : t(type)}
+        </TextContainer>
         <HiXContainer>
           <HiX
             style={{
