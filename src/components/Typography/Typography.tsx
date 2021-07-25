@@ -30,6 +30,7 @@ export {
   StyledSubtitle as Subtitle,
   StyledParagraph as Paragraph,
   StyledFormLabel as FormLabel,
+  StyledFormInput as FormInput,
   StyledNavigation as Navigation,
   StyledMetadata as Metadata,
 } from "./Typography.styles";

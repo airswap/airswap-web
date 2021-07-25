@@ -1,4 +1,6 @@
 import { useState, FormEvent, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import Modal from "react-modal";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { BigNumber } from "ethers";
@@ -34,14 +36,16 @@ import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
-import { useTranslation } from "react-i18next";
-import Button from "../Button/Button";
-import TokenSelect from "../TokenSelect/TokenSelect";
 import Timer from "../../components/Timer/Timer";
-import Modal from "react-modal";
-import Card from "../Card/Card";
+import { Title, Subtitle } from "../../components/Typography/Typography";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
+import StyledSwapWidget, {
+  Header,
+  QuoteAndTimer,
+  StyledTokenSelect,
+  SubmitButton
+} from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -115,14 +119,13 @@ const SwapWidget = () => {
   const DisplayedButton = () => {
     if (!active || !chainId) {
       return (
-        <Button
-          className="w-full mt-2"
+        <SubmitButton
           intent="primary"
           loading={isConnecting}
           onClick={() => setShowWalletList(true)}
         >
           {t("wallet:connectWallet")}
-        </Button>
+        </SubmitButton>
       );
     } else if (
       signerAmount &&
@@ -132,8 +135,7 @@ const SwapWidget = () => {
       senderToken
     ) {
       return (
-        <Button
-          className="w-full mt-2"
+        <SubmitButton
           intent="primary"
           aria-label={t("orders:take", { context: "aria" })}
           disabled={isNaN(parseFloat(signerAmount))}
@@ -144,7 +146,7 @@ const SwapWidget = () => {
           }}
         >
           {t("orders:take")}
-        </Button>
+        </SubmitButton>
       );
     } else if (
       signerAmount &&
@@ -153,8 +155,7 @@ const SwapWidget = () => {
       senderToken
     ) {
       return (
-        <Button
-          className="w-full mt-2"
+        <SubmitButton
           intent="primary"
           aria-label={t("orders:approve", { context: "aria" })}
           loading={
@@ -167,12 +168,11 @@ const SwapWidget = () => {
           }}
         >
           {t("orders:approve")}
-        </Button>
+        </SubmitButton>
       );
     } else {
       return (
-        <Button
-          className="w-full mt-2"
+        <SubmitButton
           intent="primary"
           disabled={
             !decimalsFound ||
@@ -207,7 +207,7 @@ const SwapWidget = () => {
             : t("orders:insufficentBalance", {
                 symbol: findTokenByAddress(senderToken!, activeTokens)?.symbol,
               })}
-        </Button>
+        </SubmitButton>
       );
     }
   };
@@ -266,12 +266,84 @@ const SwapWidget = () => {
   }, [chainId]);
 
   return (
-    <Card className="flex-col m-4 w-72">
+    <>
+      <StyledSwapWidget>
+          <Header>
+            {!order || isRequestUpdated ? (
+              <Title type="h4">Swap now</Title>
+            ) : (
+              <QuoteAndTimer>
+                <Subtitle>Quote expires in&nbsp;</Subtitle>
+                <Timer
+                  expiryTime={parseInt(order.expiry)}
+                  onTimerComplete={() => {
+                    dispatch(
+                      request({
+                        chainId: chainId!,
+                        senderToken: senderToken!,
+                        senderAmount,
+                        signerToken: signerToken!,
+                        senderWallet: account!,
+                        provider: library,
+                      })
+                    );
+                    trackEvent({ category: "order", action: "request" });
+                  }}
+                />
+              </QuoteAndTimer>
+            )}
+          </Header>
+        <StyledTokenSelect
+          tokens={activeTokens}
+          withAmount={true}
+          amount={senderAmount}
+          onAmountChange={(e) => handleTokenAmountChange(e)}
+          label={t("orders:send")}
+          token={senderToken}
+          onTokenChange={() => {
+            setTokenSelectType("senderToken");
+            setTokenSelectModalOpen(true);
+            if (order) setIsRequestUpdated(true);
+          }}
+          hasError={insufficientBalance}
+        />
+        <StyledTokenSelect
+          tokens={activeTokens}
+          withAmount={false}
+          label={t("orders:receive")}
+          token={signerToken}
+          quoteAmount={isRequestUpdated ? "" : signerAmount}
+          onTokenChange={() => {
+            setTokenSelectType("signerToken");
+            setTokenSelectModalOpen(true);
+            if (order) setIsRequestUpdated(true);
+          }}
+        />
+        <DisplayedButton />
+      </StyledSwapWidget>
+      <Modal
+        isOpen={showWalletList}
+        onRequestClose={() => setShowWalletList(false)}
+        className="modal"
+        overlayClassName="overlay"
+      >
+        {/* need to come back and fill out onProviderSelected */}
+        <WalletProviderList
+          onProviderSelected={(provider) => {
+            dispatch(setActiveProvider(provider.name));
+            setIsConnecting(true);
+            activate(provider.getConnector()).finally(() =>
+              setIsConnecting(false)
+            );
+            setShowWalletList(false);
+          }}
+        />
+      </Modal>
       <Modal
         isOpen={tokenSelectModalOpen}
         onRequestClose={() => setTokenSelectModalOpen(false)}
-        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
-        className="w-120 p-6 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
+        className="modal"
+        overlayClassName="overlay"
       >
         <TokenSelection
           closeModal={() => setTokenSelectModalOpen(false)}
@@ -288,77 +360,7 @@ const SwapWidget = () => {
           chainId={chainId!}
         />
       </Modal>
-      {!order || isRequestUpdated ? (
-        <h3 className="mb-4 font-bold">Swap now</h3>
-      ) : (
-        <p className="mb-4">
-          Quote expires in&nbsp;
-          <Timer
-            expiryTime={parseInt(order.expiry)}
-            onTimerComplete={() => {
-              dispatch(
-                request({
-                  chainId: chainId!,
-                  senderToken: senderToken!,
-                  senderAmount,
-                  signerToken: signerToken!,
-                  senderWallet: account!,
-                  provider: library,
-                })
-              );
-              trackEvent({ category: "order", action: "request" });
-            }}
-          />
-        </p>
-      )}
-      <TokenSelect
-        tokens={activeTokens}
-        withAmount={true}
-        amount={senderAmount}
-        onAmountChange={(e) => handleTokenAmountChange(e)}
-        className="mb-2"
-        label={t("orders:send")}
-        token={senderToken}
-        onSelectTokenClick={(e) => {
-          setTokenSelectType("senderToken");
-          setTokenSelectModalOpen(true);
-          if (order) setIsRequestUpdated(true);
-        }}
-        hasError={insufficientBalance}
-      />
-      <TokenSelect
-        tokens={activeTokens}
-        withAmount={false}
-        className="mb-2"
-        label={t("orders:receive")}
-        token={signerToken}
-        quoteAmount={isRequestUpdated ? "" : signerAmount}
-        onSelectTokenClick={(e) => {
-          setTokenSelectType("signerToken");
-          setTokenSelectModalOpen(true);
-          if (order) setIsRequestUpdated(true);
-        }}
-      />
-      <DisplayedButton />
-      <Modal
-        isOpen={showWalletList}
-        onRequestClose={() => setShowWalletList(false)}
-        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
-        className="w-64 p-4 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
-      >
-        {/* need to come back and fill out onProviderSelected */}
-        <WalletProviderList
-          onProviderSelected={(provider) => {
-            dispatch(setActiveProvider(provider.name));
-            setIsConnecting(true);
-            activate(provider.getConnector()).finally(() =>
-              setIsConnecting(false)
-            );
-            setShowWalletList(false);
-          }}
-        />
-      </Modal>
-    </Card>
+    </>
   );
 };
 

@@ -25,6 +25,10 @@ export const StyledTradeContainer = styled.div`
   }
 
   @media ${breakPoints.phoneOnly} {
-    padding: 1.75rem;
+    padding: 1.5rem;
   }
-`;
+
+ @media ${breakPoints.tinyScreenOnly} {
+    padding: 1.25rem;
+ }
+ `;
