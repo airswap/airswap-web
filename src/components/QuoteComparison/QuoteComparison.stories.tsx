@@ -41,12 +41,14 @@ const mockOrders: LightOrder[] = [
   },
 ];
 
-const mockSignerTokenInfo: TokenInfo = {
-  address: "0xdef",
+const airSwapTokenInfo: TokenInfo = {
+  symbol: "AST",
+  address: "0x27054b13b1b798b345b591a4d22e6562d47ea75a",
   chainId: 1,
   decimals: 4,
+  logoURI:
+    "https://assets.coingecko.com/coins/images/1019/thumb/AST.png?1547034939",
   name: "AirSwap",
-  symbol: "AST",
 };
 
 export default {
@@ -66,5 +68,6 @@ const Template: Story<QuoteComparisonProps> = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   quotes: mockOrders,
-  signerTokenInfo: mockSignerTokenInfo,
+  bestQuoteIndex: 0,
+  signerTokenInfo: airSwapTokenInfo,
 };

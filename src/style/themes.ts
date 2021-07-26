@@ -64,7 +64,7 @@ export const darkTheme: DefaultTheme = {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
     white: "#FFF",
-    alwaysWhite: '#FFF',
+    alwaysWhite: "#FFF",
     black: "#060607",
     alwaysBlack: "#060607",
     grey: "#404040",
@@ -73,6 +73,7 @@ export const darkTheme: DefaultTheme = {
     red: "#FF004D",
     orange: "#E7765A",
     green: "green",
+    subtleBgGradient: "linear-gradient(90deg, #151619a3, #1516193d)",
   },
   typography,
 };
@@ -83,7 +84,7 @@ export const lightTheme: DefaultTheme = {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
     white: "#060607",
-    alwaysWhite: '#FFF',
+    alwaysWhite: "#FFF",
     black: "#FFF",
     alwaysBlack: "#000",
     grey: "#404040",
@@ -92,6 +93,7 @@ export const lightTheme: DefaultTheme = {
     red: "#FF004D",
     orange: "#E7765A",
     green: "green",
+    subtleBgGradient: "linear-gradient(90deg, #eae9e6a3, #eae9e63d)",
   },
   typography,
 };

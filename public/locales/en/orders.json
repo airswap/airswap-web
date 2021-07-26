@@ -10,5 +10,7 @@
   "chooseToken": "Choose token",
   "enterAmount": "Enter an amount",
   "insufficentBalance": "Insufficient {{symbol}} balance",
-  "decimalsNotFound": "Token decimals not found"
+  "decimalsNotFound": "Token decimals not found",
+  "priceDifference": "Price difference",
+  "bestPrice": "Best price"
 }

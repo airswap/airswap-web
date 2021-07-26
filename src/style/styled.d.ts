@@ -36,6 +36,7 @@ declare module "styled-components" {
       red: string;
       orange: string;
       green: string;
+      subtleBgGradient: string;
     };
     typography: Record<Typography, FontProps>;
   }
