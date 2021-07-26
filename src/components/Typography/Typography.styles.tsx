@@ -16,6 +16,7 @@ const elementMap: Record<
   subtitle: "h5",
   paragraph: "p",
   formLabel: "label",
+  formInput: 'input',
   link: "div",
   nav: "div",
   small: "aside",
@@ -62,5 +63,6 @@ export const StyledSubtitle = makeTypographyComponent(
 );
 export const StyledParagraph = makeTypographyComponent("paragraph");
 export const StyledFormLabel = makeTypographyComponent("formLabel");
+export const StyledFormInput = makeTypographyComponent("formInput");
 export const StyledNavigation = makeTypographyComponent("link");
 export const StyledMetadata = makeTypographyComponent("small");
