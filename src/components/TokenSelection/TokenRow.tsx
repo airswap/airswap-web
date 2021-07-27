@@ -1,5 +1,14 @@
-import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
+import {
+  Container,
+  Image,
+  ImageContainer,
+  TextContainer,
+  Symbol,
+  TokenName,
+  Span,
+  Balance,
+} from "./TokenRow.styles";
 
 export type TokenRowProps = {
   /**
@@ -28,7 +37,7 @@ export type TokenRowProps = {
   defaultToken: boolean;
 };
 
-// TODO: Make Container a button instead of a div
+// TODO: Make Container a button instead of a Balance
 const TokenRow = ({
   token,
   balance,
@@ -38,32 +47,27 @@ const TokenRow = ({
   defaultToken,
 }: TokenRowProps) => {
   return (
-    <div
-      className={classNames(
-        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
-        disabled && "opacity-40 cursor-not-allowed"
-      )}
-      style={{
-        gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
-        gridGap: "16px",
-      }}
+    <Container
       onClick={(e) => {
         !disabled && setToken(token.address);
       }}
+      disabled={disabled!}
     >
-      <img
-        src={token.logoURI || "https://via.placeholder.com/150"}
-        className="w-6"
-        alt="hello"
-      />
-      <div className="flex flex-col justify-start">
-        <h3 className="flex flex-col">{token.symbol}</h3>
-        <h3 className="text-gray-400">
+      <ImageContainer>
+        <Image
+          src={token.logoURI || "https://via.placeholder.com/150"}
+          alt={token.address}
+        />
+      </ImageContainer>
+
+      <TextContainer>
+        <Symbol>{token.symbol}</Symbol>
+        <TokenName>
           {token.name}{" "}
           {!defaultToken && (
             <>
               •{" "}
-              <span
+              <Span
                 className="cursor-pointer hover:underline"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -71,14 +75,14 @@ const TokenRow = ({
                 }}
               >
                 Remove from active
-              </span>
+              </Span>
             </>
           )}
-        </h3>
-      </div>
-      <span></span>
-      <div className="justify-self-end max-w-md">{balance}</div>
-    </div>
+        </TokenName>
+      </TextContainer>
+      <Span></Span>
+      <Balance>{balance}</Balance>
+    </Container>
   );
 };
 

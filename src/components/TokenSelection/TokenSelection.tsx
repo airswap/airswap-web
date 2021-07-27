@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 // import AutoSizer from 'react-virtualized-auto-sizer'
 import { TokenInfo } from "@uniswap/token-lists";
-import { HiX } from "react-icons/hi";
+import { HiArrowNarrowLeft } from "react-icons/hi";
+import { IoMdInformationCircle } from "react-icons/io";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
@@ -9,6 +10,16 @@ import TokenRow from "./TokenRow";
 import TokenImportRow from "./TokenImportRow";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
+import {
+  Container,
+  TitleContainer,
+  ArrowContainer,
+  StyledLabel,
+  StyledInput,
+  TokenContainer,
+  InactiveTitleContainer,
+  InactiveTitle,
+} from "./TokenSelection.styles";
 
 export type TokenSelectionProps = {
   /**
@@ -121,17 +132,14 @@ const TokenSelection = ({
   }, [sortedInactiveTokens, tokenQuery]);
 
   return (
-    <div>
-      <div className="flex flex-wrap align-middle justify-between">
-        <label className="font-bold text-sm" htmlFor="tokenQuery">
-          Select token
-        </label>
-        <HiX
-          className="light:text-black text-xl cursor-pointer"
-          onClick={closeModal}
-        />
-      </div>
-      <input
+    <Container>
+      <TitleContainer>
+        <ArrowContainer>
+          <HiArrowNarrowLeft onClick={closeModal} />
+        </ArrowContainer>
+        <StyledLabel htmlFor="tokenQuery">Select token</StyledLabel>
+      </TitleContainer>
+      <StyledInput
         id="tokenQuery"
         type="text"
         value={tokenQuery}
@@ -139,34 +147,44 @@ const TokenSelection = ({
         onChange={(e) => {
           setTokenQuery(e.target.value);
         }}
-        className="w-full"
       />
-      <div>
-        {filteredTokens.map((token) => (
-          <TokenRow
-            token={token}
-            balance={formatUnits(
-              balances.values[token.address] || 0,
-              token.decimals
-            )}
-            setToken={handleClick}
-            disabled={
-              tokenSelectType === "senderToken"
-                ? token.address === senderToken
-                : token.address === signerToken
-            } // shouldn't be able to select same duplicate token
-            removeActiveToken={removeActiveToken}
-            defaultToken={defaultActiveTokens[chainId!].includes(token.address)}
-            key={`${token.address}`}
-          />
-        ))}
-        {chainId === 1 &&
-          tokenQuery &&
-          filteredTokens.length < 5 &&
-          inactiveTokens &&
-          inactiveTokens.length > 0 && (
-            <>
-              <h1>Expanded results from inactive Token Lists</h1>
+      {filteredTokens && filteredTokens.length > 0 && (
+        <TokenContainer listLength={filteredTokens.length}>
+          {filteredTokens.map((token) => (
+            <TokenRow
+              token={token}
+              balance={formatUnits(
+                balances.values[token.address] || 0,
+                token.decimals
+              )}
+              setToken={handleClick}
+              disabled={
+                tokenSelectType === "senderToken"
+                  ? token.address === senderToken
+                  : token.address === signerToken
+              } // shouldn't be able to select same duplicate token
+              removeActiveToken={removeActiveToken}
+              defaultToken={defaultActiveTokens[chainId!].includes(
+                token.address
+              )}
+              key={token.address}
+            />
+          ))}
+        </TokenContainer>
+      )}
+      {chainId === 1 &&
+        tokenQuery &&
+        filteredTokens.length < 5 &&
+        inactiveTokens &&
+        inactiveTokens.length > 0 && (
+          <>
+            <InactiveTitleContainer>
+              <InactiveTitle>
+                Expanded results from inactive Token Lists
+              </InactiveTitle>
+              <IoMdInformationCircle />
+            </InactiveTitleContainer>
+            <TokenContainer listLength={inactiveTokens.length}>
               {inactiveTokens.map((token) => (
                 <TokenImportRow
                   token={token}
@@ -177,10 +195,10 @@ const TokenSelection = ({
                   key={`${token.address}`}
                 />
               ))}
-            </>
-          )}
-      </div>
-    </div>
+            </TokenContainer>
+          </>
+        )}
+    </Container>
   );
 };
 

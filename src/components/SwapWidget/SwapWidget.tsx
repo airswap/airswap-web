@@ -44,7 +44,7 @@ import StyledSwapWidget, {
   Header,
   QuoteAndTimer,
   StyledTokenSelect,
-  SubmitButton
+  SubmitButton,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -57,10 +57,12 @@ const SwapWidget = () => {
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
-    useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] =
-    useState<"senderToken" | "signerToken">("senderToken");
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
+    false
+  );
+  const [tokenSelectType, setTokenSelectType] = useState<
+    "senderToken" | "signerToken"
+  >("senderToken");
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
@@ -268,31 +270,31 @@ const SwapWidget = () => {
   return (
     <>
       <StyledSwapWidget>
-          <Header>
-            {!order || isRequestUpdated ? (
-              <Title type="h4">Swap now</Title>
-            ) : (
-              <QuoteAndTimer>
-                <Subtitle>Quote expires in&nbsp;</Subtitle>
-                <Timer
-                  expiryTime={parseInt(order.expiry)}
-                  onTimerComplete={() => {
-                    dispatch(
-                      request({
-                        chainId: chainId!,
-                        senderToken: senderToken!,
-                        senderAmount,
-                        signerToken: signerToken!,
-                        senderWallet: account!,
-                        provider: library,
-                      })
-                    );
-                    trackEvent({ category: "order", action: "request" });
-                  }}
-                />
-              </QuoteAndTimer>
-            )}
-          </Header>
+        <Header>
+          {!order || isRequestUpdated ? (
+            <Title type="h4">Swap now</Title>
+          ) : (
+            <QuoteAndTimer>
+              <Subtitle>Quote expires in&nbsp;</Subtitle>
+              <Timer
+                expiryTime={parseInt(order.expiry)}
+                onTimerComplete={() => {
+                  dispatch(
+                    request({
+                      chainId: chainId!,
+                      senderToken: senderToken!,
+                      senderAmount,
+                      signerToken: signerToken!,
+                      senderWallet: account!,
+                      provider: library,
+                    })
+                  );
+                  trackEvent({ category: "order", action: "request" });
+                }}
+              />
+            </QuoteAndTimer>
+          )}
+        </Header>
         <StyledTokenSelect
           tokens={activeTokens}
           withAmount={true}
@@ -344,6 +346,12 @@ const SwapWidget = () => {
         onRequestClose={() => setTokenSelectModalOpen(false)}
         className="modal"
         overlayClassName="overlay"
+        style={{
+          content: {
+            maxWidth: "30rem",
+            background: "transparent",
+          },
+        }}
       >
         <TokenSelection
           closeModal={() => setTokenSelectModalOpen(false)}
