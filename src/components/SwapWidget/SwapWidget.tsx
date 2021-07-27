@@ -1,6 +1,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
+import { MdKeyboardBackspace } from "react-icons/md";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { BigNumber } from "ethers";
@@ -16,6 +17,7 @@ import {
   request,
   take,
   selectBestOrder,
+  selectAllOrders,
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
 import {
@@ -40,12 +42,18 @@ import Timer from "../../components/Timer/Timer";
 import { Title, Subtitle } from "../../components/Typography/Typography";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
-import StyledSwapWidget, {
+import FeaturedQuote from "../../components/FeaturedQuote/FeaturedQuote";
+import {
+  StyledContainer,
   Header,
   QuoteAndTimer,
   StyledTokenSelect,
-  SubmitButton
+  SubmitButton,
+  TimerContainer,
+  StyledViewAllLink,
+  TitleAndBackButtonContainer,
 } from "./SwapWidget.styles";
+import QuoteComparison from "../QuoteComparison/QuoteComparison";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -54,18 +62,24 @@ const SwapWidget = () => {
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
-  const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
-    useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] =
-    useState<"senderToken" | "signerToken">("senderToken");
+  const [showQuoteComparison, setShowQuoteComparison] = useState<boolean>(
+    false
+  );
+
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
+    false
+  );
+  const [tokenSelectType, setTokenSelectType] = useState<
+    "senderToken" | "signerToken"
+  >("senderToken");
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
-  const order = useAppSelector(selectBestOrder);
+  const bestOrder = useAppSelector(selectBestOrder);
+  const orders = useAppSelector(selectAllOrders);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -113,7 +127,6 @@ const SwapWidget = () => {
         value = value.slice(0, value.length - 1) + ".";
       setSenderAmount(value);
     }
-    if (order) setIsRequestUpdated(true);
   };
 
   const DisplayedButton = () => {
@@ -127,33 +140,21 @@ const SwapWidget = () => {
           {t("wallet:connectWallet")}
         </SubmitButton>
       );
-    } else if (
-      signerAmount &&
-      !isRequestUpdated &&
-      hasSufficientAllowance(senderToken) &&
-      signerToken &&
-      senderToken
-    ) {
+    } else if (bestOrder && hasSufficientAllowance(senderToken)) {
       return (
         <SubmitButton
           intent="primary"
           aria-label={t("orders:take", { context: "aria" })}
-          disabled={isNaN(parseFloat(signerAmount))}
+          disabled={isNaN(parseFloat(signerAmount!))}
           loading={ordersStatus === "taking"}
           onClick={async () => {
-            dispatch(take({ order, library }));
-            setIsRequestUpdated(false);
+            dispatch(take({ order: bestOrder, library }));
           }}
         >
           {t("orders:take")}
         </SubmitButton>
       );
-    } else if (
-      signerAmount &&
-      !isRequestUpdated &&
-      signerToken &&
-      senderToken
-    ) {
+    } else if (bestOrder) {
       return (
         <SubmitButton
           intent="primary"
@@ -195,7 +196,6 @@ const SwapWidget = () => {
               })
             );
             trackEvent({ category: "order", action: "request" });
-            setIsRequestUpdated(false);
           }}
         >
           {!insufficientBalance
@@ -213,10 +213,10 @@ const SwapWidget = () => {
   };
 
   let signerAmount: string | null = null;
-  if (order) {
-    const signerDecimals = getTokenDecimals(order.signerToken);
+  if (bestOrder) {
+    const signerDecimals = getTokenDecimals(bestOrder.signerToken);
     if (signerDecimals) {
-      signerAmount = toDecimalString(order.signerAmount, signerDecimals);
+      signerAmount = toDecimalString(bestOrder.signerAmount, signerDecimals);
     } else {
       signerAmount = t("orders:decimalsNotFound");
     }
@@ -238,6 +238,7 @@ const SwapWidget = () => {
       } else decimalsFound = false;
     }
   }
+  insufficientBalance = false;
 
   const handleAddActiveToken = (address: string) => {
     if (library) {
@@ -267,60 +268,105 @@ const SwapWidget = () => {
 
   return (
     <>
-      <StyledSwapWidget>
-          <Header>
-            {!order || isRequestUpdated ? (
+      <StyledContainer>
+        {!bestOrder ? (
+          <>
+            <Header>
               <Title type="h4">Swap now</Title>
-            ) : (
+            </Header>
+            <StyledTokenSelect
+              tokens={activeTokens}
+              withAmount={true}
+              amount={senderAmount}
+              onAmountChange={(e) => handleTokenAmountChange(e)}
+              label={t("orders:send")}
+              token={senderToken}
+              onTokenChange={() => {
+                setTokenSelectType("senderToken");
+                setTokenSelectModalOpen(true);
+              }}
+              hasError={insufficientBalance}
+            />
+            <StyledTokenSelect
+              tokens={activeTokens}
+              withAmount={false}
+              label={t("orders:receive")}
+              token={signerToken}
+              onTokenChange={() => {
+                setTokenSelectType("signerToken");
+                setTokenSelectModalOpen(true);
+              }}
+            />
+            <DisplayedButton />
+          </>
+        ) : !showQuoteComparison ? (
+          <>
+            <Header>
               <QuoteAndTimer>
-                <Subtitle>Quote expires in&nbsp;</Subtitle>
-                <Timer
-                  expiryTime={parseInt(order.expiry)}
-                  onTimerComplete={() => {
-                    dispatch(
-                      request({
-                        chainId: chainId!,
-                        senderToken: senderToken!,
-                        senderAmount,
-                        signerToken: signerToken!,
-                        senderWallet: account!,
-                        provider: library,
-                      })
-                    );
-                    trackEvent({ category: "order", action: "request" });
-                  }}
-                />
+                <Title type="h4">{t("orders:bestQuote")}</Title>
+                <TimerContainer>
+                  <Subtitle>New quotes in&nbsp;</Subtitle>
+                  <Timer
+                    expiryTime={parseInt(bestOrder.expiry)}
+                    onTimerComplete={() => {
+                      dispatch(
+                        request({
+                          chainId: chainId!,
+                          senderToken: senderToken!,
+                          senderAmount,
+                          signerToken: signerToken!,
+                          senderWallet: account!,
+                          provider: library,
+                        })
+                      );
+                      trackEvent({ category: "order", action: "request" });
+                    }}
+                  />
+                </TimerContainer>
               </QuoteAndTimer>
-            )}
-          </Header>
-        <StyledTokenSelect
-          tokens={activeTokens}
-          withAmount={true}
-          amount={senderAmount}
-          onAmountChange={(e) => handleTokenAmountChange(e)}
-          label={t("orders:send")}
-          token={senderToken}
-          onTokenChange={() => {
-            setTokenSelectType("senderToken");
-            setTokenSelectModalOpen(true);
-            if (order) setIsRequestUpdated(true);
-          }}
-          hasError={insufficientBalance}
-        />
-        <StyledTokenSelect
-          tokens={activeTokens}
-          withAmount={false}
-          label={t("orders:receive")}
-          token={signerToken}
-          quoteAmount={isRequestUpdated ? "" : signerAmount}
-          onTokenChange={() => {
-            setTokenSelectType("signerToken");
-            setTokenSelectModalOpen(true);
-            if (order) setIsRequestUpdated(true);
-          }}
-        />
-        <DisplayedButton />
-      </StyledSwapWidget>
+            </Header>
+            <FeaturedQuote
+              quote={bestOrder}
+              senderTokenInfo={findTokenByAddress(
+                bestOrder.senderToken!,
+                activeTokens
+              )}
+              signerTokenInfo={findTokenByAddress(
+                bestOrder.signerToken!,
+                activeTokens
+              )}
+            />
+            <StyledViewAllLink
+              as="button"
+              onClick={() => setShowQuoteComparison(true)}
+            >
+              View {orders.length} received quotes
+            </StyledViewAllLink>
+            <DisplayedButton />
+          </>
+        ) : (
+          <>
+            <Header>
+              <TitleAndBackButtonContainer>
+                <button onClick={() => setShowQuoteComparison(false)}>
+                  <MdKeyboardBackspace />
+                </button>
+                <Title type="h4">
+                  {t("orders:receivedQuotes")} ({orders.length})
+                </Title>
+              </TitleAndBackButtonContainer>
+            </Header>
+            <QuoteComparison
+              bestQuoteIndex={orders.findIndex((o) => o === bestOrder)}
+              quotes={orders}
+              signerTokenInfo={findTokenByAddress(
+                bestOrder.signerToken!,
+                activeTokens
+              )}
+            />
+          </>
+        )}
+      </StyledContainer>
       <Modal
         isOpen={showWalletList}
         onRequestClose={() => setShowWalletList(false)}

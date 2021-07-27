@@ -6,7 +6,8 @@ import {
   Title,
   TitleProps,
   Paragraph,
-  Navigation,
+  Link,
+  NavLink,
   Metadata,
   FormLabel,
 } from "./Typography";
@@ -63,9 +64,13 @@ const Template: Story<TitleProps> = (args) => (
     </FlexCol>
     <FormLabel>The quick brown fox jumps over the lazy dog</FormLabel>
     <FlexCol>
+      <Subtitle>Link</Subtitle>
+    </FlexCol>
+    <Link>The quick brown fox jumps over the lazy dog</Link>
+    <FlexCol>
       <Subtitle>Navigation</Subtitle>
     </FlexCol>
-    <Navigation>The quick brown fox jumps over the lazy dog</Navigation>
+    <NavLink>The quick brown fox jumps over the lazy dog</NavLink>
     <FlexCol>
       <Subtitle>Metadata</Subtitle>
     </FlexCol>

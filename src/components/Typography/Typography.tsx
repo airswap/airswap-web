@@ -31,6 +31,7 @@ export {
   StyledParagraph as Paragraph,
   StyledFormLabel as FormLabel,
   StyledFormInput as FormInput,
-  StyledNavigation as Navigation,
+  StyledLink as Link,
+  StyledNavigation as NavLink,
   StyledMetadata as Metadata,
 } from "./Typography.styles";

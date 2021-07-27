@@ -42,9 +42,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 400,
   },
   link: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
-    fontWeight: 400,
+    fontSize: "0.75rem",
+    lineHeight: 2,
+    fontWeight: 700,
   },
   nav: {
     fontSize: "2rem",

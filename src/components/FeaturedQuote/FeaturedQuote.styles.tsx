@@ -56,6 +56,8 @@ export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  margin-bottom: 1rem;
+  /* TODO: theme */
   border: 1px solid
     ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
   text-transform: uppercase;

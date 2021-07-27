@@ -148,7 +148,9 @@ export const { clear } = ordersSlice.actions;
  * then falling back to expiry.
  */
 export const selectBestOrder = (state: RootState) =>
-  state.orders.orders.sort((a, b) => {
+  // Note that `.sort` mutates the array, so we need to clone it first to
+  // prevent mutating state.
+  [...state.orders.orders].sort((a, b) => {
     // If tokens transferred are the same
     if (
       a.signerAmount === b.signerAmount &&
@@ -172,5 +174,8 @@ export const selectBestOrder = (state: RootState) =>
       else return -1;
     }
   })[0];
+
+export const selectAllOrders = (state: RootState) => state.orders.orders;
+
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;

@@ -12,6 +12,8 @@
   "insufficentBalance": "Insufficient {{symbol}} balance",
   "decimalsNotFound": "Token decimals not found",
   "priceDifference": "Price difference",
+  "bestQuote": "Best quote",
+  "receivedQuotes": "Received quotes",
   "bestPrice": "Best price",
   "price": "Price",
   "gasCost": "Gas cost",
