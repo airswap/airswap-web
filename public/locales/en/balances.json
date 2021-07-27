@@ -1,6 +1,6 @@
 {
   "tokenBalances": "Token balances",
-  "addToTokenSet": "Add to token set",
+  "addToTokenSet": "Import",
   "symbol": "Symbol",
   "balance": "Balance",
   "allowance": "Allowance"
