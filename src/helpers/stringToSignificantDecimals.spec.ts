@@ -17,7 +17,7 @@ describe("stringToSignificantDecimals", () => {
     expect(stringToSignificantDecimals("1234.000056789", 4)).toBe("1234.0000");
   });
 
-  it("Should ignore insignificant decimal places", () => {
-    expect(stringToSignificantDecimals("0.000567891", 4)).toBe("0.0005678");
+  it("Should (only) ignore insignificant decimal places", () => {
+    expect(stringToSignificantDecimals("0.0005607891", 4)).toBe("0.0005607");
   });
 });

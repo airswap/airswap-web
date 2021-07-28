@@ -13,29 +13,25 @@ import {
 } from "./QuoteComparison.styles";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import { useTranslation } from "react-i18next";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 
 export type QuoteComparisonProps = {
-  /** Array of quotes to show */
+  /** Array of quotes to show. Assumes orders are sorted (best at index 0)*/
   quotes: LightOrder[];
-  /** Index of best quote in `quotes` array */
-  bestQuoteIndex: number;
   /** TokenInfo for signer token, used for symbol and icon */
   signerTokenInfo: TokenInfo;
 };
 
 const QuoteComparison: FC<QuoteComparisonProps> = ({
   quotes,
-  bestQuoteIndex,
   signerTokenInfo,
 }) => {
-  const bestQuoteSignerAmount = BigNumber.from(
-    quotes[bestQuoteIndex].signerAmount
-  );
+  const bestQuoteSignerAmount = BigNumber.from(quotes[0].signerAmount);
   const { t } = useTranslation(["orders"]);
   return (
     <QuoteList>
       {quotes.map((quote, i) => {
-        const isBest = i === bestQuoteIndex;
+        const isBest = i === 0;
         let priceDifference = isBest
           ? BigNumber.from(0)
           : BigNumber.from(quote.signerAmount).sub(bestQuoteSignerAmount);
@@ -47,9 +43,11 @@ const QuoteComparison: FC<QuoteComparisonProps> = ({
                 {isBest && <StyledStar />}
               </MakerAddress>
               <QuotedAmount>
-                {utils.formatUnits(
-                  quote.signerAmount,
-                  signerTokenInfo.decimals
+                {stringToSignificantDecimals(
+                  utils.formatUnits(
+                    quote.signerAmount,
+                    signerTokenInfo.decimals
+                  )
                 )}
                 <TokenLogo tokenInfo={signerTokenInfo} size="small" />
               </QuotedAmount>
@@ -63,9 +61,11 @@ const QuoteComparison: FC<QuoteComparisonProps> = ({
                   t("orders:bestPrice")
                 ) : (
                   <>
-                    {utils.formatUnits(
-                      priceDifference,
-                      signerTokenInfo.decimals
+                    {stringToSignificantDecimals(
+                      utils.formatUnits(
+                        priceDifference,
+                        signerTokenInfo.decimals
+                      )
                     )}
                     <span>&nbsp;{signerTokenInfo.symbol}</span>
                   </>

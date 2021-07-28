@@ -68,6 +68,5 @@ const Template: Story<QuoteComparisonProps> = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   quotes: mockOrders,
-  bestQuoteIndex: 0,
   signerTokenInfo: airSwapTokenInfo,
 };

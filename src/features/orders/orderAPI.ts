@@ -1,4 +1,4 @@
-import { ethers, Transaction } from "ethers";
+import { BigNumber, ethers, Transaction } from "ethers";
 import { Registry, Light, ERC20 } from "@airswap/protocols";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
@@ -22,7 +22,7 @@ export async function requestOrder(
       senderToken,
       senderWallet
     );
-    return order as any as LightOrder;
+    return (order as any) as LightOrder;
   });
   const orders = await Promise.allSettled(orderPromises);
   const successfulOrders = orders
@@ -40,7 +40,7 @@ export async function approveToken(
     spender,
     provider.getSigner()
   );
-  return approvalTxHash as any as Transaction;
+  return (approvalTxHash as any) as Transaction;
 }
 
 export async function takeOrder(
@@ -51,5 +51,27 @@ export async function takeOrder(
     order,
     provider.getSigner()
   );
-  return tx as any as Transaction;
+  return (tx as any) as Transaction;
+}
+
+export function orderSortingFunction(a: LightOrder, b: LightOrder) {
+  // If tokens transferred are the same
+  if (a.signerAmount === b.signerAmount && a.senderAmount === b.senderAmount) {
+    return parseInt(b.expiry) - parseInt(a.expiry);
+  }
+  if (a.signerAmount === b.signerAmount) {
+    // Likely senderSide
+    // Sort orders by amount of senderToken sent (ascending).
+    const aAmount = BigNumber.from(a.senderAmount);
+    const bAmount = BigNumber.from(b.senderAmount);
+    if (bAmount.lt(aAmount)) return 1;
+    else return -1;
+  } else {
+    // Likely signerSide
+    // Sort orders by amount of signerToken received (descending).
+    const aAmount = BigNumber.from(a.signerAmount);
+    const bAmount = BigNumber.from(b.signerAmount);
+    if (bAmount.gt(aAmount)) return 1;
+    else return -1;
+  }
 }

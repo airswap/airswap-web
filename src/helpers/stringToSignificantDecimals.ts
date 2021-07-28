@@ -1,7 +1,7 @@
 const stringToSignificantDecimals: (
   input: string,
   sigDecimals?: number
-) => string = (input, sigDecimals = 4) => {
+) => string = (input, sigDecimals = 6) => {
   // Don't do anything if there's no decimal point.
   if (input.indexOf(".") === -1) {
     return input;
@@ -25,6 +25,7 @@ const stringToSignificantDecimals: (
       const currentDigit = afterDecimalPoint[i];
       trimmedDecimals += currentDigit;
       if (!inLeadingZeroes || currentDigit !== "0") {
+        inLeadingZeroes = false;
         sigDecimalsRemaining--;
       }
       i++;

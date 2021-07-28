@@ -20,6 +20,7 @@ import {
 import { useTranslation } from "react-i18next";
 // Note bignumber.js needed because of decimals.
 import { BigNumber } from "bignumber.js";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 
 type FeaturedQuoteProps = {
   quote: LightOrder;
@@ -60,7 +61,9 @@ const FeaturedQuote: FC<FeaturedQuoteProps> = ({
       </ArrowContainer>
       <QuoteRow>
         <Title type="h4">
-          {formatUnits(quote.signerAmount, signerTokenInfo.decimals)}
+          {stringToSignificantDecimals(
+            formatUnits(quote.signerAmount, signerTokenInfo.decimals)
+          )}
         </Title>
         <AmountAndLogoContainer>
           <TokenLogo size="small" tokenInfo={signerTokenInfo} />
@@ -73,7 +76,7 @@ const FeaturedQuote: FC<FeaturedQuoteProps> = ({
         <StyledPrice>
           1 {invertPrice ? signerTokenInfo.symbol : senderTokenInfo.symbol} ={" "}
           {/* TODO: this can display as an exponential */}
-          {price.toPrecision(4)}{" "}
+          {stringToSignificantDecimals(price.toString())}{" "}
           {invertPrice ? senderTokenInfo.symbol : signerTokenInfo.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
             <StyledInvertPriceIcon />

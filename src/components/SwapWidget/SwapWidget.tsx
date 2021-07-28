@@ -16,8 +16,7 @@ import {
   approve,
   request,
   take,
-  selectBestOrder,
-  selectAllOrders,
+  selectSortedOrders,
   selectOrdersStatus,
 } from "../../features/orders/ordersSlice";
 import {
@@ -78,8 +77,8 @@ const SwapWidget = () => {
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
-  const bestOrder = useAppSelector(selectBestOrder);
-  const orders = useAppSelector(selectAllOrders);
+  const sortedOrders = useAppSelector(selectSortedOrders);
+  const bestOrder = sortedOrders[0];
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -340,7 +339,7 @@ const SwapWidget = () => {
               as="button"
               onClick={() => setShowQuoteComparison(true)}
             >
-              View {orders.length} received quotes
+              View {sortedOrders.length} received quotes
             </StyledViewAllLink>
             <DisplayedButton />
           </>
@@ -352,13 +351,12 @@ const SwapWidget = () => {
                   <MdKeyboardBackspace />
                 </button>
                 <Title type="h4">
-                  {t("orders:receivedQuotes")} ({orders.length})
+                  {t("orders:receivedQuotes")} ({sortedOrders.length})
                 </Title>
               </TitleAndBackButtonContainer>
             </Header>
             <QuoteComparison
-              bestQuoteIndex={orders.findIndex((o) => o === bestOrder)}
-              quotes={orders}
+              quotes={sortedOrders}
               signerTokenInfo={findTokenByAddress(
                 bestOrder.signerToken!,
                 activeTokens
