@@ -150,7 +150,7 @@ const TokenSelection = ({
         className="w-full"
       />
       {filteredTokens && filteredTokens.length > 0 && (
-        <TokenContainer listLength={filterTokens.length}>
+        <TokenContainer listLength={filteredTokens.length}>
           {filteredTokens.map((token) => (
             <TokenRow
               token={token}

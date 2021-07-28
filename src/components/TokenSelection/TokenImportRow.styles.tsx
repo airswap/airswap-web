@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   border: 1px solid #282828;
+  margin: -1px -1px -1px -1px;
   padding: 1rem;
   display: grid;
   grid-auto-flow: column;
@@ -47,13 +48,12 @@ export const Span = styled.span``;
 
 export const ImportButton = styled.button`
   border: 1px solid #282828;
-  color: white;
   font-size: 0.8rem;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   &:hover {
-      background: white;
-      color: black;
-      transition: 0.25s ease-in-out;
+    background: ${props => props.theme.colors.white};
+    color: ${props => props.theme.colors.black};
+    transition: 0.25s ease-in-out;
   }
 `;

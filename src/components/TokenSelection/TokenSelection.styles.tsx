@@ -28,30 +28,35 @@ export const StyledInput = styled.input`
   border: 1px solid #282828;
   border-radius: 500px;
   background: transparent;
-  color: #9E9E9E;
+  color: #9e9e9e;
   padding: 1rem;
   font-size: 0.75rem;
   margin: 1rem 0;
+  &:focus {
+    outline: none;
+    border: 1px solid ${(props) => props.theme.colors.primary};
+  }
 `;
 
 type TokenContainerProps = {
-    listLength: number;
-}
+  listLength: number;
+};
 
 export const TokenContainer = styled.div<TokenContainerProps>`
-    border: 1px solid #282828;
-    linear-gradient(91.88deg, rgba(21, 22, 25, 0.64) 0%, rgba(21, 22, 25, 0.24) 100%);
-    max-height: 286px;
-    overflow-y: ${props => props.listLength > 5 ? "scroll" : "none"};
-    &::-webkit-scrollbar { 
-        width: 0.5rem;
-        background: #151619;
-    }
+  border: 1px solid #282828;
+  max-height: 286px;
+  overflow-y: ${(props) => (props.listLength > 4 ? "scroll" : "hidden")};
+  overflow-x: hidden;
 
-    &::-webkit-scrollbar-thumb {
-        background: #f1f1f1;
-        border-radius: 0.5rem;
-      }
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    background: ${props => props.theme.colors.black};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.white};
+    border-radius: 0.5rem;
+  }
 `;
 
 export const InactiveTitleContainer = styled.div`

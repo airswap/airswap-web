@@ -6,10 +6,11 @@ type ContainerProps = {
 
 export const Container = styled.div<ContainerProps>`
   border: 1px solid #282828;
+  margin: -1px -1px -1px -1px;
   padding: 1rem;
   display: grid;
   grid-auto-flow: column;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? "not-allowed" : "pointer"};
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 1rem;
   align-items: center;
@@ -40,7 +41,6 @@ export const TextContainer = styled.div`
 export const Symbol = styled.h3`
   font-size: 1rem;
   font-weight: bold;
-  color: white;
   line-height: 1rem;
 `;
 
