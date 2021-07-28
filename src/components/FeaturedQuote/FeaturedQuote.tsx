@@ -75,7 +75,6 @@ const FeaturedQuote: FC<FeaturedQuoteProps> = ({
         <Subtitle>{t("orders:price")} &nbsp;</Subtitle>
         <StyledPrice>
           1 {invertPrice ? signerTokenInfo.symbol : senderTokenInfo.symbol} ={" "}
-          {/* TODO: this can display as an exponential */}
           {stringToSignificantDecimals(price.toString())}{" "}
           {invertPrice ? senderTokenInfo.symbol : signerTokenInfo.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
@@ -86,15 +85,10 @@ const FeaturedQuote: FC<FeaturedQuoteProps> = ({
 
       <InfoContainer>
         <InfoRow>
-          <Metadata>{t("orders:gasCost")}</Metadata>
-          {/* TODO: estimate gas */}
-          <Metadata>0.000123 WETH</Metadata>
-        </InfoRow>
-        <InfoRow>
           {/* TODO: metadata isn't right here, missing typography component */}
           <Metadata>{t("orders:protocolFee")}</Metadata>
-          {/* @ts-ignore TODO: this needs to come from the swap contract */}
-          <Metadata>{parseInt(quote.signerFee) / 100}%</Metadata>
+          {/* @ts-ignore TODO: this needs to come from a contract */}
+          <Metadata>{30 / 100}%</Metadata>
         </InfoRow>
       </InfoContainer>
     </BestQuoteContainer>
