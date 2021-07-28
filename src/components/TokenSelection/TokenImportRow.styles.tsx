@@ -33,7 +33,6 @@ export const TextContainer = styled.div`
 export const Symbol = styled.h3`
   font-size: 1rem;
   font-weight: bold;
-  color: white;
   line-height: 1rem;
 `;
 
