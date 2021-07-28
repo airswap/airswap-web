@@ -147,7 +147,6 @@ const TokenSelection = ({
         onChange={(e) => {
           setTokenQuery(e.target.value);
         }}
-        className="w-full"
       />
       {filteredTokens && filteredTokens.length > 0 && (
         <TokenContainer listLength={filteredTokens.length}>

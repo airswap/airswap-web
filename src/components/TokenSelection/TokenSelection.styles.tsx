@@ -32,6 +32,7 @@ export const StyledInput = styled.input`
   padding: 1rem;
   font-size: 0.75rem;
   margin: 1rem 0;
+  width: 100%;
   &:focus {
     outline: none;
     border: 1px solid ${(props) => props.theme.colors.primary};

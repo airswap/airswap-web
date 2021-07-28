@@ -61,8 +61,8 @@ const TokenRow = ({
       </ImageContainer>
 
       <TextContainer>
-        <Symbol className="flex flex-col">{token.symbol}</Symbol>
-        <TokenName className="text-gray-400">
+        <Symbol>{token.symbol}</Symbol>
+        <TokenName>
           {token.name}{" "}
           {!defaultToken && (
             <>

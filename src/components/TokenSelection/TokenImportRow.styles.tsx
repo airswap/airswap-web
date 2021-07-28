@@ -33,7 +33,6 @@ export const TextContainer = styled.div`
 export const Symbol = styled.h3`
   font-size: 1rem;
   font-weight: bold;
-  color: white;
   line-height: 1rem;
 `;
 
@@ -51,6 +50,7 @@ export const ImportButton = styled.button`
   font-size: 0.8rem;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
+  justify-self: end;
   &:hover {
     background: ${(props) => props.theme.colors.white};
     color: ${(props) => props.theme.colors.black};
