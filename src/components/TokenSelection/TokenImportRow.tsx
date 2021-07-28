@@ -8,7 +8,7 @@ import {
   Symbol,
   TokenName,
   Span,
-  ImportButton
+  ImportButton,
 } from "./TokenImportRow.styles";
 
 export type TokenImportRowProps = {
@@ -22,19 +22,18 @@ export type TokenImportRowProps = {
   onClick: (val: string) => void;
 };
 
-const TokenImportRow = ({
-  token,
-  onClick,
-}: TokenImportRowProps) => {
+const TokenImportRow = ({ token, onClick }: TokenImportRowProps) => {
   const { t } = useTranslation(["balances", "common"]);
 
   return (
     <Container>
-      <ImageContainer><Image
-        src={token.logoURI || "https://via.placeholder.com/150"}
-        alt={token.address}
-      /></ImageContainer>
-      
+      <ImageContainer>
+        <Image
+          src={token.logoURI || "https://via.placeholder.com/150"}
+          alt={token.address}
+        />
+      </ImageContainer>
+
       <TextContainer>
         <Symbol className="flex flex-col">{token.symbol}</Symbol>
         <TokenName className="text-gray-400">{token.name}</TokenName>

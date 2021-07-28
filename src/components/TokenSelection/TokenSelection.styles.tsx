@@ -50,11 +50,11 @@ export const TokenContainer = styled.div<TokenContainerProps>`
 
   &::-webkit-scrollbar {
     width: 0.5rem;
-    background: ${props => props.theme.colors.black};
+    background: ${(props) => props.theme.colors.black};
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.white};
+    background: ${(props) => props.theme.colors.white};
     border-radius: 0.5rem;
   }
 `;

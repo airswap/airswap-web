@@ -7,7 +7,7 @@ import {
   Symbol,
   TokenName,
   Span,
-  Balance
+  Balance,
 } from "./TokenRow.styles";
 
 export type TokenRowProps = {

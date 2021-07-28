@@ -52,8 +52,8 @@ export const ImportButton = styled.button`
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   &:hover {
-    background: ${props => props.theme.colors.white};
-    color: ${props => props.theme.colors.black};
+    background: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.black};
     transition: 0.25s ease-in-out;
   }
 `;
