@@ -7,7 +7,6 @@ import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
@@ -25,7 +24,12 @@ import {
   selectBalances,
   setAllowance,
 } from "../balances/balancesSlice";
-import { fetchAllTokens, selectActiveTokens } from "../metadata/metadataSlice";
+import { selectTransactions } from "../transactions/transactionsSlice";
+import {
+  fetchAllTokens,
+  selectActiveTokens,
+  selectAllTokenInfo,
+} from "../metadata/metadataSlice";
 import {
   clearLastAccount,
   loadLastAccount,
@@ -56,12 +60,11 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const { providerName } = useAppSelector(selectWallet);
+  const transactions = useAppSelector(selectTransactions);
+  const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Analytics
   const { trackPageView } = useMatomo();
-
-  // i18n
-  const { t } = useTranslation(["common", "wallet"]);
 
   // Local component state
   const [showConnectorList, setShowConnectorList] = useState<boolean>(false);
@@ -209,10 +212,10 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           }
         }}
         isConnecting={isActivating}
+        transactions={transactions}
+        chainId={chainId!}
+        tokens={allTokens}
       />
-      <div>
-        {t("common:chainId")}: {chainId}
-      </div>
     </div>
   );
 };

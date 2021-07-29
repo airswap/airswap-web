@@ -13,6 +13,7 @@ export interface SubmittedTransaction {
   type: "Approval" | "Order";
   hash: string;
   status: "processing" | "succeeded" | "reverted";
+  timestamp: number;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {

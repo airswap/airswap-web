@@ -60,9 +60,7 @@ export type TokenSelectionProps = {
   /**
    * all Token addresses in metadata.
    */
-  allTokens: {
-    [address: string]: TokenInfo;
-  };
+  allTokens: TokenInfo[];
   /**
    * All active tokens.
    */
