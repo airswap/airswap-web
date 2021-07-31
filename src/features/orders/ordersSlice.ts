@@ -1,7 +1,12 @@
 import { LightOrder } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { requestOrder, takeOrder, approveToken } from "./orderAPI";
+import {
+  requestOrder,
+  takeOrder,
+  approveToken,
+  orderSortingFunction,
+} from "./orderAPI";
 import {
   submitTransaction,
   mineTransaction,
@@ -16,7 +21,7 @@ import {
   SubmittedOrder,
   SubmittedApproval,
 } from "../transactions/transactionsSlice";
-import { BigNumber, Transaction } from "ethers";
+import { Transaction } from "ethers";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -148,29 +153,11 @@ export const { clear } = ordersSlice.actions;
  * then falling back to expiry.
  */
 export const selectBestOrder = (state: RootState) =>
-  state.orders.orders.sort((a, b) => {
-    // If tokens transferred are the same
-    if (
-      a.signerAmount === b.signerAmount &&
-      a.senderAmount === b.senderAmount
-    ) {
-      return parseInt(b.expiry) - parseInt(a.expiry);
-    }
-    if (a.signerAmount === b.signerAmount) {
-      // Likely senderSide
-      // Sort orders by amount of senderToken sent (ascending).
-      const aAmount = BigNumber.from(a.senderAmount);
-      const bAmount = BigNumber.from(b.senderAmount);
-      if (bAmount.lt(aAmount)) return 1;
-      else return -1;
-    } else {
-      // Likely signerSide
-      // Sort orders by amount of signerToken received (descending).
-      const aAmount = BigNumber.from(a.signerAmount);
-      const bAmount = BigNumber.from(b.signerAmount);
-      if (bAmount.gt(aAmount)) return 1;
-      else return -1;
-    }
-  })[0];
+  // Note that `.sort` mutates the array, so we need to clone it first to
+  // prevent mutating state.
+  [...state.orders.orders].sort(orderSortingFunction)[0];
+
+export const selectSortedOrders = (state: RootState) =>
+  [...state.orders.orders].sort(orderSortingFunction);
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;
