@@ -48,7 +48,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
+    "lint": "prettier --write ./src/**/*.ts ./src/**/*.tsx",
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
@@ -91,6 +91,7 @@
     "@storybook/node-logger": "^6.2.9",
     "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.9",
+    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/lodash.uniqby": "^4.7.6",
     "@types/react-blockies": "^1.4.0",
     "autoprefixer": "^9",
