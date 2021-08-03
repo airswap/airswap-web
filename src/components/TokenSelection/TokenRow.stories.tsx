@@ -48,22 +48,6 @@ Disabled.args = {
   defaultToken: true,
 };
 
-export const DefaultToken = Template.bind({});
-DefaultToken.args = {
-  token: {
-    chainId: 1,
-    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
-    name: "Ethereum",
-    decimals: 18,
-    symbol: "ETH",
-  },
-  balance: "230",
-  disabled: false,
-  setToken: () => void 1,
-  removeActiveToken: () => void 1,
-  defaultToken: true,
-};
-
 export const InactiveToken = Template.bind({});
 InactiveToken.args = {
   token: {

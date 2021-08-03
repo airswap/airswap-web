@@ -68,7 +68,6 @@ const TokenRow = ({
             <>
               •{" "}
               <Span
-                className="cursor-pointer hover:underline"
                 onClick={(e) => {
                   e.stopPropagation();
                   removeActiveToken(token.address);
