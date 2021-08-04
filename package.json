@@ -48,7 +48,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "lint": "prettier --write ./src/**/*.ts ./src/**/*.tsx",
+    "lint": "prettier --write \"./src/**/*.{ts,tsx}\"",
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
