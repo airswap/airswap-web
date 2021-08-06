@@ -9,6 +9,7 @@ import TokenRow from "./TokenRow";
 import TokenImportRow from "./TokenImportRow";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
+import { Title } from "../Typography/Typography";
 
 export type TokenSelectionProps = {
   /**
@@ -166,7 +167,7 @@ const TokenSelection = ({
           inactiveTokens &&
           inactiveTokens.length > 0 && (
             <>
-              <h1>Expanded results from inactive Token Lists</h1>
+              <Title type="h4">Expanded results from inactive Token Lists</Title>
               {inactiveTokens.map((token) => (
                 <TokenImportRow
                   token={token}

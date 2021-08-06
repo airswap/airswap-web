@@ -9,6 +9,8 @@ import {
   Navigation,
   Metadata,
   FormLabel,
+  InfoHeading,
+  InfoSubHeading,
 } from "./Typography";
 
 export default {
@@ -58,6 +60,14 @@ const Template: Story<TitleProps> = (args) => (
       <Subtitle>Paragraph</Subtitle>
     </FlexCol>
     <Paragraph>The quick brown fox jumps over the lazy dog</Paragraph>
+    <FlexCol>
+      <Subtitle>Info Heading</Subtitle>
+    </FlexCol>
+    <InfoHeading>The quick brown fox jumps over the lazy dog</InfoHeading>
+    <FlexCol>
+      <Subtitle>Info Sub Heading</Subtitle>
+    </FlexCol>
+    <InfoSubHeading>The quick brown fox jumps over the lazy dog</InfoSubHeading>
     <FlexCol>
       <Subtitle>Form Label</Subtitle>
     </FlexCol>

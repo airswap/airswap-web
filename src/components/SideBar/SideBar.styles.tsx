@@ -36,7 +36,7 @@ export const StyledSideBar = styled.div<StyledSideBarProps>`
   height: 100%;
   min-height: 100vh;
   padding: 3.25rem 0;
-  background: ${(props) => props.theme.colors.darkGrey};
+  background: ${(props) => props.theme.name === "light" ? props.theme.colors.alwaysWhite : props.theme.colors.darkGrey};
 
   @media ${breakPoints.tabletLandscapeUp} {
     display: flex;

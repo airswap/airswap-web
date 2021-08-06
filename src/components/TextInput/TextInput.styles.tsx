@@ -20,7 +20,6 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
   ${StyledFormLabel} {
     display: ${(props) => props.hideLabel ? "none" : "block" };
     width: 100%;
-    color: ${(props) => props.theme.colors.white};
     background: none;
   }
 
@@ -30,7 +29,6 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     border-bottom: 1px solid ${(props) => props.hasError ? props.theme.colors.red : convertHexToRGBA(props.theme.colors.white, 0.1)};
     width: 100%;
     padding: 0;
-    color: ${(props) => props.theme.colors.white};
     opacity: ${(props) => props.disabled ? 0.5 : 1 };
     background: none;
         

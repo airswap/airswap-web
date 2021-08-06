@@ -29,6 +29,8 @@ export const Title: FC<TitleProps> = ({
 export {
   StyledSubtitle as Subtitle,
   StyledParagraph as Paragraph,
+  StyledInfoHeading as InfoHeading,
+  StyledInfoSubHeading as InfoSubHeading,
   StyledFormLabel as FormLabel,
   StyledFormInput as FormInput,
   StyledNavigation as Navigation,
