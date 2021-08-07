@@ -30,18 +30,18 @@ const TokenImportRow = ({ token, onClick }: TokenImportRowProps) => {
 
   return (
     <Container>
-      <ImageContainer>
-        <Image
-          src={token.logoURI || "https://via.placeholder.com/150"}
-          alt={token.address}
-        />
-      </ImageContainer>
+      <ImageContainer><Image
+        src={token.logoURI || "https://via.placeholder.com/150"}
+        alt={token.address}
+      /></ImageContainer>
+
       <TextContainer>
-        <Symbol>{token.symbol}</Symbol>
-        <TokenName>{token.name}</TokenName>
+        <Symbol className="flex flex-col">{token.symbol}</Symbol>
+        <TokenName className="text-gray-400">{token.name}</TokenName>
       </TextContainer>
       <Span></Span>
       <ImportButton
+        className="justify-self-end max-w-md"
         onClick={() => onClick(token.address)}
       >
         {t("balances:addToTokenSet")}

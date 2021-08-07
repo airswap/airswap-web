@@ -7,7 +7,7 @@ import {
   Symbol,
   TokenName,
   Span,
-  Balance,
+  Balance
 } from "./TokenRow.styles";
 
 import classNames from "classnames";
@@ -63,8 +63,8 @@ const TokenRow = ({
       </ImageContainer>
 
       <TextContainer>
-        <Symbol>{token.symbol}</Symbol>
-        <TokenName>
+        <Symbol className="flex flex-col">{token.symbol}</Symbol>
+        <TokenName className="text-gray-400">
           {token.name}{" "}
           {!defaultToken && (
             <>
@@ -83,7 +83,7 @@ const TokenRow = ({
         </TokenName>
       </TextContainer>
       <Span></Span>
-      <Balance>{balance}</Balance>
+      <Balance className="justify-self-end max-w-md">{balance}</Balance>
     </Container>
   );
 };

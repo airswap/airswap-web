@@ -62,11 +62,13 @@ export const TokenContainer = styled.div<TokenContainerProps>`
 
 export const InactiveTitleContainer = styled.div`
   border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border: 1px solid #282828;
+  border-radius: 500px;
+  background: transparent;
+  color: #9E9E9E;
+  padding: 1rem;
+  font-size: 0.75rem;
+  margin: 1rem 0;
 `;
 
 export const InactiveTitle = styled.h3`
