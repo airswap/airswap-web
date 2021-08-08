@@ -30,7 +30,7 @@ export const Container = styled.button<ContainerProps>`
   display: grid;
   grid-auto-flow: column;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  grid-template-columns: 1.5rem 3.75rem calc(50% - 3.75rem) calc(50% - 4.5rem);
+  grid-template-columns: 1.5rem 4rem calc(50% - 4rem) calc(50% - 4.5rem);
   grid-gap: 1rem;
   align-items: center;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
@@ -59,11 +59,13 @@ export const TextContainer = styled.div`
 `;
 
 export const Symbol = styled.h3`
-  
   text-align: left;
-  font-size: ${(props) => (props.theme.typography.formInput.fontSize)};
-  font-weight: ${(props) => (props.theme.typography.formInput.fontWeight)};
-  line-height: ${(props) => (props.theme.typography.formInput.lineHeight)};
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: calc(1 + (1 / 3));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 

@@ -4,6 +4,7 @@ import convertHexToRGBA from '../../helpers/transformHexToRgba';
 import TextInput from '../TextInput/TextInput';
 import { StyledInput } from '../TextInput/TextInput.styles';
 import { sizes } from "../../style/sizes";
+import Icon from "../Icon/Icon";
 
 type ContainerProps = {
   overflow: boolean;
@@ -124,5 +125,11 @@ export const InactiveTitleContainer = styled.div`
 `;
 
 export const InactiveTitle = styled.h3`
+  display: flex;
   font-size: 0.75rem;
 `;
+
+export const InformationIcon = styled(Icon)`
+  display: inline;
+  margin-left: 0.25rem;
+`

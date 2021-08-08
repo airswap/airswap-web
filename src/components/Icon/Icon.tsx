@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from 'react';
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdKeyboardArrowDown } from 'react-icons/md';
 
 import { StyledIcon } from './Icon.styles';
@@ -20,6 +21,7 @@ export const icons: IconSet = {
   'arrow-left': IconArrowLeft,
   'chevron-down': MdKeyboardArrowDown,
   'dark-mode-switch': IconDarkModeSwitch,
+  'information-circle-outline': IoMdInformationCircleOutline,
 }
 
 interface IconProps extends SvgIconProps {

@@ -1,7 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import { TokenInfo } from "@uniswap/token-lists";
-import { IoMdInformationCircle } from "react-icons/io";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
@@ -23,6 +22,7 @@ import {
   LegendItem,
   LegendDivider,
   ScrollContainer,
+  InformationIcon,
 } from "./TokenSelection.styles";
 
 export type TokenSelectionProps = {
@@ -220,8 +220,8 @@ const TokenSelection = ({
               <InactiveTitleContainer>
                 <InactiveTitle>
                   {t('orders:expandedResults')}
+                  <InformationIcon name="information-circle-outline" />
                 </InactiveTitle>
-                <IoMdInformationCircle />
               </InactiveTitleContainer>
               <TokenContainer>
                 {inactiveTokens.map((token) => (

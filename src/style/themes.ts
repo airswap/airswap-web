@@ -47,9 +47,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 600,
   },
   formInput: {
-    fontSize: "1.125rem",
-    lineHeight: 1 + (1 / 3),
-    fontWeight: 600,
+    fontSize: "1.5rem",
+    lineHeight: 1.5,
+    fontWeight: 500,
   },
   // Form select inputs
   selectItem: {
