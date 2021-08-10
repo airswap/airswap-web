@@ -356,6 +356,12 @@ const SwapWidget = () => {
         onRequestClose={() => setTokenSelectModalOpen(false)}
         className="modal"
         overlayClassName="overlay"
+        style={{
+          content: {
+            maxWidth: "30rem",
+            background: "transparent",
+          },
+        }}
       >
         <TokenSelection
           closeModal={() => setTokenSelectModalOpen(false)}
