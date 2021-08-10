@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { HiX } from "react-icons/hi";
 
 import { formatUnits } from "@ethersproject/units";
-// import AutoSizer from 'react-virtualized-auto-sizer'
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
