@@ -33,9 +33,6 @@ const App = (): JSX.Element => {
           <Page>
             <TradeContainer>
               <Orders />
-              <Transactions />
-              ☠️ Use at your own risk
-              <Balances />
             </TradeContainer>
           </Page>
         </Suspense>
