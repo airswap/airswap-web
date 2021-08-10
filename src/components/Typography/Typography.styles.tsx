@@ -18,6 +18,7 @@ const elementMap: Record<
   infoSubHeading: "h4",
   formLabel: "label",
   formInput: "input",
+  selectItem: "div",
   link: "a",
   nav: "div",
   small: "aside",
@@ -101,4 +102,5 @@ export const StyledFormInput = makeTypographyComponent(
         : props.theme.colors.primary};
   `
 );
+export const StyledSelectItem = makeTypographyComponent("selectItem");
 export const StyledMetadata = makeTypographyComponent("small");

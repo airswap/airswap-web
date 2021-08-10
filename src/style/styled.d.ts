@@ -11,6 +11,7 @@ type Typography =
   | "infoSubHeading"
   | "formLabel"
   | "formInput"
+  | "selectItem"
   | "nav"
   | "link"
   | "small";
@@ -33,6 +34,7 @@ declare module "styled-components" {
       black: string;
       alwaysBlack: string;
       grey: string;
+      borderGrey: string;
       darkGrey: string;
       lightGrey: string;
       red: string;
