@@ -9,11 +9,11 @@ export const Container = styled.div`
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 1rem;
   align-items: center;
-  
+
   &:not(:last-of-type) {
     border-bottom: 0;
   }
-  
+
   & + & {
     border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
   }

@@ -4,7 +4,7 @@ export const Text = styled.div`
   display: inline;
   margin-left: 0.25rem;
   font-size: 0.75rem;
-`
+`;
 
 export const Container = styled.button`
   position: relative;
@@ -15,14 +15,13 @@ export const Container = styled.button`
   text-overflow: ellipsis;
 
   &:hover {
-
-  ${Text} {
-    text-decoration: underline;
-  }
+    ${Text} {
+      text-decoration: underline;
+    }
   }
 
   &:before {
-    content: '•';
+    content: "•";
     display: inline;
   }
 `;

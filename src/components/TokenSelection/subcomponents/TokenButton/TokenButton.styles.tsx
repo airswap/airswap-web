@@ -20,7 +20,7 @@ export const TokenName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${(props) => (props.theme.colors.lightGrey)};
+  color: ${(props) => props.theme.colors.lightGrey};
 `;
 
 export const Container = styled.button<ContainerProps>`
@@ -37,7 +37,10 @@ export const Container = styled.button<ContainerProps>`
 
   &:hover {
     ${TokenName} {
-      color: ${(props) => (props.disabled ? props.theme.colors.lightGrey : props.theme.colors.white)};
+      color: ${(props) =>
+        props.disabled
+          ? props.theme.colors.lightGrey
+          : props.theme.colors.white};
     }
   }
 `;
@@ -68,8 +71,6 @@ export const Symbol = styled.h3`
   text-overflow: ellipsis;
 `;
 
-
-
 export const Balance = styled.div`
   font-weight: 500;
   text-align: right;
@@ -77,4 +78,3 @@ export const Balance = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-

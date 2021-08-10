@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+
+import { TokenInfo } from "@uniswap/token-lists";
+
 import {
   Container,
   Image,
@@ -9,10 +12,6 @@ import {
   Span,
   ImportButton,
 } from "./TokenImportButton.styles";
-
-import { TokenInfo } from "@uniswap/token-lists";
-
-import classNames from "classnames";
 
 export type TokenImportRowProps = {
   /**
@@ -30,19 +29,19 @@ const TokenImportButton = ({ token, onClick }: TokenImportRowProps) => {
 
   return (
     <Container>
-      <ImageContainer><Image
-        src={token.logoURI || "https://via.placeholder.com/150"}
-        alt={token.address}
-      /></ImageContainer>
+      <ImageContainer>
+        <Image
+          src={token.logoURI || "https://via.placeholder.com/150"}
+          alt={token.address}
+        />
+      </ImageContainer>
 
       <TextContainer>
         <Symbol>{token.symbol}</Symbol>
         <TokenName>{token.name}</TokenName>
       </TextContainer>
       <Span></Span>
-      <ImportButton
-        onClick={() => onClick(token.address)}
-      >
+      <ImportButton onClick={() => onClick(token.address)}>
         {t("balances:addToTokenSet")}
       </ImportButton>
     </Container>

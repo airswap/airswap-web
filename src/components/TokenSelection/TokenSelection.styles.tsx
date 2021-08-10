@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import IconButton from '../IconButton/IconButton';
-import convertHexToRGBA from '../../helpers/transformHexToRgba';
-import TextInput from '../TextInput/TextInput';
-import { StyledInput } from '../TextInput/TextInput.styles';
+
+import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
+import IconButton from "../IconButton/IconButton";
+import TextInput from "../TextInput/TextInput";
+import { StyledInput } from "../TextInput/TextInput.styles";
 
 type ContainerProps = {
   overflow: boolean;
@@ -28,7 +29,7 @@ export const ScrollContainer = styled.div`
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
-  
+
   position: absolute;
   top: 0;
   left: 0;
@@ -41,7 +42,7 @@ export const Container = styled.div<ContainerProps>`
     width: calc(100% + (${sizes.tradeContainerPadding} / 2));
     padding-right: calc(${sizes.tradeContainerPadding} / 2);
     overflow-x: hidden;
-    overflow-y: ${(props) => props.overflow ? 'scroll' : 'hidden'};
+    overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
   }
 `;
 
@@ -59,10 +60,10 @@ export const CloseButton = styled(IconButton)`
   width: 1.5rem;
   height: 1.5rem;
   padding: 0;
-  border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
-  
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+
   &:hover {
-    border-color: ${(props) => (convertHexToRGBA(props.theme.colors.white, 0.5))};
+    border-color: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.5)};
   }
 `;
 
@@ -73,9 +74,9 @@ export const StyledLabel = styled.label`
 export const SearchInput = styled(TextInput)`
   margin-bottom: 1.25rem;
   width: 100%;
-  
+
   ${StyledInput} {
-    border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
+    border: 1px solid ${(props) => props.theme.colors.borderGrey};
     border-radius: 2px;
     line-height: 2.25;
     padding: 0.25rem 0.625rem;
@@ -112,13 +113,13 @@ export const LegendDivider = styled.div`
   width: 100%;
   height: 1px;
   background: ${(props) => props.theme.colors.borderGrey};
-`
+`;
 
 export const InactiveTitleContainer = styled.div`
-  border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background: transparent;
-  color: #9E9E9E;
+  color: #9e9e9e;
   padding: 1rem;
   font-size: 0.75rem;
   margin: 1rem 0;
@@ -132,4 +133,4 @@ export const InactiveTitle = styled.h3`
 export const InformationIcon = styled(Icon)`
   display: inline;
   margin-left: 0.25rem;
-`
+`;

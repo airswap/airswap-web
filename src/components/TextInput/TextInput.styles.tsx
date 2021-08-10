@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import styled from "styled-components";
 
@@ -20,9 +20,8 @@ export const StyledFormLabel = styled(FormLabel)``;
 export const StyledInput = styled(FormInput)<StyledInputProps>``;
 
 export const StyledTextInput = styled.div<TextInputStyleProps>`
-  
   ${StyledFormLabel} {
-    display: ${(props) => props.hideLabel ? "none" : "block" };
+    display: ${(props) => (props.hideLabel ? "none" : "block")};
     width: 100%;
     background: none;
   }
@@ -32,11 +31,11 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
     border: 0;
     width: 100%;
     padding: 0;
-    opacity: ${(props) => props.disabled ? 0.5 : 1 };
+    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
     background: none;
 
     &::placeholder {
-      color: ${(props) => props.theme.colors.lightGrey };
+      color: ${(props) => props.theme.colors.lightGrey};
     }
 
     &:focus {

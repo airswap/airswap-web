@@ -1,15 +1,15 @@
 import { TokenInfo } from "@uniswap/token-lists";
+
+import TokenDeleteButton from "../TokenDeleteButton/TokenDeleteButton";
 import {
   Container,
   Image,
   ImageContainer,
   Symbol,
   TokenName,
-  Balance, TokenNameContainer,
+  Balance,
+  TokenNameContainer,
 } from "./TokenButton.styles";
-import TokenDeleteButton from "../TokenDeleteButton/TokenDeleteButton";
-
-import classNames from "classnames";
 
 export type TokenRowProps = {
   /**
@@ -64,9 +64,7 @@ const TokenButton = ({
       <Symbol>{token.symbol}</Symbol>
 
       <TokenNameContainer>
-        <TokenName>
-          {token.name}
-        </TokenName>
+        <TokenName>{token.name}</TokenName>
 
         {!defaultToken && (
           <TokenDeleteButton

@@ -349,7 +349,7 @@ const SwapWidget = () => {
           }}
         />
       </Modal>
-      { showTokenSelection && (
+      {showTokenSelection && (
         <TokenSelection
           signerToken={signerToken!}
           senderToken={senderToken!}

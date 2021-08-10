@@ -1,14 +1,13 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { MdKeyboardArrowDown } from 'react-icons/md';
+import { MdKeyboardArrowDown } from "react-icons/md";
 
-import { StyledIcon } from './Icon.styles';
-import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from './icons';
-
+import { StyledIcon } from "./Icon.styles";
+import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from "./icons";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
-}
+};
 
 export interface SvgIconProps {
   className?: string;
@@ -17,12 +16,12 @@ export interface SvgIconProps {
 }
 
 export const icons: IconSet = {
-  'arrow-right': IconArrowRight,
-  'arrow-left': IconArrowLeft,
-  'chevron-down': MdKeyboardArrowDown,
-  'dark-mode-switch': IconDarkModeSwitch,
-  'information-circle-outline': IoMdInformationCircleOutline,
-}
+  "arrow-right": IconArrowRight,
+  "arrow-left": IconArrowLeft,
+  "chevron-down": MdKeyboardArrowDown,
+  "dark-mode-switch": IconDarkModeSwitch,
+  "information-circle-outline": IoMdInformationCircleOutline,
+};
 
 interface IconProps extends SvgIconProps {
   name: keyof typeof icons;

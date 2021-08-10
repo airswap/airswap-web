@@ -1,15 +1,13 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { useTranslation } from 'react-i18next';
-import { TokenInfo } from "@uniswap/token-lists";
+import { useTranslation } from "react-i18next";
+
 import { formatUnits } from "@ethersproject/units";
-import { filterTokens } from "./filter";
-import { sortTokensBySymbol } from "./sort";
-import TokenButton from "./subcomponents/TokenButton/TokenButton";
-import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
+import { TokenInfo } from "@uniswap/token-lists";
+
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
-import { Title } from '../Typography/Typography';
 import useWindowSize from "../../helpers/useWindowSize";
+import { Title } from "../Typography/Typography";
 import {
   Container,
   TitleContainer,
@@ -24,6 +22,10 @@ import {
   ScrollContainer,
   InformationIcon,
 } from "./TokenSelection.styles";
+import { filterTokens } from "./filter";
+import { sortTokensBySymbol } from "./sort";
+import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
 
 export type TokenSelectionProps = {
   /**
@@ -144,8 +146,8 @@ const TokenSelection = ({
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      console.log((scrollHeight + offsetTop), containerRef.current.offsetHeight);
-      setOverflow((scrollHeight + offsetTop) > containerRef.current.offsetHeight);
+      console.log(scrollHeight + offsetTop, containerRef.current.offsetHeight);
+      setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
     }
   }, [
     containerRef,
@@ -161,7 +163,7 @@ const TokenSelection = ({
   return (
     <Container ref={containerRef} overflow={overflow}>
       <TitleContainer>
-        <Title type="h2">{t('common:swap')}</Title>
+        <Title type="h2">{t("common:swap")}</Title>
         <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
       </TitleContainer>
       <SearchInput
@@ -178,13 +180,9 @@ const TokenSelection = ({
 
       <ScrollContainer ref={scrollContainerRef}>
         <Legend>
-          <LegendItem>
-            {t('common:token')}
-          </LegendItem>
+          <LegendItem>{t("common:token")}</LegendItem>
           <LegendDivider />
-          <LegendItem>
-            {t('balances:balance')}
-          </LegendItem>
+          <LegendItem>{t("balances:balance")}</LegendItem>
         </Legend>
 
         {filteredTokens && filteredTokens.length > 0 && (
@@ -219,7 +217,7 @@ const TokenSelection = ({
             <>
               <InactiveTitleContainer>
                 <InactiveTitle>
-                  {t('orders:expandedResults')}
+                  {t("orders:expandedResults")}
                   <InformationIcon name="information-circle-outline" />
                 </InactiveTitle>
               </InactiveTitleContainer>
