@@ -47,7 +47,7 @@ export type TokenSelectProps = {
   /**
    * Currently selected amount. Not used if `includeAmountInput` is false.
    */
-  amount?: string;
+  amount?: string | null;
   /**
    * Called when the amount is changed. Input change event is passed.
    */

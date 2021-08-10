@@ -12,6 +12,7 @@ export async function requestOrder(
   senderWallet: string,
   provider: ethers.providers.Web3Provider
 ): Promise<LightOrder[]> {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
   const servers = await new Registry(chainId, provider).getServers(
     signerToken,
     senderToken
@@ -39,6 +40,7 @@ export async function approveToken(
   const spender = Light.getAddress(provider.network.chainId);
   const approvalTxHash = await new ERC20(senderToken).approve(
     spender,
+    // @ts-ignore TODO: type compatability issue with AirSwap lib
     provider.getSigner()
   );
   return (approvalTxHash as any) as Transaction;
@@ -48,8 +50,10 @@ export async function takeOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
 ) {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
   const tx = await new Light(provider.network.chainId, provider).swap(
     order,
+    // @ts-ignore TODO: type compatability issue with AirSwap lib
     provider.getSigner()
   );
   return (tx as any) as Transaction;

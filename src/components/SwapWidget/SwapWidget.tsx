@@ -47,6 +47,7 @@ import {
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import TokenSelect from "../TokenSelect/TokenSelect2";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import StyledSwapWidget, {
   Header,
@@ -88,6 +89,11 @@ const SwapWidget = () => {
     activate,
   } = useWeb3React<Web3Provider>();
   const { trackEvent } = useMatomo();
+
+  console.log(
+    { senderToken },
+    activeTokens.find((t) => t.address === senderToken)
+  );
 
   const getTokenDecimals = (tokenAddress: string) => {
     for (const token of activeTokens) {
@@ -272,7 +278,7 @@ const SwapWidget = () => {
   useEffect(() => {
     setSenderToken("");
     setSignerToken("");
-    setSenderAmount("0.01");
+    setSenderAmount("");
   }, [chainId]);
 
   return (
@@ -303,31 +309,35 @@ const SwapWidget = () => {
             </QuoteAndTimer>
           )}
         </Header>
-        <StyledTokenSelect
-          tokens={activeTokens}
-          withAmount={true}
+        <TokenSelect
+          label={t("orders:from")}
           amount={senderAmount}
           onAmountChange={(e) => handleTokenAmountChange(e)}
-          label={t("orders:send")}
-          token={senderToken}
-          onTokenChange={() => {
+          onChangeTokenClicked={() => {
             setTokenSelectType("senderToken");
             setTokenSelectModalOpen(true);
             if (order) setIsRequestUpdated(true);
           }}
-          hasError={insufficientBalance}
+          readOnly={!!signerAmount}
+          includeAmountInput={true}
+          selectedToken={
+            activeTokens.find((t) => t.address === senderToken) || null
+          }
         />
-        <StyledTokenSelect
-          tokens={activeTokens}
-          withAmount={false}
-          label={t("orders:receive")}
-          token={signerToken}
-          quoteAmount={isRequestUpdated ? "" : signerAmount}
-          onTokenChange={() => {
+        <TokenSelect
+          label={t("orders:to")}
+          amount={signerAmount}
+          onAmountChange={(e) => handleTokenAmountChange(e)}
+          onChangeTokenClicked={() => {
             setTokenSelectType("signerToken");
             setTokenSelectModalOpen(true);
             if (order) setIsRequestUpdated(true);
           }}
+          readOnly={!!signerAmount}
+          includeAmountInput={!!signerAmount}
+          selectedToken={
+            activeTokens.find((t) => t.address === signerToken) || null
+          }
         />
         <InfoHeading>Zero slippage atomic swaps</InfoHeading>
         <InfoSubHeading>Low fees for community members.</InfoSubHeading>

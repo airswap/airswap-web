@@ -1,5 +1,6 @@
-import styled from "styled-components/macro";
 import { BsStarFill } from "react-icons/bs";
+
+import styled from "styled-components/macro";
 
 export const QuoteRow = styled.div`
   display: flex;
@@ -9,7 +10,7 @@ export const QuoteRow = styled.div`
   padding: 1rem;
   border-width: 1px;
   border-style: solid;
-  background-image: ${(props) => props.theme.colors.subtleBgGradient};
+  background-image: ${(props) => props.theme.colors.placeholderGradient};
   /* border-image: linear-gradient(rgb(0, 143, 104), rgb(250, 224, 66)) 1; */
 
   border-image: ${(props) =>

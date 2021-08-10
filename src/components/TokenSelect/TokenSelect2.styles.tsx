@@ -17,6 +17,7 @@ export const FlexRow = styled.div`
 export const AmountAndDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
   text-align: right;
 `;
 
