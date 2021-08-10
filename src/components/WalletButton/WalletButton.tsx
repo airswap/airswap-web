@@ -1,10 +1,11 @@
+import Blockies from "react-blockies";
 import { useTranslation } from "react-i18next";
 import { RiCloseLine } from "react-icons/ri";
+
 import truncateEthAddress from "truncate-eth-address";
-import Blockies from "react-blockies";
 
 import Button from "../Button/Button";
-import { StyledWalletButton } from './WalletButton.styles';
+import { StyledWalletButton } from "./WalletButton.styles";
 
 export type WalletButtonProps = {
   /**

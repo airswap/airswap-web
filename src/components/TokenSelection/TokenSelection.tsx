@@ -1,14 +1,17 @@
 import { useState, useMemo } from "react";
+import { HiX } from "react-icons/hi";
+
+import { formatUnits } from "@ethersproject/units";
 // import AutoSizer from 'react-virtualized-auto-sizer'
 import { TokenInfo } from "@uniswap/token-lists";
-import { HiX } from "react-icons/hi";
-import { formatUnits } from "@ethersproject/units";
-import { filterTokens } from "./filter";
-import { sortTokensBySymbol } from "./sort";
-import TokenRow from "./TokenRow";
-import TokenImportRow from "./TokenImportRow";
+
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
+import { Title } from "../Typography/Typography";
+import TokenImportRow from "./TokenImportRow";
+import TokenRow from "./TokenRow";
+import { filterTokens } from "./filter";
+import { sortTokensBySymbol } from "./sort";
 
 export type TokenSelectionProps = {
   /**
@@ -166,7 +169,9 @@ const TokenSelection = ({
           inactiveTokens &&
           inactiveTokens.length > 0 && (
             <>
-              <h1>Expanded results from inactive Token Lists</h1>
+              <Title type="h4">
+                Expanded results from inactive Token Lists
+              </Title>
               {inactiveTokens.map((token) => (
                 <TokenImportRow
                   token={token}

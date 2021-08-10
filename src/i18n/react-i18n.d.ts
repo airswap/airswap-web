@@ -4,8 +4,8 @@ import "react-i18next";
 // import all namespaces (for the default language, only)
 import balances from "../../public/locales/en/balances.json";
 import common from "../../public/locales/en/common.json";
-import wallet from "../../public/locales/en/wallet.json";
 import orders from "../../public/locales/en/orders.json";
+import wallet from "../../public/locales/en/wallet.json";
 
 declare module "react-i18next" {
   // Extend with new types.

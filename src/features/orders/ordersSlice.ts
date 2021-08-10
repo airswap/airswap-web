@@ -1,12 +1,9 @@
 import { LightOrder } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+import { Transaction } from "ethers";
+
 import { RootState } from "../../app/store";
-import {
-  requestOrder,
-  takeOrder,
-  approveToken,
-  orderSortingFunction,
-} from "./orderAPI";
 import {
   submitTransaction,
   mineTransaction,
@@ -14,14 +11,19 @@ import {
   declineTransaction,
 } from "../transactions/transactionActions";
 import {
+  SubmittedOrder,
+  SubmittedApproval,
+} from "../transactions/transactionsSlice";
+import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
 import {
-  SubmittedOrder,
-  SubmittedApproval,
-} from "../transactions/transactionsSlice";
-import { Transaction } from "ethers";
+  requestOrder,
+  takeOrder,
+  approveToken,
+  orderSortingFunction,
+} from "./orderAPI";
 
 export interface OrdersState {
   orders: LightOrder[];

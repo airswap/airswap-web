@@ -1,10 +1,11 @@
-import React, { FC, ReactElement } from 'react';
-import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from './icons';
-import { StyledIcon } from './Icon.styles';
+import React, { FC, ReactElement } from "react";
+
+import { StyledIcon } from "./Icon.styles";
+import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from "./icons";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
-}
+};
 
 export interface SvgIconProps {
   className?: string;
@@ -13,16 +14,20 @@ export interface SvgIconProps {
 }
 
 export const icons: IconSet = {
-  'arrow-right': IconArrowRight,
-  'arrow-left': IconArrowLeft,
-  'dark-mode-switch': IconDarkModeSwitch,
-}
+  "arrow-right": IconArrowRight,
+  "arrow-left": IconArrowLeft,
+  "dark-mode-switch": IconDarkModeSwitch,
+};
 
 interface IconProps extends SvgIconProps {
   name: keyof typeof icons;
 }
 
-const Icon: FC<IconProps> = ({ name, iconSize = 1, className = '' }): ReactElement | null => {
+const Icon: FC<IconProps> = ({
+  name,
+  iconSize = 1,
+  className = "",
+}): ReactElement | null => {
   const IconComponent = icons[name];
 
   return IconComponent ? (
@@ -31,6 +36,5 @@ const Icon: FC<IconProps> = ({ name, iconSize = 1, className = '' }): ReactEleme
     </StyledIcon>
   ) : null;
 };
-
 
 export default Icon;

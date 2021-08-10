@@ -7,6 +7,8 @@ type Typography =
   | "title4"
   | "subtitle"
   | "paragraph"
+  | "infoHeading"
+  | "infoSubHeading"
   | "formLabel"
   | "formInput"
   | "nav"

@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 import SiteLogo from "../SiteLogo/SiteLogo";

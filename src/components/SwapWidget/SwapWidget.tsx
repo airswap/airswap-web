@@ -1,29 +1,26 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
+
+import { findTokenByAddress } from "@airswap/metadata";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+
 import { BigNumber } from "ethers";
-import { findTokenByAddress } from "@airswap/metadata";
 import { parseUnits } from "ethers/lib/utils";
+
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import Timer from "../../components/Timer/Timer";
+import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import {
-  SubmittedApproval,
-  selectTransactions,
-} from "../../features/transactions/transactionsSlice";
-import {
-  approve,
-  request,
-  take,
-  selectBestOrder,
-  selectOrdersStatus,
-} from "../../features/orders/ordersSlice";
-import {
-  selectActiveTokens,
-  selectAllTokenInfo,
-  addActiveToken,
-  removeActiveToken,
-} from "../../features/metadata/metadataSlice";
+  Title,
+  Subtitle,
+  InfoHeading,
+  InfoSubHeading,
+} from "../../components/Typography/Typography";
 import {
   requestActiveTokenAllowances,
   requestActiveTokenBalances,
@@ -32,19 +29,30 @@ import {
   selectBalances,
   selectAllowances,
 } from "../../features/balances/balancesSlice";
+import {
+  selectActiveTokens,
+  selectAllTokenInfo,
+  addActiveToken,
+  removeActiveToken,
+} from "../../features/metadata/metadataSlice";
+import {
+  approve,
+  request,
+  take,
+  selectBestOrder,
+  selectOrdersStatus,
+} from "../../features/orders/ordersSlice";
+import {
+  SubmittedApproval,
+  selectTransactions,
+} from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
-import Timer from "../../components/Timer/Timer";
-import { Title, Subtitle } from "../../components/Typography/Typography";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
-import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import StyledSwapWidget, {
   Header,
   QuoteAndTimer,
   StyledTokenSelect,
-  SubmitButton
+  SubmitButton,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -57,10 +65,12 @@ const SwapWidget = () => {
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] =
-    useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] =
-    useState<"senderToken" | "signerToken">("senderToken");
+  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
+    false
+  );
+  const [tokenSelectType, setTokenSelectType] = useState<
+    "senderToken" | "signerToken"
+  >("senderToken");
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
@@ -268,31 +278,31 @@ const SwapWidget = () => {
   return (
     <>
       <StyledSwapWidget>
-          <Header>
-            {!order || isRequestUpdated ? (
-              <Title type="h4">Swap now</Title>
-            ) : (
-              <QuoteAndTimer>
-                <Subtitle>Quote expires in&nbsp;</Subtitle>
-                <Timer
-                  expiryTime={parseInt(order.expiry)}
-                  onTimerComplete={() => {
-                    dispatch(
-                      request({
-                        chainId: chainId!,
-                        senderToken: senderToken!,
-                        senderAmount,
-                        signerToken: signerToken!,
-                        senderWallet: account!,
-                        provider: library,
-                      })
-                    );
-                    trackEvent({ category: "order", action: "request" });
-                  }}
-                />
-              </QuoteAndTimer>
-            )}
-          </Header>
+        <Header>
+          {!order || isRequestUpdated ? (
+            <Title type="h2">Swap</Title>
+          ) : (
+            <QuoteAndTimer>
+              <Subtitle>Quote expires in&nbsp;</Subtitle>
+              <Timer
+                expiryTime={parseInt(order.expiry)}
+                onTimerComplete={() => {
+                  dispatch(
+                    request({
+                      chainId: chainId!,
+                      senderToken: senderToken!,
+                      senderAmount,
+                      signerToken: signerToken!,
+                      senderWallet: account!,
+                      provider: library,
+                    })
+                  );
+                  trackEvent({ category: "order", action: "request" });
+                }}
+              />
+            </QuoteAndTimer>
+          )}
+        </Header>
         <StyledTokenSelect
           tokens={activeTokens}
           withAmount={true}
@@ -319,6 +329,8 @@ const SwapWidget = () => {
             if (order) setIsRequestUpdated(true);
           }}
         />
+        <InfoHeading>Zero slippage atomic swaps</InfoHeading>
+        <InfoSubHeading>Low fees for community members.</InfoSubHeading>
         <DisplayedButton />
       </StyledSwapWidget>
       <Modal

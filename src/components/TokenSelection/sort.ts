@@ -1,5 +1,6 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import { formatUnits } from "@ethersproject/units";
+import { TokenInfo } from "@uniswap/token-lists";
+
 import { BalancesState } from "../../features/balances/balancesSlice";
 
 export function sortTokensByBalance(

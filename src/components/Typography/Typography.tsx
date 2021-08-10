@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from "react";
+
 import { StyledH1, StyledH2, StyledH3, StyledH4 } from "./Typography.styles";
 
 type TitleType = "h1" | "h2" | "h3" | "h4";
@@ -29,6 +30,8 @@ export const Title: FC<TitleProps> = ({
 export {
   StyledSubtitle as Subtitle,
   StyledParagraph as Paragraph,
+  StyledInfoHeading as InfoHeading,
+  StyledInfoSubHeading as InfoSubHeading,
   StyledFormLabel as FormLabel,
   StyledFormInput as FormInput,
   StyledNavigation as Navigation,

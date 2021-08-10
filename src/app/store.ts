@@ -1,14 +1,15 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import ordersReducer from "../features/orders/ordersSlice";
-import walletReducer from "../features/wallet/walletSlice";
-import metadataReducer from "../features/metadata/metadataSlice";
-import transactionsReducer from "../features/transactions/transactionsSlice";
-import userSettingsReducer from '../features/userSettings/userSettingsSlice';
+
 import {
   balancesReducer,
   allowancesReducer,
 } from "../features/balances/balancesSlice";
+import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
+import ordersReducer from "../features/orders/ordersSlice";
+import transactionsReducer from "../features/transactions/transactionsSlice";
+import userSettingsReducer from "../features/userSettings/userSettingsSlice";
+import walletReducer from "../features/wallet/walletSlice";
 
 export const store = configureStore({
   reducer: {

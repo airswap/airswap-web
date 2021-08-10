@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { StyledButton, Text } from './Button.styles';
+import { StyledButton, Text } from "./Button.styles";
 
 export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
-type ButtonJustifyContent = "center" | "flex-start" | 'flex-end';
+type ButtonJustifyContent = "center" | "flex-start" | "flex-end";
 
 export type ButtonProps = {
   children: React.ReactNode;
@@ -50,9 +51,7 @@ export const Button = ({
       }}
       {...rest}
     >
-      <Text>
-        {children}
-      </Text>
+      <Text>{children}</Text>
       {loading && <LoadingSpinner />}
     </StyledButton>
   );

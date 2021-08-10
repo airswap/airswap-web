@@ -1,3 +1,3 @@
 export const sizes = {
-  sideBarWidth: '27rem',
-}
+  sideBarWidth: "27rem",
+};

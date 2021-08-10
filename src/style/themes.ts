@@ -2,22 +2,22 @@ import { DefaultTheme } from "styled-components/macro";
 
 const typography: DefaultTheme["typography"] = {
   title1: {
-    fontSize: "3rem",
+    fontSize: "2rem",
     lineHeight: 1.167,
     fontWeight: 500,
   },
   title2: {
-    fontSize: "2.5rem",
+    fontSize: "1.5rem",
     lineHeight: 1.2,
-    fontWeight: 500,
+    fontWeight: 700,
   },
   title3: {
-    fontSize: "2rem",
+    fontSize: "1.25rem",
     lineHeight: 1.25,
     fontWeight: 400,
   },
   title4: {
-    fontSize: "1.5rem",
+    fontSize: "1rem",
     lineHeight: 1.33,
     fontWeight: 700,
   },
@@ -31,15 +31,25 @@ const typography: DefaultTheme["typography"] = {
     lineHeight: 1.5,
     fontWeight: 400,
   },
-  formLabel: {
+  infoHeading: {
     fontSize: "1rem",
     lineHeight: 1.5,
-    fontWeight: 700,
+    fontWeight: 600,
   },
-  formInput: {
+  infoSubHeading: {
     fontSize: "1rem",
     lineHeight: 1.5,
     fontWeight: 400,
+  },
+  formLabel: {
+    fontSize: "0.75rem",
+    lineHeight: 1.5,
+    fontWeight: 600,
+  },
+  formInput: {
+    fontSize: "1.5rem",
+    lineHeight: 1.5,
+    fontWeight: 500,
   },
   link: {
     fontSize: "1rem",
@@ -47,12 +57,12 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 400,
   },
   nav: {
-    fontSize: "2rem",
+    fontSize: "1rem",
     lineHeight: 1.25,
     fontWeight: 400,
   },
   small: {
-    fontSize: "0.875rem",
+    fontSize: "0.75rem",
     lineHeight: 1.71,
     fontWeight: 400,
   },
@@ -63,16 +73,16 @@ export const darkTheme: DefaultTheme = {
   colors: {
     primary: "#2B71FF",
     primaryDark: "#0F5FFF",
-    white: "#FFF",
-    alwaysWhite: '#FFF',
+    white: "#FFFFFF",
+    alwaysWhite: "#FFFFFF",
     black: "#060607",
     alwaysBlack: "#060607",
     grey: "#404040",
-    darkGrey: "#111215",
-    lightGrey: "#C4C4C4",
+    darkGrey: "#101217",
+    lightGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",
-    green: "green",
+    green: "#60FF66",
   },
   typography,
 };
@@ -81,17 +91,17 @@ export const lightTheme: DefaultTheme = {
   name: "light",
   colors: {
     primary: "#2B71FF",
-    primaryDark: "#0F5FFF",
+    primaryDark: "#101217",
     white: "#060607",
-    alwaysWhite: '#FFF',
-    black: "#FFF",
-    alwaysBlack: "#000",
+    alwaysWhite: "#FFFFFF",
+    black: "#FFFFFF",
+    alwaysBlack: "#000000",
     grey: "#404040",
-    darkGrey: "#fff",
-    lightGrey: "#C4C4C4",
+    darkGrey: "#6E7686",
+    lightGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",
-    green: "green",
+    green: "#60FF66",
   },
   typography,
 };

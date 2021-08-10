@@ -1,12 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import Modal from "react-modal";
+import { Provider } from "react-redux";
+
+import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react";
+
 import App from "./App";
 import { store } from "./app/store";
-import { Provider } from "react-redux";
+import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react";
-import Modal from "react-modal";
 
 const instance = createInstance({
   urlBase: "https://airswap.matomo.cloud/",

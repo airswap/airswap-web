@@ -1,6 +1,7 @@
-import React, { FC, ReactElement } from 'react';
-import { icons } from '../Icon/Icon';
-import { StyledIcon, StyledIconButton } from './IconButton.styles';
+import React, { FC, ReactElement } from "react";
+
+import { icons } from "../Icon/Icon";
+import { StyledIcon, StyledIconButton } from "./IconButton.styles";
 
 export type IconButtonProps = {
   text?: string;
@@ -8,7 +9,7 @@ export type IconButtonProps = {
   iconSize?: number;
   onClick: () => void;
   className?: string;
-}
+};
 
 const IconButton: FC<IconButtonProps> = ({
   text,
@@ -18,16 +19,9 @@ const IconButton: FC<IconButtonProps> = ({
   onClick,
 }): ReactElement => {
   return (
-    <StyledIconButton
-      hasText={!!text}
-      className={className}
-      onClick={onClick}
-    >
+    <StyledIconButton hasText={!!text} className={className} onClick={onClick}>
       {text}
-      <StyledIcon
-        name={icon}
-        iconSize={iconSize}
-      />
+      <StyledIcon name={icon} iconSize={iconSize} />
     </StyledIconButton>
   );
 };

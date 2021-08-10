@@ -1,4 +1,5 @@
 import styled, { DefaultTheme } from "styled-components/macro";
+
 import { ButtonIntent, ButtonProps } from "./Button";
 
 function getButtonBackground(
@@ -28,12 +29,13 @@ export const StyledButton = styled.button<ButtonProps>`
   width: 100%;
   height: 3.5rem;
   padding: 0 1rem;
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.alwaysWhite};
   background: ${(props) => getButtonBackground(props.theme, props.intent)};
   pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
   cursor: ${(props) => (props.disabled ? "none" : "pointer")};

@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import { TokenInfo } from "@uniswap/token-lists";
+
+import classNames from "classnames";
 
 export type TokenRowProps = {
   /**

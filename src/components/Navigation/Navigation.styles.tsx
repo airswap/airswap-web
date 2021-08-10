@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+
 import Icon from "../Icon/Icon";
 
 export const NavigationButton = styled.a`

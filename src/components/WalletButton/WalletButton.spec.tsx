@@ -1,8 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { ThemeProvider } from "styled-components/macro";
+
+import { darkTheme } from "../../style/themes";
 import WalletButton from "./WalletButton";
-import { ThemeProvider } from 'styled-components/macro';
-import { darkTheme } from '../../style/themes';
 
 describe("WalletButton", () => {
   it("should render connect wallet button when no address is provided", () => {
