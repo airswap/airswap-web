@@ -8,7 +8,7 @@ import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 
 type ContainerProps = {
-  overflow: boolean;
+  $overflow: boolean;
 };
 
 export const ScrollContainer = styled.div`
@@ -42,7 +42,7 @@ export const Container = styled.div<ContainerProps>`
     width: calc(100% + (${sizes.tradeContainerPadding} / 2));
     padding-right: calc(${sizes.tradeContainerPadding} / 2);
     overflow-x: hidden;
-    overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+    overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   }
 `;
 

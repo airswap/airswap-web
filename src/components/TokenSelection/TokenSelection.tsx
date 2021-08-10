@@ -160,7 +160,7 @@ const TokenSelection = ({
   ]);
 
   return (
-    <Container ref={containerRef} overflow={overflow}>
+    <Container ref={containerRef} $overflow={overflow}>
       <TitleContainer>
         <Title type="h2">{t("common:swap")}</Title>
         <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
