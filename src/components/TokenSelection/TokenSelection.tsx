@@ -1,4 +1,5 @@
-import {useState, useMemo, useRef, useEffect} from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { TokenInfo } from "@uniswap/token-lists";
 import { IoMdInformationCircle } from "react-icons/io";
 import { formatUnits } from "@ethersproject/units";
@@ -8,6 +9,8 @@ import TokenButton from "./subcomponents/TokenButton/TokenButton";
 import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
+import { Title } from '../Typography/Typography';
+import useWindowSize from "../../helpers/useWindowSize";
 import {
   Container,
   TitleContainer,
@@ -15,11 +18,12 @@ import {
   SearchInput,
   TokenContainer,
   InactiveTitleContainer,
-  InactiveTitle, Legend, LegendItem, LegendDivider, ScrollContainer,
+  InactiveTitle,
+  Legend,
+  LegendItem,
+  LegendDivider,
+  ScrollContainer,
 } from "./TokenSelection.styles";
-import { Title } from '../Typography/Typography';
-import { useTranslation } from 'react-i18next';
-import useWindowSize from "../../helpers/useWindowSize";
 
 export type TokenSelectionProps = {
   /**
@@ -89,8 +93,8 @@ const TokenSelection = ({
   removeActiveToken,
   chainId,
 }: TokenSelectionProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { width, height } = useWindowSize();
+  const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
 
@@ -139,7 +143,9 @@ const TokenSelection = ({
 
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
-      setOverflow(scrollContainerRef.current.offsetHeight > containerRef.current.offsetHeight);
+      const { offsetTop, scrollHeight } = scrollContainerRef.current;
+      console.log((scrollHeight + offsetTop), containerRef.current.offsetHeight);
+      setOverflow((scrollHeight + offsetTop) > containerRef.current.offsetHeight);
     }
   }, [
     containerRef,
@@ -154,23 +160,23 @@ const TokenSelection = ({
 
   return (
     <Container ref={containerRef} overflow={overflow}>
-      <ScrollContainer ref={scrollContainerRef}>
-        <TitleContainer>
-          <Title type="h2">{t('common:swap')}</Title>
-          <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
-        </TitleContainer>
-        <SearchInput
-          hideLabel
-          id="tokenQuery"
-          type="text"
-          label="Search name or address"
-          value={tokenQuery}
-          placeholder="Search name or paste address"
-          onChange={(e) => {
-            setTokenQuery(e.currentTarget.value);
-          }}
-        />
+      <TitleContainer>
+        <Title type="h2">{t('common:swap')}</Title>
+        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
+      </TitleContainer>
+      <SearchInput
+        hideLabel
+        id="tokenQuery"
+        type="text"
+        label="Search name or address"
+        value={tokenQuery}
+        placeholder="Search name or paste address"
+        onChange={(e) => {
+          setTokenQuery(e.currentTarget.value);
+        }}
+      />
 
+      <ScrollContainer ref={scrollContainerRef}>
         <Legend>
           <LegendItem>
             {t('common:token')}

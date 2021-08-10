@@ -1,12 +1,13 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
+import { sizes } from "../../style/sizes";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 2.25rem;
+  padding: ${sizes.tradeContainerPadding};
   width: 100%;
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;

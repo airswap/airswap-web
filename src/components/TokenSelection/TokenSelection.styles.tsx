@@ -3,19 +3,15 @@ import IconButton from '../IconButton/IconButton';
 import convertHexToRGBA from '../../helpers/transformHexToRgba';
 import TextInput from '../TextInput/TextInput';
 import { StyledInput } from '../TextInput/TextInput.styles';
+import { sizes } from "../../style/sizes";
 
 type ContainerProps = {
   overflow: boolean;
 };
 
-export const Container = styled.div<ContainerProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: ${(props) => props.theme.colors.black};
-  overflow-y: ${(props) => props.overflow ? 'scroll' : 'hidden'};
+export const ScrollContainer = styled.div`
+  flex-grow: 99;
+  padding-bottom: ${sizes.tradeContainerPadding};
 
   &::-webkit-scrollbar {
     width: 0.5rem;
@@ -28,9 +24,25 @@ export const Container = styled.div<ContainerProps>`
   }
 `;
 
-export const ScrollContainer = styled.div`  
-  padding: 2.25rem;
-`
+export const Container = styled.div<ContainerProps>`
+  display: flex;
+  flex-direction: column;
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding} 0;
+  background-color: ${(props) => props.theme.colors.black};
+
+  ${ScrollContainer} {
+    width: calc(100% + (${sizes.tradeContainerPadding} / 2));
+    padding-right: calc(${sizes.tradeContainerPadding} / 2);
+    overflow-x: hidden;
+    overflow-y: ${(props) => props.overflow ? 'scroll' : 'hidden'};
+  }
+`;
 
 export const TitleContainer = styled.div`
   display: flex;
@@ -77,12 +89,14 @@ export const SearchInput = styled(TextInput)`
   }
 `;
 
+export const TokenContainer = styled.div``;
+
 export const Legend = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.75rem;
-  height: 1.5rem;
+  min-height: 1.5rem;
 `;
 
 export const LegendItem = styled.div`
@@ -98,8 +112,6 @@ export const LegendDivider = styled.div`
   height: 1px;
   background: ${(props) => props.theme.colors.borderGrey};
 `
-
-export const TokenContainer = styled.div``;
 
 export const InactiveTitleContainer = styled.div`
   border: 1px solid ${(props) => (props.theme.colors.borderGrey)};

@@ -2,7 +2,6 @@ import styled, {
   DefaultTheme,
   ThemedStyledFunction,
   css,
-  FlattenSimpleInterpolation,
 } from "styled-components/macro";
 
 const elementMap: Record<

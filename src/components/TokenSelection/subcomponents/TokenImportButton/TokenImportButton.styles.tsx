@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};;
-  margin: -1px -1px -1px -1px;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
   display: grid;
   grid-auto-flow: column;
@@ -10,6 +9,14 @@ export const Container = styled.div`
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 1rem;
   align-items: center;
+  
+  &:not(:last-of-type) {
+    border-bottom: 0;
+  }
+  
+  & + & {
+    border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
+  }
 `;
 
 export const ImageContainer = styled.div`
@@ -46,11 +53,12 @@ export const TokenName = styled.h3`
 export const Span = styled.span``;
 
 export const ImportButton = styled.button`
-  border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   font-size: 0.8rem;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   justify-self: end;
+
   &:hover {
     background: ${(props) => props.theme.colors.white};
     color: ${(props) => props.theme.colors.black};
