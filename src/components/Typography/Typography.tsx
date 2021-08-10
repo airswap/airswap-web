@@ -34,6 +34,7 @@ export {
   StyledInfoSubHeading as InfoSubHeading,
   StyledFormLabel as FormLabel,
   StyledFormInput as FormInput,
+  StyledSelectItem as SelectItem,
   StyledLink as Link,
   StyledNavigation as NavLink,
   StyledMetadata as Metadata,

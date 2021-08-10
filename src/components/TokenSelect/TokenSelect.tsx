@@ -12,10 +12,11 @@ import {
   TokenSelectorLoader,
 } from "./TokenSelect.styles";
 
-type TokenSelectProps = {
+export type TokenSelectProps = {
   withAmount: boolean;
   quoteAmount?: string | null;
   label: string;
+  readOnly?: boolean;
   className?: string;
   amount?: string;
   token?: string;

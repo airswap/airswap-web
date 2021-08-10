@@ -68,9 +68,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 400,
   },
   small: {
-    fontSize: "0.75rem",
-    lineHeight: 1.71,
-    fontWeight: 400,
+    fontSize: "0.875rem",
+    lineHeight: 1.25,
+    fontWeight: 500,
   },
 };
 
@@ -87,10 +87,11 @@ export const darkTheme: DefaultTheme = {
     borderGrey: "#1A1E25",
     darkGrey: "#101217",
     lightGrey: "#6E7686",
+    placeholderGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",
     green: "#60FF66",
-    subtleBgGradient: "linear-gradient(90deg, #151619a3, #1516193d)",
+    placeholderGradient: "linear-gradient(270deg, #232833 0%, #2F364400 93.3%)",
   },
   typography,
 };
@@ -105,13 +106,14 @@ export const lightTheme: DefaultTheme = {
     black: "#FFFFFF",
     alwaysBlack: "#000000",
     grey: "#404040",
-    borderGrey: "#1A1E25",
-    darkGrey: "#6E7686",
+    borderGrey: "#DDE2ED",
+    darkGrey: "#FFFFFF",
     lightGrey: "#6E7686",
+    placeholderGrey: "#E0EAFF",
     red: "#FF004D",
     orange: "#E7765A",
     green: "#60FF66",
-    subtleBgGradient: "linear-gradient(90deg, #eae9e6a3, #eae9e63d)",
+    placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF00 93.3%)",
   },
   typography,
 };

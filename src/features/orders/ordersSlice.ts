@@ -87,7 +87,7 @@ export const approve = createAsyncThunk(
 
 export const take = createAsyncThunk(
   "orders/take",
-  async (params: any, { dispatch }) => {
+  async (params: { order: LightOrder; library: any }, { dispatch }) => {
     let tx: Transaction;
     try {
       tx = await takeOrder(params.order, params.library);

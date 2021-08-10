@@ -1,9 +1,10 @@
 import { Story, Meta } from "@storybook/react";
-import styled from "styled-components/macro";
 import { TokenInfo } from "@uniswap/token-lists";
 
-import TokenLogo from "./TokenLogo";
+import styled from "styled-components/macro";
+
 import { Subtitle } from "../Typography/Typography";
+import TokenLogo from "./TokenLogo";
 
 export default {
   title: "components/TokenLogo",
@@ -37,6 +38,8 @@ const Template: Story<{}> = (args) => (
     <TokenLogo tokenInfo={airSwapTokenInfo} size="medium" />
     <Subtitle>large</Subtitle>
     <TokenLogo tokenInfo={airSwapTokenInfo} size="large" />
+    <Subtitle>Empty (medium)</Subtitle>
+    <TokenLogo tokenInfo={null} size="medium" />
   </Grid>
 );
 

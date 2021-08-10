@@ -100,7 +100,17 @@ export const StyledFormInput = makeTypographyComponent(
       props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary};
+    background-color: transparent;
+    border: none;
+    &::placeholder {
+      color: ${(props) => props.theme.colors.placeholderGrey};
+    }
   `
 );
 export const StyledSelectItem = makeTypographyComponent("selectItem");
-export const StyledMetadata = makeTypographyComponent("small");
+export const StyledMetadata = makeTypographyComponent(
+  "small",
+  css`
+    color: ${(props) => props.theme.colors.lightGrey};
+  `
+);
