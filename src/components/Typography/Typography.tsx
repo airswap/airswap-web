@@ -34,6 +34,7 @@ export {
   StyledInfoSubHeading as InfoSubHeading,
   StyledFormLabel as FormLabel,
   StyledFormInput as FormInput,
+  StyledSelectItem as SelectItem,
   StyledNavigation as Navigation,
   StyledMetadata as Metadata,
 } from "./Typography.styles";
