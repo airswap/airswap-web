@@ -1,9 +1,5 @@
-import IconArrowRight from './IconArrowRight';
-import IconArrowLeft from './IconArrowLeft';
-import IconDarkModeSwitch from './IconDarkModeSwitch';
+import IconArrowLeft from "./IconArrowLeft";
+import IconArrowRight from "./IconArrowRight";
+import IconDarkModeSwitch from "./IconDarkModeSwitch";
 
-export {
-  IconArrowRight,
-  IconArrowLeft,
-  IconDarkModeSwitch,
-}
+export { IconArrowRight, IconArrowLeft, IconDarkModeSwitch };

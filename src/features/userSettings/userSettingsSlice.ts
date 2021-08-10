@@ -1,5 +1,7 @@
-import { ThemeType } from "styled-components/macro";
 import { createSlice } from "@reduxjs/toolkit";
+
+import { ThemeType } from "styled-components/macro";
+
 import { RootState } from "../../app/store";
 import getInitialThemeValue from "./helpers/getInitialThemeValue";
 

@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import { AiOutlineLoading } from "react-icons/ai";
+
+import classNames from "classnames";
 
 type LoadingSpinnerProps = { className?: string };
 

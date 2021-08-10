@@ -6,6 +6,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { TokenInfo } from "@uniswap/token-lists";
+
 import { AppDispatch, RootState } from "../../app/store";
 import {
   setWalletConnected,

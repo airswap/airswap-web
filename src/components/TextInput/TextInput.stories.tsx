@@ -1,7 +1,8 @@
 import { Story, Meta } from "@storybook/react";
 
+import styled from "styled-components/macro";
+
 import TextInput, { TextInputProps } from "./TextInput";
-import styled from 'styled-components/macro';
 
 export default {
   title: "components/TextInput",
@@ -22,8 +23,11 @@ const StyledWrapper = styled.div`
   background: ${(props) => props.theme.colors.black};
 `;
 
-const Template: Story<TextInputProps> = (args) => <StyledWrapper><TextInput {...args} /></StyledWrapper>;
-
+const Template: Story<TextInputProps> = (args) => (
+  <StyledWrapper>
+    <TextInput {...args} />
+  </StyledWrapper>
+);
 
 export const Primary = Template.bind({});
 Primary.args = {
@@ -47,6 +51,6 @@ export const NumberInput = Template.bind({});
 NumberInput.args = {
   ...Primary.args,
   label: "Number input",
-  type: 'number',
-  value: 9
+  type: "number",
+  value: 9,
 };

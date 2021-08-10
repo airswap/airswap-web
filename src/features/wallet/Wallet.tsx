@@ -1,18 +1,21 @@
+import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import Modal from "react-modal";
+
 import { Light } from "@airswap/protocols";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { FC, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
-import Modal from "react-modal";
 import {
   AbstractConnector,
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
+import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -33,11 +36,10 @@ import {
   setWalletDisconnected,
   selectWallet,
 } from "./walletSlice";
-import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
 
 type WalletProps = {
   className?: string;
-}
+};
 
 export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const {

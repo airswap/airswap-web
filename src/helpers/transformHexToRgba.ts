@@ -1,5 +1,5 @@
 export default function convertHexToRGBA(hexCode: string, opacity: number) {
-  let hex = hexCode.replace('#', '');
+  let hex = hexCode.replace("#", "");
 
   if (hex.length === 3) {
     hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
@@ -10,4 +10,4 @@ export default function convertHexToRGBA(hexCode: string, opacity: number) {
   const b = parseInt(hex.substring(4, 6), 16);
 
   return `rgba(${r},${g},${b},${opacity})`;
-};
+}

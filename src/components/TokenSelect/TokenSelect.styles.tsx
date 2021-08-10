@@ -1,12 +1,13 @@
-import styled from 'styled-components';
-import IconButton from '../IconButton/IconButton';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import TextInput from '../TextInput/TextInput';
-import { StyledFormLabel, StyledInput } from '../TextInput/TextInput.styles';
+import styled from "styled-components";
+
+import IconButton from "../IconButton/IconButton";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import TextInput from "../TextInput/TextInput";
+import { StyledFormLabel, StyledInput } from "../TextInput/TextInput.styles";
 
 type StyledTokenSelectProps = {
   hasToken: boolean;
-}
+};
 
 export const TokenSelectorLoader = styled(LoadingSpinner)`
   position: absolute;
@@ -24,19 +25,20 @@ export const StyledTextInput = styled(TextInput)``;
 export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
   position: relative;
   width: 100%;
-  
+
   & + & {
     margin-top: 1.5rem;
   }
-  
+
   ${TokenSelectorButton} {
     position: absolute;
     bottom: 0;
     right: 0;
     height: 2.5rem;
     padding: 0.25rem;
-    color: ${(props) => props.hasToken ? props.theme.colors.white : props.theme.colors.lightGrey};
-    
+    color: ${(props) =>
+      props.hasToken ? props.theme.colors.white : props.theme.colors.lightGrey};
+
     &:hover {
       color: ${(props) => props.theme.colors.white};
     }
@@ -48,13 +50,12 @@ export const StyledTokenSelect = styled.div<StyledTokenSelectProps>`
   }
 
   ${StyledTextInput} {
-    
     ${StyledFormLabel} {
       margin-bottom: 0.125rem;
     }
-    
+
     ${StyledInput} {
       padding-bottom: 0.5rem;
-    }    
+    }
   }
 `;

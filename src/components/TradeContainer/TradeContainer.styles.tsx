@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+
 import breakPoints from "../../style/breakpoints";
 
 export const Container = styled.div`
@@ -28,7 +29,7 @@ export const StyledTradeContainer = styled.div`
     padding: 1.5rem;
   }
 
- @media ${breakPoints.tinyScreenOnly} {
+  @media ${breakPoints.tinyScreenOnly} {
     padding: 1.25rem;
- }
- `;
+  }
+`;

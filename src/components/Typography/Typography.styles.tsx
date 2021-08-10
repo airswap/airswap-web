@@ -2,7 +2,6 @@ import styled, {
   DefaultTheme,
   ThemedStyledFunction,
   css,
-  FlattenSimpleInterpolation,
 } from "styled-components/macro";
 
 const elementMap: Record<
@@ -15,6 +14,8 @@ const elementMap: Record<
   title4: "h4",
   subtitle: "h5",
   paragraph: "p",
+  infoHeading: "h4",
+  infoSubHeading: "h4",
   formLabel: "label",
   formInput: "input",
   link: "a",
@@ -34,7 +35,7 @@ const elementMap: Record<
  */
 const makeTypographyComponent = (
   key: keyof DefaultTheme["typography"],
-  additionalCSS?: FlattenSimpleInterpolation
+  additionalCSS?: any
 ) => {
   const tag = elementMap[key];
   const Component = (styled[tag] as ThemedStyledFunction<
@@ -52,7 +53,15 @@ const makeTypographyComponent = (
 };
 
 export const StyledH1 = makeTypographyComponent("title1");
-export const StyledH2 = makeTypographyComponent("title2");
+export const StyledH2 = makeTypographyComponent(
+  "title2",
+  css`
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.primary};
+  `
+);
 export const StyledH3 = makeTypographyComponent("title3");
 export const StyledH4 = makeTypographyComponent("title4");
 export const StyledSubtitle = makeTypographyComponent(
@@ -62,8 +71,6 @@ export const StyledSubtitle = makeTypographyComponent(
   `
 );
 export const StyledParagraph = makeTypographyComponent("paragraph");
-export const StyledFormLabel = makeTypographyComponent("formLabel");
-export const StyledFormInput = makeTypographyComponent("formInput");
 export const StyledLink = makeTypographyComponent(
   "link",
   css`
@@ -72,4 +79,26 @@ export const StyledLink = makeTypographyComponent(
   `
 );
 export const StyledNavigation = makeTypographyComponent("nav");
+export const StyledInfoHeading = makeTypographyComponent("infoHeading");
+export const StyledInfoSubHeading = makeTypographyComponent(
+  "infoSubHeading",
+  css`
+    color: ${(props) => props.theme.colors.lightGrey};
+  `
+);
+export const StyledFormLabel = makeTypographyComponent(
+  "formLabel",
+  css`
+    color: ${(props) => props.theme.colors.lightGrey};
+  `
+);
+export const StyledFormInput = makeTypographyComponent(
+  "formInput",
+  css`
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.primary};
+  `
+);
 export const StyledMetadata = makeTypographyComponent("small");

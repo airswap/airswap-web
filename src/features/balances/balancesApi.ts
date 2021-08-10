@@ -1,9 +1,9 @@
-import { BigNumber, ethers, EventFilter, Event } from "ethers";
-
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
 import { Light } from "@airswap/protocols";
+
 import erc20Abi from "erc-20-abi";
+import { BigNumber, ethers, EventFilter, Event } from "ethers";
 import { hexZeroPad, id } from "ethers/lib/utils";
 
 interface SubscribeParams {

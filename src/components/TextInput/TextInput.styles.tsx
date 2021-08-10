@@ -1,5 +1,7 @@
 import React from "react";
-import styled from "styled-components/macro";
+
+import styled from "styled-components";
+
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { FormInput, FormLabel } from "../Typography/Typography";
 
@@ -22,7 +24,6 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
   ${StyledFormLabel} {
     display: ${(props) => (props.hideLabel ? "none" : "block")};
     width: 100%;
-    color: ${(props) => props.theme.colors.white};
     background: none;
   }
 
@@ -36,7 +37,6 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
           : convertHexToRGBA(props.theme.colors.white, 0.1)};
     width: 100%;
     padding: 0;
-    color: ${(props) => props.theme.colors.white};
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
     background: none;
 

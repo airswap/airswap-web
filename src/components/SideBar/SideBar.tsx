@@ -1,12 +1,17 @@
-import React, { FC, ReactElement } from 'react';
-import { StyledDarkModeSwitch, StyledSideBar, StyledWallet } from './SideBar.styles';
-import Navigation from '../Navigation/Navigation';
-import { toggleTheme } from '../../features/userSettings/userSettingsSlice';
-import { useAppDispatch } from '../../app/hooks';
+import React, { FC, ReactElement } from "react";
+
+import { useAppDispatch } from "../../app/hooks";
+import { toggleTheme } from "../../features/userSettings/userSettingsSlice";
+import Navigation from "../Navigation/Navigation";
+import {
+  StyledDarkModeSwitch,
+  StyledSideBar,
+  StyledWallet,
+} from "./SideBar.styles";
 
 export type SideBarProps = {
   open: boolean;
-}
+};
 
 const SideBar: FC<SideBarProps> = ({ open }): ReactElement => {
   const dispatch = useAppDispatch();
@@ -16,10 +21,12 @@ const SideBar: FC<SideBarProps> = ({ open }): ReactElement => {
       <StyledWallet />
       <Navigation />
       <StyledDarkModeSwitch
-        onClick={() => { dispatch(toggleTheme()) }}
+        onClick={() => {
+          dispatch(toggleTheme());
+        }}
       />
     </StyledSideBar>
   );
-}
+};
 
 export default SideBar;

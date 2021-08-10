@@ -1,6 +1,8 @@
-import classNames from "classnames";
-import { TokenInfo } from "@uniswap/token-lists";
 import { useTranslation } from "react-i18next";
+
+import { TokenInfo } from "@uniswap/token-lists";
+
+import classNames from "classnames";
 
 export type TokenImportRowProps = {
   /**
@@ -13,16 +15,13 @@ export type TokenImportRowProps = {
   onClick: (val: string) => void;
 };
 
-const TokenImportRow = ({
-  token,
-  onClick,
-}: TokenImportRowProps) => {
+const TokenImportRow = ({ token, onClick }: TokenImportRowProps) => {
   const { t } = useTranslation(["balances", "common"]);
 
   return (
     <div
       className={classNames(
-        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full",
+        "grid items-center grid-flow-col hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer w-full"
       )}
       style={{
         gridTemplateColumns: "auto minmax(auto, 1fr) auto minmax(0, 72px)",
