@@ -4,12 +4,23 @@ type ContainerProps = {
   disabled: boolean;
 };
 
+export const TokenNameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+`;
+
 export const TokenName = styled.h3`
+  width: 100%;
   text-align: left;
+  line-height: 1;
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: ${(props) => (props.theme.colors.lightGrey)};
-  line-height: 1rem;
 `;
 
 export const Container = styled.button<ContainerProps>`
@@ -19,14 +30,14 @@ export const Container = styled.button<ContainerProps>`
   display: grid;
   grid-auto-flow: column;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  grid-template-columns: 1.5rem 3.75rem 3fr 3fr;
+  grid-template-columns: 1.5rem 3.75rem calc(50% - 3.75rem) calc(50% - 4.5rem);
   grid-gap: 1rem;
   align-items: center;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
 
   &:hover {
     ${TokenName} {
-      color: ${(props) => (props.theme.colors.white)};
+      color: ${(props) => (props.disabled ? props.theme.colors.lightGrey : props.theme.colors.white)};
     }
   }
 `;
@@ -35,13 +46,11 @@ export const ImageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-`;
-
-export const Image = styled.img`
   width: 1.5rem;
   height: 1.5rem;
 `;
+
+export const Image = styled.img``;
 
 export const TextContainer = styled.div`
   display: flex;
@@ -57,21 +66,13 @@ export const Symbol = styled.h3`
   line-height: ${(props) => (props.theme.typography.formInput.lineHeight)};
 `;
 
+
+
 export const Balance = styled.div`
+  font-weight: 500;
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
-export const TokenDeleteButton = styled.button`
-  position: relative;
-  text-align: left;
-  text-indent: 1rem;
-
-  &:hover {
-    text-decoration: underline;
-  }
-  
-  &:before {
-    content: '•';
-    display: block;
-  }
-`;

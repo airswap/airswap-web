@@ -1,10 +1,10 @@
 import { Story, Meta } from "@storybook/react";
 
-import TokenRow, { TokenRowProps } from "./TokenRow";
+import TokenButton, { TokenRowProps } from "./TokenButton";
 
 export default {
-  title: "components/TokenSelection/TokenRow",
-  component: TokenRow,
+  title: "components/TokenSelection/TokenButton",
+  component: TokenButton,
   argTypes: {
     token: { control: { type: "object" } },
     balance: { control: { type: "text" } },
@@ -15,7 +15,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<TokenRowProps> = (args) => <TokenRow {...args} />;
+const Template: Story<TokenRowProps> = (args) => <TokenButton {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

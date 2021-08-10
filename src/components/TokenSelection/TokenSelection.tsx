@@ -1,11 +1,11 @@
-import { useState, useMemo } from "react";
+import {useState, useMemo, useRef, useEffect} from "react";
 import { TokenInfo } from "@uniswap/token-lists";
 import { IoMdInformationCircle } from "react-icons/io";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
-import TokenRow from "./subcomponents/TokenRow";
-import TokenImportRow from "./subcomponents/TokenImportRow";
+import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
 import {
@@ -15,10 +15,11 @@ import {
   SearchInput,
   TokenContainer,
   InactiveTitleContainer,
-  InactiveTitle, Legend, LegendItem, LegendDivider,
+  InactiveTitle, Legend, LegendItem, LegendDivider, ScrollContainer,
 } from "./TokenSelection.styles";
 import { Title } from '../Typography/Typography';
 import { useTranslation } from 'react-i18next';
+import useWindowSize from "../../helpers/useWindowSize";
 
 export type TokenSelectionProps = {
   /**
@@ -88,8 +89,13 @@ const TokenSelection = ({
   removeActiveToken,
   chainId,
 }: TokenSelectionProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useWindowSize();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const { t } = useTranslation(["common", "wallet", "balances"]);
+  const { t } = useTranslation(["common", "wallet", "orders", "balances"]);
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -131,80 +137,101 @@ const TokenSelection = ({
     );
   }, [sortedInactiveTokens, tokenQuery]);
 
+  useEffect(() => {
+    if (containerRef.current && scrollContainerRef.current) {
+      setOverflow(scrollContainerRef.current.offsetHeight > containerRef.current.offsetHeight);
+    }
+  }, [
+    containerRef,
+    scrollContainerRef,
+    activeTokens,
+    sortedTokens,
+    allTokens,
+    tokenQuery,
+    width,
+    height,
+  ]);
+
   return (
-    <Container>
-      <TitleContainer>
-        <Title type="h2">{t('common:swap')}</Title>
-        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
-      </TitleContainer>
-      <SearchInput
-        hideLabel
-        id="tokenQuery"
-        type="text"
-        label="Search name or address"
-        value={tokenQuery}
-        placeholder="Search name or paste address"
-        onChange={(e) => {
-          setTokenQuery(e.currentTarget.value);
-        }}
-      />
+    <Container ref={containerRef} overflow={overflow}>
+      <ScrollContainer ref={scrollContainerRef}>
+        <TitleContainer>
+          <Title type="h2">{t('common:swap')}</Title>
+          <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
+        </TitleContainer>
+        <SearchInput
+          hideLabel
+          id="tokenQuery"
+          type="text"
+          label="Search name or address"
+          value={tokenQuery}
+          placeholder="Search name or paste address"
+          onChange={(e) => {
+            setTokenQuery(e.currentTarget.value);
+          }}
+        />
 
-      <Legend>
-        <LegendItem>{t('common:token')}</LegendItem>
-        <LegendDivider />
-        <LegendItem>{t('balances:balance')}</LegendItem>
-      </Legend>
+        <Legend>
+          <LegendItem>
+            {t('common:token')}
+          </LegendItem>
+          <LegendDivider />
+          <LegendItem>
+            {t('balances:balance')}
+          </LegendItem>
+        </Legend>
 
-      {filteredTokens && filteredTokens.length > 0 && (
-        <TokenContainer listLength={filteredTokens.length}>
-          {filteredTokens.map((token) => (
-            <TokenRow
-              token={token}
-              balance={formatUnits(
-                balances.values[token.address] || 0,
-                token.decimals
-              )}
-              setToken={handleClick}
-              disabled={
-                tokenSelectType === "senderToken"
-                  ? token.address === senderToken
-                  : token.address === signerToken
-              } // shouldn't be able to select same duplicate token
-              removeActiveToken={removeActiveToken}
-              defaultToken={defaultActiveTokens[chainId!].includes(
-                token.address
-              )}
-              key={token.address}
-            />
-          ))}
-        </TokenContainer>
-      )}
-      {chainId === 1 &&
-        tokenQuery &&
-        filteredTokens.length < 5 &&
-        inactiveTokens &&
-        inactiveTokens.length > 0 && (
-          <>
-            <InactiveTitleContainer>
-              <InactiveTitle>
-                Expanded results from inactive Token Lists
-              </InactiveTitle>
-              <IoMdInformationCircle />
-            </InactiveTitleContainer>
-            <TokenContainer listLength={inactiveTokens.length}>
-              {inactiveTokens.map((token) => (
-                <TokenImportRow
-                  token={token}
-                  onClick={() => {
-                    addActiveToken(token.address);
-                    setTokenQuery("");
-                  }}
-                  key={`${token.address}`}
-                />
-              ))}
-            </TokenContainer>
-          </>
+        {filteredTokens && filteredTokens.length > 0 && (
+          <TokenContainer>
+            {filteredTokens.map((token) => (
+              <TokenButton
+                token={token}
+                balance={formatUnits(
+                  balances.values[token.address] || 0,
+                  token.decimals
+                )}
+                setToken={handleClick}
+                disabled={
+                  tokenSelectType === "senderToken"
+                    ? token.address === senderToken
+                    : token.address === signerToken
+                } // shouldn't be able to select same duplicate token
+                removeActiveToken={removeActiveToken}
+                defaultToken={defaultActiveTokens[chainId!].includes(
+                  token.address
+                )}
+                key={token.address}
+              />
+            ))}
+          </TokenContainer>
         )}
+        {chainId === 1 &&
+          tokenQuery &&
+          filteredTokens.length < 5 &&
+          inactiveTokens &&
+          inactiveTokens.length > 0 && (
+            <>
+              <InactiveTitleContainer>
+                <InactiveTitle>
+                  {t('orders:expandedResults')}
+                </InactiveTitle>
+                <IoMdInformationCircle />
+              </InactiveTitleContainer>
+              <TokenContainer>
+                {inactiveTokens.map((token) => (
+                  <TokenImportButton
+                    token={token}
+                    onClick={() => {
+                      addActiveToken(token.address);
+                      setTokenQuery("");
+                    }}
+                    key={`${token.address}`}
+                  />
+                ))}
+              </TokenContainer>
+            </>
+          )}
+      </ScrollContainer>
     </Container>
   );
 };

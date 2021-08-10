@@ -1,4 +1,5 @@
 import { Story, Meta } from "@storybook/react";
+import styled from "styled-components/macro";
 
 import TokenSelection, { TokenSelectionProps } from "./TokenSelection";
 
@@ -21,8 +22,19 @@ export default {
   },
 } as Meta;
 
+const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30rem;
+  max-width: 30rem;
+`;
+
 const Template: Story<TokenSelectionProps> = (args) => (
-  <TokenSelection {...args} />
+  <Container>
+    <TokenSelection {...args} />
+  </Container>
 );
 
 const ETH = {

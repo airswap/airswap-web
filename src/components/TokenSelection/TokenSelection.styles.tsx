@@ -4,15 +4,33 @@ import convertHexToRGBA from '../../helpers/transformHexToRgba';
 import TextInput from '../TextInput/TextInput';
 import { StyledInput } from '../TextInput/TextInput.styles';
 
-export const Container = styled.div`
+type ContainerProps = {
+  overflow: boolean;
+};
+
+export const Container = styled.div<ContainerProps>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: ${(props) => props.theme.colors.black};
-  padding: 2.25rem;
+  overflow-y: ${(props) => props.overflow ? 'scroll' : 'hidden'};
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    background: ${(props) => props.theme.colors.black};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.colors.white};
+    border-radius: 0.5rem;
+  }
 `;
+
+export const ScrollContainer = styled.div`  
+  padding: 2.25rem;
+`
 
 export const TitleContainer = styled.div`
   display: flex;
@@ -63,7 +81,7 @@ export const Legend = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   height: 1.5rem;
 `;
 
@@ -81,30 +99,11 @@ export const LegendDivider = styled.div`
   background: ${(props) => props.theme.colors.borderGrey};
 `
 
-type TokenContainerProps = {
-  listLength: number;
-};
-
-export const TokenContainer = styled.div<TokenContainerProps>`
-  // max-height: 286px;
-  // overflow-y: ${(props) => (props.listLength > 4 ? "scroll" : "hidden")};
-  // overflow-x: hidden;
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-    background: ${(props) => props.theme.colors.black};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
-    border-radius: 0.5rem;
-  }
-`;
+export const TokenContainer = styled.div``;
 
 export const InactiveTitleContainer = styled.div`
-  border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
-  border: 1px solid #282828;
-  border-radius: 500px;
+  border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
+  border-radius: 2px;
   background: transparent;
   color: #9E9E9E;
   padding: 1rem;

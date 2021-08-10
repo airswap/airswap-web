@@ -8,7 +8,7 @@ import {
   TokenName,
   Span,
   ImportButton,
-} from "./TokenImportRow.styles";
+} from "./TokenImportButton.styles";
 
 import { TokenInfo } from "@uniswap/token-lists";
 
@@ -25,7 +25,7 @@ export type TokenImportRowProps = {
   onClick: (val: string) => void;
 };
 
-const TokenImportRow = ({ token, onClick }: TokenImportRowProps) => {
+const TokenImportButton = ({ token, onClick }: TokenImportRowProps) => {
   const { t } = useTranslation(["balances", "common"]);
 
   return (
@@ -49,4 +49,4 @@ const TokenImportRow = ({ token, onClick }: TokenImportRowProps) => {
   );
 };
 
-export default TokenImportRow;
+export default TokenImportButton;

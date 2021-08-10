@@ -5,9 +5,9 @@ import {
   ImageContainer,
   Symbol,
   TokenName,
-  Balance,
-} from "./TokenRow.styles";
-import TokenDeleteButton from "./TokenDeleteButton/TokenDeleteButton";
+  Balance, TokenNameContainer,
+} from "./TokenButton.styles";
+import TokenDeleteButton from "../TokenDeleteButton/TokenDeleteButton";
 
 import classNames from "classnames";
 
@@ -39,7 +39,7 @@ export type TokenRowProps = {
 };
 
 // TODO: Make Container a button instead of a Balance
-const TokenRow = ({
+const TokenButton = ({
   token,
   balance,
   setToken,
@@ -63,8 +63,11 @@ const TokenRow = ({
 
       <Symbol>{token.symbol}</Symbol>
 
-      <TokenName>
-        {token.name}{" "}
+      <TokenNameContainer>
+        <TokenName>
+          {token.name}
+        </TokenName>
+
         {!defaultToken && (
           <TokenDeleteButton
             onClick={(e) => {
@@ -73,11 +76,11 @@ const TokenRow = ({
             }}
           />
         )}
-      </TokenName>
+      </TokenNameContainer>
 
       <Balance>{balance}</Balance>
     </Container>
   );
 };
 
-export default TokenRow;
+export default TokenButton;
