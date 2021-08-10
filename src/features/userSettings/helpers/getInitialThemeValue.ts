@@ -1,4 +1,5 @@
 import { ThemeType } from "styled-components/macro";
+
 import { THEME_LOCAL_STORAGE_KEY } from "../userSettingsSlice";
 
 export default function getInitialThemeValue(): ThemeType {

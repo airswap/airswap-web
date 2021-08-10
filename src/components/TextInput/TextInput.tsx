@@ -1,7 +1,12 @@
-import React, { FC, ReactElement } from 'react';
-import { StyledFormLabel, StyledInput, StyledTextInput } from './TextInput.styles';
+import React, { FC, ReactElement } from "react";
 
-type HTMLInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as'>;
+import {
+  StyledFormLabel,
+  StyledInput,
+  StyledTextInput,
+} from "./TextInput.styles";
+
+type HTMLInputProps = Omit<React.HTMLProps<HTMLInputElement>, "ref" | "as">;
 
 export type TextInputProps = {
   label: string;
@@ -19,7 +24,6 @@ const TextInput: FC<TextInputProps> = ({
   disabled,
   ...inputProps
 }): ReactElement => {
-
   return (
     <StyledTextInput
       hasError={hasError}
@@ -28,16 +32,10 @@ const TextInput: FC<TextInputProps> = ({
       disabled={disabled}
       className={className}
     >
-      <StyledFormLabel>
-        {label}
-      </StyledFormLabel>
-      <StyledInput
-        {...inputProps}
-        disabled={disabled}
-        type={type}
-      />
+      <StyledFormLabel>{label}</StyledFormLabel>
+      <StyledInput {...inputProps} disabled={disabled} type={type} />
     </StyledTextInput>
-  )
-}
+  );
+};
 
 export default TextInput;

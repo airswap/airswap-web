@@ -1,21 +1,25 @@
-import React, { FC, ReactElement } from 'react';
-import { NavigationButton, NavigationButtonIcon, StyledNavigation } from './Navigation.styles';
-import { routes } from '../../routes';
+import React, { FC, ReactElement } from "react";
 
-const anchors = routes.filter(route => route.path !== '/');
+import { routes } from "../../routes";
+import {
+  NavigationButton,
+  NavigationButtonIcon,
+  StyledNavigation,
+} from "./Navigation.styles";
+
+const anchors = routes.filter((route) => route.path !== "/");
 
 const Navigation: FC = (): ReactElement => {
-
   return (
     <StyledNavigation>
-      {anchors.map(route => (
-        <NavigationButton href={route.path} >
+      {anchors.map((route) => (
+        <NavigationButton href={route.path}>
           <NavigationButtonIcon iconSize={1} name="arrow-right" />
           {route.label}
         </NavigationButton>
       ))}
     </StyledNavigation>
-  )
+  );
 };
 
 export default Navigation;

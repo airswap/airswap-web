@@ -1,12 +1,12 @@
 import { store } from "../../app/store";
 import {
-  getActiveTokensLocalStorageKey,
-  getTransactionsLocalStorageKey,
-} from "./metadataApi";
-import {
   SubmittedTransaction,
   TransactionsState,
 } from "../transactions/transactionsSlice";
+import {
+  getActiveTokensLocalStorageKey,
+  getTransactionsLocalStorageKey,
+} from "./metadataApi";
 
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const activeTokensCache: {

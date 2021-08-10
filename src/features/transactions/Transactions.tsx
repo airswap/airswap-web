@@ -1,15 +1,17 @@
 import { useEffect } from "react";
+
 import { getEtherscanURL } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
+
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
+import { revertTransaction, mineTransaction } from "./transactionActions";
 import {
   selectTransactions,
   setTransactions,
   TransactionsState,
 } from "./transactionsSlice";
-import { revertTransaction, mineTransaction } from "./transactionActions";
-import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 
 export function Transactions() {
   const transactions = useAppSelector(selectTransactions);

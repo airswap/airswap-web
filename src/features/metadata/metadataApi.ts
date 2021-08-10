@@ -1,6 +1,7 @@
 import { chainIds } from "@airswap/constants";
 import { fetchTokens } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
+
 import uniqBy from "lodash.uniqby";
 
 export const defaultActiveTokens: {

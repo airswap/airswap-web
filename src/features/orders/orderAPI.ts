@@ -1,7 +1,8 @@
-import { BigNumber, ethers, Transaction } from "ethers";
 import { Registry, Light, ERC20 } from "@airswap/protocols";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
+
+import { BigNumber, ethers, Transaction } from "ethers";
 
 export async function requestOrder(
   chainId: number,

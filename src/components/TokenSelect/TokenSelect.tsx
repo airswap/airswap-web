@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { TokenInfo } from "@uniswap/token-lists";
 import { useTranslation } from "react-i18next";
-import { useWeb3React } from "@web3-react/core";
+
 import { Web3Provider } from "@ethersproject/providers";
+import { TokenInfo } from "@uniswap/token-lists";
+import { useWeb3React } from "@web3-react/core";
+
 import {
   StyledTextInput,
   StyledTokenSelect,
   TokenSelectorButton,
   TokenSelectorLoader,
-} from './TokenSelect.styles';
+} from "./TokenSelect.styles";
 
 type TokenSelectProps = {
   withAmount: boolean;
@@ -37,10 +39,7 @@ const TokenSelect = ({
 }: TokenSelectProps) => {
   const { t } = useTranslation(["common", "orders"]);
   const { chainId } = useWeb3React<Web3Provider>();
-  const [
-    isDefaultOptionDisabled,
-    setIsDefaultOptionDisabled,
-  ] = useState(false);
+  const [isDefaultOptionDisabled, setIsDefaultOptionDisabled] = useState(false);
   const [tokenSelectorText, setTokenSelectorText] = useState("");
 
   useEffect(() => {
@@ -48,18 +47,16 @@ const TokenSelect = ({
   }, [chainId]);
 
   useEffect(() => {
-    const match = tokens.find((t)=> t.address === token)?.symbol;
-    const text = match || isDefaultOptionDisabled ? match : `${t("common:select")}…`;
+    const match = tokens.find((t) => t.address === token)?.symbol;
+    const text =
+      match || isDefaultOptionDisabled ? match : `${t("common:select")}…`;
 
     setTokenSelectorText(text || "");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens, token, isDefaultOptionDisabled]);
 
   return (
-    <StyledTokenSelect
-      className={className}
-      hasToken={!!token}
-    >
+    <StyledTokenSelect className={className} hasToken={!!token}>
       {withAmount ? (
         <StyledTextInput
           label={label}
@@ -80,7 +77,7 @@ const TokenSelect = ({
           label={label}
           autoComplete="off"
           spellCheck={false}
-          value={!token ? t("orders:chooseToken") : quoteAmount || ''}
+          value={!token ? t("orders:chooseToken") : quoteAmount || ""}
         />
       )}
 

@@ -1,4 +1,3 @@
-import { BigNumber, ethers } from "ethers";
 import {
   AsyncThunk,
   createAction,
@@ -6,9 +5,12 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { fetchAllowances, fetchBalances } from "./balancesApi";
+
+import { BigNumber, ethers } from "ethers";
+
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
+import { fetchAllowances, fetchBalances } from "./balancesApi";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -37,7 +39,9 @@ const getSetInFlightRequestTokensAction = (type: "balances" | "allowances") => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
-const getThunk: (type: "balances" | "allowances") => AsyncThunk<
+const getThunk: (
+  type: "balances" | "allowances"
+) => AsyncThunk<
   { address: string; amount: string }[],
   {
     provider: ethers.providers.Web3Provider;
@@ -115,9 +119,9 @@ const getSlice = (
         const currentAmount = BigNumber.from(
           state.values[action.payload.tokenAddress.toLowerCase()] || 0
         );
-        state.values[action.payload.tokenAddress.toLowerCase()] = currentAmount
-          .add(action.payload.amount)
-          .toString();
+        state.values[
+          action.payload.tokenAddress.toLowerCase()
+        ] = currentAmount.add(action.payload.amount).toString();
       },
       decrementBy: (
         state,
@@ -128,8 +132,9 @@ const getSlice = (
         );
         let newAmount = currentAmount.sub(action.payload.amount);
         if (newAmount.lt("0")) newAmount = BigNumber.from("0");
-        state.values[action.payload.tokenAddress.toLowerCase()] =
-          newAmount.toString();
+        state.values[
+          action.payload.tokenAddress.toLowerCase()
+        ] = newAmount.toString();
       },
       set: (
         state,

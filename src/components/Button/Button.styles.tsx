@@ -1,4 +1,5 @@
 import styled, { DefaultTheme } from "styled-components/macro";
+
 import { ButtonIntent, ButtonProps } from "./Button";
 
 function getButtonBackground(

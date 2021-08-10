@@ -1,6 +1,7 @@
-import styled from 'styled-components';
-import TokenSelect from '../TokenSelect/TokenSelect';
-import Button from '../Button/Button';
+import styled from "styled-components";
+
+import Button from "../Button/Button";
+import TokenSelect from "../TokenSelect/TokenSelect";
 
 export const Header = styled.div`
   margin-bottom: 3rem;
@@ -13,7 +14,6 @@ export const QuoteAndTimer = styled.div`
 `;
 
 export const StyledTokenSelect = styled(TokenSelect)`
-
   &:last-of-type {
     margin-bottom: 3rem;
   }

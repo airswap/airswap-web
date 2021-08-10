@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components/macro";
-import convertHexToRGBA from '../helpers/transformHexToRgba';
-import breakPoints from './breakpoints';
+
+import convertHexToRGBA from "../helpers/transformHexToRgba";
+import breakPoints from "./breakpoints";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -34,7 +35,8 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     padding: 1.5rem;
-    background: ${(props) => convertHexToRGBA(props.theme.colors.alwaysBlack, 0.5)};
+    background: ${(props) =>
+      convertHexToRGBA(props.theme.colors.alwaysBlack, 0.5)};
       
     @media ${breakPoints.tabletPortraitUp} {
       padding: 2.5rem;

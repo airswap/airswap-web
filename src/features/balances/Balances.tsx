@@ -1,11 +1,13 @@
 import { Fragment, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { useAppSelector } from "../../app/hooks";
-import { selectAllowances, selectBalances } from "./balancesSlice";
-import classes from "./Balances.module.css";
-import { formatUnits } from "@ethersproject/units";
-import { selectActiveTokens } from "../metadata/metadataSlice";
 import { useTranslation } from "react-i18next";
+
+import { formatUnits } from "@ethersproject/units";
+import { useWeb3React } from "@web3-react/core";
+
+import { useAppSelector } from "../../app/hooks";
+import { selectActiveTokens } from "../metadata/metadataSlice";
+import classes from "./Balances.module.css";
+import { selectAllowances, selectBalances } from "./balancesSlice";
 
 const Balances = () => {
   const { active } = useWeb3React();
