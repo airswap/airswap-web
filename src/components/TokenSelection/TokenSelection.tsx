@@ -1,31 +1,30 @@
 import { useState, useMemo } from "react";
-// import AutoSizer from 'react-virtualized-auto-sizer'
 import { TokenInfo } from "@uniswap/token-lists";
-import { HiArrowNarrowLeft } from "react-icons/hi";
 import { IoMdInformationCircle } from "react-icons/io";
 import { formatUnits } from "@ethersproject/units";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
-import TokenRow from "./TokenRow";
-import TokenImportRow from "./TokenImportRow";
+import TokenRow from "./subcomponents/TokenRow";
+import TokenImportRow from "./subcomponents/TokenImportRow";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
 import {
   Container,
   TitleContainer,
-  ArrowContainer,
-  StyledLabel,
-  StyledInput,
+  CloseButton,
+  SearchInput,
   TokenContainer,
   InactiveTitleContainer,
-  InactiveTitle,
+  InactiveTitle, Legend, LegendItem, LegendDivider,
 } from "./TokenSelection.styles";
+import { Title } from '../Typography/Typography';
+import { useTranslation } from 'react-i18next';
 
 export type TokenSelectionProps = {
   /**
    * Function to close modal
    */
-  closeModal: () => void;
+  onClose: () => void;
   /**
    * signerToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
    */
@@ -76,7 +75,7 @@ export type TokenSelectionProps = {
 };
 
 const TokenSelection = ({
-  closeModal,
+  onClose,
   signerToken,
   senderToken,
   setSignerToken,
@@ -90,6 +89,7 @@ const TokenSelection = ({
   chainId,
 }: TokenSelectionProps) => {
   const [tokenQuery, setTokenQuery] = useState<string>("");
+  const { t } = useTranslation(["common", "wallet", "balances"]);
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -101,7 +101,7 @@ const TokenSelection = ({
       if (address === senderToken) setSenderToken(signerToken);
       setSignerToken(address);
     }
-    closeModal();
+    onClose();
   };
 
   // sort tokens based on symbol
@@ -134,20 +134,27 @@ const TokenSelection = ({
   return (
     <Container>
       <TitleContainer>
-        <ArrowContainer>
-          <HiArrowNarrowLeft onClick={closeModal} />
-        </ArrowContainer>
-        <StyledLabel htmlFor="tokenQuery">Select token</StyledLabel>
+        <Title type="h2">{t('common:swap')}</Title>
+        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
       </TitleContainer>
-      <StyledInput
+      <SearchInput
+        hideLabel
         id="tokenQuery"
         type="text"
+        label="Search name or address"
         value={tokenQuery}
         placeholder="Search name or paste address"
         onChange={(e) => {
-          setTokenQuery(e.target.value);
+          setTokenQuery(e.currentTarget.value);
         }}
       />
+
+      <Legend>
+        <LegendItem>{t('common:token')}</LegendItem>
+        <LegendDivider />
+        <LegendItem>{t('balances:balance')}</LegendItem>
+      </Legend>
+
       {filteredTokens && filteredTokens.length > 0 && (
         <TokenContainer listLength={filteredTokens.length}>
           {filteredTokens.map((token) => (

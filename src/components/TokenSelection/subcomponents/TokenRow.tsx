@@ -3,12 +3,11 @@ import {
   Container,
   Image,
   ImageContainer,
-  TextContainer,
   Symbol,
   TokenName,
-  Span,
   Balance,
 } from "./TokenRow.styles";
+import TokenDeleteButton from "./TokenDeleteButton/TokenDeleteButton";
 
 import classNames from "classnames";
 
@@ -62,28 +61,21 @@ const TokenRow = ({
         />
       </ImageContainer>
 
-      <TextContainer>
-        <Symbol>{token.symbol}</Symbol>
-        <TokenName>
-          {token.name}{" "}
-          {!defaultToken && (
-            <>
-              •{" "}
-              <Span
-                className="cursor-pointer hover:underline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeActiveToken(token.address);
-                }}
-              >
-                Remove from active
-              </Span>
-            </>
-          )}
-        </TokenName>
-      </TextContainer>
-      <Span></Span>
-      <Balance className="justify-self-end max-w-md">{balance}</Balance>
+      <Symbol>{token.symbol}</Symbol>
+
+      <TokenName>
+        {token.name}{" "}
+        {!defaultToken && (
+          <TokenDeleteButton
+            onClick={(e) => {
+              e.stopPropagation();
+              removeActiveToken(token.address);
+            }}
+          />
+        )}
+      </TokenName>
+
+      <Balance>{balance}</Balance>
     </Container>
   );
 };

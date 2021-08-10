@@ -47,9 +47,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 600,
   },
   formInput: {
-    fontSize: "1.5rem",
-    lineHeight: 1.5,
-    fontWeight: 500,
+    fontSize: "1.125rem",
+    lineHeight: 1 + (1 / 3),
+    fontWeight: 600,
   },
   // Form select inputs
   selectItem: {
@@ -86,6 +86,7 @@ export const darkTheme: DefaultTheme = {
     grey: "#404040",
     borderGrey: "#1A1E25",
     darkGrey: "#101217",
+    borderGrey: "#1A1E25",
     lightGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",

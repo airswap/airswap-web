@@ -1,53 +1,94 @@
 import styled from "styled-components";
+import IconButton from '../IconButton/IconButton';
+import convertHexToRGBA from '../../helpers/transformHexToRgba';
+import TextInput from '../TextInput/TextInput';
+import { StyledInput } from '../TextInput/TextInput.styles';
 
 export const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-color: ${(props) => props.theme.colors.black};
-  padding: 2rem;
+  padding: 2.25rem;
 `;
 
 export const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  height: 2rem;
+  justify-content: space-between;
+  margin-bottom: 1.875rem;
 `;
 
-export const ArrowContainer = styled.div`
+export const CloseButton = styled(IconButton)`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 1rem;
-  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
+  
+  &:hover {
+    border-color: ${(props) => (convertHexToRGBA(props.theme.colors.white, 0.5))};
+  }
 `;
 
 export const StyledLabel = styled.label`
   font-size: 1rem;
 `;
 
-export const StyledInput = styled.input`
-  border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
-  border-radius: 500px;
-  background: transparent;
-  color: #9e9e9e;
-  padding: 1rem;
-  font-size: 0.75rem;
-  margin: 1rem 0;
+export const SearchInput = styled(TextInput)`
+  margin-bottom: 1.25rem;
   width: 100%;
-  &:focus {
-    outline: none;
-    border: 1px solid ${(props) => props.theme.colors.primary};
+  
+  ${StyledInput} {
+    border: 1px solid ${(props) => (props.theme.colors.borderGrey)};
+    border-radius: 2px;
+    line-height: 2.25;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.875rem;
+    background: transparent;
+    color: #9e9e9e;
+
+    &:focus {
+      outline: none;
+      border: 1px solid ${(props) => props.theme.colors.primary};
+    }
   }
 `;
+
+export const Legend = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  height: 1.5rem;
+`;
+
+export const LegendItem = styled.div`
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.625rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const LegendDivider = styled.div`
+  margin: 0 1rem;
+  width: 100%;
+  height: 1px;
+  background: ${(props) => props.theme.colors.borderGrey};
+`
 
 type TokenContainerProps = {
   listLength: number;
 };
 
 export const TokenContainer = styled.div<TokenContainerProps>`
-  border: 1px solid ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
-  max-height: 286px;
-  overflow-y: ${(props) => (props.listLength > 4 ? "scroll" : "hidden")};
-  overflow-x: hidden;
+  // max-height: 286px;
+  // overflow-y: ${(props) => (props.listLength > 4 ? "scroll" : "hidden")};
+  // overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: 0.5rem;

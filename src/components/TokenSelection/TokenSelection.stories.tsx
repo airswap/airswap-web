@@ -6,7 +6,7 @@ export default {
   title: "components/TokenSelection/TokenSelection",
   component: TokenSelection,
   argTypes: {
-    closeModal: { control: { type: "function" } },
+    onClose: { control: { type: "function" } },
     signerToken: { control: { type: "text" } },
     senderToken: { control: { type: "function" } },
     setSignerToken: { control: { type: "boolean" } },
@@ -72,7 +72,7 @@ const activeTokens = [ETH, DAI];
 
 export const Default = Template.bind({});
 Default.args = {
-  closeModal: () => void 1,
+  onClose: () => void 1,
   signerToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   senderToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   setSignerToken: () => void 1,
@@ -97,7 +97,7 @@ Default.args = {
 
 export const TestNet = Template.bind({});
 TestNet.args = {
-  closeModal: () => void 1,
+  onClose: () => void 1,
   signerToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   senderToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   setSignerToken: () => void 1,
