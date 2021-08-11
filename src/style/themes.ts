@@ -86,7 +86,6 @@ export const darkTheme: DefaultTheme = {
     grey: "#404040",
     borderGrey: "#1A1E25",
     darkGrey: "#101217",
-    borderGrey: "#1A1E25",
     lightGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",
