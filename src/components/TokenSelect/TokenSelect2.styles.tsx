@@ -24,9 +24,11 @@ export const AmountAndDetailsContainer = styled.div`
 export const TokenSelectContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%;
-  padding: 1.25em;
   justify-content: space-between;
+  width: 100%;
+  height: 5rem;
+  padding: 1.25em;
+  margin-bottom: 0.625rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background-color: ${(props) => props.theme.colors.darkGrey};
@@ -72,6 +74,7 @@ export const StyledSelectItem = styled(SelectItem)`
 `;
 
 export const AmountInput = styled(FormInput)<{ hasSubtext: boolean }>`
+  padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
   text-align: right;
 `;

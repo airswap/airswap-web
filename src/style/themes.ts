@@ -8,7 +8,7 @@ const typography: DefaultTheme["typography"] = {
   },
   title2: {
     fontSize: "1.5rem",
-    lineHeight: 1.2,
+    lineHeight: 1.25,
     fontWeight: 700,
   },
   title3: {
@@ -33,12 +33,12 @@ const typography: DefaultTheme["typography"] = {
   },
   infoHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5,
+    lineHeight: 1.5625,
     fontWeight: 600,
   },
   infoSubHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5,
+    lineHeight: 1.5625,
     fontWeight: 400,
   },
   formLabel: {

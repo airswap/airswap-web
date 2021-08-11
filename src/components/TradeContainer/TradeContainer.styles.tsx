@@ -5,8 +5,9 @@ import breakPoints from "../../style/breakpoints";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2.25rem;
+  height: 32.5rem;
   width: 100%;
+  padding: 1.875rem;
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
 `;

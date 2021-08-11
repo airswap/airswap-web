@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
 
@@ -47,12 +47,14 @@ import {
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../TokenSelect/TokenSelect2";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
+import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
   QuoteAndTimer,
-  StyledTokenSelect,
+  InfoContainer,
   SubmitButton,
 } from "./SwapWidget.styles";
 
@@ -89,6 +91,15 @@ const SwapWidget = () => {
     activate,
   } = useWeb3React<Web3Provider>();
   const { trackEvent } = useMatomo();
+
+  const senderTokenInfo = useMemo(
+    () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
+    [senderToken, activeTokens]
+  );
+  const signerTokenInfo = useMemo(
+    () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
+    [signerToken, activeTokens]
+  );
 
   console.log(
     { senderToken },
@@ -221,7 +232,7 @@ const SwapWidget = () => {
               ? t("orders:continue")
               : t("orders:decimalsNotFound")
             : t("orders:insufficentBalance", {
-                symbol: findTokenByAddress(senderToken!, activeTokens)?.symbol,
+                symbol: senderTokenInfo?.symbol,
               })}
         </SubmitButton>
       );
@@ -285,29 +296,7 @@ const SwapWidget = () => {
     <>
       <StyledSwapWidget>
         <Header>
-          {!order || isRequestUpdated ? (
-            <Title type="h2">Swap</Title>
-          ) : (
-            <QuoteAndTimer>
-              <Subtitle>Quote expires in&nbsp;</Subtitle>
-              <Timer
-                expiryTime={parseInt(order.expiry)}
-                onTimerComplete={() => {
-                  dispatch(
-                    request({
-                      chainId: chainId!,
-                      senderToken: senderToken!,
-                      senderAmount,
-                      signerToken: signerToken!,
-                      senderWallet: account!,
-                      provider: library,
-                    })
-                  );
-                  trackEvent({ category: "order", action: "request" });
-                }}
-              />
-            </QuoteAndTimer>
-          )}
+          <Title type="h2">Swap</Title>
         </Header>
         <TokenSelect
           label={t("orders:from")}
@@ -320,13 +309,11 @@ const SwapWidget = () => {
           }}
           readOnly={!!signerAmount}
           includeAmountInput={true}
-          selectedToken={
-            activeTokens.find((t) => t.address === senderToken) || null
-          }
+          selectedToken={senderTokenInfo}
         />
         <TokenSelect
           label={t("orders:to")}
-          amount={signerAmount}
+          amount={signerAmount && stringToSignificantDecimals(signerAmount)}
           onAmountChange={(e) => handleTokenAmountChange(e)}
           onChangeTokenClicked={() => {
             setTokenSelectType("signerToken");
@@ -335,14 +322,22 @@ const SwapWidget = () => {
           }}
           readOnly={!!signerAmount}
           includeAmountInput={!!signerAmount}
-          selectedToken={
-            activeTokens.find((t) => t.address === signerToken) || null
-          }
+          amountDetails={!!signerAmount ? "After 0.3% fee" : ""}
+          selectedToken={signerTokenInfo}
         />
-        <InfoHeading>Zero slippage atomic swaps</InfoHeading>
-        <InfoSubHeading>Low fees for community members.</InfoSubHeading>
+        <InfoContainer>
+          <InfoSection
+            isConnected={active}
+            isFetchingOrders={ordersStatus === "requesting"}
+            order={order}
+            requiresApproval={order && !hasSufficientAllowance(senderToken)}
+            senderTokenInfo={senderTokenInfo}
+            signerTokenInfo={signerTokenInfo}
+          />
+        </InfoContainer>
         <DisplayedButton />
       </StyledSwapWidget>
+
       <Modal
         isOpen={showWalletList}
         onRequestClose={() => setShowWalletList(false)}
@@ -361,6 +356,7 @@ const SwapWidget = () => {
           }}
         />
       </Modal>
+
       <Modal
         isOpen={tokenSelectModalOpen}
         onRequestClose={() => setTokenSelectModalOpen(false)}

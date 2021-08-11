@@ -27,7 +27,7 @@ export const StyledButton = styled.button<ButtonProps>`
   align-items: center;
   justify-content: ${(props) => props.justifyContent || "center"};
   width: 100%;
-  height: 3.5rem;
+  height: 3.125rem;
   padding: 0 1rem;
   font-size: 1rem;
   font-weight: 600;
