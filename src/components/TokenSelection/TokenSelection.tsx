@@ -146,7 +146,6 @@ const TokenSelection = ({
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      console.log(scrollHeight + offsetTop, containerRef.current.offsetHeight);
       setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
     }
   }, [

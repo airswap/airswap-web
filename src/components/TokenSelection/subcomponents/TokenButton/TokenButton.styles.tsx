@@ -33,7 +33,7 @@ export const Container = styled.button<ContainerProps>`
   grid-template-columns: 1.5rem 4rem calc(50% - 4rem) calc(50% - 4.5rem);
   grid-gap: 1rem;
   align-items: center;
-  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+  opacity: ${(props) => (props.disabled ? 0.6 : 1)};
 
   &:hover {
     ${TokenName} {
