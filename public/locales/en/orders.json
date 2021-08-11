@@ -10,5 +10,8 @@
   "chooseToken": "Choose token",
   "enterAmount": "Enter an amount",
   "insufficentBalance": "Insufficient {{symbol}} balance",
-  "decimalsNotFound": "Token decimals not found"
+  "decimalsNotFound": "Token decimals not found",
+  "searchByNameOrSymbol": "Search by name or symbol...",
+  "removeFromActive": "Remove from active",
+  "expandedResults": "Expanded results from inactive Token Lists"
 }

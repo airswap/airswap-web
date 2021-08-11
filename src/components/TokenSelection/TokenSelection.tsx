@@ -1,23 +1,37 @@
-import { useState, useMemo } from "react";
-import { HiX } from "react-icons/hi";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { formatUnits } from "@ethersproject/units";
-// import AutoSizer from 'react-virtualized-auto-sizer'
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
+import useWindowSize from "../../helpers/useWindowSize";
 import { Title } from "../Typography/Typography";
-import TokenImportRow from "./TokenImportRow";
-import TokenRow from "./TokenRow";
+import {
+  Container,
+  TitleContainer,
+  CloseButton,
+  SearchInput,
+  TokenContainer,
+  InactiveTitleContainer,
+  InactiveTitle,
+  Legend,
+  LegendItem,
+  LegendDivider,
+  ScrollContainer,
+  InformationIcon,
+} from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbol } from "./sort";
+import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
 
 export type TokenSelectionProps = {
   /**
    * Function to close modal
    */
-  closeModal: () => void;
+  onClose: () => void;
   /**
    * signerToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
    */
@@ -68,7 +82,7 @@ export type TokenSelectionProps = {
 };
 
 const TokenSelection = ({
-  closeModal,
+  onClose,
   signerToken,
   senderToken,
   setSignerToken,
@@ -81,7 +95,13 @@ const TokenSelection = ({
   removeActiveToken,
   chainId,
 }: TokenSelectionProps) => {
+  const { width, height } = useWindowSize();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+
   const [tokenQuery, setTokenQuery] = useState<string>("");
+  const { t } = useTranslation(["common", "wallet", "orders", "balances"]);
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -93,7 +113,7 @@ const TokenSelection = ({
       if (address === senderToken) setSenderToken(signerToken);
       setSignerToken(address);
     }
-    closeModal();
+    onClose();
   };
 
   // sort tokens based on symbol
@@ -123,69 +143,99 @@ const TokenSelection = ({
     );
   }, [sortedInactiveTokens, tokenQuery]);
 
+  useEffect(() => {
+    if (containerRef.current && scrollContainerRef.current) {
+      const { offsetTop, scrollHeight } = scrollContainerRef.current;
+      setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
+    }
+  }, [
+    containerRef,
+    scrollContainerRef,
+    activeTokens,
+    sortedTokens,
+    allTokens,
+    tokenQuery,
+    width,
+    height,
+  ]);
+
   return (
-    <div>
-      <div className="flex flex-wrap align-middle justify-between">
-        <label className="font-bold text-sm" htmlFor="tokenQuery">
-          Select token
-        </label>
-        <HiX
-          className="light:text-black text-xl cursor-pointer"
-          onClick={closeModal}
-        />
-      </div>
-      <input
+    <Container ref={containerRef} $overflow={overflow}>
+      <TitleContainer>
+        <Title type="h2">{t("common:swap")}</Title>
+        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
+      </TitleContainer>
+      <SearchInput
+        hideLabel
         id="tokenQuery"
         type="text"
+        label="Search name or address"
         value={tokenQuery}
         placeholder="Search name or paste address"
         onChange={(e) => {
-          setTokenQuery(e.target.value);
+          setTokenQuery(e.currentTarget.value);
         }}
-        className="w-full"
       />
-      <div>
-        {filteredTokens.map((token) => (
-          <TokenRow
-            token={token}
-            balance={formatUnits(
-              balances.values[token.address] || 0,
-              token.decimals
-            )}
-            setToken={handleClick}
-            disabled={
-              tokenSelectType === "senderToken"
-                ? token.address === senderToken
-                : token.address === signerToken
-            } // shouldn't be able to select same duplicate token
-            removeActiveToken={removeActiveToken}
-            defaultToken={defaultActiveTokens[chainId!].includes(token.address)}
-            key={`${token.address}`}
-          />
-        ))}
+
+      <ScrollContainer ref={scrollContainerRef}>
+        <Legend>
+          <LegendItem>{t("common:token")}</LegendItem>
+          <LegendDivider />
+          <LegendItem>{t("balances:balance")}</LegendItem>
+        </Legend>
+
+        {filteredTokens && filteredTokens.length > 0 && (
+          <TokenContainer>
+            {filteredTokens.map((token) => (
+              <TokenButton
+                token={token}
+                balance={formatUnits(
+                  balances.values[token.address] || 0,
+                  token.decimals
+                )}
+                setToken={handleClick}
+                disabled={
+                  tokenSelectType === "senderToken"
+                    ? token.address === senderToken
+                    : token.address === signerToken
+                } // shouldn't be able to select same duplicate token
+                removeActiveToken={removeActiveToken}
+                defaultToken={defaultActiveTokens[chainId!].includes(
+                  token.address
+                )}
+                key={token.address}
+              />
+            ))}
+          </TokenContainer>
+        )}
         {chainId === 1 &&
           tokenQuery &&
           filteredTokens.length < 5 &&
           inactiveTokens &&
           inactiveTokens.length > 0 && (
             <>
-              <Title type="h4">
-                Expanded results from inactive Token Lists
-              </Title>
-              {inactiveTokens.map((token) => (
-                <TokenImportRow
-                  token={token}
-                  onClick={() => {
-                    addActiveToken(token.address);
-                    setTokenQuery("");
-                  }}
-                  key={`${token.address}`}
-                />
-              ))}
+              <InactiveTitleContainer>
+                <InactiveTitle>
+                  {t("orders:expandedResults")}
+                  <InformationIcon name="information-circle-outline" />
+                </InactiveTitle>
+              </InactiveTitleContainer>
+              <TokenContainer>
+                {inactiveTokens.map((token) => (
+                  <TokenImportButton
+                    token={token}
+                    onClick={() => {
+                      addActiveToken(token.address);
+                      setTokenQuery("");
+                    }}
+                    key={`${token.address}`}
+                  />
+                ))}
+              </TokenContainer>
             </>
           )}
-      </div>
-    </div>
+      </ScrollContainer>
+    </Container>
   );
 };
 
