@@ -20,7 +20,7 @@ import {
   ScrollContainer,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
-import { sortTokensBySymbol } from "./sort";
+import { sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
@@ -113,8 +113,8 @@ const TokenSelection = ({
 
   // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensBySymbol(activeTokens);
-  }, [activeTokens]);
+    return sortTokensBySymbolAndBalance(activeTokens, balances);
+  }, [activeTokens, balances]);
 
   // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {
