@@ -1,9 +1,19 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { RiCloseLine } from "react-icons/ri";
+
+import { findTokenByAddress } from "@airswap/metadata";
+import { TokenInfo } from "@uniswap/token-lists";
+
+import truncateEthAddress from "truncate-eth-address";
+
 import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
 import Button from "../Button/Button";
+import { InfoHeading } from "../Typography/Typography";
 import { TransactionRow } from "./TransactionRow";
 import {
   StyledWalletButton,
@@ -15,12 +25,9 @@ import {
   ExitButton,
   DisconnectButton,
   TransactionContainer,
+  Line,
+  Span,
 } from "./WalletButton.styles";
-import { findTokenByAddress } from "@airswap/metadata";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { RiCloseLine } from "react-icons/ri";
-import truncateEthAddress from "truncate-eth-address";
 
 export type WalletButtonProps = {
   /**
@@ -51,7 +58,7 @@ export type WalletButtonProps = {
   /**
    * List of all tokens in metadata
    */
-  tokens: any;
+  tokens: TokenInfo[];
 };
 
 export const WalletButton = ({
@@ -82,7 +89,7 @@ export const WalletButton = ({
               />
               <GreenCircle />
             </BlockiesContainer>
-            <span>{truncateEthAddress(address)}</span>
+            <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
             {walletOpen && (
               <ExitButton onClick={() => setWalletOpen(!walletOpen)}>
                 <RiCloseLine />
@@ -91,28 +98,49 @@ export const WalletButton = ({
           </StyledWalletButton>
           {walletOpen && (
             <WalletExtension>
-              <TransactionContainer>
-                {transactions.length !== 0
-                  ? transactions.slice(0, 3).map((transaction) => {
-                      let token;
-                      if (transaction.type === "Order") {
-                        const tx: SubmittedOrder = transaction as SubmittedOrder;
-                        token = findTokenByAddress(tx.order.signerToken, tokens);
-                      } else if (transaction.type === "Approval") {
-                        const tx: SubmittedApproval = transaction as SubmittedApproval;
-                        token = findTokenByAddress(tx.tokenAddress, tokens);
-                      }
+              <Line />
+              <TransactionContainer flex={transactions.length === 0}>
+                {transactions.length > 0 ? (
+                  transactions.slice(0, 3).map((transaction) => {
+                    let token;
+                    if (transaction.type === "Order") {
+                      const tx: SubmittedOrder = transaction as SubmittedOrder;
+                      const senderToken = findTokenByAddress(
+                        tx.order.senderToken,
+                        tokens
+                      );
+                      const signerToken = findTokenByAddress(
+                        tx.order.signerToken,
+                        tokens
+                      );
                       return (
                         <TransactionRow
                           transaction={transaction}
-                          token={token}
+                          senderToken={senderToken}
+                          signerToken={signerToken}
                           type={transaction.type}
-                          chainId={chainId}
+                          chainId={chainId!}
                           key={transaction.hash}
                         />
                       );
-                    })
-                  : "No transactions"}
+                    } else if (transaction.type === "Approval") {
+                      const tx: SubmittedApproval = transaction as SubmittedApproval;
+                      token = findTokenByAddress(tx.tokenAddress, tokens);
+                      return (
+                        <TransactionRow
+                          transaction={transaction}
+                          approvalToken={token}
+                          type={transaction.type}
+                          chainId={chainId!}
+                          key={transaction.hash}
+                        />
+                      );
+                    }
+                    return null;
+                  })
+                ) : (
+                  <Span>{t("wallet:noTransactions")}</Span>
+                )}
               </TransactionContainer>
 
               <DisconnectButton

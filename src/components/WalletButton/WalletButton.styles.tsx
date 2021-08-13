@@ -1,5 +1,8 @@
-import styled from "styled-components/macro";
 import Blockies from "react-blockies";
+
+import styled from "styled-components/macro";
+
+import Button from "../Button/Button";
 
 export const Container = styled.div``;
 
@@ -8,12 +11,10 @@ export const StyledWalletButton = styled.div`
   grid-auto-flow: column;
   grid-gap: 1rem;
   justify-content: space-between;
-  border: 1px solid
-    ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
   padding: 1rem;
   cursor: pointer;
   background-color: ${(props) =>
-    props.theme.name === "dark" ? "#151619" : "#F4F4F4"};
+    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
 `;
 
 export const BlockiesContainer = styled.div`
@@ -40,9 +41,9 @@ export const WalletExtension = styled.div`
   position: absolute;
   width: 100%;
   z-index: 100;
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
   background-color: ${(props) =>
-    props.theme.name === "dark" ? "#151619" : "#F4F4F4"};
+    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -50,21 +51,40 @@ export const WalletExtension = styled.div`
   justify-content: center;
 `;
 
-export const ExitButton = styled.button`
-  margin-left: 4rem;
+export const Line = styled.hr`
+  border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
+  width: 80%;
 `;
 
-export const TransactionContainer = styled.div`
-  display: flex;
+export const Span = styled.span`
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const ExitButton = styled.button`
+  margin-left: 5rem;
+`;
+
+type TransactionContainerProps = {
+  flex: boolean;
+};
+
+export const TransactionContainer = styled.div<TransactionContainerProps>`
+  display: ${(props) => (props.flex ? "flex" : "block")};
   flex-wrap: wrap;
-  // align-items: center;
+  align-items: center;
   justify-content: center;
   width: 100%;
   height: 12rem;
 `;
 
-export const DisconnectButton = styled.button`
-  border: 1px solid
-    ${(props) => (props.theme.name === "dark" ? "#282828" : "#ededed")};
+export const DisconnectButton = styled(Button)`
+  border: 1px solid ${(props) => props.theme.colors.lightGrey};
   padding: 1rem 3rem;
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
+  transition: 0.25s ease-in-out;
+  &:hover {
+    color: ${(props) => props.theme.colors.black};
+    background-color: ${(props) => props.theme.colors.white};
+  }
 `;

@@ -1,16 +1,25 @@
+import { useTranslation } from "react-i18next";
+import { HiOutlineCheck, HiX } from "react-icons/hi";
+import { MdOpenInNew } from "react-icons/md";
+import { RiLoader2Fill } from "react-icons/ri";
+
+import { getEtherscanURL } from "@airswap/utils";
+import { formatUnits } from "@ethersproject/units";
+import { TokenInfo } from "@uniswap/token-lists";
+
 import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
 import getTimeBetweenTwoDates from "../../helpers/getTimeBetweenTwoDates";
-import { Container, TextContainer, Span, Link } from "./TransactionRow.styles";
-import { getEtherscanURL } from "@airswap/utils";
-import { formatUnits } from "@ethersproject/units";
-import { TokenInfo } from "@uniswap/token-lists";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
-import { MdOpenInNew } from "react-icons/md";
-import { RiLoader2Fill } from "react-icons/ri";
+import {
+  Container,
+  TextContainer,
+  SpanTitle,
+  SpanSubtitle,
+  Link,
+} from "./TransactionRow.styles";
 
 type TransactionRowProps = {
   /**
@@ -27,17 +36,29 @@ type TransactionRowProps = {
    */
   chainId: number;
   /**
-   * List of all token info from metadata
+   * Token Info of sender token
    */
-  token: TokenInfo | undefined;
+  senderToken?: TokenInfo;
+  /**
+   * Token Info of signer token
+   */
+  signerToken?: TokenInfo;
+  /**
+   * Token Info of approval token
+   */
+  approvalToken?: TokenInfo;
 };
 
 export const TransactionRow = ({
   transaction,
-  token,
   type,
   chainId,
+  senderToken,
+  signerToken,
+  approvalToken,
 }: TransactionRowProps) => {
+  const { t } = useTranslation(["common", "wallet"]);
+
   if (type === "Order") {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
     return (
@@ -50,34 +71,39 @@ export const TransactionRow = ({
           <HiX />
         )}
         <TextContainer>
-          {tx && token ? (
+          {tx && senderToken && signerToken && (
             <>
-              <Span>
-                {`${parseFloat(
-                  Number(
-                    formatUnits(tx.order.senderAmount, token.decimals)
-                  ).toFixed(5)
-                )} ${token.symbol} -> ${parseFloat(
-                  Number(
-                    formatUnits(tx.order.signerAmount, token.decimals)
-                  ).toFixed(5)
-                )} ${token.symbol}`}
-              </Span>
-              <Span>
+              <SpanTitle>
+                {t("wallet:transaction", {
+                  senderAmount: parseFloat(
+                    Number(
+                      formatUnits(tx.order.senderAmount, senderToken.decimals)
+                    ).toFixed(5)
+                  ),
+                  senderToken: senderToken.symbol,
+                  signerAmount: parseFloat(
+                    Number(
+                      formatUnits(tx.order.signerAmount, signerToken.decimals)
+                    ).toFixed(5)
+                  ),
+                  signerToken: signerToken.symbol,
+                })}
+              </SpanTitle>
+              <SpanSubtitle>
                 {tx.status === "succeeded"
-                  ? "Success"
+                  ? t("common:success")
                   : tx.status === "processing"
-                  ? "Processing"
-                  : "Failed"}{" "}
+                  ? t("common:processing")
+                  : t("common:failed")}{" "}
                 ·{" "}
                 {tx.timestamp
                   ? getTimeBetweenTwoDates(new Date(tx.timestamp))
-                  : "undefined"}
-              </Span>
+                  : t("common:undefined")}
+              </SpanSubtitle>
             </>
-          ) : null}
+          )}
         </TextContainer>
-        <Span></Span>
+        <SpanTitle></SpanTitle>
         <Link
           target="_blank"
           rel="noreferrer"
@@ -98,8 +124,22 @@ export const TransactionRow = ({
         ) : (
           <HiX />
         )}
-        <TextContainer>Approve {token!.symbol}</TextContainer>
-        <Span></Span>
+        {approvalToken && (
+          <>
+            <SpanTitle>Approve {approvalToken.symbol}</SpanTitle>
+            <SpanSubtitle>
+              {tx.status === "succeeded"
+                ? t("common:success")
+                : tx.status === "processing"
+                ? t("common:processing")
+                : t("common:failed")}{" "}
+              ·{" "}
+              {tx.timestamp
+                ? getTimeBetweenTwoDates(new Date(tx.timestamp))
+                : t("common:undefined")}
+            </SpanSubtitle>
+          </>
+        )}
         <Link
           target="_blank"
           rel="noreferrer"

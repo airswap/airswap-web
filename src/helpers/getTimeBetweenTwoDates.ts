@@ -11,7 +11,7 @@ export default function getTimeBetweenTwoDates(date: Date) {
   if (currentDate < date) return "undefined";
 
   // convert to seconds
-  const timeDiff = (currentDate.getTime() - date.getTime());
+  const timeDiff = currentDate.getTime() - date.getTime();
 
   // use increasing denominations based on how recent the comparison between dates are
   // e.g. x mins ago (< 1 hour), x hours ago(< 1 day), x days ago(< 1 month), x months ago(< 1 year), x years ago(> 1 year)

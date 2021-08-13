@@ -1,4 +1,7 @@
 {
   "connectWallet": "Connect Wallet",
-  "disconnectWallet": "Disconnect Wallet"
+  "disconnectWallet": "Disconnect",
+  "noTransactions": "No Transactions",
+  "approve": "Approve {{symbol}}",
+  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
 }
