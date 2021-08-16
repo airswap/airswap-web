@@ -11,8 +11,11 @@ export const QuoteAndTimer = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const BackButton = styled(Button)`
+  flex: 1 0 0;
+`;
 export const SubmitButton = styled(Button)`
-  margin-bottom: 2.75rem;
+  flex: 2.33333333 0 0;
 `;
 
 export const InfoContainer = styled.div`
@@ -22,6 +25,13 @@ export const InfoContainer = styled.div`
   align-items: center;
   height: 11.25rem;
   margin-top: -0.625rem;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 1.25rem;
+  margin-bottom: 2.75rem;
 `;
 
 export const SwapIconContainer = styled.div`

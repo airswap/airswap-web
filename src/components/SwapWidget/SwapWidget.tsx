@@ -36,6 +36,7 @@ import {
   take,
   selectBestOrder,
   selectOrdersStatus,
+  clear,
 } from "../../features/orders/ordersSlice";
 import {
   SubmittedApproval,
@@ -50,7 +51,9 @@ import StyledSwapWidget, {
   Header,
   InfoContainer,
   SubmitButton,
+  BackButton,
   SwapIconContainer,
+  ButtonContainer,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -136,7 +139,7 @@ const SwapWidget = () => {
     if (order) setIsRequestUpdated(true);
   };
 
-  const DisplayedButton = () => {
+  const DisplayedButtons = () => {
     if (!active || !chainId) {
       return (
         <SubmitButton
@@ -155,18 +158,27 @@ const SwapWidget = () => {
       senderToken
     ) {
       return (
-        <SubmitButton
-          intent="primary"
-          aria-label={t("orders:take", { context: "aria" })}
-          disabled={isNaN(parseFloat(signerAmount))}
-          loading={ordersStatus === "taking"}
-          onClick={async () => {
-            dispatch(take({ order, library }));
-            setIsRequestUpdated(false);
-          }}
-        >
-          {t("orders:take")}
-        </SubmitButton>
+        <>
+          <BackButton
+            onClick={() => {
+              dispatch(clear());
+            }}
+          >
+            Back
+          </BackButton>
+          <SubmitButton
+            intent="primary"
+            aria-label={t("orders:take", { context: "aria" })}
+            disabled={isNaN(parseFloat(signerAmount))}
+            loading={ordersStatus === "taking"}
+            onClick={async () => {
+              dispatch(take({ order, library }));
+              setIsRequestUpdated(false);
+            }}
+          >
+            {t("orders:take")}
+          </SubmitButton>
+        </>
       );
     } else if (
       signerAmount &&
@@ -175,20 +187,30 @@ const SwapWidget = () => {
       senderToken
     ) {
       return (
-        <SubmitButton
-          intent="primary"
-          aria-label={t("orders:approve", { context: "aria" })}
-          loading={
-            getTokenApprovalStatus(senderToken) === "processing" || isApproving
-          }
-          onClick={async () => {
-            setIsApproving(true);
-            await dispatch(approve({ token: senderToken, library }));
-            setIsApproving(false);
-          }}
-        >
-          {t("orders:approve")}
-        </SubmitButton>
+        <>
+          <BackButton
+            onClick={() => {
+              dispatch(clear());
+            }}
+          >
+            Back
+          </BackButton>
+          <SubmitButton
+            intent="primary"
+            aria-label={t("orders:approve", { context: "aria" })}
+            loading={
+              getTokenApprovalStatus(senderToken) === "processing" ||
+              isApproving
+            }
+            onClick={async () => {
+              setIsApproving(true);
+              await dispatch(approve({ token: senderToken, library }));
+              setIsApproving(false);
+            }}
+          >
+            {t("orders:approve")}
+          </SubmitButton>
+        </>
       );
     } else {
       return (
@@ -329,7 +351,7 @@ const SwapWidget = () => {
             requiresApproval={order && !hasSufficientAllowance(senderToken)}
             senderTokenInfo={senderTokenInfo}
             signerTokenInfo={signerTokenInfo}
-            timerExpiry={order ? parseInt(order.expiry) : null}
+            timerExpiry={order ? parseInt(order.expiry) - 60 : null}
             onTimerComplete={() => {
               dispatch(
                 request({
@@ -345,7 +367,9 @@ const SwapWidget = () => {
             }}
           />
         </InfoContainer>
-        <DisplayedButton />
+        <ButtonContainer>
+          <DisplayedButtons />
+        </ButtonContainer>
       </StyledSwapWidget>
 
       <Modal

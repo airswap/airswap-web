@@ -12,7 +12,7 @@ function getButtonBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.lightGrey;
+      return theme.colors.black;
     default:
       return theme.colors.primary;
   }
@@ -35,6 +35,10 @@ export const StyledButton = styled.button<ButtonProps>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-radius: 2px;
+  border-style: ${(props) => (props.intent === "neutral" ? "solid" : "none")};
+  border-width: 1px;
+  border-color: ${(props) => props.theme.colors.borderGrey};
   color: ${(props) => props.theme.colors.alwaysWhite};
   background: ${(props) => getButtonBackground(props.theme, props.intent)};
   pointer-events: ${(props) => (props.disabled ? "none" : "visible")};

@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LightOrder } from "@airswap/types";
 import { TokenInfo } from "@uniswap/token-lists";
@@ -37,6 +38,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   timerExpiry,
   onTimerComplete,
 }) => {
+  const { t } = useTranslation(["orders"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   // Wallet not connected.
   if (!isConnected) {
@@ -84,7 +86,7 @@ const InfoSection: FC<InfoSectionProps> = ({
         ) : (
           <InfoSubHeading>
             <TimerContainer>
-              <NewQuoteText>New Quote In</NewQuoteText>
+              <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
               {order && (
                 <TimerText>
                   <Timer
