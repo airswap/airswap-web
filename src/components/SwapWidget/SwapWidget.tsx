@@ -61,12 +61,10 @@ const SwapWidget = () => {
   const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
+  const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
   const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [tokenSelectModalOpen, setTokenSelectModalOpen] = useState<boolean>(
-    false
-  );
   const [tokenSelectType, setTokenSelectType] = useState<
     "senderToken" | "signerToken"
   >("senderToken");
@@ -300,7 +298,7 @@ const SwapWidget = () => {
           onAmountChange={(e) => handleTokenAmountChange(e)}
           onChangeTokenClicked={() => {
             setTokenSelectType("senderToken");
-            setTokenSelectModalOpen(true);
+            setShowTokenSelection(true);
             if (order) setIsRequestUpdated(true);
           }}
           readOnly={!!signerAmount}
@@ -313,7 +311,7 @@ const SwapWidget = () => {
           onAmountChange={(e) => handleTokenAmountChange(e)}
           onChangeTokenClicked={() => {
             setTokenSelectType("signerToken");
-            setTokenSelectModalOpen(true);
+            setShowTokenSelection(true);
             if (order) setIsRequestUpdated(true);
           }}
           readOnly={!!signerAmount}
@@ -352,15 +350,8 @@ const SwapWidget = () => {
           }}
         />
       </Modal>
-
-      <Modal
-        isOpen={tokenSelectModalOpen}
-        onRequestClose={() => setTokenSelectModalOpen(false)}
-        className="modal"
-        overlayClassName="overlay"
-      >
+      {showTokenSelection && (
         <TokenSelection
-          closeModal={() => setTokenSelectModalOpen(false)}
           signerToken={signerToken!}
           senderToken={senderToken!}
           setSignerToken={setSignerToken}
@@ -371,9 +362,10 @@ const SwapWidget = () => {
           activeTokens={activeTokens}
           addActiveToken={handleAddActiveToken}
           removeActiveToken={handleRemoveActiveToken}
+          onClose={() => setShowTokenSelection(false)}
           chainId={chainId!}
         />
-      </Modal>
+      )}
     </>
   );
 };

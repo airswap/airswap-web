@@ -1,8 +1,7 @@
 import React from "react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
-import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { FormInput, FormLabel } from "../Typography/Typography";
 
 type TextInputStyleProps = {
@@ -30,21 +29,17 @@ export const StyledTextInput = styled.div<TextInputStyleProps>`
   ${StyledInput} {
     position: relative;
     border: 0;
-    border-bottom: 1px solid
-      ${(props) =>
-        props.hasError
-          ? props.theme.colors.red
-          : convertHexToRGBA(props.theme.colors.white, 0.1)};
     width: 100%;
     padding: 0;
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
     background: none;
 
+    &::placeholder {
+      color: ${(props) => props.theme.colors.lightGrey};
+    }
+
     &:focus {
       outline: 0;
-      border-bottom: 1px solid
-        ${(props) =>
-          props.hasError ? props.theme.colors.red : props.theme.colors.white};
     }
   }
 `;

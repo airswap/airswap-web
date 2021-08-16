@@ -36,6 +36,6 @@ export {
   StyledFormInput as FormInput,
   StyledSelectItem as SelectItem,
   StyledLink as Link,
-  StyledNavigation as NavLink,
+  StyledNavigation as Navigation,
   StyledMetadata as Metadata,
 } from "./Typography.styles";

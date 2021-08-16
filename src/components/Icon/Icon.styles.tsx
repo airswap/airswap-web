@@ -7,6 +7,7 @@ interface StyledIconProps {
 export const StyledIcon = styled.div<StyledIconProps>`
   svg {
     width: ${(props) => `${props.iconSize}rem`};
+    height: ${(props) => `${props.iconSize}rem`};
   }
 
   circle,

@@ -8,7 +8,7 @@ import {
   TitleProps,
   Paragraph,
   Link,
-  NavLink,
+  Navigation,
   Metadata,
   FormLabel,
   InfoHeading,
@@ -81,7 +81,7 @@ const Template: Story<TitleProps> = (args) => (
     <FlexCol>
       <Subtitle>Navigation</Subtitle>
     </FlexCol>
-    <NavLink>The quick brown fox jumps over the lazy dog</NavLink>
+    <Navigation>The quick brown fox jumps over the lazy dog</Navigation>
     <FlexCol>
       <Subtitle>Metadata</Subtitle>
     </FlexCol>

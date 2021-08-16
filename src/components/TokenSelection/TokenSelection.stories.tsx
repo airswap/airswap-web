@@ -1,12 +1,14 @@
 import { Story, Meta } from "@storybook/react";
 
+import styled from "styled-components/macro";
+
 import TokenSelection, { TokenSelectionProps } from "./TokenSelection";
 
 export default {
   title: "components/TokenSelection/TokenSelection",
   component: TokenSelection,
   argTypes: {
-    closeModal: { control: { type: "function" } },
+    onClose: { control: { type: "function" } },
     signerToken: { control: { type: "text" } },
     senderToken: { control: { type: "function" } },
     setSignerToken: { control: { type: "boolean" } },
@@ -21,8 +23,19 @@ export default {
   },
 } as Meta;
 
+const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30rem;
+  max-width: 30rem;
+`;
+
 const Template: Story<TokenSelectionProps> = (args) => (
-  <TokenSelection {...args} />
+  <Container>
+    <TokenSelection {...args} />
+  </Container>
 );
 
 const ETH = {
@@ -72,7 +85,7 @@ const activeTokens = [ETH, DAI];
 
 export const Default = Template.bind({});
 Default.args = {
-  closeModal: () => void 1,
+  onClose: () => void 1,
   signerToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   senderToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   setSignerToken: () => void 1,
@@ -97,7 +110,7 @@ Default.args = {
 
 export const TestNet = Template.bind({});
 TestNet.args = {
-  closeModal: () => void 1,
+  onClose: () => void 1,
   signerToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   senderToken: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
   setSignerToken: () => void 1,

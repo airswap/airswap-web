@@ -17,5 +17,8 @@
   "bestPrice": "Best price",
   "price": "Price",
   "gasCost": "Gas cost",
-  "protocolFee": "Protocol Fee"
+  "protocolFee": "Protocol Fee",
+  "searchByNameOrSymbol": "Search by name or symbol...",
+  "removeFromActive": "Remove from active",
+  "expandedResults": "Expanded results from inactive Token Lists"
 }
