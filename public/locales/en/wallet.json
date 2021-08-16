@@ -3,5 +3,6 @@
   "disconnectWallet": "Disconnect",
   "noTransactions": "No Transactions",
   "approve": "Approve {{symbol}}",
-  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
+  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+  "transactionTimeAgo": "{{time}} ago"
 }

@@ -38,17 +38,17 @@ export const GreenCircle = styled.div`
 `;
 
 export const WalletExtension = styled.div`
-  position: absolute;
-  width: 100%;
-  z-index: 100;
-  padding: 0 1rem 1rem 1rem;
-  background-color: ${(props) =>
-    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  width: 100%;
+  padding: 0 1rem 1rem 1rem;
+  z-index: 100;
+  background-color: ${(props) =>
+    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
 `;
 
 export const Line = styled.hr`

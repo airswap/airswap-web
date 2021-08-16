@@ -1,9 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
-import { MdOpenInNew } from "react-icons/md";
-import { RiLoader2Fill } from "react-icons/ri";
 
-import { getEtherscanURL } from "@airswap/utils";
 import { formatUnits } from "@ethersproject/units";
 import { TokenInfo } from "@uniswap/token-lists";
 
@@ -11,17 +7,18 @@ import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
-} from "../../features/transactions/transactionsSlice";
-import getTimeBetweenTwoDates from "../../helpers/getTimeBetweenTwoDates";
+} from "../../../../features/transactions/transactionsSlice";
+import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
+import TransactionLink from "../TransactionLink/TransactionLink";
+import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 import {
   Container,
   TextContainer,
   SpanTitle,
   SpanSubtitle,
-  Link,
-} from "./TransactionRow.styles";
+} from "./WalletTransaction.styles";
 
-type TransactionRowProps = {
+type WalletTransactionProps = {
   /**
    * The parent object of SubmittedOrder and SubmittedApproval
    */
@@ -49,27 +46,21 @@ type TransactionRowProps = {
   approvalToken?: TokenInfo;
 };
 
-export const TransactionRow = ({
+export const WalletTransaction = ({
   transaction,
   type,
   chainId,
   senderToken,
   signerToken,
   approvalToken,
-}: TransactionRowProps) => {
+}: WalletTransactionProps) => {
   const { t } = useTranslation(["common", "wallet"]);
 
   if (type === "Order") {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
     return (
       <Container>
-        {tx.status === "succeeded" ? (
-          <HiOutlineCheck />
-        ) : tx.status === "processing" ? (
-          <RiLoader2Fill />
-        ) : (
-          <HiX />
-        )}
+        <WalletTransactionStatus status={tx.status} />
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
@@ -97,58 +88,40 @@ export const TransactionRow = ({
                   : t("common:failed")}{" "}
                 ·{" "}
                 {tx.timestamp
-                  ? getTimeBetweenTwoDates(new Date(tx.timestamp))
+                  ? t("wallet:transactionTimeAgo", {time: getTimeBetweenTwoDates(new Date(tx.timestamp))})
                   : t("common:undefined")}
               </SpanSubtitle>
             </>
           )}
         </TextContainer>
-        <SpanTitle></SpanTitle>
-        <Link
-          target="_blank"
-          rel="noreferrer"
-          href={`${getEtherscanURL(`${chainId}`, tx.hash)}`}
-        >
-          <MdOpenInNew />
-        </Link>
+        <TransactionLink chainId={chainId} hash={tx.hash} />
       </Container>
     );
-  } else if (transaction.type === "Approval") {
+  } else {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     return (
       <Container>
-        {tx.status === "succeeded" ? (
-          <HiOutlineCheck />
-        ) : tx.status === "processing" ? (
-          <RiLoader2Fill />
-        ) : (
-          <HiX />
-        )}
-        {approvalToken && (
-          <>
-            <SpanTitle>Approve {approvalToken.symbol}</SpanTitle>
-            <SpanSubtitle>
-              {tx.status === "succeeded"
-                ? t("common:success")
-                : tx.status === "processing"
-                ? t("common:processing")
-                : t("common:failed")}{" "}
-              ·{" "}
-              {tx.timestamp
-                ? getTimeBetweenTwoDates(new Date(tx.timestamp))
-                : t("common:undefined")}
-            </SpanSubtitle>
-          </>
-        )}
-        <Link
-          target="_blank"
-          rel="noreferrer"
-          href={`${getEtherscanURL(`${chainId}`, tx.hash)}`}
-        >
-          <MdOpenInNew />
-        </Link>
+        <WalletTransactionStatus status={tx.status} />
+        <TextContainer>
+          {approvalToken && (
+            <>
+              <SpanTitle>Approve {approvalToken.symbol}</SpanTitle>
+              <SpanSubtitle>
+                {tx.status === "succeeded"
+                  ? t("common:success")
+                  : tx.status === "processing"
+                  ? t("common:processing")
+                  : t("common:failed")}{" "}
+                ·{" "}
+                {tx.timestamp
+                  ? t("wallet:transactionTimeAgo", {time: getTimeBetweenTwoDates(new Date(tx.timestamp))})
+                  : t("common:undefined")}
+              </SpanSubtitle>
+            </>
+          )}
+        </TextContainer>
+        <TransactionLink chainId={chainId} hash={tx.hash} />
       </Container>
     );
   }
-  return <div></div>;
 };

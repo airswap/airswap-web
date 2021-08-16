@@ -1,5 +1,7 @@
 import { Story, Meta } from "@storybook/react";
 
+import styled from "styled-components";
+
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import { WalletButton, WalletButtonProps } from "./WalletButton";
 
@@ -17,7 +19,19 @@ export default {
   },
 } as Meta;
 
-const Template: Story<WalletButtonProps> = (args) => <WalletButton {...args} />;
+const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 20rem;
+`;
+
+const Template: Story<WalletButtonProps> = (args) => (
+  <Container>
+    <WalletButton {...args} />
+  </Container>
+);
 
 const transactions: SubmittedTransaction[] = [
   {

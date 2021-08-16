@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { RiCloseLine } from "react-icons/ri";
 
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
@@ -14,7 +13,7 @@ import {
 } from "../../features/transactions/transactionsSlice";
 import Button from "../Button/Button";
 import { InfoHeading } from "../Typography/Typography";
-import { TransactionRow } from "./TransactionRow";
+import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
 import {
   StyledWalletButton,
   StyledBlockies,
@@ -28,6 +27,7 @@ import {
   Line,
   Span,
 } from "./WalletButton.styles";
+import Icon from "../Icon/Icon";
 
 export type WalletButtonProps = {
   /**
@@ -66,7 +66,7 @@ export const WalletButton = ({
   isConnecting,
   onConnectWalletClicked,
   onDisconnectWalletClicked,
-  transactions,
+  transactions = [],
   chainId,
   tokens,
 }: WalletButtonProps) => {
@@ -92,7 +92,7 @@ export const WalletButton = ({
             <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
             {walletOpen && (
               <ExitButton onClick={() => setWalletOpen(!walletOpen)}>
-                <RiCloseLine />
+                <Icon iconSize={1} name="exit-modal"/>
               </ExitButton>
             )}
           </StyledWalletButton>
@@ -114,7 +114,7 @@ export const WalletButton = ({
                         tokens
                       );
                       return (
-                        <TransactionRow
+                        <WalletTransaction
                           transaction={transaction}
                           senderToken={senderToken}
                           signerToken={signerToken}
@@ -123,11 +123,11 @@ export const WalletButton = ({
                           key={transaction.hash}
                         />
                       );
-                    } else if (transaction.type === "Approval") {
+                    } else {
                       const tx: SubmittedApproval = transaction as SubmittedApproval;
                       token = findTokenByAddress(tx.tokenAddress, tokens);
                       return (
-                        <TransactionRow
+                        <WalletTransaction
                           transaction={transaction}
                           approvalToken={token}
                           type={transaction.type}
@@ -136,7 +136,6 @@ export const WalletButton = ({
                         />
                       );
                     }
-                    return null;
                   })
                 ) : (
                   <Span>{t("wallet:noTransactions")}</Span>
