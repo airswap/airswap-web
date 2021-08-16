@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -7,8 +8,6 @@ import { ThemeProvider } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
-import TradeContainer from "./components/TradeContainer/TradeContainer";
-import { Orders } from "./features/orders/Orders";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
@@ -28,11 +27,11 @@ const App = (): JSX.Element => {
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={"Loading..."}>
-          <Page>
-            <TradeContainer>
-              <Orders />
-            </TradeContainer>
-          </Page>
+          <Router>
+            <Route path="/:section([^0/#?]+)?">
+              <Page />
+            </Route>
+          </Router>
         </Suspense>
       </Web3ReactProvider>
       <GlobalStyle />

@@ -1,4 +1,4 @@
 export const sizes = {
-  sideBarWidth: "27rem",
+  sideBarWidth: "28rem",
   tradeContainerPadding: "1.875rem",
 };

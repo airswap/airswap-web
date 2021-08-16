@@ -1,48 +1,91 @@
-import styled from "styled-components/macro";
+import { Link } from "react-router-dom";
+
+import { motion } from "framer-motion";
+import styled from "styled-components";
 
 import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints from "../../style/breakpoints";
+import { sizes } from "../../style/sizes";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
-
-interface StyledSideBarProps {
-  open: boolean;
-}
 
 export const StyledDarkModeSwitch = styled(DarkModeSwitch)`
   position: absolute;
-  bottom: 2.5rem;
-  right: 2.5rem;
+  bottom: 1rem;
+  right: 1rem;
 `;
 
-export const StyledWallet = styled(Wallet)`
+type StyledWalletProps = {
+  isOpen: boolean;
+};
+
+export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   position: absolute;
-  top: 2.5rem;
-  right: 2.5rem;
+  top: 2rem;
+  right: 2rem;
+  transform: translateX(
+    ${(props) =>
+      props.isOpen ? "-2.5rem" : `calc(-4rem - ${sizes.sideBarWidth})`}
+  );
+  transition: transform 0.3s ease-in-out;
+  z-index: 1001;
 `;
 
-export const StyledSideBar = styled.div<StyledSideBarProps>`
-  transition: transform 0.5s ease-out;
-  transform: ${(props) => (props.open ? "none" : "translateX(27rem)")};
+type ContainerProps = {
+  isOpen: boolean;
+};
 
-  display: none;
-  align-items: center;
+export const Container = styled.div<ContainerProps>`
   position: absolute;
   top: 0;
   right: 0;
-  border-left: 1px solid ${(props) => props.theme.colors.grey};
-  width: 27rem;
   height: 100%;
-  min-height: 100vh;
-  padding: 3.25rem 0;
-  background: ${(props) =>
-    props.theme.name === "light"
-      ? props.theme.colors.alwaysWhite
-      : props.theme.colors.darkGrey};
+  width: 32rem;
+  padding: 4rem;
+  transform: translateX(${(props) => (props.isOpen ? "28rem" : "0")});
+  transition: transform 0.3s ease-in-out;
+  background-color: ${(props) => props.theme.colors.darkGrey};
 
-  @media ${breakPoints.tabletLandscapeUp} {
-    display: flex;
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const ToggleButton = styled.button`
+  position: absolute;
+  top: 50%;
+  left: -1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.colors.darkGrey};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.colors.white};
+`;
+
+export const Navigation = styled.nav`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+type StyledLinkProps = {
+  primary: boolean;
+};
+
+export const StyledLink = styled(Link)<StyledLinkProps>`
+  font-weight: ${(props) => (props.primary ? 700 : 500)};
+  color: ${(props) => props.theme.colors.white};
+`;
+
+export const ContentContainer = styled(motion.div)`
+  padding: 1rem 0;
+
+  .hidden {
+    color: purple;
   }
 `;
