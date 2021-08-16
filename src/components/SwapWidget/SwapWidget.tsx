@@ -13,13 +13,9 @@ import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import Timer from "../../components/Timer/Timer";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import {
   Title,
-  Subtitle,
-  InfoHeading,
-  InfoSubHeading,
 } from "../../components/Typography/Typography";
 import {
   requestActiveTokenAllowances,
