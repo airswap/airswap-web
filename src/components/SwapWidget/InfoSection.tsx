@@ -5,11 +5,15 @@ import { TokenInfo } from "@uniswap/token-lists";
 
 import { BigNumber } from "bignumber.js";
 
+import Timer from "../../components/Timer/Timer";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
   StyledInvertPriceButton,
   StyledInvertPriceIcon,
+  TimerContainer,
+  NewQuoteText,
+  TimerText,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -19,6 +23,8 @@ export type InfoSectionProps = {
   requiresApproval: boolean;
   signerTokenInfo: TokenInfo | null;
   senderTokenInfo: TokenInfo | null;
+  timerExpiry: number | null;
+  onTimerComplete: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -28,6 +34,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   requiresApproval,
   senderTokenInfo,
   signerTokenInfo,
+  timerExpiry,
+  onTimerComplete,
 }) => {
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   // Wallet not connected.
@@ -74,7 +82,19 @@ const InfoSection: FC<InfoSectionProps> = ({
             To proceed you must approve {senderTokenInfo!.symbol}
           </InfoSubHeading>
         ) : (
-          <InfoSubHeading>Timer goes here.</InfoSubHeading>
+          <InfoSubHeading>
+            <TimerContainer>
+              <NewQuoteText>New Quote In</NewQuoteText>
+              {order && (
+                <TimerText>
+                  <Timer
+                    expiryTime={timerExpiry!}
+                    onTimerComplete={onTimerComplete}
+                  ></Timer>
+                </TimerText>
+              )}
+            </TimerContainer>
+          </InfoSubHeading>
         )}
       </>
     );

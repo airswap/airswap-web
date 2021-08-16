@@ -1,5 +1,6 @@
 import { useState, FormEvent, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { MdSwapVert, MdArrowDownward } from "react-icons/md";
 import Modal from "react-modal";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -14,9 +15,7 @@ import { parseUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
-import {
-  Title,
-} from "../../components/Typography/Typography";
+import { Title } from "../../components/Typography/Typography";
 import {
   requestActiveTokenAllowances,
   requestActiveTokenBalances,
@@ -49,9 +48,9 @@ import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
-  QuoteAndTimer,
   InfoContainer,
   SubmitButton,
+  SwapIconContainer,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -305,6 +304,9 @@ const SwapWidget = () => {
           includeAmountInput={true}
           selectedToken={senderTokenInfo}
         />
+        <SwapIconContainer>
+          <MdArrowDownward />
+        </SwapIconContainer>
         <TokenSelect
           label={t("orders:to")}
           amount={signerAmount && stringToSignificantDecimals(signerAmount)}
@@ -327,6 +329,20 @@ const SwapWidget = () => {
             requiresApproval={order && !hasSufficientAllowance(senderToken)}
             senderTokenInfo={senderTokenInfo}
             signerTokenInfo={signerTokenInfo}
+            timerExpiry={order ? parseInt(order.expiry) : null}
+            onTimerComplete={() => {
+              dispatch(
+                request({
+                  chainId: chainId!,
+                  senderToken: senderToken!,
+                  senderAmount,
+                  signerToken: signerToken!,
+                  senderWallet: account!,
+                  provider: library,
+                })
+              );
+              trackEvent({ category: "order", action: "request" });
+            }}
           />
         </InfoContainer>
         <DisplayedButton />
