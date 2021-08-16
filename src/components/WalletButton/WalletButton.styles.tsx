@@ -7,9 +7,7 @@ import Button from "../Button/Button";
 export const Container = styled.div``;
 
 export const StyledWalletButton = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 1rem;
+  display: flex;
   justify-content: space-between;
   padding: 1rem;
   cursor: pointer;
