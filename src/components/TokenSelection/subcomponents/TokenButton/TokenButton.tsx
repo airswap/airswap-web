@@ -1,5 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
+import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenDeleteButton from "../TokenDeleteButton/TokenDeleteButton";
 import {
   Container,
@@ -76,7 +77,7 @@ const TokenButton = ({
         )}
       </TokenNameContainer>
 
-      <Balance>{balance}</Balance>
+      <Balance>{stringToSignificantDecimals(balance)}</Balance>
     </Container>
   );
 };
