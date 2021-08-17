@@ -14,18 +14,15 @@ import {
   CloseButton,
   SearchInput,
   TokenContainer,
-  InactiveTitleContainer,
-  InactiveTitle,
   Legend,
   LegendItem,
   LegendDivider,
   ScrollContainer,
-  InformationIcon,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
-import { sortTokensBySymbol } from "./sort";
+import { sortTokensBySymbolAndBalance } from "./sort";
+import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
-import TokenImportButton from "./subcomponents/TokenImportButton/TokenImportButton";
 
 export type TokenSelectionProps = {
   /**
@@ -116,30 +113,13 @@ const TokenSelection = ({
 
   // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensBySymbol(activeTokens);
-  }, [activeTokens]);
+    return sortTokensBySymbolAndBalance(activeTokens, balances);
+  }, [activeTokens, balances]);
 
   // filter token
   const filteredTokens: TokenInfo[] = useMemo(() => {
     return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
-
-  // sort inactive tokens based on symbol
-  const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensBySymbol(
-      Object.values(allTokens).filter((el) => {
-        return !activeTokens.includes(el);
-      })
-    );
-  }, [allTokens, activeTokens]);
-
-  // only take the top 10 tokens
-  const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
-      0,
-      10
-    );
-  }, [sortedInactiveTokens, tokenQuery]);
 
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
@@ -206,32 +186,17 @@ const TokenSelection = ({
             ))}
           </TokenContainer>
         )}
-        {chainId === 1 &&
-          tokenQuery &&
-          filteredTokens.length < 5 &&
-          inactiveTokens &&
-          inactiveTokens.length > 0 && (
-            <>
-              <InactiveTitleContainer>
-                <InactiveTitle>
-                  {t("orders:expandedResults")}
-                  <InformationIcon name="information-circle-outline" />
-                </InactiveTitle>
-              </InactiveTitleContainer>
-              <TokenContainer>
-                {inactiveTokens.map((token) => (
-                  <TokenImportButton
-                    token={token}
-                    onClick={() => {
-                      addActiveToken(token.address);
-                      setTokenQuery("");
-                    }}
-                    key={`${token.address}`}
-                  />
-                ))}
-              </TokenContainer>
-            </>
-          )}
+        {chainId === 1 && tokenQuery && filteredTokens.length < 5 && (
+          <InactiveTokensList
+            tokenQuery={tokenQuery}
+            activeTokens={activeTokens}
+            allTokens={allTokens}
+            onTokenClick={(tokenAddress) => {
+              addActiveToken(tokenAddress);
+              setTokenQuery("");
+            }}
+          />
+        )}
       </ScrollContainer>
     </Container>
   );
