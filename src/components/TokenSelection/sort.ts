@@ -25,3 +25,33 @@ export function sortTokensBySymbol(tokens: TokenInfo[]) {
     a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1
   );
 }
+
+function getTokenBalance(token: TokenInfo, balances: BalancesState): number {
+  const balance = balances.values[token.address];
+
+  if (!balance) {
+    return 0;
+  }
+
+  return parseFloat(
+    formatUnits(balances.values[token.address]!, token.decimals)
+  );
+}
+
+export function sortTokensBySymbolAndBalance(
+  tokens: TokenInfo[],
+  balances: BalancesState
+) {
+  return tokens.sort((a, b) => {
+    const aBalance = getTokenBalance(a, balances);
+    const bBalance = getTokenBalance(b, balances);
+
+    if (aBalance === 0 && bBalance !== 0) {
+      return 1;
+    } else if (bBalance === 0 && aBalance !== 0) {
+      return -1;
+    }
+
+    return a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1;
+  });
+}

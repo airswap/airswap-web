@@ -14,6 +14,7 @@ describe("WalletButton", () => {
         <WalletButton
           onConnectWalletClicked={onConnectWalletClicked}
           onDisconnectWalletClicked={() => {}}
+          tokens={[]}
         />
       </ThemeProvider>
     );
@@ -31,6 +32,7 @@ describe("WalletButton", () => {
         <WalletButton
           onDisconnectWalletClicked={() => {}}
           onConnectWalletClicked={onConnectWalletClicked}
+          tokens={[]}
           address={"0x73580000000000000000000000000000000bcBE5"}
         />
       </ThemeProvider>

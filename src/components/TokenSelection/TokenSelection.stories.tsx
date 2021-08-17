@@ -54,32 +54,15 @@ const DAI = {
   symbol: "DAI",
 };
 
-const allTokens = {
-  // these are all dummy data
-  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2": ETH,
-  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a3": DAI,
-  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a4": {
-    chainId: 1,
-    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a4",
-    name: "Airswap",
-    decimals: 18,
-    symbol: "AST",
-  },
-  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a5": {
-    chainId: 1,
-    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a5",
-    name: "USD Coin",
-    decimals: 18,
-    symbol: "USDC",
-  },
-  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a6": {
-    chainId: 1,
-    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a6",
-    name: "Ethereum 2.0",
-    decimals: 18,
-    symbol: "ETH2",
-  },
+const USDC = {
+  chainId: 1,
+  address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a4",
+  name: "USD Coin",
+  decimals: 18,
+  symbol: "USDC",
 };
+
+const allTokens = [ETH, DAI, USDC];
 
 const activeTokens = [ETH, DAI];
 

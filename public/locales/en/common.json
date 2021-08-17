@@ -7,5 +7,9 @@
   "fetching": "Fetching",
   "token": "Token",
   "back": "Back",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "success": "Success",
+  "processing": "Processing",
+  "failed": "Failed",
+  "undefined": "undefined"
 }
