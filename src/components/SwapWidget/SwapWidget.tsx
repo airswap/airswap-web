@@ -77,7 +77,7 @@ const SwapWidget = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
-  const { t } = useTranslation(["orders", "common", "wallet"]);
+  const { t } = useTranslation(["orders", "common", "wallet", "balances"]);
   const {
     chainId,
     account,
