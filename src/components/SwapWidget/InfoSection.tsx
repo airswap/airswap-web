@@ -38,14 +38,14 @@ const InfoSection: FC<InfoSectionProps> = ({
   timerExpiry,
   onTimerComplete,
 }) => {
-  const { t } = useTranslation(["orders"]);
+  const { t } = useTranslation(["orders", "marketing"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   // Wallet not connected.
   if (!isConnected) {
     return (
       <>
-        <InfoHeading>Zero slippage atomic swaps</InfoHeading>
-        <InfoSubHeading>Low fees for community members.</InfoSubHeading>
+        <InfoHeading>{t("marketing:zeroSlippage")}</InfoHeading>
+        <InfoSubHeading>{t("marketing:communityFeeDiscout")}</InfoSubHeading>
       </>
     );
   }
@@ -53,8 +53,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isFetchingOrders) {
     return (
       <>
-        <InfoHeading>Finding the best prices...</InfoHeading>
-        <InfoSubHeading>Scanning peers on the network</InfoSubHeading>
+        <InfoHeading>{t("orders:findingBestPrice")}</InfoHeading>
+        <InfoSubHeading>{t("orders:scanningPeers")}</InfoSubHeading>
       </>
     );
   }
@@ -81,7 +81,7 @@ const InfoSection: FC<InfoSectionProps> = ({
         </InfoHeading>
         {requiresApproval ? (
           <InfoSubHeading>
-            To proceed you must approve {senderTokenInfo!.symbol}
+            {t("orders:approvalRequired", { symbol: senderTokenInfo!.symbol })}
           </InfoSubHeading>
         ) : (
           <InfoSubHeading>
@@ -105,8 +105,10 @@ const InfoSection: FC<InfoSectionProps> = ({
   // No order & not fetching, but wallet connected.
   return (
     <>
-      <InfoHeading>0.3% protocol fee active</InfoHeading>
-      <InfoSubHeading>Lower fees for community members.</InfoSubHeading>
+      <InfoHeading>
+        {t("orders:protocolFeeActive", { fee: "0.3%" })}
+      </InfoHeading>
+      <InfoSubHeading>{t("marketing:communityFeeDiscout")}</InfoSubHeading>
     </>
   );
 };

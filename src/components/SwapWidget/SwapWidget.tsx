@@ -44,7 +44,7 @@ import {
 } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
-import TokenSelect from "../TokenSelect/TokenSelect2";
+import TokenSelect from "../TokenSelect/TokenSelect";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
@@ -164,7 +164,7 @@ const SwapWidget = () => {
               dispatch(clear());
             }}
           >
-            Back
+            {t("common:back")}
           </BackButton>
           <SubmitButton
             intent="primary"
@@ -193,7 +193,7 @@ const SwapWidget = () => {
               dispatch(clear());
             }}
           >
-            Back
+            {t("common:back")}
           </BackButton>
           <SubmitButton
             intent="primary"
@@ -340,7 +340,9 @@ const SwapWidget = () => {
           }}
           readOnly={!!signerAmount}
           includeAmountInput={!!signerAmount}
-          amountDetails={!!signerAmount ? "After 0.3% fee" : ""}
+          amountDetails={
+            !!signerAmount ? t("orders:afterFee", { fee: "0.3%" }) : ""
+          }
           selectedToken={signerTokenInfo}
         />
         <InfoContainer>
