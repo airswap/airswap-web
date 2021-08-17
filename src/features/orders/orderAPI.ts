@@ -9,6 +9,7 @@ export async function requestOrder(
   signerToken: string,
   senderToken: string,
   senderAmount: string,
+  senderTokenDecimals: number,
   senderWallet: string,
   provider: ethers.providers.Web3Provider
 ): Promise<LightOrder[]> {
@@ -22,7 +23,7 @@ export async function requestOrder(
   }
   const orderPromises = servers.map(async (server) => {
     const order = await server.getSignerSideOrder(
-      toAtomicString(senderAmount, 18),
+      toAtomicString(senderAmount, senderTokenDecimals),
       signerToken,
       senderToken,
       senderWallet

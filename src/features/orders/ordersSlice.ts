@@ -42,6 +42,7 @@ export const request = createAsyncThunk(
     signerToken: string;
     senderToken: string;
     senderAmount: string;
+    senderTokenDecimals: number;
     senderWallet: string;
     provider: any;
   }) =>
@@ -50,6 +51,7 @@ export const request = createAsyncThunk(
       params.signerToken,
       params.senderToken,
       params.senderAmount,
+      params.senderTokenDecimals,
       params.senderWallet,
       params.provider
     )
