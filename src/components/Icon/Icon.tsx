@@ -27,7 +27,7 @@ export const icons: IconSet = {
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
   "transaction-pending": MdAccessTime,
-  "transaction-link": MdOpenInNew
+  "transaction-link": MdOpenInNew,
 };
 
 interface IconProps extends SvgIconProps {

@@ -1,7 +1,7 @@
 import { getEtherscanURL } from "@airswap/utils";
 
-import { Link } from "./TransactionLink.style";
 import Icon from "../../../Icon/Icon";
+import { Link } from "./TransactionLink.style";
 
 type TransactionLinkProps = {
   chainId: number;

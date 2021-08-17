@@ -12,8 +12,8 @@ import {
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
 import Button from "../Button/Button";
+import Icon from "../Icon/Icon";
 import { InfoHeading } from "../Typography/Typography";
-import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
 import {
   StyledWalletButton,
   StyledBlockies,
@@ -27,7 +27,7 @@ import {
   Line,
   Span,
 } from "./WalletButton.styles";
-import Icon from "../Icon/Icon";
+import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
 
 export type WalletButtonProps = {
   /**
@@ -92,7 +92,7 @@ export const WalletButton = ({
             <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
             {walletOpen && (
               <ExitButton onClick={() => setWalletOpen(!walletOpen)}>
-                <Icon iconSize={1} name="exit-modal"/>
+                <Icon iconSize={1} name="exit-modal" />
               </ExitButton>
             )}
           </StyledWalletButton>

@@ -88,7 +88,9 @@ export const WalletTransaction = ({
                   : t("common:failed")}{" "}
                 ·{" "}
                 {tx.timestamp
-                  ? t("wallet:transactionTimeAgo", {time: getTimeBetweenTwoDates(new Date(tx.timestamp))})
+                  ? t("wallet:transactionTimeAgo", {
+                      time: getTimeBetweenTwoDates(new Date(tx.timestamp)),
+                    })
                   : t("common:undefined")}
               </SpanSubtitle>
             </>
@@ -114,7 +116,9 @@ export const WalletTransaction = ({
                   : t("common:failed")}{" "}
                 ·{" "}
                 {tx.timestamp
-                  ? t("wallet:transactionTimeAgo", {time: getTimeBetweenTwoDates(new Date(tx.timestamp))})
+                  ? t("wallet:transactionTimeAgo", {
+                      time: getTimeBetweenTwoDates(new Date(tx.timestamp)),
+                    })
                   : t("common:undefined")}
               </SpanSubtitle>
             </>
