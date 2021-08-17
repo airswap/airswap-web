@@ -12,7 +12,7 @@ import {
 import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import {
-  Container,
+  OpenWallet,
   ExitButton,
   DisconnectButton,
   TransactionContainer,
@@ -70,19 +70,17 @@ export const WalletButton = ({
 
   if (address && !walletOpen) {
     return (
-      <Container>
-        <WalletAddress
-          isButton
-          address={address}
-          onClick={() => setWalletOpen(!walletOpen)}
-        />
-      </Container>
+      <WalletAddress
+        isButton
+        address={address}
+        onClick={() => setWalletOpen(!walletOpen)}
+      />
     );
   }
 
   if (address && walletOpen) {
     return (
-      <Container>
+      <OpenWallet>
         <StyledWalletButton>
           <WalletAddress
             isButton
@@ -145,20 +143,18 @@ export const WalletButton = ({
         >
           {t("wallet:disconnectWallet")}
         </DisconnectButton>
-      </Container>
+      </OpenWallet>
     );
   }
 
   return (
-    <Container>
-      <Button
-        intent="primary"
-        loading={isConnecting}
-        onClick={onConnectWalletClicked}
-      >
-        {t("wallet:connectWallet")}
-      </Button>
-    </Container>
+    <Button
+      intent="primary"
+      loading={isConnecting}
+      onClick={onConnectWalletClicked}
+    >
+      {t("wallet:connectWallet")}
+    </Button>
   );
 };
 

@@ -4,7 +4,10 @@ import styled from "styled-components/macro";
 
 import Button from "../Button/Button";
 
-export const Container = styled.div``;
+export const OpenWallet = styled.div`
+  width: 21.5rem;
+  background: ${(props) => props.theme.colors.darkGrey};
+`;
 
 export const StyledWalletButton = styled.div`
   display: flex;
