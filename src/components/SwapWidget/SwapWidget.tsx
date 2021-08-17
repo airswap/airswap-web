@@ -1,6 +1,6 @@
-import { useState, FormEvent, useEffect, useMemo } from "react";
+import { useState, FormEvent, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { MdSwapVert, MdArrowDownward } from "react-icons/md";
+import { MdArrowDownward, MdBlock } from "react-icons/md";
 import Modal from "react-modal";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -8,6 +8,7 @@ import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "ethers";
@@ -64,9 +65,10 @@ const SwapWidget = () => {
   const [senderAmount, setSenderAmount] = useState("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
-  const [isRequestUpdated, setIsRequestUpdated] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+
   const [tokenSelectType, setTokenSelectType] = useState<
     "senderToken" | "signerToken"
   >("senderToken");
@@ -97,10 +99,11 @@ const SwapWidget = () => {
     [signerToken, activeTokens]
   );
 
-  console.log(
-    { senderToken },
-    activeTokens.find((t) => t.address === senderToken)
-  );
+  // useEffect(() => {
+  //   setSenderToken("");
+  //   setSignerToken("");
+  //   setSenderAmount("");
+  // }, [chainId]);
 
   const getTokenDecimals = (tokenAddress: string) => {
     for (const token of activeTokens) {
@@ -136,7 +139,6 @@ const SwapWidget = () => {
         value = value.slice(0, value.length - 1) + ".";
       setSenderAmount(value);
     }
-    if (order) setIsRequestUpdated(true);
   };
 
   const DisplayedButtons = () => {
@@ -150,9 +152,21 @@ const SwapWidget = () => {
           {t("wallet:connectWallet")}
         </SubmitButton>
       );
+    } else if (pairUnavailable) {
+      return (
+        <>
+          <BackButton
+            onClick={() => {
+              dispatch(clear());
+              setPairUnavailable(false);
+            }}
+          >
+            {t("common:back")}
+          </BackButton>
+        </>
+      );
     } else if (
       signerAmount &&
-      !isRequestUpdated &&
       hasSufficientAllowance(senderToken) &&
       signerToken &&
       senderToken
@@ -173,19 +187,13 @@ const SwapWidget = () => {
             loading={ordersStatus === "taking"}
             onClick={async () => {
               dispatch(take({ order, library }));
-              setIsRequestUpdated(false);
             }}
           >
             {t("orders:take")}
           </SubmitButton>
         </>
       );
-    } else if (
-      signerAmount &&
-      !isRequestUpdated &&
-      signerToken &&
-      senderToken
-    ) {
+    } else if (signerAmount && signerToken && senderToken) {
       return (
         <>
           <BackButton
@@ -226,18 +234,30 @@ const SwapWidget = () => {
           }
           loading={ordersStatus === "requesting"}
           onClick={async () => {
-            await dispatch(
-              request({
-                chainId: chainId!,
-                senderToken: senderToken!,
-                senderAmount,
-                signerToken: signerToken!,
-                senderWallet: account!,
-                provider: library,
-              })
-            );
-            trackEvent({ category: "order", action: "request" });
-            setIsRequestUpdated(false);
+            try {
+              trackEvent({ category: "order", action: "request" });
+              const result = await dispatch(
+                request({
+                  chainId: chainId!,
+                  senderToken: senderToken!,
+                  senderAmount,
+                  signerToken: signerToken!,
+                  senderWallet: account!,
+                  provider: library,
+                })
+              );
+              await unwrapResult(result);
+            } catch (e) {
+              switch (e.message) {
+                // may want to handle no peers differently in future.
+                // case "no peers": {
+                //   break;
+                // }
+                default: {
+                  setPairUnavailable(true);
+                }
+              }
+            }
           }}
         >
           {!insufficientBalance
@@ -301,12 +321,6 @@ const SwapWidget = () => {
     }
   };
 
-  useEffect(() => {
-    setSenderToken("");
-    setSignerToken("");
-    setSenderAmount("");
-  }, [chainId]);
-
   return (
     <>
       <StyledSwapWidget>
@@ -320,14 +334,13 @@ const SwapWidget = () => {
           onChangeTokenClicked={() => {
             setTokenSelectType("senderToken");
             setShowTokenSelection(true);
-            if (order) setIsRequestUpdated(true);
           }}
-          readOnly={!!signerAmount}
+          readOnly={!!signerAmount || pairUnavailable}
           includeAmountInput={true}
           selectedToken={senderTokenInfo}
         />
         <SwapIconContainer>
-          <MdArrowDownward />
+          {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
         </SwapIconContainer>
         <TokenSelect
           label={t("orders:to")}
@@ -336,9 +349,8 @@ const SwapWidget = () => {
           onChangeTokenClicked={() => {
             setTokenSelectType("signerToken");
             setShowTokenSelection(true);
-            if (order) setIsRequestUpdated(true);
           }}
-          readOnly={!!signerAmount}
+          readOnly={!!signerAmount || pairUnavailable}
           includeAmountInput={!!signerAmount}
           amountDetails={
             !!signerAmount ? t("orders:afterFee", { fee: "0.3%" }) : ""
@@ -348,6 +360,7 @@ const SwapWidget = () => {
         <InfoContainer>
           <InfoSection
             isConnected={active}
+            isPairUnavailable={pairUnavailable}
             isFetchingOrders={ordersStatus === "requesting"}
             order={order}
             requiresApproval={order && !hasSufficientAllowance(senderToken)}

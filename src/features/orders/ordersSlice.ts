@@ -121,6 +121,7 @@ export const ordersSlice = createSlice({
   reducers: {
     clear: (state) => {
       state.orders = [];
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -132,11 +133,18 @@ export const ordersSlice = createSlice({
         state.status = "idle";
         state.orders = action.payload!;
       })
+      .addCase(request.rejected, (state, action) => {
+        state.status = "failed";
+        state.orders = [];
+      })
       .addCase(take.pending, (state) => {
         state.status = "taking";
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
+      })
+      .addCase(take.rejected, (state, action) => {
+        state.status = "failed";
       })
       .addCase(setWalletConnected, (state) => {
         state.status = "idle";

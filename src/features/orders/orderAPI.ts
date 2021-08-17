@@ -17,6 +17,9 @@ export async function requestOrder(
     signerToken,
     senderToken
   );
+  if (!servers.length) {
+    throw new Error("no peers");
+  }
   const orderPromises = servers.map(async (server) => {
     const order = await server.getSignerSideOrder(
       toAtomicString(senderAmount, 18),
