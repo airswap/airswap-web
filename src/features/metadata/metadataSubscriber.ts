@@ -20,36 +20,50 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     };
   } = {};
 
+  let currentChainId: number;
   let currentTransaction: TransactionsState;
 
   store.subscribe(() => {
     const { wallet, metadata, transactions } = store.getState();
     if (!wallet.connected) return;
 
+    let previousChainId = currentChainId;
+    currentChainId = wallet.chainId!;
+
     let previousTransaction = currentTransaction;
     currentTransaction = transactions;
 
-    if (previousTransaction !== currentTransaction) {
+    if (
+      previousTransaction !== currentTransaction ||
+      previousChainId !== currentChainId
+    ) {
       // handles change in transactions and persists all transactions to localStorage
-      // TODO: don't save all transactions (e.g. max 10 transactions)
+      // Store only the top 3 transactions
       const txs: TransactionsState = JSON.parse(
         localStorage.getItem(
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
         )!
       ) || { all: [] };
 
+      const mostRecentTransactions = transactions.all.slice(0, 3);
+
       if (transactionCache[wallet.address!] === undefined) {
         transactionCache[wallet.address!] = {};
         transactionCache[wallet.address!][wallet.chainId!] = txs.all;
       }
       if (
+        previousChainId === currentChainId &&
         transactions.all.length &&
         transactionCache[wallet.address!][wallet.chainId!] !== transactions.all
       ) {
-        transactionCache[wallet.address!][wallet.chainId!] = transactions.all;
+        transactionCache[wallet.address!][
+          wallet.chainId!
+        ] = mostRecentTransactions;
         localStorage.setItem(
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
-          JSON.stringify(transactions)
+          JSON.stringify({
+            all: mostRecentTransactions,
+          })
         );
       }
     }

@@ -5,5 +5,9 @@
   "select": "Select",
   "swap": "Swap",
   "fetching": "Fetching",
-  "token": "Token"
+  "token": "Token",
+  "success": "Success",
+  "processing": "Processing",
+  "failed": "Failed",
+  "undefined": "undefined"
 }

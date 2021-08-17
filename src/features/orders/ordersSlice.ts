@@ -67,6 +67,7 @@ export const approve = createAsyncThunk(
           hash: tx.hash,
           status: "processing",
           tokenAddress: params.token,
+          timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
@@ -97,6 +98,7 @@ export const take = createAsyncThunk(
           order: params.order,
           hash: tx.hash,
           status: "processing",
+          timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {

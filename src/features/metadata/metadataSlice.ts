@@ -103,7 +103,7 @@ export const { addActiveToken, removeActiveToken } = metadataSlice.actions;
 const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
 export const selectAllTokenInfo = (state: RootState) =>
-  state.metadata.tokens.all;
+  Object.values(state.metadata.tokens.all);
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
