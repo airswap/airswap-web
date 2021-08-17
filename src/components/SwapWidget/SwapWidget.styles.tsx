@@ -1,3 +1,5 @@
+import { MdDoneAll } from "react-icons/md";
+
 import styled from "styled-components/macro";
 
 import Button from "../Button/Button";
@@ -49,6 +51,11 @@ export const SwapIconContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
+`;
+
+export const HugeTicks = styled(MdDoneAll)`
+  font-size: 8rem;
+  margin: 5rem auto 2px auto;
 `;
 
 export const StyledSwapWidget = styled.div``;

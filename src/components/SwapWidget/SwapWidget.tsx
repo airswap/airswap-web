@@ -1,4 +1,4 @@
-import { useState, FormEvent, useMemo } from "react";
+import { useState, FormEvent, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
 import Modal from "react-modal";
@@ -55,6 +55,7 @@ import StyledSwapWidget, {
   BackButton,
   SwapIconContainer,
   ButtonContainer,
+  HugeTicks,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -68,6 +69,7 @@ const SwapWidget = () => {
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+  const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
 
   const [tokenSelectType, setTokenSelectType] = useState<
     "senderToken" | "signerToken"
@@ -99,11 +101,11 @@ const SwapWidget = () => {
     [signerToken, activeTokens]
   );
 
-  // useEffect(() => {
-  //   setSenderToken("");
-  //   setSignerToken("");
-  //   setSenderAmount("");
-  // }, [chainId]);
+  useEffect(() => {
+    setSenderToken("");
+    setSignerToken("");
+    setSenderAmount("");
+  }, [chainId]);
 
   const getTokenDecimals = (tokenAddress: string) => {
     for (const token of activeTokens) {
@@ -165,6 +167,18 @@ const SwapWidget = () => {
           </BackButton>
         </>
       );
+    } else if (showOrderSubmitted) {
+      return (
+        <SubmitButton
+          intent="primary"
+          onClick={() => {
+            dispatch(clear());
+            setShowOrderSubmitted(false);
+          }}
+        >
+          {t("orders:newSwap")}
+        </SubmitButton>
+      );
     } else if (
       signerAmount &&
       hasSufficientAllowance(senderToken) &&
@@ -186,7 +200,8 @@ const SwapWidget = () => {
             disabled={isNaN(parseFloat(signerAmount))}
             loading={ordersStatus === "taking"}
             onClick={async () => {
-              dispatch(take({ order, library }));
+              await dispatch(take({ order, library }));
+              setShowOrderSubmitted(true);
             }}
           >
             {t("orders:take")}
@@ -327,38 +342,45 @@ const SwapWidget = () => {
         <Header>
           <Title type="h2">Swap</Title>
         </Header>
-        <TokenSelect
-          label={t("orders:from")}
-          amount={senderAmount}
-          onAmountChange={(e) => handleTokenAmountChange(e)}
-          onChangeTokenClicked={() => {
-            setTokenSelectType("senderToken");
-            setShowTokenSelection(true);
-          }}
-          readOnly={!!signerAmount || pairUnavailable}
-          includeAmountInput={true}
-          selectedToken={senderTokenInfo}
-        />
-        <SwapIconContainer>
-          {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
-        </SwapIconContainer>
-        <TokenSelect
-          label={t("orders:to")}
-          amount={signerAmount && stringToSignificantDecimals(signerAmount)}
-          onAmountChange={(e) => handleTokenAmountChange(e)}
-          onChangeTokenClicked={() => {
-            setTokenSelectType("signerToken");
-            setShowTokenSelection(true);
-          }}
-          readOnly={!!signerAmount || pairUnavailable}
-          includeAmountInput={!!signerAmount}
-          amountDetails={
-            !!signerAmount ? t("orders:afterFee", { fee: "0.3%" }) : ""
-          }
-          selectedToken={signerTokenInfo}
-        />
+        {!showOrderSubmitted ? (
+          <>
+            <TokenSelect
+              label={t("orders:from")}
+              amount={senderAmount}
+              onAmountChange={(e) => handleTokenAmountChange(e)}
+              onChangeTokenClicked={() => {
+                setTokenSelectType("senderToken");
+                setShowTokenSelection(true);
+              }}
+              readOnly={!!signerAmount || pairUnavailable}
+              includeAmountInput={true}
+              selectedToken={senderTokenInfo}
+            />
+            <SwapIconContainer>
+              {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
+            </SwapIconContainer>
+            <TokenSelect
+              label={t("orders:to")}
+              amount={signerAmount && stringToSignificantDecimals(signerAmount)}
+              onAmountChange={(e) => handleTokenAmountChange(e)}
+              onChangeTokenClicked={() => {
+                setTokenSelectType("signerToken");
+                setShowTokenSelection(true);
+              }}
+              readOnly={!!signerAmount || pairUnavailable}
+              includeAmountInput={!!signerAmount}
+              amountDetails={
+                !!signerAmount ? t("orders:afterFee", { fee: "0.3%" }) : ""
+              }
+              selectedToken={signerTokenInfo}
+            />
+          </>
+        ) : (
+          <HugeTicks />
+        )}
         <InfoContainer>
           <InfoSection
+            orderSubmitted={showOrderSubmitted}
             isConnected={active}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={ordersStatus === "requesting"}

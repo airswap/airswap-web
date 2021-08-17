@@ -20,6 +20,7 @@ import {
 export type InfoSectionProps = {
   isConnected: boolean;
   isPairUnavailable: boolean;
+  orderSubmitted: boolean;
   isFetchingOrders: boolean;
   order: LightOrder | null;
   requiresApproval: boolean;
@@ -32,6 +33,7 @@ export type InfoSectionProps = {
 const InfoSection: FC<InfoSectionProps> = ({
   isConnected,
   isPairUnavailable,
+  orderSubmitted,
   order,
   isFetchingOrders,
   requiresApproval,
@@ -66,6 +68,15 @@ const InfoSection: FC<InfoSectionProps> = ({
       <>
         <InfoHeading>{t("orders:tokenPairUnavailable")}</InfoHeading>
         <InfoSubHeading>{t("orders:retryOrCancel")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (orderSubmitted) {
+    return (
+      <>
+        <InfoHeading>{t("orders:submitted")}</InfoHeading>
+        <InfoSubHeading>{t("orders:trackTransaction")}</InfoSubHeading>
       </>
     );
   }

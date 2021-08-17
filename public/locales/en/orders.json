@@ -27,5 +27,8 @@
   "protocolFeeActive": "{{fee}} protocol fee active",
   "afterFee": "After {{fee}} fee",
   "tokenPairUnavailable": "Token pair currently unavailable",
-  "retryOrCancel": "Please try again with different parameters"
+  "retryOrCancel": "Please try again with different parameters",
+  "newSwap": "New swap",
+  "submitted": "Submitted!",
+  "trackTransaction": "Track this transaction on the top right"
 }
