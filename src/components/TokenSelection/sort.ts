@@ -27,6 +27,12 @@ export function sortTokensBySymbol(tokens: TokenInfo[]) {
 }
 
 function getTokenBalance(token: TokenInfo, balances: BalancesState): number {
+  const balance = balances.values[token.address];
+
+  if (!balance) {
+    return 0;
+  }
+
   return parseFloat(
     formatUnits(balances.values[token.address]!, token.decimals)
   );

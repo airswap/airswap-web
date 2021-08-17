@@ -15,9 +15,7 @@ import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {
   tokenQuery: string;
-  allTokens: {
-    [address: string]: TokenInfo;
-  };
+  allTokens: TokenInfo[];
   activeTokens: TokenInfo[];
   onTokenClick: (tokenAddress: string) => void;
 };
@@ -33,7 +31,7 @@ const InactiveTokensList = ({
   // sort inactive tokens based on symbol
   const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
     return sortTokensBySymbol(
-      Object.values(allTokens).filter((el) => {
+      allTokens.filter((el) => {
         return !activeTokens.includes(el);
       })
     );
