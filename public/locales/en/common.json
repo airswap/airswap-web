@@ -6,6 +6,8 @@
   "swap": "Swap",
   "fetching": "Fetching",
   "token": "Token",
+  "back": "Back",
+  "cancel": "Cancel",
   "success": "Success",
   "processing": "Processing",
   "failed": "Failed",

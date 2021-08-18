@@ -72,6 +72,14 @@ export const StyledSubtitle = makeTypographyComponent(
   `
 );
 export const StyledParagraph = makeTypographyComponent("paragraph");
+export const StyledLink = makeTypographyComponent(
+  "link",
+  css`
+    text-transform: uppercase;
+    text-decoration: underline;
+  `
+);
+export const StyledNavigation = makeTypographyComponent("nav");
 export const StyledInfoHeading = makeTypographyComponent("infoHeading");
 export const StyledInfoSubHeading = makeTypographyComponent(
   "infoSubHeading",
@@ -92,8 +100,17 @@ export const StyledFormInput = makeTypographyComponent(
       props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary};
+    background-color: transparent;
+    border: none;
+    &::placeholder {
+      color: ${(props) => props.theme.colors.placeholderGrey};
+    }
   `
 );
 export const StyledSelectItem = makeTypographyComponent("selectItem");
-export const StyledNavigation = makeTypographyComponent("link");
-export const StyledMetadata = makeTypographyComponent("small");
+export const StyledMetadata = makeTypographyComponent(
+  "small",
+  css`
+    color: ${(props) => props.theme.colors.lightGrey};
+  `
+);

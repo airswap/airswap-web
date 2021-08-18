@@ -42,6 +42,7 @@ export const request = createAsyncThunk(
     signerToken: string;
     senderToken: string;
     senderAmount: string;
+    senderTokenDecimals: number;
     senderWallet: string;
     provider: any;
   }) =>
@@ -50,6 +51,7 @@ export const request = createAsyncThunk(
       params.signerToken,
       params.senderToken,
       params.senderAmount,
+      params.senderTokenDecimals,
       params.senderWallet,
       params.provider
     )
@@ -88,7 +90,7 @@ export const approve = createAsyncThunk(
 
 export const take = createAsyncThunk(
   "orders/take",
-  async (params: any, { dispatch }) => {
+  async (params: { order: LightOrder; library: any }, { dispatch }) => {
     let tx: Transaction;
     try {
       tx = await takeOrder(params.order, params.library);
@@ -123,6 +125,7 @@ export const ordersSlice = createSlice({
   reducers: {
     clear: (state) => {
       state.orders = [];
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -134,11 +137,18 @@ export const ordersSlice = createSlice({
         state.status = "idle";
         state.orders = action.payload!;
       })
+      .addCase(request.rejected, (state, action) => {
+        state.status = "failed";
+        state.orders = [];
+      })
       .addCase(take.pending, (state) => {
         state.status = "taking";
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
+      })
+      .addCase(take.rejected, (state, action) => {
+        state.status = "failed";
       })
       .addCase(setWalletConnected, (state) => {
         state.status = "idle";

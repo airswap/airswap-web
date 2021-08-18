@@ -37,9 +37,11 @@ declare module "styled-components" {
       borderGrey: string;
       darkGrey: string;
       lightGrey: string;
+      placeholderGrey: string;
       red: string;
       orange: string;
       green: string;
+      placeholderGradient: string;
     };
     typography: Record<Typography, FontProps>;
   }

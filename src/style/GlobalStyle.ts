@@ -13,7 +13,10 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
-    color: ${(props) => props.theme.colors.white};
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.primary};
     background: ${(props) => props.theme.colors.black};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -42,11 +45,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 1.5rem;
     background: ${(props) =>
       convertHexToRGBA(props.theme.colors.alwaysBlack, 0.5)};
-      
+
     @media ${breakPoints.tabletPortraitUp} {
       padding: 2.5rem;
     }
-    
+
   }
 
   .ReactModal__Content {

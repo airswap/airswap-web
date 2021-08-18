@@ -7,8 +7,9 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: ${sizes.tradeContainerPadding};
+  height: 32.5rem;
   width: 100%;
+  padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
 `;

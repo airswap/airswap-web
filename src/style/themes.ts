@@ -8,7 +8,7 @@ const typography: DefaultTheme["typography"] = {
   },
   title2: {
     fontSize: "1.5rem",
-    lineHeight: 1.2,
+    lineHeight: 1.25,
     fontWeight: 700,
   },
   title3: {
@@ -33,12 +33,12 @@ const typography: DefaultTheme["typography"] = {
   },
   infoHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5,
+    lineHeight: 1.5625,
     fontWeight: 600,
   },
   infoSubHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5,
+    lineHeight: 1.5625,
     fontWeight: 400,
   },
   formLabel: {
@@ -58,9 +58,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 600,
   },
   link: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
-    fontWeight: 400,
+    fontSize: "0.75rem",
+    lineHeight: 2,
+    fontWeight: 700,
   },
   nav: {
     fontSize: "1rem",
@@ -68,9 +68,9 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 400,
   },
   small: {
-    fontSize: "0.75rem",
-    lineHeight: 1.71,
-    fontWeight: 400,
+    fontSize: "0.875rem",
+    lineHeight: 1.25,
+    fontWeight: 500,
   },
 };
 
@@ -87,9 +87,11 @@ export const darkTheme: DefaultTheme = {
     borderGrey: "#1A1E25",
     darkGrey: "#101217",
     lightGrey: "#6E7686",
+    placeholderGrey: "#6E7686",
     red: "#FF004D",
     orange: "#E7765A",
     green: "#60FF66",
+    placeholderGradient: "linear-gradient(270deg, #232833 0%, #2F364400 93.3%)",
   },
   typography,
 };
@@ -104,12 +106,14 @@ export const lightTheme: DefaultTheme = {
     black: "#FFFFFF",
     alwaysBlack: "#000000",
     grey: "#404040",
-    borderGrey: "#1A1E25",
-    darkGrey: "#6E7686",
+    borderGrey: "#DDE2ED",
+    darkGrey: "#FFFFFF",
     lightGrey: "#6E7686",
+    placeholderGrey: "#E0EAFF",
     red: "#FF004D",
     orange: "#E7765A",
     green: "#60FF66",
+    placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF00 93.3%)",
   },
   typography,
 };
