@@ -38,7 +38,6 @@ async function getStakerTokens(chainId: number, provider: providers.Provider) {
   const stakerTokens: Record<string, string[]> = {};
 
   sortedEvents.forEach((log) => {
-    // TODO: On rinkeby, args are null...
     if (!log.args) return;
     // @ts-ignore (args are not typed)
     const [staker, tokens] = log.args as string[];
