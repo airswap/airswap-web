@@ -38,4 +38,8 @@ export const SpanSubtitle = styled.span`
 export const StyledTransactionLink = styled(TransactionLink)`
   justify-self: flex-end;
   margin-left: auto;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.alwaysWhite};
+  }
 `;

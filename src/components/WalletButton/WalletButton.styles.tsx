@@ -45,7 +45,7 @@ export const ExitButton = styled(IconButton)`
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
-    color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.alwaysWhite};
   }
 `;
 
