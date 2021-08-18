@@ -13,8 +13,7 @@ export const StyledWalletButton = styled.div`
   justify-content: space-between;
   padding: 1rem;
   cursor: pointer;
-  background-color: ${(props) =>
-    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
+  background-color: ${(props) => props.theme.colors.darkGrey};
 `;
 
 export const BlockiesContainer = styled.div`
@@ -47,8 +46,7 @@ export const WalletExtension = styled.div`
   width: 100%;
   padding: 0 1rem 1rem 1rem;
   z-index: 100;
-  background-color: ${(props) =>
-    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
+  background-color: ${(props) => props.theme.colors.darkGrey};
 `;
 
 export const Line = styled.hr`

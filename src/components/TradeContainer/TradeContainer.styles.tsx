@@ -14,7 +14,11 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
-export const StyledTradeContainer = styled.div`
+type StyledTradeContainerProps = {
+  isOpen: boolean;
+};
+
+export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   display: flex;
   box-sizing: border-box;
   margin: 0 auto;
@@ -23,6 +27,12 @@ export const StyledTradeContainer = styled.div`
   max-width: 34.5rem;
   background: url("/images/bg.png");
   background-size: 100% 100%;
+
+  transition: transform 0.3s ease-in-out;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    transform: translateX(${(props) => (props.isOpen ? 0 : "-16rem")});
+  }
 
   @media (min-resolution: 144dpi) {
     background-image: url("/images/bg-x2.png");

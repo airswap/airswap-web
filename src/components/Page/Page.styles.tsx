@@ -1,27 +1,21 @@
 import styled from "styled-components/macro";
 
-import breakPoints from "../../style/breakpoints";
-import { sizes } from "../../style/sizes";
 import SiteLogo from "../SiteLogo/SiteLogo";
 
 export const StyledSiteLogo = styled(SiteLogo)`
   position: absolute;
-  top: 3.75rem;
-  left: 3.125rem;
+  top: 2.5rem;
+  left: 2.5rem;
 `;
 
 export const StyledPage = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
   min-width: 18rem;
   min-height: 100vh;
   padding: 2rem 0;
-
-  @media ${breakPoints.tabletLandscapeUp} {
-    padding-right: ${sizes.sideBarWidth};
-  }
 
   @media (min-height: 50rem) {
     align-items: center;

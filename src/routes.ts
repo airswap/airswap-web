@@ -3,25 +3,23 @@ type PageRoute = {
   label: string;
 };
 
+export type NavLocation = "swap" | "introduction" | "products" | "organization";
+
 export const routes: PageRoute[] = [
   {
     path: "/",
-    label: "Home",
+    label: "Swap",
   },
   {
-    path: "/learn",
-    label: "Learn",
+    path: "/introduction",
+    label: "Introduction",
   },
   {
-    path: "/participate",
-    label: "Participate",
+    path: "/products",
+    label: "Products",
   },
   {
-    path: "/develop",
-    label: "Develop",
-  },
-  {
-    path: "/analyse",
-    label: "Analyse",
+    path: "/organizations",
+    label: "Orginization",
   },
 ];
