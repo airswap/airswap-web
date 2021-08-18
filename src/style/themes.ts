@@ -106,7 +106,7 @@ export const lightTheme: DefaultTheme = {
     black: "#FFFFFF",
     alwaysBlack: "#000000",
     grey: "#404040",
-    borderGrey: "#1A1E25",
+    borderGrey: "#DDE2ED",
     darkGrey: "#F5F8FF",
     lightGrey: "#6E7686",
     placeholderGrey: "#E0EAFF",

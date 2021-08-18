@@ -53,7 +53,15 @@ const makeTypographyComponent = (
   return Component;
 };
 
-export const StyledH1 = makeTypographyComponent("title1");
+export const StyledH1 = makeTypographyComponent(
+  "title1",
+  css`
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.alwaysBlack};
+  `
+);
 export const StyledH2 = makeTypographyComponent(
   "title2",
   css`
@@ -71,7 +79,15 @@ export const StyledSubtitle = makeTypographyComponent(
     text-transform: uppercase;
   `
 );
-export const StyledParagraph = makeTypographyComponent("paragraph");
+export const StyledParagraph = makeTypographyComponent(
+  "paragraph",
+  css`
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.grey};
+  `
+);
 export const StyledLink = makeTypographyComponent(
   "link",
   css`
