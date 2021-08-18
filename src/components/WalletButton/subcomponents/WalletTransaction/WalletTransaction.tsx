@@ -9,13 +9,13 @@ import {
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
-import TransactionLink from "../TransactionLink/TransactionLink";
-import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 import {
   Container,
   TextContainer,
   SpanTitle,
   SpanSubtitle,
+  StyledTransactionLink,
+  StyledWalletTransactionStatus,
 } from "./WalletTransaction.styles";
 
 type WalletTransactionProps = {
@@ -60,7 +60,7 @@ export const WalletTransaction = ({
     const tx: SubmittedOrder = transaction as SubmittedOrder;
     return (
       <Container>
-        <WalletTransactionStatus status={tx.status} />
+        <StyledWalletTransactionStatus status={tx.status} />
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
@@ -96,14 +96,14 @@ export const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        <TransactionLink chainId={chainId} hash={tx.hash} />
+        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
       </Container>
     );
   } else {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     return (
       <Container>
-        <WalletTransactionStatus status={tx.status} />
+        <StyledWalletTransactionStatus status={tx.status} />
         <TextContainer>
           {approvalToken && (
             <>
@@ -124,7 +124,7 @@ export const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        <TransactionLink chainId={chainId} hash={tx.hash} />
+        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
       </Container>
     );
   }

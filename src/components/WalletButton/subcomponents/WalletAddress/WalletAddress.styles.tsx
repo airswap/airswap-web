@@ -3,39 +3,45 @@ import Blockies from "react-blockies";
 import styled from "styled-components";
 
 export const StyledWalletAddress = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 1rem;
-  justify-content: space-between;
-  padding: 1rem;
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.theme.name === "dark" ? props.theme.colors.darkGrey : "#F4F4F4"};
+  display: flex;
+  align-items: center;
 `;
 
 export const Button = styled.div`
   border: 0;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
+  cursor: pointer;
   background: none;
 `;
 
 export const BlockiesContainer = styled.div`
   position: relative;
+  margin-right: 1.25rem;
+
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    background-color: ${(props) => props.theme.colors.green};
+    border-radius: 50%;
+    z-index: 5;
+    width: 0.5rem;
+    height: 0.5rem;
+    top: 1rem;
+    left: 1rem;
+  }
 `;
 
 export const StyledBlockies = styled(Blockies)`
   border-radius: 50%;
-  position: relative;
+  overflow: hidden;
 `;
 
 export const GreenCircle = styled.div`
-  position: absolute;
-  background-color: #60ff66;
-  border-radius: 50%;
-  z-index: 5;
+  margin-right: 0.5rem;
   width: 0.5rem;
   height: 0.5rem;
-  top: 1rem;
-  left: 1rem;
+  background-color: ${(props) => props.theme.colors.green};
+  border-radius: 50%;
 `;

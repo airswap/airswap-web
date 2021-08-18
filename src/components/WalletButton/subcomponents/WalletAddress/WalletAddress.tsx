@@ -4,30 +4,41 @@ import { InfoHeading } from "../../../Typography/Typography";
 import {
   StyledWalletAddress,
   BlockiesContainer,
-  StyledBlockies,
   GreenCircle,
   Button,
+  StyledBlockies,
 } from "./WalletAddress.styles";
 
 type WalletBlockiesProps = {
   address: string;
-  isButton: boolean;
+  isButton?: boolean;
+  showBlockies?: boolean;
   onClick?: () => void;
+  className?: string;
 };
 
-const WalletAddress = ({ address, isButton, onClick }: WalletBlockiesProps) => {
+const WalletAddress = ({
+  address,
+  isButton = false,
+  showBlockies = false,
+  className = "",
+  onClick,
+}: WalletBlockiesProps) => {
   const renderContent = () => (
-    <StyledWalletAddress>
-      <BlockiesContainer>
-        <StyledBlockies
-          size={8}
-          scale={3}
-          seed={address}
-          bgColor="black"
-          color="#2b72ff"
-        />
+    <StyledWalletAddress className={className}>
+      {showBlockies ? (
+        <BlockiesContainer>
+          <StyledBlockies
+            size={8}
+            scale={3}
+            seed={address}
+            bgColor="black"
+            color="#2b72ff"
+          />
+        </BlockiesContainer>
+      ) : (
         <GreenCircle />
-      </BlockiesContainer>
+      )}
       <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
     </StyledWalletAddress>
   );

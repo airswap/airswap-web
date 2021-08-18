@@ -10,15 +10,14 @@ import {
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
 import Button from "../Button/Button";
-import Icon from "../Icon/Icon";
 import {
   OpenWallet,
   ExitButton,
   DisconnectButton,
   TransactionContainer,
-  Line,
   Span,
-  StyledWalletButton,
+  OpenWalletTopContainer,
+  StyledWalletAddress,
 } from "./WalletButton.styles";
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
@@ -81,19 +80,18 @@ export const WalletButton = ({
   if (address && walletOpen) {
     return (
       <OpenWallet>
-        <StyledWalletButton>
-          <WalletAddress
-            isButton
+        <OpenWalletTopContainer>
+          <StyledWalletAddress
+            showBlockies
             address={address}
             onClick={() => setWalletOpen(!walletOpen)}
           />
-          {walletOpen && (
-            <ExitButton onClick={() => setWalletOpen(!walletOpen)}>
-              <Icon iconSize={1} name="exit-modal" />
-            </ExitButton>
-          )}
-        </StyledWalletButton>
-        <Line />
+          <ExitButton
+            iconSize={1.25}
+            icon="exit-modal"
+            onClick={() => setWalletOpen(!walletOpen)}
+          />
+        </OpenWalletTopContainer>
         <TransactionContainer flex={transactions.length === 0}>
           {transactions.length > 0 ? (
             transactions.slice(0, 3).map((transaction) => {

@@ -2,17 +2,33 @@ import Icon from "../../../Icon/Icon";
 
 type WalletTransactionStatusProps = {
   status: "succeeded" | "processing" | "reverted";
+  className?: string;
 };
 
-const WalletTransactionStatus = ({ status }: WalletTransactionStatusProps) => {
+const WalletTransactionStatus = ({
+  status,
+  className = "",
+}: WalletTransactionStatusProps) => {
   return (
     <>
       {status === "succeeded" ? (
-        <Icon iconSize={1} name="transaction-completed" />
+        <Icon
+          className={className}
+          iconSize={1.875}
+          name="transaction-completed"
+        />
       ) : status === "processing" ? (
-        <Icon iconSize={1} name="transaction-pending" />
+        <Icon
+          className={className}
+          iconSize={1.875}
+          name="transaction-pending"
+        />
       ) : (
-        <Icon iconSize={1} name="transaction-failed" />
+        <Icon
+          className={className}
+          iconSize={1.875}
+          name="transaction-failed"
+        />
       )}
     </>
   );
