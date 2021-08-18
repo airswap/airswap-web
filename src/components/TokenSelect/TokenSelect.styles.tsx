@@ -31,7 +31,10 @@ export const TokenSelectContainer = styled.div`
   margin-bottom: 0.625rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
-  background-color: ${(props) => props.theme.colors.darkGrey};
+  background-color: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.darkGrey
+      : props.theme.colors.alwaysWhite};
 `;
 
 const fadeOutWhenInvisible = css<{ invisible: boolean }>`
