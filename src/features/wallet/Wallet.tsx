@@ -30,7 +30,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
-import { getAllSupportedTokens } from "../registry/registryAPI";
+import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
   revertTransaction,
   mineTransaction,
@@ -129,8 +129,11 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           provider: library,
         })
       );
-
-      getAllSupportedTokens(chainId, library);
+      dispatch(
+        fetchSupportedTokens({
+          provider: library,
+        })
+      );
     } else {
       dispatch(setWalletDisconnected());
     }

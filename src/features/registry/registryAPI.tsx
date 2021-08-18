@@ -2,16 +2,12 @@ import * as RegistryContract from "@airswap/registry/build/contracts/Registry.so
 import registryDeploys from "@airswap/registry/deploys.js";
 
 import { providers, utils, Contract, Event } from "ethers";
-import uniqBy from "lodash.uniqby";
 
 const RegistryInterface = new utils.Interface(
   JSON.stringify(RegistryContract.abi)
 );
 
-async function getAllSupportedTokens(
-  chainId: number,
-  provider: providers.Provider
-) {
+async function getStakerTokens(chainId: number, provider: providers.Provider) {
   const registryContract = new Contract(
     registryDeploys[chainId],
     RegistryInterface,
@@ -57,16 +53,7 @@ async function getAllSupportedTokens(
     }
   });
 
-  // Combine token lists from all makers and flatten them.
-  const allSupportedTokens = uniqBy(
-    Object.values(stakerTokens)
-      .flat()
-      .map((addr) => addr.toLowerCase()),
-    (i) => i
-  );
-  console.log(allSupportedTokens);
-
-  return allSupportedTokens;
+  return stakerTokens;
 }
 
-export { getAllSupportedTokens };
+export { getStakerTokens };

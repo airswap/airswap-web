@@ -63,6 +63,10 @@ export type TokenSelectionProps = {
    */
   activeTokens: TokenInfo[];
   /**
+   * Supported tokens according to registry
+   */
+  supportedTokenAddresses: string[];
+  /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
   addActiveToken: (val: string) => void;

@@ -7,6 +7,7 @@ import {
 import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
 import ordersReducer from "../features/orders/ordersSlice";
+import registryReducer from "../features/registry/registrySlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
 import userSettingsReducer from "../features/userSettings/userSettingsSlice";
 import walletReducer from "../features/wallet/walletSlice";
@@ -19,6 +20,7 @@ export const store = configureStore({
     metadata: metadataReducer,
     orders: ordersReducer,
     wallet: walletReducer,
+    registry: registryReducer,
     userSettings: userSettingsReducer,
   },
 });

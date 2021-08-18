@@ -39,6 +39,7 @@ import {
   selectOrdersStatus,
   clear,
 } from "../../features/orders/ordersSlice";
+import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   SubmittedApproval,
   selectTransactions,
@@ -82,6 +83,7 @@ const SwapWidget = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
+  const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const { t } = useTranslation(["orders", "common", "wallet", "balances"]);
   const {
     chainId,
@@ -439,6 +441,7 @@ const SwapWidget = () => {
           balances={balances}
           allTokens={allTokens}
           activeTokens={activeTokens}
+          supportedTokenAddresses={supportedTokens}
           addActiveToken={handleAddActiveToken}
           removeActiveToken={handleRemoveActiveToken}
           onClose={() => setShowTokenSelection(false)}
