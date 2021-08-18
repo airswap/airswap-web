@@ -39,7 +39,11 @@ export const StyledButton = styled.button<ButtonProps>`
   border-style: ${(props) => (props.intent === "neutral" ? "solid" : "none")};
   border-width: 1px;
   border-color: ${(props) => props.theme.colors.borderGrey};
-  color: ${(props) => props.theme.colors.alwaysWhite};
+  /* Use blue text on a netral light mode button, otherwise white. */
+  color: ${(props) =>
+    props.intent === "neutral" && props.theme.name === "light"
+      ? props.theme.colors.primary
+      : props.theme.colors.alwaysWhite};
   background: ${(props) => getButtonBackground(props.theme, props.intent)};
   pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
   cursor: ${(props) => (props.disabled ? "none" : "pointer")};
