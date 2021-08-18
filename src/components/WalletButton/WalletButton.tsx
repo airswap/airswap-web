@@ -9,7 +9,6 @@ import {
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
-import Button from "../Button/Button";
 import {
   OpenWallet,
   ExitButton,
@@ -146,13 +145,7 @@ export const WalletButton = ({
   }
 
   return (
-    <Button
-      intent="primary"
-      loading={isConnecting}
-      onClick={onConnectWalletClicked}
-    >
-      {t("wallet:connectWallet")}
-    </Button>
+    null
   );
 };
 
