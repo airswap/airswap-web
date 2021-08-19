@@ -27,7 +27,7 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   padding: 2.25rem;
   width: 100%;
   max-width: 34.5rem;
-  background: url("${process.env.PUBLIC_URL}/images/bg.png");
+  background: url("${process.env.PUBLIC_URL}/images/bg.jpg");
   background-size: 100% 100%;
 
   transition: transform 0.3s ease-in-out;
@@ -37,7 +37,7 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   }
 
   @media (min-resolution: 144dpi) {
-    background-image: url("${process.env.PUBLIC_URL}/images/bg-x2.png");
+    background-image: url("${process.env.PUBLIC_URL}/images/bg-x2.jpg");
   }
 
   @media ${breakPoints.phoneOnly} {
