@@ -11,6 +11,7 @@ import {
   TokenName,
   Span,
   ImportButton,
+  UnsupportedTokenText,
 } from "./TokenImportButton.styles";
 
 export type TokenImportRowProps = {
@@ -19,12 +20,20 @@ export type TokenImportRowProps = {
    */
   token: TokenInfo;
   /**
+   * True if the token isn't currently supported by makers.
+   */
+  isUnsupported: boolean;
+  /**
    * onClick event, either setSignerToken or setSenderToken
    */
   onClick: (val: string) => void;
 };
 
-const TokenImportButton = ({ token, onClick }: TokenImportRowProps) => {
+const TokenImportButton = ({
+  token,
+  onClick,
+  isUnsupported,
+}: TokenImportRowProps) => {
   const { t } = useTranslation(["balances", "common"]);
 
   return (
@@ -40,10 +49,15 @@ const TokenImportButton = ({ token, onClick }: TokenImportRowProps) => {
         <Symbol>{token.symbol}</Symbol>
         <TokenName>{token.name}</TokenName>
       </TextContainer>
-      <Span></Span>
-      <ImportButton onClick={() => onClick(token.address)}>
-        {t("balances:addToTokenSet")}
-      </ImportButton>
+      {isUnsupported ? (
+        <UnsupportedTokenText>
+          {t("balances:unsupportedToken")}
+        </UnsupportedTokenText>
+      ) : (
+        <ImportButton onClick={() => onClick(token.address)}>
+          {t("balances:addToTokenSet")}
+        </ImportButton>
+      )}
     </Container>
   );
 };

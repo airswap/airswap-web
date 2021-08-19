@@ -90,6 +90,7 @@ const TokenSelection = ({
   balances,
   allTokens,
   activeTokens = [],
+  supportedTokenAddresses,
   addActiveToken,
   removeActiveToken,
   chainId,
@@ -195,6 +196,7 @@ const TokenSelection = ({
             tokenQuery={tokenQuery}
             activeTokens={activeTokens}
             allTokens={allTokens}
+            supportedTokenAddresses={supportedTokenAddresses}
             onTokenClick={(tokenAddress) => {
               addActiveToken(tokenAddress);
               setTokenQuery("");

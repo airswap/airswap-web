@@ -1,12 +1,14 @@
 import styled from "styled-components/macro";
 
+import { Metadata } from "../../../Typography/Typography";
+
 export const Container = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
   display: grid;
   grid-auto-flow: column;
   cursor: pointer;
-  grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
+  grid-template-columns: auto minmax(auto, 1fr) 6.25rem;
   grid-gap: 1rem;
   align-items: center;
 
@@ -52,14 +54,19 @@ export const TokenName = styled.h3`
 
 export const Span = styled.span``;
 
+export const UnsupportedTokenText = styled(Metadata)`
+  text-align: center;
+  justify-self: center;
+`;
+
 export const ImportButton = styled.button`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   font-size: 0.8rem;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
-  justify-self: end;
+  justify-self: center;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${(props) => props.theme.colors.white};
     color: ${(props) => props.theme.colors.black};
     transition: 0.25s ease-in-out;
