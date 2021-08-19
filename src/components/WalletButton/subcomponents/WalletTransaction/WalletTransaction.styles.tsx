@@ -1,16 +1,19 @@
 import styled from "styled-components";
 
+import TransactionLink from "../TransactionLink/TransactionLink";
+import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
+
 export const Container = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 0.5rem auto 0.5rem;
-  grid-gap: 1rem;
-  align-items: center;
-  font-size: 0.75rem;
+  display: flex;
+  align-items: flex-start;
   width: 100%;
-  padding: 0.5rem;
-  height: 4rem;
+
+  & + & {
+    margin-top: 1.25rem;
+  }
 `;
+
+export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 
 export const TextContainer = styled.div`
   display: flex;
@@ -19,9 +22,22 @@ export const TextContainer = styled.div`
 `;
 
 export const SpanTitle = styled.span`
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
 `;
 
 export const SpanSubtitle = styled.span`
+  line-height: 1.3;
+  font-size: 1rem;
+  font-weight: 400;
   color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const StyledTransactionLink = styled(TransactionLink)`
+  justify-self: flex-end;
+  margin-left: auto;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.alwaysWhite};
+  }
 `;

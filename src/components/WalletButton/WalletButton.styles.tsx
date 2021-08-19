@@ -1,65 +1,55 @@
-import Blockies from "react-blockies";
-
 import styled from "styled-components/macro";
 
 import Button from "../Button/Button";
+import IconButton from "../IconButton/IconButton";
+import { InfoHeading } from "../Typography/Typography";
+import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 
-export const Container = styled.div``;
+export const OpenWallet = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+  padding: 1.375rem 1.5rem;
+  width: 21.5rem;
+  min-height: 21.5rem;
+  background: ${(props) => props.theme.colors.darkGrey};
+  overflow: hidden;
+`;
+
+export const OpenWalletTopContainer = styled.div`
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid ${(props) => props.theme.colors.borderGrey};
+  width: 100%;
+  padding-bottom: 1.1875rem;
+`;
 
 export const StyledWalletButton = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 1rem;
-  justify-content: space-between;
-  padding: 1rem;
-  cursor: pointer;
-  background-color: ${(props) => props.theme.colors.darkGrey};
-`;
-
-export const BlockiesContainer = styled.div`
-  position: relative;
-`;
-
-export const StyledBlockies = styled(Blockies)`
-  border-radius: 50%;
-  position: relative;
-`;
-
-export const GreenCircle = styled.div`
-  position: absolute;
-  background-color: #60ff66;
-  border-radius: 50%;
-  z-index: 5;
-  width: 0.5rem;
-  height: 0.5rem;
-  top: 1rem;
-  left: 1rem;
-`;
-
-export const WalletExtension = styled.div`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  width: 100%;
-  padding: 0 1rem 1rem 1rem;
-  z-index: 100;
-  background-color: ${(props) => props.theme.colors.darkGrey};
+  justify-content: space-between;
 `;
 
-export const Line = styled.hr`
-  border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
-  width: 80%;
+export const StyledWalletAddress = styled(WalletAddress)`
+  ${InfoHeading} {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
 `;
 
-export const Span = styled.span`
+export const NoTransactions = styled.span`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
-export const ExitButton = styled.button`
-  margin-left: 5rem;
+export const ExitButton = styled(IconButton)`
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  padding: 0.5rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.alwaysWhite};
+  }
 `;
 
 type TransactionContainerProps = {
@@ -71,16 +61,23 @@ export const TransactionContainer = styled.div<TransactionContainerProps>`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  flex-grow: 2;
+  padding: 1.25rem 0 1.5rem;
   width: 100%;
-  height: 12rem;
 `;
 
 export const DisconnectButton = styled(Button)`
-  border: 1px solid ${(props) => props.theme.colors.lightGrey};
+  margin-top: auto;
+  justify-self: flex-end;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2px;
+  height: 2.875rem;
   padding: 1rem 3rem;
+  font-size: 0.875rem;
+  font-weight: 700;
   background-color: transparent;
   color: ${(props) => props.theme.colors.lightGrey};
-  transition: 0.25s ease-in-out;
+
   &:hover {
     color: ${(props) => props.theme.colors.black};
     background-color: ${(props) => props.theme.colors.white};

@@ -4,29 +4,21 @@ import { useTranslation } from "react-i18next";
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 
-import truncateEthAddress from "truncate-eth-address";
-
 import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
-import Button from "../Button/Button";
-import Icon from "../Icon/Icon";
-import { InfoHeading } from "../Typography/Typography";
 import {
-  StyledWalletButton,
-  StyledBlockies,
-  BlockiesContainer,
-  GreenCircle,
-  Container,
-  WalletExtension,
+  OpenWallet,
   ExitButton,
   DisconnectButton,
   TransactionContainer,
-  Line,
-  Span,
+  OpenWalletTopContainer,
+  StyledWalletAddress,
+  NoTransactions,
 } from "./WalletButton.styles";
+import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
 
 export type WalletButtonProps = {
@@ -74,94 +66,85 @@ export const WalletButton = ({
 
   const [walletOpen, setWalletOpen] = useState<boolean>(false);
 
-  return (
-    <Container>
-      {address ? (
-        <>
-          <StyledWalletButton onClick={() => setWalletOpen(!walletOpen)}>
-            <BlockiesContainer>
-              <StyledBlockies
-                size={8}
-                scale={3}
-                seed={address}
-                bgColor="black"
-                color="#2b72ff"
-              />
-              <GreenCircle />
-            </BlockiesContainer>
-            <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
-            {walletOpen && (
-              <ExitButton onClick={() => setWalletOpen(!walletOpen)}>
-                <Icon iconSize={1} name="exit-modal" />
-              </ExitButton>
-            )}
-          </StyledWalletButton>
-          {walletOpen && (
-            <WalletExtension>
-              <Line />
-              <TransactionContainer flex={transactions.length === 0}>
-                {transactions.length > 0 ? (
-                  transactions.slice(0, 3).map((transaction) => {
-                    let token;
-                    if (transaction.type === "Order") {
-                      const tx: SubmittedOrder = transaction as SubmittedOrder;
-                      const senderToken = findTokenByAddress(
-                        tx.order.senderToken,
-                        tokens
-                      );
-                      const signerToken = findTokenByAddress(
-                        tx.order.signerToken,
-                        tokens
-                      );
-                      return (
-                        <WalletTransaction
-                          transaction={transaction}
-                          senderToken={senderToken}
-                          signerToken={signerToken}
-                          type={transaction.type}
-                          chainId={chainId!}
-                          key={transaction.hash}
-                        />
-                      );
-                    } else {
-                      const tx: SubmittedApproval = transaction as SubmittedApproval;
-                      token = findTokenByAddress(tx.tokenAddress, tokens);
-                      return (
-                        <WalletTransaction
-                          transaction={transaction}
-                          approvalToken={token}
-                          type={transaction.type}
-                          chainId={chainId!}
-                          key={transaction.hash}
-                        />
-                      );
-                    }
-                  })
-                ) : (
-                  <Span>{t("wallet:noTransactions")}</Span>
-                )}
-              </TransactionContainer>
+  if (address && !walletOpen) {
+    return (
+      <WalletAddress
+        isButton
+        address={address}
+        onClick={() => setWalletOpen(!walletOpen)}
+      />
+    );
+  }
 
-              <DisconnectButton
-                aria-label={t("wallet:disconnectWallet")}
-                onClick={onDisconnectWalletClicked}
-              >
-                {t("wallet:disconnectWallet")}
-              </DisconnectButton>
-            </WalletExtension>
+  if (address && walletOpen) {
+    return (
+      <OpenWallet>
+        <OpenWalletTopContainer>
+          <StyledWalletAddress
+            showBlockies
+            address={address}
+            onClick={() => setWalletOpen(!walletOpen)}
+          />
+          <ExitButton
+            iconSize={1.25}
+            icon="exit-modal"
+            onClick={() => setWalletOpen(!walletOpen)}
+          />
+        </OpenWalletTopContainer>
+        <TransactionContainer flex={transactions.length === 0}>
+          {transactions.length > 0 ? (
+            transactions.slice(0, 3).map((transaction) => {
+              let token;
+              if (transaction.type === "Order") {
+                const tx: SubmittedOrder = transaction as SubmittedOrder;
+                const senderToken = findTokenByAddress(
+                  tx.order.senderToken,
+                  tokens
+                );
+                const signerToken = findTokenByAddress(
+                  tx.order.signerToken,
+                  tokens
+                );
+                return (
+                  <WalletTransaction
+                    transaction={transaction}
+                    senderToken={senderToken}
+                    signerToken={signerToken}
+                    type={transaction.type}
+                    chainId={chainId!}
+                    key={transaction.hash}
+                  />
+                );
+              } else {
+                const tx: SubmittedApproval = transaction as SubmittedApproval;
+                token = findTokenByAddress(tx.tokenAddress, tokens);
+                return (
+                  <WalletTransaction
+                    transaction={transaction}
+                    approvalToken={token}
+                    type={transaction.type}
+                    chainId={chainId!}
+                    key={transaction.hash}
+                  />
+                );
+              }
+            })
+          ) : (
+            <NoTransactions>{t("wallet:noTransactions")}</NoTransactions>
           )}
-        </>
-      ) : (
-        <Button
-          intent="primary"
-          loading={isConnecting}
-          onClick={onConnectWalletClicked}
+        </TransactionContainer>
+
+        <DisconnectButton
+          aria-label={t("wallet:disconnectWallet")}
+          onClick={onDisconnectWalletClicked}
         >
-          {t("wallet:connectWallet")}
-        </Button>
-      )}
-    </Container>
-  );
+          {t("wallet:disconnectWallet")}
+        </DisconnectButton>
+      </OpenWallet>
+    );
+  }
+
+  return null;
 };
 
 export default WalletButton;

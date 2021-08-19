@@ -6,16 +6,22 @@ import { Link } from "./TransactionLink.style";
 type TransactionLinkProps = {
   chainId: number;
   hash: string;
+  className?: string;
 };
 
-const TransactionLink = ({ chainId, hash }: TransactionLinkProps) => {
+const TransactionLink = ({
+  chainId,
+  hash,
+  className = "",
+}: TransactionLinkProps) => {
   return (
     <Link
+      className={className}
       target="_blank"
       rel="noreferrer"
       href={`${getEtherscanURL(chainId, hash)}`}
     >
-      <Icon iconSize={0.75} name="transaction-link" />
+      <Icon iconSize={1} name="transaction-link" />
     </Link>
   );
 };

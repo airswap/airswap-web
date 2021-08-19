@@ -31,6 +31,7 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   );
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
+  z-index: 1;
 `;
 
 type ContainerProps = {

@@ -1,20 +1,41 @@
-import Icon from "../../../Icon/Icon";
+import {
+  FailedIcon,
+  IconContainer,
+  ProcessingIcon,
+  SucceedIcon,
+} from "./WalletTransactionStatus.styles";
 
 type WalletTransactionStatusProps = {
   status: "succeeded" | "processing" | "reverted";
+  className?: string;
 };
 
-const WalletTransactionStatus = ({ status }: WalletTransactionStatusProps) => {
+const WalletTransactionStatus = ({
+  status,
+  className = "",
+}: WalletTransactionStatusProps) => {
   return (
-    <>
+    <IconContainer>
       {status === "succeeded" ? (
-        <Icon iconSize={1} name="transaction-completed" />
+        <SucceedIcon
+          className={className}
+          iconSize={1.875}
+          name="transaction-completed"
+        />
       ) : status === "processing" ? (
-        <Icon iconSize={1} name="transaction-pending" />
+        <ProcessingIcon
+          className={className}
+          iconSize={1.5}
+          name="transaction-pending"
+        />
       ) : (
-        <Icon iconSize={1} name="transaction-failed" />
+        <FailedIcon
+          className={className}
+          iconSize={1.5}
+          name="transaction-failed"
+        />
       )}
-    </>
+    </IconContainer>
   );
 };
 
