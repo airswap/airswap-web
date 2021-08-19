@@ -13,7 +13,7 @@ const TransactionLink = ({ chainId, hash }: TransactionLinkProps) => {
     <Link
       target="_blank"
       rel="noreferrer"
-      href={`${getEtherscanURL(`${chainId}`, hash)}`}
+      href={`${getEtherscanURL(chainId, hash)}`}
     >
       <Icon iconSize={0.75} name="transaction-link" />
     </Link>

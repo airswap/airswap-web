@@ -40,14 +40,17 @@ async function getStakerTokens(chainId: number, provider: providers.Provider) {
   sortedEvents.forEach((log) => {
     if (!log.args) return;
     // @ts-ignore (args are not typed)
-    const [staker, tokens] = log.args as string[];
+    const [staker, tokens] = log.args as [string, string[]];
+    const lowerCasedTokens = tokens.map((t) => t.toLowerCase());
     if (log.event === "AddTokens") {
       // Adding tokens
-      stakerTokens[staker] = (stakerTokens[staker] || []).concat(tokens);
+      stakerTokens[staker] = (stakerTokens[staker] || []).concat(
+        lowerCasedTokens
+      );
     } else {
       // Removing tokens
       stakerTokens[staker] = (stakerTokens[staker] || []).filter(
-        (token) => !tokens.includes(token)
+        (token) => !lowerCasedTokens.includes(token)
       );
     }
   });

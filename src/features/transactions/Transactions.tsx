@@ -120,7 +120,7 @@ export function Transactions() {
           <a
             target="_blank"
             rel="noreferrer"
-            href={`${getEtherscanURL(`${chainId}`, submittedOrder.hash!)}`}
+            href={`${getEtherscanURL(chainId, submittedOrder.hash!)}`}
           >
             {submittedOrder.hash}
           </a>

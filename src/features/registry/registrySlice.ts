@@ -35,9 +35,7 @@ export const fetchSupportedTokens = createAsyncThunk<
   );
   // Combine token lists from all makers and flatten them.
   const allSupportedTokens = uniqBy(
-    Object.values(stakerTokens)
-      .flat()
-      .map((addr) => addr.toLowerCase()),
+    Object.values(stakerTokens).flat(),
     (i) => i
   );
   return { stakerTokens, allSupportedTokens };
