@@ -48,8 +48,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (!isConnected) {
     return (
       <>
-        <InfoHeading>{t("marketing:zeroSlippage")}</InfoHeading>
-        <InfoSubHeading>{t("marketing:communityFeeDiscout")}</InfoSubHeading>
+        <InfoHeading>{t("marketing:useAtOwnRisk")}</InfoHeading>
+        <InfoSubHeading>{t("marketing:alphaPreview")}</InfoSubHeading>
       </>
     );
   }
@@ -127,10 +127,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   // No order & not fetching, but wallet connected.
   return (
     <>
-      <InfoHeading>
-        {t("orders:protocolFeeActive", { fee: "0.3%" })}
-      </InfoHeading>
-      <InfoSubHeading>{t("marketing:communityFeeDiscout")}</InfoSubHeading>
+      <InfoHeading>{t("marketing:useAtOwnRisk")}</InfoHeading>
+      <InfoSubHeading>{t("marketing:alphaPreview")}</InfoSubHeading>
     </>
   );
 };
