@@ -3,5 +3,13 @@
   "chainId": "Chain ID",
   "account": "Account",
   "select": "Select",
-  "fetching": "Fetching"
+  "swap": "Swap",
+  "fetching": "Fetching",
+  "token": "Token",
+  "back": "Back",
+  "cancel": "Cancel",
+  "success": "Success",
+  "processing": "Processing",
+  "failed": "Failed",
+  "undefined": "undefined"
 }
