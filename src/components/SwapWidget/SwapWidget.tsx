@@ -202,8 +202,17 @@ const SwapWidget = () => {
             disabled={isNaN(parseFloat(signerAmount))}
             loading={ordersStatus === "taking"}
             onClick={async () => {
-              await dispatch(take({ order, library }));
-              setShowOrderSubmitted(true);
+              try {
+                const result = await dispatch(take({ order, library }));
+                await unwrapResult(result);
+                setShowOrderSubmitted(true);
+              } catch (e) {
+                if (e.code && e.code === 4001) {
+                  // 4001 is metamask user declining transaction sig, do nothing
+                } else {
+                  // FIXME: notify user - toast?
+                }
+              }
             }}
           >
             {t("orders:take")}
