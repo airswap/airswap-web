@@ -4,7 +4,7 @@ import { providers } from "ethers";
 import uniqBy from "lodash.uniqby";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { getStakerTokens } from "./registryApi";
+import { getStakerTokens } from "./registryAPI";
 
 export interface RegistryState {
   stakerTokens: Record<string, string[]>;
