@@ -7,6 +7,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  border-radius: 0.25rem;
   height: 32.5rem;
   width: 100%;
   padding: ${sizes.tradeContainerPadding};
@@ -21,6 +22,7 @@ type StyledTradeContainerProps = {
 export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   display: flex;
   box-sizing: border-box;
+  border-radius: 0.5rem;
   margin: 0 auto;
   padding: 2.25rem;
   width: 100%;
