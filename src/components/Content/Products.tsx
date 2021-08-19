@@ -5,18 +5,13 @@ const Products = () => {
   return (
     <>
       <Container>
-        <Title type="h1">Lorem ipsum dolor sit amet, consectetur</Title>
+        <Title type="h1">Peer-to-peer Trading</Title>
         <Paragraph>
-          Token holders decide what to build and work together to get it done.
+          We are an open developer community building decentralized trading systems.
+          <br /><br />
+          More content will be displayed here soon.
         </Paragraph>
-        <Link href="#">Learn more →</Link>
-      </Container>
-      <Container>
-        <Title type="h1">Lorem ipsum dolor sit amet, consectetur</Title>
-        <Paragraph>
-          Token holders decide what to build and work together to get it done.
-        </Paragraph>
-        <Link href="#">Learn more →</Link>
+        <Link href="https://docs.airswap.io/">Check the docs →</Link>
       </Container>
     </>
   );
