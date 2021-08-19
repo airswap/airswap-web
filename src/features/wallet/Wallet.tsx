@@ -30,6 +30,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
+import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
   revertTransaction,
   mineTransaction,
@@ -125,6 +126,11 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       );
       dispatch(
         requestActiveTokenBalances({
+          provider: library,
+        })
+      );
+      dispatch(
+        fetchSupportedTokens({
           provider: library,
         })
       );

@@ -63,6 +63,10 @@ export type TokenSelectionProps = {
    */
   activeTokens: TokenInfo[];
   /**
+   * Supported tokens according to registry
+   */
+  supportedTokenAddresses: string[];
+  /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
   addActiveToken: (val: string) => void;
@@ -86,6 +90,7 @@ const TokenSelection = ({
   balances,
   allTokens,
   activeTokens = [],
+  supportedTokenAddresses,
   addActiveToken,
   removeActiveToken,
   chainId,
@@ -191,6 +196,7 @@ const TokenSelection = ({
             tokenQuery={tokenQuery}
             activeTokens={activeTokens}
             allTokens={allTokens}
+            supportedTokenAddresses={supportedTokenAddresses}
             onTokenClick={(tokenAddress) => {
               addActiveToken(tokenAddress);
               setTokenQuery("");

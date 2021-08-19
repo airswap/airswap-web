@@ -86,6 +86,8 @@ Default.args = {
   },
   allTokens: allTokens,
   activeTokens: activeTokens,
+  // TODO:
+  supportedTokenAddresses: [],
   addActiveToken: () => void 1,
   removeActiveToken: () => void 1,
   chainId: 1,
@@ -111,6 +113,8 @@ TestNet.args = {
   },
   allTokens: allTokens,
   activeTokens: activeTokens,
+  // TODO:
+  supportedTokenAddresses: [],
   addActiveToken: () => void 1,
   removeActiveToken: () => void 1,
   chainId: 4,

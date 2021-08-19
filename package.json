@@ -16,7 +16,7 @@
     "@airswap/balances": "^1.1.2",
     "@airswap/constants": "^0.4.0",
     "@airswap/metadata": "^0.3.2",
-    "@airswap/protocols": "^0.5.7",
+    "@airswap/protocols": "0.5.9",
     "@airswap/types": "^3.5.17",
     "@craco/craco": "^6.2.0",
     "@datapunt/matomo-tracker-react": "^0.4.0",

@@ -17,12 +17,14 @@ type InactiveTokensListProps = {
   tokenQuery: string;
   allTokens: TokenInfo[];
   activeTokens: TokenInfo[];
+  supportedTokenAddresses: string[];
   onTokenClick: (tokenAddress: string) => void;
 };
 
 const InactiveTokensList = ({
   tokenQuery,
   allTokens,
+  supportedTokenAddresses,
   activeTokens,
   onTokenClick,
 }: InactiveTokensListProps) => {
@@ -57,6 +59,10 @@ const InactiveTokensList = ({
         {inactiveTokens.map((token) => (
           <TokenImportButton
             token={token}
+            isUnsupported={
+              supportedTokenAddresses.length !== 0 &&
+              !supportedTokenAddresses.includes(token.address)
+            }
             onClick={() => onTokenClick(token.address)}
             key={`${token.address}`}
           />
