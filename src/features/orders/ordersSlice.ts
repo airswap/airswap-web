@@ -82,8 +82,8 @@ export const approve = createAsyncThunk(
         });
       }
     } catch (e) {
-      console.error(e);
       dispatch(declineTransaction(e.message));
+      throw e;
     }
   }
 );
@@ -113,8 +113,8 @@ export const take = createAsyncThunk(
         });
       }
     } catch (e) {
-      console.error(e);
       dispatch(declineTransaction(e.message));
+      throw e;
     }
   }
 );
