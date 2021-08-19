@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/airswap-web/static/css/main.ef70831d.chunk.css",
-    "main.js": "/airswap-web/static/js/main.cf5fe3e3.chunk.js",
-    "main.js.map": "/airswap-web/static/js/main.cf5fe3e3.chunk.js.map",
+    "main.js": "/airswap-web/static/js/main.e2dbcd95.chunk.js",
+    "main.js.map": "/airswap-web/static/js/main.e2dbcd95.chunk.js.map",
     "runtime-main.js": "/airswap-web/static/js/runtime-main.c6d2266e.js",
     "runtime-main.js.map": "/airswap-web/static/js/runtime-main.c6d2266e.js.map",
     "static/css/2.944136ea.chunk.css": "/airswap-web/static/css/2.944136ea.chunk.css",
@@ -30,6 +30,6 @@
     "static/css/2.944136ea.chunk.css",
     "static/js/2.730e0779.chunk.js",
     "static/css/main.ef70831d.chunk.css",
-    "static/js/main.cf5fe3e3.chunk.js"
+    "static/js/main.e2dbcd95.chunk.js"
   ]
 }
