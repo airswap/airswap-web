@@ -9,7 +9,6 @@ import {
   TextContainer,
   Symbol,
   TokenName,
-  Span,
   ImportButton,
   UnsupportedTokenText,
 } from "./TokenImportButton.styles";
