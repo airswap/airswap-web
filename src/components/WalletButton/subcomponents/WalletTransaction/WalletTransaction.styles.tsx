@@ -13,9 +13,7 @@ export const Container = styled.div`
   }
 `;
 
-export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)`
-  transform: translate(-0.25rem, -0.25rem);
-`;
+export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 
 export const TextContainer = styled.div`
   display: flex;

@@ -71,7 +71,7 @@ const transactions: SubmittedTransaction[] = [
       v: "28",
     },
     hash: "0x0268eddd12d466b19fb1ba05789e4fc8e6a4cfbdb2faf488acc93709dc567263",
-    status: "succeeded",
+    status: "processing",
     timestamp: 1628840176458,
   } as SubmittedTransaction,
   {
@@ -91,7 +91,7 @@ const transactions: SubmittedTransaction[] = [
       v: "27",
     },
     hash: "0xe594e34a2353164b9ecf1c91d00fcc6c07f8ae281e90d34b3a02f05321f79475",
-    status: "succeeded",
+    status: "reverted",
     timestamp: 1628840166870,
   } as SubmittedTransaction,
 ];

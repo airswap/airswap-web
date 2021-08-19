@@ -14,9 +14,9 @@ import {
   ExitButton,
   DisconnectButton,
   TransactionContainer,
-  Span,
   OpenWalletTopContainer,
   StyledWalletAddress,
+  NoTransactions,
 } from "./WalletButton.styles";
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
@@ -130,7 +130,7 @@ export const WalletButton = ({
               }
             })
           ) : (
-            <Span>{t("wallet:noTransactions")}</Span>
+            <NoTransactions>{t("wallet:noTransactions")}</NoTransactions>
           )}
         </TransactionContainer>
 
@@ -144,9 +144,7 @@ export const WalletButton = ({
     );
   }
 
-  return (
-    null
-  );
+  return null;
 };
 
 export default WalletButton;

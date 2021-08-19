@@ -6,9 +6,12 @@ import { InfoHeading } from "../Typography/Typography";
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 
 export const OpenWallet = styled.div`
+  display: flex;
+  flex-direction: column;
   border-radius: 2px;
   padding: 1.375rem 1.5rem;
   width: 21.5rem;
+  min-height: 21.5rem;
   background: ${(props) => props.theme.colors.darkGrey};
   overflow: hidden;
 `;
@@ -33,7 +36,7 @@ export const StyledWalletAddress = styled(WalletAddress)`
   }
 `;
 
-export const Span = styled.span`
+export const NoTransactions = styled.span`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
@@ -58,11 +61,14 @@ export const TransactionContainer = styled.div<TransactionContainerProps>`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  flex-grow: 2;
   padding: 1.25rem 0 1.5rem;
   width: 100%;
 `;
 
 export const DisconnectButton = styled(Button)`
+  margin-top: auto;
+  justify-self: flex-end;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   height: 2.875rem;
