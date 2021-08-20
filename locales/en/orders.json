@@ -2,6 +2,8 @@
   "continue": "Continue",
   "approve": "Approve",
   "approvalRequired": "To continue you must approve {{symbol}}",
+  "approvePending": "Prepared to approve {{symbol}}",
+  "approveMessage": "Approve AirSwap to transfer your tokens.",
   "approve_aria": "Approve token spend",
   "take": "Complete Swap",
   "take_aria": "Take swap",
@@ -29,6 +31,8 @@
   "tokenPairUnavailable": "Token pair currently unavailable",
   "retryOrCancel": "Please try again with different parameters",
   "newSwap": "New swap",
+  "swapPending": "Prepared to swap",
+  "swapMessage": "Accept on your wallet to proceed",
   "submitted": "Submitted!",
   "trackTransaction": "Track this transaction on the top right"
 }
