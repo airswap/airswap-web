@@ -10,8 +10,6 @@ If you are interested in [AirSwap](https://www.airswap.io/) or applied Ethereum 
 
 ## Who‍
 
-It's dangerous to go alone, take this!
-
 - [AirSwap](https://www.airswap.io/) is a decentralized network for trading digital assets: a novel design that protects traders from [counterparty risk](https://www.investopedia.com/terms/c/counterpartyrisk.asp), [price slippage](https://www.investopedia.com/terms/s/slippage.asp#:~:text=Slippage%20refers%20to%20the%20difference,when%20market%20orders%20are%20used), and [front running](https://consensys.github.io/smart-contract-best-practices/known_attacks/#front-running).
 
 - It is the weapon of choice for traditional market makers entering the decentralized financial system. With its focus on peer-to-peer, AirSwap is the de facto standard for [RFQ ("request for quote")](https://www.airswap.io/whitepaper.htm) and [OTC ("over the counter") style trading](<https://en.wikipedia.org/wiki/Over-the-counter_(finance)>).
