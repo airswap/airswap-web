@@ -8,11 +8,11 @@ import { ThemeProvider } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
+import Toaster from "./components/Toasts/Toaster";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
-import Toaster from "./components/Toasts/Toaster";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);

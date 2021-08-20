@@ -5,6 +5,10 @@ import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
 import {
+  notifyTransactionFail,
+  notifyTransactionSuccess,
+} from "../../components/Toasts/ToastController";
+import {
   submitTransaction,
   mineTransaction,
   revertTransaction,
@@ -24,8 +28,6 @@ import {
   approveToken,
   orderSortingFunction,
 } from "./orderAPI";
-import { notifyTransactionFail, notifyTransactionPending, notifyTransactionSuccess } from "../../components/Toasts/ToastController";
-
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -74,7 +76,6 @@ export const approve = createAsyncThunk(
           timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
-        notifyTransactionPending();
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -89,7 +90,7 @@ export const approve = createAsyncThunk(
     } catch (e) {
       console.error(e);
       dispatch(declineTransaction(e.message));
-      notifyTransactionFail();
+      throw e;
     }
   }
 );
@@ -109,7 +110,6 @@ export const take = createAsyncThunk(
           timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
-        notifyTransactionPending();
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
@@ -122,8 +122,8 @@ export const take = createAsyncThunk(
         });
       }
     } catch (e) {
+      console.error(e);
       dispatch(declineTransaction(e.message));
-      notifyTransactionFail();
       throw e;
     }
   }

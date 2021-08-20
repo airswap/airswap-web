@@ -1,8 +1,6 @@
 {
-  "approval": "Please approve {{amount}} {{token}} tokens for withdrawl.",
-  "transactionPending": "Your transaction has been sent to the network.",
-  "transactionSuccess": "Your transaction has successfully been completed.",
-  "transactionFail": "Transaction has failed!",
-  "orderRequestError": "Order Request Failed. Please try again at a later time.",
-  "gasWarning": "Higher than average gas fees."
+  "transactionSuccess": "Transaction success",
+  "transactionSuccessMsg": "The transaction has successfully completed.",
+  "transactionFail": "Transaction failed",
+  "transactionFailMsg": "The transaction couldn’t be completed."
 }

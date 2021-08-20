@@ -7,8 +7,10 @@ const Introduction = () => {
       <Container>
         <Title type="h1">Welcome to AirSwap</Title>
         <Paragraph>
-          We are an open developer community building decentralized trading systems.
-          <br /><br />
+          We are an open developer community building decentralized trading
+          systems.
+          <br />
+          <br />
           More content will be displayed here soon.
         </Paragraph>
         <Link href="https://chat.airswap.io/">Join the Discord →</Link>
