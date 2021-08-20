@@ -22,6 +22,8 @@ export type InfoSectionProps = {
   isPairUnavailable: boolean;
   orderSubmitted: boolean;
   isFetchingOrders: boolean;
+  isApproving: boolean;
+  isSwapping: boolean;
   order: LightOrder | null;
   requiresApproval: boolean;
   signerTokenInfo: TokenInfo | null;
@@ -34,6 +36,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   isConnected,
   isPairUnavailable,
   orderSubmitted,
+  isApproving,
+  isSwapping,
   order,
   isFetchingOrders,
   requiresApproval,
@@ -77,6 +81,26 @@ const InfoSection: FC<InfoSectionProps> = ({
       <>
         <InfoHeading>{t("orders:submitted")}</InfoHeading>
         <InfoSubHeading>{t("orders:trackTransaction")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (isApproving) {
+    return (
+      <>
+        <InfoHeading>
+          {t("orders:approvePending", { symbol: senderTokenInfo!.symbol })}
+        </InfoHeading>
+        <InfoSubHeading>{t("orders:approveMessage")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (isSwapping) {
+    return (
+      <>
+        <InfoHeading>{t("orders:swapPending")}</InfoHeading>
+        <InfoSubHeading>{t("orders:swapMessage")}</InfoSubHeading>
       </>
     );
   }
