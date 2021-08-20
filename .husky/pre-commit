@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+CI=true yarn test
+yarn prettier --check ./src --plugin @trivago/prettier-plugin-sort-imports
