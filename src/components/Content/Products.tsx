@@ -7,8 +7,10 @@ const Products = () => {
       <Container>
         <Title type="h1">Peer-to-peer Trading</Title>
         <Paragraph>
-          We are an open developer community building decentralized trading systems.
-          <br /><br />
+          We are an open developer community building decentralized trading
+          systems.
+          <br />
+          <br />
           More content will be displayed here soon.
         </Paragraph>
         <Link href="https://docs.airswap.io/">Check the docs →</Link>
