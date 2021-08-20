@@ -36,6 +36,10 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
     transform: translateX(${(props) => (props.isOpen ? 0 : "-16rem")});
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
   @media (min-resolution: 144dpi) {
     background-image: url("${process.env.PUBLIC_URL}/images/bg-x2.jpg");
   }

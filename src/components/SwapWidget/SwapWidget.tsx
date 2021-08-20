@@ -450,23 +450,22 @@ const SwapWidget = () => {
           }}
         />
       </Modal>
-      {showTokenSelection && (
-        <TokenSelection
-          signerToken={signerToken!}
-          senderToken={senderToken!}
-          setSignerToken={setSignerToken}
-          setSenderToken={setSenderToken}
-          tokenSelectType={tokenSelectType}
-          balances={balances}
-          allTokens={allTokens}
-          activeTokens={activeTokens}
-          supportedTokenAddresses={supportedTokens}
-          addActiveToken={handleAddActiveToken}
-          removeActiveToken={handleRemoveActiveToken}
-          onClose={() => setShowTokenSelection(false)}
-          chainId={chainId!}
-        />
-      )}
+      <TokenSelection
+        signerToken={signerToken!}
+        senderToken={senderToken!}
+        setSignerToken={setSignerToken}
+        setSenderToken={setSenderToken}
+        tokenSelectType={tokenSelectType}
+        balances={balances}
+        allTokens={allTokens}
+        activeTokens={activeTokens}
+        supportedTokenAddresses={supportedTokens}
+        addActiveToken={handleAddActiveToken}
+        removeActiveToken={handleRemoveActiveToken}
+        onClose={() => setShowTokenSelection(false)}
+        chainId={chainId!}
+        isHidden={!showTokenSelection}
+      />
     </>
   );
 };

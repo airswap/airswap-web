@@ -32,6 +32,10 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
   z-index: 1;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 type ContainerProps = {
@@ -48,6 +52,10 @@ export const Container = styled.div<ContainerProps>`
   transform: translateX(${(props) => (props.isOpen ? "28rem" : "0")});
   transition: transform 0.3s ease-in-out;
   background-color: ${(props) => props.theme.colors.darkGrey};
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   @media ${breakPoints.phoneOnly} {
     display: none;
