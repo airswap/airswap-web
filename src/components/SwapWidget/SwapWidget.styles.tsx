@@ -58,6 +58,12 @@ export const HugeTicks = styled(MdDoneAll)`
   margin: 5rem auto 2px auto;
 `;
 
-export const StyledSwapWidget = styled.div``;
+export const Placeholder = styled.div`
+  height: 5rem;
+`;
+
+export const StyledSwapWidget = styled.div`
+  height: 100%;
+`;
 
 export default StyledSwapWidget;

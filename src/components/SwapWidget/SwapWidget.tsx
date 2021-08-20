@@ -57,6 +57,7 @@ import StyledSwapWidget, {
   SwapIconContainer,
   ButtonContainer,
   HugeTicks,
+  Placeholder,
 } from "./SwapWidget.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
@@ -68,6 +69,7 @@ const SwapWidget = () => {
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
@@ -156,6 +158,8 @@ const SwapWidget = () => {
           {t("wallet:connectWallet")}
         </SubmitButton>
       );
+    } else if (isApproving || isSwapping) {
+      return <></>;
     } else if (pairUnavailable) {
       return (
         <>
@@ -203,7 +207,9 @@ const SwapWidget = () => {
             loading={ordersStatus === "taking"}
             onClick={async () => {
               try {
+                setIsSwapping(true);
                 const result = await dispatch(take({ order, library }));
+                setIsSwapping(false);
                 await unwrapResult(result);
                 setShowOrderSubmitted(true);
               } catch (e) {
@@ -352,9 +358,13 @@ const SwapWidget = () => {
     <>
       <StyledSwapWidget>
         <Header>
-          <Title type="h2">Swap</Title>
+          <Title type="h2">{isApproving ? "Approve" : "Swap"}</Title>
         </Header>
-        {!showOrderSubmitted ? (
+        {showOrderSubmitted ? (
+          <HugeTicks />
+        ) : isApproving || isSwapping ? (
+          <Placeholder />
+        ) : (
           <>
             <TokenSelect
               label={t("orders:from")}
@@ -387,8 +397,6 @@ const SwapWidget = () => {
               selectedToken={signerTokenInfo}
             />
           </>
-        ) : (
-          <HugeTicks />
         )}
         <InfoContainer>
           <InfoSection
@@ -396,6 +404,8 @@ const SwapWidget = () => {
             isConnected={active}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={ordersStatus === "requesting"}
+            isApproving={isApproving}
+            isSwapping={isSwapping}
             order={order}
             requiresApproval={order && !hasSufficientAllowance(senderToken)}
             senderTokenInfo={senderTokenInfo}
