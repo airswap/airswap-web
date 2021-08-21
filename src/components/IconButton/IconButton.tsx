@@ -7,7 +7,7 @@ export type IconButtonProps = {
   text?: string;
   icon: keyof typeof icons;
   iconSize?: number;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
 };
 

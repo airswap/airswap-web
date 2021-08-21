@@ -15,7 +15,7 @@ export const StyledDarkModeSwitch = styled(DarkModeSwitch)`
 `;
 
 type StyledWalletProps = {
-  isOpen: boolean;
+  isOpen?: boolean;
 };
 
 export const StyledWallet = styled(Wallet)<StyledWalletProps>`
@@ -31,7 +31,6 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   );
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
-  z-index: 1;
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -42,7 +41,7 @@ type ContainerProps = {
   isOpen: boolean;
 };
 
-export const Container = styled.div<ContainerProps>`
+export const StyledSideBar = styled.div<ContainerProps>`
   position: absolute;
   top: 0;
   right: 0;
