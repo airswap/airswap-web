@@ -1,4 +1,3 @@
-const path = require("path");
 module.exports = {
   // ref: https://storybook.js.org/docs/ember/configure/typescript#mainjs-configuration
   typescript: {
@@ -18,22 +17,4 @@ module.exports = {
     "@storybook/preset-create-react-app",
     "@react-theming/storybook-addon",
   ],
-
-  // Tell webpack to apply tailwind to postcss loader
-  webpackFinal: async (config) => {
-    config.module.rules.push({
-      test: /\.css$/,
-      use: [
-        {
-          loader: "postcss-loader",
-          options: {
-            ident: "postcss",
-            plugins: [require("tailwindcss"), require("autoprefixer")],
-          },
-        },
-      ],
-      include: path.resolve(__dirname, "../"),
-    });
-    return config;
-  },
 };
