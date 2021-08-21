@@ -10,7 +10,7 @@ import Organization from "../Content/Organization";
 import Products from "../Content/Products";
 import Icon from "../Icon/Icon";
 import {
-  Container,
+  StyledSideBar,
   ToggleButton,
   Navigation,
   StyledLink,
@@ -26,7 +26,7 @@ const content: Record<NavLocation, FunctionComponent> = {
 
 type SideBarProps = {
   isOpen: boolean;
-  setIsOpen: any;
+  setIsOpen?: () => void;
 };
 
 const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
@@ -46,7 +46,7 @@ const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
   const { section } = match.params;
 
   return (
-    <Container isOpen={isOpen}>
+    <StyledSideBar isOpen={isOpen}>
       <Navigation>
         {allLocations
           .filter((loc) => loc !== "swap")
@@ -88,7 +88,7 @@ const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
           <Icon iconSize={0.5} name="arrow-right" />
         )}
       </ToggleButton>
-    </Container>
+    </StyledSideBar>
   );
 };
 

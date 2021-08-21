@@ -1,16 +1,15 @@
-import React, { ReactElement } from "react";
+import React, { FC, ReactElement } from "react";
 
 import { Container, StyledTradeContainer } from "./TradeContainer.styles";
 
 type TradeContainerProps = {
-  children: React.ReactNode;
-  isOpen: boolean;
+  isOpen?: boolean;
 };
 
-const TradeContainer = ({
+const TradeContainer: FC<TradeContainerProps> = ({
   children,
-  isOpen,
-}: TradeContainerProps): ReactElement => {
+  isOpen = false,
+}): ReactElement => {
   return (
     <StyledTradeContainer isOpen={isOpen}>
       <Container>{children}</Container>

@@ -8,6 +8,7 @@ import { ThemeProvider } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
+import PageLoader from "./components/PageLoader/PageLoader";
 import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
@@ -26,7 +27,7 @@ const App = (): JSX.Element => {
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
-        <Suspense fallback={"Loading..."}>
+        <Suspense fallback={<PageLoader />}>
           <Router>
             <Route path="/:section([^0/#?]+)?">
               <Page />
