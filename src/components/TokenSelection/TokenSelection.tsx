@@ -7,7 +7,6 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { defaultActiveTokens } from "../../features/metadata/metadataApi";
 import useWindowSize from "../../helpers/useWindowSize";
-import { Title } from "../Typography/Typography";
 import {
   Container,
   TitleContainer,
@@ -18,6 +17,8 @@ import {
   LegendItem,
   LegendDivider,
   ScrollContainer,
+  ContentContainer,
+  StyledTitle,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
 import { sortTokensBySymbolAndBalance } from "./sort";
@@ -78,6 +79,10 @@ export type TokenSelectionProps = {
    * currently connected chain id
    */
   chainId: number;
+  /**
+   * Hide or show the component
+   */
+  isHidden?: boolean;
 };
 
 const TokenSelection = ({
@@ -94,6 +99,7 @@ const TokenSelection = ({
   addActiveToken,
   removeActiveToken,
   chainId,
+  isHidden = false,
 }: TokenSelectionProps) => {
   const { width, height } = useWindowSize();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -143,67 +149,69 @@ const TokenSelection = ({
   ]);
 
   return (
-    <Container ref={containerRef} $overflow={overflow}>
+    <Container ref={containerRef} overflow={overflow} isHidden={isHidden}>
       <TitleContainer>
-        <Title type="h2">{t("common:swap")}</Title>
+        <StyledTitle type="h2">{t("common:swap")}</StyledTitle>
         <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
       </TitleContainer>
-      <SearchInput
-        hideLabel
-        id="tokenQuery"
-        type="text"
-        label="Search name or address"
-        value={tokenQuery}
-        placeholder="Search name or paste address"
-        onChange={(e) => {
-          setTokenQuery(e.currentTarget.value);
-        }}
-      />
+      <ContentContainer>
+        <SearchInput
+          hideLabel
+          id="tokenQuery"
+          type="text"
+          label="Search name or address"
+          value={tokenQuery}
+          placeholder="Search name or paste address"
+          onChange={(e) => {
+            setTokenQuery(e.currentTarget.value);
+          }}
+        />
 
-      <ScrollContainer ref={scrollContainerRef}>
-        <Legend>
-          <LegendItem>{t("common:token")}</LegendItem>
-          <LegendDivider />
-          <LegendItem>{t("balances:balance")}</LegendItem>
-        </Legend>
+        <ScrollContainer ref={scrollContainerRef}>
+          <Legend>
+            <LegendItem>{t("common:token")}</LegendItem>
+            <LegendDivider />
+            <LegendItem>{t("balances:balance")}</LegendItem>
+          </Legend>
 
-        {filteredTokens && filteredTokens.length > 0 && (
-          <TokenContainer>
-            {filteredTokens.map((token) => (
-              <TokenButton
-                token={token}
-                balance={formatUnits(
-                  balances.values[token.address] || 0,
-                  token.decimals
-                )}
-                setToken={handleClick}
-                disabled={
-                  tokenSelectType === "senderToken"
-                    ? token.address === senderToken
-                    : token.address === signerToken
-                } // shouldn't be able to select same duplicate token
-                removeActiveToken={removeActiveToken}
-                defaultToken={defaultActiveTokens[chainId!].includes(
-                  token.address
-                )}
-                key={token.address}
-              />
-            ))}
-          </TokenContainer>
-        )}
-        {chainId === 1 && tokenQuery && filteredTokens.length < 5 && (
-          <InactiveTokensList
-            tokenQuery={tokenQuery}
-            activeTokens={activeTokens}
-            allTokens={allTokens}
-            supportedTokenAddresses={supportedTokenAddresses}
-            onTokenClick={(tokenAddress) => {
-              addActiveToken(tokenAddress);
-              setTokenQuery("");
-            }}
-          />
-        )}
-      </ScrollContainer>
+          {filteredTokens && filteredTokens.length > 0 && (
+            <TokenContainer>
+              {filteredTokens.map((token) => (
+                <TokenButton
+                  token={token}
+                  balance={formatUnits(
+                    balances.values[token.address] || 0,
+                    token.decimals
+                  )}
+                  setToken={handleClick}
+                  disabled={
+                    tokenSelectType === "senderToken"
+                      ? token.address === senderToken
+                      : token.address === signerToken
+                  } // shouldn't be able to select same duplicate token
+                  removeActiveToken={removeActiveToken}
+                  defaultToken={defaultActiveTokens[chainId!].includes(
+                    token.address
+                  )}
+                  key={token.address}
+                />
+              ))}
+            </TokenContainer>
+          )}
+          {chainId === 1 && tokenQuery && filteredTokens.length < 5 && (
+            <InactiveTokensList
+              tokenQuery={tokenQuery}
+              activeTokens={activeTokens}
+              allTokens={allTokens}
+              supportedTokenAddresses={supportedTokenAddresses}
+              onTokenClick={(tokenAddress) => {
+                addActiveToken(tokenAddress);
+                setTokenQuery("");
+              }}
+            />
+          )}
+        </ScrollContainer>
+      </ContentContainer>
     </Container>
   );
 };

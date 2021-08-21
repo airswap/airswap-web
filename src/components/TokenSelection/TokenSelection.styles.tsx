@@ -6,13 +6,17 @@ import Icon from "../Icon/Icon";
 import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
+import { Title } from "../Typography/Typography";
 
 type ContainerProps = {
-  $overflow: boolean;
+  overflow: boolean;
+  isHidden: boolean;
 };
 
 export const ScrollContainer = styled.div`
   flex-grow: 99;
+  height: 100%;
+  max-height: calc(100% - 3.75rem);
   padding-bottom: ${sizes.tradeContainerPadding};
 
   &::-webkit-scrollbar {
@@ -26,31 +30,11 @@ export const ScrollContainer = styled.div`
   }
 `;
 
-export const Container = styled.div<ContainerProps>`
-  display: flex;
-  flex-direction: column;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding} 0;
+export const ContentContainer = styled.div`
+  position: relative;
+  height: calc(100% - 5.625rem);
+  padding: 0 ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
-
-  ${ScrollContainer} {
-    width: calc(100% + (${sizes.tradeContainerPadding} / 2));
-    padding-right: calc(${sizes.tradeContainerPadding} / 2);
-    overflow-x: hidden;
-    overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
-  }
-`;
-
-export const TitleContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 1.875rem;
 `;
 
 export const CloseButton = styled(IconButton)`
@@ -67,6 +51,61 @@ export const CloseButton = styled(IconButton)`
   }
 `;
 
+export const Container = styled.div<ContainerProps>`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
+
+  ${ScrollContainer} {
+    width: calc(100% + (${sizes.tradeContainerPadding} / 2));
+    padding-right: calc(${sizes.tradeContainerPadding} / 2);
+    overflow-x: hidden;
+    overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+  }
+  
+  ${ContentContainer} {
+    transition: transform ${(props) =>
+      props.isHidden
+        ? "0.25s ease-in"
+        : "0.35s cubic-bezier(0.12, 0.71, 0.36, 1)"};
+    transform: translateY(${(props) => (props.isHidden ? "100%" : "0%")});
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+  
+  ${CloseButton} {
+    transition: transform ${(props) =>
+      props.isHidden
+        ? "0.25s ease-in"
+        : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
+    transform: translateY(${(props) => (props.isHidden ? "-5rem" : "0%")});
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1.875rem;
+  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding} 0;
+`;
+
+export const StyledTitle = styled(Title)`
+  visibility: hidden;
+`;
+
 export const StyledLabel = styled.label`
   font-size: 1rem;
 `;
@@ -74,6 +113,7 @@ export const StyledLabel = styled.label`
 export const SearchInput = styled(TextInput)`
   margin-bottom: 1.25rem;
   width: 100%;
+  background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
     border: 1px solid ${(props) => props.theme.colors.borderGrey};
