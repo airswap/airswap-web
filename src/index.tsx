@@ -7,7 +7,6 @@ import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react";
 
 import App from "./App";
 import { store } from "./app/store";
-import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
 const instance = createInstance({

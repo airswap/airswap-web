@@ -75,8 +75,7 @@
     "autoprefixer": "^9",
     "husky": "^7.0.1",
     "jest-canvas-mock": "^2.3.1",
-    "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "postcss": "^7"
   },
   "eslintConfig": {
     "extends": "react-app",

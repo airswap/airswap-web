@@ -7,8 +7,11 @@ import { createGlobalStyle } from "styled-components/macro";
 
 import convertHexToRGBA from "../helpers/transformHexToRgba";
 import breakPoints from "./breakpoints";
+import reset from "./reset";
 
 const GlobalStyle = createGlobalStyle`
+  ${reset}
+  
   body {
     margin: 0;
     padding: 0;
