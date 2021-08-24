@@ -40,10 +40,7 @@ import {
   clear,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
-import {
-  SubmittedApproval,
-  selectTransactions,
-} from "../../features/transactions/transactionsSlice";
+import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../TokenSelect/TokenSelect";
@@ -78,7 +75,6 @@ const SwapWidget = () => {
     "senderToken" | "signerToken"
   >("senderToken");
   const dispatch = useAppDispatch();
-  const transactions = useAppSelector(selectTransactions);
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const order = useAppSelector(selectBestOrder);
@@ -105,6 +101,8 @@ const SwapWidget = () => {
     [signerToken, activeTokens]
   );
 
+  const pendingApprovals = useAppSelector(selectPendingApprovals);
+
   useEffect(() => {
     setSenderToken("");
     setSignerToken("");
@@ -118,17 +116,9 @@ const SwapWidget = () => {
     return null;
   };
 
-  const getTokenApprovalStatus = (tokenId: string | undefined) => {
-    if (tokenId === undefined) return null;
-    for (let i = transactions.length - 1; i >= 0; i--) {
-      if (transactions[i].type === "Approval") {
-        const approvalTx: SubmittedApproval = transactions[
-          i
-        ] as SubmittedApproval;
-        if (approvalTx.tokenAddress === tokenId) return approvalTx.status;
-      }
-    }
-    return null;
+  const hasApprovalPending = (tokenId: string | undefined) => {
+    if (tokenId === undefined) return false;
+    return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
   };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
@@ -239,8 +229,7 @@ const SwapWidget = () => {
             intent="primary"
             aria-label={t("orders:approve", { context: "aria" })}
             loading={
-              getTokenApprovalStatus(senderToken) === "processing" ||
-              isApproving
+              ordersStatus === "approving" || hasApprovalPending(senderToken)
             }
             onClick={async () => {
               setIsApproving(true);

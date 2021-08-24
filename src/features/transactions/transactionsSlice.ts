@@ -48,7 +48,7 @@ function updateTransaction(
   }
 }
 
-export const ordersSlice = createSlice({
+export const transactionsSlice = createSlice({
   name: "transactions",
   initialState,
   reducers: {
@@ -80,6 +80,10 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear, setTransactions } = ordersSlice.actions;
+export const { clear, setTransactions } = transactionsSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
-export default ordersSlice.reducer;
+export const selectPendingApprovals = (state: RootState) =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "processing" && tx.type === "Approval"
+  ) as SubmittedApproval[];
+export default transactionsSlice.reducer;
