@@ -198,7 +198,7 @@ const TokenSelection = ({
               ))}
             </TokenContainer>
           )}
-          {chainId === 1 && tokenQuery && filteredTokens.length < 5 && (
+          {tokenQuery && filteredTokens.length < 5 && (
             <InactiveTokensList
               tokenQuery={tokenQuery}
               activeTokens={activeTokens}
