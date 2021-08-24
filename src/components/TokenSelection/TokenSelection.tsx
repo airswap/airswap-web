@@ -184,11 +184,6 @@ const TokenSelection = ({
                     token.decimals
                   )}
                   setToken={handleClick}
-                  disabled={
-                    tokenSelectType === "senderToken"
-                      ? token.address === senderToken
-                      : token.address === signerToken
-                  } // shouldn't be able to select same duplicate token
                   removeActiveToken={removeActiveToken}
                   defaultToken={defaultActiveTokens[chainId!].includes(
                     token.address
