@@ -2,7 +2,7 @@ import { StyledDarkModeSwitch } from "./DarkModeSwitch.styles";
 
 type DarkModeProps = {
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const DarkModeSwitch = ({ className, onClick }: DarkModeProps): JSX.Element => {

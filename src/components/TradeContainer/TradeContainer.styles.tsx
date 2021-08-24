@@ -16,7 +16,7 @@ export const Container = styled.div`
 `;
 
 type StyledTradeContainerProps = {
-  isOpen: boolean;
+  isOpen?: boolean;
 };
 
 export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
