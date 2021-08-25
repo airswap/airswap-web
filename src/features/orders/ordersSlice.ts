@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
+import { allowancesActions } from "../balances/balancesSlice";
 import {
   submitTransaction,
   mineTransaction,
@@ -27,7 +28,7 @@ import {
 
 export interface OrdersState {
   orders: LightOrder[];
-  status: "idle" | "requesting" | "taking" | "failed";
+  status: "idle" | "requesting" | "approving" | "taking" | "failed";
 }
 
 const initialState: OrdersState = {
@@ -76,6 +77,14 @@ export const approve = createAsyncThunk(
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
+            // Optimistically update allowance (this is not really optimisitc,
+            // but it pre-empts receiving the event)
+            dispatch(
+              allowancesActions.set({
+                tokenAddress: params.token,
+                amount: "90071992547409910000000000",
+              })
+            );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
           }
@@ -148,6 +157,15 @@ export const ordersSlice = createSlice({
         state.status = "idle";
       })
       .addCase(take.rejected, (state, action) => {
+        state.status = "failed";
+      })
+      .addCase(approve.pending, (state) => {
+        state.status = "approving";
+      })
+      .addCase(approve.fulfilled, (state) => {
+        state.status = "idle";
+      })
+      .addCase(approve.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(setWalletConnected, (state) => {
