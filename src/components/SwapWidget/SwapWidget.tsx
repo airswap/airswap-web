@@ -262,7 +262,8 @@ const SwapWidget = () => {
             !signerToken ||
             !senderAmount ||
             insufficientBalance ||
-            parseFloat(senderAmount) === 0
+            parseFloat(senderAmount) === 0 ||
+            senderAmount === "."
           }
           loading={ordersStatus === "requesting"}
           onClick={async () => {
