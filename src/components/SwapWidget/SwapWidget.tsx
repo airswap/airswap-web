@@ -251,7 +251,8 @@ const SwapWidget = () => {
             !signerToken ||
             !senderAmount ||
             insufficientBalance ||
-            parseFloat(senderAmount) === 0
+            parseFloat(senderAmount) === 0 ||
+            senderAmount === "."
           }
           loading={ordersStatus === "requesting"}
           onClick={async () => {
@@ -283,7 +284,9 @@ const SwapWidget = () => {
           }}
         >
           {!insufficientBalance
-            ? !senderAmount || parseFloat(senderAmount) === 0
+            ? !senderAmount ||
+              parseFloat(senderAmount) === 0 ||
+              senderAmount === "."
               ? t("orders:enterAmount")
               : decimalsFound
               ? t("orders:continue")
@@ -310,7 +313,7 @@ const SwapWidget = () => {
   let insufficientBalance: boolean = false;
   let decimalsFound: boolean = true;
   if (senderAmount && senderToken && Object.keys(balances.values).length) {
-    if (parseFloat(senderAmount) === 0) {
+    if (parseFloat(senderAmount) === 0 || senderAmount === ".") {
       insufficientBalance = false;
     } else {
       const senderDecimals = getTokenDecimals(senderToken);
