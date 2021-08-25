@@ -13,9 +13,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import {
-  getActiveTokensFromLocalStorage,
-} from "./metadataApi";
+import { getActiveTokensFromLocalStorage } from "./metadataApi";
 
 export interface MetadataState {
   tokens: {

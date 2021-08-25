@@ -32,9 +32,7 @@ export const getActiveTokensFromLocalStorage = (
   )
     .split(",")
     .filter((address) => address.length);
-  return (
-    (savedTokens.length && savedTokens) || []
-  );
+  return (savedTokens.length && savedTokens) || [];
 };
 
 export const getSavedActiveTokensInfo = async (
