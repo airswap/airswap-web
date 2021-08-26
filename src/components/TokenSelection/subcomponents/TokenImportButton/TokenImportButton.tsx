@@ -2,10 +2,9 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@uniswap/token-lists";
 
+import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
   Container,
-  Image,
-  ImageContainer,
   TextContainer,
   Symbol,
   TokenName,
@@ -37,12 +36,7 @@ const TokenImportButton = ({
 
   return (
     <Container>
-      <ImageContainer>
-        <Image
-          src={token.logoURI || "https://via.placeholder.com/150"}
-          alt={token.address}
-        />
-      </ImageContainer>
+      <TokenLogo tokenInfo={token} size="medium" />
 
       <TextContainer>
         <Symbol>{token.symbol}</Symbol>

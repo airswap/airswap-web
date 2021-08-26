@@ -1,11 +1,10 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
+import TokenLogo from "../../../TokenLogo/TokenLogo";
 import TokenDeleteButton from "../TokenDeleteButton/TokenDeleteButton";
 import {
   Container,
-  Image,
-  ImageContainer,
   Symbol,
   TokenName,
   Balance,
@@ -50,12 +49,7 @@ const TokenButton = ({
       }}
       disabled={disabled!}
     >
-      <ImageContainer>
-        <Image
-          src={token.logoURI || "https://via.placeholder.com/150"}
-          alt={token.address}
-        />
-      </ImageContainer>
+      <TokenLogo tokenInfo={token} size="small" />
 
       <Symbol>{token.symbol}</Symbol>
 

@@ -72,7 +72,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   return (
     <TokenSelectContainer>
       <FlexRow>
-        <TokenLogo size="medium" tokenInfo={selectedToken} />
+        <TokenLogo size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
           <StyledLabel invisible={readOnly}>{label}</StyledLabel>
           <StyledSelectItem>

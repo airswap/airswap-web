@@ -45,16 +45,6 @@ export const Container = styled.button<ContainerProps>`
   }
 `;
 
-export const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-`;
-
-export const Image = styled.img``;
-
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;

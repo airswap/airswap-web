@@ -11,8 +11,8 @@ export type StlyedTokenLogoProps = {
 
 const remSizes: Record<sizes, string> = {
   small: "1.5rem",
-  medium: "2.5rem",
-  large: "3.125rem",
+  medium: "2rem",
+  large: "2.5rem",
 };
 
 const StyledTokenLogo = styled.div<StlyedTokenLogoProps>`
