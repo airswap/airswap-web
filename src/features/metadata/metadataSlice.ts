@@ -84,7 +84,8 @@ export const metadataSlice = createSlice({
         // TODO: handle failure?
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
-        state.tokens.active = action.payload.activeTokens || [];
+        if (!state.tokens.active?.length)
+          state.tokens.active = action.payload.activeTokens || [];
       })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId, address } = action.payload;
