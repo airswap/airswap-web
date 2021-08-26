@@ -133,7 +133,7 @@ const TokenSelection = ({
   }, [sortedTokens, tokenQuery]);
 
   const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
-    if (!filteredTokens) return [];
+    if (!filteredTokens.length) return [];
     if (!tokenQuery || tokenQuery === "") return filteredTokens;
 
     // split query into word array
