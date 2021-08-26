@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
 import Modal from "react-modal";
 
-import { findTokenByAddress } from "@airswap/metadata";
+import { findTokenByAddress, findTokensBySymbol } from "@airswap/metadata";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -98,11 +98,13 @@ const SwapWidget = () => {
 
   const senderTokenInfo = useMemo(
     () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
-    [senderToken, activeTokens]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [senderToken, activeTokens, chainId]
   );
   const signerTokenInfo = useMemo(
     () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
-    [signerToken, activeTokens]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [signerToken, activeTokens, chainId]
   );
 
   const pendingApprovals = useAppSelector(selectPendingApprovals);
@@ -112,6 +114,22 @@ const SwapWidget = () => {
     setSignerToken("");
     setSenderAmount("");
   }, [chainId]);
+
+  useEffect(() => {
+    if (allTokens.length) {
+      const usdtToken = findTokensBySymbol("USDT", allTokens)[0];
+      const wethToken = findTokensBySymbol("WETH", allTokens)[0];
+
+      if (usdtToken) {
+        setSenderToken(usdtToken.address);
+      }
+
+      if (wethToken) {
+        setSignerToken(wethToken.address);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTokens.length]);
 
   const getTokenDecimals = (tokenAddress: string) => {
     for (const token of activeTokens) {
@@ -377,7 +395,7 @@ const SwapWidget = () => {
               }}
               readOnly={!!signerAmount || pairUnavailable}
               includeAmountInput={true}
-              selectedToken={senderTokenInfo}
+              selectedToken={senderTokenInfo || null}
             />
             <SwapIconContainer>
               {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
