@@ -98,13 +98,12 @@ const SwapWidget = () => {
 
   const senderTokenInfo = useMemo(
     () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [senderToken, activeTokens, chainId]
+    [senderToken, activeTokens]
   );
+
   const signerTokenInfo = useMemo(
     () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [signerToken, activeTokens, chainId]
+    [signerToken, activeTokens]
   );
 
   const pendingApprovals = useAppSelector(selectPendingApprovals);
@@ -395,7 +394,7 @@ const SwapWidget = () => {
               }}
               readOnly={!!signerAmount || pairUnavailable}
               includeAmountInput={true}
-              selectedToken={senderTokenInfo || null}
+              selectedToken={senderTokenInfo}
             />
             <SwapIconContainer>
               {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
