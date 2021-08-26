@@ -2442,18 +2442,6 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@datapunt/matomo-tracker-js@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@datapunt/matomo-tracker-js/-/matomo-tracker-js-0.4.0.tgz#0b5012e1de5d302f4ba169ae94904155e526266e"
-  integrity sha512-jOLKZCyPc1y8ZntTTW0vnHAbU1jQHA5Ibdyb7G9jt+KWvGDR2wotX4ki2/x7SMD+IfOrfKDJ9pXzVo29dPIjAg==
-
-"@datapunt/matomo-tracker-react@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@datapunt/matomo-tracker-react/-/matomo-tracker-react-0.4.0.tgz#415dda2ebc82c612f9d829d9efe112edd3577dfa"
-  integrity sha512-R5iGHtdjgY0Iw0yg2vNO/WlBEwh/3QhZTinkh/SI/fbACeFaIZhcUt9PKB5nrMVMCdZWPfvMfW5T/6wtlyb3fA==
-  dependencies:
-    "@datapunt/matomo-tracker-js" "^0.4.0"
-
 "@emotion/cache@^10.0.27":
   version "10.0.29"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.29.tgz#87e7e64f412c060102d589fe7c6dc042e6f9d1e0"
@@ -15571,7 +15559,7 @@ react-hot-toast@^2.0.0:
   dependencies:
     goober "^2.0.35"
 
-react-i18next@^11.10.0:
+react-i18next@^11.11.4:
   version "11.11.4"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.4.tgz#f6f9a1c827e7a5271377de2bf14db04cb1c9e5ce"
   integrity sha512-ayWFlu8Sc7GAxW1PzMaPtzq+yiozWMxs0P1WeITNVzXAVRhC0Httkzw/IiODBta6seJRBCLrtUeFUSXhAIxlRg==

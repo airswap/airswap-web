@@ -107,7 +107,9 @@ export const WalletTransaction = ({
         <TextContainer>
           {approvalToken && (
             <>
-              <SpanTitle>Approve {approvalToken.symbol}</SpanTitle>
+              <SpanTitle>
+                {t("wallet:approve", { symbol: approvalToken.symbol })}
+              </SpanTitle>
               <SpanSubtitle>
                 {tx.status === "succeeded"
                   ? t("common:success")

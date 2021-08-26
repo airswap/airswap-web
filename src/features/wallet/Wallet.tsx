@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import Modal from "react-modal";
 
 import { Light } from "@airswap/protocols";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -73,9 +72,6 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const transactions = useAppSelector(selectTransactions);
   const allTokens = useAppSelector(selectAllTokenInfo);
 
-  // Analytics
-  const { trackPageView } = useMatomo();
-
   // Local component state
   const [showConnectorList, setShowConnectorList] = useState<boolean>(false);
   const [isActivating, setIsActivating] = useState<boolean>(false);
@@ -84,7 +80,6 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
-    trackPageView({ documentTitle: "Swap Page", href: "https://airswap.io" });
     const lastConnectedAccount = loadLastAccount();
     if (lastConnectedAccount) {
       setIsActivating(true);
@@ -93,7 +88,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       setProvider(lastConnectedAccount.provider);
       activate(connector).finally(() => setIsActivating(false));
     }
-  }, [activate, trackPageView]);
+  }, [activate]);
 
   // Side effects for connecting a wallet from SwapWidget
 

@@ -20,7 +20,6 @@
     "@airswap/protocols": "0.5.9",
     "@airswap/types": "^3.5.17",
     "@craco/craco": "^6.2.0",
-    "@datapunt/matomo-tracker-react": "^0.4.0",
     "@fontsource/montserrat": "^4.5.1",
     "@reduxjs/toolkit": "~1.5.1",
     "@testing-library/jest-dom": "^5.14.1",

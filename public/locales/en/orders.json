@@ -22,7 +22,7 @@
   "price": "Price",
   "gasCost": "Gas cost",
   "protocolFee": "Protocol Fee",
-  "searchByNameOrSymbol": "Search by name or symbol...",
+  "searchByNameOrAddress": "Search name or paste address",
   "removeFromActive": "Remove from active",
   "expandedResults": "Expanded results from inactive Token Lists",
   "newQuoteIn": "New Quote In",

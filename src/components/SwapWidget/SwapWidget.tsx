@@ -6,7 +6,6 @@ import Modal from "react-modal";
 import { findTokenByAddress } from "@airswap/metadata";
 import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
-import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
@@ -96,7 +95,6 @@ const SwapWidget = () => {
     active,
     activate,
   } = useWeb3React<Web3Provider>();
-  const { trackEvent } = useMatomo();
 
   const senderTokenInfo = useMemo(
     () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
@@ -263,7 +261,6 @@ const SwapWidget = () => {
           loading={ordersStatus === "requesting"}
           onClick={async () => {
             try {
-              trackEvent({ category: "order", action: "request" });
               const result = await dispatch(
                 request({
                   chainId: chainId!,
@@ -356,7 +353,9 @@ const SwapWidget = () => {
     <>
       <StyledSwapWidget>
         <Header>
-          <Title type="h2">{isApproving ? "Approve" : "Swap"}</Title>
+          <Title type="h2">
+            {isApproving ? t("orders:approve") : t("common:swap")}
+          </Title>
         </Header>
         {showOrderSubmitted ? (
           <HugeTicks />
@@ -421,7 +420,6 @@ const SwapWidget = () => {
                   provider: library,
                 })
               );
-              trackEvent({ category: "order", action: "request" });
             }}
           />
         </InfoContainer>

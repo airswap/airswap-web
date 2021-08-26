@@ -106,7 +106,13 @@ const TokenSelection = ({
   const [overflow, setOverflow] = useState(false);
 
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const { t } = useTranslation(["common", "wallet", "orders", "balances"]);
+  const { t } = useTranslation([
+    "common",
+    "wallet",
+    "orders",
+    "balances",
+    "orders",
+  ]);
 
   // handle user clicking row
   const handleClick = (address: string) => {
@@ -158,9 +164,9 @@ const TokenSelection = ({
           hideLabel
           id="tokenQuery"
           type="text"
-          label="Search name or address"
+          label={t("orders:searchByNameOrAddress")}
           value={tokenQuery}
-          placeholder="Search name or paste address"
+          placeholder={t("orders:searchByNameOrAddress")}
           onChange={(e) => {
             setTokenQuery(e.currentTarget.value);
           }}
