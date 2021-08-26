@@ -353,7 +353,9 @@ const SwapWidget = () => {
     <>
       <StyledSwapWidget>
         <Header>
-          <Title type="h2">{isApproving ? "Approve" : "Swap"}</Title>
+          <Title type="h2">
+            {isApproving ? t("orders:approve") : t("common:swap")}
+          </Title>
         </Header>
         {showOrderSubmitted ? (
           <HugeTicks />
