@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.js": "/static/js/main.6207d57c.chunk.js",
-    "main.js.map": "/static/js/main.6207d57c.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.f46a6588.js",
-    "runtime-main.js.map": "/static/js/runtime-main.f46a6588.js.map",
+    "main.js": "/static/js/main.4d35199e.chunk.js",
+    "main.js.map": "/static/js/main.4d35199e.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.48067e2a.js",
+    "runtime-main.js.map": "/static/js/runtime-main.48067e2a.js.map",
     "static/css/2.4c8a09d6.chunk.css": "/static/css/2.4c8a09d6.chunk.css",
-    "static/js/2.3a293709.chunk.js": "/static/js/2.3a293709.chunk.js",
-    "static/js/2.3a293709.chunk.js.map": "/static/js/2.3a293709.chunk.js.map",
-    "static/js/3.d555d292.chunk.js": "/static/js/3.d555d292.chunk.js",
-    "static/js/3.d555d292.chunk.js.map": "/static/js/3.d555d292.chunk.js.map",
+    "static/js/2.2b4cc204.chunk.js": "/static/js/2.2b4cc204.chunk.js",
+    "static/js/2.2b4cc204.chunk.js.map": "/static/js/2.2b4cc204.chunk.js.map",
+    "static/js/3.ac1a0d26.chunk.js": "/static/js/3.ac1a0d26.chunk.js",
+    "static/js/3.ac1a0d26.chunk.js.map": "/static/js/3.ac1a0d26.chunk.js.map",
     "static/js/4.adc42eb9.chunk.js": "/static/js/4.adc42eb9.chunk.js",
     "static/js/4.adc42eb9.chunk.js.map": "/static/js/4.adc42eb9.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.4c8a09d6.chunk.css.map": "/static/css/2.4c8a09d6.chunk.css.map",
-    "static/js/2.3a293709.chunk.js.LICENSE.txt": "/static/js/2.3a293709.chunk.js.LICENSE.txt",
-    "static/js/3.d555d292.chunk.js.LICENSE.txt": "/static/js/3.d555d292.chunk.js.LICENSE.txt",
+    "static/js/2.2b4cc204.chunk.js.LICENSE.txt": "/static/js/2.2b4cc204.chunk.js.LICENSE.txt",
+    "static/js/3.ac1a0d26.chunk.js.LICENSE.txt": "/static/js/3.ac1a0d26.chunk.js.LICENSE.txt",
     "static/media/getFetch.cjs": "/static/media/getFetch.582d29c4.cjs",
     "static/media/metamask.45038d58.svg": "/static/media/metamask.45038d58.svg",
     "static/media/400.css": "/static/media/montserrat-vietnamese-400-normal.968b706e.woff2",
@@ -24,9 +24,9 @@
     "static/media/walletconnect.dfa25e47.svg": "/static/media/walletconnect.dfa25e47.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.f46a6588.js",
+    "static/js/runtime-main.48067e2a.js",
     "static/css/2.4c8a09d6.chunk.css",
-    "static/js/2.3a293709.chunk.js",
-    "static/js/main.6207d57c.chunk.js"
+    "static/js/2.2b4cc204.chunk.js",
+    "static/js/main.4d35199e.chunk.js"
   ]
 }
