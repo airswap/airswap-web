@@ -33,10 +33,6 @@ export type TokenRowProps = {
    * Removes token from the active tokens list.
    */
   removeActiveToken: (tokenAddress: string) => void;
-  /**
-   * Flag that determines if this is a default token that is automatically active.
-   */
-  defaultToken: boolean;
 };
 
 // TODO: Make Container a button instead of a Balance
@@ -46,7 +42,6 @@ const TokenButton = ({
   setToken,
   removeActiveToken,
   disabled,
-  defaultToken,
 }: TokenRowProps) => {
   return (
     <Container
@@ -67,14 +62,12 @@ const TokenButton = ({
       <TokenNameContainer>
         <TokenName>{token.name}</TokenName>
 
-        {!defaultToken && (
-          <TokenDeleteButton
-            onClick={(e) => {
-              e.stopPropagation();
-              removeActiveToken(token.address);
-            }}
-          />
-        )}
+        <TokenDeleteButton
+          onClick={(e) => {
+            e.stopPropagation();
+            removeActiveToken(token.address);
+          }}
+        />
       </TokenNameContainer>
 
       <Balance>{stringToSignificantDecimals(balance)}</Balance>

@@ -5,7 +5,6 @@ import { formatUnits } from "@ethersproject/units";
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { defaultActiveTokens } from "../../features/metadata/metadataApi";
 import useWindowSize from "../../helpers/useWindowSize";
 import {
   Container,
@@ -185,9 +184,6 @@ const TokenSelection = ({
                   )}
                   setToken={handleClick}
                   removeActiveToken={removeActiveToken}
-                  defaultToken={defaultActiveTokens[chainId!].includes(
-                    token.address
-                  )}
                   key={token.address}
                 />
               ))}

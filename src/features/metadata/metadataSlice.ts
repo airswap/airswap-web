@@ -8,14 +8,12 @@ import {
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { AppDispatch, RootState } from "../../app/store";
+import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import {
-  defaultActiveTokens,
-  getActiveTokensFromLocalStorage,
-} from "./metadataApi";
+import { getActiveTokensFromLocalStorage } from "./metadataApi";
 
 export interface MetadataState {
   tokens: {
@@ -85,12 +83,14 @@ export const metadataSlice = createSlice({
       .addCase(fetchAllTokens.rejected, (state) => {
         // TODO: handle failure?
       })
+      .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
+        if (!state.tokens.active?.length)
+          state.tokens.active = action.payload.activeTokens || [];
+      })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId, address } = action.payload;
         state.tokens.active =
-          getActiveTokensFromLocalStorage(address, chainId) ||
-          defaultActiveTokens[chainId] ||
-          [];
+          getActiveTokensFromLocalStorage(address, chainId) || [];
       })
       .addCase(setWalletDisconnected, (state) => {
         state.tokens.active = [];
