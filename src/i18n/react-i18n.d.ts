@@ -7,6 +7,7 @@ import common from "../../public/locales/en/common.json";
 import information from "../../public/locales/en/information.json";
 import marketing from "../../public/locales/en/marketing.json";
 import orders from "../../public/locales/en/orders.json";
+import toast from "../../public/locales/en/toast.json";
 import wallet from "../../public/locales/en/wallet.json";
 
 declare module "react-i18next" {
@@ -18,5 +19,6 @@ declare module "react-i18next" {
     orders: typeof orders;
     marketing: typeof marketing;
     information: typeof information;
+    toast: typeof toast;
   }
 }

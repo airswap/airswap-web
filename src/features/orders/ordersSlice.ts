@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
+import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { allowancesActions } from "../balances/balancesSlice";
 import {
   submitTransaction,
@@ -60,7 +61,7 @@ export const request = createAsyncThunk(
 
 export const approve = createAsyncThunk(
   "orders/approve",
-  async (params: any, { dispatch }) => {
+  async (params: any, { getState, dispatch }) => {
     let tx: Transaction;
     try {
       tx = await approveToken(params.token, params.library);
@@ -75,6 +76,8 @@ export const approve = createAsyncThunk(
         dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
+          const state: RootState = getState() as RootState;
+          const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
             // Optimistically update allowance (this is not really optimisitc,
@@ -85,12 +88,15 @@ export const approve = createAsyncThunk(
                 amount: "90071992547409910000000000",
               })
             );
+            notifyTransaction("Approval", transaction, tokens, false);
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
+            notifyTransaction("Approval", transaction, tokens, true);
           }
         });
       }
     } catch (e) {
+      console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -99,7 +105,10 @@ export const approve = createAsyncThunk(
 
 export const take = createAsyncThunk(
   "orders/take",
-  async (params: { order: LightOrder; library: any }, { dispatch }) => {
+  async (
+    params: { order: LightOrder; library: any },
+    { getState, dispatch }
+  ) => {
     let tx: Transaction;
     try {
       tx = await takeOrder(params.order, params.library);
@@ -114,14 +123,19 @@ export const take = createAsyncThunk(
         dispatch(submitTransaction(transaction));
         params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
+          const state: RootState = getState() as RootState;
+          const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
+            notifyTransaction("Order", transaction, tokens, false);
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
+            notifyTransaction("Order", transaction, tokens, true);
           }
         });
       }
     } catch (e) {
+      console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
     }

@@ -8,6 +8,7 @@ import { toggleTheme } from "../../features/userSettings/userSettingsSlice";
 import { NavLocation } from "../../routes";
 import SideBar from "../SideBar/SideBar";
 import { StyledWallet, StyledDarkModeSwitch } from "../SideBar/SideBar.styles";
+import Toaster from "../Toasts/Toaster";
 import TradeContainer from "../TradeContainer/TradeContainer";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
 
@@ -31,6 +32,7 @@ const Page: FC = (): ReactElement => {
 
   return (
     <StyledPage>
+      <Toaster sideBarOpen={sideBarOpen} />
       <StyledSiteLogo />
       <StyledWallet isOpen={sideBarOpen} />
       <TradeContainer isOpen={sideBarOpen}>
