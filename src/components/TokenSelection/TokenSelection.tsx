@@ -132,6 +132,44 @@ const TokenSelection = ({
     return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
 
+  const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
+    if (!filteredTokens) return [];
+    if (!tokenQuery || tokenQuery === "") return filteredTokens;
+
+    // split query into word array
+    const symbolMatch = tokenQuery
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((s) => s.length > 0);
+
+    // don't filter against symbol if query is multiple words
+    if (symbolMatch.length > 1) return filteredTokens;
+
+    // filter based off symbol match -> substring match -> remainder of filtered tokens
+    const exactMatches: TokenInfo[] = [];
+    const symbolSubtrings: TokenInfo[] = [];
+    const remainder: TokenInfo[] = [];
+
+    filteredTokens.forEach((token) => {
+      // add exact matches
+      if (token.symbol?.toLowerCase() === symbolMatch[0]) {
+        return exactMatches.push(token);
+      }
+      // add matches with starting values
+      else if (
+        token.symbol?.toLowerCase().startsWith(tokenQuery.toLowerCase().trim())
+      ) {
+        return symbolSubtrings.push(token);
+      }
+      // add remaining filtered tokens
+      else {
+        return remainder.push(token);
+      }
+    });
+
+    return [...exactMatches, ...symbolSubtrings, ...remainder];
+  }, [filteredTokens, tokenQuery]);
+
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
@@ -174,9 +212,9 @@ const TokenSelection = ({
             <LegendItem>{t("balances:balance")}</LegendItem>
           </Legend>
 
-          {filteredTokens && filteredTokens.length > 0 && (
+          {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              {filteredTokens.map((token) => (
+              {sortedFilteredTokens.map((token) => (
                 <TokenButton
                   token={token}
                   balance={formatUnits(
@@ -193,7 +231,7 @@ const TokenSelection = ({
               ))}
             </TokenContainer>
           )}
-          {tokenQuery && filteredTokens.length < 5 && (
+          {tokenQuery && sortedFilteredTokens.length < 5 && (
             <InactiveTokensList
               tokenQuery={tokenQuery}
               activeTokens={activeTokens}
