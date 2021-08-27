@@ -132,10 +132,9 @@ const TokenSelection = ({
     return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
 
-  const sortedFilteredTokens: TokenInfo[] = sortTokenByExactMatch(
-    filteredTokens,
-    tokenQuery
-  );
+  const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
+    return sortTokenByExactMatch(filteredTokens, tokenQuery);
+  }, [filteredTokens, tokenQuery]);
 
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {

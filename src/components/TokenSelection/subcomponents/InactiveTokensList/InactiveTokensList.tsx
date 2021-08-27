@@ -44,10 +44,9 @@ const InactiveTokensList = ({
     return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
   }, [sortedInactiveTokens, tokenQuery]);
 
-  const sortedFilteredInactiveTokens: TokenInfo[] = sortTokenByExactMatch(
-    inactiveTokens,
-    tokenQuery
-  ).slice(0, 10);
+  const sortedFilteredInactiveTokens: TokenInfo[] = useMemo(() => {
+    return sortTokenByExactMatch(inactiveTokens, tokenQuery);
+  }, [inactiveTokens, tokenQuery]).slice(0, 10);
 
   return (
     <>

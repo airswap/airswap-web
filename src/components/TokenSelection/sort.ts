@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { formatUnits } from "@ethersproject/units";
 import { TokenInfo } from "@uniswap/token-lists";
 
@@ -62,42 +60,39 @@ export function sortTokenByExactMatch(
   filteredTokens: TokenInfo[],
   tokenQuery: string
 ) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useMemo(() => {
-    if (!filteredTokens.length) return [];
-    if (!tokenQuery || tokenQuery === "") return filteredTokens;
+  if (!filteredTokens.length) return [];
+  if (!tokenQuery || tokenQuery === "") return filteredTokens;
 
-    // split query into word array
-    const symbolMatch = tokenQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((s) => s.length > 0);
+  // split query into word array
+  const symbolMatch = tokenQuery
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((s) => s.length > 0);
 
-    // don't filter against symbol if query is multiple words
-    if (symbolMatch.length > 1) return filteredTokens;
+  // don't filter against symbol if query is multiple words
+  if (symbolMatch.length > 1) return filteredTokens;
 
-    // filter based off symbol match -> substring match -> remainder of filtered tokens
-    const exactMatches: TokenInfo[] = [];
-    const symbolSubtrings: TokenInfo[] = [];
-    const remainder: TokenInfo[] = [];
+  // filter based off symbol match -> substring match -> remainder of filtered tokens
+  const exactMatches: TokenInfo[] = [];
+  const symbolSubtrings: TokenInfo[] = [];
+  const remainder: TokenInfo[] = [];
 
-    filteredTokens.forEach((token) => {
-      // add exact matches
-      if (token.symbol?.toLowerCase() === symbolMatch[0]) {
-        return exactMatches.push(token);
-      }
-      // add matches with starting values
-      else if (
-        token.symbol?.toLowerCase().startsWith(tokenQuery.toLowerCase().trim())
-      ) {
-        return symbolSubtrings.push(token);
-      }
-      // add remaining filtered tokens
-      else {
-        return remainder.push(token);
-      }
-    });
+  filteredTokens.forEach((token) => {
+    // add exact matches
+    if (token.symbol?.toLowerCase() === symbolMatch[0]) {
+      return exactMatches.push(token);
+    }
+    // add matches with starting values
+    else if (
+      token.symbol?.toLowerCase().startsWith(tokenQuery.toLowerCase().trim())
+    ) {
+      return symbolSubtrings.push(token);
+    }
+    // add remaining filtered tokens
+    else {
+      return remainder.push(token);
+    }
+  });
 
-    return [...exactMatches, ...symbolSubtrings, ...remainder];
-  }, [filteredTokens, tokenQuery]);
+  return [...exactMatches, ...symbolSubtrings, ...remainder];
 }
