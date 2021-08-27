@@ -21,7 +21,7 @@ import {
   StyledTitle,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
-import { sortTokensBySymbolAndBalance } from "./sort";
+import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
@@ -132,43 +132,10 @@ const TokenSelection = ({
     return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
 
-  const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
-    if (!filteredTokens) return [];
-    if (!tokenQuery || tokenQuery === "") return filteredTokens;
-
-    // split query into word array
-    const symbolMatch = tokenQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((s) => s.length > 0);
-
-    // don't filter against symbol if query is multiple words
-    if (symbolMatch.length > 1) return filteredTokens;
-
-    // filter based off symbol match -> substring match -> remainder of filtered tokens
-    const exactMatches: TokenInfo[] = [];
-    const symbolSubtrings: TokenInfo[] = [];
-    const remainder: TokenInfo[] = [];
-
-    filteredTokens.forEach((token) => {
-      // add exact matches
-      if (token.symbol?.toLowerCase() === symbolMatch[0]) {
-        return exactMatches.push(token);
-      }
-      // add matches with starting values
-      else if (
-        token.symbol?.toLowerCase().startsWith(tokenQuery.toLowerCase().trim())
-      ) {
-        return symbolSubtrings.push(token);
-      }
-      // add remaining filtered tokens
-      else {
-        return remainder.push(token);
-      }
-    });
-
-    return [...exactMatches, ...symbolSubtrings, ...remainder];
-  }, [filteredTokens, tokenQuery]);
+  const sortedFilteredTokens: TokenInfo[] = sortTokenByExactMatch(
+    filteredTokens,
+    tokenQuery
+  );
 
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
