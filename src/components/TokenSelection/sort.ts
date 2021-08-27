@@ -64,7 +64,7 @@ export function sortTokenByExactMatch(
 ) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMemo(() => {
-    if (!filteredTokens) return [];
+    if (!filteredTokens.length) return [];
     if (!tokenQuery || tokenQuery === "") return filteredTokens;
 
     // split query into word array
