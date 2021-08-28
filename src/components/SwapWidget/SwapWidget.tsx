@@ -61,6 +61,8 @@ import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAdd
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
+type TokenSelectType = "senderToken" | "signerToken";
+
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
@@ -72,9 +74,9 @@ const SwapWidget = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] = useState<
-    "senderToken" | "signerToken"
-  >("senderToken");
+  const [tokenSelectType, setTokenSelectType] = useState<TokenSelectType>(
+    "senderToken"
+  );
 
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -163,8 +165,8 @@ const SwapWidget = () => {
     }
   };
 
-  const handleSetToken = (value: string, type: "sender" | "signer") => {
-    if (type === "sender") {
+  const handleSetToken = (value: string, type: TokenSelectType) => {
+    if (type === "senderToken") {
       history.push({ pathname: `/${value}/${signerToken}` });
       setSenderToken(value);
     } else {
@@ -485,8 +487,8 @@ const SwapWidget = () => {
       <TokenSelection
         signerToken={signerToken!}
         senderToken={senderToken!}
-        setSignerToken={(value) => handleSetToken(value, "signer")}
-        setSenderToken={(value) => handleSetToken(value, "sender")}
+        setSignerToken={(value) => handleSetToken(value, "signerToken")}
+        setSenderToken={(value) => handleSetToken(value, "senderToken")}
         tokenSelectType={tokenSelectType}
         balances={balances}
         allTokens={allTokens}
