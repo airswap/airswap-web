@@ -1,6 +1,5 @@
 import React, { FC, ReactElement } from "react";
 import { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { useAppDispatch } from "../../app/hooks";
 import { Orders } from "../../features/orders/Orders";
@@ -14,14 +13,6 @@ import { StyledPage, StyledSiteLogo } from "./Page.styles";
 const Page: FC = (): ReactElement => {
   const [sideBarOpen, setSideBarOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
-  const match = useRouteMatch<{
-    tokenFrom?: string;
-    tokenTo?: string;
-  }>();
-
-  const { tokenFrom, tokenTo } = match.params;
-  console.log(tokenFrom, tokenTo);
 
   return (
     <StyledPage>

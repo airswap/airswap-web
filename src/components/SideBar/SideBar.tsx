@@ -1,10 +1,9 @@
 import { FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useRouteMatch } from "react-router-dom";
 
 import { AnimatePresence } from "framer-motion";
 
-import { NavLocation } from "../../routes";
+import { SideBarNavButton } from "../../routes";
 import Information from "../Content/Introduction";
 import Organization from "../Content/Organization";
 import Products from "../Content/Products";
@@ -17,8 +16,7 @@ import {
   StyledNavButton,
 } from "./SideBar.styles";
 
-const content: Record<NavLocation, FunctionComponent> = {
-  swap: Information,
+const content: Record<SideBarNavButton, FunctionComponent> = {
   introduction: Information,
   products: Products,
   organization: Organization,
@@ -29,21 +27,17 @@ type SideBarProps = {
   setIsOpen?: () => void;
 };
 
-type NavButton = "introduction" | "products" | "organization";
-
 const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
-  const [activeNavButton, setActiveNavButton] = useState<NavButton>(
+  const [activeNavButton, setActiveNavButton] = useState<SideBarNavButton>(
     "introduction"
   );
   const { t } = useTranslation(["information"]);
 
-  const match = useRouteMatch<{
-    section?: NavLocation;
-  }>();
-
-  const buttons: NavButton[] = ["introduction", "products", "organization"];
-
-  const { section } = match.params;
+  const buttons: SideBarNavButton[] = [
+    "introduction",
+    "products",
+    "organization",
+  ];
 
   return (
     <StyledSideBar isOpen={isOpen}>
@@ -65,7 +59,7 @@ const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
           animate={{ opacity: 1, x: "0%" }}
           exit={{ opacity: 0, x: "100%" }}
           transition={{ ease: "easeOut" }}
-          key={section || "introduction"}
+          key={activeNavButton}
           style={{
             display: `${isOpen ? "none" : "block"}`,
           }}
