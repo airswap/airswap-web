@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouteMatch } from "react-router-dom";
 
@@ -13,8 +13,8 @@ import {
   StyledSideBar,
   ToggleButton,
   Navigation,
-  StyledLink,
   ContentContainer,
+  StyledNavButton,
 } from "./SideBar.styles";
 
 const content: Record<NavLocation, FunctionComponent> = {
@@ -29,41 +29,35 @@ type SideBarProps = {
   setIsOpen?: () => void;
 };
 
+type NavButton = "introduction" | "products" | "organization";
+
 const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
+  const [activeNavButton, setActiveNavButton] = useState<NavButton>(
+    "introduction"
+  );
   const { t } = useTranslation(["information"]);
 
   const match = useRouteMatch<{
     section?: NavLocation;
   }>();
 
-  const allLocations: NavLocation[] = [
-    "swap",
-    "introduction",
-    "products",
-    "organization",
-  ];
+  const buttons: NavButton[] = ["introduction", "products", "organization"];
 
   const { section } = match.params;
 
   return (
     <StyledSideBar isOpen={isOpen}>
       <Navigation>
-        {allLocations
-          .filter((loc) => loc !== "swap")
-          .map((loc) => (
-            <StyledLink
-              key={loc}
-              to={loc}
-              primary={
-                section === loc ||
-                (loc === "introduction" &&
-                  (!section || !allLocations.includes(section)))
-              }
-            >
-              {/* @ts-ignore dynamic key */}
-              {t(`information:nav_${loc}`)}
-            </StyledLink>
-          ))}
+        {buttons.map((button) => (
+          <StyledNavButton
+            key={button}
+            primary={activeNavButton === button}
+            onClick={() => setActiveNavButton(button)}
+          >
+            {/* @ts-ignore dynamic key */}
+            {t(`information:nav_${button}`)}
+          </StyledNavButton>
+        ))}
       </Navigation>
       <AnimatePresence exitBeforeEnter>
         <ContentContainer
@@ -76,9 +70,7 @@ const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
             display: `${isOpen ? "none" : "block"}`,
           }}
         >
-          {section && content[section]
-            ? content[section]({})
-            : content["introduction"]({})}
+          {content[activeNavButton]({})}
         </ContentContainer>
       </AnimatePresence>
       <ToggleButton onClick={setIsOpen}>

@@ -29,7 +29,7 @@ const App = (): JSX.Element => {
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
           <Router>
-            <Route path="/:section([^0/#?]+)?">
+            <Route path="/:tokenFrom?/:tokenTo?">
               <Page />
             </Route>
           </Router>
