@@ -11,5 +11,6 @@
   "success": "Success",
   "processing": "Processing",
   "failed": "Failed",
-  "undefined": "undefined"
+  "undefined": "undefined",
+  "noResultsFound": "No results found"
 }

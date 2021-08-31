@@ -1,7 +1,11 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { sortTokenByExactMatch, sortTokensBySymbol, sortTokensBySymbolAndBalance } from "./sort";
+import {
+  sortTokenByExactMatch,
+  sortTokensBySymbol,
+  sortTokensBySymbolAndBalance,
+} from "./sort";
 
 describe("Sort Tokens", () => {
   let activeTokens: TokenInfo[];
