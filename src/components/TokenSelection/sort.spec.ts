@@ -1,7 +1,7 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { sortTokensBySymbol, sortTokensBySymbolAndBalance } from "./sort";
+import { sortTokenByExactMatch, sortTokensBySymbol, sortTokensBySymbolAndBalance } from "./sort";
 
 describe("Sort Tokens", () => {
   let activeTokens: TokenInfo[];
@@ -37,6 +37,27 @@ describe("Sort Tokens", () => {
         symbol: "cLINK",
         decimals: 8,
       },
+      {
+        chainId: 1,
+        address: "0xface851a4921ce59e912d19329929ce6da6eb0c7",
+        name: "Uniswap",
+        symbol: "UNI",
+        decimals: 8,
+      },
+      {
+        chainId: 1,
+        address: "0xface851a4921ce59e912d19329929ce6da6eb0c7",
+        name: "Uniswap Socks",
+        symbol: "UNISOCK",
+        decimals: 8,
+      },
+      {
+        chainId: 1,
+        address: "0xface851a4921ce59e912d19329929ce6da6eb0c7",
+        name: "Uniswap Mock",
+        symbol: "UNIMOCK",
+        decimals: 8,
+      },
     ];
 
     balances = {
@@ -57,8 +78,8 @@ describe("Sort Tokens", () => {
       const sortedTokens = sortTokensBySymbol(activeTokens);
       expect(sortedTokens[0].symbol).toBe("cLINK");
       expect(sortedTokens[1].symbol).toBe("cUSDC");
-      expect(sortedTokens[2].symbol).toBe("WBTC");
-      expect(sortedTokens[3].symbol).toBe("ZRX");
+      expect(sortedTokens[2].symbol).toBe("UNI");
+      expect(sortedTokens[3].symbol).toBe("UNIMOCK");
     });
   });
 
@@ -70,7 +91,7 @@ describe("Sort Tokens", () => {
       expect(sortedTokens[0].symbol).toBe("WBTC");
       expect(sortedTokens[1].symbol).toBe("cLINK");
       expect(sortedTokens[2].symbol).toBe("cUSDC");
-      expect(sortedTokens[3].symbol).toBe("ZRX");
+      expect(sortedTokens[3].symbol).toBe("UNI");
     });
 
     it("should sort ZRX and WBTC on top when the rest has no balance", () => {
@@ -82,6 +103,32 @@ describe("Sort Tokens", () => {
       expect(sortedTokens[1].symbol).toBe("ZRX");
       expect(sortedTokens[2].symbol).toBe("cLINK");
       expect(sortedTokens[3].symbol).toBe("cUSDC");
+    });
+  });
+
+  describe("sortTokensByExactMatch", () => {
+    it("should sort UNI to the top when query is UNI", () => {
+      const sortedTokens = sortTokenByExactMatch(activeTokens, "UNI");
+      expect(sortedTokens[0].symbol).toBe("UNI");
+      expect(sortedTokens[1].symbol).toBe("UNISOCK");
+      expect(sortedTokens[2].symbol).toBe("UNIMOCK");
+    });
+
+    it("should sort WBTC to the top when query is WBTC", () => {
+      const sortedTokens = sortTokenByExactMatch(activeTokens, "WBTC");
+      expect(sortedTokens[0].symbol).toBe("WBTC");
+      expect(sortedTokens[1].symbol).toBe("ZRX");
+      expect(sortedTokens[2].symbol).toBe("cUSDC");
+    });
+
+    it("should return original activeTokens when query is empty", () => {
+      const sortedTokens = sortTokenByExactMatch(activeTokens, "");
+      expect(sortedTokens.length).toBe(7);
+    });
+
+    it("should return [] when activeTokens is not empty", () => {
+      const sortedTokens = sortTokenByExactMatch([], "");
+      expect(sortedTokens.length).toBe(0);
     });
   });
 });

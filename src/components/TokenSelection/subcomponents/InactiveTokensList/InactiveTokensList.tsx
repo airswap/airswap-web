@@ -10,7 +10,7 @@ import {
   TokenContainer,
 } from "../../TokenSelection.styles";
 import { filterTokens } from "../../filter";
-import { sortTokensBySymbol } from "../../sort";
+import { sortTokenByExactMatch, sortTokensBySymbol } from "../../sort";
 import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {
@@ -41,11 +41,12 @@ const InactiveTokensList = ({
 
   // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
-      0,
-      10
-    );
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
   }, [sortedInactiveTokens, tokenQuery]);
+
+  const sortedFilteredInactiveTokens: TokenInfo[] = useMemo(() => {
+    return sortTokenByExactMatch(inactiveTokens, tokenQuery);
+  }, [inactiveTokens, tokenQuery]).slice(0, 10);
 
   return (
     <>
@@ -56,7 +57,7 @@ const InactiveTokensList = ({
         </InactiveTitle>
       </InactiveTitleContainer>
       <TokenContainer>
-        {inactiveTokens.map((token) => (
+        {sortedFilteredInactiveTokens.map((token) => (
           <TokenImportButton
             token={token}
             isUnsupported={

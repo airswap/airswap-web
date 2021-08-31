@@ -20,7 +20,7 @@ import {
   StyledTitle,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
-import { sortTokensBySymbolAndBalance } from "./sort";
+import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
@@ -137,6 +137,10 @@ const TokenSelection = ({
     return filterTokens(Object.values(sortedTokens), tokenQuery);
   }, [sortedTokens, tokenQuery]);
 
+  const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
+    return sortTokenByExactMatch(filteredTokens, tokenQuery);
+  }, [filteredTokens, tokenQuery]);
+
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
@@ -179,9 +183,9 @@ const TokenSelection = ({
             <LegendItem>{t("balances:balance")}</LegendItem>
           </Legend>
 
-          {filteredTokens && filteredTokens.length > 0 && (
+          {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              {filteredTokens.map((token) => (
+              {sortedFilteredTokens.map((token) => (
                 <TokenButton
                   token={token}
                   balance={formatUnits(
@@ -195,7 +199,7 @@ const TokenSelection = ({
               ))}
             </TokenContainer>
           )}
-          {tokenQuery && filteredTokens.length < 5 && (
+          {tokenQuery && sortedFilteredTokens.length < 5 && (
             <InactiveTokensList
               tokenQuery={tokenQuery}
               activeTokens={activeTokens}
