@@ -4,6 +4,8 @@ import { toAtomicString } from "@airswap/utils";
 
 import { BigNumber, ethers, Transaction } from "ethers";
 
+const REQUEST_ORDER_TIMEOUT_MS = 5000;
+
 export async function requestOrder(
   chainId: number,
   signerToken: string,
@@ -22,12 +24,20 @@ export async function requestOrder(
     throw new Error("no peers");
   }
   const orderPromises = servers.map(async (server) => {
-    const order = await server.getSignerSideOrder(
-      toAtomicString(senderAmount, senderTokenDecimals),
-      signerToken,
-      senderToken,
-      senderWallet
-    );
+    const order = await Promise.race([
+      server.getSignerSideOrder(
+        toAtomicString(senderAmount, senderTokenDecimals),
+        signerToken,
+        senderToken,
+        senderWallet
+      ),
+      // Servers should respond in a timely manner for orders to be considered
+      new Promise((resolve, reject) =>
+        setTimeout(() => {
+          reject("ETIMEDOUT");
+        }, REQUEST_ORDER_TIMEOUT_MS)
+      ),
+    ]);
     return (order as any) as LightOrder;
   });
   const orders = await Promise.allSettled(orderPromises);

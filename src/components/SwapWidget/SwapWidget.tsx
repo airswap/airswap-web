@@ -272,11 +272,15 @@ const SwapWidget = () => {
                   provider: library,
                 })
               );
-              await unwrapResult(result);
+              const orders = await unwrapResult(result);
+              if (!orders.length) throw new Error("no valid orders");
             } catch (e) {
               switch (e.message) {
                 // may want to handle no peers differently in future.
                 // case "no peers": {
+                //   break;
+                // }
+                // case "no valid orders": {
                 //   break;
                 // }
                 default: {
