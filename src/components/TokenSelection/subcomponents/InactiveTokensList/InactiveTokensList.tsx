@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@uniswap/token-lists";
@@ -9,44 +8,20 @@ import {
   InformationIcon,
   TokenContainer,
 } from "../../TokenSelection.styles";
-import { filterTokens } from "../../filter";
-import { sortTokenByExactMatch, sortTokensBySymbol } from "../../sort";
 import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {
-  tokenQuery: string;
-  allTokens: TokenInfo[];
-  activeTokens: TokenInfo[];
+  inactiveTokens: TokenInfo[];
   supportedTokenAddresses: string[];
   onTokenClick: (tokenAddress: string) => void;
 };
 
 const InactiveTokensList = ({
-  tokenQuery,
-  allTokens,
   supportedTokenAddresses,
-  activeTokens,
+  inactiveTokens,
   onTokenClick,
 }: InactiveTokensListProps) => {
   const { t } = useTranslation(["orders"]);
-
-  // sort inactive tokens based on symbol
-  const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensBySymbol(
-      allTokens.filter((el) => {
-        return !activeTokens.includes(el);
-      })
-    );
-  }, [allTokens, activeTokens]);
-
-  // only take the top 10 tokens
-  const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
-  }, [sortedInactiveTokens, tokenQuery]);
-
-  const sortedFilteredInactiveTokens: TokenInfo[] = useMemo(() => {
-    return sortTokenByExactMatch(inactiveTokens, tokenQuery);
-  }, [inactiveTokens, tokenQuery]).slice(0, 10);
 
   return (
     <>
@@ -57,7 +32,7 @@ const InactiveTokensList = ({
         </InactiveTitle>
       </InactiveTitleContainer>
       <TokenContainer>
-        {sortedFilteredInactiveTokens.map((token) => (
+        {inactiveTokens.map((token) => (
           <TokenImportButton
             token={token}
             isUnsupported={

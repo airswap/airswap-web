@@ -6,6 +6,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   TitleContainer,
@@ -18,6 +19,7 @@ import {
   ScrollContainer,
   ContentContainer,
   StyledTitle,
+  NoResultsContainer,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
@@ -141,6 +143,24 @@ const TokenSelection = ({
     return sortTokenByExactMatch(filteredTokens, tokenQuery);
   }, [filteredTokens, tokenQuery]);
 
+  // sort inactive tokens based on symbol
+  const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
+    return sortTokenByExactMatch(
+      allTokens.filter((el) => {
+        return !activeTokens.includes(el);
+      }),
+      tokenQuery
+    );
+  }, [allTokens, activeTokens, tokenQuery]);
+
+  // only take the top 10 tokens
+  const inactiveTokens: TokenInfo[] = useMemo(() => {
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
+      0,
+      10
+    );
+  }, [sortedInactiveTokens, tokenQuery]);
+
   useEffect(() => {
     if (containerRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
@@ -199,17 +219,22 @@ const TokenSelection = ({
               ))}
             </TokenContainer>
           )}
-          {tokenQuery && sortedFilteredTokens.length < 5 && (
-            <InactiveTokensList
-              tokenQuery={tokenQuery}
-              activeTokens={activeTokens}
-              allTokens={allTokens}
-              supportedTokenAddresses={supportedTokenAddresses}
-              onTokenClick={(tokenAddress) => {
-                addActiveToken(tokenAddress);
-                setTokenQuery("");
-              }}
-            />
+          {inactiveTokens.length !== 0 &&
+            tokenQuery &&
+            sortedFilteredTokens.length < 5 && (
+              <InactiveTokensList
+                inactiveTokens={inactiveTokens}
+                supportedTokenAddresses={supportedTokenAddresses}
+                onTokenClick={(tokenAddress) => {
+                  addActiveToken(tokenAddress);
+                  setTokenQuery("");
+                }}
+              />
+            )}
+          {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
+            <NoResultsContainer>
+              <InfoHeading>{t("common:noResultsFound")}</InfoHeading>
+            </NoResultsContainer>
           )}
         </ScrollContainer>
       </ContentContainer>

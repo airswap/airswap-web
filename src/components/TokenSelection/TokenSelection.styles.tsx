@@ -174,3 +174,7 @@ export const InformationIcon = styled(Icon)`
   display: inline;
   margin-left: 0.25rem;
 `;
+
+export const NoResultsContainer = styled.div`
+  text-align: center;
+`;
