@@ -32,7 +32,7 @@ const InactiveTokensList = ({
         </InactiveTitle>
       </InactiveTitleContainer>
       <TokenContainer>
-        {sortedFilteredInactiveTokens.map((token) => (
+        {inactiveTokens.map((token) => (
           <TokenImportButton
             token={token}
             isUnsupported={
