@@ -1,7 +1,13 @@
 import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
-import Button from "../Button/Button";
+import {
+  StyledButton,
+  ButtonIconContainer,
+  StyledWalletProviderList,
+  ButtonIcon,
+  ButtonText,
+} from "./WalletProviderList.styles";
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
@@ -11,27 +17,25 @@ const WalletProviderList = ({
   onProviderSelected,
 }: WalletProviderListProps) => {
   return (
-    <div className="flex flex-col gap-2">
+    <StyledWalletProviderList>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
-        <Button
+        <StyledButton
           key={provider.name}
-          justifyContent="flex-start"
-          intent="neutral"
           onClick={() => {
             onProviderSelected(provider);
           }}
         >
-          <div className="flex gap-2 items-center pr-2">
-            <img
+          <ButtonIconContainer>
+            <ButtonIcon
               src={provider.logo}
               alt={`${provider.name} logo`}
               className="w-12 h-12"
             />
-            <span className="flex-1">{provider.name}</span>
-          </div>
-        </Button>
+          </ButtonIconContainer>
+          <ButtonText>{provider.name}</ButtonText>
+        </StyledButton>
       ))}
-    </div>
+    </StyledWalletProviderList>
   );
 };
 
