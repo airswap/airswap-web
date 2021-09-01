@@ -2,6 +2,7 @@ import { useState, FormEvent, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
 import Modal from "react-modal";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { findTokenByAddress } from "@airswap/metadata";
 import { toDecimalString } from "@airswap/utils";
@@ -42,6 +43,7 @@ import { selectAllSupportedTokens } from "../../features/registry/registrySlice"
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
+import { AppRoutes } from "../../routes";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import InfoSection from "./InfoSection";
@@ -55,8 +57,11 @@ import StyledSwapWidget, {
   HugeTicks,
   Placeholder,
 } from "./SwapWidget.styles";
+import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
+
+type TokenSelectType = "senderToken" | "signerToken";
 
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
@@ -69,11 +74,13 @@ const SwapWidget = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
+  const [tokenSelectType, setTokenSelectType] = useState<TokenSelectType>(
+    "senderToken"
+  );
 
-  const [tokenSelectType, setTokenSelectType] = useState<
-    "senderToken" | "signerToken"
-  >("senderToken");
   const dispatch = useAppDispatch();
+  const history = useHistory();
+  const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const order = useAppSelector(selectBestOrder);
@@ -100,6 +107,7 @@ const SwapWidget = () => {
     () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
     [senderToken, activeTokens]
   );
+
   const signerTokenInfo = useMemo(
     () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
     [signerToken, activeTokens]
@@ -112,6 +120,22 @@ const SwapWidget = () => {
     setSignerToken("");
     setSenderAmount("");
   }, [chainId]);
+
+  useEffect(() => {
+    if (allTokens.length) {
+      const { fromAddress, toAddress } = findTokenFromAndTokenToAddress(
+        allTokens,
+        "USDT",
+        "WETH",
+        tokenFrom,
+        tokenTo
+      );
+
+      setSenderToken(fromAddress);
+      setSignerToken(toAddress);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTokens.length]);
 
   const getTokenDecimals = (tokenAddress: string) => {
     for (const token of activeTokens) {
@@ -138,6 +162,16 @@ const SwapWidget = () => {
       if (value[value.length - 1] === ",")
         value = value.slice(0, value.length - 1) + ".";
       setSenderAmount(value);
+    }
+  };
+
+  const handleSetToken = (value: string, type: TokenSelectType) => {
+    if (type === "senderToken") {
+      history.push({ pathname: `/${value}/${signerToken}` });
+      setSenderToken(value);
+    } else {
+      history.push({ pathname: `/${senderToken}/${value}` });
+      setSignerToken(value);
     }
   };
 
@@ -453,8 +487,8 @@ const SwapWidget = () => {
       <TokenSelection
         signerToken={signerToken!}
         senderToken={senderToken!}
-        setSignerToken={setSignerToken}
-        setSenderToken={setSenderToken}
+        setSignerToken={(value) => handleSetToken(value, "signerToken")}
+        setSenderToken={(value) => handleSetToken(value, "senderToken")}
         tokenSelectType={tokenSelectType}
         balances={balances}
         allTokens={allTokens}

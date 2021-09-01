@@ -77,9 +77,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
           <StyledLabel invisible={readOnly}>{label}</StyledLabel>
           <StyledSelectItem>
             <StyledSelectButtonContent emphasize={readOnly}>
-              {selectedToken !== null
-                ? selectedToken.symbol
-                : t("common:select")}
+              {selectedToken ? selectedToken.symbol : t("common:select")}
             </StyledSelectButtonContent>
             <StyledDownArrow invisible={readOnly} />
           </StyledSelectItem>

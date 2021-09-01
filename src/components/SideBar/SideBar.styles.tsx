@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
@@ -81,11 +79,11 @@ export const Navigation = styled.nav`
   justify-content: space-between;
 `;
 
-type StyledLinkProps = {
+type StyledNavButtonProps = {
   primary: boolean;
 };
 
-export const StyledLink = styled(Link)<StyledLinkProps>`
+export const StyledNavButton = styled.button<StyledNavButtonProps>`
   font-weight: ${(props) => (props.primary ? 700 : 500)};
   color: ${(props) => props.theme.colors.white};
 `;
