@@ -32,10 +32,6 @@ export type WalletButtonProps = {
    */
   isConnecting?: boolean;
   /**
-   * Callback function for when connect button is clicked
-   */
-  onConnectWalletClicked: () => void;
-  /**
    * Callback function for when disconnect button is clicked
    */
   onDisconnectWalletClicked: () => void;
@@ -55,8 +51,6 @@ export type WalletButtonProps = {
 
 export const WalletButton = ({
   address,
-  isConnecting,
-  onConnectWalletClicked,
   onDisconnectWalletClicked,
   transactions = [],
   chainId,

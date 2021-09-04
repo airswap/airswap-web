@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import Modal from "react-modal";
 
 import { Light } from "@airswap/protocols";
 import { Web3Provider } from "@ethersproject/providers";
@@ -8,7 +7,6 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WalletButton from "../../components/WalletButton/WalletButton";
-import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
 import {
   AbstractConnector,
   WalletProvider,
@@ -73,7 +71,6 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Local component state
-  const [showConnectorList, setShowConnectorList] = useState<boolean>(false);
   const [isActivating, setIsActivating] = useState<boolean>(false);
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -278,28 +275,8 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   return (
     <div className={className}>
-      <Modal
-        isOpen={showConnectorList}
-        onRequestClose={() => setShowConnectorList(false)}
-        overlayClassName="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 p-10"
-        className="w-64 p-4 rounded-sm bg-white dark:bg-gray-800 shadow-lg"
-      >
-        <WalletProviderList
-          onProviderSelected={(provider) => {
-            setProvider(provider);
-            const connector = provider.getConnector();
-            setConnector(connector);
-            setShowConnectorList(false);
-            setIsActivating(true);
-            activate(connector).finally(() => setIsActivating(false));
-          }}
-        />
-      </Modal>
       <WalletButton
         address={account}
-        onConnectWalletClicked={() => {
-          setShowConnectorList(true);
-        }}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();

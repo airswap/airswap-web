@@ -1,7 +1,6 @@
 import { useState, FormEvent, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
-import Modal from "react-modal";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -45,7 +44,6 @@ import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
 import TokenSelect from "../TokenSelect/TokenSelect";
-import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
@@ -56,6 +54,7 @@ import StyledSwapWidget, {
   ButtonContainer,
   HugeTicks,
   Placeholder,
+  StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
 
@@ -466,24 +465,6 @@ const SwapWidget = () => {
         </ButtonContainer>
       </StyledSwapWidget>
 
-      <Modal
-        isOpen={showWalletList}
-        onRequestClose={() => setShowWalletList(false)}
-        className="modal"
-        overlayClassName="overlay"
-      >
-        {/* need to come back and fill out onProviderSelected */}
-        <WalletProviderList
-          onProviderSelected={(provider) => {
-            dispatch(setActiveProvider(provider.name));
-            setIsConnecting(true);
-            activate(provider.getConnector()).finally(() =>
-              setIsConnecting(false)
-            );
-            setShowWalletList(false);
-          }}
-        />
-      </Modal>
       <TokenSelection
         signerToken={signerToken!}
         senderToken={senderToken!}
@@ -500,6 +481,19 @@ const SwapWidget = () => {
         chainId={chainId!}
         isHidden={!showTokenSelection}
       />
+      { showWalletList && (
+        <StyledWalletProviderList
+          onClose={() => setShowWalletList(false)}
+          onProviderSelected={(provider) => {
+            dispatch(setActiveProvider(provider.name));
+            setIsConnecting(true);
+            activate(provider.getConnector()).finally(() =>
+              setIsConnecting(false)
+            );
+            setShowWalletList(false);
+          }}
+        />
+      )}
     </>
   );
 };

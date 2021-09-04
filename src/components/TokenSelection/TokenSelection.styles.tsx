@@ -1,12 +1,11 @@
 import styled from "styled-components/macro";
 
-import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
-import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
+import CloseButton from "../../styled-components/CloseButton/CloseButton";
 
 type ContainerProps = {
   overflow: boolean;
@@ -35,20 +34,6 @@ export const ContentContainer = styled.div`
   height: calc(100% - 5.625rem);
   padding: 0 ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
-`;
-
-export const CloseButton = styled(IconButton)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-
-  &:hover {
-    border-color: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.5)};
-  }
 `;
 
 export const Container = styled.div<ContainerProps>`

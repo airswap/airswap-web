@@ -11,7 +11,6 @@ export default {
   argTypes: {
     address: { control: { type: "text" } },
     isConnecting: { control: { type: "boolean" } },
-    onConnectWalletClicked: { control: { type: "function" } },
     onDisconnectWalletClicked: { control: { type: "function" } },
     transactions: { control: { type: "array" } },
     chainId: { control: { type: "number" } },
@@ -163,7 +162,6 @@ export const Connecting = Template.bind({});
 Connecting.args = {
   address: "0x73580000000000000000000000000000000bcBE5",
   isConnecting: true,
-  onConnectWalletClicked: () => void 0,
   onDisconnectWalletClicked: () => void 0,
   transactions: transactions,
   chainId: 4,
@@ -174,7 +172,6 @@ export const Connected = Template.bind({});
 Connected.args = {
   address: "0x73580000000000000000000000000000000bcBE5",
   isConnecting: false,
-  onConnectWalletClicked: () => void 0,
   onDisconnectWalletClicked: () => void 0,
   transactions: transactions,
   chainId: 4,
@@ -185,7 +182,6 @@ export const NoTransactions = Template.bind({});
 NoTransactions.args = {
   address: "0x73580000000000000000000000000000000bcBE5",
   isConnecting: false,
-  onConnectWalletClicked: () => void 0,
   onDisconnectWalletClicked: () => void 0,
   transactions: [],
   chainId: 4,

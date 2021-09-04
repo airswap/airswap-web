@@ -10,7 +10,6 @@ import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   TitleContainer,
-  CloseButton,
   SearchInput,
   TokenContainer,
   Legend,
@@ -25,6 +24,7 @@ import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import CloseButton from "../../styled-components/CloseButton/CloseButton";
 
 export type TokenSelectionProps = {
   /**
