@@ -1,11 +1,11 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
+import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Icon from "../Icon/Icon";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 
 type ContainerProps = {
   overflow: boolean;

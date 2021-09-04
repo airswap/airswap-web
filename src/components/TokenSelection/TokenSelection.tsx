@@ -6,6 +6,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -24,11 +25,10 @@ import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 
 export type TokenSelectionProps = {
   /**
-   * Function to close modal
+   * Function to close component
    */
   onClose: () => void;
   /**
@@ -48,7 +48,7 @@ export type TokenSelectionProps = {
    */
   setSenderToken: (val: string) => void;
   /**
-   * Request type incoming to token selection modal; modal handles
+   * Request type incoming to token selection; handles
    * setSignerToken/setSenderToken based off of this parameter
    */
   tokenSelectType: "signerToken" | "senderToken";

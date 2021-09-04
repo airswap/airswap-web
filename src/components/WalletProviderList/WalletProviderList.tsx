@@ -1,16 +1,18 @@
 import { useTranslation } from "react-i18next";
+
 import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
+import CloseButton from "../../styled-components/CloseButton/CloseButton";
+import { Title } from "../Typography/Typography";
 import {
   StyledButton,
   ButtonIconContainer,
   StyledWalletProviderList,
   ButtonIcon,
-  ButtonText, TitleContainer,
+  ButtonText,
+  TitleContainer,
 } from "./WalletProviderList.styles";
-import { Title } from "../Typography/Typography";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;

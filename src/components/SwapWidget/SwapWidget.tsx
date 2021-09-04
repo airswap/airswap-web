@@ -481,7 +481,7 @@ const SwapWidget = () => {
         chainId={chainId!}
         isHidden={!showTokenSelection}
       />
-      { showWalletList && (
+      {showWalletList && (
         <StyledWalletProviderList
           onClose={() => setShowWalletList(false)}
           onProviderSelected={(provider) => {

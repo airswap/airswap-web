@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+
 import { sizes } from "../../style/sizes";
 
 export const StyledWalletProviderList = styled.div`
