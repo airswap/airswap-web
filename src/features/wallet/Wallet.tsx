@@ -26,6 +26,7 @@ import {
 import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
   fetchAllTokens,
+  fetchUnkownTokens,
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
@@ -113,7 +114,6 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         })
       );
       saveLastAccount(account, provider);
-      dispatch(fetchAllTokens());
       dispatch(
         requestActiveTokenAllowances({
           provider: library,
@@ -124,11 +124,19 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           provider: library,
         })
       );
-      dispatch(
+      const allTokensPromise = dispatch(fetchAllTokens());
+      const supportedTokensPromise = dispatch(
         fetchSupportedTokens({
           provider: library,
         })
       );
+      Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
+        dispatch(
+          fetchUnkownTokens({
+            provider: library,
+          })
+        );
+      });
     } else {
       dispatch(setWalletDisconnected());
     }
