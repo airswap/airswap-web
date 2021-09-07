@@ -21,26 +21,23 @@ export type OverlayProps = {
    * Hide or show the component
    */
   isHidden?: boolean;
-}
+};
 
 const Overlay: FC<OverlayProps> = ({
   onClose,
-  title = '',
+  title = "",
   isHidden = true,
   children,
 }) => {
-
   return (
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
         <StyledTitle type="h2">{title}</StyledTitle>
         <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
       </TitleContainer>
-      <ContentContainer>
-        {children}
-      </ContentContainer>
+      <ContentContainer>{children}</ContentContainer>
     </Container>
   );
-}
+};
 
 export default Overlay;

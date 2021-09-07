@@ -43,6 +43,7 @@ import { selectPendingApprovals } from "../../features/transactions/transactions
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
+import Overlay from "../Overlay/Overlay";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
@@ -57,7 +58,6 @@ import StyledSwapWidget, {
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
-import Overlay from "../Overlay/Overlay";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 

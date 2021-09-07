@@ -39,7 +39,8 @@ export const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 1rem;
-  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding} 0.875rem;
+  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding}
+    0.875rem;
   transition: background ease-in-out 0.3s;
 `;
 
@@ -66,9 +67,9 @@ export const Container = styled.div<ContainerProps>`
   
   ${ContentContainer} {
     transition: transform ${(props) =>
-  props.isHidden
-    ? "0.25s ease-in"
-    : "0.35s cubic-bezier(0.12, 0.71, 0.36, 1)"};
+      props.isHidden
+        ? "0.25s ease-in"
+        : "0.35s cubic-bezier(0.12, 0.71, 0.36, 1)"};
     transform: translateY(${(props) => (props.isHidden ? "100%" : "0%")});
 
     @media (prefers-reduced-motion: reduce) {
@@ -78,9 +79,9 @@ export const Container = styled.div<ContainerProps>`
   
   ${CloseButton} {
     transition: transform ${(props) =>
-  props.isHidden
-    ? "0.25s ease-in"
-    : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
+      props.isHidden
+        ? "0.25s ease-in"
+        : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
     transform: translateY(${(props) => (props.isHidden ? "-5rem" : "0%")});
 
     @media (prefers-reduced-motion: reduce) {
@@ -90,7 +91,7 @@ export const Container = styled.div<ContainerProps>`
   
   ${StyledTitle} {
     opacity: ${(props) => (props.isHidden ? 0 : 1)};
-    pointer-events: ${(props) => (props.isHidden ? 'none' : 'visible')};
+    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
     
     @media (prefers-reduced-motion: reduce) {
       transition: none;
@@ -98,8 +99,10 @@ export const Container = styled.div<ContainerProps>`
   }
   
   ${TitleContainer} {
-    background: ${(props) => ((props.isHidden || !props.hasTitle) ?
-      convertHexToRGBA(props.theme.colors.black, 0) : props.theme.colors.black)};
+    background: ${(props) =>
+      props.isHidden || !props.hasTitle
+        ? convertHexToRGBA(props.theme.colors.black, 0)
+        : props.theme.colors.black};
   }
 }
 `;

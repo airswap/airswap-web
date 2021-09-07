@@ -20,7 +20,6 @@ const WalletProviderList = ({
   onClose,
   className,
 }: WalletProviderListProps) => {
-
   return (
     <StyledWalletProviderList className={className}>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
