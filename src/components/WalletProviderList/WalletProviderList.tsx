@@ -1,17 +1,12 @@
-import { useTranslation } from "react-i18next";
-
 import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
-import { Title } from "../Typography/Typography";
 import {
   StyledButton,
   ButtonIconContainer,
   StyledWalletProviderList,
   ButtonIcon,
   ButtonText,
-  TitleContainer,
 } from "./WalletProviderList.styles";
 
 export type WalletProviderListProps = {
@@ -25,19 +20,15 @@ const WalletProviderList = ({
   onClose,
   className,
 }: WalletProviderListProps) => {
-  const { t } = useTranslation(["wallet"]);
 
   return (
     <StyledWalletProviderList className={className}>
-      <TitleContainer>
-        <Title type="h2">{t("wallet:selectWallet")}</Title>
-        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
-      </TitleContainer>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <StyledButton
           key={provider.name}
           onClick={() => {
             onProviderSelected(provider);
+            onClose();
           }}
         >
           <ButtonIconContainer>

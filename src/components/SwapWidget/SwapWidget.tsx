@@ -57,6 +57,7 @@ import StyledSwapWidget, {
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
+import Overlay from "../Overlay/Overlay";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -465,23 +466,32 @@ const SwapWidget = () => {
         </ButtonContainer>
       </StyledSwapWidget>
 
-      <TokenSelection
-        signerToken={signerToken!}
-        senderToken={senderToken!}
-        setSignerToken={(value) => handleSetToken(value, "signerToken")}
-        setSenderToken={(value) => handleSetToken(value, "senderToken")}
-        tokenSelectType={tokenSelectType}
-        balances={balances}
-        allTokens={allTokens}
-        activeTokens={activeTokens}
-        supportedTokenAddresses={supportedTokens}
-        addActiveToken={handleAddActiveToken}
-        removeActiveToken={handleRemoveActiveToken}
+      <Overlay
         onClose={() => setShowTokenSelection(false)}
-        chainId={chainId!}
         isHidden={!showTokenSelection}
-      />
-      {showWalletList && (
+      >
+        <TokenSelection
+          signerToken={signerToken!}
+          senderToken={senderToken!}
+          setSignerToken={(value) => handleSetToken(value, "signerToken")}
+          setSenderToken={(value) => handleSetToken(value, "senderToken")}
+          tokenSelectType={tokenSelectType}
+          balances={balances}
+          allTokens={allTokens}
+          activeTokens={activeTokens}
+          supportedTokenAddresses={supportedTokens}
+          addActiveToken={handleAddActiveToken}
+          removeActiveToken={handleRemoveActiveToken}
+          onClose={() => setShowTokenSelection(false)}
+          chainId={chainId!}
+        />
+      </Overlay>
+
+      <Overlay
+        title={t("wallet:selectWallet")}
+        onClose={() => setShowWalletList(false)}
+        isHidden={!showWalletList}
+      >
         <StyledWalletProviderList
           onClose={() => setShowWalletList(false)}
           onProviderSelected={(provider) => {
@@ -493,7 +503,7 @@ const SwapWidget = () => {
             setShowWalletList(false);
           }}
         />
-      )}
+      </Overlay>
     </>
   );
 };

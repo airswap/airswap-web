@@ -5,7 +5,7 @@ import { sizes } from "../../style/sizes";
 export const StyledWalletProviderList = styled.div`
   display: flex;
   flex-direction: column;
-  padding: ${sizes.tradeContainerPadding};
+  padding: 0 ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
 `;
 

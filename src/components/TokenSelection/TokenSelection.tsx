@@ -6,11 +6,9 @@ import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
-  TitleContainer,
   SearchInput,
   TokenContainer,
   Legend,
@@ -18,7 +16,6 @@ import {
   LegendDivider,
   ScrollContainer,
   ContentContainer,
-  StyledTitle,
   NoResultsContainer,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
@@ -179,10 +176,6 @@ const TokenSelection = ({
 
   return (
     <Container ref={containerRef} overflow={overflow} isHidden={isHidden}>
-      <TitleContainer>
-        <StyledTitle type="h2">{t("common:swap")}</StyledTitle>
-        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
-      </TitleContainer>
       <ContentContainer>
         <SearchInput
           hideLabel
