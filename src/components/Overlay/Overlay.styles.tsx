@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
@@ -27,7 +28,7 @@ export const ScrollContainer = styled.div`
   }
 `;
 
-export const ContentContainer = styled.div`
+export const ContentContainer = styled(motion.div)`
   position: relative;
   height: calc(100% - 5.625rem);
   padding: 0 ${sizes.tradeContainerPadding};
@@ -64,18 +65,6 @@ export const Container = styled.div<ContainerProps>`
   width: 100%;
   height: 100%;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  
-  ${ContentContainer} {
-    transition: transform ${(props) =>
-      props.isHidden
-        ? "0.25s ease-in"
-        : "0.35s cubic-bezier(0.12, 0.71, 0.36, 1)"};
-    transform: translateY(${(props) => (props.isHidden ? "100%" : "0%")});
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
   
   ${CloseButton} {
     transition: transform ${(props) =>
