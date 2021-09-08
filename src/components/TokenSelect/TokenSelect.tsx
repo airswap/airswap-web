@@ -18,6 +18,8 @@ import {
   StyledLabel,
   StyledDownArrow,
   StyledSelectButtonContent,
+  InputAndMaxButtonWrapper,
+  MaxButton,
 } from "./TokenSelect.styles";
 
 export type TokenSelectProps = {
@@ -45,6 +47,11 @@ export type TokenSelectProps = {
    */
   onChangeTokenClicked: MouseEventHandler<HTMLButtonElement>;
   /**
+   * Called when user clicks the 'use max' button. Presence of this prop is used
+   * to imply presence of use max button in DOM.
+   */
+  onMaxClicked?: MouseEventHandler<HTMLButtonElement>;
+  /**
    * Currently selected amount. Not used if `includeAmountInput` is false.
    */
   amount?: string | null;
@@ -64,6 +71,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   label,
   selectedToken,
   onChangeTokenClicked,
+  onMaxClicked,
   amount,
   onAmountChange,
   amountDetails,
@@ -84,23 +92,28 @@ const TokenSelect: FC<TokenSelectProps> = ({
         </StyledSelectButton>
       </FlexRow>
       {includeAmountInput ? (
-        <AmountAndDetailsContainer>
-          <AmountInput
-            // @ts-ignore
-            inputMode="decimal"
-            autoComplete="off"
-            pattern="^[0-9]*[.,]?[0-9]*$"
-            minLength={1}
-            maxLength={79}
-            spellCheck={false}
-            value={amount}
-            disabled={readOnly}
-            onChange={onAmountChange}
-            placeholder="0.00"
-            hasSubtext={!!amountDetails}
-          />
-          {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
-        </AmountAndDetailsContainer>
+        <InputAndMaxButtonWrapper>
+          <AmountAndDetailsContainer>
+            <AmountInput
+              // @ts-ignore
+              inputMode="decimal"
+              autoComplete="off"
+              pattern="^[0-9]*[.,]?[0-9]*$"
+              minLength={1}
+              maxLength={79}
+              spellCheck={false}
+              value={amount}
+              disabled={readOnly}
+              onChange={onAmountChange}
+              placeholder="0.00"
+              hasSubtext={!!amountDetails}
+            />
+            {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
+          </AmountAndDetailsContainer>
+          {onMaxClicked && !readOnly && (
+            <MaxButton onClick={onMaxClicked}>{t("common:max")}</MaxButton>
+          )}
+        </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>
           <PlaceholderTop />
