@@ -10,9 +10,9 @@ const PageLoader: FC = (): ReactElement => {
   return (
     <StyledPage>
       <StyledSiteLogo />
-      <TradeContainer isOpen={sideBarIsOpen} />
-      <StyledSideBar isOpen={sideBarIsOpen} />
-      <StyledDarkModeSwitch />
+      <TradeContainer isOpen={true} />
+      {/* <StyledSideBar isOpen={sideBarIsOpen} /> */}
+      {/* <StyledDarkModeSwitch /> */}
     </StyledPage>
   );
 };
