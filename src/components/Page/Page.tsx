@@ -1,3 +1,6 @@
+// FIXME: remove after sidebar re-added
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { FC, ReactElement } from "react";
 import { useState } from "react";
 
