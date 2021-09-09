@@ -172,7 +172,6 @@ const SwapWidget = () => {
       setSenderToken(value);
     } else {
       history.push({ pathname: `/${senderToken}/${value}` });
-      setSenderAmount("");
       setSignerToken(value);
     }
   };
