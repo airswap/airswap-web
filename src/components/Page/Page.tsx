@@ -1,3 +1,6 @@
+// FIXME: remove after sidebar re-added
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { FC, ReactElement } from "react";
 import { useState } from "react";
 
@@ -11,7 +14,7 @@ import TradeContainer from "../TradeContainer/TradeContainer";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
 
 const Page: FC = (): ReactElement => {
-  const [sideBarOpen, setSideBarOpen] = useState<boolean>(false);
+  const [sideBarOpen, setSideBarOpen] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
   return (
@@ -22,17 +25,17 @@ const Page: FC = (): ReactElement => {
       <TradeContainer isOpen={sideBarOpen}>
         <Orders />
       </TradeContainer>
-      <SideBar
+      {/* <SideBar
         isOpen={sideBarOpen}
         setIsOpen={() => {
           setSideBarOpen(!sideBarOpen);
         }}
-      />
-      <StyledDarkModeSwitch
+      /> */}
+      {/* <StyledDarkModeSwitch
         onClick={() => {
           dispatch(toggleTheme());
         }}
-      />
+      /> */}
     </StyledPage>
   );
 };
