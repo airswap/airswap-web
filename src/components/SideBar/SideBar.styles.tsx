@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints from "../../style/breakpoints";
-import { sizes } from "../../style/sizes";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 
 export const StyledDarkModeSwitch = styled(DarkModeSwitch)`
@@ -23,10 +22,6 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   position: absolute;
   top: 2rem;
   right: 2rem;
-  transform: translateX(
-    ${(props) =>
-      props.isOpen ? "-2.5rem" : `calc(-4rem - ${sizes.sideBarWidth})`}
-  );
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
 
