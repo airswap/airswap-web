@@ -12,7 +12,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
+import { parseUnits, formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
@@ -408,6 +408,16 @@ const SwapWidget = () => {
               onChangeTokenClicked={() => {
                 setTokenSelectType("senderToken");
                 setShowTokenSelection(true);
+              }}
+              onMaxClicked={(e) => {
+                if (senderToken) {
+                  setSenderAmount(
+                    formatUnits(
+                      balances.values[senderToken] || "0",
+                      senderTokenInfo?.decimals
+                    )
+                  );
+                }
               }}
               readOnly={!!signerAmount || pairUnavailable}
               includeAmountInput={true}

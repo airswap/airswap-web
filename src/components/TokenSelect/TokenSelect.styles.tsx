@@ -21,6 +21,32 @@ export const AmountAndDetailsContainer = styled.div`
   text-align: right;
 `;
 
+export const InputAndMaxButtonWrapper = styled.div`
+  display: flex;
+  min-width: 0;
+  gap: 0.75rem;
+`;
+
+export const MaxButton = styled.button`
+  position: relative;
+  bottom: 1px;
+  letter-spacing: 0.07rem;
+  align-self: center;
+  padding: 0.125rem;
+  border-radius: 0.125rem;
+  font-weight: 600;
+  font-size: 0.5rem;
+  line-height: 1;
+  text-transform: uppercase;
+  background-color: ${(props) => props.theme.colors.lightGrey};
+  color: ${(props) => props.theme.colors.black};
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 export const TokenSelectContainer = styled.div`
   display: flex;
   flex-direction: row;
