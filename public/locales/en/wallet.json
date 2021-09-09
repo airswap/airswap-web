@@ -4,5 +4,6 @@
   "noTransactions": "No Transactions",
   "approve": "Approve {{symbol}}",
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
-  "transactionTimeAgo": "{{time}} ago"
+  "transactionTimeAgo": "{{time}} ago",
+  "selectWallet": "Select a wallet"
 }

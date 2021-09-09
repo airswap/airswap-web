@@ -9,8 +9,6 @@ import useWindowSize from "../../helpers/useWindowSize";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
-  TitleContainer,
-  CloseButton,
   SearchInput,
   TokenContainer,
   Legend,
@@ -18,7 +16,6 @@ import {
   LegendDivider,
   ScrollContainer,
   ContentContainer,
-  StyledTitle,
   NoResultsContainer,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
@@ -28,7 +25,7 @@ import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
 export type TokenSelectionProps = {
   /**
-   * Function to close modal
+   * Function to close component
    */
   onClose: () => void;
   /**
@@ -48,7 +45,7 @@ export type TokenSelectionProps = {
    */
   setSenderToken: (val: string) => void;
   /**
-   * Request type incoming to token selection modal; modal handles
+   * Request type incoming to token selection; handles
    * setSignerToken/setSenderToken based off of this parameter
    */
   tokenSelectType: "signerToken" | "senderToken";
@@ -179,10 +176,6 @@ const TokenSelection = ({
 
   return (
     <Container ref={containerRef} overflow={overflow} isHidden={isHidden}>
-      <TitleContainer>
-        <StyledTitle type="h2">{t("common:swap")}</StyledTitle>
-        <CloseButton icon="chevron-down" iconSize={1} onClick={onClose} />
-      </TitleContainer>
       <ContentContainer>
         <SearchInput
           hideLabel

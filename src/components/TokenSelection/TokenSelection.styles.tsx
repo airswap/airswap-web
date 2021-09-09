@@ -1,9 +1,7 @@
 import styled from "styled-components/macro";
 
-import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
-import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
@@ -32,23 +30,9 @@ export const ScrollContainer = styled.div`
 
 export const ContentContainer = styled.div`
   position: relative;
-  height: calc(100% - 5.625rem);
+  height: 100%;
   padding: 0 ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
-`;
-
-export const CloseButton = styled(IconButton)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-
-  &:hover {
-    border-color: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.5)};
-  }
 `;
 
 export const Container = styled.div<ContainerProps>`
@@ -66,30 +50,6 @@ export const Container = styled.div<ContainerProps>`
     padding-right: calc(${sizes.tradeContainerPadding} / 2);
     overflow-x: hidden;
     overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
-  }
-  
-  ${ContentContainer} {
-    transition: transform ${(props) =>
-      props.isHidden
-        ? "0.25s ease-in"
-        : "0.35s cubic-bezier(0.12, 0.71, 0.36, 1)"};
-    transform: translateY(${(props) => (props.isHidden ? "100%" : "0%")});
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
-  
-  ${CloseButton} {
-    transition: transform ${(props) =>
-      props.isHidden
-        ? "0.25s ease-in"
-        : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
-    transform: translateY(${(props) => (props.isHidden ? "-5rem" : "0%")});
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
   }
 }
 `;

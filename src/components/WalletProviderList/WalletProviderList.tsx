@@ -11,18 +11,23 @@ import {
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
+  onClose: () => void;
+  className?: string;
 };
 
 const WalletProviderList = ({
   onProviderSelected,
+  onClose,
+  className,
 }: WalletProviderListProps) => {
   return (
-    <StyledWalletProviderList>
+    <StyledWalletProviderList className={className}>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <StyledButton
           key={provider.name}
           onClick={() => {
             onProviderSelected(provider);
+            onClose();
           }}
         >
           <ButtonIconContainer>

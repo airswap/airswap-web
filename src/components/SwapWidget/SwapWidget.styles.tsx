@@ -3,6 +3,7 @@ import { MdDoneAll } from "react-icons/md";
 import styled from "styled-components/macro";
 
 import Button from "../Button/Button";
+import WalletProviderList from "../WalletProviderList/WalletProviderList";
 
 export const Header = styled.div`
   margin-bottom: 1.875rem;
@@ -63,6 +64,14 @@ export const Placeholder = styled.div`
 `;
 
 export const StyledSwapWidget = styled.div`
+  height: 100%;
+`;
+
+export const StyledWalletProviderList = styled(WalletProviderList)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
 `;
 

@@ -1,7 +1,6 @@
 import { useState, FormEvent, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
-import Modal from "react-modal";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -44,8 +43,8 @@ import { selectPendingApprovals } from "../../features/transactions/transactions
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
+import Overlay from "../Overlay/Overlay";
 import TokenSelect from "../TokenSelect/TokenSelect";
-import WalletProviderList from "../WalletProviderList/WalletProviderList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
@@ -56,6 +55,7 @@ import StyledSwapWidget, {
   ButtonContainer,
   HugeTicks,
   Placeholder,
+  StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
 
@@ -477,14 +477,34 @@ const SwapWidget = () => {
         </ButtonContainer>
       </StyledSwapWidget>
 
-      <Modal
-        isOpen={showWalletList}
-        onRequestClose={() => setShowWalletList(false)}
-        className="modal"
-        overlayClassName="overlay"
+      <Overlay
+        onClose={() => setShowTokenSelection(false)}
+        isHidden={!showTokenSelection}
       >
-        {/* need to come back and fill out onProviderSelected */}
-        <WalletProviderList
+        <TokenSelection
+          signerToken={signerToken!}
+          senderToken={senderToken!}
+          setSignerToken={(value) => handleSetToken(value, "signerToken")}
+          setSenderToken={(value) => handleSetToken(value, "senderToken")}
+          tokenSelectType={tokenSelectType}
+          balances={balances}
+          allTokens={allTokens}
+          activeTokens={activeTokens}
+          supportedTokenAddresses={supportedTokens}
+          addActiveToken={handleAddActiveToken}
+          removeActiveToken={handleRemoveActiveToken}
+          onClose={() => setShowTokenSelection(false)}
+          chainId={chainId!}
+        />
+      </Overlay>
+
+      <Overlay
+        title={t("wallet:selectWallet")}
+        onClose={() => setShowWalletList(false)}
+        isHidden={!showWalletList}
+      >
+        <StyledWalletProviderList
+          onClose={() => setShowWalletList(false)}
           onProviderSelected={(provider) => {
             dispatch(setActiveProvider(provider.name));
             setIsConnecting(true);
@@ -494,23 +514,7 @@ const SwapWidget = () => {
             setShowWalletList(false);
           }}
         />
-      </Modal>
-      <TokenSelection
-        signerToken={signerToken!}
-        senderToken={senderToken!}
-        setSignerToken={(value) => handleSetToken(value, "signerToken")}
-        setSenderToken={(value) => handleSetToken(value, "senderToken")}
-        tokenSelectType={tokenSelectType}
-        balances={balances}
-        allTokens={allTokens}
-        activeTokens={activeTokens}
-        supportedTokenAddresses={supportedTokens}
-        addActiveToken={handleAddActiveToken}
-        removeActiveToken={handleRemoveActiveToken}
-        onClose={() => setShowTokenSelection(false)}
-        chainId={chainId!}
-        isHidden={!showTokenSelection}
-      />
+      </Overlay>
     </>
   );
 };

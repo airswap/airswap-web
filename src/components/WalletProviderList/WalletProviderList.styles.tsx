@@ -1,8 +1,19 @@
 import styled from "styled-components/macro";
 
+import { sizes } from "../../style/sizes";
+
 export const StyledWalletProviderList = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0 ${sizes.tradeContainerPadding};
+  background: ${(props) => props.theme.colors.black};
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1.875rem;
 `;
 
 export const StyledButton = styled.button`
@@ -10,16 +21,17 @@ export const StyledButton = styled.button`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding: 0.5rem;
-  height: 3.5rem;
-  background: ${(props) => props.theme.colors.black};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  padding: 1rem 1.625rem;
+  height: 4.5rem;
+  background: ${(props) => props.theme.colors.darkGrey};
 
   &:hover {
-    background: ${(props) => props.theme.colors.darkGrey};
+    border-color: ${(props) => props.theme.colors.primary};
   }
 
   & + & {
-    margin-top: 0.75em;
+    margin-top: 0.6875rem;
   }
 `;
 
@@ -27,7 +39,7 @@ export const ButtonIconContainer = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  width: 3.5rem;
+  width: 3rem;
   height: 100%;
 `;
 
