@@ -168,9 +168,11 @@ const SwapWidget = () => {
   const handleSetToken = (value: string, type: TokenSelectType) => {
     if (type === "senderToken") {
       history.push({ pathname: `/${value}/${signerToken}` });
+      setSenderAmount("");
       setSenderToken(value);
     } else {
       history.push({ pathname: `/${senderToken}/${value}` });
+      setSenderAmount("");
       setSignerToken(value);
     }
   };
