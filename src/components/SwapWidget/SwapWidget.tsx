@@ -438,7 +438,7 @@ const SwapWidget = () => {
               readOnly={!!signerAmount || pairUnavailable}
               includeAmountInput={!!signerAmount}
               amountDetails={
-                !!signerAmount ? t("orders:afterFee", { fee: "0.3%" }) : ""
+                !!signerAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
               }
               selectedToken={signerTokenInfo}
             />
