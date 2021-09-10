@@ -39,9 +39,7 @@ export const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding}
-    0.875rem;
+  padding: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
 `;
 

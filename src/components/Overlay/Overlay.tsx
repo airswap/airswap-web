@@ -16,7 +16,7 @@ export type OverlayProps = {
    */
   onClose: () => void;
   /**
-   * Function to close component
+   * Title shown on top
    */
   title?: string;
   /**
@@ -49,7 +49,7 @@ const Overlay: FC<OverlayProps> = ({
           <ContentContainer
             key="content"
             transition={{
-              ease: [0.12, 0.71, 0.36, 1],
+              ease: "easeOut",
               duration: shouldReduceMotion ? 0 : 0.3,
             }}
             initial={{ y: "100%" }}
