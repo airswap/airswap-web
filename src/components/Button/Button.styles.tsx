@@ -18,6 +18,22 @@ function getButtonBackground(
   }
 }
 
+function getButtonHoverBackground(
+  theme: DefaultTheme,
+  intent?: ButtonIntent
+): string {
+  switch (intent) {
+    case "destructive":
+      return theme.colors.red;
+    case "positive":
+      return theme.colors.green;
+    case "neutral":
+      return theme.colors.black;
+    default:
+      return theme.colors.primaryDark;
+  }
+}
+
 export const Text = styled.div`
   transition: opacity 0.3s ease-out;
 `;
@@ -51,5 +67,12 @@ export const StyledButton = styled.button<ButtonProps>`
   ${Text} {
     margin-right: ${(props) => (props.loading ? "1rem" : 0)};
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  }
+
+  &:hover {
+    background: ${(props) =>
+      getButtonHoverBackground(props.theme, props.intent)};
+    border-color: ${(props) =>
+      props.intent === "neutral" ? props.theme.colors.white : "inherit"};
   }
 `;
