@@ -94,6 +94,7 @@ export const StyledSelectButton = styled.button`
   flex-direction: column;
   margin-left: 0.9375rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
 
   &:focus {
     border: 0;
@@ -107,9 +108,13 @@ export const StyledSelectItem = styled(SelectItem)`
   gap: 0.5rem;
 `;
 
-export const AmountInput = styled(FormInput)<{ hasSubtext: boolean }>`
+export const AmountInput = styled(FormInput)<{
+  hasSubtext: boolean;
+  disabled: boolean;
+}>`
   padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
+  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
   text-align: right;
 
   &:focus {
