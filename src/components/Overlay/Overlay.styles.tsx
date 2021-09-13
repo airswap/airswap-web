@@ -63,6 +63,7 @@ export const Container = styled.div<ContainerProps>`
   width: 100%;
   height: 100%;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
+  z-index: 2;
   
   ${CloseButton} {
     transition: transform ${(props) =>

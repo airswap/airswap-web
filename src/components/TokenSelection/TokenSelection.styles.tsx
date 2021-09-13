@@ -2,7 +2,6 @@ import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
-import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
@@ -34,25 +33,6 @@ export const ContentContainer = styled.div`
   height: 100%;
   padding: 0 ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
-`;
-
-export const CloseButton = styled(IconButton)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-
-  &:hover {
-    border-color: ${(props) => props.theme.colors.lightGrey};
-  }
-
-  &:focus {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.primary};
-  }
 `;
 
 export const Container = styled.div<ContainerProps>`
