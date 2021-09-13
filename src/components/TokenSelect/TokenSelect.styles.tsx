@@ -51,6 +51,7 @@ export const TokenSelectContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
   width: 100%;
   height: 5rem;
   padding: 1.25em;
@@ -93,6 +94,10 @@ export const StyledSelectButton = styled.button`
   flex-direction: column;
   margin-left: 0.9375rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
+
+  &:focus {
+    border: 0;
+  }
 `;
 
 export const StyledSelectItem = styled(SelectItem)`
@@ -106,6 +111,10 @@ export const AmountInput = styled(FormInput)<{ hasSubtext: boolean }>`
   padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
   text-align: right;
+
+  &:focus {
+    outline: 0;
+  }
 `;
 
 export const AmountSubtext = styled(Metadata)`

@@ -21,6 +21,7 @@ import {
   InputAndMaxButtonWrapper,
   MaxButton,
 } from "./TokenSelect.styles";
+import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
   /**
@@ -90,6 +91,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <StyledDownArrow invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelectButton>
+        <TokenSelectFocusBorder position="left" />
       </FlexRow>
       {includeAmountInput ? (
         <InputAndMaxButtonWrapper>
@@ -108,6 +110,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               placeholder="0.00"
               hasSubtext={!!amountDetails}
             />
+            <TokenSelectFocusBorder position="right" />
             {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
           </AmountAndDetailsContainer>
           {onMaxClicked && !readOnly && (

@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
+import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";

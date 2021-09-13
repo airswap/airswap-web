@@ -52,6 +52,7 @@ export const SwapIconContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
+  z-index: 1;
 `;
 
 export const HugeTicks = styled(MdDoneAll)`
