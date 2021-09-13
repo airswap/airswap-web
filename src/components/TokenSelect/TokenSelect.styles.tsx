@@ -97,7 +97,7 @@ export const StyledSelectButton = styled.button`
   pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
 
   &:focus {
-    border: 0;
+    outline: 0;
   }
 `;
 
