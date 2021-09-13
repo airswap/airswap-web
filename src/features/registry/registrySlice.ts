@@ -5,6 +5,10 @@ import uniqBy from "lodash.uniqby";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { getActiveTokensFromLocalStorage } from "../metadata/metadataApi";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
 import { getStakerTokens } from "./registryAPI";
 
 export interface RegistryState {
@@ -81,7 +85,10 @@ export const registrySlice = createSlice({
       })
       .addCase(fetchSupportedTokens.rejected, (state) => {
         state.status = "failed";
-      });
+      })
+      // Reset on wallet connect or disconnect
+      .addCase(setWalletConnected, () => initialState)
+      .addCase(setWalletDisconnected, () => initialState);
   },
 });
 

@@ -7,13 +7,18 @@ import {
 } from "@reduxjs/toolkit";
 import { TokenInfo } from "@uniswap/token-lists";
 
+import { providers } from "ethers";
+
 import { AppDispatch, RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { getActiveTokensFromLocalStorage } from "./metadataApi";
+import {
+  getActiveTokensFromLocalStorage,
+  getUnknownTokens,
+} from "./metadataApi";
 
 export interface MetadataState {
   tokens: {
@@ -32,16 +37,39 @@ const initialState: MetadataState = {
 };
 
 export const fetchAllTokens = createAsyncThunk<
-  TokenInfo[],
-  void,
+  TokenInfo[], // Return type
+  void, // First argument
   {
+    // thunkApi
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/fetchTokens", async (unused, thunkApi) => {
+>("metadata/fetchTokens", async (_, thunkApi) => {
   const { wallet } = thunkApi.getState();
   if (!wallet.connected) return [];
   return await fetchTokens(wallet.chainId!);
+});
+
+export const fetchUnkownTokens = createAsyncThunk<
+  TokenInfo[], // Return type
+  {
+    // First argument
+    provider: providers.Provider;
+  },
+  {
+    // thunkApi
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("metadata/fetchUnknownTokens", async ({ provider }, thunkApi) => {
+  const { registry, metadata, wallet } = thunkApi.getState();
+  if (wallet.chainId === null) return [];
+  return await getUnknownTokens(
+    wallet.chainId,
+    registry.allSupportedTokens,
+    Object.values(metadata.tokens.all),
+    provider
+  );
 });
 
 export const metadataSlice = createSlice({
@@ -86,6 +114,11 @@ export const metadataSlice = createSlice({
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
         if (!state.tokens.active?.length)
           state.tokens.active = action.payload.activeTokens || [];
+      })
+      .addCase(fetchUnkownTokens.fulfilled, (state, action) => {
+        action.payload.forEach((token) => {
+          state.tokens.all[token.address] = token;
+        });
       })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId, address } = action.payload;
