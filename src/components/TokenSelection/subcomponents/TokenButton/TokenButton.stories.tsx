@@ -10,7 +10,6 @@ export default {
     balance: { control: { type: "text" } },
     disabled: { control: { type: "boolean" } },
     setToken: { control: { type: "function" } },
-    removeActiveToken: { control: { type: "function" } },
   },
 } as Meta;
 
@@ -27,7 +26,6 @@ Default.args = {
   },
   balance: "230",
   setToken: () => void 1,
-  removeActiveToken: () => void 1,
 };
 
 export const Disabled = Template.bind({});
@@ -42,7 +40,6 @@ Disabled.args = {
   balance: "230",
   disabled: true,
   setToken: () => void 1,
-  removeActiveToken: () => void 1,
 };
 
 export const DefaultToken = Template.bind({});
@@ -57,7 +54,6 @@ DefaultToken.args = {
   balance: "230",
   disabled: false,
   setToken: () => void 1,
-  removeActiveToken: () => void 1,
 };
 
 export const InactiveToken = Template.bind({});
@@ -72,5 +68,4 @@ InactiveToken.args = {
   balance: "230",
   disabled: false,
   setToken: () => void 1,
-  removeActiveToken: () => void 1,
 };

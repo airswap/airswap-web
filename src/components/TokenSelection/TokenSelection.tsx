@@ -200,6 +200,7 @@ const TokenSelection = ({
             <TokenContainer>
               {sortedFilteredTokens.map((token) => (
                 <TokenButton
+                  showDeleteButton
                   token={token}
                   balance={formatUnits(
                     balances.values[token.address] || 0,
