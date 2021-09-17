@@ -47,6 +47,10 @@ export const Container = styled.button<ContainerProps>`
   align-items: center;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
 
+  &:last-of-type {
+    padding-bottom: 0;
+  }
+
   &:hover {
     ${TokenName} {
       color: ${(props) =>
@@ -61,6 +65,10 @@ export const Container = styled.button<ContainerProps>`
           ? props.theme.colors.lightGrey
           : props.theme.colors.white};
     }
+  }
+
+  &:focus {
+    outline-color: ${(props) => props.theme.colors.white};
   }
 `;
 
