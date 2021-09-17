@@ -147,10 +147,6 @@ export const EditCustomTokensButton = styled(Button)`
   margin-top: auto;
   justify-self: flex-end;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  //height: 2.875rem;
-  //padding: 1rem 3rem;
-  //font-size: 0.875rem;
-  //font-weight: 700;
   background-color: transparent;
   color: ${(props) => props.theme.colors.lightGrey};
 

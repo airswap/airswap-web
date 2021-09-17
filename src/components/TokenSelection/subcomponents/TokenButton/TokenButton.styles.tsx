@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled, { keyframes } from "styled-components/macro";
 
 import Icon from "../../../Icon/Icon";
 
@@ -26,10 +26,28 @@ export const TokenName = styled.h3`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
+const scaleInAnimation = keyframes`
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+`;
+
 export const DeleteIcon = styled(Icon)`
   margin-left: auto;
   padding: 0.25rem;
   color: ${(props) => props.theme.colors.lightGrey};
+
+  transform: scale(0);
+  animation: ${scaleInAnimation} 0.25s ease-out forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: scale(1);
+    animation: none;
+  }
 `;
 
 export const Container = styled.button<ContainerProps>`
