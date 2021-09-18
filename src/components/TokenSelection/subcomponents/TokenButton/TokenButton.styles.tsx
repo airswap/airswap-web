@@ -65,10 +65,6 @@ export const Container = styled.button<ContainerProps>`
   align-items: center;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
 
-  &:last-of-type {
-    padding-bottom: 0;
-  }
-
   &:hover {
     ${TokenName} {
       color: ${(props) =>

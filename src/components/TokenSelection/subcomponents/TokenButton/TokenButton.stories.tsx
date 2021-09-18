@@ -1,6 +1,12 @@
 import { Story, Meta } from "@storybook/react";
 
+import styled from "styled-components/macro";
+
 import TokenButton, { TokenRowProps } from "./TokenButton";
+
+const Container = styled.div`
+  background: ${(props) => props.theme.colors.black};
+`;
 
 export default {
   title: "components/TokenSelection/TokenButton",
@@ -10,10 +16,15 @@ export default {
     balance: { control: { type: "text" } },
     disabled: { control: { type: "boolean" } },
     setToken: { control: { type: "function" } },
+    showDeleteButton: { control: { type: "boolean" } },
   },
 } as Meta;
 
-const Template: Story<TokenRowProps> = (args) => <TokenButton {...args} />;
+const Template: Story<TokenRowProps> = (args) => (
+  <Container>
+    <TokenButton {...args} />
+  </Container>
+);
 
 export const Default = Template.bind({});
 Default.args = {
@@ -67,5 +78,20 @@ InactiveToken.args = {
   },
   balance: "230",
   disabled: false,
+  setToken: () => void 1,
+};
+
+export const ShowDeleteButton = Template.bind({});
+ShowDeleteButton.args = {
+  token: {
+    chainId: 1,
+    address: "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a3",
+    name: "Inactive",
+    decimals: 18,
+    symbol: "INA",
+  },
+  balance: "230",
+  disabled: false,
+  showDeleteButton: true,
   setToken: () => void 1,
 };

@@ -16,7 +16,7 @@ export const ScrollContainer = styled.div`
   flex-grow: 99;
   height: 100%;
   max-height: calc(100% - 7rem);
-  padding-bottom: ${sizes.tradeContainerPadding};
+  padding-bottom: 1rem;
 
   &::-webkit-scrollbar {
     width: 0.5rem;
