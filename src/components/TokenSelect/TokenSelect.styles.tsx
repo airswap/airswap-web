@@ -1,6 +1,6 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-import styled, { css } from "styled-components/macro";
+import styled, { css, keyframes } from "styled-components/macro";
 
 import {
   SelectItem,
@@ -47,7 +47,33 @@ export const MaxButton = styled.button`
   }
 `;
 
-export const TokenSelectContainer = styled.div`
+const fadeInOut = keyframes`
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+`;
+
+export const PlaceHolderBar = styled.div`
+  background-image: ${(props) => props.theme.colors.placeholderGradient};
+  animation: ${fadeInOut} 0.35s ease-in-out infinite alternate;
+`
+
+export const PlaceholderTop = styled(PlaceHolderBar)`
+  height: 1.25rem;
+  width: 100%;
+`;
+
+export const PlaceholderBottom = styled(PlaceHolderBar)`
+  height: 0.9375rem;
+  width: 75%;
+  animation-delay: 0.1s;
+`;
+
+export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -62,6 +88,10 @@ export const TokenSelectContainer = styled.div`
     props.theme.name === "dark"
       ? props.theme.colors.darkGrey
       : props.theme.colors.alwaysWhite};
+
+  ${PlaceHolderBar} {
+    ${(props) => props.isLoading ? '' : 'animation: none;'}
+  }
 `;
 
 const fadeOutWhenInvisible = css<{ invisible: boolean }>`
@@ -133,16 +163,4 @@ export const PlaceholderContainer = styled.div`
   align-items: flex-end;
   gap: 0.3125rem;
   max-width: 50%;
-`;
-
-export const PlaceholderTop = styled.div`
-  height: 1.25rem;
-  width: 100%;
-  background-image: ${(props) => props.theme.colors.placeholderGradient};
-`;
-
-export const PlaceholderBottom = styled.div`
-  height: 0.9375rem;
-  width: 75%;
-  background-image: ${(props) => props.theme.colors.placeholderGradient};
 `;

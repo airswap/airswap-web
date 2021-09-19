@@ -64,6 +64,10 @@ export type TokenSelectProps = {
    * Text to include beneath the amount. Currently used for fee information.
    */
   amountDetails?: string;
+  /**
+   * Used for showing loading state
+   */
+  isLoading?: boolean;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -76,10 +80,11 @@ const TokenSelect: FC<TokenSelectProps> = ({
   amount,
   onAmountChange,
   amountDetails,
+  isLoading = false,
 }) => {
   const { t } = useTranslation(["common"]);
   return (
-    <TokenSelectContainer>
+    <TokenSelectContainer isLoading={isLoading}>
       <FlexRow>
         <TokenLogo size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
