@@ -34,5 +34,6 @@
   "swapPending": "Prepared to swap",
   "swapMessage": "Accept on your wallet to proceed",
   "submitted": "Submitted!",
-  "trackTransaction": "Track this transaction on the top right"
+  "trackTransaction": "Track this transaction on the top right",
+  "editCustomTokens": "Edit Custom Tokens"
 }
