@@ -5,7 +5,7 @@ import { providers } from "ethers";
 import uniqBy from "lodash.uniqby";
 
 const tokensCache: {
-  [chainId: number]: Promise<TokenInfo[]>;
+  [chainId: number]: TokenInfo[];
 } = {};
 
 export const getActiveTokensLocalStorageKey: (
@@ -20,10 +20,10 @@ export const getCachedMetadataLocalStorageKey = (chainId: number): string =>
 export const getAllTokens = async (chainId: number) => {
   let tokens;
   if (!tokensCache[chainId]) {
-    tokensCache[chainId] = fetchTokens(chainId);
+    tokensCache[chainId] = (await fetchTokens(chainId)).tokens;
+    //handle failure here, need to decide what to do with errors
   }
-  // TODO: handle failure.
-  tokens = await tokensCache[chainId];
+  tokens = tokensCache[chainId];
   return tokens;
 };
 
