@@ -82,11 +82,19 @@ export const SearchInput = styled(TextInput)`
     padding: 0.25rem 0.625rem;
     font-size: 0.875rem;
     background: transparent;
-    color: #9e9e9e;
+    color: ${(props) => props.theme.colors.white};
+
+    &::placeholder {
+      color: ${(props) => props.theme.colors.lightGrey};
+    }
+
+    &:hover {
+      border-color: ${(props) => props.theme.colors.lightGrey};
+    }
 
     &:focus {
       outline: none;
-      border: 1px solid ${(props) => props.theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.primary};
     }
   }
 `;

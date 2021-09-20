@@ -15,6 +15,7 @@ import {
   TimerContainer,
   NewQuoteText,
   TimerText,
+  StyledInfoHeading,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -117,14 +118,14 @@ const InfoSection: FC<InfoSectionProps> = ({
 
     return (
       <>
-        <InfoHeading>
+        <StyledInfoHeading>
           1 {invertPrice ? signerTokenInfo!.symbol : senderTokenInfo!.symbol} ={" "}
           {stringToSignificantDecimals(price.toString())}{" "}
           {invertPrice ? senderTokenInfo!.symbol : signerTokenInfo!.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
             <StyledInvertPriceIcon />
           </StyledInvertPriceButton>
-        </InfoHeading>
+        </StyledInfoHeading>
         {requiresApproval ? (
           <InfoSubHeading>
             {t("orders:approvalRequired", { symbol: senderTokenInfo!.symbol })}

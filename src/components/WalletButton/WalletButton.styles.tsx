@@ -76,10 +76,10 @@ export const DisconnectButton = styled(Button)`
   font-size: 0.875rem;
   font-weight: 700;
   background-color: transparent;
-  color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
-    color: ${(props) => props.theme.colors.black};
-    background-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white};
+    border-color: ${(props) => props.theme.colors.white};
+    background: none;
   }
 `;

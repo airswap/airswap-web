@@ -21,6 +21,7 @@ import {
   InputAndMaxButtonWrapper,
   MaxButton,
 } from "./TokenSelect.styles";
+import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
   /**
@@ -63,6 +64,10 @@ export type TokenSelectProps = {
    * Text to include beneath the amount. Currently used for fee information.
    */
   amountDetails?: string;
+  /**
+   * Used for showing loading state
+   */
+  isLoading?: boolean;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -75,10 +80,11 @@ const TokenSelect: FC<TokenSelectProps> = ({
   amount,
   onAmountChange,
   amountDetails,
+  isLoading = false,
 }) => {
   const { t } = useTranslation(["common"]);
   return (
-    <TokenSelectContainer>
+    <TokenSelectContainer isLoading={isLoading}>
       <FlexRow>
         <TokenLogo size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
@@ -90,6 +96,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <StyledDownArrow invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelectButton>
+        <TokenSelectFocusBorder position="left" />
       </FlexRow>
       {includeAmountInput ? (
         <InputAndMaxButtonWrapper>
@@ -108,6 +115,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               placeholder="0.00"
               hasSubtext={!!amountDetails}
             />
+            <TokenSelectFocusBorder position="right" />
             {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
           </AmountAndDetailsContainer>
           {onMaxClicked && !readOnly && (
