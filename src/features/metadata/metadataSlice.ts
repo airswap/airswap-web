@@ -47,7 +47,7 @@ export const fetchAllTokens = createAsyncThunk<
 >("metadata/fetchTokens", async (_, thunkApi) => {
   const { wallet } = thunkApi.getState();
   if (!wallet.connected) return [];
-  return await fetchTokens(wallet.chainId!);
+  return (await fetchTokens(wallet.chainId!)).tokens;
 });
 
 export const fetchUnkownTokens = createAsyncThunk<
@@ -110,6 +110,7 @@ export const metadataSlice = createSlice({
       })
       .addCase(fetchAllTokens.rejected, (state) => {
         // TODO: handle failure?
+        // perhaps rejected state can be for when errors.length === known.length ?
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
         if (!state.tokens.active?.length)
