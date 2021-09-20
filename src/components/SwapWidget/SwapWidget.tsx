@@ -441,7 +441,7 @@ const SwapWidget = () => {
                 !!signerAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
               }
               selectedToken={signerTokenInfo}
-              isLoading={ordersStatus === 'requesting'}
+              isLoading={ordersStatus === "requesting"}
             />
           </>
         )}

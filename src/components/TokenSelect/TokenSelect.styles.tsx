@@ -60,7 +60,7 @@ const fadeInOut = keyframes`
 export const PlaceHolderBar = styled.div`
   background-image: ${(props) => props.theme.colors.placeholderGradient};
   animation: ${fadeInOut} 0.35s ease-in-out infinite alternate;
-`
+`;
 
 export const PlaceholderTop = styled(PlaceHolderBar)`
   height: 1.25rem;
@@ -90,7 +90,7 @@ export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
       : props.theme.colors.alwaysWhite};
 
   ${PlaceHolderBar} {
-    ${(props) => props.isLoading ? '' : 'animation: none;'}
+    ${(props) => (props.isLoading ? "" : "animation: none;")}
   }
 `;
 
