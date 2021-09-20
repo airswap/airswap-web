@@ -34,7 +34,7 @@ const Container = styled.div`
 
 const Template: Story<TokenSelectionProps> = (args) => (
   <Container>
-    <TokenSelection {...args} />
+    <TokenSelection {...args} isHidden />
   </Container>
 );
 

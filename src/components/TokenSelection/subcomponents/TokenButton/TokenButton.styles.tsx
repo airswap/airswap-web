@@ -1,7 +1,10 @@
-import styled from "styled-components/macro";
+import styled, { keyframes } from "styled-components/macro";
+
+import Icon from "../../../Icon/Icon";
 
 type ContainerProps = {
   disabled: boolean;
+  showDeleteButton: boolean;
 };
 
 export const TokenNameContainer = styled.div`
@@ -23,6 +26,30 @@ export const TokenName = styled.h3`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
+const scaleInAnimation = keyframes`
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+`;
+
+export const DeleteIcon = styled(Icon)`
+  margin-left: auto;
+  padding: 0.25rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  transform: scale(0);
+  animation: ${scaleInAnimation} 0.25s ease-out forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: scale(1);
+    animation: none;
+  }
+`;
+
 export const Container = styled.button<ContainerProps>`
   position: relative;
   width: 100%;
@@ -30,7 +57,10 @@ export const Container = styled.button<ContainerProps>`
   display: grid;
   grid-auto-flow: column;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  grid-template-columns: 1.5rem 4rem calc(50% - 4rem) calc(50% - 4.5rem);
+  grid-template-columns: ${(props) =>
+    props.showDeleteButton
+      ? "1.5rem 4rem calc(100% - 11.5rem) 3rem"
+      : "1.5rem 4rem calc(50% - 4rem) calc(50% - 4.5rem)"};
   grid-gap: 1rem;
   align-items: center;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
@@ -42,6 +72,17 @@ export const Container = styled.button<ContainerProps>`
           ? props.theme.colors.lightGrey
           : props.theme.colors.white};
     }
+
+    ${DeleteIcon} {
+      color: ${(props) =>
+        props.disabled
+          ? props.theme.colors.lightGrey
+          : props.theme.colors.white};
+    }
+  }
+
+  &:focus {
+    outline-color: ${(props) => props.theme.colors.white};
   }
 `;
 

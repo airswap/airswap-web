@@ -5,7 +5,12 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdKeyboardArrowDown, MdAccessTime, MdOpenInNew } from "react-icons/md";
 
 import { StyledIcon } from "./Icon.styles";
-import { IconArrowLeft, IconArrowRight, IconDarkModeSwitch } from "./icons";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconDarkModeSwitch,
+  IconDeny,
+} from "./icons";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -22,6 +27,7 @@ export const icons: IconSet = {
   "arrow-left": IconArrowLeft,
   "chevron-down": MdKeyboardArrowDown,
   "dark-mode-switch": IconDarkModeSwitch,
+  deny: IconDeny,
   "information-circle-outline": IoMdInformationCircleOutline,
   "exit-modal": HiX,
   "transaction-completed": BiCheck,

@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
+import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
@@ -14,8 +15,8 @@ type ContainerProps = {
 export const ScrollContainer = styled.div`
   flex-grow: 99;
   height: 100%;
-  max-height: calc(100% - 3.75rem);
-  padding-bottom: ${sizes.tradeContainerPadding};
+  max-height: calc(100% - 7rem);
+  padding-bottom: 1rem;
 
   &::-webkit-scrollbar {
     width: 0.5rem;
@@ -29,9 +30,11 @@ export const ScrollContainer = styled.div`
 `;
 
 export const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   height: 100%;
-  padding: 0 ${sizes.tradeContainerPadding};
+  padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
 `;
 
@@ -48,6 +51,7 @@ export const Container = styled.div<ContainerProps>`
   ${ScrollContainer} {
     width: calc(100% + (${sizes.tradeContainerPadding} / 2));
     padding-right: calc(${sizes.tradeContainerPadding} / 2);
+    padding-left: 0.125rem;
     overflow-x: hidden;
     overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
   }
@@ -145,4 +149,17 @@ export const InformationIcon = styled(Icon)`
 
 export const NoResultsContainer = styled.div`
   text-align: center;
+`;
+
+export const EditCustomTokensButton = styled(Button)`
+  margin-top: auto;
+  justify-self: flex-end;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.black};
+    background-color: ${(props) => props.theme.colors.white};
+  }
 `;

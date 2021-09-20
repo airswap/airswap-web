@@ -17,6 +17,7 @@ import {
   ScrollContainer,
   ContentContainer,
   NoResultsContainer,
+  EditCustomTokensButton,
 } from "./TokenSelection.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
@@ -103,6 +104,7 @@ const TokenSelection = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const [tokenQuery, setTokenQuery] = useState<string>("");
   const { t } = useTranslation([
@@ -200,6 +202,7 @@ const TokenSelection = ({
             <TokenContainer>
               {sortedFilteredTokens.map((token) => (
                 <TokenButton
+                  showDeleteButton={editMode}
                   token={token}
                   balance={formatUnits(
                     balances.values[token.address] || 0,
@@ -230,6 +233,9 @@ const TokenSelection = ({
             </NoResultsContainer>
           )}
         </ScrollContainer>
+        <EditCustomTokensButton onClick={() => setEditMode(!editMode)}>
+          {editMode ? t("common:done") : t("orders:editCustomTokens")}
+        </EditCustomTokensButton>
       </ContentContainer>
     </Container>
   );
