@@ -21,7 +21,7 @@ export const getAllTokens = async (chainId: number) => {
   let tokens;
   if (!tokensCache[chainId]) {
     tokensCache[chainId] = (await fetchTokens(chainId)).tokens;
-    //handle failure here, need to decide what to do with errors
+    //TODO: handle failure here, need to decide what to do with errors
   }
   tokens = tokensCache[chainId];
   return tokens;
