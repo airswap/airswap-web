@@ -19,14 +19,14 @@ const StyledTokenLogo = styled.div<StlyedTokenLogoProps>`
   width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
-    props.tokenInfo === null ? "none" : "url(" + props.tokenInfo.logoURI + ")"};
+    !props.tokenInfo ? "none" : "url(" + props.tokenInfo.logoURI + ")"};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color: ${(props) => props.theme.colors.black};
   border-radius: 50%;
   border-color: ${(props) => props.theme.colors.borderGrey};
-  border-style: ${(props) => (props.tokenInfo === null ? "solid" : "none")};
+  border-style: ${(props) => (!props.tokenInfo ? "solid" : "none")};
   /* Note this is only applied when not empty. */
   border-width: 1px;
 `;
