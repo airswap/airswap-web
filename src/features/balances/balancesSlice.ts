@@ -67,7 +67,10 @@ const getThunk: (
     async (params, { getState, dispatch }) => {
       try {
         const state = getState();
-        const activeTokensAddresses = state.metadata.tokens.active;
+        const activeTokensAddresses = [
+          ...state.metadata.tokens.active,
+          "0x0000000000000000000000000000000000000000",
+        ];
         const { chainId, address } = state.wallet;
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)

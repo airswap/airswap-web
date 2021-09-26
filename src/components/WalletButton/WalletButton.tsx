@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 
+import nativeETH from "../../constants/nativeETH";
 import {
   SubmittedApproval,
   SubmittedOrder,
@@ -91,14 +92,14 @@ export const WalletButton = ({
               let token;
               if (transaction.type === "Order") {
                 const tx: SubmittedOrder = transaction as SubmittedOrder;
-                const senderToken = findTokenByAddress(
-                  tx.order.senderToken,
-                  tokens
-                );
-                const signerToken = findTokenByAddress(
-                  tx.order.signerToken,
-                  tokens
-                );
+                const senderToken =
+                  tx.order.senderToken === nativeETH[chainId].address
+                    ? nativeETH[chainId]
+                    : findTokenByAddress(tx.order.senderToken, tokens);
+                const signerToken =
+                  tx.order.signerToken === nativeETH[chainId].address
+                    ? nativeETH[chainId]
+                    : findTokenByAddress(tx.order.signerToken, tokens);
                 return (
                   <WalletTransaction
                     transaction={transaction}

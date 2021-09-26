@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { formatUnits } from "@ethersproject/units";
 import { TokenInfo } from "@uniswap/token-lists";
 
+import nativeETH from "../../constants/nativeETH";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import { InfoHeading } from "../Typography/Typography";
@@ -200,6 +201,16 @@ const TokenSelection = ({
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
+              <TokenButton
+                token={nativeETH[chainId]}
+                balance={formatUnits(
+                  balances.values[nativeETH[chainId].address] || 0,
+                  nativeETH[chainId].decimals
+                )}
+                setToken={handleClick}
+                removeActiveToken={removeActiveToken}
+                key={nativeETH[chainId].address}
+              />
               {sortedFilteredTokens.map((token) => (
                 <TokenButton
                   showDeleteButton={editMode}
