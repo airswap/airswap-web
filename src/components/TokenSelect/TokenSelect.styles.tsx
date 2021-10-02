@@ -12,6 +12,7 @@ import {
 export const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
+  height: 2.5rem;
 `;
 
 export const AmountAndDetailsContainer = styled.div`
@@ -79,9 +80,9 @@ export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
   justify-content: space-between;
   position: relative;
   width: 100%;
-  height: 5rem;
-  padding: 1.25em;
-  margin-bottom: 0.625rem;
+  height: 4.5rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background-color: ${(props) =>
@@ -122,7 +123,9 @@ export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
 export const StyledSelectButton = styled.button`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   margin-left: 0.9375rem;
+  height: 100%;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
 
@@ -135,7 +138,8 @@ export const StyledSelectItem = styled(SelectItem)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  line-height: 1;
+  gap: 0.375rem;
 `;
 
 export const AmountInput = styled(FormInput)<{
