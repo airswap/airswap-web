@@ -102,6 +102,7 @@ const fadeOutWhenInvisible = css<{ invisible: boolean }>`
 `;
 
 export const StyledLabel = styled(FormLabel)<{ invisible: boolean }>`
+  text-align: left;
   ${fadeOutWhenInvisible}
 `;
 
