@@ -6,10 +6,14 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import { ThemeProvider } from "styled-components/macro";
 
-import { useAppSelector } from "./app/hooks";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import BookmarkWarning from "./components/BookmarkWarning/BookmarkWarning";
 import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
-import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
+import {
+  disableBookmarkWarning,
+  selectUserSettings,
+} from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
@@ -21,13 +25,17 @@ function getLibrary(provider: any): Web3Provider {
 }
 
 const App = (): JSX.Element => {
-  const { theme } = useAppSelector(selectUserSettings);
-
+  const { theme, showBookmarkWarning } = useAppSelector(selectUserSettings);
+  const dispatch = useAppDispatch();
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
+          <BookmarkWarning
+            hidden={!showBookmarkWarning}
+            onClick={() => dispatch(disableBookmarkWarning())}
+          />
           <Router>
             <Route path="/:tokenFrom?/:tokenTo?">
               <Page />
