@@ -14,6 +14,7 @@ import {
   disableBookmarkWarning,
   selectUserSettings,
 } from "./features/userSettings/userSettingsSlice";
+import useWindowSize from "./helpers/useWindowSize";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
@@ -26,6 +27,7 @@ function getLibrary(provider: any): Web3Provider {
 
 const App = (): JSX.Element => {
   const { theme, showBookmarkWarning } = useAppSelector(selectUserSettings);
+  const { width } = useWindowSize();
   const dispatch = useAppDispatch();
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
@@ -33,7 +35,7 @@ const App = (): JSX.Element => {
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
           <BookmarkWarning
-            hidden={!showBookmarkWarning}
+            hidden={width! < 800 || !showBookmarkWarning}
             onClick={() => dispatch(disableBookmarkWarning())}
           />
           <Router>

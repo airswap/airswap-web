@@ -14,7 +14,7 @@ export const ButtonX = styled.button`
   cursor: ${(props) => (props.disabled ? "none" : "pointer")};
 `;
 
-export const StyledBookmarkWarning = styled.button<BookmarkWarningProps>`
+export const StyledBookmarkWarning = styled.div<BookmarkWarningProps>`
   height: 2rem;
   display: flex;
   transition: opacity 0.3s ease-out;
@@ -28,8 +28,7 @@ export const StyledBookmarkWarning = styled.button<BookmarkWarningProps>`
   text-overflow: ellipsis;
   color: ${(props) => props.theme.colors.alwaysWhite};
   background: ${(props) => props.theme.colors.primary};
-  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
-  cursor: ${(props) => (props.disabled ? "none" : "pointer")};
+  cursor: pointer;
   z-index: 1;
   ${Text} {
     font-weight: normal;

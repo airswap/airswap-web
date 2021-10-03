@@ -5,8 +5,13 @@ import React, { FC, ReactElement, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Orders } from "../../features/orders/Orders";
-import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
-import { StyledWallet } from "../SideBar/SideBar.styles";
+import {
+  selectUserSettings,
+  toggleTheme,
+} from "../../features/userSettings/userSettingsSlice";
+import useWindowSize from "../../helpers/useWindowSize";
+import SideBar from "../SideBar/SideBar";
+import { StyledDarkModeSwitch, StyledWallet } from "../SideBar/SideBar.styles";
 import Toaster from "../Toasts/Toaster";
 import TradeContainer from "../TradeContainer/TradeContainer";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
@@ -21,27 +26,31 @@ export type StyledPageProps = {
 const Page: FC = (): ReactElement => {
   const [sideBarOpen, setSideBarOpen] = useState<boolean>(true);
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
+  const { width } = useWindowSize();
   const dispatch = useAppDispatch();
+  const adjustForBookmarkWarning = width! > 800 && showBookmarkWarning;
 
   return (
-    <StyledPage adjustForBookmarkWarning={showBookmarkWarning}>
+    <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <Toaster sideBarOpen={sideBarOpen} />
-      <StyledSiteLogo />
+      <StyledSiteLogo adjustForBookmarkWarning={adjustForBookmarkWarning} />
       <StyledWallet isOpen={sideBarOpen} />
       <TradeContainer isOpen={sideBarOpen}>
         <Orders />
       </TradeContainer>
-      {/* <SideBar
+      {/*
+       <SideBar
         isOpen={sideBarOpen}
         setIsOpen={() => {
           setSideBarOpen(!sideBarOpen);
         }}
-      /> */}
-      {/* <StyledDarkModeSwitch
+      />*/}
+      {/*
+       <StyledDarkModeSwitch
         onClick={() => {
           dispatch(toggleTheme());
         }}
-      /> */}
+      />*/}
     </StyledPage>
   );
 };

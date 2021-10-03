@@ -6,6 +6,7 @@ import { StyledPageProps } from "./Page";
 export const StyledSiteLogo = styled(SiteLogo)`
   position: absolute;
   top: 2.5rem;
+  top: ${(props) => (props.adjustForBookmarkWarning ? "1.5rem" : "2.5rem")};
   left: 2.5rem;
 `;
 
