@@ -24,14 +24,17 @@ export const StyledBookmarkWarning = styled.div<BookmarkWarningProps>`
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding-left: 1rem;
+  padding-right: 3.5rem;
   color: ${(props) => props.theme.colors.alwaysWhite};
   background: ${(props) => props.theme.colors.primary};
   cursor: pointer;
   z-index: 1;
   ${Text} {
     font-weight: normal;
+    text-overflow: ellipsis;
+    text-align: center;
+    overflow: hidden;
   }
   ${ButtonX} {
     font-weight: normal;

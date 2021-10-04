@@ -28,7 +28,8 @@ const Page: FC = (): ReactElement => {
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   const dispatch = useAppDispatch();
-  const adjustForBookmarkWarning = width! > 800 && showBookmarkWarning;
+  /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
+  const adjustForBookmarkWarning = width! > 480 && showBookmarkWarning;
 
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>

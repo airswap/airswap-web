@@ -14,6 +14,7 @@ const PageLoader: FC = (): ReactElement => {
   const sideBarIsOpen = window.location.pathname.indexOf("swap") !== -1;
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
+  /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
   const adjustForBookmarkWarning = width! > 800 && showBookmarkWarning;
 
   return (
