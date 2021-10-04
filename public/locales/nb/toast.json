@@ -1,0 +1,8 @@
+{
+  "swapComplete": "Veksling fullført",
+  "swapFail": "Veksling feilet",
+  "approvalComplete": "Godkjenning fullført",
+  "approvalFail": "Godkjenning feilet",
+  "approve": "Godkjenn {{symbol}}",
+  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
+}
