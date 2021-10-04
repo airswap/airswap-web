@@ -1,8 +1,9 @@
-import { Registry, Light, ERC20 } from "@airswap/protocols";
+import { Registry, Light } from "@airswap/libraries";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
-import { BigNumber, ethers, Transaction } from "ethers";
+import erc20Abi from "erc-20-abi";
+import { BigNumber, ethers, Transaction, constants } from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -52,10 +53,15 @@ export async function approveToken(
   provider: ethers.providers.Web3Provider
 ) {
   const spender = Light.getAddress(provider.network.chainId);
-  const approvalTxHash = await new ERC20(senderToken).approve(
-    spender,
-    // @ts-ignore TODO: type compatability issue with AirSwap lib
+  const erc20Interface = new ethers.utils.Interface(erc20Abi);
+  const erc20Contract = new ethers.Contract(
+    senderToken,
+    erc20Interface,
     provider.getSigner()
+  );
+  const approvalTxHash = await erc20Contract.approve(
+    spender,
+    constants.MaxUint256
   );
   return (approvalTxHash as any) as Transaction;
 }

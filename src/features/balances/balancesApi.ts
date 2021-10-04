@@ -1,6 +1,6 @@
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
-import { Light } from "@airswap/protocols";
+import { Light } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event } from "ethers";
