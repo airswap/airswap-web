@@ -15,7 +15,7 @@ export const ButtonX = styled.button`
 `;
 
 export const StyledBookmarkWarning = styled.div<BookmarkWarningProps>`
-  height: 2rem;
+  height: 40px;
   display: flex;
   transition: opacity 0.3s ease-out;
   align-items: center;
