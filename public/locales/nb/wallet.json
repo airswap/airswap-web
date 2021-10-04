@@ -1,0 +1,9 @@
+{
+  "connectWallet": "Koble lommebok",
+  "disconnectWallet": "Koble fra",
+  "noTransactions": "Ingen transaksjoner",
+  "approve": "Godkjenn {{symbol}}",
+  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+  "transactionTimeAgo": "{{time}} siden",
+  "selectWallet": "Velg en lommebok"
+}
