@@ -4,6 +4,7 @@ import { StyledSiteLogo } from "./SiteLogo.styles";
 
 type SiteLogoProps = {
   className?: string;
+  adjustForBookmarkWarning?: boolean;
 };
 
 const SiteLogo: FC<SiteLogoProps> = ({ className }): ReactElement => {
