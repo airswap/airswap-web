@@ -312,7 +312,7 @@ const SwapWidget = () => {
             } catch (e) {
               switch (e.message) {
                 // may want to handle no peers differently in future.
-                // case "no peers": {
+                // case "no counterparties": {
                 //   break;
                 // }
                 // case "no valid orders": {

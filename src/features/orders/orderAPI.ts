@@ -7,29 +7,32 @@ import { BigNumber, ethers, Transaction, constants } from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
-export async function requestOrder(
+export async function requestOrders(
   chainId: number,
-  signerToken: string,
-  senderToken: string,
-  senderAmount: string,
+  quoteToken: string,
+  baseToken: string,
+  baseTokenAmount: string,
   senderTokenDecimals: number,
   senderWallet: string,
   provider: ethers.providers.Web3Provider
 ): Promise<LightOrder[]> {
   // @ts-ignore TODO: type compatability issue with AirSwap lib
   const servers = await new Registry(chainId, provider).getServers(
-    signerToken,
-    senderToken
+    quoteToken,
+    baseToken
   );
   if (!servers.length) {
-    throw new Error("no peers");
+    throw new Error("no counterparties");
   }
-  const orderPromises = servers.map(async (server) => {
+  const rfqServers = servers.filter((s) =>
+    s.supportsProtocol("request-for-quote")
+  );
+  const rfqOrderPromises = rfqServers.map(async (server) => {
     const order = await Promise.race([
       server.getSignerSideOrder(
-        toAtomicString(senderAmount, senderTokenDecimals),
-        signerToken,
-        senderToken,
+        toAtomicString(baseTokenAmount, senderTokenDecimals),
+        quoteToken,
+        baseToken,
         senderWallet
       ),
       // Servers should respond in a timely manner for orders to be considered
@@ -41,11 +44,11 @@ export async function requestOrder(
     ]);
     return (order as any) as LightOrder;
   });
-  const orders = await Promise.allSettled(orderPromises);
-  const successfulOrders = orders
+  const rfqOrders = await Promise.allSettled(rfqOrderPromises);
+  const successfulRfqOrders = rfqOrders
     .filter((result) => result.status === "fulfilled")
     .map((result) => (result as PromiseFulfilledResult<LightOrder>).value);
-  return successfulOrders;
+  return successfulRfqOrders;
 }
 
 export async function approveToken(

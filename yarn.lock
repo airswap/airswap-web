@@ -97,7 +97,7 @@
   dependencies:
     openzeppelin-solidity "2.4"
 
-"@airswap/utils@0.4.10":
+"@airswap/utils@0.4.10", "@airswap/utils@^0.4.10":
   version "0.4.10"
   resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.10.tgz#bac8c7d5e7a6ef288d47d2ae6f1aaf41fdaf9093"
   integrity sha512-YzR0G1hoVYPx/KsSjObX2XuMo+ySURHGRijiz4eM4EMU7udiH4upIpE2M/HeQ0HISWLVJrMJa89BJ/8szKorVQ==

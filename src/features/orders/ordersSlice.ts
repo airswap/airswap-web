@@ -21,7 +21,7 @@ import {
   setWalletDisconnected,
 } from "../wallet/walletSlice";
 import {
-  requestOrder,
+  requestOrders,
   takeOrder,
   approveToken,
   orderSortingFunction,
@@ -48,7 +48,7 @@ export const request = createAsyncThunk(
     senderWallet: string;
     provider: any;
   }) =>
-    await requestOrder(
+    await requestOrders(
       params.chainId,
       params.signerToken,
       params.senderToken,
@@ -95,7 +95,7 @@ export const approve = createAsyncThunk(
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
@@ -134,7 +134,7 @@ export const take = createAsyncThunk(
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
