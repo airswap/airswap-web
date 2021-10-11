@@ -1,10 +1,19 @@
 import { Server } from "@airswap/libraries";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { calculateCostFromLevels } from "@airswap/utils";
+import {
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  createSelector,
+} from "@reduxjs/toolkit";
+
+import BigNumber from "bignumber.js";
 
 import { AppDispatch, RootState } from "../../app/store";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 
 // TODO: have these types exported from @airswap/libraries.
-type Levels = [string, string][];
+export type Levels = [string, string][];
 type Formula = string;
 type Pair = {
   baseToken: string;
@@ -115,5 +124,65 @@ export const subscribe = createAsyncThunk<
     }
   };
 });
+
+function pricingIsLevels(value: Levels | Formula): value is Levels {
+  return typeof value !== "string";
+}
+
+const selectPricing = (state: RootState) => state.pricing;
+
+export const selectBestPricing = createSelector(
+  selectTradeTerms,
+  selectPricing,
+  (terms, pricing) => {
+    let bestQuoteAmount = new BigNumber(0);
+    let bestPricing: {
+      pricing: Levels;
+      locator: string;
+      quoteAmount: string;
+    } | null = null;
+
+    const { quoteToken, baseToken, baseTokenAmount, type } = terms;
+
+    Object.keys(pricing).forEach((locator) => {
+      const locatorPricing = pricing[locator];
+      const relevantIndex = locatorPricing.findIndex(
+        (p) =>
+          p.quoteToken === quoteToken.address &&
+          p.baseToken === baseToken.address
+      );
+
+      if (relevantIndex === -1) return;
+      const relevantPricing =
+        locatorPricing[relevantIndex][type === "sell" ? "bid" : "ask"];
+
+      if (!pricingIsLevels(relevantPricing)) {
+        console.warn(
+          `Unable to use pricing for locator ${locator}:` +
+            `formulae not supported yet`
+        );
+        return;
+      }
+
+      const quoteAmount = new BigNumber(
+        calculateCostFromLevels(baseTokenAmount, relevantPricing)
+      );
+
+      if (
+        (type === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
+        (type === "buy" && quoteAmount.lt(bestQuoteAmount))
+      ) {
+        bestQuoteAmount = quoteAmount;
+        bestPricing = {
+          locator,
+          pricing: relevantPricing,
+          quoteAmount: quoteAmount.toString(),
+        };
+      }
+    });
+
+    return bestPricing;
+  }
+);
 
 export default pricingSlice.reducer;

@@ -37,8 +37,10 @@ import {
   selectBestOrder,
   selectOrdersStatus,
   clear,
+  selectBestOption,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
+import { setTradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
@@ -83,8 +85,9 @@ const SwapWidget = () => {
   const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
-  const order = useAppSelector(selectBestOrder);
-  const ordersStatus = useAppSelector(selectOrdersStatus);
+  const bestRfqOrder = useAppSelector(selectBestOrder);
+  const rfqOrderStatus = useAppSelector(selectOrdersStatus);
+  const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
@@ -233,15 +236,17 @@ const SwapWidget = () => {
             intent="primary"
             aria-label={t("orders:take", { context: "aria" })}
             disabled={isNaN(parseFloat(signerAmount))}
-            loading={ordersStatus === "taking"}
+            loading={rfqOrderStatus === "taking"}
             onClick={async () => {
               try {
                 setIsSwapping(true);
-                const result = await dispatch(take({ order, library }));
+                const result = await dispatch(
+                  take({ order: bestRfqOrder, library })
+                );
                 setIsSwapping(false);
                 await unwrapResult(result);
                 setShowOrderSubmitted(true);
-              } catch (e) {
+              } catch (e: any) {
                 if (e.code && e.code === 4001) {
                   // 4001 is metamask user declining transaction sig, do nothing
                 } else {
@@ -268,7 +273,7 @@ const SwapWidget = () => {
             intent="primary"
             aria-label={t("orders:approve", { context: "aria" })}
             loading={
-              ordersStatus === "approving" || hasApprovalPending(senderToken)
+              rfqOrderStatus === "approving" || hasApprovalPending(senderToken)
             }
             onClick={async () => {
               setIsApproving(true);
@@ -293,9 +298,23 @@ const SwapWidget = () => {
             parseFloat(senderAmount) === 0 ||
             senderAmount === "."
           }
-          loading={ordersStatus === "requesting"}
+          loading={rfqOrderStatus === "requesting"}
           onClick={async () => {
             try {
+              dispatch(
+                setTradeTerms({
+                  baseToken: {
+                    address: senderToken!,
+                    decimals: senderTokenInfo?.decimals || 18,
+                  },
+                  quoteToken: {
+                    address: signerToken!,
+                    decimals: signerTokenInfo?.decimals || 18,
+                  }!,
+                  baseTokenAmount: senderAmount,
+                  type: "sell",
+                })
+              );
               const result = await dispatch(
                 request({
                   chainId: chainId!,
@@ -309,7 +328,7 @@ const SwapWidget = () => {
               );
               const orders = await unwrapResult(result);
               if (!orders.length) throw new Error("no valid orders");
-            } catch (e) {
+            } catch (e: any) {
               switch (e.message) {
                 // may want to handle no peers differently in future.
                 // case "no counterparties": {
@@ -342,13 +361,8 @@ const SwapWidget = () => {
   };
 
   let signerAmount: string | null = null;
-  if (order) {
-    const signerDecimals = getTokenDecimals(order.signerToken);
-    if (signerDecimals) {
-      signerAmount = toDecimalString(order.signerAmount, signerDecimals);
-    } else {
-      signerAmount = t("orders:decimalsNotFound");
-    }
+  if (bestTradeOption) {
+    signerAmount = bestTradeOption.quoteAmount;
   }
 
   let parsedSenderAmount = null;
@@ -441,7 +455,7 @@ const SwapWidget = () => {
                 !!signerAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
               }
               selectedToken={signerTokenInfo}
-              isLoading={ordersStatus === "requesting"}
+              isLoading={rfqOrderStatus === "requesting"}
             />
           </>
         )}
@@ -450,14 +464,18 @@ const SwapWidget = () => {
             orderSubmitted={showOrderSubmitted}
             isConnected={active}
             isPairUnavailable={pairUnavailable}
-            isFetchingOrders={ordersStatus === "requesting"}
+            isFetchingOrders={rfqOrderStatus === "requesting"}
             isApproving={isApproving}
             isSwapping={isSwapping}
-            order={order}
-            requiresApproval={order && !hasSufficientAllowance(senderToken)}
+            order={bestRfqOrder}
+            requiresApproval={
+              bestRfqOrder && !hasSufficientAllowance(senderToken)
+            }
             senderTokenInfo={senderTokenInfo}
             signerTokenInfo={signerTokenInfo}
-            timerExpiry={order ? parseInt(order.expiry) - 60 : null}
+            timerExpiry={
+              bestRfqOrder ? parseInt(bestRfqOrder.expiry) - 60 : null
+            }
             onTimerComplete={() => {
               dispatch(
                 request({

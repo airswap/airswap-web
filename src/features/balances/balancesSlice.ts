@@ -82,7 +82,7 @@ const getThunk: (
           address,
           amount: amounts[i],
         }));
-      } catch (e) {
+      } catch (e: any) {
         console.error(`Error fetching ${type}: ` + e.message);
         // TODO: error handling
         return [];

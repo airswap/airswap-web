@@ -1,11 +1,18 @@
 import { LightOrder } from "@airswap/types";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
 
+import BigNumber from "bignumber.js";
 import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { allowancesActions } from "../balances/balancesSlice";
+import { Levels, selectBestPricing } from "../pricing/pricingSlice";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   submitTransaction,
   mineTransaction,
@@ -25,7 +32,7 @@ import {
   takeOrder,
   approveToken,
   orderSortingFunction,
-} from "./orderAPI";
+} from "./orderApi";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -205,5 +212,61 @@ export const selectBestOrder = (state: RootState) =>
 
 export const selectSortedOrders = (state: RootState) =>
   [...state.orders.orders].sort(orderSortingFunction);
+
+export const selectBestOption = createSelector(
+  selectTradeTerms,
+  selectBestOrder,
+  selectBestPricing,
+  (terms, bestRfqOrder, bestPricing) => {
+    if (!terms) return null;
+
+    if (terms.type === "buy") {
+      throw new Error(`Buy orders not implemented yet`);
+    }
+
+    let pricing = (bestPricing as unknown) as {
+      pricing: Levels;
+      locator: string;
+      quoteAmount: string;
+    } | null;
+
+    if (!bestRfqOrder && !pricing) return null;
+
+    let lastLookOrder;
+    if (pricing) {
+      lastLookOrder = {
+        quoteAmount: pricing!.quoteAmount,
+        protocol: "last-look",
+        pricing: pricing!,
+      };
+      if (!bestRfqOrder) return lastLookOrder;
+    }
+
+    let rfqOrder;
+    let bestRFQSignerUnits: BigNumber | undefined;
+    if (bestRfqOrder) {
+      bestRFQSignerUnits = new BigNumber(bestRfqOrder.signerAmount).div(
+        new BigNumber(10).pow(terms.quoteToken.decimals)
+      );
+      rfqOrder = {
+        quoteAmount: bestRFQSignerUnits.toString(),
+        protocol: "request-for-quote",
+        order: bestRfqOrder,
+      };
+      if (!lastLookOrder) return rfqOrder;
+    }
+
+    // TODO: this should factor in gas.
+    if (
+      pricing &&
+      bestRFQSignerUnits!.lte(new BigNumber(pricing.quoteAmount))
+    ) {
+      return lastLookOrder;
+    } else {
+      return rfqOrder;
+    }
+  }
+);
+
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export default ordersSlice.reducer;
