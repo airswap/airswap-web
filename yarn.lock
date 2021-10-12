@@ -55,13 +55,6 @@
     jayson "^3.2.0"
     websocket "^1.0.34"
 
-"@airswap/light@2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@airswap/light/-/light-2.2.4.tgz#e52477d3aec03d7a84986f5f504a66b496a29322"
-  integrity sha512-om5Ra8xwwApY/B3qonkAFQCnIOUYRiDMCh+lIbcIEKqf2rv91efrVtQzGc1KZ/Kl9f5m25beM6SMc0zlAs8u9Q==
-  dependencies:
-    "@openzeppelin/contracts" "^4.3.1"
-
 "@airswap/light@2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@airswap/light/-/light-2.3.1.tgz#cfc588347a8b91c47af007feef935f9e42da729d"
@@ -81,22 +74,6 @@
     eth-contract-metadata "^1.12.1"
     ethereumjs-abi "^0.6.8"
     ethers "^5.4.6"
-
-"@airswap/protocols@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@airswap/protocols/-/protocols-0.5.12.tgz#0c580d188aa08d711a148874917d36d821a9f22d"
-  integrity sha512-KdAsIECIk+HGWkSEfjhHywrmkmO6iBkYjMqYhYZNuNsWweRwB6UCfFT+xNZERUl8/qOIbgcL+0oKN95tzCHqjg==
-  dependencies:
-    "@airswap/constants" "0.4.2"
-    "@airswap/light" "2.2.4"
-    "@airswap/registry" "4.8.2"
-    "@airswap/types" "3.6.1"
-    "@airswap/utils" "0.4.6"
-    "@airswap/validator" "2.3.0"
-    bignumber.js "^9.0.0"
-    browser-or-node "^1.3.0"
-    ethers "^5.0.25"
-    jayson "^3.2.0"
 
 "@airswap/registry@4.8.2":
   version "4.8.2"
@@ -138,18 +115,6 @@
     eth-sig-util "^3.0.0"
     ethereumjs-util "^6.2.0"
     ethers "^5.4.7"
-
-"@airswap/utils@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.6.tgz#e042538e4c88cdb60c166e515ac91e3c549b2721"
-  integrity sha512-vnkV8QGd2iCXhdSlE6U4NdSDa6f4ryfJgjA28F0GH6lnZlTjvwNspVXjVFFoaYSvxaBTxsVWaFkS5gWtka5arg==
-  dependencies:
-    "@airswap/constants" "0.4.1"
-    "@airswap/types" "3.6.1"
-    "@types/ethereumjs-util" "^6.1.0"
-    eth-sig-util "^3.0.0"
-    ethereumjs-util "^6.2.0"
-    ethers "^5.4.6"
 
 "@airswap/validator@2.3.0":
   version "2.3.0"

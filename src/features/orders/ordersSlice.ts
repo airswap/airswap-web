@@ -77,7 +77,6 @@ export const wrap = createAsyncThunk(
         params.senderTokenDecimals,
         params.provider
       );
-      console.log(tx);
       const mockWrapOrder: LightOrder = {
         nonce: tx.nonce.toString(),
         expiry: "", // TODO: populate a value for this?

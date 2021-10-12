@@ -64,7 +64,7 @@ export async function requestOrder(
 export async function approveToken(
   senderToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: string
+  contractType: "Light" | "Wrapper"
 ) {
   const spender =
     contractType === "Light"

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { Light } from "@airswap/protocols";
+import { Light } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
