@@ -7,6 +7,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { BigNumber } from "bignumber.js";
 
 import Timer from "../../components/Timer/Timer";
+import { Levels } from "../../features/pricing/pricingSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
@@ -25,7 +26,18 @@ export type InfoSectionProps = {
   isFetchingOrders: boolean;
   isApproving: boolean;
   isSwapping: boolean;
-  order: LightOrder | null;
+  bestTradeOption:
+    | {
+        protocol: "last-look";
+        quoteAmount: string;
+        pricing: Levels;
+      }
+    | {
+        protocol: "request-for-quote";
+        quoteAmount: string;
+        order: LightOrder;
+      }
+    | null;
   requiresApproval: boolean;
   signerTokenInfo: TokenInfo | null;
   senderTokenInfo: TokenInfo | null;
@@ -39,7 +51,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   orderSubmitted,
   isApproving,
   isSwapping,
-  order,
+  bestTradeOption,
   isFetchingOrders,
   requiresApproval,
   senderTokenInfo,
@@ -106,11 +118,9 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!order) {
+  if (!!bestTradeOption) {
     // TODO: ideally refactor out bignumber.js
-    let price = new BigNumber(order.signerAmount)
-      .dividedBy(new BigNumber(order.senderAmount))
-      .dividedBy(10 ** (signerTokenInfo!.decimals - senderTokenInfo!.decimals));
+    let price = new BigNumber(bestTradeOption.quoteAmount);
 
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);
@@ -134,13 +144,17 @@ const InfoSection: FC<InfoSectionProps> = ({
           <InfoSubHeading>
             <TimerContainer>
               <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
-              {order && (
+              {/* FIXME: If RFQ isn't the best trade option, the RFQ quotes will no longer refresh */}
+              {bestTradeOption.protocol === "request-for-quote" && (
                 <TimerText>
                   <Timer
                     expiryTime={timerExpiry!}
                     onTimerComplete={onTimerComplete}
                   ></Timer>
                 </TimerText>
+              )}
+              {bestTradeOption.protocol === "last-look" && (
+                <TimerText>Gas free trade</TimerText>
               )}
             </TimerContainer>
           </InfoSubHeading>

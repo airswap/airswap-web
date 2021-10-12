@@ -221,7 +221,8 @@ export const selectBestOption = createSelector(
     if (!terms) return null;
 
     if (terms.type === "buy") {
-      throw new Error(`Buy orders not implemented yet`);
+      console.error(`Buy orders not implemented yet`);
+      return null;
     }
 
     let pricing = (bestPricing as unknown) as {

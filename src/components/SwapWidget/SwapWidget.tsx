@@ -4,7 +4,6 @@ import { MdArrowDownward, MdBlock } from "react-icons/md";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { toDecimalString } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -329,6 +328,7 @@ const SwapWidget = () => {
               const orders = await unwrapResult(result);
               if (!orders.length) throw new Error("no valid orders");
             } catch (e: any) {
+              console.error(e);
               switch (e.message) {
                 // may want to handle no peers differently in future.
                 // case "no counterparties": {
@@ -467,7 +467,8 @@ const SwapWidget = () => {
             isFetchingOrders={rfqOrderStatus === "requesting"}
             isApproving={isApproving}
             isSwapping={isSwapping}
-            order={bestRfqOrder}
+            // @ts-ignore
+            bestTradeOption={bestTradeOption}
             requiresApproval={
               bestRfqOrder && !hasSufficientAllowance(senderToken)
             }
