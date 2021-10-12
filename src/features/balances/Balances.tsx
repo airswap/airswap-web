@@ -7,13 +7,18 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector } from "../../app/hooks";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import classes from "./Balances.module.css";
-import { selectAllowances, selectBalances } from "./balancesSlice";
+import {
+  selectAllowancesLight,
+  selectAllowancesWrapper,
+  selectBalances,
+} from "./balancesSlice";
 
 const Balances = () => {
   const { active } = useWeb3React();
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
+  const allowancesLight = useAppSelector(selectAllowancesLight);
+  const allowancesWrapper = useAppSelector(selectAllowancesWrapper);
 
   const [addTokenField, setAddTokenField] = useState<string>("");
 
@@ -29,11 +34,11 @@ const Balances = () => {
         <span className={classes.bold}>{t("balances:allowance")}</span>
         {activeTokens.map((tokenInfo) => {
           const tokenBalance = balances.values[tokenInfo.address];
-          const tokenAllowance = allowances.values[tokenInfo.address];
+          // const tokenAllowance = allowances.values[tokenInfo.address];
           return (
             <Fragment key={`${tokenInfo.address}-balance`}>
               <span>{tokenInfo.symbol}:</span>
-              <span>
+              {/* <span>
                 {tokenBalance != null
                   ? formatUnits(tokenBalance, tokenInfo.decimals)
                   : t("common:fetching")}
@@ -42,7 +47,7 @@ const Balances = () => {
                 {tokenAllowance != null
                   ? formatUnits(tokenAllowance, tokenInfo.decimals)
                   : t("common:fetching")}
-              </span>
+              </span> */}
             </Fragment>
           );
         })}

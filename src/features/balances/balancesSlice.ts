@@ -1,5 +1,6 @@
 import {
   AsyncThunk,
+  combineReducers,
   createAction,
   createAsyncThunk,
   createSlice,
@@ -10,7 +11,11 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
-import { fetchAllowances, fetchBalances } from "./balancesApi";
+import {
+  fetchAllowancesLight,
+  fetchAllowancesWrapper,
+  fetchBalances,
+} from "./balancesApi";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -35,22 +40,25 @@ export const initialState: BalancesState = {
   values: {},
 };
 
-const getSetInFlightRequestTokensAction = (type: "balances" | "allowances") => {
+const getSetInFlightRequestTokensAction = (
+  type: "balances" | "allowances.light" | "allowances.wrapper"
+) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
 const getThunk: (
-  type: "balances" | "allowances"
+  type: "balances" | "allowances.light" | "allowances.wrapper"
 ) => AsyncThunk<
   { address: string; amount: string }[],
   {
     provider: ethers.providers.Web3Provider;
   },
   {}
-> = (type: "balances" | "allowances") => {
+> = (type: "balances" | "allowances.light" | "allowances.wrapper") => {
   const methods = {
     balances: fetchBalances,
-    allowances: fetchAllowances,
+    "allowances.light": fetchAllowancesLight,
+    "allowances.wrapper": fetchAllowancesWrapper,
   };
   return createAsyncThunk<
     { address: string; amount: string }[],
@@ -94,7 +102,12 @@ const getThunk: (
     {
       // Logic to prevent fetching again if we're already fetching the same or more tokens.
       condition: (params, { getState }) => {
-        const sliceState = getState()[type];
+        const pathParts = type.split(".");
+        // @ts-ignore
+        const sliceState =
+          pathParts.length > 1
+            ? getState()[pathParts[0]][pathParts[1]]
+            : getState()[type];
         // If we're not fetching, definitely continue
         if (sliceState.status !== "fetching") return true;
         if (sliceState.inFlightFetchTokens) {
@@ -108,7 +121,7 @@ const getThunk: (
 };
 
 const getSlice = (
-  type: "balances" | "allowances",
+  type: "balances" | "allowances.light" | "allowances.wrapper",
   asyncThunk: ReturnType<typeof getThunk>
 ) => {
   return createSlice({
@@ -187,15 +200,25 @@ const getSlice = (
 };
 
 export const selectBalances = (state: RootState) => state.balances;
-export const selectAllowances = (state: RootState) => state.allowances;
+export const selectAllowancesLight = (state: RootState) =>
+  state.allowances.light;
+export const selectAllowancesWrapper = (state: RootState) =>
+  state.allowances.wrapper;
 
 export const requestActiveTokenBalances = getThunk("balances");
-export const requestActiveTokenAllowances = getThunk("allowances");
+export const requestActiveTokenAllowancesLight = getThunk("allowances.light");
+export const requestActiveTokenAllowancesWrapper = getThunk(
+  "allowances.wrapper"
+);
 
 export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
-export const allowancesSlice = getSlice(
-  "allowances",
-  requestActiveTokenAllowances
+export const allowancesLightSlice = getSlice(
+  "allowances.light",
+  requestActiveTokenAllowancesLight
+);
+export const allowancesWrapperSlice = getSlice(
+  "allowances.wrapper",
+  requestActiveTokenAllowancesWrapper
 );
 
 export const {
@@ -204,13 +227,24 @@ export const {
   set: setBalance,
 } = balancesSlice.actions;
 export const {
-  incrementBy: incrementAllowanceBy,
-  decrementBy: decreementAllowanceBy,
-  set: setAllowance,
-} = allowancesSlice.actions;
+  incrementBy: incrementAllowanceLightBy,
+  decrementBy: decreementAllowanceLightBy,
+  set: setAllowanceLight,
+} = allowancesLightSlice.actions;
+export const {
+  incrementBy: incrementAllowanceWrapperBy,
+  decrementBy: decreementAllowanceWrapperBy,
+  set: setAllowanceWrapper,
+} = allowancesWrapperSlice.actions;
 
 export const balancesActions = balancesSlice.actions;
-export const allowancesActions = allowancesSlice.actions;
+export const allowancesLightActions = allowancesLightSlice.actions;
+export const allowancesWrapperActions = allowancesWrapperSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;
-export const allowancesReducer = allowancesSlice.reducer;
+export const allowancesLightReducer = allowancesLightSlice.reducer;
+export const allowancesWrapperReducer = allowancesWrapperSlice.reducer;
+export const allowancesReducer = combineReducers({
+  light: allowancesLightReducer,
+  wrapper: allowancesWrapperReducer,
+});

@@ -8,7 +8,10 @@ import { Transaction } from "ethers";
 import { RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import nativeETH from "../../constants/nativeETH";
-import { allowancesActions } from "../balances/balancesSlice";
+import {
+  allowancesLightActions,
+  allowancesWrapperActions,
+} from "../balances/balancesSlice";
 import {
   submitTransaction,
   mineTransaction,
@@ -31,6 +34,7 @@ import {
   wrapToken,
   unwrapToken,
   takeWrapperOrder,
+  approveWrapperToken,
 } from "./orderAPI";
 
 export interface OrdersState {
@@ -43,14 +47,13 @@ const initialState: OrdersState = {
   status: "idle",
 };
 
-const switchWETHtoETH = (order: LightOrder, chainId: number) => {
+const refactorOrder = (order: LightOrder, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wethAddresses[chainId]) {
     newOrder.senderToken = nativeETH[chainId].address;
   } else if (order.signerToken === wethAddresses[chainId]) {
     newOrder.signerToken = nativeETH[chainId].address;
   }
-
   return newOrder;
 };
 
@@ -234,7 +237,7 @@ export const approve = createAsyncThunk(
             // Optimistically update allowance (this is not really optimisitc,
             // but it pre-empts receiving the event)
             dispatch(
-              allowancesActions.set({
+              allowancesLightActions.set({
                 tokenAddress: params.token,
                 amount: "90071992547409910000000000",
               })
@@ -293,6 +296,50 @@ export const take = createAsyncThunk(
   }
 );
 
+export const approveWrapper = createAsyncThunk(
+  "orders/approveWrapper",
+  async (params: any, { getState, dispatch }) => {
+    let tx: Transaction;
+    try {
+      tx = await approveWrapperToken(params.token, params.library);
+      if (tx.hash) {
+        const transaction: SubmittedApproval = {
+          type: "Approval",
+          hash: tx.hash,
+          status: "processing",
+          tokenAddress: params.token,
+          timestamp: Date.now(),
+        };
+        dispatch(submitTransaction(transaction));
+        params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          const state: RootState = getState() as RootState;
+          const tokens = Object.values(state.metadata.tokens.all);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+            // Optimistically update allowance (this is not really optimisitc,
+            // but it pre-empts receiving the event)
+            dispatch(
+              allowancesWrapperActions.set({
+                tokenAddress: params.token,
+                amount: "90071992547409910000000000",
+              })
+            );
+            notifyTransaction("Approval", transaction, tokens, false);
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+            notifyTransaction("Approval", transaction, tokens, true);
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch(declineTransaction(e.message));
+      throw e;
+    }
+  }
+);
+
 export const takeWrapper = createAsyncThunk(
   "orders/takeWrapper",
   async (
@@ -303,7 +350,7 @@ export const takeWrapper = createAsyncThunk(
     try {
       tx = await takeWrapperOrder(params.order, params.library);
       // Since the "actual" swap is ETH <-> ERC20, we should change the order token
-      let newOrder = switchWETHtoETH(
+      let newOrder = refactorOrder(
         params.order,
         params.library._network.chainId
       );

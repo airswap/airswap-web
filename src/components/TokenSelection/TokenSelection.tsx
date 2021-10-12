@@ -210,6 +210,7 @@ const TokenSelection = ({
                 setToken={handleClick}
                 removeActiveToken={removeActiveToken}
                 key={nativeETH[chainId].address}
+                showDeleteButton={false}
               />
               {sortedFilteredTokens.map((token) => (
                 <TokenButton

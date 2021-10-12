@@ -16,10 +16,12 @@ import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
   selectBalances,
-  setAllowance,
+  setAllowanceLight,
+  setAllowanceWrapper,
 } from "../balances/balancesSlice";
 import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
@@ -112,7 +114,12 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       );
       saveLastAccount(account, provider);
       dispatch(
-        requestActiveTokenAllowances({
+        requestActiveTokenAllowancesLight({
+          provider: library,
+        })
+      );
+      dispatch(
+        requestActiveTokenAllowancesWrapper({
           provider: library,
         })
       );
@@ -171,7 +178,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         },
         onApproval: (tokenAddress, amount) => {
           dispatch(
-            setAllowance({
+            setAllowanceLight({
+              tokenAddress,
+              amount: amount.toString(),
+            })
+          );
+          dispatch(
+            setAllowanceWrapper({
               tokenAddress,
               amount: amount.toString(),
             })

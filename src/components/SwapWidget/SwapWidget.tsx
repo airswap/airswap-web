@@ -19,12 +19,14 @@ import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import { Title } from "../../components/Typography/Typography";
 import nativeETH from "../../constants/nativeETH";
 import {
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
 } from "../../features/balances/balancesSlice";
 import {
   selectBalances,
-  selectAllowances,
+  selectAllowancesLight,
+  selectAllowancesWrapper,
 } from "../../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -42,6 +44,7 @@ import {
   wrap,
   unwrap,
   takeWrapper,
+  approveWrapper,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
@@ -90,7 +93,9 @@ const SwapWidget = () => {
   const history = useHistory();
   const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
+  const allowancesLight = useAppSelector(selectAllowancesLight);
+  const allowancesWrapper = useAppSelector(selectAllowancesWrapper);
+
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
@@ -201,8 +206,14 @@ const SwapWidget = () => {
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (!tokenAddress) return false;
-    if (!allowances.values[tokenAddress]) return false;
-    return allowances.values[tokenAddress]! >= senderAmount;
+    if (swapType === "wrap" || swapType === "unwrap") return true;
+    if (swapType === "swap") {
+      if (!allowancesLight.values[tokenAddress]) return false;
+      return allowancesLight.values[tokenAddress]! >= senderAmount;
+    } else if (swapType === "wrapper") {
+      if (!allowancesWrapper.values[tokenAddress]) return false;
+      return allowancesWrapper.values[tokenAddress]! >= senderAmount;
+    }
   };
 
   // function to only allow numerical and dot values to be inputted
@@ -378,7 +389,18 @@ const SwapWidget = () => {
             }
             onClick={async () => {
               setIsApproving(true);
-              await dispatch(approve({ token: senderToken, library }));
+              switch (swapType) {
+                case "swap":
+                  await dispatch(approve({ token: senderToken, library }));
+                  break;
+                case "wrapper":
+                  await dispatch(
+                    approveWrapper({ token: senderToken, library })
+                  );
+                  break;
+                default:
+                  await dispatch(approve({ token: senderToken, library }));
+              }
               setIsApproving(false);
             }}
           >
@@ -444,7 +466,7 @@ const SwapWidget = () => {
                       senderWallet:
                         senderToken === nativeETH[chainId!].address
                           ? Wrapper.getAddress(chainId)
-                          : Wrapper.getAddress(chainId),
+                          : account!,
                       provider: library,
                     })
                   );
@@ -508,7 +530,8 @@ const SwapWidget = () => {
     if (library) {
       dispatch(addActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 
@@ -520,7 +543,8 @@ const SwapWidget = () => {
       } else if (address === signerToken) setSignerToken("");
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 

@@ -78,6 +78,23 @@ export async function approveToken(
   return (approvalTxHash as any) as Transaction;
 }
 
+export async function approveWrapperToken(
+  senderToken: string,
+  provider: ethers.providers.Web3Provider
+) {
+  const spender = Wrapper.getAddress(provider.network.chainId);
+  const erc20Contract = new ethers.Contract(
+    senderToken,
+    erc20Interface,
+    provider.getSigner()
+  );
+  const approvalTxHash = await erc20Contract.approve(
+    spender,
+    constants.MaxUint256
+  );
+  return (approvalTxHash as any) as Transaction;
+}
+
 export async function takeOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
@@ -153,6 +170,8 @@ export async function takeWrapperOrder(
   order: LightOrder,
   provider: ethers.providers.Web3Provider
 ) {
+  console.log("HERE");
+  console.log(order);
   // @ts-ignore TODO: type compatability issue with AirSwap lib
   const tx = await new Wrapper(provider.network.chainId, provider).swap(
     order,

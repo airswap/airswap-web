@@ -1,6 +1,6 @@
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
-import { Light } from "@airswap/protocols";
+import { Light, Wrapper } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event } from "ethers";
@@ -49,25 +49,39 @@ const getContract = (
  */
 const fetchBalancesOrAllowances: (
   method: "walletBalances" | "walletAllowances",
+  spenderAddressType: "Wrapper" | "Light" | "None",
   params: WalletParams
 ) => Promise<string[]> = async (
   method,
+  spenderAddressType,
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
   const contract = getContract(chainId, provider);
   const args =
     method === "walletBalances"
       ? [walletAddress, tokenAddresses]
-      : // sender, spender, tokens.
-        [walletAddress, Light.getAddress(chainId), tokenAddresses];
+      : spenderAddressType === "Light"
+      ? // sender, spender, tokens.
+        [walletAddress, Light.getAddress(chainId), tokenAddresses]
+      : [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());
 };
 
-const fetchBalances = fetchBalancesOrAllowances.bind(null, "walletBalances");
-const fetchAllowances = fetchBalancesOrAllowances.bind(
+const fetchBalances = fetchBalancesOrAllowances.bind(
   null,
-  "walletAllowances"
+  "walletBalances",
+  "None"
+);
+const fetchAllowancesLight = fetchBalancesOrAllowances.bind(
+  null,
+  "walletAllowances",
+  "Light"
+);
+const fetchAllowancesWrapper = fetchBalancesOrAllowances.bind(
+  null,
+  "walletAllowances",
+  "Wrapper"
 );
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)
@@ -125,7 +139,12 @@ subscribeToTransfersAndApprovals = ({
       const isApproval = parsedEvent.name === "Approval";
 
       // Ignore approvals for other spenders.
-      if (isApproval && parsedEvent.args[1].toLowerCase() !== spenderAddress)
+      const approvalAddress = parsedEvent.args[1].toLowerCase();
+      if (
+        isApproval &&
+        approvalAddress !== spenderAddress &&
+        approvalAddress !== Wrapper.getAddress()
+      )
         return;
 
       const amount: BigNumber = parsedEvent.args[2];
@@ -142,4 +161,9 @@ subscribeToTransfersAndApprovals = ({
   };
 };
 
-export { fetchBalances, fetchAllowances, subscribeToTransfersAndApprovals };
+export {
+  fetchBalances,
+  fetchAllowancesLight,
+  fetchAllowancesWrapper,
+  subscribeToTransfersAndApprovals,
+};
