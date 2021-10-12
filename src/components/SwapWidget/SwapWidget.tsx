@@ -43,8 +43,6 @@ import {
   clear,
   wrap,
   unwrap,
-  takeWrapper,
-  approveWrapper,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
@@ -318,7 +316,9 @@ const SwapWidget = () => {
                 switch (swapType) {
                   case "swap":
                     setIsSwapping(true);
-                    result = await dispatch(take({ order, library }));
+                    result = await dispatch(
+                      take({ order, library, contractType: "Light" })
+                    );
                     setIsSwapping(false);
                     await unwrapResult(result);
                     setShowOrderSubmitted(true);
@@ -353,7 +353,9 @@ const SwapWidget = () => {
                     break;
                   case "wrapper":
                     setIsSwapping(true);
-                    result = await dispatch(takeWrapper({ order, library }));
+                    result = await dispatch(
+                      take({ order, library, contractType: "Wrapper" })
+                    );
                     setIsSwapping(false);
                     await unwrapResult(result);
                     setShowOrderSubmitted(true);
@@ -389,17 +391,22 @@ const SwapWidget = () => {
             }
             onClick={async () => {
               setIsApproving(true);
-              switch (swapType) {
-                case "swap":
-                  await dispatch(approve({ token: senderToken, library }));
-                  break;
-                case "wrapper":
-                  await dispatch(
-                    approveWrapper({ token: senderToken, library })
-                  );
-                  break;
-                default:
-                  await dispatch(approve({ token: senderToken, library }));
+              if (swapType === "wrapper") {
+                await dispatch(
+                  approve({
+                    token: senderToken,
+                    library,
+                    contractType: "Wrapper",
+                  })
+                );
+              } else {
+                await dispatch(
+                  approve({
+                    token: senderToken,
+                    library,
+                    contractType: "Light",
+                  })
+                );
               }
               setIsApproving(false);
             }}
@@ -447,6 +454,7 @@ const SwapWidget = () => {
                   setIsWrapping(true);
                   break;
                 case "unwrap":
+                  // triggers re-render for swap screen
                   setIsWrapping(true);
                   break;
                 case "wrapper":
@@ -463,10 +471,7 @@ const SwapWidget = () => {
                         signerToken === nativeETH[chainId!].address
                           ? wethAddresses[chainId!]
                           : signerToken!,
-                      senderWallet:
-                        senderToken === nativeETH[chainId!].address
-                          ? Wrapper.getAddress(chainId)
-                          : account!,
+                      senderWallet: Wrapper.getAddress(chainId),
                       provider: library,
                     })
                   );

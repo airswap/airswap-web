@@ -103,11 +103,12 @@ const getThunk: (
       // Logic to prevent fetching again if we're already fetching the same or more tokens.
       condition: (params, { getState }) => {
         const pathParts = type.split(".");
-        // @ts-ignore
         const sliceState =
           pathParts.length > 1
-            ? getState()[pathParts[0]][pathParts[1]]
-            : getState()[type];
+            ? // @ts-ignore
+              getState()[pathParts[0]][pathParts[1]]
+            : // @ts-ignore
+              getState()[type];
         // If we're not fetching, definitely continue
         if (sliceState.status !== "fetching") return true;
         if (sliceState.inFlightFetchTokens) {

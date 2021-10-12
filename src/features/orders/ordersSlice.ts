@@ -33,8 +33,6 @@ import {
   orderSortingFunction,
   wrapToken,
   unwrapToken,
-  takeWrapperOrder,
-  approveWrapperToken,
 } from "./orderAPI";
 
 export interface OrdersState {
@@ -47,6 +45,9 @@ const initialState: OrdersState = {
   status: "idle",
 };
 
+const APPROVE_AMOUNT = "90071992547409910000000000";
+
+// replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: LightOrder, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wethAddresses[chainId]) {
@@ -76,13 +77,14 @@ export const wrap = createAsyncThunk(
         params.senderTokenDecimals,
         params.provider
       );
+      console.log(tx);
       const mockWrapOrder: LightOrder = {
         nonce: tx.nonce.toString(),
-        expiry: "",
-        signerWallet: "",
-        v: "",
-        r: "",
-        s: "",
+        expiry: "", // TODO: populate a value for this?
+        signerWallet: tx.to!,
+        v: tx.v!.toString(),
+        r: tx.r!,
+        s: tx.s!,
         signerToken: wethAddresses[params.chainId],
         signerAmount: toAtomicString(
           params.senderAmount,
@@ -145,11 +147,11 @@ export const unwrap = createAsyncThunk(
       );
       const mockUnwrapOrder: LightOrder = {
         nonce: tx.nonce.toString(),
-        expiry: "",
-        signerWallet: "",
-        v: "",
-        r: "",
-        s: "",
+        expiry: "", // TODO: populate a value for this?
+        signerWallet: tx.to!,
+        v: tx.v!.toString(),
+        r: tx.r!,
+        s: tx.s!,
         signerToken: nativeETH[params.chainId].address,
         signerAmount: toAtomicString(
           params.senderAmount,
@@ -218,7 +220,11 @@ export const approve = createAsyncThunk(
   async (params: any, { getState, dispatch }) => {
     let tx: Transaction;
     try {
-      tx = await approveToken(params.token, params.library);
+      tx = await approveToken(
+        params.token,
+        params.library,
+        params.contractType
+      );
       if (tx.hash) {
         const transaction: SubmittedApproval = {
           type: "Approval",
@@ -236,12 +242,22 @@ export const approve = createAsyncThunk(
             dispatch(mineTransaction(receipt.transactionHash));
             // Optimistically update allowance (this is not really optimisitc,
             // but it pre-empts receiving the event)
-            dispatch(
-              allowancesLightActions.set({
-                tokenAddress: params.token,
-                amount: "90071992547409910000000000",
-              })
-            );
+            if (params.contractType === "Light") {
+              dispatch(
+                allowancesLightActions.set({
+                  tokenAddress: params.token,
+                  amount: APPROVE_AMOUNT,
+                })
+              );
+            } else if (params.contractType === "Wrapper") {
+              dispatch(
+                allowancesWrapperActions.set({
+                  tokenAddress: params.token,
+                  amount: APPROVE_AMOUNT,
+                })
+              );
+            }
+
             notifyTransaction("Approval", transaction, tokens, false);
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
@@ -260,100 +276,22 @@ export const approve = createAsyncThunk(
 export const take = createAsyncThunk(
   "orders/take",
   async (
-    params: { order: LightOrder; library: any },
+    params: {
+      order: LightOrder;
+      library: any;
+      contractType: "Light" | "Wrapper";
+    },
     { getState, dispatch }
   ) => {
     let tx: Transaction;
     try {
-      tx = await takeOrder(params.order, params.library);
-      if (tx.hash) {
-        const transaction: SubmittedOrder = {
-          type: "Order",
-          order: params.order,
-          hash: tx.hash,
-          status: "processing",
-          timestamp: Date.now(),
-        };
-        dispatch(submitTransaction(transaction));
-        params.library.once(tx.hash, async () => {
-          const receipt = await params.library.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, false);
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, true);
-          }
-        });
-      }
-    } catch (e) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
-      throw e;
-    }
-  }
-);
-
-export const approveWrapper = createAsyncThunk(
-  "orders/approveWrapper",
-  async (params: any, { getState, dispatch }) => {
-    let tx: Transaction;
-    try {
-      tx = await approveWrapperToken(params.token, params.library);
-      if (tx.hash) {
-        const transaction: SubmittedApproval = {
-          type: "Approval",
-          hash: tx.hash,
-          status: "processing",
-          tokenAddress: params.token,
-          timestamp: Date.now(),
-        };
-        dispatch(submitTransaction(transaction));
-        params.library.once(tx.hash, async () => {
-          const receipt = await params.library.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
-            // Optimistically update allowance (this is not really optimisitc,
-            // but it pre-empts receiving the event)
-            dispatch(
-              allowancesWrapperActions.set({
-                tokenAddress: params.token,
-                amount: "90071992547409910000000000",
-              })
-            );
-            notifyTransaction("Approval", transaction, tokens, false);
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Approval", transaction, tokens, true);
-          }
-        });
-      }
-    } catch (e) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
-      throw e;
-    }
-  }
-);
-
-export const takeWrapper = createAsyncThunk(
-  "orders/takeWrapper",
-  async (
-    params: { order: LightOrder; library: any },
-    { getState, dispatch }
-  ) => {
-    let tx: Transaction;
-    try {
-      tx = await takeWrapperOrder(params.order, params.library);
-      // Since the "actual" swap is ETH <-> ERC20, we should change the order token
-      let newOrder = refactorOrder(
-        params.order,
-        params.library._network.chainId
-      );
+      tx = await takeOrder(params.order, params.library, params.contractType);
+      // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
+      // we should change the order tokens to WETH -> ETH
+      let newOrder =
+        params.contractType === "Light"
+          ? params.order
+          : refactorOrder(params.order, params.library._network.chainId);
       if (tx.hash) {
         const transaction: SubmittedOrder = {
           type: "Order",
