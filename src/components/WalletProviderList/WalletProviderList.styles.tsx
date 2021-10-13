@@ -22,7 +22,7 @@ export const StyledButton = styled.button`
   align-items: center;
   position: relative;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  padding: 1rem 1.625rem;
+  padding: 1rem;
   height: 4.5rem;
   background: ${(props) => props.theme.colors.darkGrey};
 
@@ -31,7 +31,7 @@ export const StyledButton = styled.button`
   }
 
   & + & {
-    margin-top: 0.6875rem;
+    margin-top: 0.5rem;
   }
 `;
 

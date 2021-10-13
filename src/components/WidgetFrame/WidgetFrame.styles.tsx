@@ -24,9 +24,9 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   box-sizing: border-box;
   border-radius: 0.5rem;
   margin: 0 auto;
-  padding: 2.25rem;
+  padding: 2.5rem;
   width: 100%;
-  max-width: 34.5rem;
+  max-width: 35rem;
   background: url("${process.env.PUBLIC_URL}/images/bg.jpg");
   background-size: 100% 100%;
 

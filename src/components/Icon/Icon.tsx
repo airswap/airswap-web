@@ -10,6 +10,7 @@ import {
   IconArrowRight,
   IconDarkModeSwitch,
   IconDeny,
+  IconX,
 } from "./icons";
 
 type IconSet = {
@@ -34,6 +35,7 @@ export const icons: IconSet = {
   "transaction-failed": HiX,
   "transaction-pending": MdAccessTime,
   "transaction-link": MdOpenInNew,
+  "button-x": IconX,
 };
 
 interface IconProps extends SvgIconProps {

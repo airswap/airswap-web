@@ -33,12 +33,12 @@ const typography: DefaultTheme["typography"] = {
   },
   infoHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5625,
+    lineHeight: 1.5,
     fontWeight: 600,
   },
   infoSubHeading: {
     fontSize: "1rem",
-    lineHeight: 1.5625,
+    lineHeight: 1.5,
     fontWeight: 400,
   },
   formLabel: {

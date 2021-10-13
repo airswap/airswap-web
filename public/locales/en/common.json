@@ -14,5 +14,7 @@
   "failed": "Failed",
   "undefined": "undefined",
   "noResultsFound": "No results found",
-  "done": "Done"
+  "done": "Done",
+  "bookmarkWarning1": "Make sure the URL is {{url}}",
+  "bookmarkWarning2": " - Press (Ctrl+D or Cmd+D) to bookmark it to be safe."
 }
