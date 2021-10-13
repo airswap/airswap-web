@@ -42,7 +42,7 @@ import {
   clearLastAccount,
   loadLastAccount,
   saveLastAccount,
-} from "./walletAPI";
+} from "./walletApi";
 import {
   setWalletConnected,
   setWalletDisconnected,
