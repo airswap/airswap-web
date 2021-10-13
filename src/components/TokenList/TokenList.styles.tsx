@@ -9,7 +9,6 @@ import { Title } from "../Typography/Typography";
 
 type ContainerProps = {
   overflow: boolean;
-  isHidden: boolean;
 };
 
 export const ScrollContainer = styled.div`
@@ -46,7 +45,6 @@ export const Container = styled.div<ContainerProps>`
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
 
   ${ScrollContainer} {
     width: calc(100% + (${sizes.tradeContainerPadding} / 2));

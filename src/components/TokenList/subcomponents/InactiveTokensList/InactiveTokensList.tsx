@@ -7,7 +7,7 @@ import {
   InactiveTitleContainer,
   InformationIcon,
   TokenContainer,
-} from "../../TokenSelection.styles";
+} from "../../TokenList.styles";
 import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {

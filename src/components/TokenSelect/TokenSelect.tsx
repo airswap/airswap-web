@@ -88,12 +88,12 @@ const TokenSelect: FC<TokenSelectProps> = ({
       <FlexRow>
         <TokenLogo size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
-          <StyledLabel invisible={readOnly}>{label}</StyledLabel>
+          <StyledLabel $invisible={readOnly}>{label}</StyledLabel>
           <StyledSelectItem>
-            <StyledSelectButtonContent emphasize={readOnly}>
+            <StyledSelectButtonContent $emphasize={readOnly}>
               {selectedToken ? selectedToken.symbol : t("common:select")}
             </StyledSelectButtonContent>
-            <StyledDownArrow invisible={readOnly} />
+            <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelectButton>
         <TokenSelectFocusBorder position="left" />

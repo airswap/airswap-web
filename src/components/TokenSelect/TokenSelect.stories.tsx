@@ -14,7 +14,7 @@ const wethTokenInfo: TokenInfo = {
 };
 
 export default {
-  title: "components/TokenSelection/TokenSelect",
+  title: "components/TokenList/TokenSelect",
   component: TokenSelect,
 } as Meta;
 

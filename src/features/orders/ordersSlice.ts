@@ -220,7 +220,7 @@ export const selectBestOption = createSelector(
   (terms, bestRfqOrder, bestPricing) => {
     if (!terms) return null;
 
-    if (terms.type === "buy") {
+    if (terms.side === "buy") {
       console.error(`Buy orders not implemented yet`);
       return null;
     }

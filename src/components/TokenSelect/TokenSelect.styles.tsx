@@ -94,27 +94,27 @@ export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
   }
 `;
 
-const fadeOutWhenInvisible = css<{ invisible: boolean }>`
+const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
   transition: opacity ease-in-out 0.3s;
   will-change: opacity;
-  opacity: ${(props) => (props.invisible ? 0 : 1)};
+  opacity: ${(props) => (props.$invisible ? 0 : 1)};
 `;
 
-export const StyledLabel = styled(FormLabel)<{ invisible: boolean }>`
+export const StyledLabel = styled(FormLabel)<{ $invisible: boolean }>`
   ${fadeOutWhenInvisible}
 `;
 
-export const StyledSelectButtonContent = styled.span<{ emphasize: boolean }>`
+export const StyledSelectButtonContent = styled.span<{ $emphasize: boolean }>`
   transition: transform ease-in-out 0.3s;
   will-change: transform;
   transform: ${(props) =>
-    props.emphasize
+    props.$emphasize
       ? "translateY(-0.625rem) scale(1.111111)"
       : "translateY(0) scale(1)"};
 `;
 
 export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
-  invisible: boolean;
+  $invisible: boolean;
 }>`
   ${fadeOutWhenInvisible}
 `;

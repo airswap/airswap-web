@@ -1,19 +1,16 @@
-import { useState, FormEvent, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { MdArrowDownward, MdBlock } from "react-icons/md";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
 
-import { BigNumber } from "ethers";
-import { parseUnits, formatUnits } from "ethers/lib/utils";
+import { BigNumber } from "bignumber.js";
+import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import { Title } from "../../components/Typography/Typography";
 import {
   requestActiveTokenAllowances,
@@ -39,49 +36,38 @@ import {
   selectBestOption,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
-import { setTradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
+import {
+  clearTradeTerms,
+  setTradeTerms,
+} from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
-import TokenSelect from "../TokenSelect/TokenSelect";
+import TokenList from "../TokenList/TokenList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
   InfoContainer,
-  SubmitButton,
-  BackButton,
-  SwapIconContainer,
   ButtonContainer,
   HugeTicks,
   Placeholder,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
+import ActionButtons, {
+  ButtonActions,
+} from "./subcomponents/ActionButtons/ActionButtons";
+import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 
-const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
+type TokenSelectModalTypes = "base" | "quote" | null;
 
-type TokenSelectType = "senderToken" | "signerToken";
+const initialBaseAmount = "0.01";
 
 const SwapWidget = () => {
-  const [senderToken, setSenderToken] = useState<string>();
-  const [signerToken, setSignerToken] = useState<string>();
-  const [senderAmount, setSenderAmount] = useState("0.01");
-  const [showWalletList, setShowWalletList] = useState<boolean>(false);
-  const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
-  const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [isSwapping, setIsSwapping] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
-  const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
-  const [tokenSelectType, setTokenSelectType] = useState<TokenSelectType>(
-    "senderToken"
-  );
-
+  // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -90,6 +76,30 @@ const SwapWidget = () => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
+  const pendingApprovals = useAppSelector(selectPendingApprovals);
+
+  // Input states
+  const [baseToken, setBaseToken] = useState<string>();
+  const [quoteToken, setQuoteToken] = useState<string>();
+  const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+  const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
+
+  // Modals
+  const [showWalletList, setShowWalletList] = useState<boolean>(false);
+  const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
+  const [
+    showTokenSelectModalFor,
+    setShowTokenSelectModalFor,
+  ] = useState<TokenSelectModalTypes | null>(null);
+
+  // Loading states
+  const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [isSwapping, setIsSwapping] = useState<boolean>(false);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+
+  // Error states
+  const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+
   const { t } = useTranslation([
     "orders",
     "common",
@@ -97,6 +107,7 @@ const SwapWidget = () => {
     "balances",
     "toast",
   ]);
+
   const {
     chainId,
     account,
@@ -105,24 +116,24 @@ const SwapWidget = () => {
     activate,
   } = useWeb3React<Web3Provider>();
 
-  const senderTokenInfo = useMemo(
-    () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
-    [senderToken, activeTokens]
+  const baseTokenInfo = useMemo(
+    () => (baseToken ? findTokenByAddress(baseToken, activeTokens) : null),
+    [baseToken, activeTokens]
   );
 
-  const signerTokenInfo = useMemo(
-    () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
-    [signerToken, activeTokens]
+  const quoteTokenInfo = useMemo(
+    () => (quoteToken ? findTokenByAddress(quoteToken, activeTokens) : null),
+    [quoteToken, activeTokens]
   );
 
-  const pendingApprovals = useAppSelector(selectPendingApprovals);
-
+  // Reset everything when the chainId changes.
   useEffect(() => {
-    setSenderToken("");
-    setSignerToken("");
-    setSenderAmount("");
+    setBaseToken("");
+    setQuoteToken("");
+    setBaseAmount(initialBaseAmount);
   }, [chainId]);
 
+  // Default to USDT -> WETH
   useEffect(() => {
     if (allTokens.length) {
       const { fromAddress, toAddress } = findTokenFromAndTokenToAddress(
@@ -132,19 +143,11 @@ const SwapWidget = () => {
         tokenFrom,
         tokenTo
       );
-
-      setSenderToken(fromAddress);
-      setSignerToken(toAddress);
+      setBaseToken(fromAddress);
+      setQuoteToken(toAddress);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens.length]);
-
-  const getTokenDecimals = (tokenAddress: string) => {
-    for (const token of activeTokens) {
-      if (token.address === tokenAddress) return token.decimals;
-    }
-    return null;
-  };
 
   const hasApprovalPending = (tokenId: string | undefined) => {
     if (tokenId === undefined) return false;
@@ -154,231 +157,33 @@ const SwapWidget = () => {
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (!tokenAddress) return false;
     if (!allowances.values[tokenAddress]) return false;
-    return allowances.values[tokenAddress]! >= senderAmount;
+    return new BigNumber(allowances.values[tokenAddress]!)
+      .div(10 ** (baseTokenInfo?.decimals || 18))
+      .gte(baseAmount);
   };
 
-  // function to only allow numerical and dot values to be inputted
-  const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
-    let value = e.currentTarget.value;
-    if (value === "" || floatRegExp.test(value)) {
-      if (value[value.length - 1] === ",")
-        value = value.slice(0, value.length - 1) + ".";
-      setSenderAmount(value);
-    }
-  };
-
-  const handleSetToken = (value: string, type: TokenSelectType) => {
-    if (type === "senderToken") {
-      history.push({ pathname: `/${value}/${signerToken}` });
-      setSenderAmount("");
-      setSenderToken(value);
+  const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+    if (type === "base") {
+      history.push({ pathname: `/${value}/${quoteToken}` });
+      setBaseAmount("");
+      setBaseToken(value);
     } else {
-      history.push({ pathname: `/${senderToken}/${value}` });
-      setSignerToken(value);
+      history.push({ pathname: `/${baseToken}/${value}` });
+      setQuoteToken(value);
     }
   };
 
-  const DisplayedButtons = () => {
-    if (!active || !chainId) {
-      return (
-        <SubmitButton
-          intent="primary"
-          loading={isConnecting}
-          onClick={() => setShowWalletList(true)}
-        >
-          {t("wallet:connectWallet")}
-        </SubmitButton>
-      );
-    } else if (isApproving || isSwapping) {
-      return <></>;
-    } else if (pairUnavailable) {
-      return (
-        <>
-          <BackButton
-            onClick={() => {
-              dispatch(clear());
-              setPairUnavailable(false);
-            }}
-          >
-            {t("common:back")}
-          </BackButton>
-        </>
-      );
-    } else if (showOrderSubmitted) {
-      return (
-        <SubmitButton
-          intent="primary"
-          onClick={() => {
-            dispatch(clear());
-            setShowOrderSubmitted(false);
-          }}
-        >
-          {t("orders:newSwap")}
-        </SubmitButton>
-      );
-    } else if (
-      signerAmount &&
-      hasSufficientAllowance(senderToken) &&
-      signerToken &&
-      senderToken
-    ) {
-      return (
-        <>
-          <BackButton
-            onClick={() => {
-              dispatch(clear());
-            }}
-          >
-            {t("common:back")}
-          </BackButton>
-          <SubmitButton
-            intent="primary"
-            aria-label={t("orders:take", { context: "aria" })}
-            disabled={isNaN(parseFloat(signerAmount))}
-            loading={rfqOrderStatus === "taking"}
-            onClick={async () => {
-              try {
-                setIsSwapping(true);
-                const result = await dispatch(
-                  take({ order: bestRfqOrder, library })
-                );
-                setIsSwapping(false);
-                await unwrapResult(result);
-                setShowOrderSubmitted(true);
-              } catch (e: any) {
-                if (e.code && e.code === 4001) {
-                  // 4001 is metamask user declining transaction sig, do nothing
-                } else {
-                  // FIXME: notify user - toast?
-                }
-              }
-            }}
-          >
-            {t("orders:take")}
-          </SubmitButton>
-        </>
-      );
-    } else if (signerAmount && signerToken && senderToken) {
-      return (
-        <>
-          <BackButton
-            onClick={() => {
-              dispatch(clear());
-            }}
-          >
-            {t("common:back")}
-          </BackButton>
-          <SubmitButton
-            intent="primary"
-            aria-label={t("orders:approve", { context: "aria" })}
-            loading={
-              rfqOrderStatus === "approving" || hasApprovalPending(senderToken)
-            }
-            onClick={async () => {
-              setIsApproving(true);
-              await dispatch(approve({ token: senderToken, library }));
-              setIsApproving(false);
-            }}
-          >
-            {t("orders:approve")}
-          </SubmitButton>
-        </>
-      );
-    } else {
-      return (
-        <SubmitButton
-          intent="primary"
-          disabled={
-            !decimalsFound ||
-            !senderToken ||
-            !signerToken ||
-            !senderAmount ||
-            insufficientBalance ||
-            parseFloat(senderAmount) === 0 ||
-            senderAmount === "."
-          }
-          loading={rfqOrderStatus === "requesting"}
-          onClick={async () => {
-            try {
-              dispatch(
-                setTradeTerms({
-                  baseToken: {
-                    address: senderToken!,
-                    decimals: senderTokenInfo?.decimals || 18,
-                  },
-                  quoteToken: {
-                    address: signerToken!,
-                    decimals: signerTokenInfo?.decimals || 18,
-                  }!,
-                  baseTokenAmount: senderAmount,
-                  type: "sell",
-                })
-              );
-              const result = await dispatch(
-                request({
-                  chainId: chainId!,
-                  senderToken: senderToken!,
-                  senderAmount,
-                  senderTokenDecimals: senderTokenInfo!.decimals,
-                  signerToken: signerToken!,
-                  senderWallet: account!,
-                  provider: library,
-                })
-              );
-              const orders = await unwrapResult(result);
-              if (!orders.length) throw new Error("no valid orders");
-            } catch (e: any) {
-              console.error(e);
-              switch (e.message) {
-                // may want to handle no peers differently in future.
-                // case "no counterparties": {
-                //   break;
-                // }
-                // case "no valid orders": {
-                //   break;
-                // }
-                default: {
-                  setPairUnavailable(true);
-                }
-              }
-            }
-          }}
-        >
-          {!insufficientBalance
-            ? !senderAmount ||
-              parseFloat(senderAmount) === 0 ||
-              senderAmount === "."
-              ? t("orders:enterAmount")
-              : decimalsFound
-              ? t("orders:continue")
-              : t("orders:decimalsNotFound")
-            : t("orders:insufficentBalance", {
-                symbol: senderTokenInfo?.symbol,
-              })}
-        </SubmitButton>
-      );
-    }
-  };
-
-  let signerAmount: string | null = null;
-  if (bestTradeOption) {
-    signerAmount = bestTradeOption.quoteAmount;
-  }
-
-  let parsedSenderAmount = null;
   let insufficientBalance: boolean = false;
-  let decimalsFound: boolean = true;
-  if (senderAmount && senderToken && Object.keys(balances.values).length) {
-    if (parseFloat(senderAmount) === 0 || senderAmount === ".") {
+  if (baseAmount && baseToken && Object.keys(balances.values).length) {
+    if (parseFloat(baseAmount) === 0 || baseAmount === ".") {
       insufficientBalance = false;
     } else {
-      const senderDecimals = getTokenDecimals(senderToken);
-      if (senderDecimals) {
-        parsedSenderAmount = parseUnits(senderAmount, senderDecimals);
-        insufficientBalance = BigNumber.from(
-          balances.values[senderToken!] || toAtomicString("0", 18)
-        ).lt(parsedSenderAmount);
-      } else decimalsFound = false;
+      const baseDecimals = baseTokenInfo?.decimals;
+      if (baseDecimals) {
+        insufficientBalance = new BigNumber(
+          balances.values[baseToken!] || "0"
+        ).lt(new BigNumber(baseAmount).multipliedBy(10 ** baseDecimals));
+      }
     }
   }
 
@@ -392,13 +197,120 @@ const SwapWidget = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
-      if (address === senderToken) {
-        setSenderToken("");
-        setSenderAmount("0.01");
-      } else if (address === signerToken) setSignerToken("");
+      if (address === baseToken) {
+        setBaseToken("");
+        setBaseAmount("0.01");
+      } else if (address === quoteToken) setQuoteToken("");
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
       dispatch(requestActiveTokenAllowances({ provider: library! }));
+    }
+  };
+
+  const requestQuotes = async () => {
+    try {
+      const result = await dispatch(
+        request({
+          chainId: chainId!,
+          senderToken: baseToken!,
+          senderAmount: baseAmount,
+          senderTokenDecimals: baseTokenInfo!.decimals,
+          signerToken: quoteToken!,
+          senderWallet: account!,
+          provider: library,
+        })
+      );
+      const orders = await unwrapResult(result);
+      if (!orders.length) throw new Error("no valid orders");
+    } catch (e: any) {
+      switch (e.message) {
+        // may want to handle no peers differently in future.
+        // case "no peers": {
+        //   break;
+        // }
+        // case "no valid orders": {
+        //   break;
+        // }
+        default: {
+          setPairUnavailable(true);
+        }
+      }
+    }
+  };
+
+  const setBaseAmountToMax = () => {
+    if (baseToken && baseTokenInfo) {
+      setBaseAmount(
+        formatUnits(balances.values[baseToken] || "0", baseTokenInfo.decimals)
+      );
+    }
+  };
+
+  const takeBestOption = async () => {
+    try {
+      setIsSwapping(true);
+      const result = await dispatch(
+        take({ order: bestTradeOption!.order!, library })
+      );
+      setIsSwapping(false);
+      await unwrapResult(result);
+      setShowOrderSubmitted(true);
+    } catch (e: any) {
+      if (e.code && e.code === 4001) {
+        // 4001 is metamask user declining transaction sig, do nothing
+      } else {
+        // FIXME: notify user - toast?
+      }
+    }
+  };
+
+  const handleButtonClick = async (action: ButtonActions) => {
+    switch (action) {
+      case ButtonActions.goBack:
+        dispatch(clearTradeTerms());
+        dispatch(clear());
+        break;
+
+      case ButtonActions.restart:
+        setShowOrderSubmitted(false);
+        dispatch(clearTradeTerms());
+        dispatch(clear());
+        break;
+
+      case ButtonActions.connectWallet:
+        setShowWalletList(true);
+        break;
+
+      case ButtonActions.requestQuotes:
+        dispatch(
+          setTradeTerms({
+            baseToken: {
+              address: baseToken!,
+              decimals: baseTokenInfo!.decimals,
+            },
+            baseTokenAmount: baseAmount,
+            quoteToken: {
+              address: quoteToken!,
+              decimals: quoteTokenInfo!.decimals,
+            },
+            side: "sell",
+          })
+        );
+        requestQuotes();
+        break;
+
+      case ButtonActions.approve:
+        setIsApproving(true);
+        await dispatch(approve({ token: baseToken, library }));
+        setIsApproving(false);
+        break;
+
+      case ButtonActions.takeQuote:
+        takeBestOption();
+        break;
+
+      default:
+      // Do nothing.
     }
   };
 
@@ -415,49 +327,19 @@ const SwapWidget = () => {
         ) : isApproving || isSwapping ? (
           <Placeholder />
         ) : (
-          <>
-            <TokenSelect
-              label={t("orders:from")}
-              amount={senderAmount}
-              onAmountChange={(e) => handleTokenAmountChange(e)}
-              onChangeTokenClicked={() => {
-                setTokenSelectType("senderToken");
-                setShowTokenSelection(true);
-              }}
-              onMaxClicked={(e) => {
-                if (senderToken) {
-                  setSenderAmount(
-                    formatUnits(
-                      balances.values[senderToken] || "0",
-                      senderTokenInfo?.decimals
-                    )
-                  );
-                }
-              }}
-              readOnly={!!signerAmount || pairUnavailable}
-              includeAmountInput={true}
-              selectedToken={senderTokenInfo}
-            />
-            <SwapIconContainer>
-              {pairUnavailable ? <MdBlock /> : <MdArrowDownward />}
-            </SwapIconContainer>
-            <TokenSelect
-              label={t("orders:to")}
-              amount={signerAmount && stringToSignificantDecimals(signerAmount)}
-              onAmountChange={(e) => handleTokenAmountChange(e)}
-              onChangeTokenClicked={() => {
-                setTokenSelectType("signerToken");
-                setShowTokenSelection(true);
-              }}
-              readOnly={!!signerAmount || pairUnavailable}
-              includeAmountInput={!!signerAmount}
-              amountDetails={
-                !!signerAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
-              }
-              selectedToken={signerTokenInfo}
-              isLoading={rfqOrderStatus === "requesting"}
-            />
-          </>
+          <SwapInputs
+            baseAmount={baseAmount}
+            onBaseAmountChange={setBaseAmount}
+            baseTokenInfo={baseTokenInfo}
+            quoteTokenInfo={quoteTokenInfo}
+            onChangeTokenClick={setShowTokenSelectModalFor}
+            onMaxButtonClick={setBaseAmountToMax}
+            side="sell"
+            tradeNotAllowed={pairUnavailable}
+            isRequesting={rfqOrderStatus === "requesting"}
+            quoteAmount={bestTradeOption?.quoteAmount || ""}
+            readOnly={!!bestTradeOption}
+          />
         )}
         <InfoContainer>
           <InfoSection
@@ -470,10 +352,10 @@ const SwapWidget = () => {
             // @ts-ignore
             bestTradeOption={bestTradeOption}
             requiresApproval={
-              bestRfqOrder && !hasSufficientAllowance(senderToken)
+              bestRfqOrder && !hasSufficientAllowance(baseToken)
             }
-            senderTokenInfo={senderTokenInfo}
-            signerTokenInfo={signerTokenInfo}
+            baseTokenInfo={baseTokenInfo}
+            quoteTokenInfo={quoteTokenInfo}
             timerExpiry={
               bestRfqOrder ? parseInt(bestRfqOrder.expiry) - 60 : null
             }
@@ -481,10 +363,10 @@ const SwapWidget = () => {
               dispatch(
                 request({
                   chainId: chainId!,
-                  senderToken: senderToken!,
-                  senderAmount,
-                  senderTokenDecimals: senderTokenInfo!.decimals,
-                  signerToken: signerToken!,
+                  senderToken: baseToken!,
+                  senderAmount: baseAmount,
+                  senderTokenDecimals: baseTokenInfo!.decimals,
+                  signerToken: quoteToken!,
                   senderWallet: account!,
                   provider: library,
                 })
@@ -493,28 +375,46 @@ const SwapWidget = () => {
           />
         </InfoContainer>
         <ButtonContainer>
-          <DisplayedButtons />
+          {!isApproving && !isSwapping && (
+            <ActionButtons
+              walletIsActive={active}
+              orderComplete={showOrderSubmitted}
+              baseTokenInfo={baseTokenInfo}
+              hasAmount={baseAmount !== "0" && baseAmount !== "."}
+              hasQuote={!!bestTradeOption}
+              hasSufficientBalance={!insufficientBalance}
+              needsApproval={!hasSufficientAllowance(baseToken)}
+              pairUnavailable={pairUnavailable}
+              onButtonClicked={handleButtonClick}
+              isLoading={
+                isConnecting ||
+                ["approving", "requesting", "taking"].includes(
+                  rfqOrderStatus
+                ) ||
+                hasApprovalPending(baseToken)
+              }
+            />
+          )}
         </ButtonContainer>
       </StyledSwapWidget>
 
       <Overlay
-        onClose={() => setShowTokenSelection(false)}
-        isHidden={!showTokenSelection}
+        onClose={() => setShowTokenSelectModalFor(null)}
+        isHidden={!showTokenSelectModalFor}
       >
-        <TokenSelection
-          signerToken={signerToken!}
-          senderToken={senderToken!}
-          setSignerToken={(value) => handleSetToken(value, "signerToken")}
-          setSenderToken={(value) => handleSetToken(value, "senderToken")}
-          tokenSelectType={tokenSelectType}
+        <TokenList
+          onSelectToken={(newTokenAddress) => {
+            // e.g. handleSetToken("base", "0x123")
+            handleSetToken(showTokenSelectModalFor, newTokenAddress);
+            // Close the modal
+            setShowTokenSelectModalFor(null);
+          }}
           balances={balances}
           allTokens={allTokens}
           activeTokens={activeTokens}
           supportedTokenAddresses={supportedTokens}
           addActiveToken={handleAddActiveToken}
           removeActiveToken={handleRemoveActiveToken}
-          onClose={() => setShowTokenSelection(false)}
-          chainId={chainId!}
         />
       </Overlay>
 

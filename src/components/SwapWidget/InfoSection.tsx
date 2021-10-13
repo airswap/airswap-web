@@ -39,8 +39,8 @@ export type InfoSectionProps = {
       }
     | null;
   requiresApproval: boolean;
-  signerTokenInfo: TokenInfo | null;
-  senderTokenInfo: TokenInfo | null;
+  quoteTokenInfo: TokenInfo | null;
+  baseTokenInfo: TokenInfo | null;
   timerExpiry: number | null;
   onTimerComplete: () => void;
 };
@@ -54,8 +54,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   bestTradeOption,
   isFetchingOrders,
   requiresApproval,
-  senderTokenInfo,
-  signerTokenInfo,
+  baseTokenInfo,
+  quoteTokenInfo,
   timerExpiry,
   onTimerComplete,
 }) => {
@@ -102,7 +102,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <InfoHeading>
-          {t("orders:approvePending", { symbol: senderTokenInfo!.symbol })}
+          {t("orders:approvePending", { symbol: baseTokenInfo!.symbol })}
         </InfoHeading>
         <InfoSubHeading>{t("orders:approveMessage")}</InfoSubHeading>
       </>
@@ -129,16 +129,16 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <StyledInfoHeading>
-          1 {invertPrice ? signerTokenInfo!.symbol : senderTokenInfo!.symbol} ={" "}
+          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
           {stringToSignificantDecimals(price.toString())}{" "}
-          {invertPrice ? senderTokenInfo!.symbol : signerTokenInfo!.symbol}
+          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
             <StyledInvertPriceIcon />
           </StyledInvertPriceButton>
         </StyledInfoHeading>
         {requiresApproval ? (
           <InfoSubHeading>
-            {t("orders:approvalRequired", { symbol: senderTokenInfo!.symbol })}
+            {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
           </InfoSubHeading>
         ) : (
           <InfoSubHeading>

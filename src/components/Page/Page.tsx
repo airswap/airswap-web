@@ -10,7 +10,7 @@ import { toggleTheme } from "../../features/userSettings/userSettingsSlice";
 import SideBar from "../SideBar/SideBar";
 import { StyledWallet, StyledDarkModeSwitch } from "../SideBar/SideBar.styles";
 import Toaster from "../Toasts/Toaster";
-import TradeContainer from "../TradeContainer/TradeContainer";
+import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
 
 const Page: FC = (): ReactElement => {
@@ -22,9 +22,9 @@ const Page: FC = (): ReactElement => {
       <Toaster sideBarOpen={sideBarOpen} />
       <StyledSiteLogo />
       <StyledWallet isOpen={sideBarOpen} />
-      <TradeContainer isOpen={sideBarOpen}>
+      <WidgetFrame isOpen={sideBarOpen}>
         <Orders />
-      </TradeContainer>
+      </WidgetFrame>
       {/* <SideBar
         isOpen={sideBarOpen}
         setIsOpen={() => {

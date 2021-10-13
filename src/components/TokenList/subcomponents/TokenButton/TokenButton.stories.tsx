@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 export default {
-  title: "components/TokenSelection/TokenButton",
+  title: "components/TokenList/TokenButton",
   component: TokenButton,
   argTypes: {
     token: { control: { type: "object" } },

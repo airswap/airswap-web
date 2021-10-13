@@ -17,14 +17,14 @@ type TradeTermsState = {
    * amount of quoteToken. Buy means sending an as yet unknown amount of
    * quoteToken to receive a known amount of baseToken.
    */
-  type: "sell" | "buy";
+  side: "sell" | "buy";
 };
 
 const initialState: TradeTermsState = {
   baseToken: { address: "", decimals: 18 },
   quoteToken: { address: "", decimals: 18 },
   baseTokenAmount: "",
-  type: "sell",
+  side: "sell",
 };
 
 const tradeTermsSlice = createSlice({

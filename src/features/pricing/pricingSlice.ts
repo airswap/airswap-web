@@ -142,7 +142,7 @@ export const selectBestPricing = createSelector(
       quoteAmount: string;
     } | null = null;
 
-    const { quoteToken, baseToken, baseTokenAmount, type } = terms;
+    const { quoteToken, baseToken, baseTokenAmount, side } = terms;
 
     Object.keys(pricing).forEach((locator) => {
       const locatorPricing = pricing[locator];
@@ -154,7 +154,7 @@ export const selectBestPricing = createSelector(
 
       if (relevantIndex === -1) return;
       const relevantPricing =
-        locatorPricing[relevantIndex][type === "sell" ? "bid" : "ask"];
+        locatorPricing[relevantIndex][side === "sell" ? "bid" : "ask"];
 
       if (!pricingIsLevels(relevantPricing)) {
         console.warn(
@@ -169,8 +169,8 @@ export const selectBestPricing = createSelector(
       );
 
       if (
-        (type === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
-        (type === "buy" && quoteAmount.lt(bestQuoteAmount))
+        (side === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
+        (side === "buy" && quoteAmount.lt(bestQuoteAmount))
       ) {
         bestQuoteAmount = quoteAmount;
         bestPricing = {

@@ -1,6 +1,6 @@
 import styled, { DefaultTheme } from "styled-components/macro";
 
-import { ButtonIntent, ButtonProps } from "./Button";
+import { ButtonIntent, ButtonJustifyContent } from "./Button";
 
 function getButtonBackground(
   theme: DefaultTheme,
@@ -38,7 +38,14 @@ export const Text = styled.div`
   transition: opacity 0.3s ease-out;
 `;
 
-export const StyledButton = styled.button<ButtonProps>`
+type StyledButtonProps = {
+  disabled?: boolean;
+  $loading?: boolean;
+  intent?: ButtonIntent;
+  justifyContent?: ButtonJustifyContent;
+};
+
+export const StyledButton = styled.button<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.justifyContent || "center"};
@@ -65,7 +72,7 @@ export const StyledButton = styled.button<ButtonProps>`
   cursor: ${(props) => (props.disabled ? "none" : "pointer")};
 
   ${Text} {
-    margin-right: ${(props) => (props.loading ? "1rem" : 0)};
+    margin-right: ${(props) => (props.$loading ? "1rem" : 0)};
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   }
 
