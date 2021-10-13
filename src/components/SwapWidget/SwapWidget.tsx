@@ -356,9 +356,6 @@ const SwapWidget = () => {
             }
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
-            timerExpiry={
-              bestRfqOrder ? parseInt(bestRfqOrder.expiry) - 60 : null
-            }
             onTimerComplete={() => {
               dispatch(
                 request({

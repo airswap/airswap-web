@@ -7,6 +7,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { BigNumber } from "bignumber.js";
 
 import Timer from "../../components/Timer/Timer";
+import { EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { Levels } from "../../features/pricing/pricingSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
@@ -41,8 +42,6 @@ export type InfoSectionProps = {
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
-  timerExpiry: number | null;
-  onTimerComplete: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -56,8 +55,6 @@ const InfoSection: FC<InfoSectionProps> = ({
   requiresApproval,
   baseTokenInfo,
   quoteTokenInfo,
-  timerExpiry,
-  onTimerComplete,
 }) => {
   const { t } = useTranslation(["orders", "marketing"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -148,8 +145,10 @@ const InfoSection: FC<InfoSectionProps> = ({
               {bestTradeOption.protocol === "request-for-quote" && (
                 <TimerText>
                   <Timer
-                    expiryTime={timerExpiry!}
-                    onTimerComplete={onTimerComplete}
+                    expiryTime={
+                      parseInt(bestTradeOption!.order!.expiry) -
+                      EXPIRY_BUFFER_MS / 1000
+                    }
                   ></Timer>
                 </TimerText>
               )}

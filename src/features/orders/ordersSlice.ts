@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createSlice,
   createSelector,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
@@ -10,6 +11,7 @@ import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
+import { EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { allowancesActions } from "../balances/balancesSlice";
 import { Levels, selectBestPricing } from "../pricing/pricingSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -37,25 +39,30 @@ import {
 export interface OrdersState {
   orders: LightOrder[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed";
+  reRequestTimerId: number | null;
 }
 
 const initialState: OrdersState = {
   orders: [],
   status: "idle",
+  reRequestTimerId: null,
 };
 
 export const request = createAsyncThunk(
   "orders/request",
-  async (params: {
-    chainId: number;
-    signerToken: string;
-    senderToken: string;
-    senderAmount: string;
-    senderTokenDecimals: number;
-    senderWallet: string;
-    provider: any;
-  }) =>
-    await requestOrders(
+  async (
+    params: {
+      chainId: number;
+      signerToken: string;
+      senderToken: string;
+      senderAmount: string;
+      senderTokenDecimals: number;
+      senderWallet: string;
+      provider: any;
+    },
+    { dispatch }
+  ) => {
+    const orders = await requestOrders(
       params.chainId,
       params.signerToken,
       params.senderToken,
@@ -63,7 +70,17 @@ export const request = createAsyncThunk(
       params.senderTokenDecimals,
       params.senderWallet,
       params.provider
-    )
+    );
+    const bestOrder = [...orders].sort(orderSortingFunction)[0];
+    const expiry = parseInt(bestOrder.expiry) * 1000;
+    const timeTilReRequest = expiry - Date.now() - EXPIRY_BUFFER_MS;
+    const reRequestTimerId = window.setTimeout(
+      () => dispatch(request(params)),
+      timeTilReRequest
+    );
+    dispatch(setReRequestTimerId(reRequestTimerId));
+    return orders;
+  }
 );
 
 export const approve = createAsyncThunk(
@@ -156,6 +173,13 @@ export const ordersSlice = createSlice({
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
+      if (state.reRequestTimerId) {
+        clearTimeout(state.reRequestTimerId);
+        state.reRequestTimerId = null;
+      }
+    },
+    setReRequestTimerId: (state, action: PayloadAction<number>) => {
+      state.reRequestTimerId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -200,7 +224,7 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear } = ordersSlice.actions;
+export const { clear, setReRequestTimerId } = ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.

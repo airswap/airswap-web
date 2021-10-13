@@ -65,7 +65,7 @@ const ActionButtons: FC<{
   if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (pairUnavailable) nextAction = ButtonActions.goBack;
   else if (orderComplete) nextAction = ButtonActions.restart;
-  else if (needsApproval) nextAction = ButtonActions.approve;
+  else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
   else if (hasQuote) nextAction = ButtonActions.takeQuote;
   else nextAction = ButtonActions.requestQuotes;
 
@@ -76,7 +76,9 @@ const ActionButtons: FC<{
 
   // Some actions require an additional back button
   const hasBackButton: boolean =
-    !isDisabled && nextAction === ButtonActions.takeQuote;
+    !isDisabled &&
+    (nextAction === ButtonActions.takeQuote ||
+      nextAction === ButtonActions.approve);
 
   // The text depends on the next action, unless the button is disabled, when
   // it depends on the reason for being disabled instead.
@@ -103,6 +105,7 @@ const ActionButtons: FC<{
       <MainButton
         intent={nextAction === ButtonActions.goBack ? "neutral" : "primary"}
         loading={isLoading}
+        disabled={isDisabled}
         onClick={onButtonClicked.bind(null, nextAction)}
       >
         {mainButtonText}

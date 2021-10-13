@@ -83,7 +83,7 @@ const SwapInputs: FC<{
         }}
         onMaxClicked={onMaxButtonClick}
         readOnly={readOnly}
-        includeAmountInput={isSell}
+        includeAmountInput={isSell || !!quoteAmount}
         amountDetails={
           !isSell && quoteAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
         }
@@ -101,7 +101,7 @@ const SwapInputs: FC<{
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
         readOnly={readOnly}
-        includeAmountInput={!!isSell}
+        includeAmountInput={!isSell || !!quoteAmount}
         amountDetails={
           isSell && quoteAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
         }
