@@ -23,10 +23,10 @@ import {
 import { selectBestPricing } from "../pricing/pricingSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
-  submitTransaction,
+  declineTransaction,
   mineTransaction,
   revertTransaction,
-  declineTransaction,
+  submitTransaction,
 } from "../transactions/transactionActions";
 import {
   SubmittedOrder,
@@ -357,7 +357,24 @@ export const take = createAsyncThunk(
           timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
-        params.library.once(tx.hash, async () => {
+
+        let orderCompleted = false;
+        await params.library.on(tx.hash, async (result: any) => {
+          console.debug({ orderCompleted }, result);
+          if (!orderCompleted) {
+            orderCompleted = true;
+            const receipt = await params.library.getTransactionReceipt(tx.hash);
+            const state: RootState = getState() as RootState;
+            const tokens = Object.values(state.metadata.tokens.all);
+            if (receipt.status === 1) {
+              dispatch(mineTransaction(receipt.transactionHash));
+              notifyTransaction("Order", transaction, tokens, false);
+            } else {
+              dispatch(revertTransaction(receipt.transactionHash));
+              notifyTransaction("Order", transaction, tokens, true);
+            }
+            /*
+             params.library.once(tx.hash, async () => {
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
@@ -379,12 +396,14 @@ export const take = createAsyncThunk(
               true,
               params.library._network.chainId
             );
+             */
           }
         });
       }
     } catch (e: any) {
       console.error(e);
-      dispatch(declineTransaction(e.message));
+      // TODO don't throw the actual error message, just show a helpful message
+      dispatch(declineTransaction({ reason: "", hash: "" }));
       throw e;
     }
   }
