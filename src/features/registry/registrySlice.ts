@@ -92,11 +92,8 @@ export const registrySlice = createSlice({
   },
 });
 
-export const {
-  setStakerTokens,
-  setAllSupportedTokens,
-  reset,
-} = registrySlice.actions;
+export const { setStakerTokens, setAllSupportedTokens, reset } =
+  registrySlice.actions;
 export const selectAllSupportedTokens = (state: RootState) =>
   state.registry.allSupportedTokens;
 export default registrySlice.reducer;

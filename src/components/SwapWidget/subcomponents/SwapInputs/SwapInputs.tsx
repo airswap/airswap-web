@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { MdBlock, MdArrowDownward } from "react-icons/md";
 
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/metadata";
 
 import styled from "styled-components/macro";
 

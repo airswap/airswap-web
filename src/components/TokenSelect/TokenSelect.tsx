@@ -1,7 +1,7 @@
 import { FC, MouseEventHandler, FormEventHandler } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/metadata";
 
 import TokenLogo from "../TokenLogo/TokenLogo";
 import {

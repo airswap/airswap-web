@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 
-type TradeTermsState = {
+export type TradeTerms = {
   /**
    * The token whose quantity is known
    */
@@ -20,7 +20,7 @@ type TradeTermsState = {
   side: "sell" | "buy";
 };
 
-const initialState: TradeTermsState = {
+const initialState: TradeTerms = {
   baseToken: { address: "", decimals: 18 },
   quoteToken: { address: "", decimals: 18 },
   baseTokenAmount: "",
@@ -32,15 +32,13 @@ const tradeTermsSlice = createSlice({
   initialState,
   reducers: {
     clear: () => initialState,
-    set: (_, action: PayloadAction<TradeTermsState>) => action.payload,
+    set: (_, action: PayloadAction<TradeTerms>) => action.payload,
   },
 });
 
 export const selectTradeTerms = (state: RootState) => state.tradeTerms;
 
-export const {
-  set: setTradeTerms,
-  clear: clearTradeTerms,
-} = tradeTermsSlice.actions;
+export const { set: setTradeTerms, clear: clearTradeTerms } =
+  tradeTermsSlice.actions;
 
 export default tradeTermsSlice.reducer;

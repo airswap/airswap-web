@@ -1,5 +1,5 @@
 import { findTokenByAddress, findTokensBySymbol } from "@airswap/metadata";
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/metadata";
 
 export default function findTokenFromAndTokenToAddress(
   allTokens: TokenInfo[],

@@ -39,9 +39,7 @@ const userSettingsSlice = createSlice({
 
 export const selectUserSettings = (state: RootState) => state.userSettings;
 
-export const {
-  toggleTheme,
-  disableBookmarkWarning,
-} = userSettingsSlice.actions;
+export const { toggleTheme, disableBookmarkWarning } =
+  userSettingsSlice.actions;
 
 export default userSettingsSlice.reducer;

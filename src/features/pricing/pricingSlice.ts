@@ -1,40 +1,20 @@
-import { Server } from "@airswap/libraries";
+import { Pricing, Levels, Formula } from "@airswap/types";
 import { calculateCostFromLevels } from "@airswap/utils";
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-  createSelector,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 
-import { AppDispatch, RootState } from "../../app/store";
+import { RootState } from "../../app/store";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
-
-// TODO: have these types exported from @airswap/libraries.
-export type Levels = [string, string][];
-type Formula = string;
-type Pair = {
-  baseToken: string;
-  quoteToken: string;
-};
-
-type PricingDetails =
-  | {
-      bid: Levels;
-      ask: Levels;
-    }
-  | {
-      bid: Formula;
-      ask: Formula;
-    };
-
-type Pricing = Pair & PricingDetails;
 
 export interface PricingState {
   [locator: string]: Pricing[];
 }
+
+type Pair = {
+  baseToken: string;
+  quoteToken: string;
+};
 
 // Initially empty
 const initialState: PricingState = {};
@@ -82,50 +62,7 @@ export const pricingSlice = createSlice({
 
 export const { updatePricing, clearPricing } = pricingSlice.actions;
 
-export const subscribe = createAsyncThunk<
-  () => Promise<void>, // Return type (returns a teardown.)
-  {
-    // TODO: can remove locator once it is public on Server.
-    locator: string;
-    server: Server;
-    pair: {
-      baseToken: string;
-      quoteToken: string;
-    };
-  }, // Params
-  {
-    // thunkApi
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("pricing/subscribe", async (params, thunkApi) => {
-  const { locator, server, pair } = params;
-  function onPricing(pricing: Pricing[]) {
-    const relevantPricing = pricing.find(
-      (p) => p.baseToken === pair.baseToken && p.quoteToken === pair.quoteToken
-    );
-    if (relevantPricing) {
-      thunkApi.dispatch(updatePricing({ locator, pricing: relevantPricing }));
-    }
-  }
-  server.on("pricing", onPricing);
-  await server.subscribe([pair]);
-
-  return async () => {
-    try {
-      server.off("pricing", onPricing);
-      await server.unsubscribeAll();
-    } catch (e) {
-      console.error("Error tearing down last look subscription: ", e);
-      // (Doesn't really matter)
-    } finally {
-      thunkApi.dispatch(clearPricing);
-      server.disconnect();
-    }
-  };
-});
-
-function pricingIsLevels(value: Levels | Formula): value is Levels {
+export function pricingIsLevels(value: Levels | Formula): value is Levels {
   return typeof value !== "string";
 }
 

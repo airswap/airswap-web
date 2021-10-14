@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/metadata";
 import { formatUnits } from "@ethersproject/units";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
@@ -128,7 +128,7 @@ const TokenList = ({
   ]);
 
   return (
-    <Container ref={containerRef} overflow={overflow}>
+    <Container ref={containerRef} $overflow={overflow}>
       <ContentContainer>
         <SearchInput
           hideLabel

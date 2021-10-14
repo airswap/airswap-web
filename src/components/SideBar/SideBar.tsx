@@ -28,9 +28,8 @@ type SideBarProps = {
 };
 
 const SideBar = ({ isOpen, setIsOpen }: SideBarProps) => {
-  const [activeNavButton, setActiveNavButton] = useState<SideBarNavButton>(
-    "introduction"
-  );
+  const [activeNavButton, setActiveNavButton] =
+    useState<SideBarNavButton>("introduction");
   const { t } = useTranslation(["information"]);
 
   const buttons: SideBarNavButton[] = [

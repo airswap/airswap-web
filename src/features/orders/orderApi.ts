@@ -1,4 +1,4 @@
-import { Registry, Light } from "@airswap/libraries";
+import { Light, Server } from "@airswap/libraries";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
@@ -8,26 +8,17 @@ import { BigNumber, ethers, Transaction, constants } from "ethers";
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
 export async function requestOrders(
-  chainId: number,
+  servers: Server[],
   quoteToken: string,
   baseToken: string,
   baseTokenAmount: string,
   senderTokenDecimals: number,
-  senderWallet: string,
-  provider: ethers.providers.Web3Provider
+  senderWallet: string
 ): Promise<LightOrder[]> {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
-  const servers = await new Registry(chainId, provider).getServers(
-    quoteToken,
-    baseToken
-  );
   if (!servers.length) {
     throw new Error("no counterparties");
   }
-  const rfqServers = servers.filter((s) =>
-    s.supportsProtocol("request-for-quote")
-  );
-  const rfqOrderPromises = rfqServers.map(async (server) => {
+  const rfqOrderPromises = servers.map(async (server) => {
     const order = await Promise.race([
       server.getSignerSideOrder(
         toAtomicString(baseTokenAmount, senderTokenDecimals),
@@ -42,7 +33,7 @@ export async function requestOrders(
         }, REQUEST_ORDER_TIMEOUT_MS)
       ),
     ]);
-    return (order as any) as LightOrder;
+    return order as any as LightOrder;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   const successfulRfqOrders = rfqOrders
@@ -66,7 +57,7 @@ export async function approveToken(
     spender,
     constants.MaxUint256
   );
-  return (approvalTxHash as any) as Transaction;
+  return approvalTxHash as any as Transaction;
 }
 
 export async function takeOrder(
@@ -79,7 +70,7 @@ export async function takeOrder(
     // @ts-ignore TODO: type compatability issue with AirSwap lib
     provider.getSigner()
   );
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
 
 export function orderSortingFunction(a: LightOrder, b: LightOrder) {

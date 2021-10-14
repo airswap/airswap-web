@@ -1,8 +1,11 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
+import { Registry } from "@airswap/libraries";
 import { findTokenByAddress } from "@airswap/metadata";
+import { Pricing } from "@airswap/types";
+import { LightOrder } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
@@ -12,6 +15,7 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Title } from "../../components/Typography/Typography";
+import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowances,
   requestActiveTokenBalances,
@@ -28,16 +32,17 @@ import {
 } from "../../features/metadata/metadataSlice";
 import {
   approve,
-  request,
   take,
   selectBestOrder,
   selectOrdersStatus,
   clear,
   selectBestOption,
+  request,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   clearTradeTerms,
+  selectTradeTerms,
   setTradeTerms,
 } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
@@ -77,6 +82,10 @@ const SwapWidget = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const pendingApprovals = useAppSelector(selectPendingApprovals);
+  const tradeTerms = useAppSelector(selectTradeTerms);
+
+  // Contexts
+  const LastLook = useContext(LastLookContext);
 
   // Input states
   const [baseToken, setBaseToken] = useState<string>();
@@ -87,15 +96,14 @@ const SwapWidget = () => {
   // Modals
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
-  const [
-    showTokenSelectModalFor,
-    setShowTokenSelectModalFor,
-  ] = useState<TokenSelectModalTypes | null>(null);
+  const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
+    useState<TokenSelectModalTypes | null>(null);
 
   // Loading states
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [isRequestingQuotes, setisRequestingQuotes] = useState<boolean>(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
@@ -108,13 +116,8 @@ const SwapWidget = () => {
     "toast",
   ]);
 
-  const {
-    chainId,
-    account,
-    library,
-    active,
-    activate,
-  } = useWeb3React<Web3Provider>();
+  const { chainId, account, library, active, activate } =
+    useWeb3React<Web3Provider>();
 
   const baseTokenInfo = useMemo(
     () => (baseToken ? findTokenByAddress(baseToken, activeTokens) : null),
@@ -208,33 +211,76 @@ const SwapWidget = () => {
   };
 
   const requestQuotes = async () => {
+    setisRequestingQuotes(true);
     try {
-      const result = await dispatch(
-        request({
-          chainId: chainId!,
-          senderToken: baseToken!,
-          senderAmount: baseAmount,
-          senderTokenDecimals: baseTokenInfo!.decimals,
-          signerToken: quoteToken!,
-          senderWallet: account!,
-          provider: library,
-        })
+      const servers = await new Registry(
+        chainId,
+        // @ts-ignore provider type mismatch
+        library
+      ).getServers(quoteToken!, baseToken!);
+
+      const rfqServers = servers.filter((s) =>
+        s.supportsProtocol("request-for-quote")
       );
-      const orders = await unwrapResult(result);
-      if (!orders.length) throw new Error("no valid orders");
+
+      const lastLookServers = servers.filter((s) =>
+        s.supportsProtocol("last-look")
+      );
+
+      let rfqPromise: Promise<LightOrder[]> | null = null,
+        lastLookPromise: Promise<Pricing> | null = null;
+
+      if (rfqServers.length) {
+        let rfqDispatchResult = dispatch(
+          request({
+            // FIXME: check these with unlinked library.
+            // @ts-ignore
+            servers: rfqServers,
+            senderToken: baseToken!,
+            senderAmount: baseAmount,
+            signerToken: quoteToken!,
+            senderTokenDecimals: baseTokenInfo!.decimals,
+            senderWallet: account!,
+          })
+        );
+        rfqPromise = rfqDispatchResult
+          .then((result) => {
+            return unwrapResult(result);
+          })
+          .then((orders) => {
+            if (!orders.length) throw new Error("no valid orders");
+            return orders;
+          });
+      }
+
+      if (lastLookServers.length) {
+        // @ts-ignore
+        lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
+          baseToken: baseToken!,
+          quoteToken: quoteToken!,
+        });
+      }
+      const orderPromises: Promise<any>[] = [];
+      if (rfqPromise) orderPromises.push(rfqPromise);
+      if (lastLookPromise) orderPromises.push(lastLookPromise);
+
+      await Promise.race([
+        Promise.any<any>(orderPromises),
+        new Promise((_, reject) =>
+          setTimeout(() => reject("no valid orders"), 4000)
+        ),
+      ]);
     } catch (e: any) {
       switch (e.message) {
-        // may want to handle no peers differently in future.
         // case "no peers": {
-        //   break;
-        // }
         // case "no valid orders": {
-        //   break;
-        // }
         default: {
+          console.error(e);
           setPairUnavailable(true);
         }
       }
+    } finally {
+      setisRequestingQuotes(false);
     }
   };
 
@@ -247,14 +293,32 @@ const SwapWidget = () => {
   };
 
   const takeBestOption = async () => {
+    // TODO: at this stage we need to stop the last look price updates
+    //       from updating the UI.
     try {
       setIsSwapping(true);
-      const result = await dispatch(
-        take({ order: bestTradeOption!.order!, library })
-      );
-      setIsSwapping(false);
-      await unwrapResult(result);
-      setShowOrderSubmitted(true);
+      if (bestTradeOption!.protocol === "request-for-quote") {
+        const result = await dispatch(
+          take({ order: bestTradeOption!.order!, library })
+        );
+        setIsSwapping(false);
+        await unwrapResult(result);
+        setShowOrderSubmitted(true);
+      } else {
+        // Last look order.
+        const accepted = await LastLook.sendOrderForConsideration({
+          locator: bestTradeOption!.pricing!.locator,
+          pricing: bestTradeOption!.pricing!.pricing,
+          terms: tradeTerms,
+        });
+        setIsSwapping(false);
+        if (accepted) {
+          setShowOrderSubmitted(true);
+          LastLook.unsubscribeAllServers();
+        } else {
+          // TODO: order rejected. Also need to handle errors.
+        }
+      }
     } catch (e: any) {
       if (e.code && e.code === 4001) {
         // 4001 is metamask user declining transaction sig, do nothing
@@ -267,6 +331,8 @@ const SwapWidget = () => {
   const handleButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
+        setPairUnavailable(false);
+        LastLook.unsubscribeAllServers();
         dispatch(clearTradeTerms());
         dispatch(clear());
         break;
@@ -336,7 +402,7 @@ const SwapWidget = () => {
             onMaxButtonClick={setBaseAmountToMax}
             side="sell"
             tradeNotAllowed={pairUnavailable}
-            isRequesting={rfqOrderStatus === "requesting"}
+            isRequesting={isRequestingQuotes}
             quoteAmount={bestTradeOption?.quoteAmount || ""}
             readOnly={!!bestTradeOption}
           />
@@ -346,7 +412,7 @@ const SwapWidget = () => {
             orderSubmitted={showOrderSubmitted}
             isConnected={active}
             isPairUnavailable={pairUnavailable}
-            isFetchingOrders={rfqOrderStatus === "requesting"}
+            isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
             isSwapping={isSwapping}
             // @ts-ignore
@@ -356,19 +422,6 @@ const SwapWidget = () => {
             }
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
-            onTimerComplete={() => {
-              dispatch(
-                request({
-                  chainId: chainId!,
-                  senderToken: baseToken!,
-                  senderAmount: baseAmount,
-                  senderTokenDecimals: baseTokenInfo!.decimals,
-                  signerToken: quoteToken!,
-                  senderWallet: account!,
-                  provider: library,
-                })
-              );
-            }}
           />
         </InfoContainer>
         <ButtonContainer>
@@ -377,7 +430,9 @@ const SwapWidget = () => {
               walletIsActive={active}
               orderComplete={showOrderSubmitted}
               baseTokenInfo={baseTokenInfo}
-              hasAmount={baseAmount !== "0" && baseAmount !== "."}
+              hasAmount={
+                !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
+              }
               hasQuote={!!bestTradeOption}
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!hasSufficientAllowance(baseToken)}
@@ -385,9 +440,8 @@ const SwapWidget = () => {
               onButtonClicked={handleButtonClick}
               isLoading={
                 isConnecting ||
-                ["approving", "requesting", "taking"].includes(
-                  rfqOrderStatus
-                ) ||
+                isRequestingQuotes ||
+                ["approving", "taking"].includes(rfqOrderStatus) ||
                 hasApprovalPending(baseToken)
               }
             />

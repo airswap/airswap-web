@@ -1,5 +1,5 @@
+import { TokenInfo } from "@airswap/metadata";
 import { Story, Meta } from "@storybook/react";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import TokenSelect, { TokenSelectProps } from "./TokenSelect";
 

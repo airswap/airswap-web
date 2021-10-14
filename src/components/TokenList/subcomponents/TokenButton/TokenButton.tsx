@@ -1,4 +1,4 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/metadata";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenLogo from "../../../TokenLogo/TokenLogo";

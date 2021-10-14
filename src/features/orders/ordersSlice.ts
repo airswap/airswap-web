@@ -1,3 +1,4 @@
+import { Server, Levels } from "@airswap/libraries";
 import { LightOrder } from "@airswap/types";
 import {
   createAsyncThunk,
@@ -11,9 +12,9 @@ import { Transaction } from "ethers";
 
 import { RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
-import { EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { allowancesActions } from "../balances/balancesSlice";
-import { Levels, selectBestPricing } from "../pricing/pricingSlice";
+import { selectBestPricing } from "../pricing/pricingSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   submitTransaction,
@@ -52,33 +53,33 @@ export const request = createAsyncThunk(
   "orders/request",
   async (
     params: {
-      chainId: number;
+      servers: Server[];
       signerToken: string;
       senderToken: string;
       senderAmount: string;
       senderTokenDecimals: number;
       senderWallet: string;
-      provider: any;
     },
     { dispatch }
   ) => {
     const orders = await requestOrders(
-      params.chainId,
+      params.servers,
       params.signerToken,
       params.senderToken,
       params.senderAmount,
       params.senderTokenDecimals,
-      params.senderWallet,
-      params.provider
+      params.senderWallet
     );
-    const bestOrder = [...orders].sort(orderSortingFunction)[0];
-    const expiry = parseInt(bestOrder.expiry) * 1000;
-    const timeTilReRequest = expiry - Date.now() - EXPIRY_BUFFER_MS;
-    const reRequestTimerId = window.setTimeout(
-      () => dispatch(request(params)),
-      timeTilReRequest
-    );
-    dispatch(setReRequestTimerId(reRequestTimerId));
+    if (orders.length) {
+      const bestOrder = [...orders].sort(orderSortingFunction)[0];
+      const expiry = parseInt(bestOrder.expiry) * 1000;
+      const timeTilReRequest = expiry - Date.now() - RFQ_EXPIRY_BUFFER_MS;
+      const reRequestTimerId = window.setTimeout(
+        () => dispatch(request(params)),
+        timeTilReRequest
+      );
+      dispatch(setReRequestTimerId(reRequestTimerId));
+    }
     return orders;
   }
 );
@@ -249,7 +250,7 @@ export const selectBestOption = createSelector(
       return null;
     }
 
-    let pricing = (bestPricing as unknown) as {
+    let pricing = bestPricing as unknown as {
       pricing: Levels;
       locator: string;
       quoteAmount: string;

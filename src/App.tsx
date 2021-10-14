@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "./app/hooks";
 import BookmarkWarning from "./components/BookmarkWarning/BookmarkWarning";
 import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
+import LastLookProvider from "./contexts/lastLook/LastLook";
 import {
   disableBookmarkWarning,
   selectUserSettings,
@@ -32,18 +33,20 @@ const App = (): JSX.Element => {
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        {/* Suspense needed here for loading i18n resources */}
-        <Suspense fallback={<PageLoader />}>
-          <BookmarkWarning
-            hidden={width! < 480 || !showBookmarkWarning}
-            onClick={() => dispatch(disableBookmarkWarning())}
-          />
-          <Router>
-            <Route path="/:tokenFrom?/:tokenTo?">
-              <Page />
-            </Route>
-          </Router>
-        </Suspense>
+        <LastLookProvider>
+          {/* Suspense needed here for loading i18n resources */}
+          <Suspense fallback={<PageLoader />}>
+            <BookmarkWarning
+              hidden={width! < 480 || !showBookmarkWarning}
+              onClick={() => dispatch(disableBookmarkWarning())}
+            />
+            <Router>
+              <Route path="/:tokenFrom?/:tokenTo?">
+                <Page />
+              </Route>
+            </Router>
+          </Suspense>
+        </LastLookProvider>
       </Web3ReactProvider>
       <GlobalStyle />
     </ThemeProvider>

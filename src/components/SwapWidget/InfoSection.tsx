@@ -1,14 +1,14 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/metadata";
+import { Levels } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import { BigNumber } from "bignumber.js";
 
 import Timer from "../../components/Timer/Timer";
-import { EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { Levels } from "../../features/pricing/pricingSlice";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
@@ -147,7 +147,7 @@ const InfoSection: FC<InfoSectionProps> = ({
                   <Timer
                     expiryTime={
                       parseInt(bestTradeOption!.order!.expiry) -
-                      EXPIRY_BUFFER_MS / 1000
+                      RFQ_EXPIRY_BUFFER_MS / 1000
                     }
                   ></Timer>
                 </TimerText>
