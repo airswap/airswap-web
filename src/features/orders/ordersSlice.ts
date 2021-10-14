@@ -329,6 +329,67 @@ export const approve = createAsyncThunk<
   }
 });
 
+export const swapListener = createAsyncThunk(
+  "orders/swaplistener",
+  async (
+    params: { transaction: any; tx: any; library: any },
+    { getState, dispatch }
+  ) => {
+    let orderCompleted = false;
+    const {
+      tx,
+      tx: { nonce },
+      transaction,
+      library,
+    } = params;
+    console.debug({ nonce, transaction });
+    // todo store these vars in localstorage (then delete when order is complete) so that we can dispatch this event on reload
+    // todo scan swap indexed by nonce for last look results and finish if it's been handled
+
+    await library.on(tx.hash, async (result: any) => {
+      console.debug({ orderCompleted }, result);
+      if (!orderCompleted) {
+        orderCompleted = true;
+        const receipt = await params.library.getTransactionReceipt(tx.hash);
+        const state: RootState = getState() as RootState;
+        const tokens = Object.values(state.metadata.tokens.all);
+        if (receipt.status === 1) {
+          dispatch(mineTransaction(receipt.transactionHash));
+          notifyTransaction("Order", transaction, tokens, false);
+        } else {
+          dispatch(revertTransaction(receipt.transactionHash));
+          notifyTransaction("Order", transaction, tokens, true);
+        }
+      }
+    });
+  }
+);
+
+ /*
+ params.library.once(tx.hash, async () => {
+          const receipt = await params.library.getTransactionReceipt(tx.hash);
+          const state: RootState = getState() as RootState;
+          const tokens = Object.values(state.metadata.tokens.all);
+          if (receipt.status === 1) {
+            dispatch(mineTransaction(receipt.transactionHash));
+            notifyTransaction(
+              "Order",
+              transaction,
+              tokens,
+              false,
+              params.library._network.chainId
+            );
+          } else {
+            dispatch(revertTransaction(receipt.transactionHash));
+            notifyTransaction(
+              "Order",
+              transaction,
+              tokens,
+              true,
+              params.library._network.chainId
+            );
+ */
+
 export const take = createAsyncThunk(
   "orders/take",
   async (
@@ -357,48 +418,7 @@ export const take = createAsyncThunk(
           timestamp: Date.now(),
         };
         dispatch(submitTransaction(transaction));
-
-        let orderCompleted = false;
-        await params.library.on(tx.hash, async (result: any) => {
-          console.debug({ orderCompleted }, result);
-          if (!orderCompleted) {
-            orderCompleted = true;
-            const receipt = await params.library.getTransactionReceipt(tx.hash);
-            const state: RootState = getState() as RootState;
-            const tokens = Object.values(state.metadata.tokens.all);
-            if (receipt.status === 1) {
-              dispatch(mineTransaction(receipt.transactionHash));
-              notifyTransaction("Order", transaction, tokens, false);
-            } else {
-              dispatch(revertTransaction(receipt.transactionHash));
-              notifyTransaction("Order", transaction, tokens, true);
-            }
-            /*
-             params.library.once(tx.hash, async () => {
-          const receipt = await params.library.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Order",
-              transaction,
-              tokens,
-              false,
-              params.library._network.chainId
-            );
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Order",
-              transaction,
-              tokens,
-              true,
-              params.library._network.chainId
-            );
-             */
-          }
-        });
+        dispatch(swapListener({ library: params.library, tx, transaction }));
       }
     } catch (e: any) {
       console.error(e);
