@@ -35,7 +35,6 @@ const SettingsPopover = () => {
       window.navigator.language.substring(0, 2) ||
       DEFAULT_LOCALE
   );
-
   const dispatch = useAppDispatch();
   const { theme } = useAppSelector(selectUserSettings);
   const { t, i18n } = useTranslation(["common"]);
@@ -44,10 +43,11 @@ const SettingsPopover = () => {
     setSelectedButton(newTheme);
     // if the user perfers dark color scheme and they are currently on light mode -> switch to dark
     if (newTheme === "system") {
-      window.matchMedia("(prefers-color-scheme: dark)").matches &&
-      theme === "light"
-        ? dispatch(toggleTheme())
-        : void 0;
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        if (theme === "light") dispatch(toggleTheme());
+      } else {
+        if (theme === "dark") dispatch(toggleTheme());
+      }
     } else if (newTheme !== theme) {
       dispatch(toggleTheme());
     }

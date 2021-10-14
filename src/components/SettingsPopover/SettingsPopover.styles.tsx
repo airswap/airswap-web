@@ -35,9 +35,11 @@ const ThemeButton = styled.button<ButtonStyleProps>`
     props.active ? props.theme.colors.white : props.theme.colors.lightGrey};
   line-height: 1.5rem;
 
+  &:hover,
   &:focus {
     outline: 0;
-    box-shadow: none;
+    border-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white};
   }
 `;
 
@@ -46,7 +48,7 @@ const LocaleContainer = styled.div`
   width: 100%;
   height: auto;
   margin: 0.25rem 0;
-  overflow: scroll;
+  overflow-y: scroll;
 `;
 
 const LocaleButton = styled.button<ButtonStyleProps>`
@@ -62,9 +64,11 @@ const LocaleButton = styled.button<ButtonStyleProps>`
     props.active ? props.theme.colors.borderGrey : "transparent"};
   line-height: 1.5rem;
 
+  &:hover,
   &:focus {
     outline: 0;
-    box-shadow: none;
+    border-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white};
   }
 `;
 
