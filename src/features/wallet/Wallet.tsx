@@ -6,12 +6,14 @@ import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -282,7 +284,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [chainId, dispatch, library, account]);
 
   return (
-    <div className={className}>
+    <PopoverContainer>
       <WalletButton
         address={account}
         onDisconnectWalletClicked={() => {
@@ -297,6 +299,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         chainId={chainId!}
         transactions={transactions}
       />
-    </div>
+      <SettingsButton />
+    </PopoverContainer>
   );
 };

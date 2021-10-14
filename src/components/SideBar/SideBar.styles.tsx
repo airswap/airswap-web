@@ -19,9 +19,6 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
 
