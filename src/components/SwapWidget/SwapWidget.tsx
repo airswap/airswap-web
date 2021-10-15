@@ -44,6 +44,7 @@ import {
   clearTradeTerms,
   selectTradeTerms,
   setTradeTerms,
+  setTradeTermsQuoteAmount,
 } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
@@ -96,8 +97,10 @@ const SwapWidget = () => {
   // Modals
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
-  const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
-    useState<TokenSelectModalTypes | null>(null);
+  const [
+    showTokenSelectModalFor,
+    setShowTokenSelectModalFor,
+  ] = useState<TokenSelectModalTypes | null>(null);
 
   // Loading states
   const [isApproving, setIsApproving] = useState<boolean>(false);
@@ -116,8 +119,13 @@ const SwapWidget = () => {
     "toast",
   ]);
 
-  const { chainId, account, library, active, activate } =
-    useWeb3React<Web3Provider>();
+  const {
+    chainId,
+    account,
+    library,
+    active,
+    activate,
+  } = useWeb3React<Web3Provider>();
 
   const baseTokenInfo = useMemo(
     () => (baseToken ? findTokenByAddress(baseToken, activeTokens) : null),
@@ -305,11 +313,12 @@ const SwapWidget = () => {
         await unwrapResult(result);
         setShowOrderSubmitted(true);
       } else {
+        dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
         const accepted = await LastLook.sendOrderForConsideration({
           locator: bestTradeOption!.pricing!.locator,
           pricing: bestTradeOption!.pricing!.pricing,
-          terms: tradeTerms,
+          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         setIsSwapping(false);
         if (accepted) {
@@ -354,11 +363,12 @@ const SwapWidget = () => {
               address: baseToken!,
               decimals: baseTokenInfo!.decimals,
             },
-            baseTokenAmount: baseAmount,
+            baseAmount: baseAmount,
             quoteToken: {
               address: quoteToken!,
               decimals: quoteTokenInfo!.decimals,
             },
+            quoteAmount: null,
             side: "sell",
           })
         );
@@ -403,7 +413,11 @@ const SwapWidget = () => {
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequesting={isRequestingQuotes}
-            quoteAmount={bestTradeOption?.quoteAmount || ""}
+            // Note that using the quoteAmount from tradeTerms will stop this
+            // updating when the user clicks the take button.
+            quoteAmount={
+              tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
+            }
             readOnly={!!bestTradeOption}
           />
         )}

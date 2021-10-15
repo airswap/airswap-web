@@ -6,14 +6,8 @@ import { Server } from "@airswap/libraries";
 import lightDeploys from "@airswap/light/deploys.js";
 import { Pricing, Levels } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
-import {
-  createLightOrder,
-  createLightSignature,
-  calculateCostFromLevels,
-} from "@airswap/utils";
+import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
-
-import BigNumber from "bignumber.js";
 
 import { useAppDispatch } from "../../app/hooks";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
@@ -103,29 +97,14 @@ const LastLookProvider: FC<{}> = ({ children }) => {
   const sendOrderForConsideration = async (params: {
     locator: string;
     terms: TradeTerms;
-    pricing: Levels;
   }) => {
-    const { locator, terms, pricing } = params;
+    const { locator, terms } = params;
+
+    if (terms.quoteAmount === null)
+      throw new Error("No quote amount specified");
     const server = connectedServers[locator];
 
-    // baseAmount always known.
-    // For a sell, baseAmount is signerAmount.
-    // For a buy, baseAmount is senderAmount.
-
-    // Amount specified = senderAmount + senderAmount * (signerFee / 1000)
-    const signerFee = 7;
-    let signerAmount: string, senderAmount: string;
-    if (terms.side === "sell") {
-      signerAmount = new BigNumber(terms.baseTokenAmount)
-        .multipliedBy(new BigNumber(signerFee).dividedBy(1000))
-        .integerValue(BigNumber.ROUND_CEIL)
-        .toString();
-      senderAmount = calculateCostFromLevels(signerAmount.toString(), pricing);
-    } else {
-      // TODO: buy.
-      signerAmount = "0";
-      senderAmount = "0";
-    }
+    const isSell = terms.side === "sell";
 
     const order = createLightOrder({
       expiry: Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC,
@@ -133,9 +112,9 @@ const LastLookProvider: FC<{}> = ({ children }) => {
       signerWallet: account,
       signerToken: terms.baseToken,
       senderToken: terms.quoteToken,
-      signerFee: signerFee.toString(), // TODO: fee
-      signerAmount: signerAmount, // TODO: signerAmount
-      senderAmount: senderAmount, // TODO: senderAmount
+      signerFee: "7",
+      signerAmount: isSell ? terms.baseAmount : terms.quoteAmount,
+      senderAmount: !isSell ? terms.baseAmount : terms.quoteAmount,
     });
 
     // TODO: deal with rejection here (cancel signature request)

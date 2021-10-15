@@ -1,11 +1,11 @@
-import { Pricing, Levels, Formula } from "@airswap/types";
-import { calculateCostFromLevels } from "@airswap/utils";
+import { Pricing } from "@airswap/types";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 
 import { RootState } from "../../app/store";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
+import { calculateQuoteAmount } from "./pricingApi";
 
 export interface PricingState {
   [locator: string]: Pricing[];
@@ -62,10 +62,6 @@ export const pricingSlice = createSlice({
 
 export const { updatePricing, clearPricing } = pricingSlice.actions;
 
-export function pricingIsLevels(value: Levels | Formula): value is Levels {
-  return typeof value !== "string";
-}
-
 const selectPricing = (state: RootState) => state.pricing;
 
 export const selectBestPricing = createSelector(
@@ -74,12 +70,11 @@ export const selectBestPricing = createSelector(
   (terms, pricing) => {
     let bestQuoteAmount = new BigNumber(0);
     let bestPricing: {
-      pricing: Levels;
       locator: string;
       quoteAmount: string;
     } | null = null;
 
-    const { quoteToken, baseToken, baseTokenAmount, side } = terms;
+    const { quoteToken, baseToken, baseAmount: baseTokenAmount, side } = terms;
 
     Object.keys(pricing).forEach((locator) => {
       const locatorPricing = pricing[locator];
@@ -90,19 +85,15 @@ export const selectBestPricing = createSelector(
       );
 
       if (relevantIndex === -1) return;
-      const relevantPricing =
-        locatorPricing[relevantIndex][side === "sell" ? "bid" : "ask"];
-
-      if (!pricingIsLevels(relevantPricing)) {
-        console.warn(
-          `Unable to use pricing for locator ${locator}:` +
-            `formulae not supported yet`
-        );
-        return;
-      }
+      const relevantPricing: Pricing = locatorPricing[relevantIndex];
 
       const quoteAmount = new BigNumber(
-        calculateCostFromLevels(baseTokenAmount, relevantPricing)
+        calculateQuoteAmount({
+          baseAmount: baseTokenAmount,
+          pricing: relevantPricing,
+          signerFee: "7",
+          side,
+        })
       );
 
       if (
@@ -112,7 +103,6 @@ export const selectBestPricing = createSelector(
         bestQuoteAmount = quoteAmount;
         bestPricing = {
           locator,
-          pricing: relevantPricing,
           quoteAmount: quoteAmount.toString(),
         };
       }
