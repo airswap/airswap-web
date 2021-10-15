@@ -37,7 +37,6 @@ export type TokenRowProps = {
   showDeleteButton?: boolean;
 };
 
-// TODO: Make Container a button instead of a Balance
 const TokenButton = ({
   token,
   balance,

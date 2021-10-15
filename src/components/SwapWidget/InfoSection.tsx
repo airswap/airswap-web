@@ -116,7 +116,6 @@ const InfoSection: FC<InfoSectionProps> = ({
   }
 
   if (!!bestTradeOption) {
-    // TODO: ideally refactor out bignumber.js
     let price = new BigNumber(bestTradeOption.quoteAmount);
 
     if (invertPrice) {
@@ -141,7 +140,6 @@ const InfoSection: FC<InfoSectionProps> = ({
           <InfoSubHeading>
             <TimerContainer>
               <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
-              {/* FIXME: If RFQ isn't the best trade option, the RFQ quotes will no longer refresh */}
               {bestTradeOption.protocol === "request-for-quote" && (
                 <TimerText>
                   <Timer

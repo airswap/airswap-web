@@ -241,8 +241,6 @@ const SwapWidget = () => {
       if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
           request({
-            // FIXME: check these with unlinked library.
-            // @ts-ignore
             servers: rfqServers,
             senderToken: baseToken!,
             senderAmount: baseAmount,
@@ -301,8 +299,6 @@ const SwapWidget = () => {
   };
 
   const takeBestOption = async () => {
-    // TODO: at this stage we need to stop the last look price updates
-    //       from updating the UI.
     try {
       setIsSwapping(true);
       if (bestTradeOption!.protocol === "request-for-quote") {
@@ -313,6 +309,7 @@ const SwapWidget = () => {
         await unwrapResult(result);
         setShowOrderSubmitted(true);
       } else {
+        // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
         const accepted = await LastLook.sendOrderForConsideration({
