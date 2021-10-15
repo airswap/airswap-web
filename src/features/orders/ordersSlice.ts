@@ -1,5 +1,5 @@
-import { Server, Levels } from "@airswap/libraries";
-import { LightOrder } from "@airswap/types";
+import { Server } from "@airswap/libraries";
+import { LightOrder, Levels } from "@airswap/types";
 import {
   createAsyncThunk,
   createSlice,
@@ -250,7 +250,7 @@ export const selectBestOption = createSelector(
       return null;
     }
 
-    let pricing = bestPricing as unknown as {
+    let pricing = (bestPricing as unknown) as {
       pricing: Levels;
       locator: string;
       quoteAmount: string;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 
 import {
   SubmittedApproval,

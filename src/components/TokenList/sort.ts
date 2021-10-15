@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import { BalancesState } from "../../features/balances/balancesSlice";

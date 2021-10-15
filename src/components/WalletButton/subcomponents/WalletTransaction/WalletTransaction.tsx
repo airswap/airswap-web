@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import {

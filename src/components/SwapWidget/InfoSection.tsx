@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 import { Levels } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 

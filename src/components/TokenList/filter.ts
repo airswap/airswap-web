@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 
 import { ethers } from "ethers";
 

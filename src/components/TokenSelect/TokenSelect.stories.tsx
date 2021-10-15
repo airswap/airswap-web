@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 import { Story, Meta } from "@storybook/react";
 
 import TokenSelect, { TokenSelectProps } from "./TokenSelect";
