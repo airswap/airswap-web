@@ -1,3 +1,5 @@
+import { Title } from "../Typography/Typography";
+import { Header } from "./ErrorList.styles";
 import errorMessages from "./ErrorMessages.json";
 
 type ErrorListProps = {
@@ -5,7 +7,13 @@ type ErrorListProps = {
 };
 
 const ErrorList = ({ error }: ErrorListProps) => {
-  return <></>;
+  return (
+    <>
+      <Header>
+        <Title type="h2"></Title>
+      </Header>
+    </>
+  );
 };
 
 export default ErrorList;
