@@ -1,7 +1,10 @@
 {
-  "joinAirswap": {
+  "join": {
     "title": "Join AirSwap",
     "introPart1": "AirSwap is an open community",
-    "introPart2": "of developers designers, writers, and thinkers creating decentralized trading systems."
+    "introPart2": "of developers designers, writers, and thinkers creating decentralized trading systems.",
+    "learnMoreWithAGuide": "Learn more with a guide",
+    "paragraphPart1": "Protocol fees",
+    "paragraphPart2": "are automatically distributed to members for contributing to product and community development."
   }
 }

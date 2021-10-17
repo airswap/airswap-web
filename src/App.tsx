@@ -5,6 +5,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import { ThemeProvider } from "styled-components/macro";
+import { ModalProvider } from "styled-react-modal";
 
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import BookmarkWarning from "./components/BookmarkWarning/BookmarkWarning";
@@ -47,6 +48,20 @@ const App = (): JSX.Element => {
             </Router>
           </Suspense>
         </LastLookProvider>
+        <ModalProvider>
+          {/* Suspense needed here for loading i18n resources */}
+          <Suspense fallback={<PageLoader />}>
+            <BookmarkWarning
+              hidden={width! < 480 || !showBookmarkWarning}
+              onClick={() => dispatch(disableBookmarkWarning())}
+            />
+            <Router>
+              <Route path="/:tokenFrom?/:tokenTo?">
+                <Page />
+              </Route>
+            </Router>
+          </Suspense>
+        </ModalProvider>
       </Web3ReactProvider>
       <GlobalStyle />
     </ThemeProvider>
