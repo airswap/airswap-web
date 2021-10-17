@@ -10,7 +10,8 @@ const ButtonStyle = css`
   width: 5rem;
   height: 5rem;
 
-  & + & {
+  & + a,
+  & + button {
     margin-top: 1rem;
   }
 
