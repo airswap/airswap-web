@@ -1,6 +1,6 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
-export const ToolbarButtonContainer = styled.button`
+const ButtonStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,6 +19,14 @@ export const ToolbarButtonContainer = styled.button`
     border-color: ${(props) => props.theme.colors.white};
     outline: 0;
   }
+`;
+
+export const ToolbarButtonContainer = styled.button`
+  ${ButtonStyle}
+`;
+
+export const ToolBarAnchorContainer = styled.a`
+  ${ButtonStyle}
 `;
 
 export const Text = styled.div`

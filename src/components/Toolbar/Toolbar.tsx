@@ -16,8 +16,16 @@ const Toolbar: FC = () => {
       <IconAirswap iconSize={2.5} name="airswap" />
       <ToolbarButtonsContainer>
         <ToolbarButton iconName="bars" text={t("common:stats")} />
-        <ToolbarButton iconName="vote" text={t("common:vote")} />
-        <ToolbarButton iconName="code" text={t("common:build")} />
+        <ToolbarButton
+          iconName="vote"
+          text={t("common:vote")}
+          href="https://activate.codefi.network/staking/airswap/governance"
+        />
+        <ToolbarButton
+          iconName="code"
+          text={t("common:build")}
+          href="https://github.com/airswap/airswap-web"
+        />
         <ToolbarButton iconName="about" text={t("common:about")} />
         <ToolbarButton iconName="contact-support" text={t("common:join")} />
       </ToolbarButtonsContainer>

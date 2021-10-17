@@ -14,7 +14,7 @@ export const ToolbarContainer = styled.div`
   width: 7rem;
   height: 100%;
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 0;
   border-right: 1px solid ${(props) => props.theme.colors.borderGrey};
   overflow: hidden;
   background: ${(props) => props.theme.colors.black};
@@ -35,5 +35,5 @@ export const ToolbarButtonsContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   flex-grow: 2;
-  margin-top: 1rem;
+  margin: 2rem 0;
 `;
