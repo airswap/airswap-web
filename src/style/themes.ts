@@ -92,6 +92,7 @@ export const darkTheme: DefaultTheme = {
     orange: "#E7765A",
     green: "#60FF66",
     placeholderGradient: "linear-gradient(270deg, #232833 0%, #2F364400 93.3%)",
+    darkSubText: "#9EA3AC",
   },
   typography,
 };
@@ -114,6 +115,7 @@ export const lightTheme: DefaultTheme = {
     orange: "#E7765A",
     green: "#60FF66",
     placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF00 93.3%)",
+    darkSubText: "#9EA3AC",
   },
   typography,
 };

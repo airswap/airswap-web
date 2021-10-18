@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { StyledTitle } from "../../../Overlay/Overlay.styles";
 
 const Container = styled.div`
-  color: ${(props) => props.theme.colors.lightGrey};
+  color: ${(props) => props.theme.colors.darkSubText};
   display: grid;
-  grid-template-rows: 1.75rem;
+  grid-template-rows: 1.5rem;
   overflow: hidden;
 `;
 
@@ -22,8 +22,9 @@ const Title = styled(StyledTitle)`
   align-items: center;
   justify-content: center;
   padding: 0;
+  font-size: 0.75rem;
   &:after {
-    margin: 0 0 0 1rem;
+    margin: 0 0 0 0.5rem;
     background: ${(props) => props.theme.colors.borderGrey};
     height: 1px;
     flex: 1;

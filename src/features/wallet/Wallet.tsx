@@ -75,6 +75,9 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   // Local component state
   const [isActivating, setIsActivating] = useState<boolean>(false);
+  const [walletOpen, setWalletOpen] = useState<boolean>(false);
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
 
@@ -283,6 +286,16 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
     };
   }, [chainId, dispatch, library, account]);
 
+  const handleWalletOpen = (state: boolean) => {
+    setWalletOpen(state);
+    setSettingsOpen(false);
+  };
+
+  const handleSettingsOpen = (state: boolean) => {
+    setSettingsOpen(state);
+    setWalletOpen(false);
+  };
+
   return (
     <PopoverContainer>
       <WalletButton
@@ -298,8 +311,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         tokens={allTokens}
         chainId={chainId!}
         transactions={transactions}
+        walletOpen={walletOpen}
+        setWalletOpen={handleWalletOpen}
       />
-      <SettingsButton />
+      <SettingsButton
+        settingsOpen={settingsOpen}
+        setSettingsOpen={handleSettingsOpen}
+      />
     </PopoverContainer>
   );
 };

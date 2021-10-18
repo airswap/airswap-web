@@ -13,7 +13,7 @@ export const StyledIconButton = styled.button<StyledIconButtonProps>`
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 1rem;
+  padding: 0.5rem;
   font-weight: 600;
 
   ${StyledIcon} {

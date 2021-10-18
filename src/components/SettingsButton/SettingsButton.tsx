@@ -1,19 +1,27 @@
-import { useState } from "react";
-
-import IconButton from "../IconButton/IconButton";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
+import {
+  SettingIconButtonContainer,
+  SettingsIconButton,
+} from "./SettingsButton.style";
 
-const SettingsButton = () => {
-  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+type SettingsButtonType = {
+  settingsOpen: boolean;
+  setSettingsOpen: (x: boolean) => void;
+};
+
+const SettingsButton = ({
+  settingsOpen,
+  setSettingsOpen,
+}: SettingsButtonType) => {
   return (
-    <>
-      <IconButton
+    <SettingIconButtonContainer>
+      <SettingsIconButton
         iconSize={1.5}
         icon="settings"
         onClick={() => setSettingsOpen(!settingsOpen)}
       />
       {settingsOpen ? <SettingsPopover /> : null}
-    </>
+    </SettingIconButtonContainer>
   );
 };
 
