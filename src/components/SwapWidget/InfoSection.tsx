@@ -139,19 +139,21 @@ const InfoSection: FC<InfoSectionProps> = ({
         ) : (
           <InfoSubHeading>
             <TimerContainer>
-              <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
               {bestTradeOption.protocol === "request-for-quote" && (
-                <TimerText>
-                  <Timer
-                    expiryTime={
-                      parseInt(bestTradeOption!.order!.expiry) -
-                      RFQ_EXPIRY_BUFFER_MS / 1000
-                    }
-                  ></Timer>
-                </TimerText>
+                <>
+                  <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
+                  <TimerText>
+                    <Timer
+                      expiryTime={
+                        parseInt(bestTradeOption!.order!.expiry) -
+                        RFQ_EXPIRY_BUFFER_MS / 1000
+                      }
+                    ></Timer>
+                  </TimerText>
+                </>
               )}
               {bestTradeOption.protocol === "last-look" && (
-                <TimerText>Gas free trade</TimerText>
+                <NewQuoteText>Gas free trade</NewQuoteText>
               )}
             </TimerContainer>
           </InfoSubHeading>
