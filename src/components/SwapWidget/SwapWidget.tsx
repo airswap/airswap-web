@@ -341,6 +341,7 @@ const SwapWidget = () => {
         LastLook.unsubscribeAllServers();
         dispatch(clearTradeTerms());
         dispatch(clear());
+        LastLook.unsubscribeAllServers();
         break;
 
       case ButtonActions.restart:

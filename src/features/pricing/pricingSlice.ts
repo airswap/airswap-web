@@ -4,7 +4,10 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import BigNumber from "bignumber.js";
 
 import { RootState } from "../../app/store";
-import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
+import {
+  clearTradeTerms,
+  selectTradeTerms,
+} from "../tradeTerms/tradeTermsSlice";
 import { calculateQuoteAmount } from "./pricingApi";
 
 export interface PricingState {
@@ -57,6 +60,9 @@ export const pricingSlice = createSlice({
       if (i === -1) return;
       state[locator].splice(i, 1);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(clearTradeTerms, () => initialState);
   },
 });
 

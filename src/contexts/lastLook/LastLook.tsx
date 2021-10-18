@@ -73,7 +73,7 @@ const LastLookProvider: FC<{}> = ({ children }) => {
         server.on("pricing", handlePricing.bind(null));
         server.on("error", (e) => {
           console.error(
-            `RPC WebSocket error [${server.locator}]: ${e.code} - ${e.message}`,
+            `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
             e
           );
         });
@@ -91,6 +91,7 @@ const LastLookProvider: FC<{}> = ({ children }) => {
       const server = connectedServers[locator];
       server.removeAllListeners();
       server.disconnect();
+      delete connectedServers[locator];
     });
   };
 
