@@ -1,7 +1,7 @@
-import { findTokenByAddress, findTokensBySymbol } from "@airswap/metadata";
+import { findTokensBySymbol } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 
-import nativeETH from "../../../constants/nativeETH";
+import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 
 export default function findTokenFromAndTokenToAddress(
   allTokens: TokenInfo[],
@@ -16,14 +16,10 @@ export default function findTokenFromAndTokenToAddress(
 
   if (fromAddress) {
     fromToken = fromAddress
-      ? fromAddress === "0x0000000000000000000000000000000000000000"
-        ? nativeETH[chainId!]
-        : findTokenByAddress(fromAddress, allTokens)
+      ? findEthOrTokenByAddress(fromAddress, allTokens, chainId!)
       : undefined;
     toToken = toAddress
-      ? toAddress === "0x0000000000000000000000000000000000000000"
-        ? nativeETH[chainId!]
-        : findTokenByAddress(toAddress, allTokens)
+      ? findEthOrTokenByAddress(toAddress, allTokens, chainId!)
       : undefined;
 
     return {

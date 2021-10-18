@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next";
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 
-import nativeETH from "../../constants/nativeETH";
 import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import {
   OpenWallet,
   ExitButton,
@@ -96,14 +96,16 @@ export const WalletButton = ({
                 transaction.type === "Withdraw"
               ) {
                 const tx: SubmittedOrder = transaction as SubmittedOrder;
-                const senderToken =
-                  tx.order.senderToken === nativeETH[chainId].address
-                    ? nativeETH[chainId]
-                    : findTokenByAddress(tx.order.senderToken, tokens);
-                const signerToken =
-                  tx.order.signerToken === nativeETH[chainId].address
-                    ? nativeETH[chainId]
-                    : findTokenByAddress(tx.order.signerToken, tokens);
+                const senderToken = findEthOrTokenByAddress(
+                  tx.order.senderToken,
+                  tokens,
+                  chainId
+                );
+                const signerToken = findEthOrTokenByAddress(
+                  tx.order.signerToken,
+                  tokens,
+                  chainId
+                );
                 return (
                   <WalletTransaction
                     transaction={transaction}

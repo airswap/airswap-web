@@ -10,6 +10,7 @@ import {
   SubmittedWithdrawOrder,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
@@ -20,14 +21,26 @@ export const notifyTransaction = (
     | SubmittedDepositOrder
     | SubmittedWithdrawOrder,
   tokens: TokenInfo[],
-  error: boolean
+  error: boolean,
+  chainId?: number
 ) => {
   let token: TokenInfo;
   // TODO: make a switch case to render a different toast for each case
-  if (type === "Order") {
+  if (
+    (type === "Order" || type === "Deposit" || type === "Withdraw") &&
+    chainId
+  ) {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
-    const senderToken = findTokenByAddress(tx.order.senderToken, tokens);
-    const signerToken = findTokenByAddress(tx.order.signerToken, tokens);
+    const senderToken = findEthOrTokenByAddress(
+      tx.order.senderToken,
+      tokens,
+      chainId
+    );
+    const signerToken = findEthOrTokenByAddress(
+      tx.order.signerToken,
+      tokens,
+      chainId
+    );
     toast(
       (t) => (
         <TransactionToast

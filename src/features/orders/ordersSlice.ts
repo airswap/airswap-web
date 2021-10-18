@@ -104,10 +104,22 @@ export const deposit = createAsyncThunk(
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Deposit", transaction, tokens, false);
+            notifyTransaction(
+              "Deposit",
+              transaction,
+              tokens,
+              false,
+              params.chainId
+            );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Deposit", transaction, tokens, true);
+            notifyTransaction(
+              "Deposit",
+              transaction,
+              tokens,
+              true,
+              params.chainId
+            );
           }
         });
       }
@@ -164,10 +176,22 @@ export const withdraw = createAsyncThunk(
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Withdraw", transaction, tokens, false);
+            notifyTransaction(
+              "Withdraw",
+              transaction,
+              tokens,
+              false,
+              params.chainId
+            );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Withdraw", transaction, tokens, true);
+            notifyTransaction(
+              "Withdraw",
+              transaction,
+              tokens,
+              true,
+              params.chainId
+            );
           }
         });
       }
@@ -244,10 +268,22 @@ export const approve = createAsyncThunk(
               );
             }
 
-            notifyTransaction("Approval", transaction, tokens, false);
+            notifyTransaction(
+              "Approval",
+              transaction,
+              tokens,
+              false,
+              params.chainId
+            );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Approval", transaction, tokens, true);
+            notifyTransaction(
+              "Approval",
+              transaction,
+              tokens,
+              true,
+              params.chainId
+            );
           }
         });
       }
@@ -293,10 +329,22 @@ export const take = createAsyncThunk(
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, false);
+            notifyTransaction(
+              "Order",
+              transaction,
+              tokens,
+              false,
+              params.library._network.chainId
+            );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, true);
+            notifyTransaction(
+              "Order",
+              transaction,
+              tokens,
+              true,
+              params.library._network.chainId
+            );
           }
         });
       }

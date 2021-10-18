@@ -5,7 +5,6 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
 import { Wrapper } from "@airswap/libraries";
-import { findTokenByAddress } from "@airswap/metadata";
 import { toDecimalString, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -47,6 +46,7 @@ import {
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
@@ -116,9 +116,7 @@ const SwapWidget = () => {
   const senderTokenInfo = useMemo(
     () =>
       senderToken
-        ? senderToken === nativeETH[chainId!].address
-          ? nativeETH[chainId!]
-          : findTokenByAddress(senderToken, activeTokens)
+        ? findEthOrTokenByAddress(senderToken, activeTokens, chainId!)
         : null,
     [senderToken, activeTokens, chainId]
   );
@@ -126,9 +124,7 @@ const SwapWidget = () => {
   const signerTokenInfo = useMemo(
     () =>
       signerToken
-        ? signerToken === nativeETH[chainId!].address
-          ? nativeETH[chainId!]
-          : findTokenByAddress(signerToken, activeTokens)
+        ? findEthOrTokenByAddress(signerToken, activeTokens, chainId!)
         : null,
     [signerToken, activeTokens, chainId]
   );
