@@ -21,6 +21,8 @@ import {
 import {
   SubmittedOrder,
   SubmittedApproval,
+  SubmittedWithdrawOrder,
+  SubmittedDepositOrder,
 } from "../transactions/transactionsSlice";
 import {
   setWalletConnected,
@@ -31,8 +33,8 @@ import {
   takeOrder,
   approveToken,
   orderSortingFunction,
-  wrapToken,
-  unwrapToken,
+  depositETH,
+  withdrawETH,
 } from "./orderAPI";
 
 export interface OrdersState {
@@ -58,8 +60,8 @@ const refactorOrder = (order: LightOrder, chainId: number) => {
   return newOrder;
 };
 
-export const wrap = createAsyncThunk(
-  "orders/wrap",
+export const deposit = createAsyncThunk(
+  "orders/deposit",
   async (
     params: {
       chainId: number;
@@ -71,34 +73,26 @@ export const wrap = createAsyncThunk(
   ) => {
     let tx: Transaction;
     try {
-      tx = await wrapToken(
+      tx = await depositETH(
         params.chainId,
         params.senderAmount,
         params.senderTokenDecimals,
         params.provider
       );
-      const mockWrapOrder: LightOrder = {
-        nonce: tx.nonce.toString(),
-        expiry: "", // TODO: populate a value for this?
-        signerWallet: tx.to!,
-        v: tx.v!.toString(),
-        r: tx.r!,
-        s: tx.s!,
-        signerToken: wethAddresses[params.chainId],
-        signerAmount: toAtomicString(
-          params.senderAmount,
-          params.senderTokenDecimals
-        ),
-        senderToken: nativeETH[params.chainId].address,
-        senderAmount: toAtomicString(
-          params.senderAmount,
-          params.senderTokenDecimals
-        ),
-      };
       if (tx.hash) {
-        const transaction: SubmittedOrder = {
-          type: "Order",
-          order: mockWrapOrder,
+        const senderAmount = toAtomicString(
+          params.senderAmount,
+          params.senderTokenDecimals
+        );
+        // Since this is a Deposit, senderAmount === signerAmount
+        const transaction: SubmittedDepositOrder = {
+          type: "Deposit",
+          order: {
+            signerToken: wethAddresses[params.chainId],
+            signerAmount: senderAmount,
+            senderToken: nativeETH[params.chainId].address,
+            senderAmount: senderAmount,
+          },
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),
@@ -110,14 +104,14 @@ export const wrap = createAsyncThunk(
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, false);
+            notifyTransaction("Deposit", transaction, tokens, false);
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, true);
+            notifyTransaction("Deposit", transaction, tokens, true);
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
@@ -125,8 +119,8 @@ export const wrap = createAsyncThunk(
   }
 );
 
-export const unwrap = createAsyncThunk(
-  "orders/unwrap",
+export const withdraw = createAsyncThunk(
+  "orders/withdraw",
   async (
     params: {
       chainId: number;
@@ -138,34 +132,27 @@ export const unwrap = createAsyncThunk(
   ) => {
     let tx: Transaction;
     try {
-      tx = await unwrapToken(
+      tx = await withdrawETH(
         params.chainId,
         params.senderAmount,
         params.senderTokenDecimals,
         params.provider
       );
-      const mockUnwrapOrder: LightOrder = {
-        nonce: tx.nonce.toString(),
-        expiry: "", // TODO: populate a value for this?
-        signerWallet: tx.to!,
-        v: tx.v!.toString(),
-        r: tx.r!,
-        s: tx.s!,
-        signerToken: nativeETH[params.chainId].address,
-        signerAmount: toAtomicString(
-          params.senderAmount,
-          params.senderTokenDecimals
-        ),
-        senderToken: wethAddresses[params.chainId],
-        senderAmount: toAtomicString(
-          params.senderAmount,
-          params.senderTokenDecimals
-        ),
-      };
       if (tx.hash) {
-        const transaction: SubmittedOrder = {
-          type: "Order",
-          order: mockUnwrapOrder,
+        const transaction: SubmittedWithdrawOrder = {
+          type: "Withdraw",
+          order: {
+            signerToken: nativeETH[params.chainId].address,
+            signerAmount: toAtomicString(
+              params.senderAmount,
+              params.senderTokenDecimals
+            ),
+            senderToken: wethAddresses[params.chainId],
+            senderAmount: toAtomicString(
+              params.senderAmount,
+              params.senderTokenDecimals
+            ),
+          },
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),
@@ -177,14 +164,14 @@ export const unwrap = createAsyncThunk(
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
             dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, false);
+            notifyTransaction("Withdraw", transaction, tokens, false);
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction("Order", transaction, tokens, true);
+            notifyTransaction("Withdraw", transaction, tokens, true);
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
@@ -264,7 +251,7 @@ export const approve = createAsyncThunk(
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
@@ -313,7 +300,7 @@ export const take = createAsyncThunk(
           }
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;

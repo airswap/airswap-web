@@ -93,7 +93,7 @@ const getThunk: (
           address,
           amount: amounts[i],
         }));
-      } catch (e) {
+      } catch (e: any) {
         console.error(`Error fetching ${type}: ` + e.message);
         // TODO: error handling
         return [];
@@ -201,6 +201,7 @@ const getSlice = (
 };
 
 export const selectBalances = (state: RootState) => state.balances;
+export const selectAllowances = (state: RootState) => state.allowances;
 export const selectAllowancesLight = (state: RootState) =>
   state.allowances.light;
 export const selectAllowancesWrapper = (state: RootState) =>

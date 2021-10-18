@@ -5,20 +5,25 @@ import { TokenInfo } from "@uniswap/token-lists";
 
 import {
   SubmittedApproval,
+  SubmittedDepositOrder,
   SubmittedOrder,
+  SubmittedWithdrawOrder,
+  TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import TransactionToast from "./TransactionToast";
 
-type typeProps = "Approval" | "Order";
-type transactionType = SubmittedOrder | SubmittedApproval;
-
 export const notifyTransaction = (
-  type: typeProps,
-  transaction: transactionType,
+  type: TransactionType,
+  transaction:
+    | SubmittedOrder
+    | SubmittedApproval
+    | SubmittedDepositOrder
+    | SubmittedWithdrawOrder,
   tokens: TokenInfo[],
   error: boolean
 ) => {
   let token: TokenInfo;
+  // TODO: make a switch case to render a different toast for each case
   if (type === "Order") {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
     const senderToken = findTokenByAddress(tx.order.senderToken, tokens);

@@ -90,7 +90,11 @@ export const WalletButton = ({
           {transactions.length > 0 ? (
             transactions.slice(0, 3).map((transaction) => {
               let token;
-              if (transaction.type === "Order") {
+              if (
+                transaction.type === "Order" ||
+                transaction.type === "Deposit" ||
+                transaction.type === "Withdraw"
+              ) {
                 const tx: SubmittedOrder = transaction as SubmittedOrder;
                 const senderToken =
                   tx.order.senderToken === nativeETH[chainId].address

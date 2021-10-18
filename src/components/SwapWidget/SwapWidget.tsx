@@ -41,8 +41,8 @@ import {
   selectBestOrder,
   selectOrdersStatus,
   clear,
-  wrap,
-  unwrap,
+  deposit,
+  withdraw,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
@@ -86,7 +86,6 @@ const SwapWidget = () => {
   const [tokenSelectType, setTokenSelectType] = useState<TokenSelectType>(
     "senderToken"
   );
-  const [swapType, setSwapType] = useState<SwapType>("idle");
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
@@ -159,35 +158,34 @@ const SwapWidget = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens.length]);
 
-  useEffect(() => {
-    // if ETH -> WETH, set the swap state to "wrap"
-    if (chainId && senderToken && signerToken) {
-      if (
-        senderToken === nativeETH[chainId!].address &&
-        signerToken === wethAddresses[chainId!]
-      ) {
-        setSwapType("wrap");
-      }
-      // if WETH -> ETH, set the swap state to "unwrap"
-      else if (
-        signerToken === nativeETH[chainId!].address &&
-        senderToken === wethAddresses[chainId!]
-      ) {
-        setSwapType("unwrap");
-      }
-      // if ETH <-> ERC20, set the swap state to "wrapper"
-      else if (
-        senderToken === nativeETH[chainId!].address ||
-        signerToken === nativeETH[chainId!].address
-      ) {
-        setSwapType("wrapper");
-      }
-      // if ERC20 <-> ERC20, set the swap state to "swap"
-      else {
-        setSwapType("swap");
-      }
+  let swapType: SwapType = "idle";
+  // if ETH -> WETH, set the swap state to "wrap"
+  if (chainId && senderToken && signerToken) {
+    if (
+      senderToken === nativeETH[chainId!].address &&
+      signerToken === wethAddresses[chainId!]
+    ) {
+      swapType = "wrap";
     }
-  }, [senderToken, signerToken, chainId]);
+    // if WETH -> ETH, set the swap state to "unwrap"
+    else if (
+      signerToken === nativeETH[chainId!].address &&
+      senderToken === wethAddresses[chainId!]
+    ) {
+      swapType = "unwrap";
+    }
+    // if ETH <-> ERC20, set the swap state to "wrapper"
+    else if (
+      senderToken === nativeETH[chainId!].address ||
+      signerToken === nativeETH[chainId!].address
+    ) {
+      swapType = "wrapper";
+    }
+    // if ERC20 <-> ERC20, set the swap state to "swap"
+    else {
+      swapType = "swap";
+    }
+  }
 
   const getTokenDecimals = (tokenAddress: string) => {
     if (tokenAddress === nativeETH[chainId!].address) return 18;
@@ -202,6 +200,7 @@ const SwapWidget = () => {
     return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
   };
 
+  // TODO: compare BigNumber instead of numbers
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (!tokenAddress) return false;
     if (swapType === "wrap" || swapType === "unwrap") return true;
@@ -326,7 +325,7 @@ const SwapWidget = () => {
                   case "wrap":
                     setIsSwapping(true);
                     result = await dispatch(
-                      wrap({
+                      deposit({
                         chainId: chainId!,
                         senderAmount,
                         senderTokenDecimals: senderTokenInfo!.decimals,
@@ -340,7 +339,7 @@ const SwapWidget = () => {
                   case "unwrap":
                     setIsSwapping(true);
                     result = await dispatch(
-                      unwrap({
+                      withdraw({
                         chainId: chainId!,
                         senderAmount,
                         senderTokenDecimals: senderTokenInfo!.decimals,
@@ -481,7 +480,7 @@ const SwapWidget = () => {
                 default:
                   return;
               }
-            } catch (e) {
+            } catch (e: any) {
               console.error(e);
               switch (e.message) {
                 // may want to handle no peers differently in future.

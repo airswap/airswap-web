@@ -201,20 +201,11 @@ const TokenSelection = ({
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              <TokenButton
-                token={nativeETH[chainId]}
-                balance={formatUnits(
-                  balances.values[nativeETH[chainId].address] || 0,
-                  nativeETH[chainId].decimals
-                )}
-                setToken={handleClick}
-                removeActiveToken={removeActiveToken}
-                key={nativeETH[chainId].address}
-                showDeleteButton={false}
-              />
-              {sortedFilteredTokens.map((token) => (
+              {[nativeETH[chainId], ...sortedFilteredTokens].map((token) => (
                 <TokenButton
-                  showDeleteButton={editMode}
+                  showDeleteButton={
+                    token.address !== nativeETH[chainId].address && editMode
+                  }
                   token={token}
                   balance={formatUnits(
                     balances.values[token.address] || 0,

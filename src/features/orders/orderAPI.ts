@@ -20,6 +20,32 @@ const erc20Interface = new ethers.utils.Interface(erc20Abi);
 
 const WETHInterface = new utils.Interface(JSON.stringify(WETHContract.abi));
 
+async function swapLight(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: LightOrder
+) {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
+  return await new Light(chainId, provider).swap(
+    order,
+    // @ts-ignore
+    provider.getSigner()
+  );
+}
+
+async function swapWrapper(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: LightOrder
+) {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
+  return await new Wrapper(chainId, provider).swap(
+    order,
+    // @ts-ignore
+    provider.getSigner()
+  );
+}
+
 export async function requestOrder(
   chainId: number,
   signerToken: string,
@@ -87,21 +113,11 @@ export async function takeOrder(
   provider: ethers.providers.Web3Provider,
   contractType: "Light" | "Wrapper"
 ) {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
   const tx =
     contractType === "Light"
-      ? // @ts-ignore
-        await new Light(provider.network.chainId, provider).swap(
-          order,
-          // @ts-ignore
-          provider.getSigner()
-        )
-      : // @ts-ignore
-        await new Wrapper(provider.network.chainId, provider).swap(
-          order,
-          // @ts-ignore
-          provider.getSigner()
-        );
+      ? await swapLight(provider.network.chainId, provider, order)
+      : await swapWrapper(provider.network.chainId, provider, order);
+
   return (tx as any) as Transaction;
 }
 
@@ -127,7 +143,7 @@ export function orderSortingFunction(a: LightOrder, b: LightOrder) {
   }
 }
 
-export async function wrapToken(
+export async function depositETH(
   chainId: number,
   senderAmount: string,
   senderTokenDecimals: number,
@@ -145,7 +161,7 @@ export async function wrapToken(
   return (tx as any) as Transaction;
 }
 
-export async function unwrapToken(
+export async function withdrawETH(
   chainId: number,
   senderAmount: string,
   senderTokenDecimals: number,

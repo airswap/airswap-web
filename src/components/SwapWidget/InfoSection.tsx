@@ -118,7 +118,7 @@ const InfoSection: FC<InfoSectionProps> = ({
             <StyledInvertPriceIcon />
           </StyledInvertPriceButton>
         </InfoHeading>
-        <InfoSubHeading>{t("orders:swapMessage")}</InfoSubHeading>
+        <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
       </>
     );
   }
