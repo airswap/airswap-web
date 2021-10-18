@@ -54,8 +54,14 @@ type WalletProps = {
 };
 
 export const Wallet: FC<WalletProps> = ({ className = "" }) => {
-  const { chainId, account, activate, deactivate, active, library } =
-    useWeb3React<Web3Provider>();
+  const {
+    chainId,
+    account,
+    activate,
+    deactivate,
+    active,
+    library,
+  } = useWeb3React<Web3Provider>();
 
   // Redux
   const dispatch = useAppDispatch();

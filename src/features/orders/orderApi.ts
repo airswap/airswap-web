@@ -33,7 +33,7 @@ export async function requestOrders(
         }, REQUEST_ORDER_TIMEOUT_MS)
       ),
     ]);
-    return order as any as LightOrder;
+    return (order as any) as LightOrder;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   const successfulRfqOrders = rfqOrders
@@ -57,7 +57,7 @@ export async function approveToken(
     spender,
     constants.MaxUint256
   );
-  return approvalTxHash as any as Transaction;
+  return (approvalTxHash as any) as Transaction;
 }
 
 export async function takeOrder(
@@ -70,7 +70,7 @@ export async function takeOrder(
     // @ts-ignore TODO: type compatability issue with AirSwap lib
     provider.getSigner()
   );
-  return tx as any as Transaction;
+  return (tx as any) as Transaction;
 }
 
 export function orderSortingFunction(a: LightOrder, b: LightOrder) {
