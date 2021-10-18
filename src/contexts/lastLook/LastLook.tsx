@@ -9,6 +9,8 @@ import { LightOrder } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
+import BigNumber from "bignumber.js";
+
 import { useAppDispatch } from "../../app/hooks";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
@@ -107,31 +109,44 @@ const LastLookProvider: FC<{}> = ({ children }) => {
 
     const isSell = terms.side === "sell";
 
+    const baseAmountAtomic = new BigNumber(terms.baseAmount)
+      .multipliedBy(10 ** terms.baseToken.decimals)
+      .integerValue(BigNumber.ROUND_CEIL)
+      .toString();
+    const quoteAmountAtomic = new BigNumber(terms.quoteAmount)
+      .multipliedBy(10 ** terms.quoteToken.decimals)
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toString();
+
     const order = createLightOrder({
-      expiry: Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC,
+      expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
       nonce: Date.now().toString(),
       signerWallet: account,
-      signerToken: terms.baseToken,
-      senderToken: terms.quoteToken,
+      signerToken: terms.baseToken.address,
+      senderToken: terms.quoteToken.address,
       signerFee: "7",
-      signerAmount: isSell ? terms.baseAmount : terms.quoteAmount,
-      senderAmount: !isSell ? terms.baseAmount : terms.quoteAmount,
+      signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
+      senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
     });
 
     // TODO: deal with rejection here (cancel signature request)
-    const signature = await createLightSignature(
-      order,
-      library,
-      lightDeploys[chainId],
-      chainId!
-    );
+    try {
+      const signature = await createLightSignature(
+        order,
+        library.getSigner(),
+        lightDeploys[chainId],
+        chainId!
+      );
+      const signedOrder: LightOrder = {
+        ...order,
+        ...signature,
+      };
 
-    const signedOrder: LightOrder = {
-      ...order,
-      ...signature,
-    };
-
-    return server.consider(signedOrder);
+      return server.consider(signedOrder);
+    } catch (e) {
+      console.error("Error signing order", e);
+      throw e;
+    }
   };
 
   return (

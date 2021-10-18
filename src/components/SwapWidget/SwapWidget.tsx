@@ -302,6 +302,7 @@ const SwapWidget = () => {
     try {
       setIsSwapping(true);
       if (bestTradeOption!.protocol === "request-for-quote") {
+        LastLook.unsubscribeAllServers();
         const result = await dispatch(
           take({ order: bestTradeOption!.order!, library })
         );
