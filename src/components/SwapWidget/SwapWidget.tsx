@@ -225,7 +225,9 @@ const SwapWidget = () => {
         chainId,
         // @ts-ignore provider type mismatch
         library
-      ).getServers(quoteToken!, baseToken!);
+      ).getServers(quoteToken!, baseToken!, {
+        initializeTimeout: 10 * 1000,
+      });
 
       const rfqServers = servers.filter((s) =>
         s.supportsProtocol("request-for-quote")

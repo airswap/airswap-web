@@ -36,10 +36,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.6.tgz#ce212662a7fa3e9d597d01599cf5ee13dc6c91b8"
-  integrity sha512-gh2qhlaTdV/fY2hcCFiMmwbl9AKvQS887Nojrf7UScIp7+nBj/xOietDIxNSXiNaclSywgIG7PerzeJn/8KYlA==
+"@airswap/libraries@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.7.tgz#c97ac351c554d2b9595f43f489a1d1ec4db97138"
+  integrity sha512-jlWs7pLxrhtvuaNJggY/O0ZnsFaTXRdWuR1J9eDz43Z6yzVWYxSvuuV0nTo6iAcGThGKUpLyMZIhg0LqKQAJNA==
   dependencies:
     "@airswap/constants" "0.4.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"

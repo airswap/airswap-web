@@ -121,6 +121,7 @@ const LastLookProvider: FC<{}> = ({ children }) => {
     const order = createLightOrder({
       expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
       nonce: Date.now().toString(),
+      senderWallet: server.getSenderWallet(),
       signerWallet: account,
       signerToken: terms.baseToken.address,
       senderToken: terms.quoteToken.address,
