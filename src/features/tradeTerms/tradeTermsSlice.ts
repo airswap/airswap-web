@@ -41,6 +41,9 @@ const tradeTermsSlice = createSlice({
     setQuoteAmount: (state, action: PayloadAction<string>) => {
       state.quoteAmount = action.payload;
     },
+    clearQuoteAmount: (state) => {
+      state.quoteAmount = null;
+    },
   },
 });
 
@@ -50,6 +53,7 @@ export const {
   set: setTradeTerms,
   clear: clearTradeTerms,
   setQuoteAmount: setTradeTermsQuoteAmount,
+  clearQuoteAmount: clearTradeTermsQuoteAmount,
 } = tradeTermsSlice.actions;
 
 export default tradeTermsSlice.reducer;

@@ -42,6 +42,7 @@ import {
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   clearTradeTerms,
+  clearTradeTermsQuoteAmount,
   selectTradeTerms,
   setTradeTerms,
   setTradeTermsQuoteAmount,
@@ -329,8 +330,13 @@ const SwapWidget = () => {
         }
       }
     } catch (e: any) {
+      if (bestTradeOption!.protocol !== "request-for-quote") {
+        setIsSwapping(false);
+        dispatch(clearTradeTermsQuoteAmount());
+      }
+
       if (e.code && e.code === 4001) {
-        // 4001 is metamask user declining transaction sig, do nothing
+        // 4001 is metamask user declining transaction sig
       } else {
         // FIXME: notify user - toast?
       }
