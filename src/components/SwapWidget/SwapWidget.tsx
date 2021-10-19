@@ -58,7 +58,6 @@ import StyledSwapWidget, {
   InfoContainer,
   ButtonContainer,
   HugeTicks,
-  Placeholder,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
@@ -408,7 +407,7 @@ const SwapWidget = () => {
         {showOrderSubmitted ? (
           <HugeTicks />
         ) : isApproving || isSwapping ? (
-          <Placeholder />
+          <></>
         ) : (
           <SwapInputs
             baseAmount={baseAmount}

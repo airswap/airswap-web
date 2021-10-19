@@ -34,10 +34,6 @@ export const HugeTicks = styled(MdDoneAll)`
   margin: 5rem auto 2px auto;
 `;
 
-export const Placeholder = styled.div`
-  height: 5rem;
-`;
-
 export const StyledSwapWidget = styled.div`
   display: flex;
   flex-direction: column;
