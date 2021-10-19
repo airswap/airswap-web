@@ -14,5 +14,7 @@
   "signer_allowance_low": "Signer has not approved the signer amount",
   "sender_balance_low": "Sender has not approved the sender amount",
   "signer_balance_low": "Signer has not approved the signer amount",
-  "nonce_aleady_used": "Nonce has been already used or cancelled"
+  "nonce_aleady_used": "Nonce has been already used or cancelled",
+  "unableSwap": "Unable to swap",
+  "swapFail": "The swap would fail for the following reasons."
 }
