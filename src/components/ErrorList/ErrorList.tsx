@@ -1,16 +1,19 @@
-import { Title } from "../Typography/Typography";
+import { useTranslation } from "react-i18next";
+
+import { Title, InfoSubHeading } from "../Typography/Typography";
 import { Header } from "./ErrorList.styles";
-import errorMessages from "./ErrorMessages.json";
 
 type ErrorListProps = {
   error: string;
 };
 
 const ErrorList = ({ error }: ErrorListProps) => {
+  const { t } = useTranslation(["validatorErrors"]);
   return (
     <>
       <Header>
-        <Title type="h2"></Title>
+        <Title type="h2">{t("validatorErrors:unableSwap")}</Title>
+        <InfoSubHeading>{t("validatorErrors:swapFail")}</InfoSubHeading>
       </Header>
     </>
   );
