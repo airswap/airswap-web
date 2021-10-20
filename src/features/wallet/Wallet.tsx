@@ -49,6 +49,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
   selectWallet,
+  setActiveProvider,
 } from "./walletSlice";
 
 type WalletProps = {
@@ -77,18 +78,24 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [isActivating, setIsActivating] = useState<boolean>(false);
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
-
+  const [activated, setActivated] = useState(false);
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
-    if (lastConnectedAccount) {
+    if (lastConnectedAccount?.address) {
       setIsActivating(true);
       const connector = lastConnectedAccount.provider.getConnector();
       setConnector(connector);
       setProvider(lastConnectedAccount.provider);
-      activate(connector).finally(() => setIsActivating(false));
+      activate(connector)
+        .then(() => {
+          setActivated(true);
+        })
+        .finally(() => {
+          setIsActivating(false);
+        });
     }
-  }, [activate]);
+  }, [activate, activated]);
 
   // Side effects for connecting a wallet from SwapWidget
 
@@ -131,12 +138,14 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       const allTokensPromise = dispatch(fetchAllTokens());
       const supportedTokensPromise = dispatch(
         fetchSupportedTokens({
+          // @ts-ignore
           provider: library,
         })
       );
       Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
         dispatch(
           fetchUnkownTokens({
+            // @ts-ignore
             provider: library,
           })
         );

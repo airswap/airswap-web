@@ -39,6 +39,7 @@ const getContract = (
   return new ethers.Contract(
     balancesDeploys[chainId],
     balancesInterface,
+    // @ts-ignore
     provider
   );
 };

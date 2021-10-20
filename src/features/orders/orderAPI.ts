@@ -99,6 +99,7 @@ export async function approveToken(
   const erc20Contract = new ethers.Contract(
     senderToken,
     erc20Interface,
+    // @ts-ignore
     provider.getSigner()
   );
   const approvalTxHash = await erc20Contract.approve(
@@ -152,8 +153,10 @@ export async function depositETH(
   const WETHContract = new Contract(
     wethAddresses[chainId],
     WETHInterface,
+    // @ts-ignore
     provider
   );
+  // @ts-ignore
   const signer = WETHContract.connect(provider.getSigner());
   const tx = await signer.deposit({
     value: toAtomicString(senderAmount, senderTokenDecimals),
@@ -170,8 +173,10 @@ export async function withdrawETH(
   const WETHContract = new Contract(
     wethAddresses[chainId],
     WETHInterface,
+    // @ts-ignore
     provider
   );
+  // @ts-ignore
   const signer = WETHContract.connect(provider.getSigner());
   const tx = await signer.withdraw(
     toAtomicString(senderAmount, senderTokenDecimals)
