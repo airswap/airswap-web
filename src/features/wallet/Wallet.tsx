@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { Light } from "@airswap/protocols";
+import { Light } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -16,10 +16,12 @@ import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
   selectBalances,
-  setAllowance,
+  setAllowanceLight,
+  setAllowanceWrapper,
 } from "../balances/balancesSlice";
 import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
@@ -112,7 +114,12 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       );
       saveLastAccount(account, provider);
       dispatch(
-        requestActiveTokenAllowances({
+        requestActiveTokenAllowancesLight({
+          provider: library,
+        })
+      );
+      dispatch(
+        requestActiveTokenAllowancesWrapper({
           provider: library,
         })
       );
@@ -171,7 +178,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         },
         onApproval: (tokenAddress, amount) => {
           dispatch(
-            setAllowance({
+            setAllowanceLight({
+              tokenAddress,
+              amount: amount.toString(),
+            })
+          );
+          dispatch(
+            setAllowanceWrapper({
               tokenAddress,
               amount: amount.toString(),
             })

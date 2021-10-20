@@ -9,8 +9,17 @@ import {
   mineTransaction,
 } from "./transactionActions";
 
+export interface DepositOrWithdrawOrder {
+  signerToken: string;
+  signerAmount: string;
+  senderToken: string;
+  senderAmount: string;
+}
+
+export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
+
 export interface SubmittedTransaction {
-  type: "Approval" | "Order";
+  type: TransactionType;
   hash: string;
   status: "processing" | "succeeded" | "reverted";
   timestamp: number;
@@ -22,6 +31,14 @@ export interface SubmittedOrder extends SubmittedTransaction {
 
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
+}
+
+export interface SubmittedDepositOrder extends SubmittedTransaction {
+  order: DepositOrWithdrawOrder;
+}
+
+export interface SubmittedWithdrawOrder extends SubmittedTransaction {
+  order: DepositOrWithdrawOrder;
 }
 
 export interface TransactionsState {

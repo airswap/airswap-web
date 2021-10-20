@@ -1,21 +1,27 @@
-import { findTokenByAddress, findTokensBySymbol } from "@airswap/metadata";
+import { findTokensBySymbol } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
+
+import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 
 export default function findTokenFromAndTokenToAddress(
   allTokens: TokenInfo[],
   fromSymbol: string,
   toSymbol: string,
   fromAddress?: string,
-  toAddress?: string
+  toAddress?: string,
+  chainId?: number
 ): { fromAddress: string | undefined; toAddress: string | undefined } {
   let fromToken: TokenInfo | undefined;
   let toToken: TokenInfo | undefined;
 
-  if (fromAddress) {
-    fromToken = fromAddress
-      ? findTokenByAddress(fromAddress, allTokens)
-      : undefined;
-    toToken = toAddress ? findTokenByAddress(toAddress, allTokens) : undefined;
+  if (fromAddress && fromAddress !== "-") {
+    fromToken =
+      (fromAddress &&
+        findEthOrTokenByAddress(fromAddress, allTokens, chainId!)) ||
+      findTokensBySymbol(fromSymbol, allTokens)[0];
+    toToken =
+      (toAddress && findEthOrTokenByAddress(toAddress, allTokens, chainId!)) ||
+      findTokensBySymbol(toSymbol, allTokens)[0];
 
     return {
       fromAddress: fromToken ? fromToken.address : undefined,
@@ -25,7 +31,6 @@ export default function findTokenFromAndTokenToAddress(
 
   fromToken = findTokensBySymbol(fromSymbol, allTokens)[0];
   toToken = findTokensBySymbol(toSymbol, allTokens)[0];
-
   return {
     fromAddress: fromToken ? fromToken.address : undefined,
     toAddress: toToken ? toToken.address : undefined,

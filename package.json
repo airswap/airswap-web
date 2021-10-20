@@ -16,8 +16,8 @@
   "dependencies": {
     "@airswap/balances": "^1.1.2",
     "@airswap/constants": "^0.4.0",
+    "@airswap/libraries": "^0.0.5",
     "@airswap/metadata": "0.3.6",
-    "@airswap/protocols": "0.5.9",
     "@airswap/types": "^3.5.17",
     "@craco/craco": "^6.2.0",
     "@fontsource/montserrat": "^4.5.1",
