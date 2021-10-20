@@ -49,7 +49,6 @@ import {
   setWalletConnected,
   setWalletDisconnected,
   selectWallet,
-  setActiveProvider,
 } from "./walletSlice";
 
 type WalletProps = {
