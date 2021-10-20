@@ -137,16 +137,14 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       const allTokensPromise = dispatch(fetchAllTokens());
       const supportedTokensPromise = dispatch(
         fetchSupportedTokens({
-          // @ts-ignore
           provider: library,
-        })
+        } as any)
       );
       Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
         dispatch(
           fetchUnkownTokens({
-            // @ts-ignore
             provider: library,
-          })
+          } as any)
         );
       });
     } else {
@@ -155,6 +153,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [active, account, chainId, dispatch, library, connector, provider]);
 
   // Subscribe to changes in balance
+
   useEffect(() => {
     if (
       !library ||

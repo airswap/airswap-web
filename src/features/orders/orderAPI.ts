@@ -12,6 +12,7 @@ import {
   Contract,
   utils,
   constants,
+  providers,
 } from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
@@ -153,11 +154,9 @@ export async function depositETH(
   const WETHContract = new Contract(
     wethAddresses[chainId],
     WETHInterface,
-    // @ts-ignore
-    provider
+    provider as providers.Provider
   );
-  // @ts-ignore
-  const signer = WETHContract.connect(provider.getSigner());
+  const signer = WETHContract.connect(provider.getSigner() as ethers.Signer);
   const tx = await signer.deposit({
     value: toAtomicString(senderAmount, senderTokenDecimals),
   });
