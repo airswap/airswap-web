@@ -9,6 +9,7 @@ import { formatUnits } from "ethers/lib/utils";
 import {
   SubmittedOrder,
   SubmittedTransaction,
+  TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
@@ -34,7 +35,7 @@ export type TransactionToastProps = {
   /**
    * Type of transaction the toast will display;
    */
-  type: "Order" | "Approval";
+  type: TransactionType;
   /**
    * Token Info of sender token
    */
@@ -71,7 +72,7 @@ const TransactionToast = ({
       </IconContainer>
       <TextContainer>
         <InfoHeading>
-          {type === "Order"
+          {type === "Order" || type === "Deposit" || type === "Withdraw"
             ? error
               ? t("toast:swapFail")
               : t("toast:swapComplete")
@@ -80,7 +81,7 @@ const TransactionToast = ({
             : t("toast:approvalComplete")}
         </InfoHeading>
         <InfoSubHeading>
-          {type === "Order"
+          {type === "Order" || type === "Deposit" || type === "Withdraw"
             ? transaction && senderToken && signerToken
               ? t("toast:transaction", {
                   senderAmount: parseFloat(

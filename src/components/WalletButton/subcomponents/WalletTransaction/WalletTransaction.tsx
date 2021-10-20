@@ -7,6 +7,7 @@ import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
+  TransactionType,
 } from "../../../../features/transactions/transactionsSlice";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import {
@@ -25,9 +26,9 @@ type WalletTransactionProps = {
   transaction: SubmittedTransaction;
   /**
    * the type of transaction
-   * @type "Approval" | "Order"
+   * @type "Approval" | "Order" | "Withdraw" | "Deposit"
    */
-  type: "Approval" | "Order";
+  type: TransactionType;
   /**
    * chainId of current Ethereum net
    */
@@ -56,7 +57,7 @@ export const WalletTransaction = ({
 }: WalletTransactionProps) => {
   const { t } = useTranslation(["common", "wallet"]);
 
-  if (type === "Order") {
+  if (type === "Order" || type === "Deposit" || type === "Withdraw") {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
     return (
       <Container>

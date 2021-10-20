@@ -9,6 +9,7 @@ import {
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import {
   OpenWallet,
   ExitButton,
@@ -89,15 +90,21 @@ export const WalletButton = ({
           {transactions.length > 0 ? (
             transactions.slice(0, 3).map((transaction) => {
               let token;
-              if (transaction.type === "Order") {
+              if (
+                transaction.type === "Order" ||
+                transaction.type === "Deposit" ||
+                transaction.type === "Withdraw"
+              ) {
                 const tx: SubmittedOrder = transaction as SubmittedOrder;
-                const senderToken = findTokenByAddress(
+                const senderToken = findEthOrTokenByAddress(
                   tx.order.senderToken,
-                  tokens
+                  tokens,
+                  chainId
                 );
-                const signerToken = findTokenByAddress(
+                const signerToken = findEthOrTokenByAddress(
                   tx.order.signerToken,
-                  tokens
+                  tokens,
+                  chainId
                 );
                 return (
                   <WalletTransaction

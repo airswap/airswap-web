@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import { MdArrowDownward, MdBlock } from "react-icons/md";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { findTokenByAddress } from "@airswap/metadata";
-import { toDecimalString } from "@airswap/utils";
-import { toAtomicString } from "@airswap/utils";
+import { wethAddresses } from "@airswap/constants";
+import { Wrapper } from "@airswap/libraries";
+import { toDecimalString, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
@@ -16,8 +16,10 @@ import { parseUnits, formatUnits } from "ethers/lib/utils";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import TokenSelection from "../../components/TokenSelection/TokenSelection";
 import { Title } from "../../components/Typography/Typography";
+import nativeETH from "../../constants/nativeETH";
 import {
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
 } from "../../features/balances/balancesSlice";
 import {
@@ -37,10 +39,13 @@ import {
   selectBestOrder,
   selectOrdersStatus,
   clear,
+  deposit,
+  withdraw,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
@@ -63,6 +68,8 @@ const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 type TokenSelectType = "senderToken" | "signerToken";
 
+type SwapType = "idle" | "wrap" | "unwrap" | "swap" | "wrapper";
+
 const SwapWidget = () => {
   const [senderToken, setSenderToken] = useState<string>();
   const [signerToken, setSignerToken] = useState<string>();
@@ -71,18 +78,19 @@ const SwapWidget = () => {
   const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
+  const [isWrapping, setIsWrapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [tokenSelectType, setTokenSelectType] = useState<TokenSelectType>(
     "senderToken"
   );
-
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
+
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const activeTokens = useAppSelector(selectActiveTokens);
@@ -104,13 +112,19 @@ const SwapWidget = () => {
   } = useWeb3React<Web3Provider>();
 
   const senderTokenInfo = useMemo(
-    () => (senderToken ? findTokenByAddress(senderToken, activeTokens) : null),
-    [senderToken, activeTokens]
+    () =>
+      senderToken
+        ? findEthOrTokenByAddress(senderToken, activeTokens, chainId!)
+        : null,
+    [senderToken, activeTokens, chainId]
   );
 
   const signerTokenInfo = useMemo(
-    () => (signerToken ? findTokenByAddress(signerToken, activeTokens) : null),
-    [signerToken, activeTokens]
+    () =>
+      signerToken
+        ? findEthOrTokenByAddress(signerToken, activeTokens, chainId!)
+        : null,
+    [signerToken, activeTokens, chainId]
   );
 
   const pendingApprovals = useAppSelector(selectPendingApprovals);
@@ -128,7 +142,8 @@ const SwapWidget = () => {
         "USDT",
         "WETH",
         tokenFrom,
-        tokenTo
+        tokenTo,
+        chainId!
       );
 
       setSenderToken(fromAddress);
@@ -137,7 +152,37 @@ const SwapWidget = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens.length]);
 
+  let swapType: SwapType = "idle";
+  // if ETH -> WETH, set the swap state to "wrap"
+  if (chainId && senderToken && signerToken) {
+    if (
+      senderToken === nativeETH[chainId!].address &&
+      signerToken === wethAddresses[chainId!]
+    ) {
+      swapType = "wrap";
+    }
+    // if WETH -> ETH, set the swap state to "unwrap"
+    else if (
+      signerToken === nativeETH[chainId!].address &&
+      senderToken === wethAddresses[chainId!]
+    ) {
+      swapType = "unwrap";
+    }
+    // if ETH <-> ERC20, set the swap state to "wrapper"
+    else if (
+      senderToken === nativeETH[chainId!].address ||
+      signerToken === nativeETH[chainId!].address
+    ) {
+      swapType = "wrapper";
+    }
+    // if ERC20 <-> ERC20, set the swap state to "swap"
+    else {
+      swapType = "swap";
+    }
+  }
+
   const getTokenDecimals = (tokenAddress: string) => {
+    if (tokenAddress === nativeETH[chainId!].address) return 18;
     for (const token of activeTokens) {
       if (token.address === tokenAddress) return token.decimals;
     }
@@ -149,10 +194,17 @@ const SwapWidget = () => {
     return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
   };
 
+  // TODO: compare BigNumber instead of numbers
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (!tokenAddress) return false;
-    if (!allowances.values[tokenAddress]) return false;
-    return allowances.values[tokenAddress]! >= senderAmount;
+    if (swapType === "wrap" || swapType === "unwrap") return true;
+    if (swapType === "swap") {
+      if (!allowances.light.values[tokenAddress]) return false;
+      return allowances.light.values[tokenAddress]! >= senderAmount;
+    } else if (swapType === "wrapper") {
+      if (!allowances.wrapper.values[tokenAddress]) return false;
+      return allowances.wrapper.values[tokenAddress]! >= senderAmount;
+    }
   };
 
   // function to only allow numerical and dot values to be inputted
@@ -175,6 +227,18 @@ const SwapWidget = () => {
       setSignerToken(value);
     }
   };
+
+  let signerAmount: string | null = null;
+  if (order) {
+    const signerDecimals = getTokenDecimals(order.signerToken);
+    if (signerDecimals) {
+      signerAmount = toDecimalString(order.signerAmount, signerDecimals);
+    } else {
+      signerAmount = t("orders:decimalsNotFound");
+    }
+  } else if ((swapType === "wrap" || swapType === "unwrap") && isWrapping) {
+    signerAmount = senderAmount;
+  }
 
   const DisplayedButtons = () => {
     if (!active || !chainId) {
@@ -208,6 +272,8 @@ const SwapWidget = () => {
           intent="primary"
           onClick={() => {
             dispatch(clear());
+            signerAmount = null;
+            setIsWrapping(false);
             setShowOrderSubmitted(false);
           }}
         >
@@ -216,7 +282,8 @@ const SwapWidget = () => {
       );
     } else if (
       signerAmount &&
-      hasSufficientAllowance(senderToken) &&
+      (senderToken === nativeETH[chainId].address ||
+        hasSufficientAllowance(senderToken)) &&
       signerToken &&
       senderToken
     ) {
@@ -225,6 +292,8 @@ const SwapWidget = () => {
           <BackButton
             onClick={() => {
               dispatch(clear());
+              signerAmount = null;
+              setIsWrapping(false);
             }}
           >
             {t("common:back")}
@@ -236,17 +305,60 @@ const SwapWidget = () => {
             loading={ordersStatus === "taking"}
             onClick={async () => {
               try {
-                setIsSwapping(true);
-                const result = await dispatch(take({ order, library }));
-                setIsSwapping(false);
-                await unwrapResult(result);
-                setShowOrderSubmitted(true);
-              } catch (e) {
-                if (e.code && e.code === 4001) {
-                  // 4001 is metamask user declining transaction sig, do nothing
-                } else {
-                  // FIXME: notify user - toast?
+                let result;
+                switch (swapType) {
+                  case "swap":
+                    setIsSwapping(true);
+                    result = await dispatch(
+                      take({ order, library, contractType: "Light" })
+                    );
+                    setIsSwapping(false);
+                    await unwrapResult(result);
+                    setShowOrderSubmitted(true);
+                    break;
+                  case "wrap":
+                    setIsSwapping(true);
+                    result = await dispatch(
+                      deposit({
+                        chainId: chainId!,
+                        senderAmount,
+                        senderTokenDecimals: senderTokenInfo!.decimals,
+                        provider: library,
+                      })
+                    );
+                    await unwrapResult(result);
+                    setIsSwapping(false);
+                    setShowOrderSubmitted(true);
+                    break;
+                  case "unwrap":
+                    setIsSwapping(true);
+                    result = await dispatch(
+                      withdraw({
+                        chainId: chainId!,
+                        senderAmount,
+                        senderTokenDecimals: senderTokenInfo!.decimals,
+                        provider: library,
+                      })
+                    );
+                    await unwrapResult(result);
+                    setIsSwapping(false);
+                    setShowOrderSubmitted(true);
+                    break;
+                  case "wrapper":
+                    setIsSwapping(true);
+                    result = await dispatch(
+                      take({ order, library, contractType: "Wrapper" })
+                    );
+                    setIsSwapping(false);
+                    await unwrapResult(result);
+                    setShowOrderSubmitted(true);
+                    break;
+                  default:
+                    return;
                 }
+              } catch (e) {
+                // TODO: Catch errors
+                console.error(e);
               }
             }}
           >
@@ -272,7 +384,23 @@ const SwapWidget = () => {
             }
             onClick={async () => {
               setIsApproving(true);
-              await dispatch(approve({ token: senderToken, library }));
+              if (swapType === "wrapper") {
+                await dispatch(
+                  approve({
+                    token: senderToken,
+                    library,
+                    contractType: "Wrapper",
+                  })
+                );
+              } else {
+                await dispatch(
+                  approve({
+                    token: senderToken,
+                    library,
+                    contractType: "Light",
+                  })
+                );
+              }
               setIsApproving(false);
             }}
           >
@@ -296,20 +424,58 @@ const SwapWidget = () => {
           loading={ordersStatus === "requesting"}
           onClick={async () => {
             try {
-              const result = await dispatch(
-                request({
-                  chainId: chainId!,
-                  senderToken: senderToken!,
-                  senderAmount,
-                  senderTokenDecimals: senderTokenInfo!.decimals,
-                  signerToken: signerToken!,
-                  senderWallet: account!,
-                  provider: library,
-                })
-              );
-              const orders = await unwrapResult(result);
-              if (!orders.length) throw new Error("no valid orders");
-            } catch (e) {
+              let result;
+              let orders;
+              switch (swapType) {
+                case "swap":
+                  result = await dispatch(
+                    request({
+                      chainId: chainId!,
+                      senderToken: senderToken!,
+                      senderAmount,
+                      senderTokenDecimals: senderTokenInfo!.decimals,
+                      signerToken: signerToken!,
+                      senderWallet: account!,
+                      provider: library,
+                    })
+                  );
+                  orders = await unwrapResult(result);
+                  if (!orders.length) throw new Error("no valid orders");
+                  break;
+                case "wrap":
+                  // triggers re-render for swap screen
+                  setIsWrapping(true);
+                  break;
+                case "unwrap":
+                  // triggers re-render for swap screen
+                  setIsWrapping(true);
+                  break;
+                case "wrapper":
+                  result = await dispatch(
+                    request({
+                      chainId: chainId!,
+                      senderToken:
+                        senderToken === nativeETH[chainId!].address
+                          ? wethAddresses[chainId!]
+                          : senderToken!,
+                      senderAmount,
+                      senderTokenDecimals: senderTokenInfo!.decimals,
+                      signerToken:
+                        signerToken === nativeETH[chainId!].address
+                          ? wethAddresses[chainId!]
+                          : signerToken!,
+                      senderWallet: Wrapper.getAddress(chainId),
+                      provider: library,
+                    })
+                  );
+                  orders = await unwrapResult(result);
+                  if (!orders.length) throw new Error("no valid orders");
+                  break;
+                default:
+                  return;
+              }
+            } catch (e: any) {
+              console.error(e);
               switch (e.message) {
                 // may want to handle no peers differently in future.
                 // case "no peers": {
@@ -341,16 +507,6 @@ const SwapWidget = () => {
     }
   };
 
-  let signerAmount: string | null = null;
-  if (order) {
-    const signerDecimals = getTokenDecimals(order.signerToken);
-    if (signerDecimals) {
-      signerAmount = toDecimalString(order.signerAmount, signerDecimals);
-    } else {
-      signerAmount = t("orders:decimalsNotFound");
-    }
-  }
-
   let parsedSenderAmount = null;
   let insufficientBalance: boolean = false;
   let decimalsFound: boolean = true;
@@ -372,7 +528,8 @@ const SwapWidget = () => {
     if (library) {
       dispatch(addActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 
@@ -384,7 +541,8 @@ const SwapWidget = () => {
       } else if (address === signerToken) setSignerToken("");
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 
@@ -438,7 +596,10 @@ const SwapWidget = () => {
               readOnly={!!signerAmount || pairUnavailable}
               includeAmountInput={!!signerAmount}
               amountDetails={
-                !!signerAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
+                !!signerAmount &&
+                (swapType === "swap" || swapType === "wrapper")
+                  ? t("orders:afterFee", { fee: "0.07%" })
+                  : ""
               }
               selectedToken={signerTokenInfo}
               isLoading={ordersStatus === "requesting"}
@@ -453,6 +614,7 @@ const SwapWidget = () => {
             isFetchingOrders={ordersStatus === "requesting"}
             isApproving={isApproving}
             isSwapping={isSwapping}
+            isWrapping={isWrapping}
             order={order}
             requiresApproval={order && !hasSufficientAllowance(senderToken)}
             senderTokenInfo={senderTokenInfo}

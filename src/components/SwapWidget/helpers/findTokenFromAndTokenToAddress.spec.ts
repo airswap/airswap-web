@@ -1,6 +1,5 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
-import { BalancesState } from "../../../features/balances/balancesSlice";
 import findTokenFromAndTokenToAddress from "./findTokenFromAndTokenToAddress";
 
 describe("findTokenFromAndTokenToAddress", () => {
