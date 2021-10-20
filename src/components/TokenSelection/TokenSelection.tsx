@@ -204,7 +204,7 @@ const TokenSelection = ({
               {[nativeETH[chainId], ...sortedFilteredTokens].map((token) => (
                 <TokenButton
                   showDeleteButton={
-                    token.address !== nativeETH[chainId].address && editMode
+                    editMode && token.address !== nativeETH[chainId].address
                   }
                   token={token}
                   balance={formatUnits(
