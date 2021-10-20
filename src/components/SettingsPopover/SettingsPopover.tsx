@@ -33,7 +33,7 @@ const SettingsPopover = () => {
   // selects i18nextLang first, window language, falls back to default locale (en)
   // TODO: keep track of different langauage locale (e.g. en-US, en-AU)?
   const [selectedLocale, setSelectedLocale] = useState<string>(
-    localStorage.getItem("i18nextLng") ||
+    localStorage.getItem("i18nextLng")?.substring(0, 2) ||
       window.navigator.language.substring(0, 2) ||
       DEFAULT_LOCALE
   );

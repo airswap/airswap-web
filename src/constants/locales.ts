@@ -10,5 +10,5 @@ export const DEFAULT_LOCALE: SupportedLocale = "en";
 
 export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   en: "English",
-  nb: "Norwegian", // TODO: change to actual language
+  nb: "Norsk Bokmål",
 };
