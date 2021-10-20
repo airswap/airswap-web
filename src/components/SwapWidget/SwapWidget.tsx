@@ -24,8 +24,7 @@ import {
 } from "../../features/balances/balancesSlice";
 import {
   selectBalances,
-  selectAllowancesLight,
-  selectAllowancesWrapper,
+  selectAllowances,
 } from "../../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -90,8 +89,7 @@ const SwapWidget = () => {
   const history = useHistory();
   const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
-  const allowancesLight = useAppSelector(selectAllowancesLight);
-  const allowancesWrapper = useAppSelector(selectAllowancesWrapper);
+  const allowances = useAppSelector(selectAllowances);
 
   const order = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
@@ -201,11 +199,11 @@ const SwapWidget = () => {
     if (!tokenAddress) return false;
     if (swapType === "wrap" || swapType === "unwrap") return true;
     if (swapType === "swap") {
-      if (!allowancesLight.values[tokenAddress]) return false;
-      return allowancesLight.values[tokenAddress]! >= senderAmount;
+      if (!allowances.light.values[tokenAddress]) return false;
+      return allowances.light.values[tokenAddress]! >= senderAmount;
     } else if (swapType === "wrapper") {
-      if (!allowancesWrapper.values[tokenAddress]) return false;
-      return allowancesWrapper.values[tokenAddress]! >= senderAmount;
+      if (!allowances.wrapper.values[tokenAddress]) return false;
+      return allowances.wrapper.values[tokenAddress]! >= senderAmount;
     }
   };
 
