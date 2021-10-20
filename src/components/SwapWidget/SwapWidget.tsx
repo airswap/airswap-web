@@ -71,8 +71,6 @@ type TokenSelectType = "senderToken" | "signerToken";
 type SwapType = "idle" | "wrap" | "unwrap" | "swap" | "wrapper";
 
 const SwapWidget = () => {
-  const [senderToken, setSenderToken] = useState<string>();
-  const [signerToken, setSignerToken] = useState<string>();
   const [senderAmount, setSenderAmount] = useState("0.01");
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showTokenSelection, setShowTokenSelection] = useState<boolean>(false);
@@ -87,7 +85,10 @@ const SwapWidget = () => {
   );
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
+  const {
+    tokenFrom: senderToken,
+    tokenTo: signerToken,
+  } = useRouteMatch<AppRoutes>().params;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
 
@@ -130,8 +131,6 @@ const SwapWidget = () => {
   const pendingApprovals = useAppSelector(selectPendingApprovals);
 
   useEffect(() => {
-    setSenderToken("");
-    setSignerToken("");
     setSenderAmount("");
   }, [chainId]);
 
@@ -141,13 +140,15 @@ const SwapWidget = () => {
         allTokens,
         "USDT",
         "WETH",
-        tokenFrom,
-        tokenTo,
+        senderToken,
+        signerToken,
         chainId!
       );
-
-      setSenderToken(fromAddress);
-      setSignerToken(toAddress);
+      history.push({
+        pathname: `/${fromAddress ? fromAddress : "-"}/${
+          toAddress ? toAddress : "-"
+        }`,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens.length]);
@@ -219,12 +220,14 @@ const SwapWidget = () => {
 
   const handleSetToken = (value: string, type: TokenSelectType) => {
     if (type === "senderToken") {
-      history.push({ pathname: `/${value}/${signerToken}` });
+      value === signerToken
+        ? history.push({ pathname: `/${value}/${senderToken}` })
+        : history.push({ pathname: `/${value}/${signerToken}` });
       setSenderAmount("");
-      setSenderToken(value);
     } else {
-      history.push({ pathname: `/${senderToken}/${value}` });
-      setSignerToken(value);
+      value === senderToken
+        ? history.push({ pathname: `/${signerToken}/${value}` })
+        : history.push({ pathname: `/${senderToken}/${value}` });
     }
   };
 
@@ -536,9 +539,10 @@ const SwapWidget = () => {
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       if (address === senderToken) {
-        setSenderToken("");
+        history.push({ pathname: `/-/${signerToken ? signerToken : "-"}` });
         setSenderAmount("0.01");
-      } else if (address === signerToken) setSignerToken("");
+      } else if (address === signerToken)
+        history.push({ pathname: `/${signerToken ? signerToken : "-"}/-` });
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
       dispatch(requestActiveTokenAllowancesLight({ provider: library! }));

@@ -14,13 +14,14 @@ export default function findTokenFromAndTokenToAddress(
   let fromToken: TokenInfo | undefined;
   let toToken: TokenInfo | undefined;
 
-  if (fromAddress) {
-    fromToken = fromAddress
-      ? findEthOrTokenByAddress(fromAddress, allTokens, chainId!)
-      : undefined;
-    toToken = toAddress
-      ? findEthOrTokenByAddress(toAddress, allTokens, chainId!)
-      : undefined;
+  if (fromAddress && fromAddress !== "-") {
+    fromToken =
+      (fromAddress &&
+        findEthOrTokenByAddress(fromAddress, allTokens, chainId!)) ||
+      findTokensBySymbol(fromSymbol, allTokens)[0];
+    toToken =
+      (toAddress && findEthOrTokenByAddress(toAddress, allTokens, chainId!)) ||
+      findTokensBySymbol(toSymbol, allTokens)[0];
 
     return {
       fromAddress: fromToken ? fromToken.address : undefined,
@@ -30,7 +31,6 @@ export default function findTokenFromAndTokenToAddress(
 
   fromToken = findTokensBySymbol(fromSymbol, allTokens)[0];
   toToken = findTokensBySymbol(toSymbol, allTokens)[0];
-
   return {
     fromAddress: fromToken ? fromToken.address : undefined,
     toAddress: toToken ? toToken.address : undefined,
