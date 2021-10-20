@@ -72,8 +72,12 @@ describe("findTokenFromAndTokenToAddress", () => {
     expect(result2.fromAddress).toBe(
       "0xface851a4921ce59e912d19329929ce6da6eb0c7"
     );
-    expect(result2.toAddress).toBe(undefined);
-    expect(result3.fromAddress).toBe(undefined);
+    expect(result2.toAddress).toBe(
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+    );
+    expect(result3.fromAddress).toBe(
+      "0xe41d2489571d322189246dafa5ebde1f4699f498"
+    );
     expect(result3.toAddress).toBe(
       "0xe41d2489571d322189246dafa5ebde1f4699f498"
     );
