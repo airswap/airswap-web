@@ -17,10 +17,7 @@ const Toolbar: FC = () => {
     <ToolbarContainer>
       <IconAirswap iconSize={2.5} name="airswap" />
       <ToolbarButtonsContainer>
-        <ToolbarButton
-          iconName="bars"
-          text={t("common:stats")}
-        />
+        <ToolbarButton iconName="bars" text={t("common:stats")} />
         <ToolbarButton
           iconName="vote"
           text={t("common:vote")}
