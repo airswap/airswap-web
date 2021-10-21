@@ -55,7 +55,9 @@ const LastLookProvider: FC<{}> = ({ children }) => {
         const handlePricing = (pricing: Pricing[]) => {
           const pairPricing = pricing.find(
             (p) =>
-              p.baseToken === pair.baseToken && p.quoteToken === pair.quoteToken
+              p &&
+              p.baseToken === pair.baseToken &&
+              p.quoteToken === pair.quoteToken
           );
           if (pairPricing) {
             resolve(pairPricing);
