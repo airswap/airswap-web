@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -48,6 +47,8 @@ export type WalletButtonProps = {
    * List of all tokens in metadata
    */
   tokens: TokenInfo[];
+  walletOpen: boolean;
+  setWalletOpen: (x: boolean) => void;
 };
 
 export const WalletButton = ({
@@ -56,10 +57,10 @@ export const WalletButton = ({
   transactions = [],
   chainId,
   tokens,
+  walletOpen,
+  setWalletOpen,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
-
-  const [walletOpen, setWalletOpen] = useState<boolean>(false);
 
   if (address && !walletOpen) {
     return (
