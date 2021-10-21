@@ -11,11 +11,16 @@ import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 const Toolbar: FC = () => {
   const { t } = useTranslation(["common"]);
 
+  // TODO: Add link for "bars". Add content for "about" in feat/new-modals branch
+
   return (
     <ToolbarContainer>
       <IconAirswap iconSize={2.5} name="airswap" />
       <ToolbarButtonsContainer>
-        <ToolbarButton iconName="bars" text={t("common:stats")} />
+        <ToolbarButton
+          iconName="bars"
+          text={t("common:stats")}
+        />
         <ToolbarButton
           iconName="vote"
           text={t("common:vote")}

@@ -40,7 +40,7 @@ export const StyledPage = styled.div<StyledPageProps>`
   min-width: 18rem;
   min-height: ${(props) =>
     props.adjustForBookmarkWarning ? "calc(100vh - 40px)" : "100vh"};
-  padding: 2rem 0;
+  padding: 2rem 0 0;
 
   @media (min-height: 50rem) {
     align-items: center;

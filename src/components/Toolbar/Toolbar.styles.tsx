@@ -21,7 +21,10 @@ export const ToolbarContainer = styled.div`
   z-index: 1;
 
   @media ${breakPoints.tabletPortraitUp} {
-    display: flex;
+    // TODO: Show toolbar when content for modals are designed
+    
+    display: none;
+    // display: flex;
   }
 `;
 
