@@ -35,6 +35,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
+import { swapListener } from "../orders/ordersSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
   revertTransaction,
@@ -82,9 +83,29 @@ export const Wallet: FC = () => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
-    false
-  );
+
+  useEffect(() => {
+    if (activated) {
+      const tx = localStorage.getItem("current_tx");
+      const transaction = localStorage.getItem("current_transaction");
+      if (tx && transaction) {
+        //adding this try/catch in case the localStorage items are malformed
+        try {
+          console.debug("dispatching swapListener");
+          dispatch(
+            swapListener({
+              library,
+              tx: JSON.parse(tx),
+              transaction: JSON.parse(transaction),
+            })
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }, [activated, library]);
+
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
