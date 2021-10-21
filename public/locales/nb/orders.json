@@ -11,7 +11,7 @@
   "to": "Til",
   "amount": "Sum",
   "chooseToken": "Velg token",
-  "enterAmount": "Legg inn beløp",
+  "enterAmount": "Tast inn antall",
   "insufficentBalance": "Ikke nok {{symbol}} tilgjengelig",
   "decimalsNotFound": "Tokendesimaler ikke funnet",
   "priceDifference": "Prisforskjell",

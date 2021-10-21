@@ -1,5 +1,5 @@
 {
-  "connectWallet": "Tilknytt lommebok",
+  "connectWallet": "Koble lommebok",
   "disconnectWallet": "Koble fra",
   "noTransactions": "Ingen transaksjoner",
   "approve": "Godkjenn {{symbol}}",
