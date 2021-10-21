@@ -361,6 +361,8 @@ export const swapListener = createAsyncThunk(
       }) => {
         if (!orderCompleted) {
           console.debug({ orderCompleted }, { from, to, value, event });
+          localStorage.removeItem("current_tx");
+          localStorage.removeItem("current_transaction");
           orderCompleted = true;
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           const state: RootState = getState() as RootState;
@@ -419,6 +421,11 @@ export const take = createAsyncThunk(
         };
         dispatch(submitTransaction(transaction));
         dispatch(swapListener({ library: params.library, tx, transaction }));
+        localStorage.setItem("current_tx", JSON.stringify(tx));
+        localStorage.setItem(
+          "current_transaction",
+          JSON.stringify(transaction)
+        );
       }
     } catch (e: any) {
       console.error(e);
