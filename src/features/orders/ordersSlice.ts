@@ -346,8 +346,8 @@ export const swapListener = createAsyncThunk(
     // todo store these vars in localstorage (then delete when order is complete) so that we can dispatch this event on reload
     // todo scan swap indexed by nonce for last look results and finish if it's been handled
 
-    await library.on(tx.hash, async (result: any) => {
-      console.debug({ orderCompleted }, result);
+    await library.on(tx.hash, async ({from, to, value, event}:{from:string, to:string, value:any, event:any}) => {
+      console.debug({ orderCompleted }, {from, to, value, event});
       if (!orderCompleted) {
         orderCompleted = true;
         const receipt = await params.library.getTransactionReceipt(tx.hash);
