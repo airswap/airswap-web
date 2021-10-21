@@ -421,9 +421,9 @@ export const take = createAsyncThunk(
         };
         dispatch(submitTransaction(transaction));
         dispatch(swapListener({ library: params.library, tx, transaction }));
-        localStorage.setItem("current_tx", JSON.stringify(tx));
+        localStorage.setItem("airswap/current_tx", JSON.stringify(tx));
         localStorage.setItem(
-          "current_transaction",
+          "airswap/current_transaction",
           JSON.stringify(transaction)
         );
       }
