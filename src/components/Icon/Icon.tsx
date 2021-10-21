@@ -1,7 +1,7 @@
-import React, { FC, ReactElement } from "react";
+import { FC, ReactElement } from "react";
 import { BiCheck } from "react-icons/bi";
 import { HiX } from "react-icons/hi";
-import { IoMdInformationCircleOutline } from "react-icons/io";
+import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 import { MdKeyboardArrowDown, MdAccessTime, MdOpenInNew } from "react-icons/md";
 
 import { StyledIcon } from "./Icon.styles";
@@ -36,6 +36,7 @@ export const icons: IconSet = {
   "transaction-pending": MdAccessTime,
   "transaction-link": MdOpenInNew,
   "button-x": IconX,
+  settings: IoMdSettings,
 };
 
 interface IconProps extends SvgIconProps {

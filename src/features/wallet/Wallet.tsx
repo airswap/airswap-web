@@ -6,12 +6,14 @@ import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -75,6 +77,9 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   // Local component state
   const [isActivating, setIsActivating] = useState<boolean>(false);
+  const [walletOpen, setWalletOpen] = useState<boolean>(false);
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
 
@@ -294,8 +299,18 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
     };
   }, [chainId, dispatch, library, account]);
 
+  const handleWalletOpen = (state: boolean) => {
+    setWalletOpen(state);
+    setSettingsOpen(false);
+  };
+
+  const handleSettingsOpen = (state: boolean) => {
+    setSettingsOpen(state);
+    setWalletOpen(false);
+  };
+
   return (
-    <div className={className}>
+    <PopoverContainer>
       <WalletButton
         address={account}
         onDisconnectWalletClicked={() => {
@@ -309,7 +324,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         tokens={allTokens}
         chainId={chainId!}
         transactions={transactions}
+        walletOpen={walletOpen}
+        setWalletOpen={handleWalletOpen}
       />
-    </div>
+      <SettingsButton
+        settingsOpen={settingsOpen}
+        setSettingsOpen={handleSettingsOpen}
+      />
+    </PopoverContainer>
   );
 };
