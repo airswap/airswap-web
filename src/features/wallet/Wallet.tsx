@@ -6,8 +6,10 @@ import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import EthButton from "../../components/EthButton/EthButton";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
+import nativeETH from "../../constants/nativeETH";
 import {
   AbstractConnector,
   WalletProvider,
@@ -54,10 +56,10 @@ import {
 } from "./walletSlice";
 
 type WalletProps = {
-  className?: string;
+  setTransactionsTabOpen: () => void;
 };
 
-export const Wallet: FC<WalletProps> = ({ className = "" }) => {
+export const Wallet: FC<WalletProps> = ({ setTransactionsTabOpen }) => {
   const {
     chainId,
     account,
@@ -307,8 +309,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [chainId, dispatch, library, account]);
 
   const handleWalletOpen = (state: boolean) => {
-    setWalletOpen(state);
-    setSettingsOpen(false);
+    setTransactionsTabOpen();
   };
 
   const handleSettingsOpen = (state: boolean) => {
@@ -318,6 +319,9 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   return (
     <PopoverContainer>
+      {balances && chainId && (
+        <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+      )}
       <WalletButton
         address={account}
         onDisconnectWalletClicked={() => {

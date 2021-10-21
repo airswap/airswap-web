@@ -2,9 +2,7 @@ import styled from "styled-components";
 
 import IconButton from "../IconButton/IconButton";
 
-const SettingIconButtonContainer = styled.div`
-  margin-top: 0.5rem;
-`;
+const SettingIconButtonContainer = styled.div``;
 
 const SettingsIconButton = styled(IconButton)`
   &:hover {

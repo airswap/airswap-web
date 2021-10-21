@@ -7,7 +7,7 @@ const Container = styled.div`
   width: 16rem;
   height: 17.25rem;
   top: 5.5rem;
-  right: 2.5rem;
+  right: 0rem;
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${(props) => props.theme.colors.darkGrey};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
