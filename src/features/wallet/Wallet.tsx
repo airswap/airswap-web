@@ -86,7 +86,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [activated, setActivated] = useState(false);
 
   useEffect(() => {
-    if (activated) {
+    if (activated && library) {
       const tx = localStorage.getItem("airswap/current_tx");
       const transaction = localStorage.getItem("airswap/current_transaction");
       if (tx && transaction) {
