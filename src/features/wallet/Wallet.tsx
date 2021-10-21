@@ -87,8 +87,8 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   useEffect(() => {
     if (activated) {
-      const tx = localStorage.getItem("current_tx");
-      const transaction = localStorage.getItem("current_transaction");
+      const tx = localStorage.getItem("airswap/current_tx");
+      const transaction = localStorage.getItem("airswap/current_transaction");
       if (tx && transaction) {
         //adding this try/catch in case the localStorage items are malformed
         try {
