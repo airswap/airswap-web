@@ -441,6 +441,7 @@ const SwapWidget = () => {
               bestRfqOrder && !hasSufficientAllowance(baseToken)
             }
             baseTokenInfo={baseTokenInfo}
+            baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
           />
         </InfoContainer>

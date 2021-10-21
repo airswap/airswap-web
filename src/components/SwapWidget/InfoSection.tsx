@@ -42,6 +42,7 @@ export type InfoSectionProps = {
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
+  baseAmount: string;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -54,6 +55,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   isFetchingOrders,
   requiresApproval,
   baseTokenInfo,
+  baseAmount,
   quoteTokenInfo,
 }) => {
   const { t } = useTranslation(["orders", "marketing"]);
@@ -116,7 +118,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   }
 
   if (!!bestTradeOption) {
-    let price = new BigNumber(bestTradeOption.quoteAmount);
+    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+      baseAmount
+    );
 
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);
