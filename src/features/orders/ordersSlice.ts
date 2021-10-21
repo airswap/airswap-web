@@ -361,8 +361,8 @@ export const swapListener = createAsyncThunk(
       }) => {
         if (!orderCompleted) {
           console.debug({ orderCompleted }, { from, to, value, event });
-          localStorage.removeItem("current_tx");
-          localStorage.removeItem("current_transaction");
+          localStorage.removeItem("airswap/current_tx");
+          localStorage.removeItem("airswap/current_transaction");
           orderCompleted = true;
           const receipt = await params.library.getTransactionReceipt(tx.hash);
           const state: RootState = getState() as RootState;
