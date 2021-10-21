@@ -82,18 +82,24 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
-
+  const [activated, setActivated] = useState(false);
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
-    if (lastConnectedAccount) {
+    if (lastConnectedAccount?.address) {
       setIsActivating(true);
       const connector = lastConnectedAccount.provider.getConnector();
       setConnector(connector);
       setProvider(lastConnectedAccount.provider);
-      activate(connector).finally(() => setIsActivating(false));
+      activate(connector)
+        .then(() => {
+          setActivated(true);
+        })
+        .finally(() => {
+          setIsActivating(false);
+        });
     }
-  }, [activate]);
+  }, [activate, activated]);
 
   // Side effects for connecting a wallet from SwapWidget
 
@@ -137,13 +143,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       const supportedTokensPromise = dispatch(
         fetchSupportedTokens({
           provider: library,
-        })
+        } as any)
       );
       Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
         dispatch(
           fetchUnkownTokens({
             provider: library,
-          })
+          } as any)
         );
       });
     } else {
@@ -152,6 +158,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [active, account, chainId, dispatch, library, connector, provider]);
 
   // Subscribe to changes in balance
+
   useEffect(() => {
     if (
       !library ||

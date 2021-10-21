@@ -3,7 +3,7 @@ import balancesDeploys from "@airswap/balances/deploys.js";
 import { Light, Wrapper } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
-import { BigNumber, ethers, EventFilter, Event } from "ethers";
+import { BigNumber, ethers, EventFilter, Event, providers } from "ethers";
 import { hexZeroPad, id } from "ethers/lib/utils";
 
 interface SubscribeParams {
@@ -39,7 +39,7 @@ const getContract = (
   return new ethers.Contract(
     balancesDeploys[chainId],
     balancesInterface,
-    provider
+    provider as providers.Provider
   );
 };
 
