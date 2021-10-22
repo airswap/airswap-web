@@ -4,6 +4,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
+import { findTokensBySymbol } from "@airswap/metadata";
 import { Pricing } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -66,7 +67,6 @@ import StyledSwapWidget, {
   HugeTicks,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
-import findTokenFromAndTokenToAddress from "./helpers/findTokenFromAndTokenToAddress";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -96,10 +96,7 @@ const SwapWidget = () => {
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  const {
-    tokenFrom: baseToken,
-    tokenTo: quoteToken,
-  } = useRouteMatch<AppRoutes>().params;
+  let { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Modals
@@ -136,6 +133,25 @@ const SwapWidget = () => {
     activate,
   } = useWeb3React<Web3Provider>();
 
+  let defaultBaseTokenAddress: string | null = allTokens.length
+    ? findTokensBySymbol("USDT", allTokens)[0].address
+    : null;
+  let defaultQuoteTokenAddress: string | null = allTokens.length
+    ? findTokensBySymbol("WETH", allTokens)[0].address
+    : null;
+
+  // Use default tokens only if neither are specified in the URL.
+  const baseToken = tokenFrom
+    ? tokenFrom
+    : tokenTo
+    ? null
+    : defaultBaseTokenAddress;
+  const quoteToken = tokenTo
+    ? tokenTo
+    : tokenFrom
+    ? null
+    : defaultQuoteTokenAddress;
+
   const baseTokenInfo = useMemo(
     () =>
       baseToken
@@ -152,33 +168,10 @@ const SwapWidget = () => {
     [quoteToken, activeTokens, chainId]
   );
 
-  // Reset everything when the chainId changes.
+  // Reset amount when the chainId changes.
   useEffect(() => {
-    // This has the effect of clearing the selected tokens.
-    history.push({
-      pathname: "/",
-    });
     setBaseAmount(initialBaseAmount);
-  }, [history, chainId]);
-
-  // Default to USDT -> WETH
-  useEffect(() => {
-    if (allTokens.length) {
-      const { fromAddress, toAddress } = findTokenFromAndTokenToAddress(
-        allTokens,
-        "USDT",
-        "WETH",
-        baseToken,
-        quoteToken
-      );
-      history.push({
-        pathname: `/${fromAddress ? fromAddress : "-"}/${
-          toAddress ? toAddress : "-"
-        }`,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allTokens.length]);
+  }, [chainId]);
 
   let swapType: SwapType = "swap";
 
@@ -534,7 +527,7 @@ const SwapWidget = () => {
             // @ts-ignore
             bestTradeOption={bestTradeOption}
             requiresApproval={
-              bestRfqOrder && !hasSufficientAllowance(baseToken)
+              bestRfqOrder && !hasSufficientAllowance(baseToken!)
             }
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
@@ -548,19 +541,20 @@ const SwapWidget = () => {
               walletIsActive={active}
               orderComplete={showOrderSubmitted}
               baseTokenInfo={baseTokenInfo}
+              quoteTokenInfo={quoteTokenInfo}
               hasAmount={
                 !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
               }
               hasQuote={!!bestTradeOption || isWrapping}
               hasSufficientBalance={!insufficientBalance}
-              needsApproval={!hasSufficientAllowance(baseToken)}
+              needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
               onButtonClicked={handleButtonClick}
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
                 ["approving", "taking"].includes(rfqOrderStatus) ||
-                hasApprovalPending(baseToken)
+                (!!baseToken && hasApprovalPending(baseToken))
               }
             />
           )}

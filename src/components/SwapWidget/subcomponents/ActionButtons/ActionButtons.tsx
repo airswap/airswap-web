@@ -43,6 +43,7 @@ const ActionButtons: FC<{
   needsApproval: boolean;
   hasAmount: boolean;
   baseTokenInfo: TokenInfo | null;
+  quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
   isLoading: boolean;
   onButtonClicked: (action: ButtonActions) => void;
@@ -54,6 +55,7 @@ const ActionButtons: FC<{
   needsApproval,
   hasAmount,
   baseTokenInfo,
+  quoteTokenInfo,
   hasSufficientBalance,
   isLoading,
   onButtonClicked,
@@ -72,7 +74,9 @@ const ActionButtons: FC<{
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
   const isDisabled =
-    !hasSufficientBalance || (walletIsActive && !baseTokenInfo) || !hasAmount;
+    !hasSufficientBalance ||
+    (walletIsActive && (!baseTokenInfo || !quoteTokenInfo)) ||
+    !hasAmount;
 
   // Some actions require an additional back button
   const hasBackButton: boolean =
@@ -85,7 +89,8 @@ const ActionButtons: FC<{
   let mainButtonText;
   if (isDisabled) {
     if (!hasAmount) mainButtonText = t("orders:enterAmount");
-    else if (!baseTokenInfo) mainButtonText = t("orders:tokenInfoNotFound");
+    else if (!baseTokenInfo || !quoteTokenInfo)
+      mainButtonText = t("orders:chooseToken");
     else if (!hasSufficientBalance)
       mainButtonText = t("orders:insufficentBalance", {
         symbol: baseTokenInfo.symbol,
