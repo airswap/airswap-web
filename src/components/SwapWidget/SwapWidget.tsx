@@ -56,6 +56,7 @@ import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
+import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
@@ -381,17 +382,21 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        const accepted = await LastLook.sendOrderForConsideration({
-          locator: bestTradeOption!.pricing!.locator,
-          pricing: bestTradeOption!.pricing!.pricing,
-          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        });
+        // const accepted = await LastLook.sendOrderForConsideration({
+        //   locator: bestTradeOption!.pricing!.locator,
+        //   pricing: bestTradeOption!.pricing!.pricing,
+        //   terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        // });
+        const accepted = false;
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
           LastLook.unsubscribeAllServers();
         } else {
-          // TODO: order rejected. Also need to handle errors.
+          notifyError({
+            heading: t("orders:swapRejected"),
+            cta: t("orders:swapRejectedCallToAction"),
+          });
         }
       }
     } catch (e: any) {

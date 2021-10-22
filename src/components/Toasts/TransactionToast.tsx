@@ -17,7 +17,7 @@ import {
   HiXContainer,
   IconContainer,
   TextContainer,
-} from "./TransactionToast.styles";
+} from "./Toast.styles";
 
 export type TransactionToastProps = {
   /**
