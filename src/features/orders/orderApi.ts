@@ -110,6 +110,7 @@ export async function takeOrder(
   provider: ethers.providers.Web3Provider,
   contractType: "Light" | "Wrapper"
 ) {
+  debugger;
   const tx =
     contractType === "Light"
       ? await swapLight(provider.network.chainId, provider, order)
