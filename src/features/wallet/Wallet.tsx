@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { Light } from "@airswap/libraries";
+import { Light, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -188,15 +188,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
             })
           );
         },
-        onApproval: (tokenAddress, amount) => {
+        onApproval: (tokenAddress, spenderAddress, amount) => {
+          const actionCreator =
+            spenderAddress === Wrapper.getAddress().toLowerCase()
+              ? setAllowanceWrapper
+              : setAllowanceLight;
           dispatch(
-            setAllowanceLight({
-              tokenAddress,
-              amount: amount.toString(),
-            })
-          );
-          dispatch(
-            setAllowanceWrapper({
+            actionCreator({
               tokenAddress,
               amount: amount.toString(),
             })
