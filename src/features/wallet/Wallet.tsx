@@ -6,20 +6,24 @@ import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
   selectBalances,
-  setAllowance,
+  setAllowanceLight,
+  setAllowanceWrapper,
 } from "../balances/balancesSlice";
 import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
@@ -73,20 +77,29 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   // Local component state
   const [isActivating, setIsActivating] = useState<boolean>(false);
+  const [walletOpen, setWalletOpen] = useState<boolean>(false);
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
-
+  const [activated, setActivated] = useState(false);
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
-    if (lastConnectedAccount) {
+    if (lastConnectedAccount?.address) {
       setIsActivating(true);
       const connector = lastConnectedAccount.provider.getConnector();
       setConnector(connector);
       setProvider(lastConnectedAccount.provider);
-      activate(connector).finally(() => setIsActivating(false));
+      activate(connector)
+        .then(() => {
+          setActivated(true);
+        })
+        .finally(() => {
+          setIsActivating(false);
+        });
     }
-  }, [activate]);
+  }, [activate, activated]);
 
   // Side effects for connecting a wallet from SwapWidget
 
@@ -112,7 +125,12 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       );
       saveLastAccount(account, provider);
       dispatch(
-        requestActiveTokenAllowances({
+        requestActiveTokenAllowancesLight({
+          provider: library,
+        })
+      );
+      dispatch(
+        requestActiveTokenAllowancesWrapper({
           provider: library,
         })
       );
@@ -125,13 +143,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       const supportedTokensPromise = dispatch(
         fetchSupportedTokens({
           provider: library,
-        })
+        } as any)
       );
       Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
         dispatch(
           fetchUnkownTokens({
             provider: library,
-          })
+          } as any)
         );
       });
     } else {
@@ -140,6 +158,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [active, account, chainId, dispatch, library, connector, provider]);
 
   // Subscribe to changes in balance
+
   useEffect(() => {
     if (
       !library ||
@@ -171,7 +190,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         },
         onApproval: (tokenAddress, amount) => {
           dispatch(
-            setAllowance({
+            setAllowanceLight({
+              tokenAddress,
+              amount: amount.toString(),
+            })
+          );
+          dispatch(
+            setAllowanceWrapper({
               tokenAddress,
               amount: amount.toString(),
             })
@@ -281,8 +306,18 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
     };
   }, [chainId, dispatch, library, account]);
 
+  const handleWalletOpen = (state: boolean) => {
+    setWalletOpen(state);
+    setSettingsOpen(false);
+  };
+
+  const handleSettingsOpen = (state: boolean) => {
+    setSettingsOpen(state);
+    setWalletOpen(false);
+  };
+
   return (
-    <div className={className}>
+    <PopoverContainer>
       <WalletButton
         address={account}
         onDisconnectWalletClicked={() => {
@@ -296,7 +331,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         tokens={allTokens}
         chainId={chainId!}
         transactions={transactions}
+        walletOpen={walletOpen}
+        setWalletOpen={handleWalletOpen}
       />
-    </div>
+      <SettingsButton
+        settingsOpen={settingsOpen}
+        setSettingsOpen={handleSettingsOpen}
+      />
+    </PopoverContainer>
   );
 };

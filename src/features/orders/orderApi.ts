@@ -1,18 +1,58 @@
-import { Light, Server } from "@airswap/libraries";
+import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
+import { wethAddresses } from "@airswap/constants";
+import { Light, Server, Wrapper } from "@airswap/libraries";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
-import { BigNumber, ethers, Transaction, constants } from "ethers";
+import {
+  BigNumber,
+  ethers,
+  Transaction,
+  Contract,
+  utils,
+  constants,
+  providers,
+} from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
+
+const erc20Interface = new ethers.utils.Interface(erc20Abi);
+
+const WETHInterface = new utils.Interface(JSON.stringify(WETHContract.abi));
+
+async function swapLight(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: LightOrder
+) {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
+  return await new Light(chainId, provider).swap(
+    order,
+    // @ts-ignore
+    provider.getSigner()
+  );
+}
+
+async function swapWrapper(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: LightOrder
+) {
+  // @ts-ignore TODO: type compatability issue with AirSwap lib
+  return await new Wrapper(chainId, provider).swap(
+    order,
+    // @ts-ignore
+    provider.getSigner()
+  );
+}
 
 export async function requestOrders(
   servers: Server[],
   quoteToken: string,
   baseToken: string,
   baseTokenAmount: string,
-  senderTokenDecimals: number,
+  baseTokenDecimals: number,
   senderWallet: string
 ): Promise<LightOrder[]> {
   if (!servers.length) {
@@ -21,7 +61,7 @@ export async function requestOrders(
   const rfqOrderPromises = servers.map(async (server) => {
     const order = await Promise.race([
       server.getSignerSideOrder(
-        toAtomicString(baseTokenAmount, senderTokenDecimals),
+        toAtomicString(baseTokenAmount, baseTokenDecimals),
         quoteToken,
         baseToken,
         senderWallet
@@ -43,14 +83,18 @@ export async function requestOrders(
 }
 
 export async function approveToken(
-  senderToken: string,
-  provider: ethers.providers.Web3Provider
+  baseToken: string,
+  provider: ethers.providers.Web3Provider,
+  contractType: "Light" | "Wrapper"
 ) {
-  const spender = Light.getAddress(provider.network.chainId);
-  const erc20Interface = new ethers.utils.Interface(erc20Abi);
+  const spender =
+    contractType === "Light"
+      ? Light.getAddress(provider.network.chainId)
+      : Wrapper.getAddress(provider.network.chainId);
   const erc20Contract = new ethers.Contract(
-    senderToken,
+    baseToken,
     erc20Interface,
+    // @ts-ignore
     provider.getSigner()
   );
   const approvalTxHash = await erc20Contract.approve(
@@ -62,14 +106,14 @@ export async function approveToken(
 
 export async function takeOrder(
   order: LightOrder,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.Web3Provider,
+  contractType: "Light" | "Wrapper"
 ) {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
-  const tx = await new Light(provider.network.chainId, provider).swap(
-    order,
-    // @ts-ignore TODO: type compatability issue with AirSwap lib
-    provider.getSigner()
-  );
+  const tx =
+    contractType === "Light"
+      ? await swapLight(provider.network.chainId, provider, order)
+      : await swapWrapper(provider.network.chainId, provider, order);
+
   return (tx as any) as Transaction;
 }
 
@@ -93,4 +137,42 @@ export function orderSortingFunction(a: LightOrder, b: LightOrder) {
     if (bAmount.gt(aAmount)) return 1;
     else return -1;
   }
+}
+
+export async function depositETH(
+  chainId: number,
+  senderAmount: string,
+  senderTokenDecimals: number,
+  provider: ethers.providers.Web3Provider
+) {
+  const WETHContract = new Contract(
+    wethAddresses[chainId],
+    WETHInterface,
+    provider as providers.Provider
+  );
+  const signer = WETHContract.connect(provider.getSigner() as ethers.Signer);
+  const tx = await signer.deposit({
+    value: toAtomicString(senderAmount, senderTokenDecimals),
+  });
+  return (tx as any) as Transaction;
+}
+
+export async function withdrawETH(
+  chainId: number,
+  senderAmount: string,
+  senderTokenDecimals: number,
+  provider: ethers.providers.Web3Provider
+) {
+  const WETHContract = new Contract(
+    wethAddresses[chainId],
+    WETHInterface,
+    // @ts-ignore
+    provider
+  );
+  // @ts-ignore
+  const signer = WETHContract.connect(provider.getSigner());
+  const tx = await signer.withdraw(
+    toAtomicString(senderAmount, senderTokenDecimals)
+  );
+  return (tx as any) as Transaction;
 }

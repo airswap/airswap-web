@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -9,6 +8,7 @@ import {
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import {
   OpenWallet,
   ExitButton,
@@ -47,6 +47,8 @@ export type WalletButtonProps = {
    * List of all tokens in metadata
    */
   tokens: TokenInfo[];
+  walletOpen: boolean;
+  setWalletOpen: (x: boolean) => void;
 };
 
 export const WalletButton = ({
@@ -55,10 +57,10 @@ export const WalletButton = ({
   transactions = [],
   chainId,
   tokens,
+  walletOpen,
+  setWalletOpen,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
-
-  const [walletOpen, setWalletOpen] = useState<boolean>(false);
 
   if (address && !walletOpen) {
     return (
@@ -89,15 +91,21 @@ export const WalletButton = ({
           {transactions.length > 0 ? (
             transactions.slice(0, 3).map((transaction) => {
               let token;
-              if (transaction.type === "Order") {
+              if (
+                transaction.type === "Order" ||
+                transaction.type === "Deposit" ||
+                transaction.type === "Withdraw"
+              ) {
                 const tx: SubmittedOrder = transaction as SubmittedOrder;
-                const senderToken = findTokenByAddress(
+                const senderToken = findEthOrTokenByAddress(
                   tx.order.senderToken,
-                  tokens
+                  tokens,
+                  chainId
                 );
-                const signerToken = findTokenByAddress(
+                const signerToken = findEthOrTokenByAddress(
                   tx.order.signerToken,
-                  tokens
+                  tokens,
+                  chainId
                 );
                 return (
                   <WalletTransaction

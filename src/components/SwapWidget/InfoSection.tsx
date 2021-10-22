@@ -39,6 +39,7 @@ export type InfoSectionProps = {
         order: LightOrder;
       }
     | null;
+  isWrapping: boolean;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
@@ -52,6 +53,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isSwapping,
   bestTradeOption,
+  isWrapping,
   isFetchingOrders,
   requiresApproval,
   baseTokenInfo,
@@ -113,6 +115,21 @@ const InfoSection: FC<InfoSectionProps> = ({
       <>
         <InfoHeading>{t("orders:swapPending")}</InfoHeading>
         <InfoSubHeading>{t("orders:swapMessage")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (isWrapping) {
+    return (
+      <>
+        <InfoHeading>
+          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
+          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
+          <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
+            <StyledInvertPriceIcon />
+          </StyledInvertPriceButton>
+        </InfoHeading>
+        <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
       </>
     );
   }

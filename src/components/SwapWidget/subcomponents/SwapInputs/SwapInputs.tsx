@@ -35,6 +35,7 @@ const SwapInputs: FC<{
   side: "buy" | "sell";
   readOnly: boolean;
   isRequesting: boolean;
+  noFee: boolean;
   onMaxButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
@@ -47,6 +48,7 @@ const SwapInputs: FC<{
   onMaxButtonClick,
   onChangeTokenClick,
   isRequesting,
+  noFee,
   baseTokenInfo,
   quoteTokenInfo,
   onBaseAmountChange,
@@ -103,7 +105,9 @@ const SwapInputs: FC<{
         readOnly={readOnly}
         includeAmountInput={!isSell || !!quoteAmount}
         amountDetails={
-          isSell && quoteAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
+          isSell && quoteAmount && !noFee
+            ? t("orders:afterFee", { fee: "0.07%" })
+            : ""
         }
         selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={isSell && isRequesting}

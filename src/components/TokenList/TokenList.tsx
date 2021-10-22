@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
+import nativeETH from "../../constants/nativeETH";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import { InfoHeading } from "../Typography/Typography";
@@ -25,6 +26,10 @@ import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveToken
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
 export type TokenListProps = {
+  /**
+   * ID of currently connected chain
+   */
+  chainId: number;
   /**
    * Called when a token has been seleced.
    */
@@ -56,6 +61,7 @@ export type TokenListProps = {
 };
 
 const TokenList = ({
+  chainId,
   onSelectToken,
   balances,
   allTokens,
@@ -151,9 +157,11 @@ const TokenList = ({
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              {sortedFilteredTokens.map((token) => (
+              {[nativeETH[chainId], ...sortedFilteredTokens].map((token) => (
                 <TokenButton
-                  showDeleteButton={editMode}
+                  showDeleteButton={
+                    editMode && token.address !== nativeETH[chainId].address
+                  }
                   token={token}
                   balance={formatUnits(
                     balances.values[token.address] || 0,

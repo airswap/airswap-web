@@ -33,6 +33,7 @@
   "newSwap": "New swap",
   "swapPending": "Prepared to swap",
   "swapMessage": "Accept on your wallet to proceed",
+  "wrapMessage": "No protocol fee for ETH/WETH swaps",
   "submitted": "Submitted!",
   "trackTransaction": "Track this transaction on the top right",
   "editCustomTokens": "Edit Custom Tokens"

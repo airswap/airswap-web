@@ -1,16 +1,20 @@
+import { store } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
 import {
   balancesReducer,
+  allowancesLightReducer,
+  allowancesWrapperReducer,
   balancesActions,
-  allowancesReducer,
-  allowancesActions,
+  allowancesLightActions,
+  allowancesWrapperActions,
   BalancesState,
   initialState,
 } from "./balancesSlice";
 
 const reducers: [string, typeof balancesReducer, typeof balancesActions][] = [
   ["balances", balancesReducer, balancesActions],
-  ["allowances", allowancesReducer, allowancesActions],
+  ["allowances.light", allowancesLightReducer, allowancesLightActions],
+  ["allowances.wrapper", allowancesWrapperReducer, allowancesWrapperActions],
 ];
 
 describe("balances and allowances reducers", () => {

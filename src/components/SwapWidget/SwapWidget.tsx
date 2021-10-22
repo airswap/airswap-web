@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { Registry } from "@airswap/libraries";
-import { findTokenByAddress } from "@airswap/metadata";
+import { wethAddresses } from "@airswap/constants";
+import { Registry, Wrapper } from "@airswap/libraries";
 import { Pricing } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -15,9 +15,11 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Title } from "../../components/Typography/Typography";
+import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
-  requestActiveTokenAllowances,
+  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
 } from "../../features/balances/balancesSlice";
 import {
@@ -38,6 +40,8 @@ import {
   clear,
   selectBestOption,
   request,
+  deposit,
+  withdraw,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
@@ -49,6 +53,7 @@ import {
 } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
 import TokenList from "../TokenList/TokenList";
@@ -67,6 +72,7 @@ import ActionButtons, {
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 
 type TokenSelectModalTypes = "base" | "quote" | null;
+type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "0.01";
 
@@ -89,10 +95,11 @@ const SwapWidget = () => {
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  const [baseToken, setBaseToken] = useState<string>();
-  const [quoteToken, setQuoteToken] = useState<string>();
+  const {
+    tokenFrom: baseToken,
+    tokenTo: quoteToken,
+  } = useRouteMatch<AppRoutes>().params;
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
-  const { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
 
   // Modals
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
@@ -105,6 +112,7 @@ const SwapWidget = () => {
   // Loading states
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
+  const [isWrapping, setIsWrapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [isRequestingQuotes, setisRequestingQuotes] = useState<boolean>(false);
 
@@ -128,21 +136,29 @@ const SwapWidget = () => {
   } = useWeb3React<Web3Provider>();
 
   const baseTokenInfo = useMemo(
-    () => (baseToken ? findTokenByAddress(baseToken, activeTokens) : null),
-    [baseToken, activeTokens]
+    () =>
+      baseToken
+        ? findEthOrTokenByAddress(baseToken, activeTokens, chainId!)
+        : null,
+    [baseToken, activeTokens, chainId]
   );
 
   const quoteTokenInfo = useMemo(
-    () => (quoteToken ? findTokenByAddress(quoteToken, activeTokens) : null),
-    [quoteToken, activeTokens]
+    () =>
+      quoteToken
+        ? findEthOrTokenByAddress(quoteToken, activeTokens, chainId!)
+        : null,
+    [quoteToken, activeTokens, chainId]
   );
 
   // Reset everything when the chainId changes.
   useEffect(() => {
-    setBaseToken("");
-    setQuoteToken("");
+    // This has the effect of clearing the selected tokens.
+    history.push({
+      pathname: "/",
+    });
     setBaseAmount(initialBaseAmount);
-  }, [chainId]);
+  }, [history, chainId]);
 
   // Default to USDT -> WETH
   useEffect(() => {
@@ -151,14 +167,29 @@ const SwapWidget = () => {
         allTokens,
         "USDT",
         "WETH",
-        tokenFrom,
-        tokenTo
+        baseToken,
+        quoteToken
       );
-      setBaseToken(fromAddress);
-      setQuoteToken(toAddress);
+      history.push({
+        pathname: `/${fromAddress ? fromAddress : "-"}/${
+          toAddress ? toAddress : "-"
+        }`,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens.length]);
+
+  let swapType: SwapType = "swap";
+
+  if (chainId && baseToken && quoteToken) {
+    const eth = nativeETH[chainId].address;
+    const weth = wethAddresses[chainId];
+    if ([weth, eth].includes(baseToken) && [weth, eth].includes(quoteToken)) {
+      swapType = "wrapOrUnwrap";
+    } else if ([quoteToken, baseToken].includes(eth)) {
+      swapType = "swapWithWrap";
+    }
+  }
 
   const hasApprovalPending = (tokenId: string | undefined) => {
     if (tokenId === undefined) return false;
@@ -166,21 +197,33 @@ const SwapWidget = () => {
   };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
+    if (swapType === "wrapOrUnwrap") return true;
     if (!tokenAddress) return false;
-    if (!allowances.values[tokenAddress]) return false;
-    return new BigNumber(allowances.values[tokenAddress]!)
+    if (
+      !allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+        tokenAddress
+      ]
+    )
+      return false;
+    return new BigNumber(
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+        tokenAddress
+      ]!
+    )
       .div(10 ** (baseTokenInfo?.decimals || 18))
       .gte(baseAmount);
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     if (type === "base") {
-      history.push({ pathname: `/${value}/${quoteToken}` });
+      value === quoteToken
+        ? history.push({ pathname: `/${value}/${baseToken}` })
+        : history.push({ pathname: `/${value}/${quoteToken}` });
       setBaseAmount("");
-      setBaseToken(value);
     } else {
-      history.push({ pathname: `/${baseToken}/${value}` });
-      setQuoteToken(value);
+      value === baseToken
+        ? history.push({ pathname: `/${quoteToken}/${value}` })
+        : history.push({ pathname: `/${baseToken}/${value}` });
     }
   };
 
@@ -202,30 +245,45 @@ const SwapWidget = () => {
     if (library) {
       dispatch(addActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       if (address === baseToken) {
-        setBaseToken("");
+        history.push({ pathname: `/-/${quoteToken || "-"}` });
         setBaseAmount("0.01");
-      } else if (address === quoteToken) setQuoteToken("");
+      } else if (address === quoteToken) {
+        history.push({ pathname: `/${baseToken || "-"}/-` });
+      }
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
 
   const requestQuotes = async () => {
+    if (swapType === "wrapOrUnwrap") {
+      // This will re-render with a 1:1 price and a take button.
+      setIsWrapping(true);
+      return;
+    }
     setisRequestingQuotes(true);
     try {
+      const usesWrapper = swapType === "swapWithWrap";
+      const weth = wethAddresses[chainId!];
+      const eth = nativeETH[chainId!];
+      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+      const _baseToken = baseToken === eth.address ? weth : baseToken!;
+
       const servers = await new Registry(
         chainId,
         // @ts-ignore provider type mismatch
         library
-      ).getServers(quoteToken!, baseToken!, {
+      ).getServers(_quoteToken, _baseToken, {
         initializeTimeout: 10 * 1000,
       });
 
@@ -244,11 +302,11 @@ const SwapWidget = () => {
         let rfqDispatchResult = dispatch(
           request({
             servers: rfqServers,
-            senderToken: baseToken!,
+            senderToken: _baseToken,
             senderAmount: baseAmount,
-            signerToken: quoteToken!,
+            signerToken: _quoteToken,
             senderTokenDecimals: baseTokenInfo!.decimals,
-            senderWallet: account!,
+            senderWallet: usesWrapper ? Wrapper.getAddress(chainId) : account!,
           })
         );
         rfqPromise = rfqDispatchResult
@@ -262,11 +320,15 @@ const SwapWidget = () => {
       }
 
       if (lastLookServers.length) {
-        // @ts-ignore
-        lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
-          baseToken: baseToken!,
-          quoteToken: quoteToken!,
-        });
+        if (usesWrapper) {
+          lastLookServers.forEach((s) => s.disconnect());
+        } else {
+          // @ts-ignore
+          lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
+            baseToken: baseToken!,
+            quoteToken: quoteToken!,
+          });
+        }
       }
       const orderPromises: Promise<any>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
@@ -306,7 +368,11 @@ const SwapWidget = () => {
       if (bestTradeOption!.protocol === "request-for-quote") {
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
-          take({ order: bestTradeOption!.order!, library })
+          take({
+            order: bestTradeOption!.order!,
+            library,
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+          })
         );
         setIsSwapping(false);
         await unwrapResult(result);
@@ -342,9 +408,27 @@ const SwapWidget = () => {
     }
   };
 
+  const doWrap = async () => {
+    const method = baseTokenInfo === nativeETH[chainId!] ? deposit : withdraw;
+    setIsSwapping(true);
+    const result = await dispatch(
+      method({
+        chainId: chainId!,
+        senderAmount: baseAmount,
+        senderTokenDecimals: baseTokenInfo!.decimals,
+        provider: library,
+      })
+    );
+    await unwrapResult(result);
+    setIsSwapping(false);
+    setIsWrapping(false);
+    setShowOrderSubmitted(true);
+  };
+
   const handleButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
+        setIsWrapping(false);
         setPairUnavailable(false);
         LastLook.unsubscribeAllServers();
         dispatch(clearTradeTerms());
@@ -388,7 +472,11 @@ const SwapWidget = () => {
         break;
 
       case ButtonActions.takeQuote:
-        takeBestOption();
+        if (["swap", "swapWithWrap"].includes(swapType)) {
+          takeBestOption();
+        } else if (swapType === "wrapOrUnwrap") {
+          doWrap();
+        }
         break;
 
       default:
@@ -419,12 +507,15 @@ const SwapWidget = () => {
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequesting={isRequestingQuotes}
+            noFee={swapType === "wrapOrUnwrap"}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={
-              tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
+              swapType === "wrapOrUnwrap"
+                ? baseAmount
+                : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
-            readOnly={!!bestTradeOption}
+            readOnly={!!bestTradeOption || isWrapping}
           />
         )}
         <InfoContainer>
@@ -443,6 +534,7 @@ const SwapWidget = () => {
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
+            isWrapping={isWrapping}
           />
         </InfoContainer>
         <ButtonContainer>
@@ -454,7 +546,7 @@ const SwapWidget = () => {
               hasAmount={
                 !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
               }
-              hasQuote={!!bestTradeOption}
+              hasQuote={!!bestTradeOption || isWrapping}
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
@@ -487,6 +579,7 @@ const SwapWidget = () => {
           supportedTokenAddresses={supportedTokens}
           addActiveToken={handleAddActiveToken}
           removeActiveToken={handleRemoveActiveToken}
+          chainId={chainId || 1}
         />
       </Overlay>
 

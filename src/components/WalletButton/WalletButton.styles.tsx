@@ -14,6 +14,7 @@ export const OpenWallet = styled.div`
   min-height: 21.5rem;
   background: ${(props) => props.theme.colors.darkGrey};
   overflow: hidden;
+  z-index: 1000;
 `;
 
 export const OpenWalletTopContainer = styled.div`
