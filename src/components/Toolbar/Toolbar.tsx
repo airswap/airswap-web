@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   IconAirswap,
@@ -8,15 +9,17 @@ import {
 import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 
 const Toolbar: FC = () => {
+  const { t } = useTranslation(["common"]);
+
   return (
     <ToolbarContainer>
       <IconAirswap iconSize={2.5} name="airswap" />
       <ToolbarButtonsContainer>
-        <ToolbarButton text="stats" iconName="bars" />
-        <ToolbarButton text="vote" iconName="vote" />
-        <ToolbarButton text="code" iconName="code" />
-        <ToolbarButton text="about" iconName="about" />
-        <ToolbarButton text="join" iconName="contact-support" />
+        <ToolbarButton iconName="bars" text={t("common:stats")} />
+        <ToolbarButton iconName="vote" text={t("common:vote")} />
+        <ToolbarButton iconName="code" text={t("common:build")} />
+        <ToolbarButton iconName="about" text={t("common:about")} />
+        <ToolbarButton iconName="contact-support" text={t("common:join")} />
       </ToolbarButtonsContainer>
     </ToolbarContainer>
   );
