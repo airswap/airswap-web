@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import {
   InactiveTitle,
   InactiveTitleContainer,
   InformationIcon,
   TokenContainer,
-} from "../../TokenSelection.styles";
+} from "../../TokenList.styles";
 import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {

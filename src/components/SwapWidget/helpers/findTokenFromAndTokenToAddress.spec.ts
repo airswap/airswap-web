@@ -1,4 +1,4 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import findTokenFromAndTokenToAddress from "./findTokenFromAndTokenToAddress";
 

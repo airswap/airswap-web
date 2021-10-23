@@ -8,8 +8,7 @@ import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
 
 type ContainerProps = {
-  overflow: boolean;
-  isHidden: boolean;
+  $overflow: boolean;
 };
 
 export const ScrollContainer = styled.div`
@@ -46,17 +45,15 @@ export const Container = styled.div<ContainerProps>`
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
 
   ${ScrollContainer} {
     width: calc(100% + (${sizes.tradeContainerPadding} / 2));
     padding-right: calc(${sizes.tradeContainerPadding} / 2);
     padding-left: 0.125rem;
     overflow-x: hidden;
-    overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+    overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   }
-}
-`;
+}`;
 
 export const TitleContainer = styled.div`
   display: flex;

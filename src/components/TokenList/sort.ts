@@ -1,5 +1,5 @@
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 

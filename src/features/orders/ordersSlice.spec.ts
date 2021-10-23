@@ -5,6 +5,7 @@ describe("orders reducer", () => {
   const initialState: OrdersState = {
     orders: [],
     status: "idle",
+    reRequestTimerId: null,
   };
   it("should handle initial state", () => {
     expect(ordersReducer(undefined, { type: "unknown" })).toEqual(initialState);

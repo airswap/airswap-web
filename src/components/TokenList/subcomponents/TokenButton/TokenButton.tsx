@@ -1,4 +1,4 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenLogo from "../../../TokenLogo/TokenLogo";
@@ -37,7 +37,6 @@ export type TokenRowProps = {
   showDeleteButton?: boolean;
 };
 
-// TODO: Make Container a button instead of a Balance
 const TokenButton = ({
   token,
   balance,

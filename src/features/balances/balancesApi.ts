@@ -16,7 +16,11 @@ interface SubscribeParams {
     amount: BigNumber,
     direction: "in" | "out"
   ) => void;
-  onApproval: (tokenAddress: string, amount: BigNumber) => void;
+  onApproval: (
+    tokenAddress: string,
+    spenderAddress: string,
+    amount: BigNumber
+  ) => void;
 }
 
 interface WalletParams {
@@ -130,27 +134,28 @@ subscribeToTransfersAndApprovals = ({
 
     function listener(event: Event) {
       const { address } = event;
-      const lowerCasedAddress = address.toLowerCase();
+      const lowerCasedTokenAddress = address.toLowerCase();
 
       // Ignore transactions for non-active tokens.
-      if (!activeTokenAddresses.includes(lowerCasedAddress)) return;
+      if (!activeTokenAddresses.includes(lowerCasedTokenAddress)) return;
 
       const parsedEvent = erc20Interface.parseLog(event);
       const isApproval = parsedEvent.name === "Approval";
 
       // Ignore approvals for other spenders.
       const approvalAddress = parsedEvent.args[1].toLowerCase();
+      const wrapperAddress = Wrapper.getAddress().toLowerCase();
       if (
         isApproval &&
-        approvalAddress !== spenderAddress &&
-        approvalAddress !== Wrapper.getAddress()
+        approvalAddress !== spenderAddress.toLowerCase() &&
+        approvalAddress !== wrapperAddress
       )
         return;
 
       const amount: BigNumber = parsedEvent.args[2];
       isApproval
-        ? onApproval(lowerCasedAddress, amount)
-        : onBalanceChange(lowerCasedAddress, amount, typedDirection);
+        ? onApproval(lowerCasedTokenAddress, approvalAddress, amount)
+        : onBalanceChange(lowerCasedTokenAddress, amount, typedDirection);
     }
     provider.on(filter, listener);
     tearDowns.push(provider.off.bind(provider, filter, listener));

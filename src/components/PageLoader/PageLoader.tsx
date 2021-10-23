@@ -8,7 +8,7 @@ import { selectUserSettings } from "../../features/userSettings/userSettingsSlic
 import useWindowSize from "../../helpers/useWindowSize";
 import { StyledPage, StyledSiteLogo } from "../Page/Page.styles";
 import { StyledDarkModeSwitch, StyledSideBar } from "../SideBar/SideBar.styles";
-import TradeContainer from "../TradeContainer/TradeContainer";
+import WidgetFrame from "../WidgetFrame/WidgetFrame";
 
 const PageLoader: FC = (): ReactElement => {
   const sideBarIsOpen = window.location.pathname.indexOf("swap") !== -1;
@@ -20,7 +20,7 @@ const PageLoader: FC = (): ReactElement => {
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <StyledSiteLogo adjustForBookmarkWarning={adjustForBookmarkWarning} />
-      <TradeContainer isOpen={true} />
+      <WidgetFrame isOpen={true} />
       {/* <StyledSideBar isOpen={sideBarIsOpen} /> */}
       {/* <StyledDarkModeSwitch /> */}
     </StyledPage>

@@ -13,7 +13,7 @@ import useWindowSize from "../../helpers/useWindowSize";
 import SideBar from "../SideBar/SideBar";
 import { StyledDarkModeSwitch, StyledWallet } from "../SideBar/SideBar.styles";
 import Toaster from "../Toasts/Toaster";
-import TradeContainer from "../TradeContainer/TradeContainer";
+import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
 
 export type StyledPageProps = {
@@ -36,11 +36,10 @@ const Page: FC = (): ReactElement => {
       <Toaster sideBarOpen={sideBarOpen} />
       <StyledSiteLogo adjustForBookmarkWarning={adjustForBookmarkWarning} />
       <StyledWallet isOpen={sideBarOpen} />
-      <TradeContainer isOpen={sideBarOpen}>
+      <WidgetFrame isOpen={sideBarOpen}>
         <Orders />
-      </TradeContainer>
-      {/*
-       <SideBar
+      </WidgetFrame>
+      {/* <SideBar
         isOpen={sideBarOpen}
         setIsOpen={() => {
           setSideBarOpen(!sideBarOpen);

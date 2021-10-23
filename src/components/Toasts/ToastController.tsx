@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import {
   SubmittedApproval,
@@ -11,6 +11,7 @@ import {
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import ErrorToast from "./ErrorToast";
 import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
@@ -74,4 +75,19 @@ export const notifyTransaction = (
       }
     );
   }
+};
+
+export const notifyError = (props: { heading: string; cta: string }) => {
+  toast(
+    (t) => (
+      <ErrorToast
+        onClose={() => toast.dismiss(t.id)}
+        heading={props.heading}
+        cta={props.cta}
+      />
+    ),
+    {
+      duration: 15000,
+    }
+  );
 };

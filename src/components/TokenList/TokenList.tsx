@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import nativeETH from "../../constants/nativeETH";
 import { BalancesState } from "../../features/balances/balancesSlice";
@@ -19,38 +19,21 @@ import {
   ContentContainer,
   NoResultsContainer,
   EditCustomTokensButton,
-} from "./TokenSelection.styles";
+} from "./TokenList.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
-export type TokenSelectionProps = {
+export type TokenListProps = {
   /**
-   * Function to close component
+   * ID of currently connected chain
    */
-  onClose: () => void;
+  chainId: number;
   /**
-   * signerToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
+   * Called when a token has been seleced.
    */
-  signerToken: string;
-  /**
-   * senderToken contract address (e.g. "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2")
-   */
-  senderToken: string;
-  /**
-   * useState hook to set signer token
-   */
-  setSignerToken: (val: string) => void;
-  /**
-   * useState hook to set sender token
-   */
-  setSenderToken: (val: string) => void;
-  /**
-   * Request type incoming to token selection; handles
-   * setSignerToken/setSenderToken based off of this parameter
-   */
-  tokenSelectType: "signerToken" | "senderToken";
+  onSelectToken: (val: string) => void;
   /**
    * Balances for current tokens in wallet
    */
@@ -75,32 +58,18 @@ export type TokenSelectionProps = {
    * function to handle removing active tokens (dispatches removeActiveToken).
    */
   removeActiveToken: (val: string) => void;
-  /**
-   * currently connected chain id
-   */
-  chainId: number;
-  /**
-   * Hide or show the component
-   */
-  isHidden?: boolean;
 };
 
-const TokenSelection = ({
-  onClose,
-  signerToken,
-  senderToken,
-  setSignerToken,
-  setSenderToken,
-  tokenSelectType,
+const TokenList = ({
+  chainId,
+  onSelectToken,
   balances,
   allTokens,
   activeTokens = [],
   supportedTokenAddresses,
   addActiveToken,
   removeActiveToken,
-  chainId,
-  isHidden = false,
-}: TokenSelectionProps) => {
+}: TokenListProps) => {
   const { width, height } = useWindowSize();
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -115,19 +84,6 @@ const TokenSelection = ({
     "balances",
     "orders",
   ]);
-
-  // handle user clicking row
-  const handleClick = (address: string) => {
-    if (tokenSelectType === "senderToken") {
-      // swap the token addresses
-      if (address === signerToken) setSignerToken(senderToken);
-      setSenderToken(address);
-    } else {
-      if (address === senderToken) setSenderToken(signerToken);
-      setSignerToken(address);
-    }
-    onClose();
-  };
 
   // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
@@ -178,7 +134,7 @@ const TokenSelection = ({
   ]);
 
   return (
-    <Container ref={containerRef} overflow={overflow} isHidden={isHidden}>
+    <Container ref={containerRef} $overflow={overflow}>
       <ContentContainer>
         <SearchInput
           hideLabel
@@ -211,7 +167,7 @@ const TokenSelection = ({
                     balances.values[token.address] || 0,
                     token.decimals
                   )}
-                  setToken={handleClick}
+                  setToken={onSelectToken}
                   removeActiveToken={removeActiveToken}
                   key={token.address}
                 />
@@ -244,4 +200,4 @@ const TokenSelection = ({
   );
 };
 
-export default TokenSelection;
+export default TokenList;

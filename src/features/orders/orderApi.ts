@@ -1,6 +1,6 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
 import { wethAddresses } from "@airswap/constants";
-import { Registry, Light, Wrapper } from "@airswap/libraries";
+import { Light, Server, Wrapper } from "@airswap/libraries";
 import { LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
@@ -47,29 +47,23 @@ async function swapWrapper(
   );
 }
 
-export async function requestOrder(
-  chainId: number,
-  signerToken: string,
-  senderToken: string,
-  senderAmount: string,
-  senderTokenDecimals: number,
-  senderWallet: string,
-  provider: ethers.providers.Web3Provider
+export async function requestOrders(
+  servers: Server[],
+  quoteToken: string,
+  baseToken: string,
+  baseTokenAmount: string,
+  baseTokenDecimals: number,
+  senderWallet: string
 ): Promise<LightOrder[]> {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
-  const servers = await new Registry(chainId, provider).getServers(
-    signerToken,
-    senderToken
-  );
   if (!servers.length) {
-    throw new Error("no peers");
+    throw new Error("no counterparties");
   }
-  const orderPromises = servers.map(async (server) => {
+  const rfqOrderPromises = servers.map(async (server) => {
     const order = await Promise.race([
       server.getSignerSideOrder(
-        toAtomicString(senderAmount, senderTokenDecimals),
-        signerToken,
-        senderToken,
+        toAtomicString(baseTokenAmount, baseTokenDecimals),
+        quoteToken,
+        baseToken,
         senderWallet
       ),
       // Servers should respond in a timely manner for orders to be considered
@@ -81,15 +75,15 @@ export async function requestOrder(
     ]);
     return (order as any) as LightOrder;
   });
-  const orders = await Promise.allSettled(orderPromises);
-  const successfulOrders = orders
+  const rfqOrders = await Promise.allSettled(rfqOrderPromises);
+  const successfulRfqOrders = rfqOrders
     .filter((result) => result.status === "fulfilled")
     .map((result) => (result as PromiseFulfilledResult<LightOrder>).value);
-  return successfulOrders;
+  return successfulRfqOrders;
 }
 
 export async function approveToken(
-  senderToken: string,
+  baseToken: string,
   provider: ethers.providers.Web3Provider,
   contractType: "Light" | "Wrapper"
 ) {
@@ -98,7 +92,7 @@ export async function approveToken(
       ? Light.getAddress(provider.network.chainId)
       : Wrapper.getAddress(provider.network.chainId);
   const erc20Contract = new ethers.Contract(
-    senderToken,
+    baseToken,
     erc20Interface,
     // @ts-ignore
     provider.getSigner()

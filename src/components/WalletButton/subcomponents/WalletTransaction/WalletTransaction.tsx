@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import {
   SubmittedApproval,

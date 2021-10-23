@@ -4,7 +4,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { StyledButton, Text } from "./Button.styles";
 
 export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
-type ButtonJustifyContent = "center" | "flex-start" | "flex-end";
+export type ButtonJustifyContent = "center" | "flex-start" | "flex-end";
 
 export type ButtonProps = {
   children: React.ReactNode;
@@ -42,7 +42,7 @@ export const Button = ({
   return (
     <StyledButton
       className={className}
-      loading={loading}
+      $loading={loading}
       intent={intent}
       disabled={disabled || loading}
       justifyContent={justifyContent}

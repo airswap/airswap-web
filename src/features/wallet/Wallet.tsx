@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { Light } from "@airswap/libraries";
+import { Light, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -46,7 +46,7 @@ import {
   clearLastAccount,
   loadLastAccount,
   saveLastAccount,
-} from "./walletAPI";
+} from "./walletApi";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -134,18 +134,20 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           provider: library,
         })
       );
-      dispatch(
-        requestActiveTokenBalances({
-          provider: library,
-        })
-      );
-      const allTokensPromise = dispatch(fetchAllTokens());
-      const supportedTokensPromise = dispatch(
-        fetchSupportedTokens({
-          provider: library,
-        } as any)
-      );
-      Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
+
+      Promise.all([
+        dispatch(fetchAllTokens()),
+        dispatch(
+          fetchSupportedTokens({
+            provider: library,
+          } as any)
+        ),
+      ]).then(() => {
+        dispatch(
+          requestActiveTokenBalances({
+            provider: library,
+          })
+        );
         dispatch(
           fetchUnkownTokens({
             provider: library,
@@ -188,15 +190,13 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
             })
           );
         },
-        onApproval: (tokenAddress, amount) => {
+        onApproval: (tokenAddress, spenderAddress, amount) => {
+          const actionCreator =
+            spenderAddress === Wrapper.getAddress().toLowerCase()
+              ? setAllowanceWrapper
+              : setAllowanceLight;
           dispatch(
-            setAllowanceLight({
-              tokenAddress,
-              amount: amount.toString(),
-            })
-          );
-          dispatch(
-            setAllowanceWrapper({
+            actionCreator({
               tokenAddress,
               amount: amount.toString(),
             })

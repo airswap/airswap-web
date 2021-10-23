@@ -1,5 +1,5 @@
+import { TokenInfo } from "@airswap/types";
 import { Story, Meta } from "@storybook/react";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import styled from "styled-components/macro";
 

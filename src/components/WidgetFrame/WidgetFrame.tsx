@@ -1,12 +1,12 @@
 import React, { FC, ReactElement } from "react";
 
-import { Container, StyledTradeContainer } from "./TradeContainer.styles";
+import { Container, StyledTradeContainer } from "./WidgetFrame.styles";
 
 type TradeContainerProps = {
   isOpen?: boolean;
 };
 
-const TradeContainer: FC<TradeContainerProps> = ({
+const WidgetFrame: FC<TradeContainerProps> = ({
   children,
   isOpen = false,
 }): ReactElement => {
@@ -17,4 +17,4 @@ const TradeContainer: FC<TradeContainerProps> = ({
   );
 };
 
-export default TradeContainer;
+export default WidgetFrame;

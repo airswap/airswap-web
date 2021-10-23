@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {

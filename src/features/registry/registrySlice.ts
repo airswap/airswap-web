@@ -9,7 +9,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { getStakerTokens } from "./registryAPI";
+import { getStakerTokens } from "./registryApi";
 
 export interface RegistryState {
   stakerTokens: Record<string, string[]>;
