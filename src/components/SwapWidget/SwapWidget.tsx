@@ -290,7 +290,7 @@ const SwapWidget = () => {
       );
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
-        lastLookPromise: Promise<Pricing> | null = null;
+        lastLookPromise: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
@@ -317,16 +317,18 @@ const SwapWidget = () => {
         if (usesWrapper) {
           lastLookServers.forEach((s) => s.disconnect());
         } else {
-          // @ts-ignore
           lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
         }
       }
+
       const orderPromises: Promise<any>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromise) orderPromises.push(lastLookPromise);
+      if (lastLookPromise) {
+        orderPromises.push(Promise.resolve([lastLookPromise]));
+      }
 
       await Promise.race([
         Promise.any<any>(orderPromises),
