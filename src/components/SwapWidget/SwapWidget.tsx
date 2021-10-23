@@ -465,7 +465,13 @@ const SwapWidget = () => {
 
       case ButtonActions.approve:
         setIsApproving(true);
-        await dispatch(approve({ token: baseToken, library }));
+        await dispatch(
+          approve({
+            token: baseToken,
+            library,
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+          })
+        );
         setIsApproving(false);
         break;
 
