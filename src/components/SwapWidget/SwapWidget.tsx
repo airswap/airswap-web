@@ -375,12 +375,11 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        // const accepted = await LastLook.sendOrderForConsideration({
-        //   locator: bestTradeOption!.pricing!.locator,
-        //   pricing: bestTradeOption!.pricing!.pricing,
-        //   terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        // });
-        const accepted = false;
+        const accepted = await LastLook.sendOrderForConsideration({
+          locator: bestTradeOption!.pricing!.locator,
+          pricing: bestTradeOption!.pricing!.pricing,
+          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        });
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
