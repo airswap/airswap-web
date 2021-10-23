@@ -81,6 +81,7 @@ const SettingsPopover = () => {
           {SUPPORTED_LOCALES.map((locale) => {
             return (
               <LocaleButton
+                key={locale}
                 active={selectedLocale === locale}
                 onClick={() => {
                   setSelectedLocale(locale);
