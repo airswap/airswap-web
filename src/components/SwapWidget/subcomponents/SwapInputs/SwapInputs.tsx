@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, MouseEvent, FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { MdBlock, MdArrowDownward } from "react-icons/md";
 
@@ -36,7 +36,7 @@ const SwapInputs: FC<{
   readOnly: boolean;
   isRequesting: boolean;
   noFee: boolean;
-  onMaxButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onMaxButtonClick: (event: MouseEvent<HTMLButtonElement>) => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
 }> = ({
@@ -65,7 +65,7 @@ const SwapInputs: FC<{
   const { t } = useTranslation(["orders"]);
 
   // Note: it will only be possible for the user to change the base amount.
-  const handleTokenAmountChange = (e: React.FormEvent<HTMLInputElement>) => {
+  const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
     let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {
       if (value[value.length - 1] === ",")

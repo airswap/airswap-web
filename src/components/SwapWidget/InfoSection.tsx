@@ -174,7 +174,7 @@ const InfoSection: FC<InfoSectionProps> = ({
                 </>
               )}
               {bestTradeOption.protocol === "last-look" && (
-                <NewQuoteText>Gas free trade</NewQuoteText>
+                <NewQuoteText>{t("orders:gasFreeTrade")}</NewQuoteText>
               )}
             </TimerContainer>
           </InfoSubHeading>

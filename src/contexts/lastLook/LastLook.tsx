@@ -37,7 +37,7 @@ export const LastLookContext = createContext<{
   },
 });
 
-const LastLookProvider: FC<{}> = ({ children }) => {
+const LastLookProvider: FC = ({ children }) => {
   const connectedServers: Record<string, Server> = {};
   const { account, library, chainId } = useWeb3React();
 

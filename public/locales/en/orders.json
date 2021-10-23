@@ -21,6 +21,7 @@
   "scanningPeers": "Scanning peers on the network",
   "price": "Price",
   "gasCost": "Gas cost",
+  "gasFreeTrade": "Gas free Trade",
   "protocolFee": "Protocol Fee",
   "searchByNameOrAddress": "Search name or paste address",
   "removeFromActive": "Remove from active",
