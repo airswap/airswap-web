@@ -1,8 +1,6 @@
 {
-  "tokenBalances": "Token-balanser",
-  "addToTokenSet": "Legg til",
-  "unsupportedToken": "Ikke støttet enda",
-  "symbol": "Symbol",
-  "balance": "Balanse",
-  "allowance": "Rasjon"
+  "tokenBalances": "Tokenbalanser",
+  "addToTokenSet": "Legg til Tokensett",
+  "unsupportedToken": "Ikke støttet",
+  "balance": "Balanse"
 }
