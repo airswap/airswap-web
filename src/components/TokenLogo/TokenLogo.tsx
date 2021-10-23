@@ -2,11 +2,11 @@ import { BaseHTMLAttributes, FC } from "react";
 
 import { TokenInfo } from "@airswap/types";
 
-import StyledTokenLogo, { StlyedTokenLogoProps } from "./TokenLogo.styles";
+import StyledTokenLogo, { StyledTokenLogoProps } from "./TokenLogo.styles";
 
 export type TokenLogoProps = {
   tokenInfo: TokenInfo | null;
-} & StlyedTokenLogoProps &
+} & StyledTokenLogoProps &
   BaseHTMLAttributes<HTMLImageElement>;
 
 const TokenLogo: FC<TokenLogoProps> = ({ tokenInfo, ...rest }) => {
