@@ -313,7 +313,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   const handleSettingsOpen = (state: boolean) => {
     setSettingsOpen(state);
-    setWalletOpen(false);
+    state && setWalletOpen(false);
   };
 
   return (
