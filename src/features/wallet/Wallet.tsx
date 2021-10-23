@@ -134,18 +134,20 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           provider: library,
         })
       );
-      dispatch(
-        requestActiveTokenBalances({
-          provider: library,
-        })
-      );
-      const allTokensPromise = dispatch(fetchAllTokens());
-      const supportedTokensPromise = dispatch(
-        fetchSupportedTokens({
-          provider: library,
-        } as any)
-      );
-      Promise.all([allTokensPromise, supportedTokensPromise]).then(() => {
+
+      Promise.all([
+        dispatch(fetchAllTokens()),
+        dispatch(
+          fetchSupportedTokens({
+            provider: library,
+          } as any)
+        ),
+      ]).then(() => {
+        dispatch(
+          requestActiveTokenBalances({
+            provider: library,
+          })
+        );
         dispatch(
           fetchUnkownTokens({
             provider: library,
