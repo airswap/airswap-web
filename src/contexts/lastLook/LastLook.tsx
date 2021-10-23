@@ -22,7 +22,7 @@ type Pair = {
 };
 
 export const LastLookContext = createContext<{
-  subscribeAllServers: (servers: Server[], pair: Pair) => void;
+  subscribeAllServers: (servers: Server[], pair: Pair) => Promise<Pricing>[];
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
@@ -30,7 +30,9 @@ export const LastLookContext = createContext<{
     pricing: Levels;
   }) => Promise<boolean>;
 }>({
-  subscribeAllServers: () => {},
+  subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
+    return [];
+  },
   unsubscribeAllServers: () => {},
   sendOrderForConsideration: async () => {
     return false;
@@ -46,8 +48,8 @@ const LastLookProvider: FC = ({ children }) => {
   // TODO: check if these need to be memoized.
 
   const subscribeAllServers = (servers: Server[], pair: Pair) => {
-    const pricePromises = servers.map(async (s) => {
-      const receivedPricePromise = new Promise<Pricing>(async (resolve) => {
+    return servers.map(async (s) => {
+      return new Promise<Pricing>(async (resolve) => {
         let server = s;
         if (connectedServers[s.locator]) server = connectedServers[s.locator];
         connectedServers[server.locator] = server;
@@ -84,10 +86,7 @@ const LastLookProvider: FC = ({ children }) => {
         const pricing = await server.subscribe([pair]);
         handlePricing(pricing);
       });
-
-      return receivedPricePromise;
     });
-    return pricePromises;
   };
 
   const unsubscribeAllServers = () => {
