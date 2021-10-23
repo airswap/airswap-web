@@ -464,7 +464,7 @@ const SwapWidget = () => {
             side: "sell",
           })
         );
-        requestQuotes();
+        await requestQuotes();
         break;
 
       case ButtonActions.approve:
@@ -482,9 +482,9 @@ const SwapWidget = () => {
 
       case ButtonActions.takeQuote:
         if (["swap", "swapWithWrap"].includes(swapType)) {
-          takeBestOption();
+          await takeBestOption();
         } else if (swapType === "wrapOrUnwrap") {
-          doWrap();
+          await doWrap();
         }
         break;
 
