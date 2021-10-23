@@ -12,7 +12,7 @@ import {
 import BigNumber from "bignumber.js";
 import { Transaction } from "ethers";
 
-import { RootState } from "../../app/store";
+import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
@@ -250,75 +250,84 @@ export const request = createAsyncThunk(
   }
 );
 
-export const approve = createAsyncThunk(
-  "orders/approve",
-  async (params: any, { getState, dispatch }) => {
-    let tx: Transaction;
-    try {
-      tx = await approveToken(
-        params.token,
-        params.library,
-        params.contractType
-      );
-      if (tx.hash) {
-        const transaction: SubmittedApproval = {
-          type: "Approval",
-          hash: tx.hash,
-          status: "processing",
-          tokenAddress: params.token,
-          timestamp: Date.now(),
-        };
-        dispatch(submitTransaction(transaction));
-        params.library.once(tx.hash, async () => {
-          const receipt = await params.library.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
-            // Optimistically update allowance (this is not really optimisitc,
-            // but it pre-empts receiving the event)
-            if (params.contractType === "Light") {
-              dispatch(
-                allowancesLightActions.set({
-                  tokenAddress: params.token,
-                  amount: APPROVE_AMOUNT,
-                })
-              );
-            } else if (params.contractType === "Wrapper") {
-              dispatch(
-                allowancesWrapperActions.set({
-                  tokenAddress: params.token,
-                  amount: APPROVE_AMOUNT,
-                })
-              );
-            }
-
-            notifyTransaction(
-              "Approval",
-              transaction,
-              tokens,
-              false,
-              params.chainId
+export const approve = createAsyncThunk<
+  // Return type of the payload creator
+  void,
+  // Params
+  {
+    token: string;
+    library: any;
+    contractType: "Wrapper" | "Light";
+    chainId: number;
+  },
+  // Types for ThunkAPI
+  {
+    // thunkApi
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("orders/approve", async (params, { getState, dispatch }) => {
+  let tx: Transaction;
+  try {
+    tx = await approveToken(params.token, params.library, params.contractType);
+    if (tx.hash) {
+      const transaction: SubmittedApproval = {
+        type: "Approval",
+        hash: tx.hash,
+        status: "processing",
+        tokenAddress: params.token,
+        timestamp: Date.now(),
+      };
+      dispatch(submitTransaction(transaction));
+      params.library.once(tx.hash, async () => {
+        const receipt = await params.library.getTransactionReceipt(tx.hash);
+        const state: RootState = getState() as RootState;
+        const tokens = Object.values(state.metadata.tokens.all);
+        if (receipt.status === 1) {
+          dispatch(mineTransaction(receipt.transactionHash));
+          // Optimistically update allowance (this is not really optimisitc,
+          // but it pre-empts receiving the event)
+          if (params.contractType === "Light") {
+            dispatch(
+              allowancesLightActions.set({
+                tokenAddress: params.token,
+                amount: APPROVE_AMOUNT,
+              })
             );
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Approval",
-              transaction,
-              tokens,
-              true,
-              params.chainId
+          } else if (params.contractType === "Wrapper") {
+            dispatch(
+              allowancesWrapperActions.set({
+                tokenAddress: params.token,
+                amount: APPROVE_AMOUNT,
+              })
             );
           }
-        });
-      }
-    } catch (e: any) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
-      throw e;
+
+          notifyTransaction(
+            "Approval",
+            transaction,
+            tokens,
+            false,
+            params.chainId
+          );
+        } else {
+          dispatch(revertTransaction(receipt.transactionHash));
+          notifyTransaction(
+            "Approval",
+            transaction,
+            tokens,
+            true,
+            params.chainId
+          );
+        }
+      });
     }
+  } catch (e: any) {
+    console.error(e);
+    dispatch(declineTransaction(e.message));
+    throw e;
   }
-);
+});
 
 export const take = createAsyncThunk(
   "orders/take",

@@ -467,9 +467,10 @@ const SwapWidget = () => {
         setIsApproving(true);
         await dispatch(
           approve({
-            token: baseToken,
+            token: baseToken!,
             library,
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            chainId: chainId!,
           })
         );
         setIsApproving(false);
