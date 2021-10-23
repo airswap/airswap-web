@@ -2,14 +2,16 @@ import { FC, ReactElement } from "react";
 import { BiCheck } from "react-icons/bi";
 import { HiX } from "react-icons/hi";
 import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
-import { MdKeyboardArrowDown, MdAccessTime, MdOpenInNew } from "react-icons/md";
 
 import { StyledIcon } from "./Icon.styles";
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconChevronDown,
   IconDarkModeSwitch,
   IconDeny,
+  IconLink,
+  IconPending,
   IconX,
 } from "./icons";
 
@@ -26,15 +28,15 @@ export interface SvgIconProps {
 export const icons: IconSet = {
   "arrow-right": IconArrowRight,
   "arrow-left": IconArrowLeft,
-  "chevron-down": MdKeyboardArrowDown,
+  "chevron-down": IconChevronDown,
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,
   "information-circle-outline": IoMdInformationCircleOutline,
   "exit-modal": HiX,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
-  "transaction-pending": MdAccessTime,
-  "transaction-link": MdOpenInNew,
+  "transaction-pending": IconPending,
+  "transaction-link": IconLink,
   "button-x": IconX,
   settings: IoMdSettings,
 };
