@@ -16,7 +16,10 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Title } from "../../components/Typography/Typography";
-import { RECEIVE_QUOTE_TIMEOUT_MS } from "../../constants/configParams";
+import {
+  ADDITIONAL_QUOTE_BUFFER,
+  RECEIVE_QUOTE_TIMEOUT_MS,
+} from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -339,11 +342,32 @@ const SwapWidget = () => {
         orderPromises.concat(lastLookPromises);
       }
 
-      await Promise.race([
-        Promise.any<LightOrder[] | Pricing>(orderPromises),
+      // This promise times out if _no_ orders are received before the timeout
+      // but resolves if _any_ are.
+      const timeoutOnNoOrdersPromise = Promise.race<any>([
+        Promise.any(orderPromises),
         new Promise((_, reject) =>
-          setTimeout(() => reject("no valid orders"), RECEIVE_QUOTE_TIMEOUT_MS)
+          setTimeout(() => {
+            reject("no valid orders");
+          }, RECEIVE_QUOTE_TIMEOUT_MS)
         ),
+      ]);
+
+      // This promise resolves either when all orders are received or X seconds
+      // after the first order is received.
+      const waitExtraForAllOrdersPromise = Promise.race<any>([
+        Promise.allSettled(orderPromises),
+        Promise.any(orderPromises).then(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
+            )
+        ),
+      ]);
+
+      await Promise.all([
+        waitExtraForAllOrdersPromise,
+        timeoutOnNoOrdersPromise,
       ]);
     } catch (e: any) {
       switch (e.message) {
