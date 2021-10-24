@@ -21,5 +21,10 @@
   "dark": "Dark",
   "system": "System",
   "language": "LANGUAGE",
-  "theme": "THEME"
+  "theme": "THEME",
+  "stats": "stats",
+  "vote": "vote",
+  "build": "build",
+  "about": "about",
+  "join": "join"
 }
