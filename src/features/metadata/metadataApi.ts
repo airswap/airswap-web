@@ -1,5 +1,5 @@
 import { fetchTokens, scrapeToken } from "@airswap/metadata";
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import { providers } from "ethers";
 import uniqBy from "lodash.uniqby";

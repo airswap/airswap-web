@@ -1,12 +1,14 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/types";
+import { Levels } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import { BigNumber } from "bignumber.js";
 
 import Timer from "../../components/Timer/Timer";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
@@ -25,13 +27,23 @@ export type InfoSectionProps = {
   isFetchingOrders: boolean;
   isApproving: boolean;
   isSwapping: boolean;
+  bestTradeOption:
+    | {
+        protocol: "last-look";
+        quoteAmount: string;
+        pricing: Levels;
+      }
+    | {
+        protocol: "request-for-quote";
+        quoteAmount: string;
+        order: LightOrder;
+      }
+    | null;
   isWrapping: boolean;
-  order: LightOrder | null;
   requiresApproval: boolean;
-  signerTokenInfo: TokenInfo | null;
-  senderTokenInfo: TokenInfo | null;
-  timerExpiry: number | null;
-  onTimerComplete: () => void;
+  quoteTokenInfo: TokenInfo | null;
+  baseTokenInfo: TokenInfo | null;
+  baseAmount: string;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -40,14 +52,13 @@ const InfoSection: FC<InfoSectionProps> = ({
   orderSubmitted,
   isApproving,
   isSwapping,
+  bestTradeOption,
   isWrapping,
-  order,
   isFetchingOrders,
   requiresApproval,
-  senderTokenInfo,
-  signerTokenInfo,
-  timerExpiry,
-  onTimerComplete,
+  baseTokenInfo,
+  baseAmount,
+  quoteTokenInfo,
 }) => {
   const { t } = useTranslation(["orders", "marketing"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -92,7 +103,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <InfoHeading>
-          {t("orders:approvePending", { symbol: senderTokenInfo!.symbol })}
+          {t("orders:approvePending", { symbol: baseTokenInfo!.symbol })}
         </InfoHeading>
         <InfoSubHeading>{t("orders:approveMessage")}</InfoSubHeading>
       </>
@@ -112,8 +123,8 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <InfoHeading>
-          1 {invertPrice ? signerTokenInfo!.symbol : senderTokenInfo!.symbol} ={" "}
-          1 {invertPrice ? senderTokenInfo!.symbol : signerTokenInfo!.symbol}
+          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
+          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
             <StyledInvertPriceIcon />
           </StyledInvertPriceButton>
@@ -123,11 +134,10 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!order) {
-    // TODO: ideally refactor out bignumber.js
-    let price = new BigNumber(order.signerAmount)
-      .dividedBy(new BigNumber(order.senderAmount))
-      .dividedBy(10 ** (signerTokenInfo!.decimals - senderTokenInfo!.decimals));
+  if (!!bestTradeOption) {
+    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+      baseAmount
+    );
 
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);
@@ -136,28 +146,35 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <StyledInfoHeading>
-          1 {invertPrice ? signerTokenInfo!.symbol : senderTokenInfo!.symbol} ={" "}
+          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
           {stringToSignificantDecimals(price.toString())}{" "}
-          {invertPrice ? senderTokenInfo!.symbol : signerTokenInfo!.symbol}
+          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
           <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
             <StyledInvertPriceIcon />
           </StyledInvertPriceButton>
         </StyledInfoHeading>
         {requiresApproval ? (
           <InfoSubHeading>
-            {t("orders:approvalRequired", { symbol: senderTokenInfo!.symbol })}
+            {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
           </InfoSubHeading>
         ) : (
           <InfoSubHeading>
             <TimerContainer>
-              <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
-              {order && (
-                <TimerText>
-                  <Timer
-                    expiryTime={timerExpiry!}
-                    onTimerComplete={onTimerComplete}
-                  ></Timer>
-                </TimerText>
+              {bestTradeOption.protocol === "request-for-quote" && (
+                <>
+                  <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
+                  <TimerText>
+                    <Timer
+                      expiryTime={
+                        parseInt(bestTradeOption!.order!.expiry) -
+                        RFQ_EXPIRY_BUFFER_MS / 1000
+                      }
+                    ></Timer>
+                  </TimerText>
+                </>
+              )}
+              {bestTradeOption.protocol === "last-look" && (
+                <NewQuoteText>{t("orders:gasFreeTrade")}</NewQuoteText>
               )}
             </TimerContainer>
           </InfoSubHeading>

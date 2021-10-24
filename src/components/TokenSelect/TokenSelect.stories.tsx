@@ -1,5 +1,5 @@
+import { TokenInfo } from "@airswap/types";
 import { Story, Meta } from "@storybook/react";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import TokenSelect, { TokenSelectProps } from "./TokenSelect";
 
@@ -14,7 +14,7 @@ const wethTokenInfo: TokenInfo = {
 };
 
 export default {
-  title: "components/TokenSelection/TokenSelect",
+  title: "components/TokenList/TokenSelect",
   component: TokenSelect,
 } as Meta;
 

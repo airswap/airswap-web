@@ -1,10 +1,10 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import styled from "styled-components/macro";
 
 export type sizes = "small" | "medium" | "large";
 
-export type StlyedTokenLogoProps = {
+export type StyledTokenLogoProps = {
   size: sizes;
   tokenInfo: TokenInfo | null;
 };
@@ -15,7 +15,7 @@ const remSizes: Record<sizes, string> = {
   large: "2.5rem",
 };
 
-const StyledTokenLogo = styled.div<StlyedTokenLogoProps>`
+const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>

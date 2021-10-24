@@ -163,3 +163,12 @@ ApprovalFail.args = {
   type: "Approval",
   approvalToken: tokens[0],
 };
+
+export const Error = Template.bind({});
+Error.args = {
+  onClose: () => void 1,
+  error: true,
+  transaction: transactions[0],
+  type: "Approval",
+  approvalToken: tokens[0],
+};

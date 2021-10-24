@@ -1,11 +1,11 @@
 import { fetchTokens } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
 import {
   createAsyncThunk,
   createSelector,
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { TokenInfo } from "@uniswap/token-lists";
 
 import { providers } from "ethers";
 
