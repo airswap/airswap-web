@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 import SiteLogo from "../SiteLogo/SiteLogo";
@@ -10,6 +11,25 @@ export const StyledSiteLogo = styled(SiteLogo)`
   top: 2.5rem;
   top: ${(props) => (props.adjustForBookmarkWarning ? "1.2rem" : "2.5rem")};
   left: 2.5rem;
+`;
+
+type StyledWalletProps = {
+  isOpen?: boolean;
+};
+
+export const StyledWallet = styled(Wallet)<StyledWalletProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1001;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 export const StyledPage = styled.div<StyledPageProps>`

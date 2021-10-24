@@ -2,8 +2,6 @@ import { Toaster as T } from "react-hot-toast";
 
 import styled from "styled-components/macro";
 
-import { sizes } from "../../style/sizes";
-
 const ToasterWrapper = styled.div`
   div[role="status"] {
     margin: 0;
@@ -15,16 +13,12 @@ const ToasterWrapper = styled.div`
   }
 `;
 
-const DEFAULT_INSET_RIGHT = "80px";
-
-const Toaster = ({ sideBarOpen }: { sideBarOpen: boolean }) => (
+const Toaster = () => (
   <ToasterWrapper>
     <T
       position="top-right"
       containerStyle={{
-        right: sideBarOpen
-          ? DEFAULT_INSET_RIGHT
-          : `calc(${sizes.sideBarWidth} + ${DEFAULT_INSET_RIGHT})`,
+        right: "80px",
       }}
       toastOptions={{
         style: {

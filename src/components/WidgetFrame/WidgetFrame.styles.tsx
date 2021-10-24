@@ -15,11 +15,7 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
-type StyledTradeContainerProps = {
-  isOpen?: boolean;
-};
-
-export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
+export const StyledTradeContainer = styled.div`
   display: flex;
   box-sizing: border-box;
   border-radius: 0.5rem;
@@ -31,10 +27,6 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   background-size: 100% 100%;
 
   transition: transform 0.3s ease-in-out;
-
-  @media ${breakPoints.tabletLandscapeUp} {
-    transform: translateX(${(props) => (props.isOpen ? 0 : "-16rem")});
-  }
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
