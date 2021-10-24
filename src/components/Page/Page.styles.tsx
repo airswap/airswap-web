@@ -1,5 +1,7 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
+import { sizes } from "../../style/sizes";
 import SiteLogo from "../SiteLogo/SiteLogo";
 import { StyledPageProps } from "./Page";
 
@@ -25,5 +27,13 @@ export const StyledPage = styled.div<StyledPageProps>`
     height: ${(props) =>
       props.adjustForBookmarkWarning ? "calc(100vh - 40px)" : "100vh"};
     min-height: 50rem;
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    padding-left: ${sizes.toolBarWidth};
+  }
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    padding-left: 0;
   }
 `;

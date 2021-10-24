@@ -5,13 +5,19 @@ import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 
 import { StyledIcon } from "./Icon.styles";
 import {
+  IconAirswap,
   IconArrowLeft,
   IconArrowRight,
+  IconBars,
   IconChevronDown,
+  IconCode,
+  IconContactSupport,
   IconDarkModeSwitch,
   IconDeny,
+  IconLibrary,
   IconLink,
   IconPending,
+  IconVote,
   IconX,
 } from "./icons";
 
@@ -26,18 +32,24 @@ export interface SvgIconProps {
 }
 
 export const icons: IconSet = {
+  about: IconLibrary,
+  airswap: IconAirswap,
   "arrow-right": IconArrowRight,
   "arrow-left": IconArrowLeft,
+  bars: IconBars,
+  "button-x": IconX,
   "chevron-down": IconChevronDown,
+  code: IconCode,
+  "contact-support": IconContactSupport,
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,
-  "information-circle-outline": IoMdInformationCircleOutline,
   "exit-modal": HiX,
+  "information-circle-outline": IoMdInformationCircleOutline,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
   "transaction-pending": IconPending,
   "transaction-link": IconLink,
-  "button-x": IconX,
+  vote: IconVote,
   settings: IoMdSettings,
 };
 

@@ -13,6 +13,7 @@ import useWindowSize from "../../helpers/useWindowSize";
 import SideBar from "../SideBar/SideBar";
 import { StyledDarkModeSwitch, StyledWallet } from "../SideBar/SideBar.styles";
 import Toaster from "../Toasts/Toaster";
+import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledSiteLogo } from "./Page.styles";
 
@@ -34,23 +35,11 @@ const Page: FC = (): ReactElement => {
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <Toaster sideBarOpen={sideBarOpen} />
-      <StyledSiteLogo adjustForBookmarkWarning={adjustForBookmarkWarning} />
+      <Toolbar />
       <StyledWallet isOpen={sideBarOpen} />
       <WidgetFrame isOpen={sideBarOpen}>
         <Orders />
       </WidgetFrame>
-      {/* <SideBar
-        isOpen={sideBarOpen}
-        setIsOpen={() => {
-          setSideBarOpen(!sideBarOpen);
-        }}
-      />*/}
-      {/*
-       <StyledDarkModeSwitch
-        onClick={() => {
-          dispatch(toggleTheme());
-        }}
-      />*/}
     </StyledPage>
   );
 };
