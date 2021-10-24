@@ -74,9 +74,10 @@ const ActionButtons: FC<{
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
   const isDisabled =
-    !hasSufficientBalance ||
-    (walletIsActive && (!baseTokenInfo || !quoteTokenInfo)) ||
-    !hasAmount;
+    walletIsActive &&
+    (!hasSufficientBalance ||
+      (walletIsActive && (!baseTokenInfo || !quoteTokenInfo)) ||
+      !hasAmount);
 
   // Some actions require an additional back button
   const hasBackButton: boolean =
