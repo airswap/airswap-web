@@ -13,12 +13,12 @@ const guideButtons: GuideButtonProps[] = [
   {
     iconName: "vote",
     text: "voter",
-    href: "",
+    href: "https://activate.codefi.network/staking/airswap/governance",
   },
   {
     iconName: "code",
     text: "developer",
-    href: "",
+    href: "https://github.com/airswap/airswap-web",
   },
   {
     iconName: "campaign",
@@ -56,6 +56,7 @@ const JoinModal: FC = () => {
         {guideButtons.map((guideButton) => {
           return (
             <GuideButton
+              key={guideButton.text}
               iconName={guideButton.iconName}
               text={guideButton.text}
               href={guideButton.href}

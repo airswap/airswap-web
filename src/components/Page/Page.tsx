@@ -23,7 +23,7 @@ const Page: FC = (): ReactElement => {
   const [
     activeModalPage,
     setActiveModalPage,
-  ] = useState<InformationType | null>("join");
+  ] = useState<InformationType | null>(null);
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   /* using 480 from breakpoint size defined at src/style/breakpoints.ts */

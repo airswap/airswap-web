@@ -53,7 +53,6 @@ const GlobalStyle = createGlobalStyle`
     @media ${breakPoints.tabletPortraitUp} {
       padding: 2.5rem;
     }
-
   }
 
   .ReactModal__Content {

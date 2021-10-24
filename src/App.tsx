@@ -35,33 +35,21 @@ const App = (): JSX.Element => {
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <LastLookProvider>
-          {/* Suspense needed here for loading i18n resources */}
-          <Suspense fallback={<PageLoader />}>
-            <BookmarkWarning
-              hidden={width! < 480 || !showBookmarkWarning}
-              onClick={() => dispatch(disableBookmarkWarning())}
-            />
-            <Router>
-              <Route path="/:tokenFrom?/:tokenTo?">
-                <Page />
-              </Route>
-            </Router>
-          </Suspense>
+          <ModalProvider>
+            {/* Suspense needed here for loading i18n resources */}
+            <Suspense fallback={<PageLoader />}>
+              <BookmarkWarning
+                hidden={width! < 480 || !showBookmarkWarning}
+                onClick={() => dispatch(disableBookmarkWarning())}
+              />
+              <Router>
+                <Route path="/:tokenFrom?/:tokenTo?">
+                  <Page />
+                </Route>
+              </Router>
+            </Suspense>
+          </ModalProvider>
         </LastLookProvider>
-        <ModalProvider>
-          {/* Suspense needed here for loading i18n resources */}
-          <Suspense fallback={<PageLoader />}>
-            <BookmarkWarning
-              hidden={width! < 480 || !showBookmarkWarning}
-              onClick={() => dispatch(disableBookmarkWarning())}
-            />
-            <Router>
-              <Route path="/:tokenFrom?/:tokenTo?">
-                <Page />
-              </Route>
-            </Router>
-          </Suspense>
-        </ModalProvider>
       </Web3ReactProvider>
       <GlobalStyle />
     </ThemeProvider>
