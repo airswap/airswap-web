@@ -79,20 +79,22 @@ const ActionButtons: FC<{
       (walletIsActive && (!baseTokenInfo || !quoteTokenInfo)) ||
       !hasAmount);
 
-  if (orderComplete) isDisabled = false;
-
   // Some actions require an additional back button
   const hasBackButton: boolean =
     !isDisabled &&
     (nextAction === ButtonActions.takeQuote ||
       nextAction === ButtonActions.approve);
 
+  if (orderComplete) {
+    isDisabled = false;
+    nextAction = ButtonActions.restart;
+  }
+
   // The text depends on the next action, unless the button is disabled, when
   // it depends on the reason for being disabled instead.
   let mainButtonText;
   if (isDisabled) {
-    if (orderComplete) mainButtonText = t("orders:newSwap");
-    else if (!hasAmount) mainButtonText = t("orders:enterAmount");
+    if (!hasAmount) mainButtonText = t("orders:enterAmount");
     else if (!baseTokenInfo || !quoteTokenInfo)
       mainButtonText = t("orders:chooseToken");
     else if (!hasSufficientBalance)
