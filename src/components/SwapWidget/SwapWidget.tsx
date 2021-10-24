@@ -290,7 +290,7 @@ const SwapWidget = () => {
       );
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
-        lastLookPromise: Promise<Pricing>[] | null = null;
+        lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
@@ -317,11 +317,7 @@ const SwapWidget = () => {
         if (usesWrapper) {
           lastLookServers.forEach((s) => s.disconnect());
         } else {
-          // TODO: This promise resolves on subscribe, but in some cases servers
-          // don't respond to subscribe with pricing, so it's possible this
-          // resolves before there's an order available
-          // @ts-ignore
-          lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
+          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
@@ -330,8 +326,8 @@ const SwapWidget = () => {
 
       const orderPromises: Promise<any>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromise) {
-        orderPromises.push(Promise.resolve([lastLookPromise]));
+      if (lastLookPromises) {
+        orderPromises.concat(lastLookPromises);
       }
 
       await Promise.race([
@@ -350,8 +346,6 @@ const SwapWidget = () => {
         }
       }
     } finally {
-      // Note as above that this can be set to false before an order is
-      // available.
       setisRequestingQuotes(false);
     }
   };
