@@ -11,13 +11,13 @@ import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 const Toolbar: FC = () => {
   const { t } = useTranslation(["common"]);
 
-  // TODO: Add link for "bars". Add content for "about" in feat/new-modals branch
+  // TODO: Add content for "about" in modals
 
   return (
     <ToolbarContainer>
       <IconAirswap iconSize={2.5} name="airswap" />
       <ToolbarButtonsContainer>
-        <ToolbarButton iconName="bars" text={t("common:stats")} />
+        {/*<ToolbarButton iconName="bars" text={t("common:stats")} />*/}
         <ToolbarButton
           iconName="vote"
           text={t("common:vote")}
@@ -28,7 +28,11 @@ const Toolbar: FC = () => {
           text={t("common:build")}
           href="https://github.com/airswap/airswap-web"
         />
-        <ToolbarButton iconName="about" text={t("common:about")} />
+        <ToolbarButton
+          iconName="about"
+          text={t("common:about")}
+          href="https://about.airswap.io/"
+        />
         <ToolbarButton iconName="contact-support" text={t("common:join")} />
       </ToolbarButtonsContainer>
     </ToolbarContainer>
