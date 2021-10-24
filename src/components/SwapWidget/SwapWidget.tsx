@@ -16,6 +16,7 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Title } from "../../components/Typography/Typography";
+import { RECEIVE_QUOTE_TIMEOUT_MS } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -266,28 +267,36 @@ const SwapWidget = () => {
       return;
     }
     setisRequestingQuotes(true);
+
+    const usesWrapper = swapType === "swapWithWrap";
+    const weth = wethAddresses[chainId!];
+    const eth = nativeETH[chainId!];
+    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+    const _baseToken = baseToken === eth.address ? weth : baseToken!;
+
+    let rfqServers, lastLookServers;
     try {
-      const usesWrapper = swapType === "swapWithWrap";
-      const weth = wethAddresses[chainId!];
-      const eth = nativeETH[chainId!];
-      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-      const _baseToken = baseToken === eth.address ? weth : baseToken!;
+      try {
+        const servers = await new Registry(
+          chainId,
+          // @ts-ignore provider type mismatch
+          library
+        ).getServers(_quoteToken, _baseToken, {
+          initializeTimeout: 10 * 1000,
+        });
 
-      const servers = await new Registry(
-        chainId,
-        // @ts-ignore provider type mismatch
-        library
-      ).getServers(_quoteToken, _baseToken, {
-        initializeTimeout: 10 * 1000,
-      });
+        rfqServers = servers.filter((s) =>
+          s.supportsProtocol("request-for-quote")
+        );
 
-      const rfqServers = servers.filter((s) =>
-        s.supportsProtocol("request-for-quote")
-      );
-
-      const lastLookServers = servers.filter((s) =>
-        s.supportsProtocol("last-look")
-      );
+        lastLookServers = servers.filter((s) =>
+          s.supportsProtocol("last-look")
+        );
+      } catch (e) {
+        console.error("Error requesting orders:", e);
+        const err = new Error("error requesting orders");
+        throw err;
+      }
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
@@ -324,22 +333,28 @@ const SwapWidget = () => {
         }
       }
 
-      const orderPromises: Promise<any>[] = [];
+      const orderPromises: Promise<LightOrder[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
         orderPromises.concat(lastLookPromises);
       }
 
       await Promise.race([
-        Promise.any<any>(orderPromises),
+        Promise.any<LightOrder[] | Pricing>(orderPromises),
         new Promise((_, reject) =>
-          setTimeout(() => reject("no valid orders"), 4000)
+          setTimeout(() => reject("no valid orders"), RECEIVE_QUOTE_TIMEOUT_MS)
         ),
       ]);
     } catch (e: any) {
       switch (e.message) {
-        // case "no peers": {
-        // case "no valid orders": {
+        case "error requesting orders": {
+          notifyError({
+            heading: t("orders:errorRequesting"),
+            cta: t("orders:errorRequestingCta"),
+          });
+          break;
+        }
+
         default: {
           console.error(e);
           setPairUnavailable(true);
