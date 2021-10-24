@@ -445,7 +445,7 @@ const SwapWidget = () => {
         setShowOrderSubmitted(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
-        setBaseAmount("");
+        setBaseAmount(initialBaseAmount);
         break;
 
       case ButtonActions.connectWallet:
