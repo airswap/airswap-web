@@ -352,10 +352,10 @@ const SwapWidget = () => {
         }
       }
 
-      const orderPromises: Promise<LightOrder[] | Pricing>[] = [];
+      let orderPromises: Promise<LightOrder[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
-        orderPromises.concat(lastLookPromises);
+        orderPromises = orderPromises.concat(lastLookPromises);
       }
 
       // This promise times out if _no_ orders are received before the timeout
