@@ -15,6 +15,10 @@ import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import {
+  ADDITIONAL_QUOTE_BUFFER,
+  RECEIVE_QUOTE_TIMEOUT_MS,
+} from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -112,7 +116,7 @@ const SwapWidget = () => {
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isWrapping, setIsWrapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [isRequestingQuotes, setisRequestingQuotes] = useState<boolean>(false);
+  const [isRequestingQuotes, setIsRequestingQuotes] = useState<boolean>(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
@@ -282,32 +286,39 @@ const SwapWidget = () => {
       setIsWrapping(true);
       return;
     }
-    setisRequestingQuotes(true);
+    setIsRequestingQuotes(true);
+
+    const usesWrapper = swapType === "swapWithWrap";
+    const weth = wethAddresses[chainId!];
+    const eth = nativeETH[chainId!];
+    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+    const _baseToken = baseToken === eth.address ? weth : baseToken!;
+
+    let rfqServers, lastLookServers;
     try {
-      const usesWrapper = swapType === "swapWithWrap";
-      const weth = wethAddresses[chainId!];
-      const eth = nativeETH[chainId!];
-      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-      const _baseToken = baseToken === eth.address ? weth : baseToken!;
+      try {
+        const servers = await new Registry(
+          chainId,
+          // @ts-ignore provider type mismatch
+          library
+        ).getServers(_quoteToken, _baseToken, {
+          initializeTimeout: 10 * 1000,
+        });
 
-      const servers = await new Registry(
-        chainId,
-        // @ts-ignore provider type mismatch
-        library
-      ).getServers(_quoteToken, _baseToken, {
-        initializeTimeout: 10 * 1000,
-      });
+        rfqServers = servers.filter((s) =>
+          s.supportsProtocol("request-for-quote")
+        );
 
-      const rfqServers = servers.filter((s) =>
-        s.supportsProtocol("request-for-quote")
-      );
-
-      const lastLookServers = servers.filter((s) =>
-        s.supportsProtocol("last-look")
-      );
+        lastLookServers = servers.filter((s) =>
+          s.supportsProtocol("last-look")
+        );
+      } catch (e) {
+        console.error("Error requesting orders:", e);
+        throw new Error("error requesting orders");
+      }
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
-        lastLookPromise: Promise<Pricing>[] | null = null;
+        lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
@@ -334,42 +345,63 @@ const SwapWidget = () => {
         if (usesWrapper) {
           lastLookServers.forEach((s) => s.disconnect());
         } else {
-          // TODO: This promise resolves on subscribe, but in some cases servers
-          // don't respond to subscribe with pricing, so it's possible this
-          // resolves before there's an order available
-          // @ts-ignore
-          lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
+          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
         }
       }
 
-      const orderPromises: Promise<any>[] = [];
+      const orderPromises: Promise<LightOrder[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromise) {
-        orderPromises.push(Promise.resolve([lastLookPromise]));
+      if (lastLookPromises) {
+        orderPromises.concat(lastLookPromises);
       }
 
-      await Promise.race([
-        Promise.any<any>(orderPromises),
+      // This promise times out if _no_ orders are received before the timeout
+      // but resolves if _any_ are.
+      const timeoutOnNoOrdersPromise = Promise.race<any>([
+        Promise.any(orderPromises),
         new Promise((_, reject) =>
-          setTimeout(() => reject("no valid orders"), 4000)
+          setTimeout(() => {
+            reject("no valid orders");
+          }, RECEIVE_QUOTE_TIMEOUT_MS)
         ),
+      ]);
+
+      // This promise resolves either when all orders are received or X seconds
+      // after the first order is received.
+      const waitExtraForAllOrdersPromise = Promise.race<any>([
+        Promise.allSettled(orderPromises),
+        Promise.any(orderPromises).then(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
+            )
+        ),
+      ]);
+
+      await Promise.all([
+        waitExtraForAllOrdersPromise,
+        timeoutOnNoOrdersPromise,
       ]);
     } catch (e: any) {
       switch (e.message) {
-        // case "no peers": {
-        // case "no valid orders": {
+        case "error requesting orders": {
+          notifyError({
+            heading: t("orders:errorRequesting"),
+            cta: t("orders:errorRequestingCta"),
+          });
+          break;
+        }
+
         default: {
           console.error(e);
           setPairUnavailable(true);
         }
       }
     } finally {
-      // Note as above that this can be set to false before an order is
-      // available.
-      setisRequestingQuotes(false);
+      setIsRequestingQuotes(false);
     }
   };
 
