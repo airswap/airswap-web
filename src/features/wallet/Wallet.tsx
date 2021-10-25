@@ -104,7 +104,7 @@ export const Wallet: FC = () => {
         }
       }
     }
-  }, [activated, library]);
+  }, [activated, library,dispatch]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
