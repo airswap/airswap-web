@@ -476,7 +476,6 @@ const SwapWidget = () => {
       case ButtonActions.goBack:
         setIsWrapping(false);
         setPairUnavailable(false);
-        LastLook.unsubscribeAllServers();
         dispatch(clearTradeTerms());
         dispatch(clear());
         LastLook.unsubscribeAllServers();
@@ -486,6 +485,7 @@ const SwapWidget = () => {
         setShowOrderSubmitted(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        LastLook.unsubscribeAllServers();
         setBaseAmount(initialBaseAmount);
         break;
 
@@ -569,7 +569,7 @@ const SwapWidget = () => {
                 ? baseAmount
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
-            readOnly={!!bestTradeOption || isWrapping}
+            readOnly={!!bestTradeOption || isWrapping || isRequestingQuotes}
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />
         )}
@@ -602,8 +602,9 @@ const SwapWidget = () => {
               hasAmount={
                 !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
               }
-              hasQuote={!!bestTradeOption || isWrapping}
-              hasSufficientBalance={!insufficientBalance}
+              hasQuote={
+                !isRequestingQuotes && (!!bestTradeOption || isWrapping)
+              }
               needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
               onButtonClicked={handleButtonClick}

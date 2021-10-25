@@ -87,9 +87,11 @@ const SwapInputs: FC<{
         }}
         onMaxClicked={onMaxButtonClick}
         readOnly={readOnly}
-        includeAmountInput={isSell || !!quoteAmount}
+        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
         amountDetails={
-          !isSell && quoteAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
+          !isSell && !isRequesting && quoteAmount
+            ? t("orders:afterFee", { fee: "0.07%" })
+            : ""
         }
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={!isSell && isRequesting}
@@ -106,9 +108,9 @@ const SwapInputs: FC<{
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
         readOnly={readOnly}
-        includeAmountInput={!isSell || !!quoteAmount}
+        includeAmountInput={!isSell || (!!quoteAmount && !isRequesting)}
         amountDetails={
-          isSell && quoteAmount && !noFee
+          isSell && !isRequesting && quoteAmount && !noFee
             ? t("orders:afterFee", { fee: "0.07%" })
             : ""
         }
