@@ -19,7 +19,9 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
-    !props.tokenInfo ? "none" : "url(" + props.tokenInfo.logoURI + ")"};
+    !props.tokenInfo || !props.tokenInfo.logoURI
+      ? "url(images/token-placeholder.svg)"
+      : "url(" + props.tokenInfo.logoURI + ")"};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
