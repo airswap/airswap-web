@@ -116,7 +116,7 @@ const SwapWidget = () => {
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isWrapping, setIsWrapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [isRequestingQuotes, setisRequestingQuotes] = useState<boolean>(false);
+  const [isRequestingQuotes, setIsRequestingQuotes] = useState<boolean>(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
@@ -269,7 +269,7 @@ const SwapWidget = () => {
       setIsWrapping(true);
       return;
     }
-    setisRequestingQuotes(true);
+    setIsRequestingQuotes(true);
 
     const usesWrapper = swapType === "swapWithWrap";
     const weth = wethAddresses[chainId!];
@@ -297,8 +297,7 @@ const SwapWidget = () => {
         );
       } catch (e) {
         console.error("Error requesting orders:", e);
-        const err = new Error("error requesting orders");
-        throw err;
+        throw new Error("error requesting orders");
       }
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
@@ -385,7 +384,7 @@ const SwapWidget = () => {
         }
       }
     } finally {
-      setisRequestingQuotes(false);
+      setIsRequestingQuotes(false);
     }
   };
 
