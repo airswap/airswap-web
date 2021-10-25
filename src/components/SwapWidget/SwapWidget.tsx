@@ -15,7 +15,6 @@ import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { Title } from "../../components/Typography/Typography";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -59,6 +58,7 @@ import { AppRoutes } from "../../routes";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
+import { Title } from "../Typography/Typography";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   Header,
@@ -75,7 +75,7 @@ import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
-const initialBaseAmount = "0.01";
+const initialBaseAmount = "";
 
 const SwapWidget = () => {
   // Redux
@@ -265,7 +265,7 @@ const SwapWidget = () => {
     if (library) {
       if (address === baseToken) {
         history.push({ pathname: `/-/${quoteToken || "-"}` });
-        setBaseAmount("0.01");
+        setBaseAmount(initialBaseAmount);
       } else if (address === quoteToken) {
         history.push({ pathname: `/${baseToken || "-"}/-` });
       }
@@ -454,6 +454,7 @@ const SwapWidget = () => {
         setShowOrderSubmitted(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        setBaseAmount(initialBaseAmount);
         break;
 
       case ButtonActions.connectWallet:

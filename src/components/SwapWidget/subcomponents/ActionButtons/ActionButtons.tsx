@@ -73,16 +73,20 @@ const ActionButtons: FC<{
 
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
-  const isDisabled =
-    !hasSufficientBalance ||
-    (walletIsActive && (!baseTokenInfo || !quoteTokenInfo)) ||
-    !hasAmount;
+  let isDisabled =
+    walletIsActive &&
+    (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);
 
   // Some actions require an additional back button
   const hasBackButton: boolean =
     !isDisabled &&
     (nextAction === ButtonActions.takeQuote ||
       nextAction === ButtonActions.approve);
+
+  if (orderComplete) {
+    isDisabled = false;
+    nextAction = ButtonActions.restart;
+  }
 
   // The text depends on the next action, unless the button is disabled, when
   // it depends on the reason for being disabled instead.
