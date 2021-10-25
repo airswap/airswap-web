@@ -168,6 +168,23 @@ const SwapWidget = () => {
     [quoteToken, activeTokens, chainId]
   );
 
+  const maxAmount = useMemo(() => {
+    if (
+      !baseToken ||
+      !balances ||
+      !baseTokenInfo ||
+      !balances.values[baseToken] ||
+      balances.values[baseToken] === "0"
+    ) {
+      return null;
+    }
+
+    return formatUnits(
+      balances.values[baseToken] || "0",
+      baseTokenInfo.decimals
+    );
+  }, [balances, baseToken, baseTokenInfo]);
+
   // Reset amount when the chainId changes.
   useEffect(() => {
     setBaseAmount(initialBaseAmount);
@@ -356,14 +373,6 @@ const SwapWidget = () => {
     }
   };
 
-  const setBaseAmountToMax = () => {
-    if (baseToken && baseTokenInfo) {
-      setBaseAmount(
-        formatUnits(balances.values[baseToken] || "0", baseTokenInfo.decimals)
-      );
-    }
-  };
-
   const takeBestOption = async () => {
     try {
       setIsSwapping(true);
@@ -515,7 +524,7 @@ const SwapWidget = () => {
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             onChangeTokenClick={setShowTokenSelectModalFor}
-            onMaxButtonClick={setBaseAmountToMax}
+            onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequesting={isRequestingQuotes}
@@ -528,6 +537,7 @@ const SwapWidget = () => {
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
             readOnly={!!bestTradeOption || isWrapping}
+            showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />
         )}
         <InfoContainer>
