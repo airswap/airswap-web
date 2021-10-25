@@ -112,7 +112,7 @@ const SwapWidget = () => {
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isWrapping, setIsWrapping] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [isRequestingQuotes, setisRequestingQuotes] = useState<boolean>(false);
+  const [isRequestingQuotes, setIsRequestingQuotes] = useState<boolean>(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
@@ -265,7 +265,7 @@ const SwapWidget = () => {
       setIsWrapping(true);
       return;
     }
-    setisRequestingQuotes(true);
+    setIsRequestingQuotes(true);
     try {
       const usesWrapper = swapType === "swapWithWrap";
       const weth = wethAddresses[chainId!];
@@ -290,7 +290,7 @@ const SwapWidget = () => {
       );
 
       let rfqPromise: Promise<LightOrder[]> | null = null,
-        lastLookPromise: Promise<Pricing>[] | null = null;
+        lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
@@ -321,7 +321,7 @@ const SwapWidget = () => {
           // don't respond to subscribe with pricing, so it's possible this
           // resolves before there's an order available
           // @ts-ignore
-          lastLookPromise = LastLook.subscribeAllServers(lastLookServers, {
+          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
@@ -330,16 +330,33 @@ const SwapWidget = () => {
 
       const orderPromises: Promise<any>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromise) {
-        orderPromises.push(Promise.resolve([lastLookPromise]));
+      if (lastLookPromises) {
+        for (let lastLookPromise of lastLookPromises!) {
+          orderPromises.push(lastLookPromise);
+        }
       }
 
-      await Promise.race([
-        Promise.any<any>(orderPromises),
+      const finishedPromises = await Promise.race([
+        Promise.allSettled<any>(orderPromises),
         new Promise((_, reject) =>
-          setTimeout(() => reject("no valid orders"), 4000)
-        ),
+          setTimeout(() => {
+            reject("no valid orders");
+          }, 4000)
+        ).catch((e) => {
+          throw e;
+        }),
       ]);
+
+      // Check if all orderPromises are either rejected or empty
+      if (
+        (finishedPromises as any[])
+          .map((e) => {
+            return e.status === "rejected" || !e.value.length;
+          })
+          .every((e) => e)
+      ) {
+        throw new Error("no valid orders");
+      }
     } catch (e: any) {
       switch (e.message) {
         // case "no peers": {
@@ -352,7 +369,7 @@ const SwapWidget = () => {
     } finally {
       // Note as above that this can be set to false before an order is
       // available.
-      setisRequestingQuotes(false);
+      setIsRequestingQuotes(false);
     }
   };
 

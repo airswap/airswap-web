@@ -49,7 +49,7 @@ const LastLookProvider: FC = ({ children }) => {
 
   const subscribeAllServers = (servers: Server[], pair: Pair) => {
     return servers.map(async (s) => {
-      return new Promise<Pricing>(async (resolve) => {
+      return new Promise<Pricing>(async (resolve, reject) => {
         let server = s;
         if (connectedServers[s.locator]) server = connectedServers[s.locator];
         connectedServers[server.locator] = server;
@@ -70,6 +70,7 @@ const LastLookProvider: FC = ({ children }) => {
               })
             );
           } else {
+            reject("no valid orders");
             console.warn(
               `Didn't receive pricing for pair in update from ${server.locator}`
             );
