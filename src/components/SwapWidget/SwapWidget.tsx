@@ -605,6 +605,7 @@ const SwapWidget = () => {
               hasQuote={
                 !isRequestingQuotes && (!!bestTradeOption || isWrapping)
               }
+              hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
               onButtonClicked={handleButtonClick}
