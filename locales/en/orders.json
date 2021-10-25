@@ -12,6 +12,8 @@
   "amount": "Amount",
   "chooseToken": "Choose token",
   "enterAmount": "Enter an amount",
+  "errorRequesting": "Something went wrong when requesting orders",
+  "errorRequestingCta": "Please refresh the page and try again",
   "insufficentBalance": "Insufficient {{symbol}} balance",
   "tokenInfoNotFound": "Token info not found",
   "priceDifference": "Price difference",
