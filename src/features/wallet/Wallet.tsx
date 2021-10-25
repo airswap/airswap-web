@@ -1,20 +1,16 @@
-import { FC, useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 
-import { Light, Wrapper } from "@airswap/libraries";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import {Light, Wrapper} from "@airswap/libraries";
+import {Web3Provider} from "@ethersproject/providers";
+import {useWeb3React} from "@web3-react/core";
+import {WalletConnectConnector} from "@web3-react/walletconnect-connector";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
-import {
-  AbstractConnector,
-  WalletProvider,
-} from "../../constants/supportedWalletProviders";
-import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import SUPPORTED_WALLET_PROVIDERS, {AbstractConnector, WalletProvider,} from "../../constants/supportedWalletProviders";
 import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
-import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
+import {subscribeToTransfersAndApprovals} from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
@@ -25,34 +21,14 @@ import {
   setAllowanceLight,
   setAllowanceWrapper,
 } from "../balances/balancesSlice";
-import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
-import {
-  fetchAllTokens,
-  fetchUnkownTokens,
-  selectActiveTokens,
-  selectAllTokenInfo,
-} from "../metadata/metadataSlice";
-import { swapListener } from "../orders/ordersSlice";
-import { fetchSupportedTokens } from "../registry/registrySlice";
-import {
-  revertTransaction,
-  mineTransaction,
-} from "../transactions/transactionActions";
-import {
-  selectTransactions,
-  setTransactions,
-  TransactionsState,
-} from "../transactions/transactionsSlice";
-import {
-  clearLastAccount,
-  loadLastAccount,
-  saveLastAccount,
-} from "./walletApi";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-  selectWallet,
-} from "./walletSlice";
+import {getTransactionsLocalStorageKey} from "../metadata/metadataApi";
+import {fetchAllTokens, fetchUnkownTokens, selectActiveTokens, selectAllTokenInfo,} from "../metadata/metadataSlice";
+import {orderListener} from "../orders/ordersSlice";
+import {fetchSupportedTokens} from "../registry/registrySlice";
+import {mineTransaction, revertTransaction,} from "../transactions/transactionActions";
+import {selectTransactions, setTransactions, TransactionsState,} from "../transactions/transactionsSlice";
+import {clearLastAccount, loadLastAccount, saveLastAccount,} from "./walletApi";
+import {selectWallet, setWalletConnected, setWalletDisconnected,} from "./walletSlice";
 
 type WalletProps = {
   className?: string;
@@ -86,26 +62,17 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [activated, setActivated] = useState(false);
 
   useEffect(() => {
-    if (activated && library) {
-      const tx = localStorage.getItem("airswap/current_tx");
-      const transaction = localStorage.getItem("airswap/current_transaction");
-      if (tx && transaction) {
-        //adding this try/catch in case the localStorage items are malformed
-        try {
-          console.debug("dispatching swapListener");
+    if (activated && library && chainId && provider) {
+          console.debug("dispatching orderListener");
           dispatch(
-            swapListener({
+            orderListener({
               library,
-              tx: JSON.parse(tx),
-              transaction: JSON.parse(transaction),
+              chainId,
+              provider
             })
           );
-        } catch (e) {
-          console.error(e);
-        }
-      }
     }
-  }, [activated, library,dispatch]);
+  }, [activated, library,dispatch,chainId,provider]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
@@ -228,6 +195,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         },
       });
     }
+
     return () => {
       if (teardownTransferListener) {
         teardownTransferListener();
@@ -261,7 +229,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
       // and poll at a sensible interval.
       transactionsLocalStorage.all.forEach(async (tx) => {
-        if (tx.status === "processing") {
+        if (tx.status === "processing" && tx.hash) {
           let receipt = await library.getTransactionReceipt(tx.hash);
           if (receipt !== null) {
             if (walletHasChanged) return;

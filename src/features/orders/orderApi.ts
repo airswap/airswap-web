@@ -1,19 +1,11 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
-import { wethAddresses } from "@airswap/constants";
-import { Light, Server, Wrapper } from "@airswap/libraries";
-import { LightOrder } from "@airswap/types";
-import { toAtomicString } from "@airswap/utils";
+import {wethAddresses} from "@airswap/constants";
+import {Light, Server, Wrapper} from "@airswap/libraries";
+import {LightOrder} from "@airswap/types";
+import {toAtomicString} from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
-import {
-  BigNumber,
-  ethers,
-  Transaction,
-  Contract,
-  utils,
-  constants,
-  providers,
-} from "ethers";
+import {BigNumber, constants, Contract, ethers, providers, Transaction, utils,} from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -110,7 +102,6 @@ export async function takeOrder(
   provider: ethers.providers.Web3Provider,
   contractType: "Light" | "Wrapper"
 ) {
-  debugger;
   const tx =
     contractType === "Light"
       ? await swapLight(provider.network.chainId, provider, order)

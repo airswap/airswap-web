@@ -1,13 +1,8 @@
-import { LightOrder } from "@airswap/types";
-import { createSlice } from "@reduxjs/toolkit";
+import {LightOrder} from "@airswap/types";
+import {createSlice} from "@reduxjs/toolkit";
 
-import { RootState } from "../../app/store";
-import {
-  submitTransaction,
-  declineTransaction,
-  revertTransaction,
-  mineTransaction,
-} from "./transactionActions";
+import {RootState} from "../../app/store";
+import {declineTransaction, mineTransaction, revertTransaction, submitTransaction,} from "./transactionActions";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;
@@ -20,9 +15,10 @@ export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
 export interface SubmittedTransaction {
   type: TransactionType;
-  hash: string;
+  hash: string; // LL orders doesn't have hash
   status: "processing" | "succeeded" | "reverted";
   timestamp: number;
+  nonce: number;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
