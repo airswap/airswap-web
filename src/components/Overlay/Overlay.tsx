@@ -43,7 +43,7 @@ const Overlay: FC<OverlayProps> = ({
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
         <StyledTitle type="h2">{title}</StyledTitle>
-        {!!subTitle && <InfoSubHeading>{subTitle}</InfoSubHeading>}
+        {!!subTitle && !isHidden && <InfoSubHeading>{subTitle}</InfoSubHeading>}
         <CloseButton
           icon="chevron-down"
           iconSize={1}

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import validatorErrors from "../../../public/locales/en/validatorErrors.json";
 import useWindowSize from "../../helpers/useWindowSize";
 import IconError from "../Icon/icons/IconError";
+import { BackButton } from "../SwapWidget/subcomponents/ActionButtons/ActionButtons.styles";
 import { ScrollContainer, Container } from "../TokenList/TokenList.styles";
 import { InfoHeading, SubText } from "../Typography/Typography";
 import {
@@ -21,7 +22,7 @@ type ErrorListProps = {
 };
 
 const ErrorList = ({ errors, onClick }: ErrorListProps) => {
-  const { t } = useTranslation(["validatorErrors"]);
+  const { t } = useTranslation(["validatorErrors", "common"]);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
@@ -55,6 +56,8 @@ const ErrorList = ({ errors, onClick }: ErrorListProps) => {
       setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
     }
   }, [containerRef, scrollContainerRef, width, height]);
+
+  //add button
   return (
     <>
       <Container ref={containerRef} $overflow={overflow}>
@@ -63,6 +66,7 @@ const ErrorList = ({ errors, onClick }: ErrorListProps) => {
             <StyledErrors />
           </StyledErrorList>
         </ScrollContainer>
+        <BackButton onClick={onClick}>{t("common:back")}</BackButton>
       </Container>
     </>
   );

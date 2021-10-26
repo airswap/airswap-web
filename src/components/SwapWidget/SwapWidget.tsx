@@ -623,6 +623,9 @@ const SwapWidget = () => {
         onClose={() => setHasValidatorErrors(false)}
         isHidden={!hasValidatorErrors}
       >
+        {
+          // need to clear out the other states for on-click
+        }
         <ErrorList errors={[]} onClick={() => setHasValidatorErrors(false)} />
       </Overlay>
     </>
