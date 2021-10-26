@@ -22,6 +22,7 @@ const elementMap: Record<
   link: "a",
   nav: "div",
   small: "aside",
+  subText: "h5",
 };
 
 /**
@@ -77,6 +78,12 @@ export const StyledSubtitle = makeTypographyComponent(
   "subtitle",
   css`
     text-transform: uppercase;
+  `
+);
+export const StyledSubText = makeTypographyComponent(
+  "subText",
+  css`
+    color: ${(props) => props.theme.colors.darkSubText};
   `
 );
 export const StyledParagraph = makeTypographyComponent(
