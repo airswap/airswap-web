@@ -13,22 +13,22 @@ const guideButtons: GuideButtonProps[] = [
   {
     iconName: "vote",
     text: "voter",
-    href: "https://activate.codefi.network/staking/airswap/governance",
+    href: "https://about.airswap.io/guides/voters",
   },
   {
     iconName: "code",
     text: "developer",
-    href: "https://github.com/airswap/airswap-web",
+    href: "https://github.com/airswap",
   },
   {
     iconName: "campaign",
     text: "ambassador",
-    href: "",
+    href: "https://about.airswap.io/guides/ambassadors",
   },
   {
     iconName: "edit",
     text: "author",
-    href: "",
+    href: "https://about.airswap.io/guides/authors",
   },
 ];
 

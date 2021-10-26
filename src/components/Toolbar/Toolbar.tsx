@@ -31,7 +31,7 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
         <ToolbarButton
           iconName="code"
           text={t("common:build")}
-          href="https://github.com/airswap/airswap-web"
+          href="https://github.com/airswap"
         />
         <ToolbarButton
           iconName="about"
