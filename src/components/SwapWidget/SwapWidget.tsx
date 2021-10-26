@@ -56,6 +56,7 @@ import { selectPendingApprovals } from "../../features/transactions/transactions
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
+import ErrorList from "../ErrorList/ErrorList";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
@@ -116,6 +117,8 @@ const SwapWidget = () => {
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+  const [hasValidatorErrors, setHasValidatorErrors] = useState<boolean>(false);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const { t } = useTranslation([
     "orders",
@@ -123,6 +126,7 @@ const SwapWidget = () => {
     "wallet",
     "balances",
     "toast",
+    "validatorErrors",
   ]);
 
   const {
@@ -612,6 +616,14 @@ const SwapWidget = () => {
             setShowWalletList(false);
           }}
         />
+      </Overlay>
+      <Overlay
+        title={t("validatorErrors:unableSwap")}
+        subTitle={t("validatorErrors:swapFail")}
+        onClose={() => setHasValidatorErrors(false)}
+        isHidden={!hasValidatorErrors}
+      >
+        <ErrorList errors={[]} onClick={() => setHasValidatorErrors(false)} />
       </Overlay>
     </>
   );
