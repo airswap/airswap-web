@@ -34,5 +34,5 @@ export const ErrorTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: calc(100% - 3.5rem);
+  width: calc(100% - 3.75rem);
 `;
