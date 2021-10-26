@@ -3,6 +3,7 @@ import { FC } from "react";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
+import { InfoSubHeading } from "../Typography/Typography";
 import {
   Container,
   StyledTitle,
@@ -20,6 +21,10 @@ export type OverlayProps = {
    */
   title?: string;
   /**
+   * Subtitle shown under title
+   */
+  subTitle?: string;
+  /**
    * Hide or show the component
    */
   isHidden?: boolean;
@@ -29,6 +34,7 @@ const Overlay: FC<OverlayProps> = ({
   onClose,
   title = "",
   isHidden = true,
+  subTitle = "",
   children,
 }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -37,6 +43,7 @@ const Overlay: FC<OverlayProps> = ({
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
         <StyledTitle type="h2">{title}</StyledTitle>
+        {!!subTitle && <InfoSubHeading>{subTitle}</InfoSubHeading>}
         <CloseButton
           icon="chevron-down"
           iconSize={1}
