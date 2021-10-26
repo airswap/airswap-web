@@ -16,7 +16,7 @@ export const StyledError = styled.div`
   height: 3rem;
   padding-top: 1.5rem;
   ${(props: any) =>
-    props.idx === 0 &&
+    props.key === 0 &&
     css`
       border-top: 1px solid ${props.theme.colors.borderGrey};
     `}
