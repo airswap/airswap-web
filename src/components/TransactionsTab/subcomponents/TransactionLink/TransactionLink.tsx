@@ -1,7 +1,7 @@
-import {getEtherscanURL} from "@airswap/utils";
+import { getEtherscanURL } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
-import {Link} from "./TransactionLink.style";
+import { Link } from "./TransactionLink.style";
 
 type TransactionLinkProps = {
   chainId: number;
@@ -21,10 +21,9 @@ const TransactionLink = ({
       rel="noreferrer"
       href={`${getEtherscanURL(chainId, hash)}`}
     >
-        <Icon iconSize={1} name="transaction-link" />
+      <Icon iconSize={1} name="transaction-link" />
     </Link>
   );
-
 };
 
 export default TransactionLink;

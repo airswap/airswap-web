@@ -1,8 +1,13 @@
-import {LightOrder} from "@airswap/types";
-import {createSlice} from "@reduxjs/toolkit";
+import { LightOrder } from "@airswap/types";
+import { createSlice } from "@reduxjs/toolkit";
 
-import {RootState} from "../../app/store";
-import {declineTransaction, mineTransaction, revertTransaction, submitTransaction,} from "./transactionActions";
+import { RootState } from "../../app/store";
+import {
+  declineTransaction,
+  mineTransaction,
+  revertTransaction,
+  submitTransaction,
+} from "./transactionActions";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;

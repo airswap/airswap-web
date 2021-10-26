@@ -1,20 +1,28 @@
-import {wethAddresses} from "@airswap/constants";
-import {Server} from "@airswap/libraries";
-import {Levels, LightOrder} from "@airswap/types";
-import {toAtomicString} from "@airswap/utils";
-import {createAsyncThunk, createSelector, createSlice, PayloadAction,} from "@reduxjs/toolkit";
+import { wethAddresses } from "@airswap/constants";
+import { Server } from "@airswap/libraries";
 import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+import { Levels, LightOrder } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import {Contract, Transaction} from "ethers";
+import { Contract, Transaction } from "ethers";
 
-import {AppDispatch, RootState} from "../../app/store";
-import {notifyTransaction} from "../../components/Toasts/ToastController";
-import {RFQ_EXPIRY_BUFFER_MS} from "../../constants/configParams";
+import { AppDispatch, RootState } from "../../app/store";
+import { notifyTransaction } from "../../components/Toasts/ToastController";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
-import {allowancesLightActions, allowancesWrapperActions,} from "../balances/balancesSlice";
-import {selectBestPricing} from "../pricing/pricingSlice";
-import {selectTradeTerms} from "../tradeTerms/tradeTermsSlice";
+import {
+  allowancesLightActions,
+  allowancesWrapperActions,
+} from "../balances/balancesSlice";
+import { selectBestPricing } from "../pricing/pricingSlice";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   declineTransaction,
   mineTransaction,
@@ -27,8 +35,18 @@ import {
   SubmittedOrder,
   SubmittedWithdrawOrder,
 } from "../transactions/transactionsSlice";
-import {setWalletConnected, setWalletDisconnected,} from "../wallet/walletSlice";
-import {approveToken, depositETH, orderSortingFunction, requestOrders, takeOrder, withdrawETH,} from "./orderApi";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
+import {
+  approveToken,
+  depositETH,
+  orderSortingFunction,
+  requestOrders,
+  takeOrder,
+  withdrawETH,
+} from "./orderApi";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -262,7 +280,7 @@ export const approve = createAsyncThunk<
         status: "processing",
         tokenAddress: params.token,
         timestamp: Date.now(),
-        nonce: tx.nonce
+        nonce: tx.nonce,
       };
       dispatch(submitTransaction(transaction));
       params.library.once(tx.hash, async () => {
@@ -321,50 +339,46 @@ export const orderListener = createAsyncThunk(
     params: { library: any; chainId: any; provider: any },
     { getState, dispatch }
   ) => {
-    console.debug("orderListener");
-
-    const lightContract = new Contract(
-        params.chainId,
-        LightContract.abi,
-        params.provider
-    );
-    console.debug( params.chainId,
-        LightContract.abi,
-        params.provider);
-    let orderCompleted = false;
-
-    const {
-      library,
-    } = params;
-    lightContract.on("Swap", (nonce: BigNumber,
-                              timestamp: BigNumber,
-                              signerWallet: string,
-                              signerToken: string,
-                              signerAmount: BigNumber,
-                              signerFee: BigNumber,
-                              senderWallet: string,
-                              senderToken: string,
-                              senderAmount: BigNumber,
-                              event: Event) => {
-      let DTO = {
-        nonce: nonce.toString(),
-        timestamp: timestamp.toString(),
-        signerWallet: signerWallet.toString(),
-        signerToken: signerToken.toString(),
-        signerAmount: signerAmount.toString(),
-        signerFee: signerFee.toString(),
-        senderWallet: senderWallet.toString(),
-        senderToken: senderToken.toString(),
-        senderAmount: senderAmount.toString(),
-      }
-
-
-  console.debug({DTO})
-    });
-
-
-
-
+    const { chainId, provider } = params;
+    console.debug(provider);
+    let lightContract;
+    try {
+      lightContract = new Contract(chainId, LightContract.abi, provider);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      console.debug(lightContract);
+    }
+    if (lightContract) {
+      lightContract.on(
+        "Swap",
+        (
+          nonce: BigNumber,
+          timestamp: BigNumber,
+          signerWallet: string,
+          signerToken: string,
+          signerAmount: BigNumber,
+          signerFee: BigNumber,
+          senderWallet: string,
+          senderToken: string,
+          senderAmount: BigNumber,
+          event: Event
+        ) => {
+          let DTO = {
+            nonce: nonce.toString(),
+            timestamp: timestamp.toString(),
+            signerWallet: signerWallet.toString(),
+            signerToken: signerToken.toString(),
+            signerAmount: signerAmount.toString(),
+            signerFee: signerFee.toString(),
+            senderWallet: senderWallet.toString(),
+            senderToken: senderToken.toString(),
+            senderAmount: senderAmount.toString(),
+          };
+          console.debug({ DTO });
+        }
+      );
+    }
   }
 );
 
@@ -394,13 +408,12 @@ export const take = createAsyncThunk(
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),
-          nonce: tx.nonce
+          nonce: tx.nonce,
         };
         dispatch(submitTransaction(transaction));
 
         // todo not necessary I think
         //dispatch(orderListener({ library: params.library, chainId: params.library._network.chainId, provider: ori }));
-
       }
     } catch (e: any) {
       console.error(e);
