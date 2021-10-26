@@ -1,11 +1,19 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
-import {wethAddresses} from "@airswap/constants";
-import {Light, Server, Wrapper} from "@airswap/libraries";
-import {LightOrder} from "@airswap/types";
-import {toAtomicString} from "@airswap/utils";
+import { wethAddresses } from "@airswap/constants";
+import { Light, Server, Wrapper } from "@airswap/libraries";
+import { LightOrder } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
-import {BigNumber, constants, Contract, ethers, providers, Transaction, utils,} from "ethers";
+import {
+  BigNumber,
+  constants,
+  Contract,
+  ethers,
+  providers,
+  Transaction,
+  utils,
+} from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -68,11 +76,9 @@ export async function requestOrders(
     return (order as any) as LightOrder;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
-  const successfulRfqOrders = rfqOrders
+  return rfqOrders
     .filter((result) => result.status === "fulfilled")
-    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value)
-    .filter((o) => BigNumber.from(o.signerAmount).gt("0"));
-  return successfulRfqOrders;
+    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value);
 }
 
 export async function approveToken(

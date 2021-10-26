@@ -1,9 +1,9 @@
-import {Meta, Story} from "@storybook/react";
+import { Meta, Story } from "@storybook/react";
 
 import styled from "styled-components";
 
-import {SubmittedTransaction} from "../../features/transactions/transactionsSlice";
-import {WalletButton, WalletButtonProps} from "./WalletButton";
+import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import { WalletButton, WalletButtonProps } from "./WalletButton";
 
 export default {
   title: "components/Wallet/WalletButton",

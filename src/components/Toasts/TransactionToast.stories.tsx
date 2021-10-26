@@ -1,7 +1,7 @@
-import {Meta, Story} from "@storybook/react";
+import { Meta, Story } from "@storybook/react";
 
-import {SubmittedTransaction} from "../../features/transactions/transactionsSlice";
-import TransactionToast, {TransactionToastProps} from "./TransactionToast";
+import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import TransactionToast, { TransactionToastProps } from "./TransactionToast";
 
 export default {
   title: "components/Toasts/TransactionToast",

@@ -1,16 +1,19 @@
-import {FC, useEffect, useState} from "react";
+import { FC, useEffect, useState } from "react";
 
-import {Light, Wrapper} from "@airswap/libraries";
-import {Web3Provider} from "@ethersproject/providers";
-import {useWeb3React} from "@web3-react/core";
-import {WalletConnectConnector} from "@web3-react/walletconnect-connector";
+import { Light, Wrapper } from "@airswap/libraries";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
-import SUPPORTED_WALLET_PROVIDERS, {AbstractConnector, WalletProvider,} from "../../constants/supportedWalletProviders";
+import SUPPORTED_WALLET_PROVIDERS, {
+  AbstractConnector,
+  WalletProvider,
+} from "../../constants/supportedWalletProviders";
 import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
-import {subscribeToTransfersAndApprovals} from "../balances/balancesApi";
+import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
@@ -21,14 +24,34 @@ import {
   setAllowanceLight,
   setAllowanceWrapper,
 } from "../balances/balancesSlice";
-import {getTransactionsLocalStorageKey} from "../metadata/metadataApi";
-import {fetchAllTokens, fetchUnkownTokens, selectActiveTokens, selectAllTokenInfo,} from "../metadata/metadataSlice";
-import {orderListener} from "../orders/ordersSlice";
-import {fetchSupportedTokens} from "../registry/registrySlice";
-import {mineTransaction, revertTransaction,} from "../transactions/transactionActions";
-import {selectTransactions, setTransactions, TransactionsState,} from "../transactions/transactionsSlice";
-import {clearLastAccount, loadLastAccount, saveLastAccount,} from "./walletApi";
-import {selectWallet, setWalletConnected, setWalletDisconnected,} from "./walletSlice";
+import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
+import {
+  fetchAllTokens,
+  fetchUnkownTokens,
+  selectActiveTokens,
+  selectAllTokenInfo,
+} from "../metadata/metadataSlice";
+import { orderListener } from "../orders/ordersSlice";
+import { fetchSupportedTokens } from "../registry/registrySlice";
+import {
+  mineTransaction,
+  revertTransaction,
+} from "../transactions/transactionActions";
+import {
+  selectTransactions,
+  setTransactions,
+  TransactionsState,
+} from "../transactions/transactionsSlice";
+import {
+  clearLastAccount,
+  loadLastAccount,
+  saveLastAccount,
+} from "./walletApi";
+import {
+  selectWallet,
+  setWalletConnected,
+  setWalletDisconnected,
+} from "./walletSlice";
 
 type WalletProps = {
   className?: string;
@@ -63,16 +86,18 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   useEffect(() => {
     if (activated && library && chainId && provider) {
-          console.debug("dispatching orderListener");
-          dispatch(
-            orderListener({
-              library,
-              chainId,
-              provider
-            })
-          );
+      if (provider) {
+        dispatch(
+          orderListener({
+            library,
+            chainId,
+            //@ts-ignore
+            provider: provider,
+          })
+        );
+      }
     }
-  }, [activated, library,dispatch,chainId,provider]);
+  }, [activated, library, dispatch, chainId, provider]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
