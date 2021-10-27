@@ -381,7 +381,9 @@ const SwapWidget = () => {
           bestTradeOption!.order!,
           account!
         )) as Error[];
+        console.log("first");
         if (errors.length) {
+          console.log("here");
           setErrors(errors);
           setIsSwapping(false);
           setHasValidatorErrors(true);
@@ -650,10 +652,6 @@ const SwapWidget = () => {
         onClose={() => setHasValidatorErrors(false)}
         isHidden={!hasValidatorErrors}
       >
-        {
-          // need to clear out the other states for on-click
-          // use handleButtonClick
-        }
         <ErrorList
           errors={errors}
           handleClick={async () => {
