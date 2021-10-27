@@ -411,7 +411,7 @@ export const orderListener = createAsyncThunk(
           }
 
           // rfq order
-          if (!receipt) {
+          if (receipt) {
             const tokens = Object.values(state.metadata.tokens.all);
             if (receipt.status === 1) {
               dispatch(mineTransaction(receipt.transactionHash));
