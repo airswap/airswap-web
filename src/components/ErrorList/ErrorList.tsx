@@ -18,10 +18,10 @@ type Error = keyof typeof validatorErrors;
 
 type ErrorListProps = {
   errors: Error[];
-  onClick: () => void;
+  handleClick: () => void;
 };
 
-const ErrorList = ({ errors, onClick }: ErrorListProps) => {
+const ErrorList = ({ errors, handleClick }: ErrorListProps) => {
   const { t } = useTranslation(["validatorErrors", "common"]);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -57,7 +57,6 @@ const ErrorList = ({ errors, onClick }: ErrorListProps) => {
     }
   }, [containerRef, scrollContainerRef, width, height]);
 
-  //add button
   return (
     <>
       <Container ref={containerRef} $overflow={overflow}>
@@ -66,7 +65,7 @@ const ErrorList = ({ errors, onClick }: ErrorListProps) => {
             <StyledErrors />
           </StyledErrorList>
         </ScrollContainer>
-        <BackButton onClick={onClick}>{t("common:back")}</BackButton>
+        <BackButton onClick={handleClick}>{t("common:back")}</BackButton>
       </Container>
     </>
   );
