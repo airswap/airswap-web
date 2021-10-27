@@ -408,6 +408,7 @@ const SwapWidget = () => {
   const takeBestOption = async () => {
     try {
       setIsSwapping(true);
+      console.debug({ bestTradeOption: bestTradeOption?.protocol });
       if (bestTradeOption!.protocol === "request-for-quote") {
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
@@ -428,17 +429,19 @@ const SwapWidget = () => {
           locator: bestTradeOption!.pricing!.locator,
           pricing: bestTradeOption!.pricing!.pricing,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        }).catch((e) => {
+          console.error("sendOrderForConsideration failed", e);
         });
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
-          LastLook.unsubscribeAllServers();
         } else {
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
           });
         }
+        LastLook.unsubscribeAllServers();
       }
     } catch (e: any) {
       if (bestTradeOption!.protocol !== "request-for-quote") {

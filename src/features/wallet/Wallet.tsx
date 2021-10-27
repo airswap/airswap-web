@@ -91,8 +91,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
           orderListener({
             library,
             chainId,
-            //@ts-ignore
-            provider: provider,
+            provider,
           })
         );
       }

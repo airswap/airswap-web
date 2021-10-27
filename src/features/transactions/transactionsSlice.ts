@@ -20,14 +20,15 @@ export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
 export interface SubmittedTransaction {
   type: TransactionType;
-  hash: string; // LL orders doesn't have hash
+  hash?: string; // LL orders doesn't have hash
   status: "processing" | "succeeded" | "reverted";
   timestamp: number;
-  nonce: number;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
   order: LightOrder;
+  expiry: string;
+  nonce: string;
 }
 
 export interface SubmittedApproval extends SubmittedTransaction {

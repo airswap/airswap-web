@@ -1,6 +1,8 @@
 import { wethAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
 import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+//@ts-ignore
+import * as lightDeploys from "@airswap/light/deploys.js";
 import { Levels, LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
@@ -11,7 +13,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import { Contract, Transaction } from "ethers";
+import { Contract, Transaction, utils } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
@@ -100,7 +102,6 @@ export const deposit = createAsyncThunk(
         // Since this is a Deposit, senderAmount === signerAmount
         const transaction: SubmittedDepositOrder = {
           type: "Deposit",
-          nonce: tx.nonce,
           order: {
             signerToken: wethAddresses[params.chainId],
             signerAmount: senderAmount,
@@ -167,7 +168,6 @@ export const withdraw = createAsyncThunk(
       if (tx.hash) {
         const transaction: SubmittedWithdrawOrder = {
           type: "Withdraw",
-          nonce: tx.nonce,
           order: {
             signerToken: nativeETH[params.chainId].address,
             signerAmount: toAtomicString(
@@ -260,6 +260,7 @@ export const approve = createAsyncThunk<
   {
     token: string;
     library: any;
+    nonce?: string;
     contractType: "Wrapper" | "Light";
     chainId: number;
   },
@@ -280,7 +281,6 @@ export const approve = createAsyncThunk<
         status: "processing",
         tokenAddress: params.token,
         timestamp: Date.now(),
-        nonce: tx.nonce,
       };
       dispatch(submitTransaction(transaction));
       params.library.once(tx.hash, async () => {
@@ -339,20 +339,31 @@ export const orderListener = createAsyncThunk(
     params: { library: any; chainId: any; provider: any },
     { getState, dispatch }
   ) => {
-    const { chainId, provider } = params;
-    console.debug(provider);
+    const { chainId, provider, library } = params;
     let lightContract;
     try {
-      lightContract = new Contract(chainId, LightContract.abi, provider);
+      const LightInterface = new utils.Interface(
+        JSON.stringify(LightContract.abi)
+      );
+      console.debug(LightContract.abi, LightInterface);
+      //      const LightInterface = JSON.stringify(LightContract.abi);
+      console.debug({ provider });
+      console.debug({ library });
+      lightContract = new Contract(
+        lightDeploys[chainId],
+        LightInterface,
+        library
+      );
     } catch (e) {
       console.error(e);
     } finally {
-      console.debug(lightContract);
+      console.debug({ lightContract });
     }
+
     if (lightContract) {
       lightContract.on(
         "Swap",
-        (
+        async (
           nonce: BigNumber,
           timestamp: BigNumber,
           signerWallet: string,
@@ -361,8 +372,7 @@ export const orderListener = createAsyncThunk(
           signerFee: BigNumber,
           senderWallet: string,
           senderToken: string,
-          senderAmount: BigNumber,
-          event: Event
+          senderAmount: BigNumber
         ) => {
           let DTO = {
             nonce: nonce.toString(),
@@ -376,6 +386,55 @@ export const orderListener = createAsyncThunk(
             senderAmount: senderAmount.toString(),
           };
           console.debug({ DTO });
+
+          const state: RootState = getState() as RootState;
+
+          // filter order by nonce
+          const order = state.orders.orders.filter(
+            (order: any) => order.nonce === DTO.nonce
+          )[0];
+          const transaction = state.transactions.all.filter(
+            (tx: any) => tx.nonce === DTO.nonce
+          )[0];
+          let receipt;
+          try {
+            receipt = await params.library.getTransactionReceipt(
+              transaction.hash
+            );
+          } catch (e) {
+            console.error(e);
+          }
+          // ll order
+          if (!receipt) {
+            console.debug("ll order");
+            console.debug(order);
+          }
+
+          // rfq order
+          if (!receipt) {
+            const tokens = Object.values(state.metadata.tokens.all);
+            if (receipt.status === 1) {
+              dispatch(mineTransaction(receipt.transactionHash));
+              notifyTransaction(
+                "Order",
+                //@ts-ignore
+                transaction,
+                tokens,
+                false,
+                params.library._network.chainId
+              );
+            } else {
+              dispatch(revertTransaction(receipt.transactionHash));
+              notifyTransaction(
+                "Order",
+                //@ts-ignore
+                transaction,
+                tokens,
+                true,
+                params.library._network.chainId
+              );
+            }
+          }
         }
       );
     }
@@ -408,7 +467,8 @@ export const take = createAsyncThunk(
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),
-          nonce: tx.nonce,
+          nonce: params.order.nonce,
+          expiry: params.order.expiry,
         };
         dispatch(submitTransaction(transaction));
 
