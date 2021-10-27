@@ -371,24 +371,27 @@ const SwapWidget = () => {
   };
 
   const takeBestOption = async () => {
+    console.log("first");
     try {
+      console.log("second");
       setIsSwapping(true);
       // @ts-ignore
-      const validator = new Validator(chainId, library);
+      const validator = new Validator(chainId, library?.getSigner());
+      console.log("third");
       let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
+        console.log("fourth");
         errors = (await validator.checkSwap(
           bestTradeOption!.order!,
           account!
         )) as Error[];
-        console.log("first");
         if (errors.length) {
-          console.log("here");
           setErrors(errors);
           setIsSwapping(false);
           setHasValidatorErrors(true);
           return;
         }
+        console.log("fifth");
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
           take({
@@ -433,7 +436,10 @@ const SwapWidget = () => {
         }
       }
     } catch (e: any) {
+      console.log("sixth");
+      console.log(bestTradeOption!.protocol!);
       if (bestTradeOption!.protocol !== "request-for-quote") {
+        console.log("seven");
         setIsSwapping(false);
         dispatch(clearTradeTermsQuoteAmount());
       }
