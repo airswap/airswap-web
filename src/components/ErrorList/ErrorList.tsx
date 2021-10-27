@@ -14,14 +14,14 @@ import {
   ErrorTextContainer,
 } from "./ErrorList.styles";
 
-type Error = keyof typeof validatorErrors;
+export type Error = keyof typeof validatorErrors;
 
 type ErrorListProps = {
   errors: Error[];
   handleClick: () => void;
 };
 
-const ErrorList = ({ errors, handleClick }: ErrorListProps) => {
+export const ErrorList = ({ errors, handleClick }: ErrorListProps) => {
   const { t } = useTranslation(["validatorErrors", "common"]);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -70,5 +70,3 @@ const ErrorList = ({ errors, handleClick }: ErrorListProps) => {
     </>
   );
 };
-
-export default ErrorList;

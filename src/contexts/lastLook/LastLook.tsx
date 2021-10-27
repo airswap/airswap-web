@@ -123,7 +123,7 @@ const LastLookProvider: FC = ({ children }) => {
       .multipliedBy(10 ** terms.baseToken.decimals)
       .integerValue(BigNumber.ROUND_CEIL)
       .toString();
-    const quoteAmountAtomic = new BigNumber(terms.quoteAmount)
+    const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
       .multipliedBy(10 ** terms.quoteToken.decimals)
       .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
