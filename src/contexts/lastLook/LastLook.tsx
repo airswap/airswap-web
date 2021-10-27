@@ -29,6 +29,11 @@ export const LastLookContext = createContext<{
     terms: TradeTerms;
     pricing: Levels;
   }) => Promise<boolean>;
+  getCurrentOrder: (params: {
+    locator: string;
+    terms: TradeTerms;
+    pricing: Levels;
+  }) => Promise<LightOrder>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -36,6 +41,13 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => {},
   sendOrderForConsideration: async () => {
     return false;
+  },
+  getCurrentOrder: async (params: {
+    locator: string;
+    terms: TradeTerms;
+    pricing: Levels;
+  }): Promise<LightOrder | any> => {
+    return {};
   },
 });
 
@@ -98,6 +110,47 @@ const LastLookProvider: FC = ({ children }) => {
     });
   };
 
+  const getCurrentOrder = async (params: {
+    locator: string;
+    terms: TradeTerms;
+  }) => {
+    const { locator, terms } = params;
+    const server = connectedServers[locator];
+
+    const isSell = terms.side === "sell";
+
+    const baseAmountAtomic = new BigNumber(terms.baseAmount)
+      .multipliedBy(10 ** terms.baseToken.decimals)
+      .integerValue(BigNumber.ROUND_CEIL)
+      .toString();
+    const quoteAmountAtomic = new BigNumber(terms.quoteAmount)
+      .multipliedBy(10 ** terms.quoteToken.decimals)
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toString();
+
+    const order = createLightOrder({
+      expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
+      nonce: Date.now().toString(),
+      senderWallet: server.getSenderWallet(),
+      signerWallet: account,
+      signerToken: terms.baseToken.address,
+      senderToken: terms.quoteToken.address,
+      signerFee: "7",
+      signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
+      senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
+    });
+    const signature = await createLightSignature(
+      order,
+      library.getSigner(),
+      lightDeploys[chainId],
+      chainId!
+    );
+    return {
+      ...order,
+      ...signature,
+    };
+  };
+
   const sendOrderForConsideration = async (params: {
     locator: string;
     terms: TradeTerms;
@@ -157,6 +210,7 @@ const LastLookProvider: FC = ({ children }) => {
         subscribeAllServers,
         unsubscribeAllServers,
         sendOrderForConsideration,
+        getCurrentOrder,
       }}
     >
       {children}
