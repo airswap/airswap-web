@@ -119,7 +119,7 @@ const LastLookProvider: FC = ({ children }) => {
       .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
 
-    const orderParams = {
+    const order = createLightOrder({
       expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
       nonce: Date.now().toString(),
       senderWallet: server.getSenderWallet(),
@@ -129,8 +129,7 @@ const LastLookProvider: FC = ({ children }) => {
       signerFee: "7",
       signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
       senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
-    };
-    const order = createLightOrder(orderParams);
+    });
 
     // TODO: deal with rejection here (cancel signature request)
     try {
