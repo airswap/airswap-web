@@ -139,10 +139,10 @@ const LastLookProvider: FC = ({ children }) => {
       senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
     });
     const signature = await createLightSignature(
-      unsignedOrder,
-      library.getSigner(),
-      lightDeploys[chainId],
-      chainId!
+        unsignedOrder,
+        library.getSigner(),
+        lightDeploys[chainId],
+        chainId!
     );
 
     const order: LightOrder = {

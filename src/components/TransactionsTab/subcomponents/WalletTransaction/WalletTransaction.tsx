@@ -63,7 +63,7 @@ export const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
     );
   } else {
@@ -110,7 +110,7 @@ export const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
     );
   }

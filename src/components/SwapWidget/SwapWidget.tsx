@@ -448,6 +448,8 @@ const SwapWidget = () => {
         const { order, senderWallet } = await LastLook.getSignedOrder({
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        }).catch((e) => {
+          console.error("sendOrderForConsideration failed", e);
         });
         const errors = (await validator.checkSwap(
           order,
@@ -465,13 +467,13 @@ const SwapWidget = () => {
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
-          LastLook.unsubscribeAllServers();
         } else {
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
           });
         }
+        LastLook.unsubscribeAllServers();
       }
     } catch (e: any) {
       if (bestTradeOption!.protocol !== "request-for-quote") {
