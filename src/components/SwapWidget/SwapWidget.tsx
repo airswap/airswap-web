@@ -54,6 +54,7 @@ import {
 } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import ErrorList from "../ErrorList/ErrorList";
@@ -371,7 +372,17 @@ const SwapWidget = () => {
   const takeBestOption = async () => {
     try {
       setIsSwapping(true);
+      // @ts-ignore
+      const validator = new Validator(chainId, library);
+      let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
+        errors = await validator.checkSwap(bestTradeOption!.order!, account!);
+        if (errors.length) {
+          setErrors(errors);
+          setIsSwapping(false);
+          setHasValidatorErrors(true);
+          return;
+        }
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
           take({
@@ -387,6 +398,18 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
+        const currOrder = await LastLook.getCurrentOrder({
+          locator: bestTradeOption!.pricing!.locator,
+          pricing: bestTradeOption!.pricing!.pricing,
+          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        });
+        errors = await validator.checkSwap(currOrder, account!);
+        if (errors.length) {
+          setErrors(errors);
+          setIsSwapping(false);
+          setHasValidatorErrors(true);
+          return;
+        }
         const accepted = await LastLook.sendOrderForConsideration({
           locator: bestTradeOption!.pricing!.locator,
           pricing: bestTradeOption!.pricing!.pricing,
@@ -625,8 +648,16 @@ const SwapWidget = () => {
       >
         {
           // need to clear out the other states for on-click
+          // use handleButtonClick
         }
-        <ErrorList errors={[]} onClick={() => setHasValidatorErrors(false)} />
+        <ErrorList
+          errors={[]}
+          handleClick={async () => {
+            setHasValidatorErrors(false);
+            setErrors([]);
+            await handleButtonClick(ButtonActions.restart);
+          }}
+        />
       </Overlay>
     </>
   );
