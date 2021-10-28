@@ -118,7 +118,7 @@ export const deposit = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
+            dispatch(mineTransaction(receipt.nonce));
             notifyTransaction(
               "Deposit",
               transaction,
@@ -190,7 +190,7 @@ export const withdraw = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
+            dispatch(mineTransaction(receipt.nonce));
             notifyTransaction(
               "Withdraw",
               transaction,
@@ -288,7 +288,7 @@ export const approve = createAsyncThunk<
         const state: RootState = getState() as RootState;
         const tokens = Object.values(state.metadata.tokens.all);
         if (receipt.status === 1) {
-          dispatch(mineTransaction(receipt.transactionHash));
+          dispatch(mineTransaction(receipt.nonce));
           // Optimistically update allowance (this is not really optimisitc,
           // but it pre-empts receiving the event)
           if (params.contractType === "Light") {
@@ -366,21 +366,8 @@ export const swaplistenerSubscribe = createAsyncThunk(
         const transaction = state.transactions.all.filter(
           (tx: any) => tx.nonce === swapResult.nonce
         )[0];
-        let receipt;
-        try {
-          if (transaction?.hash)
-            receipt = await params.library.getTransactionReceipt(
-              transaction.hash
-            );
-        } catch (e) {
-          console.error(e);
-        }
         const tokens = Object.values(state.metadata.tokens.all);
-
-        if (receipt) {
-          // rfq order
-          dispatch(mineTransaction(receipt.transactionHash));
-        }
+        dispatch(mineTransaction(transaction.nonce!));
         notifyTransaction(
           "Order",
           //@ts-ignore
