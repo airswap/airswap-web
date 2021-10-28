@@ -79,7 +79,7 @@ export async function requestOrders(
   const successfulRfqOrders = rfqOrders
     .filter((result) => result.status === "fulfilled")
     .map((result) => (result as PromiseFulfilledResult<LightOrder>).value)
-    .filter((o) => o.signerAmount !== "0");
+    .filter((o) => BigNumber.from(o.signerAmount).gt("0"));
   return successfulRfqOrders;
 }
 
