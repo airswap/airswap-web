@@ -1,29 +1,21 @@
 import { createContext, FC } from "react";
 
-import { wethAddresses } from "@airswap/constants";
-import { Server, Wrapper } from "@airswap/libraries";
+import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { Pricing, Levels, Order } from "@airswap/types";
-import { LightOrder } from "@airswap/types";
+import { Levels, LightOrder, Pricing } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
 
 import { useAppDispatch } from "../../app/hooks";
-import { RootState } from "../../app/store";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import nativeETH from "../../constants/nativeETH";
-import { ordersSlice, request } from "../../features/orders/ordersSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import { submitTransaction } from "../../features/transactions/transactionActions";
-import {
-  SubmittedDepositOrder,
-  SubmittedOrder,
-} from "../../features/transactions/transactionsSlice";
+import { SubmittedOrder } from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;

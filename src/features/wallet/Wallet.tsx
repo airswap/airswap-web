@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";

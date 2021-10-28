@@ -13,7 +13,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import { Contract, Transaction, utils } from "ethers";
+import { Contract, Transaction } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
@@ -359,7 +359,7 @@ export const swaplistenerSubscribe = createAsyncThunk(
     if (lightContract) {
       console.debug(Date.now() + ": subscribed to swaplistener");
       lightContract.on("Swap", async (nonce: BigNumber) => {
-        let swapResult = {
+        const swapResult = {
           nonce: nonce.toString(),
         };
         const state: RootState = getState() as RootState;
