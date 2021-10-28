@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react";
+import { Story, Meta } from "@storybook/react";
 
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import TransactionToast, { TransactionToastProps } from "./TransactionToast";
