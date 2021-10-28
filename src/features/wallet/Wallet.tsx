@@ -1,4 +1,5 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
+import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
@@ -31,7 +32,10 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
-import { orderListener } from "../orders/ordersSlice";
+import {
+  swaplistenerSubscribe,
+  swaplistenerUnsubscribe,
+} from "../orders/ordersSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import handleTransaction from "../transactions/handleTransaction";
 import {
@@ -81,19 +85,33 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
 
+  useBeforeunload(() => {
+    dispatch(
+      swaplistenerUnsubscribe({
+        library,
+        chainId,
+      })
+    );
+  });
+
   useEffect(() => {
-    if (activated && library && chainId && provider) {
-      if (provider) {
+    if (library && chainId) {
+      dispatch(
+        swaplistenerSubscribe({
+          library,
+          chainId,
+        })
+      );
+      return () => {
         dispatch(
-          orderListener({
+          swaplistenerUnsubscribe({
             library,
             chainId,
-            provider,
           })
         );
-      }
+      };
     }
-  }, [activated, library, dispatch, chainId, provider]);
+  }, [library, dispatch, chainId]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {

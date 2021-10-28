@@ -333,110 +333,63 @@ export const approve = createAsyncThunk<
   }
 });
 
-export const orderListener = createAsyncThunk(
-  "orders/listener",
-  async (
-    params: { library: any; chainId: any; provider: any },
-    { getState, dispatch }
-  ) => {
-    const { chainId, provider, library } = params;
-    let lightContract;
-    try {
-      const LightInterface = new utils.Interface(
-        JSON.stringify(LightContract.abi)
-      );
-      console.debug(LightContract.abi, LightInterface);
-      //      const LightInterface = JSON.stringify(LightContract.abi);
-      console.debug({ provider });
-      console.debug({ library });
-      lightContract = new Contract(
-        lightDeploys[chainId],
-        LightInterface,
-        library
-      );
-    } catch (e) {
-      console.error(e);
-    } finally {
-      console.debug({ lightContract });
-    }
+export const swaplistenerUnsubscribe = createAsyncThunk(
+  "orders/swaplistener:unsubscribe",
+  async (params: { library: any; chainId: any }, { getState, dispatch }) => {
+    const { chainId, library } = params;
+    let lightContract = new Contract(
+      lightDeploys[chainId],
+      LightContract.abi,
+      library
+    );
+    console.debug(Date.now() + ": unsubscribed to swaplistener");
+    lightContract.removeAllListeners("Swap");
+  }
+);
 
+export const swaplistenerSubscribe = createAsyncThunk(
+  "orders/swaplistener:subscribe",
+  async (params: { library: any; chainId: any }, { getState, dispatch }) => {
+    const { chainId, library } = params;
+    const lightContract = new Contract(
+      lightDeploys[chainId],
+      LightContract.abi,
+      library
+    );
     if (lightContract) {
-      lightContract.on(
-        "Swap",
-        async (
-          nonce: BigNumber,
-          timestamp: BigNumber,
-          signerWallet: string,
-          signerToken: string,
-          signerAmount: BigNumber,
-          signerFee: BigNumber,
-          senderWallet: string,
-          senderToken: string,
-          senderAmount: BigNumber
-        ) => {
-          let DTO = {
-            nonce: nonce.toString(),
-            timestamp: timestamp.toString(),
-            signerWallet: signerWallet.toString(),
-            signerToken: signerToken.toString(),
-            signerAmount: signerAmount.toString(),
-            signerFee: signerFee.toString(),
-            senderWallet: senderWallet.toString(),
-            senderToken: senderToken.toString(),
-            senderAmount: senderAmount.toString(),
-          };
-          console.debug({ DTO });
-
-          const state: RootState = getState() as RootState;
-
-          // filter order by nonce
-          const order = state.orders.orders.filter(
-            (order: any) => order.nonce === DTO.nonce
-          )[0];
-          const transaction = state.transactions.all.filter(
-            (tx: any) => tx.nonce === DTO.nonce
-          )[0];
-          let receipt;
-          try {
+      console.debug(Date.now() + ": subscribed to swaplistener");
+      lightContract.on("Swap", async (nonce: BigNumber) => {
+        let swapResult = {
+          nonce: nonce.toString(),
+        };
+        const state: RootState = getState() as RootState;
+        const transaction = state.transactions.all.filter(
+          (tx: any) => tx.nonce === swapResult.nonce
+        )[0];
+        let receipt;
+        try {
+          if (transaction?.hash)
             receipt = await params.library.getTransactionReceipt(
               transaction.hash
             );
-          } catch (e) {
-            console.error(e);
-          }
-          // ll order
-          if (!receipt) {
-            console.debug("ll order");
-            console.debug(order);
-          }
-
-          // rfq order
-          if (receipt) {
-            const tokens = Object.values(state.metadata.tokens.all);
-            if (receipt.status === 1) {
-              dispatch(mineTransaction(receipt.transactionHash));
-              notifyTransaction(
-                "Order",
-                //@ts-ignore
-                transaction,
-                tokens,
-                false,
-                params.library._network.chainId
-              );
-            } else {
-              dispatch(revertTransaction(receipt.transactionHash));
-              notifyTransaction(
-                "Order",
-                //@ts-ignore
-                transaction,
-                tokens,
-                true,
-                params.library._network.chainId
-              );
-            }
-          }
+        } catch (e) {
+          console.error(e);
         }
-      );
+        const tokens = Object.values(state.metadata.tokens.all);
+
+        if (receipt) {
+          // rfq order
+          dispatch(mineTransaction(receipt.transactionHash));
+        }
+        notifyTransaction(
+          "Order",
+          //@ts-ignore
+          transaction,
+          tokens,
+          false,
+          params.library._network.chainId
+        );
+      });
     }
   }
 );
@@ -471,9 +424,6 @@ export const take = createAsyncThunk(
           expiry: params.order.expiry,
         };
         dispatch(submitTransaction(transaction));
-
-        // todo not necessary I think
-        //dispatch(orderListener({ library: params.library, chainId: params.library._network.chainId, provider: ori }));
       }
     } catch (e: any) {
       console.error(e);
@@ -554,6 +504,8 @@ export const selectBestOrder = (state: RootState) =>
 
 export const selectSortedOrders = (state: RootState) =>
   [...state.orders.orders].sort(orderSortingFunction);
+
+export const selectFirstOrder = (state: RootState) => state.orders.orders[0];
 
 export const selectBestOption = createSelector(
   selectTradeTerms,

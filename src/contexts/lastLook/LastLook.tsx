@@ -1,10 +1,11 @@
 import { createContext, FC } from "react";
 
-import { Server } from "@airswap/libraries";
+import { wethAddresses } from "@airswap/constants";
+import { Server, Wrapper } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { Pricing, Levels } from "@airswap/types";
+import { Pricing, Levels, Order } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -12,9 +13,17 @@ import { useWeb3React } from "@web3-react/core";
 import BigNumber from "bignumber.js";
 
 import { useAppDispatch } from "../../app/hooks";
+import { RootState } from "../../app/store";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
+import nativeETH from "../../constants/nativeETH";
+import { ordersSlice, request } from "../../features/orders/ordersSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
+import { submitTransaction } from "../../features/transactions/transactionActions";
+import {
+  SubmittedDepositOrder,
+  SubmittedOrder,
+} from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;
@@ -130,7 +139,6 @@ const LastLookProvider: FC = ({ children }) => {
       signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
       senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
     });
-
     // TODO: deal with rejection here (cancel signature request)
     try {
       const signature = await createLightSignature(
@@ -143,7 +151,15 @@ const LastLookProvider: FC = ({ children }) => {
         ...order,
         ...signature,
       };
-
+      const transaction: SubmittedOrder = {
+        type: "Order",
+        order: signedOrder,
+        nonce: order.nonce,
+        status: "processing",
+        expiry: signedOrder.expiry,
+        timestamp: Date.now(),
+      };
+      dispatch(submitTransaction(transaction));
       return server.consider(signedOrder);
     } catch (e) {
       console.error("Error signing order", e);
