@@ -23,7 +23,7 @@
   "gasCost": "Sendekostnad",
   "gasFreeTrade": "Gratis veksling",
   "protocolFee": "Protokoll-gebyr",
-  "searchByNameOrAddress": "Skriv inn navn eller lim inn addresse",
+  "searchByNameOrAddress": "Søk med navn eller lim inn addresse",
   "removeFromActive": "Fjern fra aktive",
   "expandedResults": "Treff i liste med inaktive tokens",
   "newQuoteIn": "Ny pris om",
@@ -34,10 +34,10 @@
   "newSwap": "Ny veksling",
   "swapPending": "Klar til å veksle",
   "swapMessage": "Aksepter handelen i lommeboken din for å fortsette",
-  "wrapMessage": "Intet protokollgebyr for vekslinger med ETH/WETH",
+ "wrapMessage": "Intet protokollgebyr for vekslinger med ETH/WETH",
   "submitted": "Sendt!",
   "swapRejected": "Pris utløpt",
   "swapRejectedCallToAction": "Vennligst prøv igjen",
   "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
-  "editCustomTokens": "Endre tokenliste"
+  "editCustomTokens": "Endre egne tokens"
 }
