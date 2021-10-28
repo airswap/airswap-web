@@ -648,7 +648,11 @@ const SwapWidget = () => {
       <Overlay
         title={t("validatorErrors:unableSwap")}
         subTitle={t("validatorErrors:swapFail")}
-        onClose={() => setHasValidatorErrors(false)}
+        onClose={async () => {
+          setHasValidatorErrors(false);
+          setErrors([]);
+          await handleButtonClick(ButtonActions.restart);
+        }}
         isHidden={!hasValidatorErrors}
       >
         <ErrorList
