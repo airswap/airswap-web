@@ -19,7 +19,7 @@ async function handleTransaction(
     if (receipt !== null) {
       if (walletHasChanged) return;
       const status = receipt.status;
-      if (status === 1) dispatch(mineTransaction(tx.hash));
+      if (status === 1) dispatch(mineTransaction(tx.nonce));
       // success
       else if (status === 0)
         dispatch(
@@ -38,7 +38,7 @@ async function handleTransaction(
       if (transaction) {
         try {
           await transaction.wait(1);
-          if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
+          if (!walletHasChanged) dispatch(mineTransaction(tx.nonce)); // success
         } catch (err) {
           console.error(err);
           if (!walletHasChanged)
@@ -68,7 +68,7 @@ async function handleTransaction(
               })
             );
         } else {
-          if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
+          if (!walletHasChanged) dispatch(mineTransaction(tx.nonce)); // success
         }
       }
     }

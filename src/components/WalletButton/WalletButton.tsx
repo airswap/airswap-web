@@ -114,7 +114,7 @@ export const WalletButton = ({
                     signerToken={signerToken}
                     type={transaction.type}
                     chainId={chainId!}
-                    key={tx.nonce}
+                    key={tx.timestamp}
                   />
                 );
               } else {

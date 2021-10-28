@@ -22,13 +22,13 @@ export interface SubmittedTransaction {
   type: TransactionType;
   hash?: string; // LL orders doesn't have hash
   status: "processing" | "succeeded" | "reverted";
+  nonce?: string;
+  expiry?: string;
   timestamp: number;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
   order: LightOrder;
-  expiry: string;
-  nonce: string;
 }
 
 export interface SubmittedApproval extends SubmittedTransaction {
@@ -53,11 +53,11 @@ const initialState: TransactionsState = {
 
 function updateTransaction(
   state: TransactionsState,
-  hash: string,
+  nonce: string,
   status: "processing" | "succeeded" | "reverted"
 ) {
   for (let i in state.all) {
-    if (state.all[i].hash === hash) {
+    if (state.all[i].nonce === nonce) {
       state.all[i] = {
         ...state.all[i],
         status,
