@@ -377,10 +377,18 @@ const SwapWidget = () => {
       const validator = new Validator(chainId, library?.getSigner());
       let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
-        errors = (await validator.checkSwap(
-          bestTradeOption!.order!,
-          account!
-        )) as Error[];
+        let wait: Promise<Error[]> = new Promise((resolve, reject) => {
+          setTimeout(async () => {
+            console.log("Order expiry time: ", bestTradeOption?.order?.expiry);
+            console.log("Current Time: ", Date.now());
+            errors = (await validator.checkSwap(
+              bestTradeOption!.order!,
+              account!
+            )) as Error[];
+            resolve(errors);
+          }, 5000);
+        });
+        errors = await wait;
         if (errors.length) {
           setErrors(errors);
           setIsSwapping(false);
@@ -432,7 +440,6 @@ const SwapWidget = () => {
       }
     } catch (e: any) {
       if (bestTradeOption!.protocol !== "request-for-quote") {
-        console.log("seven");
         setIsSwapping(false);
         dispatch(clearTradeTermsQuoteAmount());
       }
