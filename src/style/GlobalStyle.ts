@@ -1,7 +1,4 @@
-import "@fontsource/montserrat/400.css";
-import "@fontsource/montserrat/500.css";
-import "@fontsource/montserrat/600.css";
-import "@fontsource/montserrat/700.css";
+import "@fontsource/dm-mono/500.css";
 
 import { createGlobalStyle } from "styled-components/macro";
 
@@ -14,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "loos-normal", sans-serif;
     color: ${(props) =>
       props.theme.name === "dark"
         ? props.theme.colors.white
@@ -27,6 +24,10 @@ const GlobalStyle = createGlobalStyle`
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
       monospace;
+  }
+  
+  input {
+    font-family: "DM Mono", monospace;
   }
 
   p {
