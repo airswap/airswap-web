@@ -9,6 +9,7 @@ import {
   StyledTitle,
   TitleContainer,
   ContentContainer,
+  TitleSubContainer,
 } from "./Overlay.styles";
 
 export type OverlayProps = {
@@ -42,8 +43,12 @@ const Overlay: FC<OverlayProps> = ({
   return (
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
-        <StyledTitle type="h2">{title}</StyledTitle>
-        {!!subTitle && !isHidden && <InfoSubHeading>{subTitle}</InfoSubHeading>}
+        <TitleSubContainer>
+          <StyledTitle type="h2">{title}</StyledTitle>
+          {!!subTitle && !isHidden && (
+            <InfoSubHeading>{subTitle}</InfoSubHeading>
+          )}
+        </TitleSubContainer>
         <CloseButton
           icon="chevron-down"
           iconSize={1}

@@ -43,6 +43,11 @@ export const TitleContainer = styled.div`
   transition: background ease-in-out 0.3s;
 `;
 
+export const TitleSubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const StyledTitle = styled(Title)`
   min-height: 1.875rem;
   padding-right: 1rem;
