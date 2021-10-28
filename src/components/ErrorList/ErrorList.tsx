@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import validatorErrors from "../../../public/locales/en/validatorErrors.json";
 import useWindowSize from "../../helpers/useWindowSize";
 import IconError from "../Icon/icons/IconError";
-import { BackButton } from "../SwapWidget/subcomponents/ActionButtons/ActionButtons.styles";
 import { ScrollContainer, Container } from "../TokenList/TokenList.styles";
 import { InfoHeading, SubText } from "../Typography/Typography";
 import {
@@ -12,6 +11,7 @@ import {
   StyledError,
   ErrorIconContainer,
   ErrorTextContainer,
+  BackButton,
 } from "./ErrorList.styles";
 
 export type Error = keyof typeof validatorErrors;

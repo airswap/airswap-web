@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
+import Button from "../Button/Button";
 
 export const StyledErrorList = styled.div`
   display: flex;
@@ -35,4 +36,11 @@ export const ErrorTextContainer = styled.div`
   flex-direction: column;
   height: 100%;
   width: calc(100% - 3.75rem);
+`;
+
+export const BackButton = styled(Button)`
+  width: 26.25rem;
+  height: 3 rem;
+  left: 510px;
+  top: 680px;
 `;
