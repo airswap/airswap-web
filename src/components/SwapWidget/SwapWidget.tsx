@@ -544,7 +544,11 @@ const SwapWidget = () => {
             side: "sell",
           })
         );
-        await requestQuotes();
+        await requestQuotes().catch((e: any) => {
+          console.error(e.message);
+          //todo handle error
+        });
+
         break;
 
       case ButtonActions.approve:
@@ -562,9 +566,15 @@ const SwapWidget = () => {
 
       case ButtonActions.takeQuote:
         if (["swap", "swapWithWrap"].includes(swapType)) {
-          await takeBestOption();
+          await takeBestOption().catch((e: any) => {
+            console.error(e.message);
+            //todo reset action
+          });
         } else if (swapType === "wrapOrUnwrap") {
-          await doWrap();
+          await doWrap().catch((e: any) => {
+            console.error(e.message);
+            //todo reset action
+          });
         }
         break;
 

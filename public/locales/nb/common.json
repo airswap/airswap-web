@@ -13,7 +13,7 @@
   "processing": "Behandler",
   "failed": "Feilet",
   "undefined": "udefinert",
-  "noResultsFound": "Ingenting funnet",
+  "noResultsFound": "Ikke funnet",
   "done": "Ferdig",
   "bookmarkWarning1": "Forsikre deg om at nettaddressen er {{url}}",
   "bookmarkWarning2": " - Trykk på (Ctrl+D eller Cmd+D) for å bokmerke siden slik at du er trygg",
