@@ -349,6 +349,16 @@ export const Wallet: FC = () => {
         chainId={chainId!}
         open={transactionsTabOpen}
         setTransactionsTabOpen={setTransactionsTabOpen}
+        onDisconnectWalletClicked={() => {
+          clearLastAccount();
+          deactivate();
+          if (connector instanceof WalletConnectConnector) {
+            connector.close();
+          }
+          setTransactionsTabOpen(false);
+        }}
+        transactions={transactions}
+        tokens={allTokens}
       />
     </>
   );

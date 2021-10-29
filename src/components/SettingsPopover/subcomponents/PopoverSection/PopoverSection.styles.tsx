@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 import { StyledTitle } from "../../../Overlay/Overlay.styles";
 
-const Container = styled.div`
+export const Container = styled.div`
   color: ${(props) => props.theme.colors.darkSubText};
   display: grid;
   grid-template-rows: 1.5rem;
   overflow: hidden;
 `;
 
-const TitleContainer = styled.div`
+export const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -17,7 +17,7 @@ const TitleContainer = styled.div`
   text-align: center;
 `;
 
-const Title = styled(StyledTitle)`
+export const Title = styled(StyledTitle)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,8 +36,6 @@ const Title = styled(StyledTitle)`
   }
 `;
 
-const Line = styled.span`
+export const Line = styled.span`
   background: transparent;
 `;
-
-export { Container, TitleContainer, Line, Title };

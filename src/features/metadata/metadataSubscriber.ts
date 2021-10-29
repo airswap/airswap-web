@@ -45,11 +45,14 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
         )!
       ) || { all: [] };
 
-      const mostRecentTransactions = transactions.all.slice(0, 3);
+      const mostRecentTransactions = transactions.all;
 
       if (transactionCache[wallet.address!] === undefined) {
         transactionCache[wallet.address!] = {};
-        transactionCache[wallet.address!][wallet.chainId!] = txs.all;
+        transactionCache[wallet.address!][wallet.chainId!] = txs.all.slice(
+          0,
+          10
+        );
       }
       if (
         previousChainId === currentChainId &&
