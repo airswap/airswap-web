@@ -36,15 +36,15 @@ export interface SubmittedRFQOrder extends SubmittedOrder {}
 
 export interface SubmittedLastLookOrder extends SubmittedOrder {}
 
-export interface SubmittedApproval extends Omit<SubmittedTransaction, "protocol"> {
+export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
 }
 
-export interface SubmittedDepositOrder extends Omit<SubmittedTransaction, "protocol"> {
+export interface SubmittedDepositOrder extends SubmittedTransaction {
   order: DepositOrWithdrawOrder;
 }
 
-export interface SubmittedWithdrawOrder extends Omit<SubmittedTransaction, "protocol"> {
+export interface SubmittedWithdrawOrder extends SubmittedTransaction {
   order: DepositOrWithdrawOrder;
 }
 
@@ -64,7 +64,7 @@ function updateTransaction(
   status: "processing" | "succeeded" | "reverted"
 ) {
   for (let i in state.all) {
-    if(hash){
+    if (hash) {
       if (state.all[i].hash === hash) {
         state.all[i] = {
           ...state.all[i],
@@ -72,10 +72,12 @@ function updateTransaction(
         };
         break;
       }
-    }
-    else {
+    } else {
       //@ts-ignore
-      if (state.all[i].nonce === nonce && state.all[i].order!.signerWallet === signerWallet) {
+      if (
+        state.all[i].nonce === nonce &&
+        state.all[i].order!.signerWallet === signerWallet
+      ) {
         state.all[i] = {
           ...state.all[i],
           timestamp: Date.now(),
@@ -111,10 +113,16 @@ export const transactionsSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, "", action.payload.hash, "","reverted");
+      updateTransaction(state, "", action.payload.hash, "", "reverted");
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(state, action.payload?.nonce, action.payload?.hash,  action.payload?.signerWallet,"succeeded");
+      updateTransaction(
+        state,
+        action.payload?.nonce,
+        action.payload?.hash,
+        action.payload?.signerWallet,
+        "succeeded"
+      );
     });
   },
 });

@@ -428,7 +428,7 @@ const SwapWidget = () => {
           locator: bestTradeOption!.pricing!.locator,
           pricing: bestTradeOption!.pricing!.pricing,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        })
+        });
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
