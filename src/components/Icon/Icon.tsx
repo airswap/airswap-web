@@ -59,6 +59,7 @@ export const icons: IconSet = {
   "transaction-failed": HiX,
   "transaction-pending": IconPending,
   "transaction-link": IconLink,
+  "wallet-link": IconLink,
   vote: IconVote,
   settings: IoMdSettings,
 };

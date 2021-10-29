@@ -8,6 +8,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import EthButton from "../../components/EthButton/EthButton";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
+import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import nativeETH from "../../constants/nativeETH";
 import {
@@ -55,11 +56,7 @@ import {
   selectWallet,
 } from "./walletSlice";
 
-type WalletProps = {
-  setTransactionsTabOpen: () => void;
-};
-
-export const Wallet: FC<WalletProps> = ({ setTransactionsTabOpen }) => {
+export const Wallet: FC = () => {
   const {
     chainId,
     account,
@@ -85,6 +82,9 @@ export const Wallet: FC<WalletProps> = ({ setTransactionsTabOpen }) => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
@@ -309,7 +309,7 @@ export const Wallet: FC<WalletProps> = ({ setTransactionsTabOpen }) => {
   }, [chainId, dispatch, library, account]);
 
   const handleWalletOpen = (state: boolean) => {
-    setTransactionsTabOpen();
+    setTransactionsTabOpen(state);
   };
 
   const handleSettingsOpen = (state: boolean) => {
@@ -318,30 +318,38 @@ export const Wallet: FC<WalletProps> = ({ setTransactionsTabOpen }) => {
   };
 
   return (
-    <PopoverContainer>
-      {balances && chainId && (
-        <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
-      )}
-      <WalletButton
-        address={account}
-        onDisconnectWalletClicked={() => {
-          clearLastAccount();
-          deactivate();
-          if (connector instanceof WalletConnectConnector) {
-            connector.close();
-          }
-        }}
-        isConnecting={isActivating}
-        tokens={allTokens}
+    <>
+      <PopoverContainer>
+        {balances && chainId && (
+          <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+        )}
+        <WalletButton
+          address={account}
+          onDisconnectWalletClicked={() => {
+            clearLastAccount();
+            deactivate();
+            if (connector instanceof WalletConnectConnector) {
+              connector.close();
+            }
+          }}
+          isConnecting={isActivating}
+          tokens={allTokens}
+          chainId={chainId!}
+          transactions={transactions}
+          walletOpen={walletOpen}
+          setWalletOpen={handleWalletOpen}
+        />
+        <SettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={handleSettingsOpen}
+        />
+      </PopoverContainer>
+      <TransactionsTab
+        address={account!}
         chainId={chainId!}
-        transactions={transactions}
-        walletOpen={walletOpen}
-        setWalletOpen={handleWalletOpen}
+        open={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
       />
-      <SettingsButton
-        settingsOpen={settingsOpen}
-        setSettingsOpen={handleSettingsOpen}
-      />
-    </PopoverContainer>
+    </>
   );
 };
