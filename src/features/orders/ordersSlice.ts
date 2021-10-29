@@ -34,7 +34,7 @@ import {
 import {
   SubmittedApproval,
   SubmittedDepositOrder,
-  SubmittedOrder,
+  SubmittedRFQOrder,
   SubmittedWithdrawOrder,
 } from "../transactions/transactionsSlice";
 import {
@@ -118,7 +118,13 @@ export const deposit = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction({hash: receipt.transactionHash, nonce: "", signerWallet: ""}));
+            dispatch(
+              mineTransaction({
+                hash: receipt.transactionHash,
+                nonce: "",
+                signerWallet: "",
+              })
+            );
             notifyTransaction(
               "Deposit",
               transaction,
@@ -190,7 +196,13 @@ export const withdraw = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction({hash: receipt.transactionHash, nonce:"", signerWallet:""}));
+            dispatch(
+              mineTransaction({
+                hash: receipt.transactionHash,
+                nonce: "",
+                signerWallet: "",
+              })
+            );
             notifyTransaction(
               "Withdraw",
               transaction,
@@ -359,31 +371,44 @@ export const swaplistenerSubscribe = createAsyncThunk(
     if (lightContract) {
       console.debug(Date.now() + ": subscribed to swaplistener");
 
-//      lightContract.filters.Swap(null, "0x63CF6013aaB710Ca21F1404f71d37111d7F928a8", async (nonce: BigNumber, timestamp: BigNumber, signerWallet: string) => {
-        lightContract.on("Swap", async (nonce: BigNumber, timestamp: BigNumber, signerWallet: string) => {
-        const swapResult = {
-          nonce: nonce.toString(),
-          timestamp: timestamp.toString(),
-          signerWallet: signerWallet.toString(),
-        };
-        console.debug({nonce: swapResult.nonce})
-        const state: RootState = getState() as RootState;
-        const transaction = state.transactions.all.filter(
-          (tx: any) => tx.nonce === swapResult.nonce
-        )[0];
-        const tokens = Object.values(state.metadata.tokens.all);
-        if(transaction?.nonce){
-        dispatch(mineTransaction({signerWallet: swapResult.signerWallet, nonce: transaction.nonce, hash: ""}));
-        notifyTransaction(
-          "Order",
-          //@ts-ignore
-          transaction,
-          tokens,
-          false,
-          params.library._network.chainId
-        );
+      //      lightContract.filters.Swap(null, "0x63CF6013aaB710Ca21F1404f71d37111d7F928a8", async (nonce: BigNumber, timestamp: BigNumber, signerWallet: string) => {
+      lightContract.on(
+        "Swap",
+        async (
+          nonce: BigNumber,
+          timestamp: BigNumber,
+          signerWallet: string
+        ) => {
+          const swapResult = {
+            nonce: nonce.toString(),
+            timestamp: timestamp.toString(),
+            signerWallet: signerWallet.toString(),
+          };
+          console.debug({ nonce: swapResult.nonce });
+          const state: RootState = getState() as RootState;
+          const transaction = state.transactions.all.filter(
+            (tx: any) => tx.nonce === swapResult.nonce
+          )[0];
+          const tokens = Object.values(state.metadata.tokens.all);
+          if (transaction?.nonce) {
+            dispatch(
+              mineTransaction({
+                signerWallet: swapResult.signerWallet,
+                nonce: transaction.nonce,
+                hash: "",
+              })
+            );
+            notifyTransaction(
+              "Order",
+              //@ts-ignore
+              transaction,
+              tokens,
+              false,
+              params.library._network.chainId
+            );
+          }
         }
-      });
+      );
     }
   }
 );
@@ -408,10 +433,10 @@ export const take = createAsyncThunk(
           ? params.order
           : refactorOrder(params.order, params.library._network.chainId);
       if (tx.hash) {
-        const transaction: SubmittedOrder = {
+        const transaction: SubmittedRFQOrder = {
           type: "Order",
           order: newOrder,
-//          protocol: "request-for-quote",
+          protocol: "request-for-quote",
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),

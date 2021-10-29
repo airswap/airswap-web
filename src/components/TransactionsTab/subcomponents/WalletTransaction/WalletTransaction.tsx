@@ -1,4 +1,4 @@
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
@@ -6,7 +6,8 @@ import { formatUnits } from "@ethersproject/units";
 
 import {
   SubmittedApproval,
-  SubmittedOrder,
+  SubmittedLastLookOrder,
+  SubmittedRFQOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -47,21 +48,19 @@ export const WalletTransaction = ({
     return (
       <Container>
         <TextContainer>
-          {approvalToken && (
-            <>
-              <SpanTitle>
-                {t("wallet:approve", { symbol: approvalToken.symbol })}
-              </SpanTitle>
-              <SpanSubtitle>
-                {tx.status === "succeeded"
-                  ? t("common:success")
-                  : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
-            </>
-          )}
+          <>
+            <SpanTitle>
+              {t("wallet:approve", { symbol: approvalToken?.symbol })}
+            </SpanTitle>
+            <SpanSubtitle>
+              {tx.status === "succeeded"
+                ? t("common:success")
+                : tx.status === "processing"
+                ? t("common:processing")
+                : t("common:failed")}{" "}
+              · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+            </SpanSubtitle>
+          </>
         </TextContainer>
         {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
