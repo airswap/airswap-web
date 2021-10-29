@@ -63,28 +63,20 @@ function updateTransaction(
   signerWallet: string,
   status: "processing" | "succeeded" | "reverted"
 ) {
-  for (let i in state.all) {
-    if (hash) {
-      if (state.all[i].hash === hash) {
-        state.all[i] = {
-          ...state.all[i],
-          status,
-        };
-        break;
-      }
-    } else {
-      if (
-        state.all[i].nonce === nonce &&
-        (state.all[i] as SubmittedLastLookOrder).order.signerWallet ===
-          signerWallet
-      ) {
-        state.all[i] = {
-          ...state.all[i],
-          timestamp: Date.now(),
-          status,
-        };
-        break;
-      }
+  if (hash) {
+    const swap = state.all.find((s) => s.hash === hash);
+    if (swap) {
+      swap.status = status;
+    }
+  } else {
+    const swap = state.all.find(
+      (s) =>
+        s.nonce === nonce &&
+        (s as SubmittedLastLookOrder).order.signerWallet === signerWallet
+    );
+    if (swap) {
+      swap.timestamp = Date.now();
+      swap.status = status;
     }
   }
 }
