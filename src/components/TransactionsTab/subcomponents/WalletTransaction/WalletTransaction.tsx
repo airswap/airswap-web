@@ -5,7 +5,7 @@ import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import {
-  SubmittedApproval,
+  SubmittedApproval, SubmittedLastLookOrder,
   SubmittedOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";

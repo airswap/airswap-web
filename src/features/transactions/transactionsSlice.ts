@@ -18,6 +18,10 @@ export interface DepositOrWithdrawOrder {
 
 export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
+interface Protocol {
+  protocol: "request-for-quote" | "last-look";
+}
+
 export interface SubmittedTransaction {
   type: TransactionType;
   hash?: string; // LL orders doesn't have hash
@@ -31,15 +35,19 @@ export interface SubmittedOrder extends SubmittedTransaction {
   order: LightOrder;
 }
 
-export interface SubmittedApproval extends SubmittedTransaction {
+export interface SubmittedRFQOrder extends SubmittedOrder {}
+
+export interface SubmittedLastLookOrder extends SubmittedOrder {}
+
+export interface SubmittedApproval extends Omit<SubmittedTransaction, "protocol"> {
   tokenAddress: string;
 }
 
-export interface SubmittedDepositOrder extends SubmittedTransaction {
+export interface SubmittedDepositOrder extends Omit<SubmittedTransaction, "protocol"> {
   order: DepositOrWithdrawOrder;
 }
 
-export interface SubmittedWithdrawOrder extends SubmittedTransaction {
+export interface SubmittedWithdrawOrder extends Omit<SubmittedTransaction, "protocol"> {
   order: DepositOrWithdrawOrder;
 }
 
@@ -54,15 +62,30 @@ const initialState: TransactionsState = {
 function updateTransaction(
   state: TransactionsState,
   nonce: string,
+  hash: string,
+  signerWallet: string,
   status: "processing" | "succeeded" | "reverted"
 ) {
   for (let i in state.all) {
-    if (state.all[i].nonce === nonce) {
-      state.all[i] = {
-        ...state.all[i],
-        status,
-      };
-      break;
+    if(hash){
+      if (state.all[i].hash === hash) {
+        state.all[i] = {
+          ...state.all[i],
+          status,
+        };
+        break;
+      }
+    }
+    else {
+      //@ts-ignore
+      if (state.all[i].nonce === nonce && state.all[i].order!.signerWallet === signerWallet) {
+        state.all[i] = {
+          ...state.all[i],
+          timestamp: Date.now(),
+          status,
+        };
+        break;
+      }
     }
   }
 }
@@ -91,10 +114,10 @@ export const transactionsSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, action.payload.hash, "reverted");
+      updateTransaction(state, "", action.payload.hash, "","reverted");
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(state, action.payload, "succeeded");
+      updateTransaction(state, action.payload?.nonce, action.payload?.hash,  action.payload?.signerWallet,"succeeded");
     });
   },
 });

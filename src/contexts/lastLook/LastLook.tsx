@@ -15,7 +15,7 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import { submitTransaction } from "../../features/transactions/transactionActions";
-import { SubmittedOrder } from "../../features/transactions/transactionsSlice";
+import {SubmittedLastLookOrder, SubmittedOrder} from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;

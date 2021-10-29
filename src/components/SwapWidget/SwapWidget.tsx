@@ -566,15 +566,9 @@ const SwapWidget = () => {
 
       case ButtonActions.takeQuote:
         if (["swap", "swapWithWrap"].includes(swapType)) {
-          await takeBestOption().catch((e: any) => {
-            console.error(e.message);
-            //todo reset action
-          });
+          await takeBestOption();
         } else if (swapType === "wrapOrUnwrap") {
-          await doWrap().catch((e: any) => {
-            console.error(e.message);
-            //todo reset action
-          });
+          await doWrap();
         }
         break;
 
