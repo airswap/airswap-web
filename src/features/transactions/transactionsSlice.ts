@@ -75,7 +75,8 @@ function updateTransaction(
     } else {
       if (
         state.all[i].nonce === nonce &&
-          (state.all[i] as SubmittedLastLookOrder).order.signerWallet === signerWallet
+        (state.all[i] as SubmittedLastLookOrder).order.signerWallet ===
+          signerWallet
       ) {
         state.all[i] = {
           ...state.all[i],

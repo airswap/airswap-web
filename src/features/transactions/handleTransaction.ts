@@ -3,6 +3,7 @@ import { mineTransaction, revertTransaction } from "./transactionActions";
 /**
  * if pending, call getTransaction to see if it was a success/failure/pending
  * update accordingly. if pending: wait() and poll at a sensible interval.
+ * this is only good for request-for-quote orders
  * @param tx
  * @param walletHasChanged
  * @param dispatch
@@ -15,11 +16,16 @@ async function handleTransaction(
   library: any
 ) {
   if (tx.status === "processing" && tx.hash) {
+    console.debug("inside handleTransaction");
     let receipt = await library.getTransactionReceipt(tx.hash);
     if (receipt !== null) {
       if (walletHasChanged) return;
       const status = receipt.status;
-      if (status === 1) dispatch(mineTransaction(tx.nonce));
+      console.debug({ status, receipt, tx });
+      if (status === 1)
+        dispatch(
+          mineTransaction({ nonce: tx.nonce, hash: tx.hash, signerWallet: "" })
+        );
       // success
       else if (status === 0)
         dispatch(
@@ -38,7 +44,10 @@ async function handleTransaction(
       if (transaction) {
         try {
           await transaction.wait(1);
-          if (!walletHasChanged) dispatch(mineTransaction(tx.nonce)); // success
+          if (!walletHasChanged)
+            dispatch(
+              mineTransaction({ nonce: tx.nonce, hash: "", signerWallet: "" })
+            ); // success
         } catch (err) {
           console.error(err);
           if (!walletHasChanged)
@@ -68,7 +77,14 @@ async function handleTransaction(
               })
             );
         } else {
-          if (!walletHasChanged) dispatch(mineTransaction(tx.nonce)); // success
+          if (!walletHasChanged)
+            dispatch(
+              mineTransaction({
+                nonce: tx.nonce,
+                hash: tx.hash,
+                signerWallet: "",
+              })
+            ); // success
         }
       }
     }
