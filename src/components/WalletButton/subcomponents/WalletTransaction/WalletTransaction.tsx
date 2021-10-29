@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
-import { formatUnits } from "@ethersproject/units";
+import {TokenInfo} from "@airswap/types";
+import {formatUnits} from "@ethersproject/units";
 
 import {
-  SubmittedApproval, SubmittedLastLookOrder,
+  SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
   TransactionType,
@@ -12,11 +12,11 @@ import {
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import {
   Container,
-  TextContainer,
-  SpanTitle,
   SpanSubtitle,
+  SpanTitle,
   StyledTransactionLink,
   StyledWalletTransactionStatus,
+  TextContainer,
 } from "./WalletTransaction.styles";
 
 type WalletTransactionProps = {

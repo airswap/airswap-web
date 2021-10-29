@@ -18,10 +18,6 @@ export interface DepositOrWithdrawOrder {
 
 export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
-interface Protocol {
-  protocol: "request-for-quote" | "last-look";
-}
-
 export interface SubmittedTransaction {
   type: TransactionType;
   hash?: string; // LL orders doesn't have hash
@@ -29,6 +25,7 @@ export interface SubmittedTransaction {
   nonce?: string;
   expiry?: string;
   timestamp: number;
+  protocol?: "request-for-quote" | "last-look";
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
