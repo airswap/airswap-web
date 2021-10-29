@@ -95,9 +95,10 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   });
 
   useEffect(() => {
-    if (library && chainId) {
+    if (library && chainId && account) {
       dispatch(
         swaplistenerSubscribe({
+          account: account!,
           library,
           chainId,
         })
@@ -111,7 +112,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         );
       };
     }
-  }, [library, dispatch, chainId]);
+  }, [library, dispatch, chainId, account]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
