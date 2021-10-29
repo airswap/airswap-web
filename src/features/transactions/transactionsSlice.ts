@@ -73,10 +73,9 @@ function updateTransaction(
         break;
       }
     } else {
-      //@ts-ignore
       if (
         state.all[i].nonce === nonce &&
-        state.all[i].order!.signerWallet === signerWallet
+          (state.all[i] as SubmittedLastLookOrder).order.signerWallet === signerWallet
       ) {
         state.all[i] = {
           ...state.all[i],
