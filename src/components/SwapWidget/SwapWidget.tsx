@@ -119,7 +119,6 @@ const SwapWidget = () => {
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
-  const [hasValidatorErrors, setHasValidatorErrors] = useState<boolean>(false);
   const [errors, setErrors] = useState<Error[]>([]);
 
   const { t } = useTranslation([
@@ -377,22 +376,13 @@ const SwapWidget = () => {
       const validator = new Validator(chainId, library?.getSigner());
       let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
-        let wait: Promise<Error[]> = new Promise((resolve, reject) => {
-          setTimeout(async () => {
-            console.log("Order expiry time: ", bestTradeOption?.order?.expiry);
-            console.log("Current Time: ", Date.now());
-            errors = (await validator.checkSwap(
-              bestTradeOption!.order!,
-              account!
-            )) as Error[];
-            resolve(errors);
-          }, 5000);
-        });
-        errors = await wait;
+        errors = errors = (await validator.checkSwap(
+          bestTradeOption!.order!,
+          account!
+        )) as Error[];
         if (errors.length) {
           setErrors(errors);
           setIsSwapping(false);
-          setHasValidatorErrors(true);
           return;
         }
         LastLook.unsubscribeAllServers();
@@ -419,7 +409,6 @@ const SwapWidget = () => {
         if (errors.length) {
           setErrors(errors);
           setIsSwapping(false);
-          setHasValidatorErrors(true);
           return;
         }
         const accepted = await LastLook.sendOrderForConsideration({
@@ -656,18 +645,16 @@ const SwapWidget = () => {
         title={t("validatorErrors:unableSwap")}
         subTitle={t("validatorErrors:swapFail")}
         onClose={async () => {
-          setHasValidatorErrors(false);
-          setErrors([]);
           await handleButtonClick(ButtonActions.restart);
+          setErrors([]);
         }}
-        isHidden={!hasValidatorErrors}
+        isHidden={!errors.length}
       >
         <ErrorList
           errors={errors}
           handleClick={async () => {
-            setHasValidatorErrors(false);
-            setErrors([]);
             await handleButtonClick(ButtonActions.restart);
+            setErrors([]);
           }}
         />
       </Overlay>
