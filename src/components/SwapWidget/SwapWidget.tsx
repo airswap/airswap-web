@@ -432,13 +432,13 @@ const SwapWidget = () => {
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
+          LastLook.unsubscribeAllServers();
         } else {
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
           });
         }
-        LastLook.unsubscribeAllServers();
       }
     } catch (e: any) {
       if (bestTradeOption!.protocol !== "request-for-quote") {
