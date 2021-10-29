@@ -61,21 +61,24 @@ function updateTransaction(
   nonce: string,
   hash: string,
   signerWallet: string,
-  status: "processing" | "succeeded" | "reverted"
+  status: "processing" | "succeeded" | "reverted",
+  protocol?: "request-for-quote" | "last-look"
 ) {
-  if (hash) {
-    const swap = state.all.find((s) => s.hash === hash);
-    if (swap) {
-      swap.status = status;
-    }
-  } else {
+  if (protocol === "last-look") {
     const swap = state.all.find(
       (s) =>
         s.nonce === nonce &&
-        (s as SubmittedLastLookOrder).order.signerWallet === signerWallet
+        (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
+          signerWallet.toLowerCase()
     );
     if (swap) {
       swap.timestamp = Date.now();
+      swap.status = status;
+      swap.hash = hash;
+    }
+  } else {
+    const swap = state.all.find((s) => s.hash === hash);
+    if (swap) {
       swap.status = status;
     }
   }
@@ -105,7 +108,14 @@ export const transactionsSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, "", action.payload.hash, "", "reverted");
+      updateTransaction(
+        state,
+        "",
+        action.payload.hash,
+        "",
+        "reverted",
+        undefined
+      );
     });
     builder.addCase(mineTransaction, (state, action) => {
       updateTransaction(
@@ -113,7 +123,8 @@ export const transactionsSlice = createSlice({
         action.payload?.nonce,
         action.payload?.hash,
         action.payload?.signerWallet,
-        "succeeded"
+        "succeeded",
+        action.payload?.protocol
       );
     });
   },
