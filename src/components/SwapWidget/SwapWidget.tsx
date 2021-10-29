@@ -569,7 +569,12 @@ const SwapWidget = () => {
                 ? baseAmount
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
-            readOnly={!!bestTradeOption || isWrapping || isRequestingQuotes}
+            readOnly={
+              !!bestTradeOption ||
+              isWrapping ||
+              isRequestingQuotes ||
+              pairUnavailable
+            }
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />
         )}
