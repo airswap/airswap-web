@@ -2,9 +2,14 @@ import { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
+import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+//@ts-ignore
+import * as lightDeploys from "@airswap/light/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+
+import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
@@ -32,10 +37,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
-import {
-  swaplistenerSubscribe,
-  swaplistenerUnsubscribe,
-} from "../orders/ordersSlice";
+import { swaplistenerSubscribe } from "../orders/ordersSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import handleTransaction from "../transactions/handleTransaction";
 import {
@@ -85,34 +87,45 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
 
+  const [lightContract, setLightContract] = useState<Contract>();
+
   useBeforeunload(() => {
-    dispatch(
-      swaplistenerUnsubscribe({
-        library,
-        chainId,
-      })
-    );
+    if (lightContract) {
+      console.debug(Date.now() + ": unsubscribed to swaplistener");
+      lightContract.removeAllListeners("Swap");
+    }
   });
 
   useEffect(() => {
-    if (library && chainId && account) {
+    if (library && chainId && account && lightContract) {
       dispatch(
         swaplistenerSubscribe({
           account: account!,
+          lightContract,
+          //@ts-ignore
           library,
           chainId,
         })
       );
       return () => {
-        dispatch(
-          swaplistenerUnsubscribe({
-            library,
-            chainId,
-          })
-        );
+        if (lightContract) {
+          console.debug(Date.now() + ": unsubscribed to swaplistener");
+          lightContract.removeAllListeners("Swap");
+        }
       };
     }
-  }, [library, dispatch, chainId, account]);
+  }, [dispatch, library, chainId, account, lightContract]);
+  useEffect(() => {
+    if (chainId && account && library) {
+      const lightContract = new Contract(
+        lightDeploys[chainId],
+        LightContract.abi,
+        //@ts-ignore
+        library
+      );
+      setLightContract(lightContract);
+    }
+  }, [library, chainId, account]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {

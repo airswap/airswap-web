@@ -1,22 +1,29 @@
-import {wethAddresses} from "@airswap/constants";
-import {Server} from "@airswap/libraries";
-import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+import { wethAddresses } from "@airswap/constants";
+import { Server } from "@airswap/libraries";
 //@ts-ignore
 import * as lightDeploys from "@airswap/light/deploys.js";
-import {Levels, LightOrder} from "@airswap/types";
-import {toAtomicString} from "@airswap/utils";
-import {createAsyncThunk, createSelector, createSlice, PayloadAction,} from "@reduxjs/toolkit";
+import { Levels, LightOrder } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import {Contract, Transaction} from "ethers";
+import { ethers, Transaction } from "ethers";
 
-import {AppDispatch, RootState} from "../../app/store";
-import {notifyTransaction} from "../../components/Toasts/ToastController";
-import {RFQ_EXPIRY_BUFFER_MS} from "../../constants/configParams";
+import { AppDispatch, RootState } from "../../app/store";
+import { notifyTransaction } from "../../components/Toasts/ToastController";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
-import {allowancesLightActions, allowancesWrapperActions,} from "../balances/balancesSlice";
-import {selectBestPricing} from "../pricing/pricingSlice";
-import {selectTradeTerms} from "../tradeTerms/tradeTermsSlice";
+import {
+  allowancesLightActions,
+  allowancesWrapperActions,
+} from "../balances/balancesSlice";
+import { selectBestPricing } from "../pricing/pricingSlice";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   declineTransaction,
   mineTransaction,
@@ -29,8 +36,18 @@ import {
   SubmittedRFQOrder,
   SubmittedWithdrawOrder,
 } from "../transactions/transactionsSlice";
-import {setWalletConnected, setWalletDisconnected,} from "../wallet/walletSlice";
-import {approveToken, depositETH, orderSortingFunction, requestOrders, takeOrder, withdrawETH,} from "./orderApi";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
+import {
+  approveToken,
+  depositETH,
+  orderSortingFunction,
+  requestOrders,
+  takeOrder,
+  withdrawETH,
+} from "./orderApi";
 
 export interface OrdersState {
   orders: LightOrder[];
@@ -288,6 +305,7 @@ export const approve = createAsyncThunk<
               nonce: receipt.nonce,
               hash: receipt.transactionHash,
               signerWallet: "",
+              protocol: undefined,
             })
           );
           // Optimistically update allowance (this is not really optimistic,
@@ -334,103 +352,67 @@ export const approve = createAsyncThunk<
   }
 });
 
-export const swaplistenerUnsubscribe = createAsyncThunk(
-  "orders/swaplistener:unsubscribe",
-  async (params: { library: any; chainId: any }, { getState, dispatch }) => {
-    const { chainId, library } = params;
-    let lightContract = new Contract(
-      lightDeploys[chainId],
-      LightContract.abi,
-      library
-    );
-    console.debug(Date.now() + ": unsubscribed to swaplistener");
-    lightContract.removeAllListeners("Swap");
-  }
-);
-
 export const swaplistenerSubscribe = createAsyncThunk(
   "orders/swaplistener:subscribe",
   async (
-    params: { library: any; chainId: number; account: string },
+    params: { lightContract: any; chainId: any; account: string; library: any },
     { getState, dispatch }
   ) => {
-    const { chainId, library, account } = params;
-    const lightContract = new Contract(
-      lightDeploys[chainId],
-      LightContract.abi,
-      library
-    );
-    if (lightContract) {
-      console.debug(Date.now() + ": subscribed to swaplistener for ", account);
-      /*
-
-      let accountFilter = {
-        address: lightDeploys[chainId].address,
-        topics: [
-          lightContract.Swap
-          ],
-      }
-      lightContract.on(accountFilter, async (result) => {
-        let data = await result.getTransaction();
-        let receipt = await result.getTransactionReceipt();
-        let block = await result.getBlock();
-        const decode = lightContract.interface.decodeEventLog(
-            "Swap",
-            result.data
+    const { lightContract, account, chainId } = params;
+    console.debug(Date.now() + ": subscribed to swaplistener for ", account);
+    const handleReceipt = (
+      tx: any,
+      protocol: "last-look" | "request-for-quote"
+    ) => {
+      const state: RootState = getState() as RootState;
+      const tokens = Object.values(state.metadata.tokens.all);
+      const nonce = parseInt(tx.topics[1]);
+      let transaction;
+      if (protocol === "request-for-quote")
+        transaction = state.transactions.all.filter(
+          (t: any) => t.hash === tx.transactionHash
+        )[0];
+      dispatch(
+        mineTransaction({
+          signerWallet: account.toString(),
+          nonce: nonce.toString(),
+          hash: tx.transactionHash,
+          protocol,
+        })
+      );
+      if (transaction)
+        notifyTransaction(
+          "Order",
+          //@ts-ignore
+          transaction,
+          tokens,
+          false,
+          chainId
         );
-        console.debug(data)
-        console.debug(receipt)
-        console.debug(block)
-        console.debug(result)
-        console.debug(decode)
-      });
-
-
-            lightContract.filters.Swap(null, lightDeploys[chainId].address, async (nonce: BigNumber, timestamp: BigNumber, signerWallet: string) => {
-              console.debug({nonce,timestamp,signerWallet});
-            });
- */
-      lightContract.on(
-        "Swap",
-        async (
-          nonce: BigNumber,
-          timestamp: BigNumber,
-          signerWallet: string
-        ) => {
-          const swapResult = {
-            nonce: nonce.toString(),
-            timestamp: timestamp.toString(),
-            signerWallet: signerWallet.toString(),
-          };
-          if (signerWallet !== account) {
-            console.debug(
-              "got a swap event, but signerWallet is not the same as the connected account"
-            );
-          } else {
-            const state: RootState = getState() as RootState;
-            const transaction = state.transactions.all.filter(
-              (tx: any) => tx.nonce === swapResult.nonce
-            )[0];
-            const tokens = Object.values(state.metadata.tokens.all);
-            if (transaction?.nonce) {
-              dispatch(
-                mineTransaction({
-                  signerWallet: swapResult.signerWallet,
-                  nonce: transaction.nonce,
-                  hash: "",
-                })
-              );
-              notifyTransaction(
-                "Order",
-                //@ts-ignore
-                transaction,
-                tokens,
-                false,
-                params.library._network.chainId
-              );
-            }
-          }
-        }
+    };
+    if (lightContract) {
+      const lastlookFilter = {
+        address: lightDeploys[chainId],
+        topics: [
+          lightContract.Swap,
+          null,
+          ethers.utils.hexZeroPad(account, 32),
+        ],
+      };
+      const rfqFilter = {
+        address: lightDeploys[chainId],
+        topics: [
+          lightContract.Swap,
+          null,
+          null,
+          ethers.utils.hexZeroPad(account, 32),
+        ],
+      };
+      lightContract.on(rfqFilter, async (tx: any) =>
+        handleReceipt(tx, "request-for-quote")
+      );
+      lightContract.on(lastlookFilter, async (tx: any) =>
+        handleReceipt(tx, "last-look")
       );
     }
   }
