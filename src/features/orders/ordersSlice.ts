@@ -296,13 +296,20 @@ export const approve = createAsyncThunk<
       };
       dispatch(submitTransaction(transaction));
       params.library.once(tx.hash, async () => {
+        console.debug("Approval", tx);
         const receipt = await params.library.getTransactionReceipt(tx.hash);
         const state: RootState = getState() as RootState;
         const tokens = Object.values(state.metadata.tokens.all);
         if (receipt.status === 1) {
-          dispatch(mineTransaction(receipt.nonce));
-          // Optimistically update allowance (this is not really optimisitc,
-          // but it pre-empts receiving the event)
+          dispatch(
+            mineTransaction({
+              nonce: receipt.nonce,
+              hash: receipt.transactionHash,
+              signerWallet: "",
+            })
+          );
+          // Optimistically update allowance (this is not really optimistic,
+          // but it preempts receiving the event)
           if (params.contractType === "Light") {
             dispatch(
               allowancesLightActions.set({
