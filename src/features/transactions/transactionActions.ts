@@ -11,7 +11,7 @@ const declineTransaction = createAction<{
   reason: string;
 }>("transactions/declineTransaction");
 
-const mineTransaction = createAction<string>("transaction/mineTransaction");
+const mineTransaction = createAction<{signerWallet:string, hash:string, nonce: string}>("transaction/mineTransaction");
 
 const revertTransaction = createAction<{
   hash: string;

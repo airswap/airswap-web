@@ -4,7 +4,7 @@ import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import {
-  SubmittedApproval,
+  SubmittedApproval, SubmittedLastLookOrder,
   SubmittedOrder,
   SubmittedTransaction,
   TransactionType,
@@ -56,9 +56,9 @@ export const WalletTransaction = ({
   approvalToken,
 }: WalletTransactionProps) => {
   const { t } = useTranslation(["common", "wallet"]);
-
   if (type === "Order" || type === "Deposit" || type === "Withdraw") {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
+    //    let tx = transaction.protocol === "last-look" ? transaction as SubmittedLastLookOrder: transaction as SubmittedRFQOrder;
     return (
       <Container>
         <StyledWalletTransactionStatus status={tx.status} />

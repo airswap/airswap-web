@@ -15,7 +15,7 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import { submitTransaction } from "../../features/transactions/transactionActions";
-import { SubmittedOrder } from "../../features/transactions/transactionsSlice";
+import {SubmittedLastLookOrder, SubmittedOrder} from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;
@@ -143,13 +143,14 @@ const LastLookProvider: FC = ({ children }) => {
         ...order,
         ...signature,
       };
-      const transaction: SubmittedOrder = {
+      const transaction: SubmittedLastLookOrder = {
         type: "Order",
         order: signedOrder,
         nonce: order.nonce,
         status: "processing",
         expiry: signedOrder.expiry,
         timestamp: Date.now(),
+        //protocol: "last-look"
       };
       dispatch(submitTransaction(transaction));
       return server.consider(signedOrder);

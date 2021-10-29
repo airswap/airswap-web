@@ -428,9 +428,7 @@ const SwapWidget = () => {
           locator: bestTradeOption!.pricing!.locator,
           pricing: bestTradeOption!.pricing!.pricing,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        }).catch((e) => {
-          console.error("sendOrderForConsideration failed", e);
-        });
+        })
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
@@ -533,15 +531,9 @@ const SwapWidget = () => {
 
       case ButtonActions.takeQuote:
         if (["swap", "swapWithWrap"].includes(swapType)) {
-          await takeBestOption().catch((e: any) => {
-            console.error(e.message);
-            //todo reset action
-          });
+          await takeBestOption();
         } else if (swapType === "wrapOrUnwrap") {
-          await doWrap().catch((e: any) => {
-            console.error(e.message);
-            //todo reset action
-          });
+          await doWrap();
         }
         break;
 
