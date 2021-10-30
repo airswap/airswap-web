@@ -60,32 +60,14 @@ async function handleTransaction(
         }
         return;
       } else {
-        // if transaction === null, we poll at intervals
-        // assume failed after 30 mins
-        const assumedFailureTime = Date.now() + 30 * 60 * 1000;
-        while (receipt === null && Date.now() <= assumedFailureTime) {
-          // wait 30 seconds
-          await new Promise((res) => setTimeout(res, 30000));
-          receipt = await library!.getTransactionReceipt(tx.hash);
-        }
-        if (!receipt || receipt.status === 0) {
-          if (!walletHasChanged)
-            dispatch(
-              revertTransaction({
-                hash: tx.hash,
-                reason: "Reverted",
-              })
-            );
-        } else {
-          if (!walletHasChanged)
-            dispatch(
-              mineTransaction({
-                nonce: tx.nonce,
-                hash: tx.hash,
-                signerWallet: "",
-              })
-            ); // success
-        }
+        if (!walletHasChanged)
+          dispatch(
+            mineTransaction({
+              nonce: tx.nonce,
+              hash: tx.hash,
+              signerWallet: "",
+            })
+          ); // success
       }
     }
   }
