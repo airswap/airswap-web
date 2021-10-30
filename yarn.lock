@@ -3886,6 +3886,15 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
+"@types/styled-components@*":
+  version "5.1.15"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.15.tgz#30855b40aa80b3b4e4c0e43a4af366e7c246d148"
+  integrity sha512-4evch8BRI3AKgb0GAZ/sn+mSeB+Dq7meYtMi7J/0Mg98Dt1+r8fySOek7Sjw1W+Wskyjc93565o5xWAT/FdY0Q==
+  dependencies:
+    "@types/hoist-non-react-statics" "*"
+    "@types/react" "*"
+    csstype "^3.0.2"
+
 "@types/styled-components@^5.1.12":
   version "5.1.15"
   resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.15.tgz#30855b40aa80b3b4e4c0e43a4af366e7c246d148"
@@ -3894,6 +3903,14 @@
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
     csstype "^3.0.2"
+
+"@types/styled-react-modal@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/styled-react-modal/-/styled-react-modal-1.2.1.tgz#178a05b482d6fa95d48bc6d2c81ff926f13f76a9"
+  integrity sha512-wEKR3TtryjVGsTeTYvP1cG5fm7KkxssErlDvTqh+YEB565eJnYBPGAutpJK0ejAPNTb/apn1fKsHomU80NXLew==
+  dependencies:
+    "@types/react" "*"
+    "@types/styled-components" "*"
 
 "@types/tapable@^1", "@types/tapable@^1.0.5":
   version "1.0.8"
@@ -15824,6 +15841,13 @@ styled-components@^5.3.1:
     hoist-non-react-statics "^3.0.0"
     shallowequal "^1.1.0"
     supports-color "^5.5.0"
+
+styled-react-modal@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/styled-react-modal/-/styled-react-modal-2.1.0.tgz#524451deb2faba329f3a004d28733b3e6de27744"
+  integrity sha512-GgUzhU4oCCA31OFKv/rCIj0DN4FDVRirGWKH+pGsFyvlr7qxeyAsiM09J0Tss107dJ6EUhK+D7U8JzQuq06hZw==
+  dependencies:
+    prop-types "^15.7.2"
 
 stylehacks@^4.0.0:
   version "4.0.3"

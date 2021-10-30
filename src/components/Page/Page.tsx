@@ -1,9 +1,12 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
 import { Orders } from "../../features/orders/Orders";
 import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import InformationModals, {
+  InformationType,
+} from "../InformationModals/InformationModals";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
@@ -17,19 +20,35 @@ export type StyledPageProps = {
 };
 
 const Page: FC = (): ReactElement => {
+  const [
+    activeModalPage,
+    setActiveModalPage,
+  ] = useState<InformationType | null>(null);
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
   const adjustForBookmarkWarning = width! > 480 && showBookmarkWarning;
 
+  const onToolbarButtonClick = (type: InformationType) => {
+    setActiveModalPage(type);
+  };
+
+  const onCloseModalClick = () => {
+    setActiveModalPage(null);
+  };
+
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <Toaster />
-      <Toolbar />
+      <Toolbar onButtonClick={onToolbarButtonClick} />
       <StyledWallet />
       <WidgetFrame>
         <Orders />
       </WidgetFrame>
+      <InformationModals
+        onCloseModalClick={onCloseModalClick}
+        activeModal={activeModalPage}
+      />
     </StyledPage>
   );
 };

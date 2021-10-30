@@ -39,6 +39,7 @@ const SwapInputs: FC<{
   onMaxButtonClick: (event: MouseEvent<HTMLButtonElement>) => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
+  showMaxButton: boolean;
 }> = ({
   tradeNotAllowed,
   baseAmount,
@@ -52,6 +53,7 @@ const SwapInputs: FC<{
   baseTokenInfo,
   quoteTokenInfo,
   onBaseAmountChange,
+  showMaxButton = false,
 }) => {
   let fromAmount: string, toAmount: string;
   const isSell = side === "sell";
@@ -85,12 +87,15 @@ const SwapInputs: FC<{
         }}
         onMaxClicked={onMaxButtonClick}
         readOnly={readOnly}
-        includeAmountInput={isSell || !!quoteAmount}
+        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
         amountDetails={
-          !isSell && quoteAmount ? t("orders:afterFee", { fee: "0.07%" }) : ""
+          !isSell && !isRequesting && quoteAmount
+            ? t("orders:afterFee", { fee: "0.07%" })
+            : ""
         }
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={!isSell && isRequesting}
+        showMaxButton={showMaxButton}
       />
       <SwapIconContainer>
         {tradeNotAllowed ? <MdBlock /> : <MdArrowDownward />}
@@ -103,9 +108,9 @@ const SwapInputs: FC<{
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
         readOnly={readOnly}
-        includeAmountInput={!isSell || !!quoteAmount}
+        includeAmountInput={!isSell || (!!quoteAmount && !isRequesting)}
         amountDetails={
-          isSell && quoteAmount && !noFee
+          isSell && !isRequesting && quoteAmount && !noFee
             ? t("orders:afterFee", { fee: "0.07%" })
             : ""
         }

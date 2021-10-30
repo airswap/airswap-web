@@ -68,6 +68,10 @@ export type TokenSelectProps = {
    * Used for showing loading state
    */
   isLoading?: boolean;
+  /**
+   * Show max button
+   */
+  showMaxButton?: boolean;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -81,6 +85,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   onAmountChange,
   amountDetails,
   isLoading = false,
+  showMaxButton = false,
 }) => {
   const { t } = useTranslation(["common"]);
   return (
@@ -118,7 +123,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <TokenSelectFocusBorder position="right" />
             {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
           </AmountAndDetailsContainer>
-          {onMaxClicked && !readOnly && (
+          {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common:max")}</MaxButton>
           )}
         </InputAndMaxButtonWrapper>

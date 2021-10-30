@@ -21,10 +21,7 @@ export const ToolbarContainer = styled.div`
   z-index: 1;
 
   @media ${breakPoints.tabletPortraitUp} {
-    // TODO: Show toolbar when modals PR is implemented
-
-    display: none;
-    // display: flex;
+    display: flex;
   }
 `;
 
