@@ -114,21 +114,19 @@ export const WalletTransaction = ({
       <Container>
         <StyledWalletTransactionStatus status={tx.status} />
         <TextContainer>
-          {approvalToken && (
-            <>
-              <SpanTitle>
-                {t("wallet:approve", { symbol: approvalToken.symbol })}
-              </SpanTitle>
-              <SpanSubtitle>
-                {tx.status === "succeeded"
+          <>
+            <SpanTitle>
+              {t("wallet:approve", { symbol: approvalToken?.symbol })}
+            </SpanTitle>
+            <SpanSubtitle>
+              {tx.status === "succeeded"
                   ? t("common:success")
                   : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
-            </>
-          )}
+                      ? t("common:processing")
+                      : t("common:failed")}{" "}
+              · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+            </SpanSubtitle>
+          </>
         </TextContainer>
         {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
