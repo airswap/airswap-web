@@ -4,7 +4,7 @@ import styled from "styled-components/macro";
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
-import { Title } from "../Typography/Typography";
+import { Title, InfoSubHeading } from "../Typography/Typography";
 
 type ContainerProps = {
   isHidden: boolean;
@@ -57,6 +57,14 @@ export const StyledTitle = styled(Title)`
   text-overflow: ellipsis;
   transition: opacity ease-in-out 0.3s;
   will-change: opacity;
+`;
+
+export const StyledSubTitle = styled(InfoSubHeading)`
+  transition: opacity ease-in-out 0.3s;
+  will-change: opacity;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 1rem;
 `;
 
 export const Container = styled.div<ContainerProps>`

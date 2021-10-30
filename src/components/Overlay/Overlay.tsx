@@ -3,13 +3,13 @@ import { FC } from "react";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
-import { InfoSubHeading } from "../Typography/Typography";
 import {
   Container,
   StyledTitle,
   TitleContainer,
   ContentContainer,
   TitleSubContainer,
+  StyledSubTitle,
 } from "./Overlay.styles";
 
 export type OverlayProps = {
@@ -46,7 +46,7 @@ const Overlay: FC<OverlayProps> = ({
         <TitleSubContainer>
           <StyledTitle type="h2">{title}</StyledTitle>
           {!!subTitle && !isHidden && (
-            <InfoSubHeading>{subTitle}</InfoSubHeading>
+            <StyledSubTitle>{subTitle}</StyledSubTitle>
           )}
         </TitleSubContainer>
         <CloseButton

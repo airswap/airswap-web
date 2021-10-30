@@ -61,3 +61,10 @@ export const BackButton = styled(Button)`
         : props.theme.colors.alwaysWhite};
   }
 `;
+
+export const LegendDivider = styled.div`
+  width: calc(100% - 4rem);
+  height: 1px;
+  background: ${(props) => props.theme.colors.borderGrey};
+  align-self: center;
+`;

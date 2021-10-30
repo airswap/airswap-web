@@ -12,6 +12,7 @@ import {
   ErrorIconContainer,
   ErrorTextContainer,
   BackButton,
+  LegendDivider,
 } from "./ErrorList.styles";
 
 export type Error = keyof typeof validatorErrors;
@@ -60,6 +61,7 @@ export const ErrorList = ({ errors, handleClick }: ErrorListProps) => {
   return (
     <>
       <Container ref={containerRef} $overflow={overflow}>
+        <LegendDivider />
         <ScrollContainer ref={scrollContainerRef}>
           <StyledErrorList>
             <StyledErrors />
