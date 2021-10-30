@@ -1,6 +1,5 @@
 import styled, { keyframes } from "styled-components/macro";
 
-import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 
 export const Container = styled.div`
@@ -8,7 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   position: relative;
   border-radius: 0.25rem;
-  height: 32.5rem;
+  height: 30rem;
   width: 30rem;
   padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};

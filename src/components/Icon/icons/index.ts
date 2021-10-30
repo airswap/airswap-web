@@ -9,9 +9,11 @@ import IconContactSupport from "./IconContactSupport";
 import IconDarkModeSwitch from "./IconDarkModeSwitch";
 import IconDeny from "./IconDeny";
 import IconEdit from "./IconEdit";
+import IconForbidden from "./IconForbidden";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconPending from "./IconPending";
+import IconSwap from "./IconSwap";
 import IconVote from "./IconVote";
 import IconX from "./IconX";
 
@@ -27,9 +29,11 @@ export {
   IconDarkModeSwitch,
   IconDeny,
   IconEdit,
+  IconForbidden,
   IconLibrary,
   IconLink,
   IconPending,
+  IconSwap,
   IconVote,
   IconX,
 };

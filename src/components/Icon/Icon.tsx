@@ -19,8 +19,10 @@ import {
   IconLibrary,
   IconLink,
   IconPending,
+  IconSwap,
   IconVote,
   IconX,
+  IconForbidden,
 } from "./icons";
 
 type IconSet = {
@@ -48,7 +50,9 @@ export const icons: IconSet = {
   deny: IconDeny,
   edit: IconEdit,
   "exit-modal": HiX,
+  forbidden: IconForbidden,
   "information-circle-outline": IoMdInformationCircleOutline,
+  swap: IconSwap,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
   "transaction-pending": IconPending,

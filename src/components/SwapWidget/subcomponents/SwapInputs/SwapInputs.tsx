@@ -1,24 +1,26 @@
 import { FC, MouseEvent, FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { MdBlock, MdArrowDownward } from "react-icons/md";
 
 import { TokenInfo } from "@airswap/types";
 
 import styled from "styled-components/macro";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
+import Icon from "../../../Icon/Icon";
 import TokenSelect from "../../../TokenSelect/TokenSelect";
 
 export const SwapIconContainer = styled.div`
   position: absolute;
   right: 14.125rem;
-  top: 10rem;
+  top: 9.9375rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 50%;
+  color: ${(props) => props.theme.colors.lightGrey};
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
   z-index: 1;
@@ -98,7 +100,11 @@ const SwapInputs: FC<{
         showMaxButton={showMaxButton}
       />
       <SwapIconContainer>
-        {tradeNotAllowed ? <MdBlock /> : <MdArrowDownward />}
+        {tradeNotAllowed ? (
+          <Icon name="forbidden" iconSize={0.9375} />
+        ) : (
+          <Icon name="swap" iconSize={0.75} />
+        )}
       </SwapIconContainer>
       <TokenSelect
         label={t("orders:to")}
