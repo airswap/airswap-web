@@ -51,10 +51,13 @@ export const BackButton = styled(Button)`
         : props.theme.colors.borderGrey};
   background-color: transparent;
   &:hover {
-    background: ${(props) =>
+    border-color: ${(props) =>
       props.theme.name === "light"
         ? props.theme.colors.primary
-        : props.theme.colors.alwaysBlack};
-    color: ${(props) => props.theme.colors.alwaysWhite};
+        : props.theme.colors.alwaysWhite};
+    color: ${(props) =>
+      props.theme.name === "light"
+        ? props.theme.colors.primary
+        : props.theme.colors.alwaysWhite};
   }
 `;

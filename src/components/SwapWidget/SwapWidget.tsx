@@ -414,6 +414,7 @@ const SwapWidget = () => {
     try {
       setIsSwapping(true);
       // @ts-ignore
+      //TOOD figure out type issues
       const validator = new Validator(chainId, library?.getSigner());
       let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
