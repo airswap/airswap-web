@@ -1,7 +1,5 @@
 import { wethAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-//@ts-ignore
-import * as lightDeploys from "@airswap/light/deploys.js";
 import { Levels, LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
@@ -12,7 +10,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import { ethers, Transaction } from "ethers";
+import { Transaction } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
@@ -295,7 +293,6 @@ export const approve = createAsyncThunk<
       };
       dispatch(submitTransaction(transaction));
       params.library.once(tx.hash, async () => {
-        console.debug("Approval", tx);
         const receipt = await params.library.getTransactionReceipt(tx.hash);
         const state: RootState = getState() as RootState;
         const tokens = Object.values(state.metadata.tokens.all);
@@ -351,72 +348,6 @@ export const approve = createAsyncThunk<
     throw e;
   }
 });
-
-export const swaplistenerSubscribe = createAsyncThunk(
-  "orders/swaplistener:subscribe",
-  async (
-    params: { lightContract: any; chainId: any; account: string; library: any },
-    { getState, dispatch }
-  ) => {
-    const { lightContract, account, chainId } = params;
-    console.debug(Date.now() + ": subscribed to swaplistener for ", account);
-    const handleReceipt = (
-      tx: any,
-      protocol: "last-look" | "request-for-quote"
-    ) => {
-      const state: RootState = getState() as RootState;
-      const tokens = Object.values(state.metadata.tokens.all);
-      const nonce = parseInt(tx.topics[1]);
-      let transaction;
-      if (protocol === "request-for-quote")
-        transaction = state.transactions.all.filter(
-          (t: any) => t.hash === tx.transactionHash
-        )[0];
-      dispatch(
-        mineTransaction({
-          signerWallet: account.toString(),
-          nonce: nonce.toString(),
-          hash: tx.transactionHash,
-          protocol,
-        })
-      );
-      if (transaction)
-        notifyTransaction(
-          "Order",
-          //@ts-ignore
-          transaction,
-          tokens,
-          false,
-          chainId
-        );
-    };
-    if (lightContract) {
-      const lastlookFilter = {
-        address: lightDeploys[chainId],
-        topics: [
-          lightContract.Swap,
-          null,
-          ethers.utils.hexZeroPad(account, 32),
-        ],
-      };
-      const rfqFilter = {
-        address: lightDeploys[chainId],
-        topics: [
-          lightContract.Swap,
-          null,
-          null,
-          ethers.utils.hexZeroPad(account, 32),
-        ],
-      };
-      lightContract.on(rfqFilter, async (tx: any) =>
-        handleReceipt(tx, "request-for-quote")
-      );
-      lightContract.on(lastlookFilter, async (tx: any) =>
-        handleReceipt(tx, "last-look")
-      );
-    }
-  }
-);
 
 export const take = createAsyncThunk(
   "orders/take",

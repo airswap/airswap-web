@@ -37,9 +37,9 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
-import { swaplistenerSubscribe } from "../orders/ordersSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import handleTransaction from "../transactions/handleTransaction";
+import swapEventSubscriber from "../transactions/swapEventSubscriber";
 import {
   selectTransactions,
   setTransactions,
@@ -60,7 +60,7 @@ type WalletProps = {
   className?: string;
 };
 
-export const Wallet: FC<WalletProps> = ({ className = "" }) => {
+export const Wallet: FC<WalletProps> = () => {
   const {
     chainId,
     account,
@@ -91,25 +91,24 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
 
   useBeforeunload(() => {
     if (lightContract) {
-      console.debug(Date.now() + ": unsubscribed to swaplistener");
+      console.debug(Date.now() + ": unsubscribed to swapEventSubscriber");
       lightContract.removeAllListeners("Swap");
     }
   });
 
   useEffect(() => {
     if (library && chainId && account && lightContract) {
-      dispatch(
-        swaplistenerSubscribe({
-          account: account!,
-          lightContract,
-          //@ts-ignore
-          library,
-          chainId,
-        })
-      );
+      swapEventSubscriber({
+        account: account!,
+        lightContract,
+        //@ts-ignore
+        library,
+        chainId,
+        dispatch,
+      });
       return () => {
         if (lightContract) {
-          console.debug(Date.now() + ": unsubscribed to swaplistener");
+          console.debug(Date.now() + ": unsubscribed to swapEventSubscriber");
           lightContract.removeAllListeners("Swap");
         }
       };
@@ -282,7 +281,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
       // and poll at a sensible interval.
       transactionsLocalStorage.all.forEach(async (tx) => {
-        handleTransaction(tx, walletHasChanged, dispatch, library);
+        await handleTransaction(tx, walletHasChanged, dispatch, library);
       });
     }
     return () => {
