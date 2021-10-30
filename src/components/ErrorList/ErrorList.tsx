@@ -3,17 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import validatorErrors from "../../../public/locales/en/validatorErrors.json";
 import useWindowSize from "../../helpers/useWindowSize";
-import IconError from "../Icon/icons/IconError";
-import { InfoHeading, SubText } from "../Typography/Typography";
+import { OverlayActionButton } from "../Overlay/Overlay.styles";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   StyledErrorList,
   StyledError,
-  ErrorIconContainer,
   ErrorTextContainer,
-  BackButton,
   LegendDivider,
   StyledScrollContainer,
+  StyledErrorIcon,
+  StyledSubText,
 } from "./ErrorList.styles";
 
 export type Error = keyof typeof validatorErrors;
@@ -39,12 +39,13 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
           const subText = error.toLowerCase() as Error;
           return (
             <StyledError key={idx}>
-              <ErrorIconContainer>
-                <IconError />
-              </ErrorIconContainer>
+              <StyledErrorIcon
+                name="information-circle-outline"
+                iconSize={1.5}
+              />
               <ErrorTextContainer>
                 <InfoHeading>{t(`validatorErrors:${error}`)}</InfoHeading>
-                <SubText>{t(`validatorErrors:${subText}`)}</SubText>
+                <StyledSubText>{t(`validatorErrors:${subText}`)}</StyledSubText>
               </ErrorTextContainer>
             </StyledError>
           );
@@ -76,9 +77,9 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
           <StyledErrors />
         </StyledErrorList>
       </StyledScrollContainer>
-      <BackButton ref={buttonRef} onClick={handleClick}>
+      <OverlayActionButton ref={buttonRef} onClick={handleClick}>
         {t("common:back")}
-      </BackButton>
+      </OverlayActionButton>
     </Container>
   );
 };

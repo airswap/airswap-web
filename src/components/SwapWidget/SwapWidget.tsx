@@ -501,14 +501,6 @@ const SwapWidget = () => {
   };
 
   const handleButtonClick = async (action: ButtonActions) => {
-    return setErrors([
-      "SIGNER_ALLOWANCE_LOW",
-      "SIGNER_ALLOWANCE_LOW",
-      "SIGNER_ALLOWANCE_LOW",
-      "SIGNER_ALLOWANCE_LOW",
-      "SIGNER_ALLOWANCE_LOW",
-    ]);
-
     switch (action) {
       case ButtonActions.goBack:
         setIsWrapping(false);

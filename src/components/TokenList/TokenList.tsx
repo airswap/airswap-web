@@ -7,6 +7,7 @@ import { formatUnits } from "@ethersproject/units";
 import nativeETH from "../../constants/nativeETH";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -18,7 +19,6 @@ import {
   StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
-  EditCustomTokensButton,
 } from "./TokenList.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
@@ -201,12 +201,12 @@ const TokenList = ({
             </NoResultsContainer>
           )}
         </StyledScrollContainer>
-        <EditCustomTokensButton
+        <OverlayActionButton
           ref={buttonRef}
           onClick={() => setEditMode(!editMode)}
         >
           {editMode ? t("common:done") : t("orders:editCustomTokens")}
-        </EditCustomTokensButton>
+        </OverlayActionButton>
       </ContentContainer>
     </Container>
   );

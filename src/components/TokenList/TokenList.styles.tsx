@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
-import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
 import TextInput from "../TextInput/TextInput";
@@ -123,17 +122,4 @@ export const InformationIcon = styled(Icon)`
 
 export const NoResultsContainer = styled.div`
   text-align: center;
-`;
-
-export const EditCustomTokensButton = styled(Button)`
-  margin-top: auto;
-  justify-self: flex-end;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.black};
-    background-color: ${(props) => props.theme.colors.white};
-  }
 `;

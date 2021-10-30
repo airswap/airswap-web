@@ -4,7 +4,8 @@ import styled from "styled-components/macro";
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
-import { Title, InfoSubHeading } from "../Typography/Typography";
+import Button from "../Button/Button";
+import { InfoSubHeading, Title } from "../Typography/Typography";
 
 type ContainerProps = {
   isHidden: boolean;
@@ -66,6 +67,33 @@ export const StyledTitle = styled(Title)`
   text-overflow: ellipsis;
   transition: opacity ease-in-out 0.3s;
   will-change: opacity;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+export const StyledInfoSubHeading = styled(InfoSubHeading)`
+  margin-top: 0.5rem;
+  transition: opacity ease-in-out 0.3s;
+  will-change: opacity;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+export const OverlayActionButton = styled(Button)`
+  margin-top: auto;
+  justify-self: flex-end;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.black};
+    background-color: ${(props) => props.theme.colors.white};
+  }
 `;
 
 export const StyledSubTitle = styled(InfoSubHeading)`
@@ -102,10 +130,11 @@ export const Container = styled.div<ContainerProps>`
   ${StyledTitle} {
     opacity: ${(props) => (props.isHidden ? 0 : 1)};
     pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-    
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
+  }
+
+  ${StyledInfoSubHeading} {
+    opacity: ${(props) => (props.isHidden ? 0 : 1)};
+    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   }
   
   ${TitleContainer} {
