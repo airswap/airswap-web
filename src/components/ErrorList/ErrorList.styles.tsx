@@ -15,20 +15,23 @@ export const StyledError = styled.div`
   flex-direction: row;
   width: 100%;
   height: 3rem;
-  padding-top: 1.5rem;
-  ${(props: any) =>
-    props.key === 0 &&
-    css`
-      border-top: 1px solid ${props.theme.colors.borderGrey};
-    `}
+  margin-top: 1.5rem;
 `;
 
 export const ErrorIconContainer = styled.div`
   display: flex;
-  justify-content: left;
+  justify-content: center;
+  flex-direction: column;
+  padding-bottom: 0.3rem;
   position: relative;
   width: 3.75rem;
   height: 100%;
+  path {
+    fill: ${(props) =>
+      props.theme.name === "light"
+        ? props.theme.colors.primary
+        : props.theme.colors.alwaysWhite};
+  }
 `;
 
 export const ErrorTextContainer = styled.div`
@@ -39,8 +42,12 @@ export const ErrorTextContainer = styled.div`
 `;
 
 export const BackButton = styled(Button)`
-  width: 26.25rem;
-  height: 3 rem;
-  left: 510px;
-  top: 680px;
+  width: calc(100% - 3.75rem);
+  align-self: center;
+  border: 1px solid
+    ${(props) =>
+      props.theme.name === "light"
+        ? props.theme.colors.lightGrey
+        : props.theme.colors.borderGrey};
+  background-color: transparent;
 `;
