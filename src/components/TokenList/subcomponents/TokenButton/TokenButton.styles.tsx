@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components/macro";
 
-import { fontLoos, fontMono } from "../../../../style/themes";
+import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
 
 type ContainerProps = {

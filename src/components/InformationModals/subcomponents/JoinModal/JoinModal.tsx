@@ -38,19 +38,15 @@ const JoinModal: FC = () => {
   return (
     <>
       <ModalTitle type="h2">{t("information:join.title")}</ModalTitle>
-      <ModalParagraph>
-        <strong>{t("information:join.introPart1")}</strong>
-        {` ${t("information:join.introPart2")}`}
-      </ModalParagraph>
+      <ModalParagraph>{t("information:join.intro")}</ModalParagraph>
 
-      <ModalParagraph>
-        <strong>{t("information:join.paragraphPart1")}</strong>
-        {` ${t("information:join.paragraphPart2")}`}
-      </ModalParagraph>
+      <ModalParagraph>{t("information:join.paragraph")}</ModalParagraph>
 
       <ModalSubTitle type="h2">
-        {t("information:join.learnMoreWithAGuide")}
+        {t("information:join.getStarted")}
       </ModalSubTitle>
+
+      <ModalParagraph>{t("information:join.paragraph2")}</ModalParagraph>
 
       <GuideButtons>
         {guideButtons.map((guideButton) => {

@@ -6,8 +6,8 @@ import { TokenInfo } from "@airswap/types";
 import styled from "styled-components/macro";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import Icon from "../../../Icon/Icon";
 import TokenSelect from "../../../TokenSelect/TokenSelect";
+import getSwapInputIcon from "../../helpers/getSwapInputIcon";
 
 export const SwapIconContainer = styled.div`
   position: absolute;
@@ -100,11 +100,7 @@ const SwapInputs: FC<{
         showMaxButton={showMaxButton}
       />
       <SwapIconContainer>
-        {tradeNotAllowed ? (
-          <Icon name="forbidden" iconSize={0.9375} />
-        ) : (
-          <Icon name="swap" iconSize={0.75} />
-        )}
+        {getSwapInputIcon(tradeNotAllowed, !!toAmount)}
       </SwapIconContainer>
       <TokenSelect
         label={t("orders:to")}

@@ -40,8 +40,8 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 600,
   },
   infoSubHeading: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
+    fontSize: "1.0625rem",
+    lineHeight: 1.41,
     fontWeight: 400,
   },
   formLabel: {

@@ -17,7 +17,7 @@ const ButtonStyle = css`
 
   &:hover,
   &:focus {
-    border-color: ${(props) => props.theme.colors.white};
+    border-color: ${(props) => props.theme.colors.lightGrey};
     outline: 0;
   }
 `;

@@ -1,4 +1,5 @@
 import IconAirswap from "./IconAirswap";
+import IconArrowDown from "./IconArrowDown";
 import IconArrowLeft from "./IconArrowLeft";
 import IconArrowRight from "./IconArrowRight";
 import IconBars from "./IconBars";
@@ -19,6 +20,7 @@ import IconX from "./IconX";
 
 export {
   IconAirswap,
+  IconArrowDown,
   IconArrowRight,
   IconArrowLeft,
   IconBars,

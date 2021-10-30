@@ -56,7 +56,6 @@ const warp = keyframes`
 export const BackgroundBlurriness = styled.div`
   position: absolute;
   inset: -0.8rem;
-  /* background-color: ${(props) => props.theme.colors.primary}; */
   background-image: linear-gradient(
     45deg,
     ${(props) => props.theme.colors.primary},
@@ -68,4 +67,8 @@ export const BackgroundBlurriness = styled.div`
   border-radius: 1rem;
   will-change: transform opacity;
   animation: ${warp} 11s infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;

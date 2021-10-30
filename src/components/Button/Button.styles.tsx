@@ -76,7 +76,9 @@ export const StyledButton = styled.button<StyledButtonProps>`
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   }
 
+  &:focus,
   &:hover {
+    outline: 0;
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>

@@ -44,7 +44,9 @@ export const MaxButton = styled.button`
   color: ${(props) => props.theme.colors.black};
   opacity: 0.6;
 
-  &:hover {
+  &:hover,
+  &:focus {
+    outline: 0;
     background-color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
