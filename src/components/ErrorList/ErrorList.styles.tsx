@@ -1,21 +1,42 @@
-import styled, { css } from "styled-components/macro";
+import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
-import Button from "../Button/Button";
+import Icon from "../Icon/Icon";
+import { ScrollContainer } from "../Overlay/Overlay.styles";
+import { SubText } from "../Typography/Typography";
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
+`;
+
+export const StyledScrollContainer = styled(ScrollContainer)`
+  max-height: calc(100% - 3.125rem);
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
+`;
 
 export const StyledErrorList = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
 `;
 
 export const StyledError = styled.div`
   display: flex;
-  flex-direction: row;
+  align-items: center;
   width: 100%;
   height: 3rem;
   margin-top: 1.5rem;
+`;
+
+export const StyledErrorIcon = styled(Icon)`
+  margin-right: 1.125rem;
 `;
 
 export const ErrorIconContainer = styled.div`
@@ -41,25 +62,8 @@ export const ErrorTextContainer = styled.div`
   width: calc(100% - 3.75rem);
 `;
 
-export const BackButton = styled(Button)`
-  width: calc(100% - 3.75rem);
-  align-self: center;
-  border: 1px solid
-    ${(props) =>
-      props.theme.name === "light"
-        ? props.theme.colors.lightGrey
-        : props.theme.colors.borderGrey};
-  background-color: transparent;
-  &:hover {
-    border-color: ${(props) =>
-      props.theme.name === "light"
-        ? props.theme.colors.primary
-        : props.theme.colors.alwaysWhite};
-    color: ${(props) =>
-      props.theme.name === "light"
-        ? props.theme.colors.primary
-        : props.theme.colors.alwaysWhite};
-  }
+export const StyledSubText = styled(SubText)`
+  color: ${(props) => props.theme.colors.lightGrey};
 `;
 
 export const LegendDivider = styled.div`

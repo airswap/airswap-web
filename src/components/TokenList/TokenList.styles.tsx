@@ -1,31 +1,15 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
-import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
+import { ScrollContainer } from "../Overlay/Overlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
 
-type ContainerProps = {
-  $overflow: boolean;
-};
-
-export const ScrollContainer = styled.div`
-  flex-grow: 99;
-  height: 100%;
+export const StyledScrollContainer = styled(ScrollContainer)`
   max-height: calc(100% - 7rem);
-  padding-bottom: 1rem;
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-    background: ${(props) => props.theme.colors.black};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
-    border-radius: 0.5rem;
-  }
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 `;
 
 export const ContentContainer = styled.div`
@@ -37,7 +21,7 @@ export const ContentContainer = styled.div`
   background-color: ${(props) => props.theme.colors.black};
 `;
 
-export const Container = styled.div<ContainerProps>`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -45,15 +29,7 @@ export const Container = styled.div<ContainerProps>`
   left: 0;
   width: 100%;
   height: 100%;
-
-  ${ScrollContainer} {
-    width: calc(100% + (${sizes.tradeContainerPadding} / 2));
-    padding-right: calc(${sizes.tradeContainerPadding} / 2);
-    padding-left: 0.125rem;
-    overflow-x: hidden;
-    overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
-  }
-}`;
+`;
 
 export const TitleContainer = styled.div`
   display: flex;
@@ -146,17 +122,4 @@ export const InformationIcon = styled(Icon)`
 
 export const NoResultsContainer = styled.div`
   text-align: center;
-`;
-
-export const EditCustomTokensButton = styled(Button)`
-  margin-top: auto;
-  justify-self: flex-end;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.black};
-    background-color: ${(props) => props.theme.colors.white};
-  }
 `;

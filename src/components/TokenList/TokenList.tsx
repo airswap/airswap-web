@@ -7,6 +7,7 @@ import { formatUnits } from "@ethersproject/units";
 import nativeETH from "../../constants/nativeETH";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -15,10 +16,9 @@ import {
   Legend,
   LegendItem,
   LegendDivider,
-  ScrollContainer,
+  StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
-  EditCustomTokensButton,
 } from "./TokenList.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
@@ -72,6 +72,7 @@ const TokenList = ({
 }: TokenListProps) => {
   const { width, height } = useWindowSize();
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -118,9 +119,17 @@ const TokenList = ({
   }, [sortedInactiveTokens, tokenQuery]);
 
   useEffect(() => {
-    if (containerRef.current && scrollContainerRef.current) {
+    if (
+      containerRef.current &&
+      scrollContainerRef.current &&
+      buttonRef.current
+    ) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
+      const { scrollHeight: buttonHeight } = buttonRef.current;
+      setOverflow(
+        scrollHeight + offsetTop + buttonHeight >
+          containerRef.current.offsetHeight
+      );
     }
   }, [
     containerRef,
@@ -134,7 +143,7 @@ const TokenList = ({
   ]);
 
   return (
-    <Container ref={containerRef} $overflow={overflow}>
+    <Container ref={containerRef}>
       <ContentContainer>
         <SearchInput
           hideLabel
@@ -148,7 +157,7 @@ const TokenList = ({
           }}
         />
 
-        <ScrollContainer ref={scrollContainerRef}>
+        <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
           <Legend>
             <LegendItem>{t("common:token")}</LegendItem>
             <LegendDivider />
@@ -191,10 +200,13 @@ const TokenList = ({
               <InfoHeading>{t("common:noResultsFound")}</InfoHeading>
             </NoResultsContainer>
           )}
-        </ScrollContainer>
-        <EditCustomTokensButton onClick={() => setEditMode(!editMode)}>
+        </StyledScrollContainer>
+        <OverlayActionButton
+          ref={buttonRef}
+          onClick={() => setEditMode(!editMode)}
+        >
           {editMode ? t("common:done") : t("orders:editCustomTokens")}
-        </EditCustomTokensButton>
+        </OverlayActionButton>
       </ContentContainer>
     </Container>
   );
