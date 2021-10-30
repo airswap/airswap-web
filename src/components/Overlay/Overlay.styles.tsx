@@ -11,11 +11,20 @@ type ContainerProps = {
   hasTitle: boolean;
 };
 
-export const ScrollContainer = styled.div`
+type ScrollContainerProps = {
+  $overflow?: boolean;
+};
+
+export const ScrollContainer = styled.div<ScrollContainerProps>`
   flex-grow: 99;
+  width: calc(100% + (${sizes.tradeContainerPadding} / 2));
   height: 100%;
   max-height: calc(100% - 3.75rem);
-  padding-bottom: ${sizes.tradeContainerPadding};
+  padding-right: calc(${sizes.tradeContainerPadding} / 2);
+  padding-left: 0.125rem;
+  padding-bottom: 1rem;
+  overflow-x: hidden;
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
   &::-webkit-scrollbar {
     width: 0.5rem;

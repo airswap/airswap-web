@@ -1,7 +1,23 @@
-import styled, { css } from "styled-components/macro";
+import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
+import { ScrollContainer } from "../Overlay/Overlay.styles";
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+export const StyledScrollContainer = styled(ScrollContainer)`
+  max-height: calc(100% - 5rem);
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
+`;
 
 export const StyledErrorList = styled.div`
   display: flex;

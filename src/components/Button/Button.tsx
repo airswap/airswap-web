@@ -29,32 +29,38 @@ export type ButtonProps = {
   loading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const Button = ({
-  children,
-  className = "",
-  intent = "neutral",
-  justifyContent = "center",
-  disabled = false,
-  loading = false,
-  onClick,
-  ...rest
-}: ButtonProps) => {
-  return (
-    <StyledButton
-      className={className}
-      $loading={loading}
-      intent={intent}
-      disabled={disabled || loading}
-      justifyContent={justifyContent}
-      onClick={(e) => {
-        !loading && onClick && onClick(e);
-      }}
-      {...rest}
-    >
-      <Text>{children}</Text>
-      {loading && <LoadingSpinner />}
-    </StyledButton>
-  );
-};
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      children,
+      className = "",
+      intent = "neutral",
+      justifyContent = "center",
+      disabled = false,
+      loading = false,
+      onClick,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <StyledButton
+        className={className}
+        $loading={loading}
+        intent={intent}
+        disabled={disabled || loading}
+        justifyContent={justifyContent}
+        onClick={(e) => {
+          !loading && onClick && onClick(e);
+        }}
+        ref={ref}
+        {...rest}
+      >
+        <Text>{children}</Text>
+        {loading && <LoadingSpinner />}
+      </StyledButton>
+    );
+  }
+);
 
 export default Button;
