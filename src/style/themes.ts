@@ -1,5 +1,8 @@
 import { DefaultTheme } from "styled-components/macro";
 
+export const fontLoos = '"loos-normal", sans-serif';
+export const fontMono = '"DM Mono", monospace';
+
 const typography: DefaultTheme["typography"] = {
   title1: {
     fontSize: "2rem",

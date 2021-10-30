@@ -3,6 +3,7 @@ import "@fontsource/dm-mono/500.css";
 import { createGlobalStyle } from "styled-components/macro";
 
 import reset from "./reset";
+import { fontLoos, fontMono } from "./themes";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -11,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    font-family: "loos-normal", sans-serif;
+    font-family: ${fontLoos};
     color: ${(props) =>
       props.theme.name === "dark"
         ? props.theme.colors.white
@@ -26,8 +27,8 @@ const GlobalStyle = createGlobalStyle`
       monospace;
   }
   
-  input {
-    font-family: "DM Mono", monospace;
+  input[inputmode="decimal"] {
+    font-family: ${fontMono};
   }
 
   p {

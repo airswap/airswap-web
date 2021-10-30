@@ -118,6 +118,7 @@ export const StyledFormInput = makeTypographyComponent(
         : props.theme.colors.primary};
     background-color: transparent;
     border: none;
+
     &::placeholder {
       color: ${(props) => props.theme.colors.placeholderGrey};
     }

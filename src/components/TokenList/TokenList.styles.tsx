@@ -81,7 +81,8 @@ export const SearchInput = styled(TextInput)`
     border-radius: 2px;
     line-height: 2.25;
     padding: 0.25rem 0.625rem;
-    font-size: 0.875rem;
+    font-size: 1rem;
+    font-weight: 400;
     background: transparent;
     color: ${(props) => props.theme.colors.white};
 
@@ -95,7 +96,7 @@ export const SearchInput = styled(TextInput)`
 
     &:focus {
       outline: none;
-      border-color: ${(props) => props.theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.lightGrey};
     }
   }
 `;

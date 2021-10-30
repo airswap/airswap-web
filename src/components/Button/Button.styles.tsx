@@ -52,7 +52,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   width: 100%;
   height: 3rem;
   padding: 0 1rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
