@@ -32,6 +32,12 @@ export const notifyTransaction = (
     chainId
   ) {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
+    /* todo fix toaster for multiple tabs or apps
+        now that we have a listener, you can have multiple
+        tabs open that receives the same order event. Only one redux
+        store will have the order, and the others won't. That will
+        throw an error here if we don't check for `order` inside `tx`
+     */
     if (tx?.order) {
       const senderToken = findEthOrTokenByAddress(
         tx.order.senderToken,
