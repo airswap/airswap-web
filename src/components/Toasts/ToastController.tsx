@@ -32,31 +32,33 @@ export const notifyTransaction = (
     chainId
   ) {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
-    const senderToken = findEthOrTokenByAddress(
-      tx.order.senderToken,
-      tokens,
-      chainId
-    );
-    const signerToken = findEthOrTokenByAddress(
-      tx.order.signerToken,
-      tokens,
-      chainId
-    );
-    toast(
-      (t) => (
-        <TransactionToast
-          onClose={() => toast.dismiss(t.id)}
-          type={type}
-          transaction={transaction}
-          senderToken={senderToken}
-          signerToken={signerToken}
-          error={error}
-        />
-      ),
-      {
-        duration: 15000,
-      }
-    );
+    if (tx.order) {
+      const senderToken = findEthOrTokenByAddress(
+        tx.order.senderToken,
+        tokens,
+        chainId
+      );
+      const signerToken = findEthOrTokenByAddress(
+        tx.order.signerToken,
+        tokens,
+        chainId
+      );
+      toast(
+        (t) => (
+          <TransactionToast
+            onClose={() => toast.dismiss(t.id)}
+            type={type}
+            transaction={transaction}
+            senderToken={senderToken}
+            signerToken={signerToken}
+            error={error}
+          />
+        ),
+        {
+          duration: 15000,
+        }
+      );
+    }
   } else {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     token = findTokenByAddress(tx.tokenAddress, tokens);
