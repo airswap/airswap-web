@@ -32,7 +32,7 @@ export const notifyTransaction = (
     chainId
   ) {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
-    if (tx.order) {
+    if (tx?.order) {
       const senderToken = findEthOrTokenByAddress(
         tx.order.senderToken,
         tokens,
