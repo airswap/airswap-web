@@ -1,12 +1,125 @@
-// @ts-ignore
-import lightDeploys from "@airswap/light/deploys.js";
 import { Dispatch } from "@reduxjs/toolkit";
 
-import { Contract, ethers } from "ethers";
+import BigNumber from "bignumber.js";
+import { Contract } from "ethers";
 
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
+import { TransactionsState } from "./transactionsSlice";
+
+const handleReceipt = ({
+  nonce,
+  transactionHash,
+  signerWallet,
+  transaction,
+  protocol,
+  chainId,
+  dispatch,
+}: {
+  nonce: number;
+  transactionHash: string;
+  signerWallet: string;
+  transaction: any;
+  protocol: "last-look" | "request-for-quote";
+  chainId: number;
+  dispatch: any;
+}) => {
+  const tokens = Object.values(store.getState().metadata.tokens.all);
+
+  dispatch(
+    mineTransaction({
+      signerWallet: signerWallet,
+      nonce: nonce.toString(),
+      hash: transactionHash,
+      protocol,
+    })
+  );
+
+  notifyTransaction(
+    "Order",
+    //@ts-ignore
+    transaction,
+    tokens,
+    false,
+    chainId
+  );
+};
+
+type SwapHex = {
+  _hex?: BigNumber;
+  _isBigNumber: boolean;
+};
+type SwapEvent = {
+  transactionHash: string;
+  address: string;
+  removed: boolean;
+  eventSignature: string;
+  topics: string[];
+};
+
+export type SwapRow = string | SwapHex | SwapEvent;
+
+function isSwapHex(data: SwapRow): data is SwapHex {
+  return (data as SwapHex)._isBigNumber !== undefined;
+}
+
+function isSwapEvent(data: SwapRow): data is SwapEvent {
+  return (data as SwapEvent).transactionHash !== undefined;
+}
+function isSwapAddress(data: SwapRow): data is string {
+  return typeof data === "string";
+}
+
+export const mapSwapEvent = (
+  data: SwapRow[],
+  chainId: number,
+  account: string,
+  transactions: TransactionsState
+) => {
+  let signerWallet = "",
+    nonce = 0,
+    transactionHash = "";
+  let protocol: "request-for-quote" | "last-look" = "request-for-quote";
+  data.forEach((item, i) => {
+    if (isSwapHex(item)) {
+      if (i === 0) {
+        nonce = parseInt(item._hex!.toString());
+      }
+    }
+    if (isSwapAddress(item)) {
+      if (i === 6) {
+        signerWallet = item;
+      }
+    }
+    if (isSwapEvent(item)) {
+      transactionHash = item.transactionHash;
+    }
+  });
+
+  let transaction = transactions.all.filter(
+    (t: any) => t.hash === transactionHash
+  )[0];
+  if (transaction) {
+    protocol = transaction.protocol!;
+  } else {
+    // most likely last-look, but check anyway
+    if (signerWallet.toLowerCase() !== account.toLowerCase())
+      protocol = "last-look";
+    transaction = transactions.all.filter(
+      (t: any) => parseInt(t.nonce) === nonce
+    )[0];
+    signerWallet = account;
+  }
+
+  return {
+    signerWallet,
+    nonce,
+    transactionHash,
+    protocol,
+    transaction,
+  };
+};
 
 export default function swapEventSubscriber(params: {
   lightContract: Contract;
@@ -20,61 +133,32 @@ export default function swapEventSubscriber(params: {
     Date.now() + ": subscribed to swapEventSubscriber for ",
     account
   );
-  const handleReceipt = (
-    tx: any,
-    protocol: "last-look" | "request-for-quote"
-  ) => {
-    const tokens = Object.values(store.getState().metadata.tokens.all);
-    const nonce = parseInt(tx.topics[1]);
-    let transaction;
-    store
-      .getState()
-      .transactions.all.forEach((t: any) => console.debug(t.nonce, t.hash));
-    if (protocol === "request-for-quote")
-      transaction = store
-        .getState()
-        .transactions.all.filter((t: any) => t.hash === tx.transactionHash)[0];
-    else
-      transaction = store
-        .getState()
-        .transactions.all.filter((t: any) => parseInt(t.nonce) === nonce)[0];
-    dispatch(
-      mineTransaction({
-        signerWallet: account.toString(),
-        nonce: nonce.toString(),
-        hash: tx.transactionHash,
+
+  lightContract.on("Swap", async (...data) => {
+    const transactions = store.getState().transactions;
+    const {
+      nonce,
+      signerWallet,
+      transactionHash,
+      protocol,
+      transaction,
+    } = mapSwapEvent(data, chainId, account, transactions);
+    if (nonce && signerWallet && transactionHash && protocol)
+      return handleReceipt({
+        nonce,
+        signerWallet,
+        transactionHash,
         protocol,
-      })
-    );
-    if (transaction)
-      notifyTransaction(
-        "Order",
-        //@ts-ignore
+        chainId,
         transaction,
-        tokens,
-        false,
-        chainId
-      );
-  };
-  if (lightContract) {
-    const lastlookFilter = {
-      address: lightDeploys[chainId],
-      topics: [lightContract.Swap, null, ethers.utils.hexZeroPad(account, 32)],
-    };
-    const rfqFilter = {
-      address: lightDeploys[chainId],
-      topics: [
-        lightContract.Swap,
-        null,
-        null,
-        ethers.utils.hexZeroPad(account, 32),
-      ],
-    };
-    lightContract.on(rfqFilter, async (tx: any) =>
-      handleReceipt(tx, "request-for-quote")
-    );
-    lightContract.on(lastlookFilter, async (tx: any) =>
-      handleReceipt(tx, "last-look")
-    );
-  }
+        dispatch,
+      });
+    else
+      console.error("missing data", {
+        nonce,
+        signerWallet,
+        transactionHash,
+        protocol,
+      });
+  });
 }
