@@ -269,7 +269,6 @@ export const approve = createAsyncThunk<
   {
     token: string;
     library: any;
-    nonce?: string;
     contractType: "Wrapper" | "Light";
     chainId: number;
   },
