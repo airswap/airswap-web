@@ -18,6 +18,7 @@ export const FlexRow = styled.div`
 export const AmountAndDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-width: 0;
   text-align: right;
 `;
@@ -42,8 +43,11 @@ export const MaxButton = styled.button`
   background-color: ${(props) => props.theme.colors.lightGrey};
   color: ${(props) => props.theme.colors.black};
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
-  &:hover {
+
+  &:hover,
+  &:focus {
+    outline: 0;
+    background-color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
 `;
@@ -103,6 +107,7 @@ const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
 
 export const StyledLabel = styled(FormLabel)<{ $invisible: boolean }>`
   text-align: left;
+  text-transform: uppercase;
   ${fadeOutWhenInvisible}
 `;
 

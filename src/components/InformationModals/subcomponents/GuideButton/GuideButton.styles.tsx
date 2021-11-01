@@ -2,6 +2,19 @@ import styled from "styled-components/macro";
 
 import Icon from "../../../Icon/Icon";
 
+export const StyledIcon = styled(Icon)`
+  margin-bottom: 0.375rem;
+  color: ${(props) => props.theme.colors.darkSubText};
+`;
+
+export const Text = styled.div`
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 2;
+  color: ${(props) => props.theme.colors.darkSubText};
+`;
+
 export const GuideButtonContainer = styled.a`
   display: flex;
   flex-direction: column;
@@ -14,7 +27,7 @@ export const GuideButtonContainer = styled.a`
   height: 6.625rem;
   overflow: hidden;
 
-  &:not(&:last-of-type) {
+  &:not(&:last-of-type):not(:focus) {
     border-right: 0;
   }
 
@@ -28,9 +41,10 @@ export const GuideButtonContainer = styled.a`
     border-bottom-right-radius: 0.1875rem;
   }
 
-  &:hover,
-  &:active {
-    border: 1px solid ${(props) => props.theme.colors.white} !important;
+  &:focus {
+    outline: 0;
+    border: 1px solid ${(props) => props.theme.colors.lightGrey};
+    z-index: 1;
 
     & + & {
       border-left: 0;
@@ -40,16 +54,14 @@ export const GuideButtonContainer = styled.a`
       padding-right: calc(1rem - 1px);
     }
   }
-`;
 
-export const StyledIcon = styled(Icon)`
-  margin-bottom: 0.375rem;
-  color: ${(props) => props.theme.colors.primary};
-`;
+  &:hover {
+    ${StyledIcon} {
+      color: ${(props) => props.theme.colors.white};
+    }
 
-export const Text = styled.div`
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  line-height: 2.18;
+    ${Text} {
+      color: ${(props) => props.theme.colors.white};
+    }
+  }
 `;

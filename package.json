@@ -21,7 +21,7 @@
     "@airswap/types": "^3.7.0",
     "@airswap/utils": "^0.4.10",
     "@craco/craco": "^6.2.0",
-    "@fontsource/montserrat": "^4.5.1",
+    "@fontsource/dm-mono": "^4.5.0",
     "@reduxjs/toolkit": "~1.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",

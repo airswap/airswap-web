@@ -52,7 +52,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   width: 100%;
   height: 3rem;
   padding: 0 1rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
@@ -76,7 +76,9 @@ export const StyledButton = styled.button<StyledButtonProps>`
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   }
 
+  &:focus,
   &:hover {
+    outline: 0;
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>

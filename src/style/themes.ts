@@ -1,5 +1,8 @@
 import { DefaultTheme } from "styled-components/macro";
 
+export const fontLoos = '"loos-normal", sans-serif';
+export const fontMono = '"DM Mono", monospace';
+
 const typography: DefaultTheme["typography"] = {
   title1: {
     fontSize: "2rem",
@@ -37,8 +40,8 @@ const typography: DefaultTheme["typography"] = {
     fontWeight: 600,
   },
   infoSubHeading: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
+    fontSize: "1.0625rem",
+    lineHeight: 1.41,
     fontWeight: 400,
   },
   formLabel: {
@@ -78,7 +81,7 @@ export const darkTheme: DefaultTheme = {
   name: "dark",
   colors: {
     primary: "#2B71FF",
-    primaryDark: "#0F5FFF",
+    primaryDark: "#0F5FFFAA",
     white: "#FFFFFF",
     alwaysWhite: "#FFFFFF",
     black: "#060607",

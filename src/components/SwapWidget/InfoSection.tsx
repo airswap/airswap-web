@@ -12,12 +12,11 @@ import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
-  StyledInvertPriceButton,
-  StyledInvertPriceIcon,
   TimerContainer,
   NewQuoteText,
   TimerText,
   StyledInfoHeading,
+  RevertPriceButton,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -125,9 +124,11 @@ const InfoSection: FC<InfoSectionProps> = ({
         <InfoHeading>
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
-            <StyledInvertPriceIcon />
-          </StyledInvertPriceButton>
+          <RevertPriceButton
+            icon="swap"
+            iconSize={1.25}
+            onClick={() => setInvertPrice((p) => !p)}
+          />
         </InfoHeading>
         <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
       </>
@@ -149,9 +150,11 @@ const InfoSection: FC<InfoSectionProps> = ({
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
           {stringToSignificantDecimals(price.toString())}{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <StyledInvertPriceButton onClick={() => setInvertPrice((p) => !p)}>
-            <StyledInvertPriceIcon />
-          </StyledInvertPriceButton>
+          <RevertPriceButton
+            icon="swap"
+            iconSize={1}
+            onClick={() => setInvertPrice((p) => !p)}
+          />
         </StyledInfoHeading>
         {requiresApproval ? (
           <InfoSubHeading>

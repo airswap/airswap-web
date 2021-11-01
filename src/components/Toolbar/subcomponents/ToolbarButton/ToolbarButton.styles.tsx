@@ -17,7 +17,7 @@ const ButtonStyle = css`
 
   &:hover,
   &:focus {
-    border-color: ${(props) => props.theme.colors.white};
+    border-color: ${(props) => props.theme.colors.lightGrey};
     outline: 0;
   }
 `;
@@ -33,6 +33,6 @@ export const ToolBarAnchorContainer = styled.a`
 export const Text = styled.div`
   margin-top: 0.25rem;
   font-weight: 600;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
 `;

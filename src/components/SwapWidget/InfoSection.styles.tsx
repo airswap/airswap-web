@@ -1,7 +1,6 @@
-import { IoMdSwap } from "react-icons/io";
-
 import styled from "styled-components/macro";
 
+import IconButton from "../IconButton/IconButton";
 import { InfoHeading } from "../Typography/Typography";
 
 export const StyledInfoHeading = styled(InfoHeading)`
@@ -9,22 +8,18 @@ export const StyledInfoHeading = styled(InfoHeading)`
   align-items: center;
 `;
 
-export const StyledInvertPriceIcon = styled(IoMdSwap)`
+export const RevertPriceButton = styled(IconButton)`
+  transform: rotate(90deg);
   position: relative;
+  margin-left: 0.25rem;
+  padding: 0.25rem;
   font-size: 1rem;
-`;
-
-export const StyledInvertPriceButton = styled.button`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  margin-left: 0.5rem;
-  width: 1.75rem;
-  height: 1.75rem;
-  overflow: hidden;
+  color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover,
   &:focus {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.white};
+    border-color: transparent;
+    color: ${(props) => props.theme.colors.white};
   }
 `;
 

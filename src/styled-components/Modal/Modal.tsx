@@ -24,16 +24,18 @@ export const ModalCloseButton = styled(IconButton)`
 `;
 
 export const ModalTitle = styled(Title)`
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const ModalParagraph = styled(InfoSubHeading)`
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.darkSubText};
+
   & + & {
     margin-top: 1rem;
   }
 `;
 
 export const ModalSubTitle = styled(Title)`
-  margin: 3rem 0 2rem;
-  font-size: 1.125rem;
+  margin: 2.5rem 0 0.5rem;
+  font-size: 1rem;
 `;

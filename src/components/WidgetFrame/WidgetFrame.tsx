@@ -1,10 +1,15 @@
 import React, { FC, ReactElement } from "react";
 
-import { Container, StyledTradeContainer } from "./WidgetFrame.styles";
+import {
+  BackgroundBlurriness,
+  Container,
+  StyledTradeContainer,
+} from "./WidgetFrame.styles";
 
 const WidgetFrame: FC = ({ children }): ReactElement => {
   return (
     <StyledTradeContainer>
+      <BackgroundBlurriness />
       <Container>{children}</Container>
     </StyledTradeContainer>
   );
