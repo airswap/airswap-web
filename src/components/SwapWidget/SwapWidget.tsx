@@ -469,7 +469,7 @@ const SwapWidget = () => {
           setShowOrderSubmitted(true);
           LastLook.unsubscribeAllServers();
         } else {
-          //todo do something about the order here so that doesn't show as processing
+          // TODO: do something about the order here so that doesn't show as processing
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
@@ -545,10 +545,7 @@ const SwapWidget = () => {
             side: "sell",
           })
         );
-        await requestQuotes().catch((e: any) => {
-          console.error(e.message);
-          //todo handle error
-        });
+        await requestQuotes();
 
         break;
 

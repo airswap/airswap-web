@@ -8,7 +8,8 @@ import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import {
   LastLookTransaction,
-  RfqTransaction,
+  SubmittedOrder,
+  SubmittedTransaction,
   TransactionsState,
 } from "./transactionsSlice";
 
@@ -21,11 +22,11 @@ const handleReceipt = ({
   chainId,
   dispatch,
 }: {
-  nonce: number;
+  nonce: string;
   transactionHash: string;
   signerWallet: string;
   transaction: any;
-  protocol: "last-look" | "request-for-quote";
+  protocol: "last-look" | "request-for-quote" | undefined;
   chainId: number;
   dispatch: any;
 }) => {
@@ -34,7 +35,7 @@ const handleReceipt = ({
   dispatch(
     mineTransaction({
       signerWallet: signerWallet,
-      nonce: nonce.toString(),
+      nonce: nonce,
       hash: transactionHash,
       protocol,
     })
@@ -74,27 +75,31 @@ export const mapSwapEvent = (
   account: string,
   transactions: TransactionsState
 ) => {
-  let protocol: "request-for-quote" | "last-look" = "request-for-quote";
-  const nonce = isSwapHex(data[0]) ? parseInt(data[0]._hex!.toString()) : 0;
-  let signerWallet = isSwapAddress(data[6]) ? data[6] : "";
+  let protocol: "request-for-quote" | "last-look" | undefined;
+  const nonce = isSwapHex(data[0]) ? data[0].toString() : "UNKNOWN";
+  let signerWallet = isSwapAddress(data[2]) ? data[2] : "";
   const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";
 
-  let transaction = transactions.all.filter(
-    (t: any) => t.hash === transactionHash
-  )[0] as RfqTransaction;
-  if (transaction) {
-    protocol = transaction.protocol!;
-  } else {
-    // most likely last-look, but check anyway
-    if (signerWallet.toLowerCase() !== account.toLowerCase())
-      protocol = "last-look";
-    signerWallet = account;
-    transaction = transactions.all.filter(
-      (t: any) =>
-        parseInt(t.nonce) === nonce &&
-        t?.order?.signerWallet.toLowerCase() === signerWallet.toLowerCase()
-    )[0] as LastLookTransaction;
+  // First search for the transaction in our pending state by hash.
+  // This will match either direct RFQ orders (senderWallet === account) or
+  // RFQ orders going through the wrapper (senderWallet === wrapper).
+  let transaction: SubmittedTransaction | null =
+    transactions.all.find((t: any) => t.hash === transactionHash) || null;
+
+  // If we haven't got a transaction with this hash in our history, then it's
+  // either a last look order (if we're the signer) OR it's someone else's
+  // swap. (Someone else includes "us" in another browser).
+  if (!transaction && signerWallet.toLowerCase() === account.toLowerCase()) {
+    transaction = transactions.all.find(
+      (t: SubmittedTransaction | SubmittedOrder) =>
+        t.nonce === nonce &&
+        (t as SubmittedOrder).order?.signerWallet.toLowerCase() ===
+          signerWallet.toLowerCase()
+    ) as LastLookTransaction;
   }
+
+  if (transaction) protocol = transaction.protocol;
+
   return {
     signerWallet,
     nonce,
@@ -104,7 +109,7 @@ export const mapSwapEvent = (
   };
 };
 
-export default function swapEventSubscriber(params: {
+export default function subscribeToSwapEvents(params: {
   lightContract: Contract;
   chainId: number;
   account: string;
@@ -126,22 +131,19 @@ export default function swapEventSubscriber(params: {
       protocol,
       transaction,
     } = mapSwapEvent(data, chainId, account, transactions);
-    if (nonce && signerWallet && transactionHash && protocol)
-      return handleReceipt({
-        nonce,
-        signerWallet,
-        transactionHash,
-        protocol,
-        chainId,
-        transaction,
-        dispatch,
-      });
-    else
-      console.error("missing data", {
-        nonce,
-        signerWallet,
-        transactionHash,
-        protocol,
-      });
+
+    // If we don't have a 'transaction', we don't already know about this swap
+    // and therefore don't need to update the UI.
+    if (!transaction) return;
+
+    return handleReceipt({
+      nonce,
+      signerWallet,
+      transactionHash,
+      protocol,
+      chainId,
+      transaction,
+      dispatch,
+    });
   });
 }

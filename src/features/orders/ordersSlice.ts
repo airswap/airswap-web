@@ -118,8 +118,6 @@ export const deposit = createAsyncThunk(
             dispatch(
               mineTransaction({
                 hash: receipt.transactionHash,
-                nonce: "",
-                signerWallet: "",
               })
             );
             notifyTransaction(
@@ -196,8 +194,6 @@ export const withdraw = createAsyncThunk(
             dispatch(
               mineTransaction({
                 hash: receipt.transactionHash,
-                nonce: "",
-                signerWallet: "",
               })
             );
             notifyTransaction(
@@ -298,10 +294,7 @@ export const approve = createAsyncThunk<
         if (receipt.status === 1) {
           dispatch(
             mineTransaction({
-              nonce: receipt.nonce,
               hash: receipt.transactionHash,
-              signerWallet: "",
-              protocol: undefined,
             })
           );
           // Optimistically update allowance (this is not really optimistic,
@@ -382,7 +375,7 @@ export const take = createAsyncThunk(
       }
     } catch (e: any) {
       console.error(e);
-      // TODO don't throw the actual error message, just show a helpful message
+      // TODO: don't throw the actual error message, just show a helpful message
       dispatch(declineTransaction({ reason: "", hash: "" }));
       throw e;
     }

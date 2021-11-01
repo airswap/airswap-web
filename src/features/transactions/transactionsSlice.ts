@@ -127,9 +127,9 @@ export const transactionsSlice = createSlice({
     builder.addCase(mineTransaction, (state, action) => {
       updateTransaction(
         state,
-        action.payload?.nonce,
-        action.payload?.hash,
-        action.payload?.signerWallet,
+        action.payload?.nonce || "",
+        action.payload?.hash || "",
+        action.payload?.signerWallet || "",
         "succeeded",
         action.payload?.protocol
       );
