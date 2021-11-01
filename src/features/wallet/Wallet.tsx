@@ -39,7 +39,7 @@ import {
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import handleTransaction from "../transactions/handleTransaction";
-import swapEventSubscriber from "../transactions/swapEventSubscriber";
+import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectTransactions,
   setTransactions,
@@ -98,7 +98,7 @@ export const Wallet: FC<WalletProps> = () => {
 
   useEffect(() => {
     if (library && chainId && account && lightContract) {
-      swapEventSubscriber({
+      subscribeToSwapEvents({
         account: account!,
         lightContract,
         //@ts-ignore

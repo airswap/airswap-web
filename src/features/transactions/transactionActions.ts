@@ -13,9 +13,9 @@ const declineTransaction = createAction<{
 
 const mineTransaction = createAction<{
   protocol?: "request-for-quote" | "last-look";
-  signerWallet: string;
-  hash: string;
-  nonce: string;
+  signerWallet?: string;
+  hash?: string;
+  nonce?: string;
 }>("transaction/mineTransaction");
 
 const revertTransaction = createAction<{
