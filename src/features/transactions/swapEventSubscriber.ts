@@ -77,25 +77,10 @@ export const mapSwapEvent = (
   account: string,
   transactions: TransactionsState
 ) => {
-  let signerWallet = "",
-    nonce = 0,
-    transactionHash = "";
   let protocol: "request-for-quote" | "last-look" = "request-for-quote";
-  data.forEach((item, i) => {
-    if (isSwapHex(item)) {
-      if (i === 0) {
-        nonce = parseInt(item._hex!.toString());
-      }
-    }
-    if (isSwapAddress(item)) {
-      if (i === 6) {
-        signerWallet = item;
-      }
-    }
-    if (isSwapEvent(item)) {
-      transactionHash = item.transactionHash;
-    }
-  });
+  const nonce = isSwapHex(data[0]) ? parseInt(data[0]._hex!.toString()) : 0;
+  let signerWallet = isSwapAddress(data[6]) ? data[6] : "";
+  const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";
 
   let transaction = transactions.all.filter(
     (t: any) => t.hash === transactionHash
