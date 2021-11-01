@@ -36,6 +36,13 @@ export interface SubmittedRFQOrder extends SubmittedOrder {}
 
 export interface SubmittedLastLookOrder extends SubmittedOrder {}
 
+export interface LastLookTransaction
+  extends SubmittedTransaction,
+    SubmittedLastLookOrder {}
+export interface RfqTransaction
+  extends SubmittedTransaction,
+    SubmittedRFQOrder {}
+
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
 }
