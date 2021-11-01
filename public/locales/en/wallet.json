@@ -4,6 +4,15 @@
   "noTransactions": "No Transactions",
   "approve": "Approve {{symbol}}",
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
-  "transactionTimeAgo": "{{time}} ago",
-  "selectWallet": "Select a wallet"
+  "selectWallet": "Select a wallet",
+  "minuteAgo_one": "{{count}} min ago",
+  "minuteAgo_other": "{{count}} mins ago",
+  "hourAgo_one": "{{count}} hour ago",
+  "hourAgo_other": "{{count}} hours ago",
+  "dayAgo_one": "{{count}} day ago",
+  "dayAgo_other": "{{count}} days ago",
+  "monthAgo_one": "{{count}} month ago",
+  "monthAgo_other": "{{count}} months ago",
+  "yearAgo_one": "{{count}} year ago",
+  "yearAgo_other": "{{count}} years ago"
 }

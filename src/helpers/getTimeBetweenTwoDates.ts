@@ -1,14 +1,19 @@
+import { TFunction } from "react-i18next";
+
 const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;
 const MS_PER_DAY = 86400000;
 const MS_PER_MONTH = 2592000000;
 const MS_PER_YEAR = 31536000000;
 
-export default function getTimeBetweenTwoDates(date: Date): string {
+export default function getTimeBetweenTwoDates(
+  date: Date,
+  t: TFunction<("common" | "wallet")[]>
+): string {
   const currentDate = new Date();
 
   // if date is past the current date;
-  if (currentDate < date) return "undefined";
+  if (currentDate < date) return t("common:undefined");
 
   // convert to seconds
   const timeDiff = currentDate.getTime() - date.getTime();
@@ -18,21 +23,31 @@ export default function getTimeBetweenTwoDates(date: Date): string {
   if (timeDiff < MS_PER_HOUR) {
     // if time difference is less than 1 hour
     const minutes = Math.floor((timeDiff % MS_PER_HOUR) / MS_PER_MINUTE);
-    return `${minutes} min${minutes > 1 ? "s" : ""}`;
+    return minutes > 1
+      ? t("wallet:minuteAgo_other", { count: minutes })
+      : t("wallet:minuteAgo_one", { count: minutes });
   } else if (timeDiff < MS_PER_DAY) {
     // if time difference is less than 1 day
     const hours = Math.floor(timeDiff / MS_PER_HOUR);
-    return `${hours} hour${hours > 1 ? "s" : ""}`;
+    return hours > 1
+      ? t("wallet:hourAgo_other", { count: hours })
+      : t("wallet:hourAgo_one", { count: hours });
   } else if (timeDiff < MS_PER_MONTH) {
     // if time difference is less than 1 month
     const days = Math.floor(timeDiff / MS_PER_DAY);
-    return `${days} day${days > 1 ? "s" : ""}`;
+    return days > 1
+      ? t("wallet:dayAgo_other", { count: days })
+      : t("wallet:dayAgo_one", { count: days });
   } else if (timeDiff < MS_PER_YEAR) {
     // if time difference is less than 1 year
     const months = Math.floor(timeDiff / MS_PER_MONTH);
-    return `${months} month${months > 1 ? "s" : ""}`;
+    return months > 1
+      ? t("wallet:monthAgo_other", { count: months })
+      : t("wallet:monthAgo_one", { count: months });
   } else {
     const years = Math.floor(timeDiff / MS_PER_YEAR);
-    return `${years} year${years > 1 ? "s" : ""}`;
+    return years > 1
+      ? t("wallet:yearAgo_other", { count: years })
+      : t("wallet:yearAgo_one", { count: years });
   }
 }

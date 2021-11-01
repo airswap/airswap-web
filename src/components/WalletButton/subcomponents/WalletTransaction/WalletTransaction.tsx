@@ -87,12 +87,7 @@ export const WalletTransaction = ({
                   : tx.status === "processing"
                   ? t("common:processing")
                   : t("common:failed")}{" "}
-                ·{" "}
-                {tx.timestamp
-                  ? t("wallet:transactionTimeAgo", {
-                      time: getTimeBetweenTwoDates(new Date(tx.timestamp)),
-                    })
-                  : t("common:undefined")}
+                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
               </SpanSubtitle>
             </>
           )}
@@ -117,12 +112,7 @@ export const WalletTransaction = ({
                   : tx.status === "processing"
                   ? t("common:processing")
                   : t("common:failed")}{" "}
-                ·{" "}
-                {tx.timestamp
-                  ? t("wallet:transactionTimeAgo", {
-                      time: getTimeBetweenTwoDates(new Date(tx.timestamp)),
-                    })
-                  : t("common:undefined")}
+                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
               </SpanSubtitle>
             </>
           )}
