@@ -79,7 +79,7 @@ export const mapSwapEvent = (
   let signerWallet = isSwapAddress(data[6]) ? data[6] : "";
   const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";
 
-  let transaction: RfqTransaction = transactions.all.filter(
+  let transaction = transactions.all.filter(
     (t: any) => t.hash === transactionHash
   )[0] as RfqTransaction;
   if (transaction) {
