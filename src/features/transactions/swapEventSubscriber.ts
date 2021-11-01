@@ -88,10 +88,12 @@ export const mapSwapEvent = (
     // most likely last-look, but check anyway
     if (signerWallet.toLowerCase() !== account.toLowerCase())
       protocol = "last-look";
-    transaction = transactions.all.filter(
-      (t: any) => parseInt(t.nonce) === nonce
-    )[0] as LastLookTransaction;
     signerWallet = account;
+    transaction = transactions.all.filter(
+      (t: any) =>
+        parseInt(t.nonce) === nonce &&
+        t?.order?.signerWallet.toLowerCase() === signerWallet.toLowerCase()
+    )[0] as LastLookTransaction;
   }
   return {
     signerWallet,
