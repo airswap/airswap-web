@@ -6,7 +6,11 @@ import { Contract } from "ethers";
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
-import { TransactionsState } from "./transactionsSlice";
+import {
+  LastLookTransaction,
+  RfqTransaction,
+  TransactionsState,
+} from "./transactionsSlice";
 
 const handleReceipt = ({
   nonce,
@@ -36,14 +40,7 @@ const handleReceipt = ({
     })
   );
 
-  notifyTransaction(
-    "Order",
-    //@ts-ignore
-    transaction,
-    tokens,
-    false,
-    chainId
-  );
+  notifyTransaction("Order", transaction, tokens, false, chainId);
 };
 
 type SwapHex = {
@@ -82,9 +79,9 @@ export const mapSwapEvent = (
   let signerWallet = isSwapAddress(data[6]) ? data[6] : "";
   const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";
 
-  let transaction = transactions.all.filter(
+  let transaction: RfqTransaction = transactions.all.filter(
     (t: any) => t.hash === transactionHash
-  )[0];
+  )[0] as RfqTransaction;
   if (transaction) {
     protocol = transaction.protocol!;
   } else {
@@ -93,10 +90,9 @@ export const mapSwapEvent = (
       protocol = "last-look";
     transaction = transactions.all.filter(
       (t: any) => parseInt(t.nonce) === nonce
-    )[0];
+    )[0] as LastLookTransaction;
     signerWallet = account;
   }
-
   return {
     signerWallet,
     nonce,
