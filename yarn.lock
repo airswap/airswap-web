@@ -113,6 +113,13 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.2"
 
+"@airswap/validator@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@airswap/validator/-/validator-2.3.1.tgz#2169e5cf23d1bac687f73556a2828a6442be8511"
+  integrity sha512-0ejY7HU+yoPQJr8B3fsBxgewceeBWZUJKSW+k4WCKESMkkbqtDoW3XdFA1kmxati0Rd637rPd/sIc+1QwszFBA==
+  dependencies:
+    "@openzeppelin/contracts" "^4.3.2"
+
 "@airswap/wrapper@1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-1.4.0.tgz#447c94220e4a8f10b77654546edba392e85eca0b"

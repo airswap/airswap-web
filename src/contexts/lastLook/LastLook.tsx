@@ -4,7 +4,7 @@ import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { Pricing, Levels } from "@airswap/types";
+import { Pricing } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -26,9 +26,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    terms: TradeTerms;
-    pricing: Levels;
+    order: LightOrder;
   }) => Promise<boolean>;
+  getSignedOrder: (params: {
+    locator: string;
+    terms: TradeTerms;
+  }) => Promise<{ order: LightOrder; senderWallet: string }>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -36,6 +39,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => {},
   sendOrderForConsideration: async () => {
     return false;
+  },
+  getSignedOrder: async (params: {
+    locator: string;
+    terms: TradeTerms;
+  }): Promise<LightOrder | any> => {
+    return {};
   },
 });
 
@@ -98,28 +107,27 @@ const LastLookProvider: FC = ({ children }) => {
     });
   };
 
-  const sendOrderForConsideration = async (params: {
+  const getSignedOrder = async (params: {
     locator: string;
     terms: TradeTerms;
-  }) => {
+  }): Promise<{ order: LightOrder; senderWallet: string }> => {
     const { locator, terms } = params;
-
-    if (terms.quoteAmount === null)
-      throw new Error("No quote amount specified");
     const server = connectedServers[locator];
 
     const isSell = terms.side === "sell";
 
+    if (terms.quoteAmount === null)
+      throw new Error("No quote amount specified");
     const baseAmountAtomic = new BigNumber(terms.baseAmount)
       .multipliedBy(10 ** terms.baseToken.decimals)
       .integerValue(BigNumber.ROUND_CEIL)
       .toString();
-    const quoteAmountAtomic = new BigNumber(terms.quoteAmount)
+    const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
       .multipliedBy(10 ** terms.quoteToken.decimals)
       .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
 
-    const order = createLightOrder({
+    const unsignedOrder = createLightOrder({
       expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
       nonce: Date.now().toString(),
       senderWallet: server.getSenderWallet(),
@@ -130,23 +138,40 @@ const LastLookProvider: FC = ({ children }) => {
       signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
       senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
     });
+    const signature = await createLightSignature(
+      unsignedOrder,
+      library.getSigner(),
+      lightDeploys[chainId],
+      chainId!
+    );
 
-    // TODO: deal with rejection here (cancel signature request)
+    const order: LightOrder = {
+      expiry: unsignedOrder.expiry,
+      nonce: unsignedOrder.nonce,
+      senderToken: unsignedOrder.senderToken,
+      senderAmount: unsignedOrder.senderAmount,
+      signerWallet: unsignedOrder.signerWallet,
+      signerToken: unsignedOrder.signerToken,
+      signerAmount: unsignedOrder.signerAmount,
+      ...signature,
+    };
+
+    return {
+      order,
+      senderWallet: unsignedOrder.senderWallet,
+    };
+  };
+
+  const sendOrderForConsideration = async (params: {
+    locator: string;
+    order: LightOrder;
+  }) => {
+    const { locator, order } = params;
+    const server = connectedServers[locator];
     try {
-      const signature = await createLightSignature(
-        order,
-        library.getSigner(),
-        lightDeploys[chainId],
-        chainId!
-      );
-      const signedOrder: LightOrder = {
-        ...order,
-        ...signature,
-      };
-
-      return server.consider(signedOrder);
+      return server.consider(order);
     } catch (e) {
-      console.error("Error signing order", e);
+      console.error("Server unable to consider order: ", e);
       throw e;
     }
   };
@@ -157,6 +182,7 @@ const LastLookProvider: FC = ({ children }) => {
         subscribeAllServers,
         unsubscribeAllServers,
         sendOrderForConsideration,
+        getSignedOrder,
       }}
     >
       {children}
