@@ -16,5 +16,9 @@
   "monthAgo_one": "{{count}} måned siden",
   "monthAgo_other": "{{count}} måneder siden",
   "yearAgo_one": "{{count}} år siden",
-  "yearAgo_other": "{{count}} år siden"
+  "yearAgo_other": "{{count}} år siden",
+  "activeTransactions": "AKTIVE TRANSAKSJONER",
+  "noActiveTransactions": "Ingen aktive transaksjoner",
+  "completedTransactions": "FULLFØRTE TRANSAKSJONER",
+  "noCompletedTransactions": "Ingen fullførte transaksjoner"
 }
