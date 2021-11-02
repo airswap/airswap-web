@@ -123,7 +123,7 @@ const SwapWidget = () => {
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
 
   const { t } = useTranslation([
     "orders",
@@ -423,7 +423,7 @@ const SwapWidget = () => {
           account!
         )) as Error[];
         if (errors.length) {
-          setErrors(errors);
+          setValidatorErrors(errors);
           setIsSwapping(false);
           return;
         }
@@ -442,21 +442,19 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        const currOrder = await LastLook.getCurrentOrder({
+        const currOrder = await LastLook.getSignedOrder({
           locator: bestTradeOption!.pricing!.locator,
-          pricing: bestTradeOption!.pricing!.pricing,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         errors = (await validator.checkSwap(currOrder, account!)) as Error[];
         if (errors.length) {
-          setErrors(errors);
+          setValidatorErrors(errors);
           setIsSwapping(false);
           return;
         }
         const accepted = await LastLook.sendOrderForConsideration({
           locator: bestTradeOption!.pricing!.locator,
-          pricing: bestTradeOption!.pricing!.pricing,
-          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+          order: currOrder,
         });
         setIsSwapping(false);
         if (accepted) {
@@ -697,15 +695,15 @@ const SwapWidget = () => {
         subTitle={t("validatorErrors:swapFail")}
         onClose={async () => {
           await handleButtonClick(ButtonActions.restart);
-          setErrors([]);
+          setValidatorErrors([]);
         }}
-        isHidden={!errors.length}
+        isHidden={!validatorErrors.length}
       >
         <ErrorList
-          errors={errors}
+          errors={validatorErrors}
           handleClick={async () => {
             await handleButtonClick(ButtonActions.restart);
-            setErrors([]);
+            setValidatorErrors([]);
           }}
         />
       </Overlay>

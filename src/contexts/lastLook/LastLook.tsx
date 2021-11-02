@@ -26,13 +26,11 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    terms: TradeTerms;
-    pricing: Levels;
+    order: LightOrder;
   }) => Promise<boolean>;
-  getCurrentOrder: (params: {
+  getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-    pricing: Levels;
   }) => Promise<LightOrder>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
@@ -42,10 +40,9 @@ export const LastLookContext = createContext<{
   sendOrderForConsideration: async () => {
     return false;
   },
-  getCurrentOrder: async (params: {
+  getSignedOrder: async (params: {
     locator: string;
     terms: TradeTerms;
-    pricing: Levels;
   }): Promise<LightOrder | any> => {
     return {};
   },
@@ -110,15 +107,17 @@ const LastLookProvider: FC = ({ children }) => {
     });
   };
 
-  const getCurrentOrder = async (params: {
+  const getSignedOrder = async (params: {
     locator: string;
     terms: TradeTerms;
-  }) => {
+  }): Promise<LightOrder> => {
     const { locator, terms } = params;
     const server = connectedServers[locator];
 
     const isSell = terms.side === "sell";
 
+    if (terms.quoteAmount === null)
+      throw new Error("No quote amount specified");
     const baseAmountAtomic = new BigNumber(terms.baseAmount)
       .multipliedBy(10 ** terms.baseToken.decimals)
       .integerValue(BigNumber.ROUND_CEIL)
@@ -153,51 +152,13 @@ const LastLookProvider: FC = ({ children }) => {
 
   const sendOrderForConsideration = async (params: {
     locator: string;
-    terms: TradeTerms;
+    order: LightOrder;
   }) => {
-    const { locator, terms } = params;
-
-    if (terms.quoteAmount === null)
-      throw new Error("No quote amount specified");
+    const { locator, order } = params;
     const server = connectedServers[locator];
-
-    const isSell = terms.side === "sell";
-
-    const baseAmountAtomic = new BigNumber(terms.baseAmount)
-      .multipliedBy(10 ** terms.baseToken.decimals)
-      .integerValue(BigNumber.ROUND_CEIL)
-      .toString();
-    const quoteAmountAtomic = new BigNumber(terms.quoteAmount)
-      .multipliedBy(10 ** terms.quoteToken.decimals)
-      .integerValue(BigNumber.ROUND_FLOOR)
-      .toString();
-
-    const order = createLightOrder({
-      expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
-      nonce: Date.now().toString(),
-      senderWallet: server.getSenderWallet(),
-      signerWallet: account,
-      signerToken: terms.baseToken.address,
-      senderToken: terms.quoteToken.address,
-      signerFee: "7",
-      signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
-      senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
-    });
-
     // TODO: deal with rejection here (cancel signature request)
     try {
-      const signature = await createLightSignature(
-        order,
-        library.getSigner(),
-        lightDeploys[chainId],
-        chainId!
-      );
-      const signedOrder: LightOrder = {
-        ...order,
-        ...signature,
-      };
-
-      return server.consider(signedOrder);
+      return server.consider(order);
     } catch (e) {
       console.error("Error signing order", e);
       throw e;
@@ -210,7 +171,7 @@ const LastLookProvider: FC = ({ children }) => {
         subscribeAllServers,
         unsubscribeAllServers,
         sendOrderForConsideration,
-        getCurrentOrder,
+        getSignedOrder,
       }}
     >
       {children}
