@@ -414,18 +414,21 @@ const SwapWidget = () => {
     try {
       setIsSwapping(true);
       // @ts-ignore
-      //TOOD figure out type issues
+      // TODO: figure out type issues
       const validator = new Validator(chainId, library?.getSigner());
-      let errors;
       if (bestTradeOption!.protocol === "request-for-quote") {
-        errors = errors = (await validator.checkSwap(
-          bestTradeOption!.order!,
-          account!
-        )) as Error[];
-        if (errors.length) {
-          setValidatorErrors(errors);
-          setIsSwapping(false);
-          return;
+        if (swapType !== "swapWithWrap") {
+          const errors = (await validator.checkSwap(
+            bestTradeOption!.order!,
+            // NOTE: once new swap contract is used, this (senderAddress) needs
+            // to be the wrapper address for wrapped swaps.
+            account!
+          )) as Error[];
+          if (errors.length) {
+            setValidatorErrors(errors);
+            setIsSwapping(false);
+            return;
+          }
         }
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
@@ -446,7 +449,10 @@ const SwapWidget = () => {
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
-        errors = (await validator.checkSwap(order, senderWallet)) as Error[];
+        const errors = (await validator.checkSwap(
+          order,
+          senderWallet
+        )) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
