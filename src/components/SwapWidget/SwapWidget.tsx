@@ -446,7 +446,11 @@ const SwapWidget = () => {
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
-        errors = (await validator.checkSwap(currOrder, account!)) as Error[];
+        errors = (await validator.checkSwap(
+          currOrder,
+          // @ts-ignore FIXME: update types
+          currOrder.senderWallet
+        )) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
