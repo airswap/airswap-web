@@ -1,3 +1,8 @@
+import { useLayoutEffect, useState } from "react";
+
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+
 import truncateEthAddress from "truncate-eth-address";
 
 import { InfoHeading } from "../../../Typography/Typography";
@@ -17,6 +22,11 @@ type WalletBlockiesProps = {
   className?: string;
 };
 
+// This is an in-memory cache that will be lost when we refresh the page, as
+// ENS records may change, but we probably only need to check once between
+// refreshes. Format: { [chainId]: { [address]: name | null }}
+const ensCachedResponses: Record<number, Record<string, string | null>> = {};
+
 const WalletAddress = ({
   address,
   isButton = false,
@@ -24,6 +34,27 @@ const WalletAddress = ({
   className = "",
   onClick,
 }: WalletBlockiesProps) => {
+  const { library, chainId } = useWeb3React<Web3Provider>();
+
+  const [ensName, setEnsName] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    if (!address || !chainId || !library) return;
+
+    const cached = ensCachedResponses[chainId]?.[address];
+    if (cached !== undefined) {
+      setEnsName(cached);
+    } else {
+      library.lookupAddress(address).then((name) => {
+        ensCachedResponses[chainId] = {
+          ...ensCachedResponses[chainId],
+          [address]: name,
+        };
+        setEnsName(name);
+      });
+    }
+  }, [library, address, chainId]);
+
   const renderContent = () => (
     <StyledWalletAddress className={className}>
       {showBlockies ? (
@@ -39,7 +70,9 @@ const WalletAddress = ({
       ) : (
         <GreenCircle />
       )}
-      <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
+      <InfoHeading>
+        {ensName ? ensName : truncateEthAddress(address)}
+      </InfoHeading>
     </StyledWalletAddress>
   );
 
