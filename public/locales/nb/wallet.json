@@ -6,5 +6,15 @@
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
   "lastLookTransaction": "{{signerAmount}} {{signerToken}} → {{senderAmount}} {{senderToken}}",
   "transactionTimeAgo": "{{time}} siden",
-  "selectWallet": "Velg lommebok"
+  "selectWallet": "Velg lommebok",
+  "minuteAgo_one": "{{count}} minutter siden",
+  "minuteAgo_other": "{{count}} minutter siden",
+  "hourAgo_one": "{{count}} time siden",
+  "hourAgo_other": "{{count}} timer siden",
+  "dayAgo_one": "{{count}} dag siden",
+  "dayAgo_other": "{{count}} dager siden",
+  "monthAgo_one": "{{count}} måned siden",
+  "monthAgo_other": "{{count}} måneder siden",
+  "yearAgo_one": "{{count}} år siden",
+  "yearAgo_other": "{{count}} år siden"
 }
