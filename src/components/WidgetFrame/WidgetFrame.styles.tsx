@@ -65,7 +65,7 @@ export const BackgroundBlurriness = styled.div`
   filter: blur(100px);
   opacity: 0.8;
   border-radius: 1rem;
-  will-change: transform opacity;
+  will-change: transform, opacity;
   animation: ${warp} 11s infinite;
 
   @media (prefers-reduced-motion: reduce) {
