@@ -4,7 +4,7 @@ import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { Pricing, Levels } from "@airswap/types";
+import { Pricing } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -156,11 +156,10 @@ const LastLookProvider: FC = ({ children }) => {
   }) => {
     const { locator, order } = params;
     const server = connectedServers[locator];
-    // TODO: deal with rejection here (cancel signature request)
     try {
       return server.consider(order);
     } catch (e) {
-      console.error("Error signing order", e);
+      console.error("Server unable to consider order: ", e);
       throw e;
     }
   };
