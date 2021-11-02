@@ -31,7 +31,7 @@ export const LastLookContext = createContext<{
   getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-  }) => Promise<LightOrder>;
+  }) => Promise<{ order: LightOrder; senderWallet: string }>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -110,7 +110,7 @@ const LastLookProvider: FC = ({ children }) => {
   const getSignedOrder = async (params: {
     locator: string;
     terms: TradeTerms;
-  }): Promise<LightOrder> => {
+  }): Promise<{ order: LightOrder; senderWallet: string }> => {
     const { locator, terms } = params;
     const server = connectedServers[locator];
 
@@ -127,7 +127,7 @@ const LastLookProvider: FC = ({ children }) => {
       .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
 
-    const order = createLightOrder({
+    const unsignedOrder = createLightOrder({
       expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
       nonce: Date.now().toString(),
       senderWallet: server.getSenderWallet(),
@@ -139,14 +139,26 @@ const LastLookProvider: FC = ({ children }) => {
       senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
     });
     const signature = await createLightSignature(
-      order,
+      unsignedOrder,
       library.getSigner(),
       lightDeploys[chainId],
       chainId!
     );
-    return {
-      ...order,
+
+    const order: LightOrder = {
+      expiry: unsignedOrder.expiry,
+      nonce: unsignedOrder.nonce,
+      senderToken: unsignedOrder.senderToken,
+      senderAmount: unsignedOrder.senderAmount,
+      signerWallet: unsignedOrder.signerWallet,
+      signerToken: unsignedOrder.signerToken,
+      signerAmount: unsignedOrder.signerAmount,
       ...signature,
+    };
+
+    return {
+      order,
+      senderWallet: unsignedOrder.senderWallet,
     };
   };
 

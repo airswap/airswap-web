@@ -442,15 +442,11 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        const currOrder = await LastLook.getSignedOrder({
+        const { order, senderWallet } = await LastLook.getSignedOrder({
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
-        errors = (await validator.checkSwap(
-          currOrder,
-          // @ts-ignore FIXME: update types
-          currOrder.senderWallet
-        )) as Error[];
+        errors = (await validator.checkSwap(order, senderWallet)) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -458,7 +454,7 @@ const SwapWidget = () => {
         }
         const accepted = await LastLook.sendOrderForConsideration({
           locator: bestTradeOption!.pricing!.locator,
-          order: currOrder,
+          order: order,
         });
         setIsSwapping(false);
         if (accepted) {
