@@ -86,7 +86,9 @@ export const Wallet: FC = () => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
   const [lightContract, setLightContract] = useState<Contract>();
 
   useBeforeunload(() => {

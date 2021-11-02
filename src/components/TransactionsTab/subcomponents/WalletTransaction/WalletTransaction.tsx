@@ -6,8 +6,7 @@ import { formatUnits } from "@ethersproject/units";
 
 import {
   SubmittedApproval,
-  SubmittedLastLookOrder,
-  SubmittedRFQOrder,
+  SubmittedOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -35,7 +34,7 @@ type WalletTransactionProps = {
   chainId: number;
 };
 
-export const WalletTransaction = ({
+const WalletTransaction = ({
   transaction,
   tokens,
   chainId,
@@ -114,3 +113,5 @@ export const WalletTransaction = ({
     );
   }
 };
+
+export { WalletTransaction };
