@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+export const Container = styled.div`
   position: absolute;
   display: grid;
   grid-template-rows: 5rem;
   width: 16rem;
   height: 17.25rem;
   top: 5.5rem;
-  right: 2.5rem;
+  right: 0rem;
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${(props) => props.theme.colors.darkGrey};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
@@ -16,7 +16,7 @@ const Container = styled.div`
   z-index: 1000;
 `;
 
-const ThemeContainer = styled.div`
+export const ThemeContainer = styled.div`
   margin: 0.5rem 0 0 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -27,7 +27,7 @@ type ButtonStyleProps = {
   active: boolean;
 };
 
-const ThemeButton = styled.button<ButtonStyleProps>`
+export const ThemeButton = styled.button<ButtonStyleProps>`
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
   font-weight: ${(props) => (props.active ? "600" : "400")};
   color: ${(props) =>
@@ -49,7 +49,7 @@ type LocaleContainerType = {
   overflow: boolean;
 };
 
-const LocaleContainer = styled.div<LocaleContainerType>`
+export const LocaleContainer = styled.div<LocaleContainerType>`
   flex-grow: 1;
   width: 100%;
   height: auto;
@@ -71,7 +71,7 @@ const LocaleContainer = styled.div<LocaleContainerType>`
   }
 `;
 
-const LocaleButton = styled.button<ButtonStyleProps>`
+export const LocaleButton = styled.button<ButtonStyleProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -92,11 +92,3 @@ const LocaleButton = styled.button<ButtonStyleProps>`
     color: ${(props) => props.theme.colors.white};
   }
 `;
-
-export {
-  Container,
-  ThemeContainer,
-  ThemeButton,
-  LocaleContainer,
-  LocaleButton,
-};
