@@ -91,7 +91,6 @@ export const Wallet: FC<WalletProps> = () => {
 
   useBeforeunload(() => {
     if (lightContract) {
-      console.debug(Date.now() + ": unsubscribed to swapEventSubscriber");
       lightContract.removeAllListeners("Swap");
     }
   });
@@ -108,7 +107,6 @@ export const Wallet: FC<WalletProps> = () => {
       });
       return () => {
         if (lightContract) {
-          console.debug(Date.now() + ": unsubscribed to swapEventSubscriber");
           lightContract.removeAllListeners("Swap");
         }
       };

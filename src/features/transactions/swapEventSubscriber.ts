@@ -117,11 +117,6 @@ export default function subscribeToSwapEvents(params: {
   dispatch: Dispatch;
 }) {
   const { lightContract, account, dispatch, chainId } = params;
-  console.debug(
-    Date.now() + ": subscribed to swapEventSubscriber for ",
-    account
-  );
-
   lightContract.on("Swap", async (...data) => {
     const transactions = store.getState().transactions;
     const {

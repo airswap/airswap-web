@@ -17,12 +17,10 @@ async function handleTransaction(
   library: any
 ) {
   if (transactionInState.status === "processing" && transactionInState.hash) {
-    console.debug("inside handleTransaction");
     let receipt = await library.getTransactionReceipt(transactionInState.hash);
     if (receipt !== null) {
       if (walletHasChanged) return;
       const status = receipt.status;
-      console.debug({ status, receipt, tx: transactionInState });
       if (status === 1)
         dispatch(mineTransaction({ hash: transactionInState.hash }));
       // success
