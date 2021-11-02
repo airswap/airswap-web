@@ -1,0 +1,16 @@
+{
+  "INVALID_SIG": "INVALID_SIG",
+  "EXPIRY_PASSED": "EXPIRY_PASSED",
+  "UNAUTHORIZED": "UNAUTHORIZED",
+  "SIGNER_ALLOWANCE_LOW": "SIGNER_ALLOWANCE_LOW",
+  "SIGNER_BALANCE_LOW": "SIGNER_BALANCE_LOW",
+  "NONCE_ALREADY_USED": "NONCE_ALREADY_USED",
+  "invalid_sig": "Ugyldig signatur",
+  "expiry_passed": "Ordren er utløpt",
+  "unauthorized": "Underskriver godkjente ikke ordren",
+  "signer_allowance_low": "Underskriver godkjente ikke beløpet",
+  "signer_balance_low": "Underskriver godkjente ikke beløpet",
+  "nonce_aleady_used": "Nonce er allerede brukt eller utløpt",
+  "unableSwap": "Kunne ikke veksle",
+  "swapFail": "Vekslingen feilet av følgende grunner."
+}

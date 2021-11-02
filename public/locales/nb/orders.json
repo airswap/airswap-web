@@ -29,6 +29,7 @@
   "removeFromActive": "Fjern fra aktive",
   "expandedResults": "Treff i liste med inaktive tokens",
   "newQuoteIn": "Ny pris om",
+  "protocolFeeActive": "{{fee}} protokoll-gebyr aktiv",
   "afterFee": "Iberegnet gebyr på {{fee}}",
   "tokenPairUnavailable": "Vekslingspar er ikke tilgjengelig akkurat nå",
   "retryOrCancel": "Vennligst prøv igjen med andre verdier",
