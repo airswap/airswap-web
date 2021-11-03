@@ -467,6 +467,7 @@ const SwapWidget = () => {
           setShowOrderSubmitted(true);
           LastLook.unsubscribeAllServers();
         } else {
+          // TODO: do something about the order here so that doesn't show as processing
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
@@ -482,7 +483,10 @@ const SwapWidget = () => {
       if (e.code && e.code === 4001) {
         // 4001 is metamask user declining transaction sig
       } else {
-        // FIXME: notify user - toast?
+        notifyError({
+          heading: t("orders:swapFailed"),
+          cta: t("orders:swapFailedCallToAction"),
+        });
       }
     }
   };
@@ -543,6 +547,7 @@ const SwapWidget = () => {
           })
         );
         await requestQuotes();
+
         break;
 
       case ButtonActions.approve:

@@ -4,6 +4,7 @@
   "noTransactions": "Ingen transaksjoner",
   "approve": "Godkjenn {{symbol}}",
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+  "lastLookTransaction": "{{signerAmount}} {{signerToken}} → {{senderAmount}} {{senderToken}}",
   "transactionTimeAgo": "{{time}} siden",
   "selectWallet": "Velg lommebok"
 }

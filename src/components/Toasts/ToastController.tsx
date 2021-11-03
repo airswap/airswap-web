@@ -32,31 +32,39 @@ export const notifyTransaction = (
     chainId
   ) {
     const tx: SubmittedOrder = transaction as SubmittedOrder;
-    const senderToken = findEthOrTokenByAddress(
-      tx.order.senderToken,
-      tokens,
-      chainId
-    );
-    const signerToken = findEthOrTokenByAddress(
-      tx.order.signerToken,
-      tokens,
-      chainId
-    );
-    toast(
-      (t) => (
-        <TransactionToast
-          onClose={() => toast.dismiss(t.id)}
-          type={type}
-          transaction={transaction}
-          senderToken={senderToken}
-          signerToken={signerToken}
-          error={error}
-        />
-      ),
-      {
-        duration: 15000,
-      }
-    );
+    /*  TODO: fix toaster for multiple tabs or apps
+        now that we have a listener, you can have multiple
+        tabs open that receives the same order event. Only one redux
+        store will have the order, and the others won't. That will
+        throw an error here if we don't check for `order` inside `tx`
+     */
+    if (tx?.order) {
+      const senderToken = findEthOrTokenByAddress(
+        tx.order.senderToken,
+        tokens,
+        chainId
+      );
+      const signerToken = findEthOrTokenByAddress(
+        tx.order.signerToken,
+        tokens,
+        chainId
+      );
+      toast(
+        (t) => (
+          <TransactionToast
+            onClose={() => toast.dismiss(t.id)}
+            type={type}
+            transaction={transaction}
+            senderToken={senderToken}
+            signerToken={signerToken}
+            error={error}
+          />
+        ),
+        {
+          duration: 15000,
+        }
+      );
+    }
   } else {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     token = findTokenByAddress(tx.tokenAddress, tokens);
