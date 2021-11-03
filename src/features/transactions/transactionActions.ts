@@ -1,6 +1,10 @@
 import { createAction } from "@reduxjs/toolkit";
 
-import { SubmittedTransaction, SubmittedApproval } from "./transactionsSlice";
+import {
+  SubmittedTransaction,
+  SubmittedApproval,
+  ProtocolType,
+} from "./transactionsSlice";
 
 const submitTransaction = createAction<
   SubmittedTransaction | SubmittedApproval
@@ -12,7 +16,7 @@ const declineTransaction = createAction<{
 }>("transactions/declineTransaction");
 
 const mineTransaction = createAction<{
-  protocol?: "request-for-quote" | "last-look";
+  protocol?: ProtocolType;
   signerWallet?: string;
   hash?: string;
   nonce?: string;

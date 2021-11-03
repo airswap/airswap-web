@@ -1,3 +1,6 @@
+import { Web3Provider } from "@ethersproject/providers";
+import { Action, Dispatch } from "@reduxjs/toolkit";
+
 import { mineTransaction, revertTransaction } from "./transactionActions";
 import { SubmittedTransaction } from "./transactionsSlice";
 
@@ -13,8 +16,8 @@ import { SubmittedTransaction } from "./transactionsSlice";
 async function handleTransaction(
   transactionInState: SubmittedTransaction,
   walletHasChanged: boolean,
-  dispatch: any,
-  library: any
+  dispatch: Dispatch<Action>,
+  library: Web3Provider
 ) {
   if (transactionInState.status === "processing" && transactionInState.hash) {
     let receipt = await library.getTransactionReceipt(transactionInState.hash);

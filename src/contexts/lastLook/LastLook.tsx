@@ -4,7 +4,7 @@ import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { Levels, LightOrder, Pricing } from "@airswap/types";
+import { LightOrder, Pricing } from "@airswap/types";
 import { createLightOrder, createLightSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
@@ -15,7 +15,7 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import { submitTransaction } from "../../features/transactions/transactionActions";
-import { SubmittedLastLookOrder } from "../../features/transactions/transactionsSlice";
+import { SubmittedOrder } from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;

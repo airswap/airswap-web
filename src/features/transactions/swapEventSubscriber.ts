@@ -1,4 +1,4 @@
-import { Dispatch } from "@reduxjs/toolkit";
+import { Action, Dispatch } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 import { Contract } from "ethers";
@@ -8,6 +8,7 @@ import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import {
   LastLookTransaction,
+  ProtocolType,
   SubmittedOrder,
   SubmittedTransaction,
   TransactionsState,
@@ -25,10 +26,10 @@ const handleReceipt = ({
   nonce: string;
   transactionHash: string;
   signerWallet: string;
-  transaction: any;
-  protocol: "last-look" | "request-for-quote" | undefined;
+  transaction: SubmittedTransaction;
+  protocol?: ProtocolType;
   chainId: number;
-  dispatch: any;
+  dispatch: Dispatch<Action>;
 }) => {
   const tokens = Object.values(store.getState().metadata.tokens.all);
 
@@ -41,7 +42,14 @@ const handleReceipt = ({
     })
   );
 
-  notifyTransaction("Order", transaction, tokens, false, chainId);
+  notifyTransaction(
+    "Order",
+    //@ts-ignore
+    transaction,
+    tokens,
+    false,
+    chainId
+  );
 };
 
 type SwapHex = {
@@ -75,7 +83,7 @@ export const mapSwapEvent = (
   account: string,
   transactions: TransactionsState
 ) => {
-  let protocol: "request-for-quote" | "last-look" | undefined;
+  let protocol: ProtocolType | undefined;
   const nonce = isSwapHex(data[0]) ? data[0].toString() : "UNKNOWN";
   let signerWallet = isSwapAddress(data[2]) ? data[2] : "";
   const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";

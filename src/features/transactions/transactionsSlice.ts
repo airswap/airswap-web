@@ -18,14 +18,18 @@ export interface DepositOrWithdrawOrder {
 
 export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
+export type StatusType = "processing" | "succeeded" | "reverted";
+
+export type ProtocolType = "request-for-quote" | "last-look";
+
 export interface SubmittedTransaction {
   type: TransactionType;
   hash?: string; // LL orders doesn't have hash
-  status: "processing" | "succeeded" | "reverted";
+  status: StatusType;
   nonce?: string;
   expiry?: string;
   timestamp: number;
-  protocol?: "request-for-quote" | "last-look";
+  protocol?: ProtocolType;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
@@ -68,8 +72,8 @@ function updateTransaction(
   nonce: string,
   hash: string,
   signerWallet: string,
-  status: "processing" | "succeeded" | "reverted",
-  protocol?: "request-for-quote" | "last-look"
+  status: StatusType,
+  protocol?: ProtocolType
 ) {
   if (protocol === "last-look") {
     const swap = state.all.find(
