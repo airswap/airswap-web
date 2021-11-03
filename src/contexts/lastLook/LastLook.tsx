@@ -162,6 +162,7 @@ const LastLookProvider: FC = ({ children }) => {
       order: order,
       nonce: order.nonce,
       status: "processing",
+      protocol: "last-look",
       expiry: unsignedOrder.expiry,
       timestamp: Date.now(),
     };
