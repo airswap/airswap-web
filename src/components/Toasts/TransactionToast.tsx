@@ -7,7 +7,8 @@ import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "ethers/lib/utils";
 
 import {
-  SubmittedOrder,
+  SubmittedLastLookOrder,
+  SubmittedRFQOrder,
   SubmittedTransaction,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
@@ -81,30 +82,36 @@ const TransactionToast = ({
             : t("toast:approvalComplete")}
         </InfoHeading>
         <InfoSubHeading>
-          {type === "Order" || type === "Deposit" || type === "Withdraw"
-            ? transaction && senderToken && signerToken
-              ? t("toast:transaction", {
+          {(() => {
+            if (type === "Order" || type === "Deposit" || type === "Withdraw") {
+              if (transaction && senderToken && signerToken) {
+                const tx =
+                  transaction.protocol === "last-look"
+                    ? (transaction as SubmittedLastLookOrder)
+                    : (transaction as SubmittedRFQOrder);
+                let translationKey = "wallet:transaction";
+                if (tx.protocol === "last-look") {
+                  translationKey = "wallet:lastLookTransaction";
+                }
+                // @ts-ignore dynamic translation key
+                return t(translationKey, {
                   senderAmount: parseFloat(
                     Number(
-                      formatUnits(
-                        (transaction as SubmittedOrder).order.senderAmount,
-                        senderToken.decimals
-                      )
+                      formatUnits(tx.order.senderAmount, senderToken.decimals)
                     ).toFixed(5)
                   ),
                   senderToken: senderToken.symbol,
                   signerAmount: parseFloat(
                     Number(
-                      formatUnits(
-                        (transaction as SubmittedOrder).order.signerAmount,
-                        signerToken.decimals
-                      )
+                      formatUnits(tx.order.signerAmount, signerToken.decimals)
                     ).toFixed(5)
                   ),
                   signerToken: signerToken.symbol,
-                })
-              : null
-            : t("toast:approve", { symbol: approvalToken?.symbol })}
+                });
+              }
+            }
+            return t("toast:approve", { symbol: approvalToken?.symbol });
+          })()}
         </InfoSubHeading>
       </TextContainer>
       <HiXContainer>

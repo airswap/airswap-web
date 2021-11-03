@@ -8,6 +8,7 @@ import information from "../../public/locales/en/information.json";
 import marketing from "../../public/locales/en/marketing.json";
 import orders from "../../public/locales/en/orders.json";
 import toast from "../../public/locales/en/toast.json";
+import validatorErrors from "../../public/locales/en/validatorErrors.json";
 import wallet from "../../public/locales/en/wallet.json";
 
 declare module "react-i18next" {
@@ -20,5 +21,6 @@ declare module "react-i18next" {
     marketing: typeof marketing;
     information: typeof information;
     toast: typeof toast;
+    validatorErrors: typeof validatorErrors;
   }
 }

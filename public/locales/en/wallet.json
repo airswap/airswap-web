@@ -4,6 +4,7 @@
   "noTransactions": "No Transactions",
   "approve": "Approve {{symbol}}",
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+  "lastLookTransaction": "{{signerAmount}} {{signerToken}} → {{senderAmount}} {{senderToken}}",
   "selectWallet": "Select a wallet",
   "minuteAgo_one": "{{count}} min ago",
   "minuteAgo_other": "{{count}} mins ago",
@@ -14,5 +15,9 @@
   "monthAgo_one": "{{count}} month ago",
   "monthAgo_other": "{{count}} months ago",
   "yearAgo_one": "{{count}} year ago",
-  "yearAgo_other": "{{count}} years ago"
+  "yearAgo_other": "{{count}} years ago",
+  "activeTransactions": "ACTIVE TRANSACTIONS",
+  "noActiveTransactions": "No active transactions",
+  "completedTransactions": "COMPLETED TRANSACTIONS",
+  "noCompletedTransactions": "No completed transactions"
 }

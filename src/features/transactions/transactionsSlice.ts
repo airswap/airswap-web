@@ -3,10 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import {
-  submitTransaction,
   declineTransaction,
-  revertTransaction,
   mineTransaction,
+  revertTransaction,
+  submitTransaction,
 } from "./transactionActions";
 
 export interface DepositOrWithdrawOrder {
@@ -18,16 +18,34 @@ export interface DepositOrWithdrawOrder {
 
 export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
+export type StatusType = "processing" | "succeeded" | "reverted";
+
+export type ProtocolType = "request-for-quote" | "last-look";
+
 export interface SubmittedTransaction {
   type: TransactionType;
-  hash: string;
-  status: "processing" | "succeeded" | "reverted";
+  hash?: string; // LL orders doesn't have hash
+  status: StatusType;
+  nonce?: string;
+  expiry?: string;
   timestamp: number;
+  protocol?: ProtocolType;
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
   order: LightOrder;
 }
+
+export interface SubmittedRFQOrder extends SubmittedOrder {}
+
+export interface SubmittedLastLookOrder extends SubmittedOrder {}
+
+export interface LastLookTransaction
+  extends SubmittedTransaction,
+    SubmittedLastLookOrder {}
+export interface RfqTransaction
+  extends SubmittedTransaction,
+    SubmittedRFQOrder {}
 
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
@@ -51,16 +69,28 @@ const initialState: TransactionsState = {
 
 function updateTransaction(
   state: TransactionsState,
+  nonce: string,
   hash: string,
-  status: "processing" | "succeeded" | "reverted"
+  signerWallet: string,
+  status: StatusType,
+  protocol?: ProtocolType
 ) {
-  for (let i in state.all) {
-    if (state.all[i].hash === hash) {
-      state.all[i] = {
-        ...state.all[i],
-        status,
-      };
-      break;
+  if (protocol === "last-look") {
+    const swap = state.all.find(
+      (s) =>
+        s.nonce === nonce &&
+        (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
+          signerWallet.toLowerCase()
+    );
+    if (swap) {
+      swap.timestamp = Date.now();
+      swap.status = status;
+      swap.hash = hash;
+    }
+  } else {
+    const swap = state.all.find((s) => s.hash === hash);
+    if (swap) {
+      swap.status = status;
     }
   }
 }
@@ -89,10 +119,24 @@ export const transactionsSlice = createSlice({
       console.error(action.payload);
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(state, action.payload.hash, "reverted");
+      updateTransaction(
+        state,
+        "",
+        action.payload.hash,
+        "",
+        "reverted",
+        undefined
+      );
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(state, action.payload, "succeeded");
+      updateTransaction(
+        state,
+        action.payload?.nonce || "",
+        action.payload?.hash || "",
+        action.payload?.signerWallet || "",
+        "succeeded",
+        action.payload?.protocol
+      );
     });
   },
 });

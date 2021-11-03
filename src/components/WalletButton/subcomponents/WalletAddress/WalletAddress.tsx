@@ -5,9 +5,9 @@ import { useWeb3React } from "@web3-react/core";
 
 import truncateEthAddress from "truncate-eth-address";
 
+import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
-  StyledWalletAddress,
   BlockiesContainer,
   GreenCircle,
   Button,
@@ -19,7 +19,6 @@ type WalletBlockiesProps = {
   isButton?: boolean;
   showBlockies?: boolean;
   onClick?: () => void;
-  className?: string;
 };
 
 // This is an in-memory cache that will be lost when we refresh the page, as
@@ -31,7 +30,6 @@ const WalletAddress = ({
   address,
   isButton = false,
   showBlockies = false,
-  className = "",
   onClick,
 }: WalletBlockiesProps) => {
   const { library, chainId } = useWeb3React<Web3Provider>();
@@ -56,7 +54,7 @@ const WalletAddress = ({
   }, [library, address, chainId]);
 
   const renderContent = () => (
-    <StyledWalletAddress className={className}>
+    <BorderedButton>
       {showBlockies ? (
         <BlockiesContainer>
           <StyledBlockies
@@ -73,7 +71,7 @@ const WalletAddress = ({
       <InfoHeading>
         {ensName ? ensName : truncateEthAddress(address)}
       </InfoHeading>
-    </StyledWalletAddress>
+    </BorderedButton>
   );
 
   if (isButton) {

@@ -1,13 +1,22 @@
 import { FC, useEffect, useState } from "react";
+import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
+import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+//@ts-ignore
+import * as lightDeploys from "@airswap/light/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
+import { Contract } from "ethers";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import EthButton from "../../components/EthButton/EthButton";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
+import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
+import nativeETH from "../../constants/nativeETH";
 import {
   AbstractConnector,
   WalletProvider,
@@ -33,10 +42,8 @@ import {
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
-import {
-  revertTransaction,
-  mineTransaction,
-} from "../transactions/transactionActions";
+import handleTransaction from "../transactions/handleTransaction";
+import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectTransactions,
   setTransactions,
@@ -48,16 +55,12 @@ import {
   saveLastAccount,
 } from "./walletApi";
 import {
+  selectWallet,
   setWalletConnected,
   setWalletDisconnected,
-  selectWallet,
 } from "./walletSlice";
 
-type WalletProps = {
-  className?: string;
-};
-
-export const Wallet: FC<WalletProps> = ({ className = "" }) => {
+export const Wallet: FC = () => {
   const {
     chainId,
     account,
@@ -83,6 +86,46 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
+  const [lightContract, setLightContract] = useState<Contract>();
+
+  useBeforeunload(() => {
+    if (lightContract) {
+      lightContract.removeAllListeners("Swap");
+    }
+  });
+
+  useEffect(() => {
+    if (library && chainId && account && lightContract) {
+      subscribeToSwapEvents({
+        account: account!,
+        lightContract,
+        //@ts-ignore
+        library,
+        chainId,
+        dispatch,
+      });
+      return () => {
+        if (lightContract) {
+          lightContract.removeAllListeners("Swap");
+        }
+      };
+    }
+  }, [dispatch, library, chainId, account, lightContract]);
+  useEffect(() => {
+    if (chainId && account && library) {
+      const lightContract = new Contract(
+        lightDeploys[chainId],
+        LightContract.abi,
+        //@ts-ignore
+        library
+      );
+      setLightContract(lightContract);
+    }
+  }, [library, chainId, account]);
+
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {
     const lastConnectedAccount = loadLastAccount();
@@ -204,6 +247,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
         },
       });
     }
+
     return () => {
       if (teardownTransferListener) {
         teardownTransferListener();
@@ -237,65 +281,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
       // to see if it was a success/failure/pending. update accordingly. if pending: wait()
       // and poll at a sensible interval.
       transactionsLocalStorage.all.forEach(async (tx) => {
-        if (tx.status === "processing") {
-          let receipt = await library.getTransactionReceipt(tx.hash);
-          if (receipt !== null) {
-            if (walletHasChanged) return;
-            const status = receipt.status;
-            if (status === 1) dispatch(mineTransaction(tx.hash));
-            // success
-            else if (status === 0)
-              dispatch(
-                revertTransaction({
-                  hash: tx.hash,
-                  reason: "Reverted",
-                })
-              ); // reverted
-            return;
-          } else {
-            // Receipt was null, so the transaction is incomplete
-            // Try to get a reference to the transaction in the mem pool - this
-            // can sometimes also return null (e.g. gas price too low or tx only
-            // recently sent) depending on backend.
-            const transaction = await library.getTransaction(tx.hash);
-            if (transaction) {
-              try {
-                await transaction.wait(1);
-                if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
-              } catch (err) {
-                console.error(err);
-                if (!walletHasChanged)
-                  dispatch(
-                    revertTransaction({
-                      hash: tx.hash,
-                      reason: "Reverted",
-                    })
-                  );
-              }
-              return;
-            } else {
-              // if transaction === null, we poll at intervals
-              // assume failed after 30 mins
-              const assumedFailureTime = Date.now() + 30 * 60 * 1000;
-              while (receipt === null && Date.now() <= assumedFailureTime) {
-                // wait 30 seconds
-                await new Promise((res) => setTimeout(res, 30000));
-                receipt = await library!.getTransactionReceipt(tx.hash);
-              }
-              if (!receipt || receipt.status === 0) {
-                if (!walletHasChanged)
-                  dispatch(
-                    revertTransaction({
-                      hash: tx.hash,
-                      reason: "Reverted",
-                    })
-                  );
-              } else {
-                if (!walletHasChanged) dispatch(mineTransaction(tx.hash)); // success
-              }
-            }
-          }
-        }
+        await handleTransaction(tx, walletHasChanged, dispatch, library);
       });
     }
     return () => {
@@ -307,8 +293,7 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   }, [chainId, dispatch, library, account]);
 
   const handleWalletOpen = (state: boolean) => {
-    setWalletOpen(state);
-    setSettingsOpen(false);
+    setTransactionsTabOpen(state);
   };
 
   const handleSettingsOpen = (state: boolean) => {
@@ -317,27 +302,48 @@ export const Wallet: FC<WalletProps> = ({ className = "" }) => {
   };
 
   return (
-    <PopoverContainer>
-      <WalletButton
-        address={account}
+    <>
+      <PopoverContainer>
+        {balances && chainId && (
+          <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+        )}
+        <WalletButton
+          address={account}
+          onDisconnectWalletClicked={() => {
+            clearLastAccount();
+            deactivate();
+            if (connector instanceof WalletConnectConnector) {
+              connector.close();
+            }
+          }}
+          isConnecting={isActivating}
+          tokens={allTokens}
+          chainId={chainId!}
+          transactions={transactions}
+          walletOpen={walletOpen}
+          setWalletOpen={handleWalletOpen}
+        />
+        <SettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={handleSettingsOpen}
+        />
+      </PopoverContainer>
+      <TransactionsTab
+        address={account!}
+        chainId={chainId!}
+        open={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
+          setTransactionsTabOpen(false);
         }}
-        isConnecting={isActivating}
-        tokens={allTokens}
-        chainId={chainId!}
         transactions={transactions}
-        walletOpen={walletOpen}
-        setWalletOpen={handleWalletOpen}
+        tokens={allTokens}
       />
-      <SettingsButton
-        settingsOpen={settingsOpen}
-        setSettingsOpen={handleSettingsOpen}
-      />
-    </PopoverContainer>
+    </>
   );
 };

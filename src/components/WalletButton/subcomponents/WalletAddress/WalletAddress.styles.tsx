@@ -2,11 +2,6 @@ import Blockies from "react-blockies";
 
 import styled from "styled-components";
 
-export const StyledWalletAddress = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const Button = styled.div`
   border: 0;
   margin: 0;
@@ -40,8 +35,8 @@ export const StyledBlockies = styled(Blockies)`
 
 export const GreenCircle = styled.div`
   margin-right: 0.5rem;
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
   background-color: ${(props) => props.theme.colors.green};
   border-radius: 50%;
 `;

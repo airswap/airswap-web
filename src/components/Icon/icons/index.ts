@@ -15,6 +15,7 @@ import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconPending from "./IconPending";
 import IconSwap from "./IconSwap";
+import IconTransaction from "./IconTransaction";
 import IconVote from "./IconVote";
 import IconX from "./IconX";
 
@@ -35,7 +36,8 @@ export {
   IconLibrary,
   IconLink,
   IconPending,
-  IconSwap,
   IconVote,
   IconX,
+  IconSwap,
+  IconTransaction,
 };

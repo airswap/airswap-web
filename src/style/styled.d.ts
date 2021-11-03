@@ -14,7 +14,8 @@ type Typography =
   | "selectItem"
   | "nav"
   | "link"
-  | "small";
+  | "small"
+  | "subText";
 
 type FontProps = {
   fontSize: string;

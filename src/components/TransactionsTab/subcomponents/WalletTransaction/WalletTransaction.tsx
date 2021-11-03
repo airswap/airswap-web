@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 
+import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
@@ -7,16 +8,15 @@ import {
   SubmittedApproval,
   SubmittedOrder,
   SubmittedTransaction,
-  TransactionType,
 } from "../../../../features/transactions/transactionsSlice";
+import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import {
   Container,
-  TextContainer,
-  SpanTitle,
   SpanSubtitle,
+  SpanTitle,
   StyledTransactionLink,
-  StyledWalletTransactionStatus,
+  TextContainer,
 } from "./WalletTransaction.styles";
 
 type WalletTransactionProps = {
@@ -25,43 +25,59 @@ type WalletTransactionProps = {
    */
   transaction: SubmittedTransaction;
   /**
-   * the type of transaction
-   * @type "Approval" | "Order" | "Withdraw" | "Deposit"
+   * All token metadata
    */
-  type: TransactionType;
+  tokens: TokenInfo[];
   /**
    * chainId of current Ethereum net
    */
   chainId: number;
-  /**
-   * Token Info of sender token
-   */
-  senderToken?: TokenInfo;
-  /**
-   * Token Info of signer token
-   */
-  signerToken?: TokenInfo;
-  /**
-   * Token Info of approval token
-   */
-  approvalToken?: TokenInfo;
 };
 
-export const WalletTransaction = ({
+const WalletTransaction = ({
   transaction,
-  type,
+  tokens,
   chainId,
-  senderToken,
-  signerToken,
-  approvalToken,
 }: WalletTransactionProps) => {
   const { t } = useTranslation(["common", "wallet"]);
 
-  if (type === "Order" || type === "Deposit" || type === "Withdraw") {
-    const tx: SubmittedOrder = transaction as SubmittedOrder;
+  if (transaction.type === "Approval") {
+    const tx: SubmittedApproval = transaction as SubmittedApproval;
+    const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
     return (
       <Container>
-        <StyledWalletTransactionStatus status={tx.status} />
+        <TextContainer>
+          <>
+            <SpanTitle>
+              {t("wallet:approve", { symbol: approvalToken?.symbol })}
+            </SpanTitle>
+            <SpanSubtitle>
+              {tx.status === "succeeded"
+                ? t("common:success")
+                : tx.status === "processing"
+                ? t("common:processing")
+                : t("common:failed")}{" "}
+              · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+            </SpanSubtitle>
+          </>
+        </TextContainer>
+        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+      </Container>
+    );
+  } else {
+    const tx: SubmittedOrder = transaction as SubmittedOrder;
+    const senderToken = findEthOrTokenByAddress(
+      tx.order.senderToken,
+      tokens,
+      chainId
+    );
+    const signerToken = findEthOrTokenByAddress(
+      tx.order.signerToken,
+      tokens,
+      chainId
+    );
+    return (
+      <Container>
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
@@ -92,33 +108,10 @@ export const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-      </Container>
-    );
-  } else {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
-    return (
-      <Container>
-        <StyledWalletTransactionStatus status={tx.status} />
-        <TextContainer>
-          {approvalToken && (
-            <>
-              <SpanTitle>
-                {t("wallet:approve", { symbol: approvalToken.symbol })}
-              </SpanTitle>
-              <SpanSubtitle>
-                {tx.status === "succeeded"
-                  ? t("common:success")
-                  : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
-            </>
-          )}
-        </TextContainer>
-        <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
     );
   }
 };
+
+export { WalletTransaction };

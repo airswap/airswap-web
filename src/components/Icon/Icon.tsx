@@ -24,6 +24,7 @@ import {
   IconVote,
   IconX,
   IconForbidden,
+  IconTransaction,
 } from "./icons";
 
 type IconSet = {
@@ -59,6 +60,8 @@ export const icons: IconSet = {
   "transaction-failed": HiX,
   "transaction-pending": IconPending,
   "transaction-link": IconLink,
+  transaction: IconTransaction,
+  "wallet-link": IconLink,
   vote: IconVote,
   settings: IoMdSettings,
 };
