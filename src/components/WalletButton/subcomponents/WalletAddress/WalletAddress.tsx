@@ -1,16 +1,18 @@
+import { useTranslation } from "react-i18next";
+
 import truncateEthAddress from "truncate-eth-address";
 
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
   BlockiesContainer,
-  GreenCircle,
+  ConnectionStatusCircle,
   Button,
   StyledBlockies,
 } from "./WalletAddress.styles";
 
 type WalletBlockiesProps = {
-  address: string;
+  address: string | null;
   isButton?: boolean;
   showBlockies?: boolean;
   onClick?: () => void;
@@ -22,9 +24,11 @@ const WalletAddress = ({
   showBlockies = false,
   onClick,
 }: WalletBlockiesProps) => {
+  const { t } = useTranslation("wallet");
+
   const renderContent = () => (
     <BorderedButton>
-      {showBlockies ? (
+      {address && showBlockies ? (
         <BlockiesContainer>
           <StyledBlockies
             size={8}
@@ -35,14 +39,20 @@ const WalletAddress = ({
           />
         </BlockiesContainer>
       ) : (
-        <GreenCircle />
+        <ConnectionStatusCircle $connected={!!address} />
       )}
-      <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
+      <InfoHeading>
+        {address ? truncateEthAddress(address) : t("notConnected")}
+      </InfoHeading>
     </BorderedButton>
   );
 
   if (isButton) {
-    return <Button onClick={onClick}>{renderContent()}</Button>;
+    return (
+      <Button onClick={!!address ? onClick : undefined}>
+        {renderContent()}
+      </Button>
+    );
   }
 
   return renderContent();

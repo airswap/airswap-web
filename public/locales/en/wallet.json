@@ -1,5 +1,6 @@
 {
   "connectWallet": "Connect Wallet",
+  "notConnected": "Not connected",
   "disconnectWallet": "Disconnect",
   "noTransactions": "No Transactions",
   "approve": "Approve {{symbol}}",

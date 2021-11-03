@@ -53,11 +53,11 @@ export const WalletButton = ({
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
 
-  if (address && !walletOpen) {
+  if (!walletOpen) {
     return (
       <WalletAddress
         isButton
-        address={address}
+        address={address || null}
         onClick={() => setWalletOpen(!walletOpen)}
       />
     );
