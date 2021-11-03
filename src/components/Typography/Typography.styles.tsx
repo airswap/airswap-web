@@ -22,6 +22,7 @@ const elementMap: Record<
   link: "a",
   nav: "div",
   small: "aside",
+  subText: "h5",
 };
 
 /**
@@ -79,6 +80,12 @@ export const StyledSubtitle = makeTypographyComponent(
     text-transform: uppercase;
   `
 );
+export const StyledSubText = makeTypographyComponent(
+  "subText",
+  css`
+    color: ${(props) => props.theme.colors.darkSubText};
+  `
+);
 export const StyledParagraph = makeTypographyComponent(
   "paragraph",
   css`
@@ -118,6 +125,7 @@ export const StyledFormInput = makeTypographyComponent(
         : props.theme.colors.primary};
     background-color: transparent;
     border: none;
+
     &::placeholder {
       color: ${(props) => props.theme.colors.placeholderGrey};
     }

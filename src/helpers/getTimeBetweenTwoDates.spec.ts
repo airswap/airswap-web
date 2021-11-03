@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import getTimeBetweenTwoDates from "./getTimeBetweenTwoDates";
 
 const MS_PER_MINUTE = 60000;
@@ -6,80 +8,97 @@ const MS_PER_DAY = 86400000;
 const MS_PER_MONTH = 2592000000;
 const MS_PER_YEAR = 31536000000;
 
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string, option: any) => `${option && option.count} ${key}`,
+  }),
+}));
+
 describe("Get Time Difference Between Two Dates", () => {
   it("should return undefined", () => {
     const futureDate = new Date("03/01/2080");
-    const res = getTimeBetweenTwoDates(futureDate);
-    expect(res).toBe("undefined");
+    const { t } = useTranslation(["common", "wallet"]);
+    const res = getTimeBetweenTwoDates(futureDate, t);
+    expect(res).toBe("undefined common:undefined");
   });
 
   it("should return 5 mins", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
+    var xMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("5 mins");
+    const res = getTimeBetweenTwoDates(xMinutesAgo, t);
+    expect(res).toBe("5 wallet:minuteAgo_other");
   });
 
   it("should return 59 mins", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 59 * MS_PER_MINUTE);
+    var xMinutesAgo = new Date(Date.now() - 59 * MS_PER_MINUTE);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("59 mins");
+    const res = getTimeBetweenTwoDates(xMinutesAgo, t);
+    expect(res).toBe("59 wallet:minuteAgo_other");
   });
 
   it("should return 1 hour", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 1 * MS_PER_HOUR);
+    var xHoursAgo = new Date(Date.now() - 1 * MS_PER_HOUR);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("1 hour");
+    const res = getTimeBetweenTwoDates(xHoursAgo, t);
+    expect(res).toBe("1 wallet:hourAgo_one");
   });
 
   it("should return 23 hours", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 23 * MS_PER_HOUR);
+    var xHoursAgo = new Date(Date.now() - 23 * MS_PER_HOUR);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("23 hours");
+    const res = getTimeBetweenTwoDates(xHoursAgo, t);
+    expect(res).toBe("23 wallet:hourAgo_other");
   });
 
   it("should return 1 day", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 1 * MS_PER_DAY);
+    var xDaysAgo = new Date(Date.now() - 1 * MS_PER_DAY);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("1 day");
+    const res = getTimeBetweenTwoDates(xDaysAgo, t);
+    expect(res).toBe("1 wallet:dayAgo_one");
   });
 
   it("should return 2 days", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 2 * MS_PER_DAY);
+    var xDaysAgo = new Date(Date.now() - 2 * MS_PER_DAY);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("2 days");
+    const res = getTimeBetweenTwoDates(xDaysAgo, t);
+    expect(res).toBe("2 wallet:dayAgo_other");
   });
 
   it("should return 1 month", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 1 * MS_PER_MONTH);
+    var xMonthsAgo = new Date(Date.now() - 1 * MS_PER_MONTH);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("1 month");
+    const res = getTimeBetweenTwoDates(xMonthsAgo, t);
+    expect(res).toBe("1 wallet:monthAgo_one");
   });
 
   it("should return 11 months", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 11 * MS_PER_MONTH);
+    var xMonthsAgo = new Date(Date.now() - 11 * MS_PER_MONTH);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("11 months");
+    const res = getTimeBetweenTwoDates(xMonthsAgo, t);
+    expect(res).toBe("11 wallet:monthAgo_other");
   });
 
   it("should return 1 year", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 1 * MS_PER_YEAR);
+    var xYearsAgo = new Date(Date.now() - 1 * MS_PER_YEAR);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("1 year");
+    const res = getTimeBetweenTwoDates(xYearsAgo, t);
+    expect(res).toBe("1 wallet:yearAgo_one");
   });
 
   it("should return 5 years", () => {
-    var fiveMinutesAgo = new Date(Date.now() - 5 * MS_PER_YEAR);
+    var xYearsAgo = new Date(Date.now() - 5 * MS_PER_YEAR);
+    const { t } = useTranslation(["common", "wallet"]);
 
-    const res = getTimeBetweenTwoDates(fiveMinutesAgo);
-    expect(res).toBe("5 years");
+    const res = getTimeBetweenTwoDates(xYearsAgo, t);
+    expect(res).toBe("5 wallet:yearAgo_other");
   });
 });

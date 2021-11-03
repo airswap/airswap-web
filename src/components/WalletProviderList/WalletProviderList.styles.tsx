@@ -26,8 +26,10 @@ export const StyledButton = styled.button`
   height: 4.5rem;
   background: ${(props) => props.theme.colors.darkGrey};
 
-  &:hover {
-    border-color: ${(props) => props.theme.colors.primary};
+  &:hover,
+  &:focus {
+    outline: 0;
+    border-color: ${(props) => props.theme.colors.lightGrey};
   }
 
   & + & {

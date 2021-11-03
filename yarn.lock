@@ -31,10 +31,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.8.tgz#479554ca3fbc5d308e7b376fca8d8cd06726eee6"
-  integrity sha512-zTjdeZlrfCPB4MTSHN90C0AZnmkFJvmg4hYfzPjMhGjuyEBMgifeJhR2yzIjaR99dFuvStB4uwyy8jQ4aM8vvg==
+"@airswap/libraries@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.10.tgz#474b51ebd3e2aaa5493d9246f75d55b03cb7496a"
+  integrity sha512-V7HLcuf88o4GmBWhgMxcLPyVqJtq87Bx3/9OptTJhJu/SRaUexrKwB+RdQLvUGi0wvoBkew/dF9rL/0OaUdqRg==
   dependencies:
     "@airswap/constants" "0.4.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
@@ -110,6 +110,13 @@
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@airswap/validator/-/validator-2.3.0.tgz#f7afd96950e33d2f3bb6653116aa2a97b9bdebf1"
   integrity sha512-tRoOrbN76k5CCglIH8SwelpzY9etshs3wCxe7+Y8KvXFmEopwgMRSj8LCkFCIjLuVDw3rMDRcyMTgx9z1RMcvA==
+  dependencies:
+    "@openzeppelin/contracts" "^4.3.2"
+
+"@airswap/validator@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@airswap/validator/-/validator-2.3.1.tgz#2169e5cf23d1bac687f73556a2828a6442be8511"
+  integrity sha512-0ejY7HU+yoPQJr8B3fsBxgewceeBWZUJKSW+k4WCKESMkkbqtDoW3XdFA1kmxati0Rd637rPd/sIc+1QwszFBA==
   dependencies:
     "@openzeppelin/contracts" "^4.3.2"
 
@@ -2004,10 +2011,10 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
-"@fontsource/montserrat@^4.5.1":
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/@fontsource/montserrat/-/montserrat-4.5.1.tgz#64a33ffdb77bbc63484c0321710bed272cc5b16f"
-  integrity sha512-xdMkzsnFlzDt5Vj9+AWuUp4Vd9F3hYN2I0GTZZYscWN/bQ20wVOGtdWLO8Okfv7SZ9t/z39/EayAAt+f/8tAvw==
+"@fontsource/dm-mono@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/dm-mono/-/dm-mono-4.5.0.tgz#e94ab508d79021c267fb8215f574f2af42590fbd"
+  integrity sha512-B2LaMZAU7gU/pGWUtN9KDKVTT/6YXTgKfhex3iVrs2zQeGl+2RpkAE2yEl3IY148Eu4T6TkUIVColtowqBirVw==
 
 "@gar/promisify@^1.0.1":
   version "1.1.2"
@@ -3793,6 +3800,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-beforeunload@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react-beforeunload/-/react-beforeunload-2.1.1.tgz#ee77c0843a588c13df4a5a4eebe48b23b361e1d5"
+  integrity sha512-KER+M11lrXhp++tHDm9P7YWaKKBWwNyZkwnHSV3QQXGU2ZcP9x+O0Y7ZDZqGQD1OlGF4P8fmcpll3ol3a8KXsQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-blockies@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/react-blockies/-/react-blockies-1.4.1.tgz#d5f6fff8ece3e90f2e7708f8f3156c87333312df"
@@ -3879,16 +3893,7 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
-"@types/styled-components@*":
-  version "5.1.15"
-  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.15.tgz#30855b40aa80b3b4e4c0e43a4af366e7c246d148"
-  integrity sha512-4evch8BRI3AKgb0GAZ/sn+mSeB+Dq7meYtMi7J/0Mg98Dt1+r8fySOek7Sjw1W+Wskyjc93565o5xWAT/FdY0Q==
-  dependencies:
-    "@types/hoist-non-react-statics" "*"
-    "@types/react" "*"
-    csstype "^3.0.2"
-
-"@types/styled-components@^5.1.12":
+"@types/styled-components@*", "@types/styled-components@^5.1.12":
   version "5.1.15"
   resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.15.tgz#30855b40aa80b3b4e4c0e43a4af366e7c246d148"
   integrity sha512-4evch8BRI3AKgb0GAZ/sn+mSeB+Dq7meYtMi7J/0Mg98Dt1+r8fySOek7Sjw1W+Wskyjc93565o5xWAT/FdY0Q==
@@ -13972,6 +13977,14 @@ react-base16-styling@^0.6.0:
     lodash.flow "^3.3.0"
     pure-color "^1.2.0"
 
+react-beforeunload@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/react-beforeunload/-/react-beforeunload-2.5.2.tgz#7e80dbb16e7b49d8364e03bad650985d577ac87f"
+  integrity sha512-lVRVUTdcQ07ea/S+5nql6ui/SyR0N9tudGQHdHvAa9WOrGgNMoxR6DOmgRNVRj6DmG1ruIAdSeem0tmM5zfy3w==
+  dependencies:
+    prop-types "^15.7.2"
+    tiny-invariant "^1.1.0"
+
 react-blockies@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-blockies/-/react-blockies-1.4.1.tgz#d4f0faf95ac197213a297a370a4d7f77ea3d0b08"
@@ -16091,7 +16104,7 @@ timsort@^0.3.0:
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tiny-invariant@^1.0.2, tiny-invariant@^1.0.6:
+tiny-invariant@^1.0.2, tiny-invariant@^1.0.6, tiny-invariant@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
   integrity sha512-ytxQvrb1cPc9WBEI/HSeYYoGD0kWnGEOR8RY6KomWLBVhqz0RgTwVO9dLrGz7dC+nN9llyI7OKAgRq8Vq4ZBSw==

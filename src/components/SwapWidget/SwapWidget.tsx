@@ -57,8 +57,11 @@ import {
 } from "../../features/tradeTerms/tradeTermsSlice";
 import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
+import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
+import type { Error } from "../ErrorList/ErrorList";
+import { ErrorList } from "../ErrorList/ErrorList";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
@@ -120,6 +123,7 @@ const SwapWidget = () => {
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
 
   const { t } = useTranslation([
     "orders",
@@ -127,6 +131,7 @@ const SwapWidget = () => {
     "wallet",
     "balances",
     "toast",
+    "validatorErrors",
   ]);
 
   const {
@@ -408,7 +413,23 @@ const SwapWidget = () => {
   const takeBestOption = async () => {
     try {
       setIsSwapping(true);
+      // @ts-ignore
+      // TODO: figure out type issues
+      const validator = new Validator(chainId, library?.getSigner());
       if (bestTradeOption!.protocol === "request-for-quote") {
+        if (swapType !== "swapWithWrap") {
+          const errors = (await validator.checkSwap(
+            bestTradeOption!.order!,
+            // NOTE: once new swap contract is used, this (senderAddress) needs
+            // to be the wrapper address for wrapped swaps.
+            account!
+          )) as Error[];
+          if (errors.length) {
+            setValidatorErrors(errors);
+            setIsSwapping(false);
+            return;
+          }
+        }
         LastLook.unsubscribeAllServers();
         const result = await dispatch(
           take({
@@ -424,16 +445,29 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
+        const { order, senderWallet } = await LastLook.getSignedOrder({
+          locator: bestTradeOption!.pricing!.locator,
+          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        });
+        const errors = (await validator.checkSwap(
+          order,
+          senderWallet
+        )) as Error[];
+        if (errors.length) {
+          setValidatorErrors(errors);
+          setIsSwapping(false);
+          return;
+        }
         const accepted = await LastLook.sendOrderForConsideration({
           locator: bestTradeOption!.pricing!.locator,
-          pricing: bestTradeOption!.pricing!.pricing,
-          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+          order: order,
         });
         setIsSwapping(false);
         if (accepted) {
           setShowOrderSubmitted(true);
           LastLook.unsubscribeAllServers();
         } else {
+          // TODO: do something about the order here so that doesn't show as processing
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
@@ -449,7 +483,10 @@ const SwapWidget = () => {
       if (e.code && e.code === 4001) {
         // 4001 is metamask user declining transaction sig
       } else {
-        // FIXME: notify user - toast?
+        notifyError({
+          heading: t("orders:swapFailed"),
+          cta: t("orders:swapFailedCallToAction"),
+        });
       }
     }
   };
@@ -510,6 +547,7 @@ const SwapWidget = () => {
           })
         );
         await requestQuotes();
+
         break;
 
       case ButtonActions.approve:
@@ -660,6 +698,23 @@ const SwapWidget = () => {
               setIsConnecting(false)
             );
             setShowWalletList(false);
+          }}
+        />
+      </Overlay>
+      <Overlay
+        title={t("validatorErrors:unableSwap")}
+        subTitle={t("validatorErrors:swapFail")}
+        onClose={async () => {
+          await handleButtonClick(ButtonActions.restart);
+          setValidatorErrors([]);
+        }}
+        isHidden={!validatorErrors.length}
+      >
+        <ErrorList
+          errors={validatorErrors}
+          handleClick={async () => {
+            await handleButtonClick(ButtonActions.restart);
+            setValidatorErrors([]);
           }}
         />
       </Overlay>

@@ -38,4 +38,5 @@ export {
   StyledLink as Link,
   StyledNavigation as Navigation,
   StyledMetadata as Metadata,
+  StyledSubText as SubText,
 } from "./Typography.styles";

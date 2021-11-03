@@ -1,6 +1,10 @@
 import { createAction } from "@reduxjs/toolkit";
 
-import { SubmittedTransaction, SubmittedApproval } from "./transactionsSlice";
+import {
+  SubmittedTransaction,
+  SubmittedApproval,
+  ProtocolType,
+} from "./transactionsSlice";
 
 const submitTransaction = createAction<
   SubmittedTransaction | SubmittedApproval
@@ -11,7 +15,12 @@ const declineTransaction = createAction<{
   reason: string;
 }>("transactions/declineTransaction");
 
-const mineTransaction = createAction<string>("transaction/mineTransaction");
+const mineTransaction = createAction<{
+  protocol?: ProtocolType;
+  signerWallet?: string;
+  hash?: string;
+  nonce?: string;
+}>("transaction/mineTransaction");
 
 const revertTransaction = createAction<{
   hash: string;

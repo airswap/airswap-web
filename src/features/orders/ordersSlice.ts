@@ -1,11 +1,11 @@
 import { wethAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-import { LightOrder, Levels } from "@airswap/types";
+import { Levels, LightOrder } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
-  createSlice,
   createSelector,
+  createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
@@ -23,27 +23,27 @@ import {
 import { selectBestPricing } from "../pricing/pricingSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
-  submitTransaction,
+  declineTransaction,
   mineTransaction,
   revertTransaction,
-  declineTransaction,
+  submitTransaction,
 } from "../transactions/transactionActions";
 import {
-  SubmittedOrder,
   SubmittedApproval,
-  SubmittedWithdrawOrder,
   SubmittedDepositOrder,
+  SubmittedRFQOrder,
+  SubmittedWithdrawOrder,
 } from "../transactions/transactionsSlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
 import {
+  approveToken,
+  depositETH,
+  orderSortingFunction,
   requestOrders,
   takeOrder,
-  approveToken,
-  orderSortingFunction,
-  depositETH,
   withdrawETH,
 } from "./orderApi";
 
@@ -115,7 +115,11 @@ export const deposit = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
+            dispatch(
+              mineTransaction({
+                hash: receipt.transactionHash,
+              })
+            );
             notifyTransaction(
               "Deposit",
               transaction,
@@ -187,7 +191,11 @@ export const withdraw = createAsyncThunk(
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
+            dispatch(
+              mineTransaction({
+                hash: receipt.transactionHash,
+              })
+            );
             notifyTransaction(
               "Withdraw",
               transaction,
@@ -284,9 +292,13 @@ export const approve = createAsyncThunk<
         const state: RootState = getState() as RootState;
         const tokens = Object.values(state.metadata.tokens.all);
         if (receipt.status === 1) {
-          dispatch(mineTransaction(receipt.transactionHash));
-          // Optimistically update allowance (this is not really optimisitc,
-          // but it pre-empts receiving the event)
+          dispatch(
+            mineTransaction({
+              hash: receipt.transactionHash,
+            })
+          );
+          // Optimistically update allowance (this is not really optimistic,
+          // but it preempts receiving the event)
           if (params.contractType === "Light") {
             dispatch(
               allowancesLightActions.set({
@@ -349,41 +361,19 @@ export const take = createAsyncThunk(
           ? params.order
           : refactorOrder(params.order, params.library._network.chainId);
       if (tx.hash) {
-        const transaction: SubmittedOrder = {
+        const transaction: SubmittedRFQOrder = {
           type: "Order",
           order: newOrder,
+          protocol: "request-for-quote",
           hash: tx.hash,
           status: "processing",
           timestamp: Date.now(),
+          nonce: params.order.nonce,
+          expiry: params.order.expiry,
         };
         dispatch(submitTransaction(transaction));
-        params.library.once(tx.hash, async () => {
-          const receipt = await params.library.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(mineTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Order",
-              transaction,
-              tokens,
-              false,
-              params.library._network.chainId
-            );
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Order",
-              transaction,
-              tokens,
-              true,
-              params.library._network.chainId
-            );
-          }
-        });
       }
     } catch (e: any) {
-      console.error(e);
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -460,6 +450,8 @@ export const selectBestOrder = (state: RootState) =>
 
 export const selectSortedOrders = (state: RootState) =>
   [...state.orders.orders].sort(orderSortingFunction);
+
+export const selectFirstOrder = (state: RootState) => state.orders.orders[0];
 
 export const selectBestOption = createSelector(
   selectTradeTerms,

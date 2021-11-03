@@ -6,6 +6,7 @@ import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 import { StyledIcon } from "./Icon.styles";
 import {
   IconAirswap,
+  IconArrowDown,
   IconArrowLeft,
   IconArrowRight,
   IconBars,
@@ -19,8 +20,11 @@ import {
   IconLibrary,
   IconLink,
   IconPending,
+  IconSwap,
   IconVote,
   IconX,
+  IconForbidden,
+  IconTransaction,
 } from "./icons";
 
 type IconSet = {
@@ -36,6 +40,7 @@ export interface SvgIconProps {
 export const icons: IconSet = {
   about: IconLibrary,
   airswap: IconAirswap,
+  "arrow-down": IconArrowDown,
   "arrow-right": IconArrowRight,
   "arrow-left": IconArrowLeft,
   bars: IconBars,
@@ -48,11 +53,15 @@ export const icons: IconSet = {
   deny: IconDeny,
   edit: IconEdit,
   "exit-modal": HiX,
+  forbidden: IconForbidden,
   "information-circle-outline": IoMdInformationCircleOutline,
+  swap: IconSwap,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
   "transaction-pending": IconPending,
   "transaction-link": IconLink,
+  transaction: IconTransaction,
+  "wallet-link": IconLink,
   vote: IconVote,
   settings: IoMdSettings,
 };

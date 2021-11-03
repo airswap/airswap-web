@@ -1,8 +1,8 @@
 import truncateEthAddress from "truncate-eth-address";
 
+import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
-  StyledWalletAddress,
   BlockiesContainer,
   GreenCircle,
   Button,
@@ -14,18 +14,16 @@ type WalletBlockiesProps = {
   isButton?: boolean;
   showBlockies?: boolean;
   onClick?: () => void;
-  className?: string;
 };
 
 const WalletAddress = ({
   address,
   isButton = false,
   showBlockies = false,
-  className = "",
   onClick,
 }: WalletBlockiesProps) => {
   const renderContent = () => (
-    <StyledWalletAddress className={className}>
+    <BorderedButton>
       {showBlockies ? (
         <BlockiesContainer>
           <StyledBlockies
@@ -40,7 +38,7 @@ const WalletAddress = ({
         <GreenCircle />
       )}
       <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
-    </StyledWalletAddress>
+    </BorderedButton>
   );
 
   if (isButton) {

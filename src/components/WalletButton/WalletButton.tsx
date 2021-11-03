@@ -1,25 +1,16 @@
 import { useTranslation } from "react-i18next";
 
-import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 
-import {
-  SubmittedApproval,
-  SubmittedOrder,
-  SubmittedTransaction,
-} from "../../features/transactions/transactionsSlice";
-import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import {
   OpenWallet,
   ExitButton,
   DisconnectButton,
-  TransactionContainer,
   OpenWalletTopContainer,
   StyledWalletAddress,
-  NoTransactions,
 } from "./WalletButton.styles";
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
-import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
 
 export type WalletButtonProps = {
   /**
@@ -87,54 +78,6 @@ export const WalletButton = ({
             onClick={() => setWalletOpen(!walletOpen)}
           />
         </OpenWalletTopContainer>
-        <TransactionContainer flex={transactions.length === 0}>
-          {transactions.length > 0 ? (
-            transactions.slice(0, 3).map((transaction) => {
-              let token;
-              if (
-                transaction.type === "Order" ||
-                transaction.type === "Deposit" ||
-                transaction.type === "Withdraw"
-              ) {
-                const tx: SubmittedOrder = transaction as SubmittedOrder;
-                const senderToken = findEthOrTokenByAddress(
-                  tx.order.senderToken,
-                  tokens,
-                  chainId
-                );
-                const signerToken = findEthOrTokenByAddress(
-                  tx.order.signerToken,
-                  tokens,
-                  chainId
-                );
-                return (
-                  <WalletTransaction
-                    transaction={transaction}
-                    senderToken={senderToken}
-                    signerToken={signerToken}
-                    type={transaction.type}
-                    chainId={chainId!}
-                    key={transaction.hash}
-                  />
-                );
-              } else {
-                const tx: SubmittedApproval = transaction as SubmittedApproval;
-                token = findTokenByAddress(tx.tokenAddress, tokens);
-                return (
-                  <WalletTransaction
-                    transaction={transaction}
-                    approvalToken={token}
-                    type={transaction.type}
-                    chainId={chainId!}
-                    key={transaction.hash}
-                  />
-                );
-              }
-            })
-          ) : (
-            <NoTransactions>{t("wallet:noTransactions")}</NoTransactions>
-          )}
-        </TransactionContainer>
 
         <DisconnectButton
           aria-label={t("wallet:disconnectWallet")}
