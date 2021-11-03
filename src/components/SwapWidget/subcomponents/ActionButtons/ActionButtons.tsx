@@ -7,6 +7,7 @@ import { MainButton, BackButton } from "./ActionButtons.styles";
 
 export enum ButtonActions {
   connectWallet,
+  switchNetwork,
   restart,
   goBack,
   approve,
@@ -16,6 +17,7 @@ export enum ButtonActions {
 
 const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.connectWallet]: "wallet:connectWallet",
+  [ButtonActions.switchNetwork]: "wallet:switchNetwork",
   [ButtonActions.restart]: "orders:newSwap",
   [ButtonActions.goBack]: "common:back",
   [ButtonActions.approve]: "orders:approve",
@@ -37,6 +39,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
  */
 const ActionButtons: FC<{
   walletIsActive: boolean;
+  unsupportedNetwork: boolean;
   orderComplete: boolean;
   pairUnavailable: boolean;
   hasQuote: boolean;
@@ -49,6 +52,7 @@ const ActionButtons: FC<{
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
+  unsupportedNetwork,
   orderComplete,
   pairUnavailable,
   hasQuote,
@@ -64,7 +68,9 @@ const ActionButtons: FC<{
 
   // First determine the next action.
   let nextAction: ButtonActions;
-  if (!walletIsActive) nextAction = ButtonActions.connectWallet;
+  // Note that wallet is not considered "active" if connected to wrong network
+  if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
+  else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (pairUnavailable) nextAction = ButtonActions.goBack;
   else if (orderComplete) nextAction = ButtonActions.restart;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;

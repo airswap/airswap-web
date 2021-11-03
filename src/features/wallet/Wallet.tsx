@@ -6,7 +6,7 @@ import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.j
 //@ts-ignore
 import * as lightDeploys from "@airswap/light/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { Contract } from "ethers";
@@ -68,6 +68,7 @@ export const Wallet: FC = () => {
     deactivate,
     active,
     library,
+    error,
   } = useWeb3React<Web3Provider>();
 
   // Redux
@@ -79,7 +80,7 @@ export const Wallet: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Local component state
-  const [isActivating, setIsActivating] = useState<boolean>(false);
+  const [, setIsActivating] = useState<boolean>(false);
   const [walletOpen, setWalletOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
@@ -316,10 +317,9 @@ export const Wallet: FC = () => {
               connector.close();
             }
           }}
-          isConnecting={isActivating}
-          tokens={allTokens}
-          chainId={chainId!}
-          transactions={transactions}
+          isUnsupportedNetwork={
+            error && error instanceof UnsupportedChainIdError
+          }
           walletOpen={walletOpen}
           setWalletOpen={handleWalletOpen}
         />

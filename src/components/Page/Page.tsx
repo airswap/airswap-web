@@ -1,8 +1,5 @@
 import React, { FC, ReactElement, useState } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../../app/hooks";
 import { Orders } from "../../features/orders/Orders";
 import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
@@ -40,9 +37,6 @@ const Page: FC = (): ReactElement => {
     setActiveModalPage(null);
   };
 
-  const { active, library, error } = useWeb3React<Web3Provider>();
-  const isUnsupportedChain = error && error instanceof UnsupportedChainIdError;
-
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <Toaster />
@@ -55,31 +49,6 @@ const Page: FC = (): ReactElement => {
         onCloseModalClick={onCloseModalClick}
         activeModal={activeModalPage}
       />
-      {active && (
-        <div>
-          <span>
-            {isUnsupportedChain
-              ? "unsupoprted chain"
-              : "this chain is supported"}
-          </span>
-          <button
-            onClick={() => {
-              if (!!library?.provider?.request) {
-                library?.provider?.request({
-                  method: "wallet_switchEthereumChain",
-                  params: [
-                    {
-                      chainId: "0x1",
-                    },
-                  ],
-                });
-              }
-            }}
-          >
-            Switch network
-          </button>
-        </div>
-      )}
     </StyledPage>
   );
 };

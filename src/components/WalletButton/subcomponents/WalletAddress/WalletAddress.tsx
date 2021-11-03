@@ -14,12 +14,14 @@ import {
 type WalletBlockiesProps = {
   address: string | null;
   isButton?: boolean;
+  isUnsupportedNetwork?: boolean;
   showBlockies?: boolean;
   onClick?: () => void;
 };
 
 const WalletAddress = ({
   address,
+  isUnsupportedNetwork = false,
   isButton = false,
   showBlockies = false,
   onClick,
@@ -42,7 +44,11 @@ const WalletAddress = ({
         <ConnectionStatusCircle $connected={!!address} />
       )}
       <InfoHeading>
-        {address ? truncateEthAddress(address) : t("notConnected")}
+        {isUnsupportedNetwork
+          ? t("unsupportedNetwork")
+          : address
+          ? truncateEthAddress(address)
+          : t("notConnected")}
       </InfoHeading>
     </BorderedButton>
   );
