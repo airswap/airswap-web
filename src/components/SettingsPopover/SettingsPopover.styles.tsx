@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { ScrollBar } from "../../style/mixins";
+
 export const Container = styled.div`
   position: absolute;
   display: grid;
@@ -50,24 +52,16 @@ type LocaleContainerType = {
 };
 
 export const LocaleContainer = styled.div<LocaleContainerType>`
-  flex-grow: 1;
   width: 100%;
-  height: auto;
-  margin: 0.5rem 0;
-  overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
-
-  flex-grow: 99;
   height: 100%;
-  padding-bottom: 1rem;
+  padding: 0.5rem 0 1rem;
+  overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+  flex-grow: 99;
+
+  ${ScrollBar}
 
   &::-webkit-scrollbar {
-    width: 0.5rem;
     background: ${(props) => props.theme.colors.black};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
-    border-radius: 0.5rem;
   }
 `;
 
