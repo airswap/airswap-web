@@ -1,10 +1,4 @@
-import { useLayoutEffect, useState } from "react";
-
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import truncateEthAddress from "truncate-eth-address";
-
+import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
@@ -21,37 +15,13 @@ type WalletBlockiesProps = {
   onClick?: () => void;
 };
 
-// This is an in-memory cache that will be lost when we refresh the page, as
-// ENS records may change, but we probably only need to check once between
-// refreshes. Format: { [chainId]: { [address]: name | null }}
-const ensCachedResponses: Record<number, Record<string, string | null>> = {};
-
 const WalletAddress = ({
   address,
   isButton = false,
   showBlockies = false,
   onClick,
 }: WalletBlockiesProps) => {
-  const { library, chainId } = useWeb3React<Web3Provider>();
-
-  const [ensName, setEnsName] = useState<string | null>(null);
-
-  useLayoutEffect(() => {
-    if (!address || !chainId || !library) return;
-
-    const cached = ensCachedResponses[chainId]?.[address];
-    if (cached !== undefined) {
-      setEnsName(cached);
-    } else {
-      library.lookupAddress(address).then((name) => {
-        ensCachedResponses[chainId] = {
-          ...ensCachedResponses[chainId],
-          [address]: name,
-        };
-        setEnsName(name);
-      });
-    }
-  }, [library, address, chainId]);
+  const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () => (
     <BorderedButton>
@@ -68,9 +38,7 @@ const WalletAddress = ({
       ) : (
         <GreenCircle />
       )}
-      <InfoHeading>
-        {ensName ? ensName : truncateEthAddress(address)}
-      </InfoHeading>
+      <InfoHeading>{addressOrName}</InfoHeading>
     </BorderedButton>
   );
 
