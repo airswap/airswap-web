@@ -217,7 +217,7 @@ const SwapWidget = () => {
   };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
-    if (swapType === "wrapOrUnwrap") return true;
+    if (tokenAddress === nativeETH[chainId || 1].address) return true;
     if (!tokenAddress) return false;
     if (
       !allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
