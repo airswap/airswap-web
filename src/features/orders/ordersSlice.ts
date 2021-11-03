@@ -374,9 +374,7 @@ export const take = createAsyncThunk(
         dispatch(submitTransaction(transaction));
       }
     } catch (e: any) {
-      console.error(e);
-      // TODO: don't throw the actual error message, just show a helpful message
-      dispatch(declineTransaction({ reason: "", hash: "" }));
+      dispatch(declineTransaction(e.message));
       throw e;
     }
   }

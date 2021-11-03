@@ -78,7 +78,8 @@ export async function requestOrders(
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   return rfqOrders
     .filter((result) => result.status === "fulfilled")
-    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value);
+    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value)
+    .filter((o) => BigNumber.from(o.signerAmount).gt("0"));
 }
 
 export async function approveToken(

@@ -445,13 +445,9 @@ const SwapWidget = () => {
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        //@ts-ignore
-        // TODO: give order the correct type
         const { order, senderWallet } = await LastLook.getSignedOrder({
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        }).catch((e) => {
-          console.error("sendOrderForConsideration failed", e);
         });
         const errors = (await validator.checkSwap(
           order,
@@ -487,7 +483,10 @@ const SwapWidget = () => {
       if (e.code && e.code === 4001) {
         // 4001 is metamask user declining transaction sig
       } else {
-        // FIXME: notify user - toast?
+        notifyError({
+          heading: t("orders:swapFailed"),
+          cta: t("orders:swapFailedCallToAction"),
+        });
       }
     }
   };
