@@ -133,7 +133,7 @@ export const StyledSelectButton = styled.button`
   margin-left: 0.9375rem;
   height: 100%;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
-  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
 
   &:focus {
     outline: 0;
@@ -154,7 +154,7 @@ export const AmountInput = styled(FormInput)<{
 }>`
   padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
-  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
   text-align: right;
 
   &:focus {

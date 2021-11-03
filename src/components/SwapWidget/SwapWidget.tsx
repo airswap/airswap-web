@@ -607,6 +607,7 @@ const SwapWidget = () => {
                 ? baseAmount
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
+            disabled={!active}
             readOnly={
               !!bestTradeOption ||
               isWrapping ||

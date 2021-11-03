@@ -3,28 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
-import styled from "styled-components/macro";
-
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../../../TokenSelect/TokenSelect";
 import getSwapInputIcon from "../../helpers/getSwapInputIcon";
-
-export const SwapIconContainer = styled.div`
-  position: absolute;
-  right: 14.125rem;
-  top: 9.9375rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 50%;
-  color: ${(props) => props.theme.colors.lightGrey};
-  background-color: ${(props) => props.theme.colors.black};
-  font-size: 1.25rem;
-  z-index: 1;
-`;
+import { Container, SwapIconContainer } from "./SwapInputs.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -35,6 +17,7 @@ const SwapInputs: FC<{
   quoteTokenInfo: TokenInfo | null;
   quoteAmount: string;
   side: "buy" | "sell";
+  disabled: boolean;
   readOnly: boolean;
   isRequesting: boolean;
   noFee: boolean;
@@ -47,6 +30,7 @@ const SwapInputs: FC<{
   baseAmount,
   quoteAmount,
   side,
+  disabled,
   readOnly,
   onMaxButtonClick,
   onChangeTokenClick,
@@ -79,7 +63,7 @@ const SwapInputs: FC<{
   };
 
   return (
-    <>
+    <Container $disabled={disabled}>
       <TokenSelect
         label={t("orders:from")}
         amount={fromAmount}
@@ -119,7 +103,7 @@ const SwapInputs: FC<{
         selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={isSell && isRequesting}
       />
-    </>
+    </Container>
   );
 };
 
