@@ -1,8 +1,5 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
-
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import {
   OpenWallet,
   ExitButton,
@@ -18,46 +15,29 @@ export type WalletButtonProps = {
    */
   address?: string | null;
   /**
-   * Boolean to indicate if wallet is currently connecting. (Ignored if address
-   * is set)
-   */
-  isConnecting?: boolean;
-  /**
    * Callback function for when disconnect button is clicked
    */
   onDisconnectWalletClicked: () => void;
-  /**
-   * List of transactions that have been submitted
-   */
-  transactions: SubmittedTransaction[];
-  /**
-   * Number representing chainId of ETH network
-   */
-  chainId: number;
-  /**
-   * List of all tokens in metadata
-   */
-  tokens: TokenInfo[];
   walletOpen: boolean;
   setWalletOpen: (x: boolean) => void;
+  isUnsupportedNetwork?: boolean;
 };
 
 export const WalletButton = ({
   address,
   onDisconnectWalletClicked,
-  transactions = [],
-  chainId,
-  tokens,
   walletOpen,
   setWalletOpen,
+  isUnsupportedNetwork = false,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
 
-  if (address && !walletOpen) {
+  if (!walletOpen) {
     return (
       <WalletAddress
+        isUnsupportedNetwork={isUnsupportedNetwork}
         isButton
-        address={address}
+        address={address || null}
         onClick={() => setWalletOpen(!walletOpen)}
       />
     );
@@ -68,6 +48,7 @@ export const WalletButton = ({
       <OpenWallet>
         <OpenWalletTopContainer>
           <StyledWalletAddress
+            isUnsupportedNetwork={isUnsupportedNetwork}
             showBlockies
             address={address}
             onClick={() => setWalletOpen(!walletOpen)}

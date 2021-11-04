@@ -48,14 +48,14 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
 `;
 
 type LocaleContainerType = {
-  overflow: boolean;
+  $overflow: boolean;
 };
 
 export const LocaleContainer = styled.div<LocaleContainerType>`
   width: 100%;
   height: 100%;
   padding: 0.5rem 0 1rem;
-  overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   flex-grow: 99;
 
   ${ScrollBar}

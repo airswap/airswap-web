@@ -68,7 +68,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
       ? props.theme.colors.primary
       : props.theme.colors.alwaysWhite};
   background: ${(props) => getButtonBackground(props.theme, props.intent)};
-  pointer-events: ${(props) => (props.disabled ? "none" : "visible")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
   cursor: ${(props) => (props.disabled ? "none" : "pointer")};
 
   ${Text} {

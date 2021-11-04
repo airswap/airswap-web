@@ -77,7 +77,7 @@ const SettingsPopover = () => {
         </ThemeContainer>
       </PopoverSection>
       <PopoverSection title={t("common:language")}>
-        <LocaleContainer ref={scrollContainerRef} overflow={overflow}>
+        <LocaleContainer ref={scrollContainerRef} $overflow={overflow}>
           {SUPPORTED_LOCALES.map((locale) => {
             return (
               <LocaleButton

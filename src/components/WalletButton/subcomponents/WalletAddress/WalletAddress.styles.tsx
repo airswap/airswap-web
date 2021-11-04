@@ -33,10 +33,11 @@ export const StyledBlockies = styled(Blockies)`
   overflow: hidden;
 `;
 
-export const GreenCircle = styled.div`
+export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   margin-right: 0.5rem;
   width: 0.75rem;
   height: 0.75rem;
-  background-color: ${(props) => props.theme.colors.green};
+  background-color: ${(props) =>
+    props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
 `;

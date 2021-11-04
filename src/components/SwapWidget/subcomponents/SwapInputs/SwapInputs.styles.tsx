@@ -1,20 +1,28 @@
 import styled from "styled-components/macro";
 
+export const Container = styled.div<{ $disabled: boolean }>`
+  display: flex;
+  flex-direction: column;
+  opacity: ${(props) => (props.$disabled ? 0.4 : 1)};
+  pointer-events: ${(props) => (props.$disabled ? "none" : "all")};
+  will-change: opacity;
+  transition: ease-in-out;
+  transition-duration: 300ms;
+`;
+
 export const SwapIconContainer = styled.div`
+  position: absolute;
+  right: 14.125rem;
+  top: 9.9375rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  /* right: 3.75rem; */
-  right: 14.125rem;
-  margin-top: -1.5rem;
-  transform: translateY(0.5rem);
   width: 1.5rem;
   height: 1.5rem;
-  /* margin-top: -1rem; */
-  /* margin-bottom: -0.875rem; */
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 50%;
+  color: ${(props) => props.theme.colors.lightGrey};
   background-color: ${(props) => props.theme.colors.black};
-  font-size: 1rem;
+  font-size: 1.25rem;
   z-index: 1;
 `;

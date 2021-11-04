@@ -10,12 +10,18 @@ import truncateEthAddress from "truncate-eth-address";
 // refreshes. Format: { [chainId]: { [address]: name | null }}
 const ensCachedResponses: Record<number, Record<string, string | null>> = {};
 
-const useAddressOrEnsName = (address: string, truncate: boolean = true) => {
+const useAddressOrEnsName = (
+  address: string | null,
+  truncate: boolean = true
+) => {
   const { library, chainId } = useWeb3React<Web3Provider>();
 
-  const fallback = truncate ? truncateEthAddress(address) : address;
-
-  const [result, setResult] = useState<string>(fallback);
+  const fallback = truncate
+    ? address
+      ? truncateEthAddress(address)
+      : null
+    : address;
+  const [result, setResult] = useState<string | null>(fallback);
 
   useLayoutEffect(() => {
     if (!address || !chainId || !library) return;

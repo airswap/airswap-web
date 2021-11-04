@@ -9,7 +9,7 @@ import { Pricing } from "@airswap/types";
 import { LightOrder } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useWeb3React } from "@web3-react/core";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
@@ -140,6 +140,7 @@ const SwapWidget = () => {
     library,
     active,
     activate,
+    error: web3Error,
   } = useWeb3React<Web3Provider>();
 
   let defaultBaseTokenAddress: string | null = allTokens.length
@@ -197,7 +198,10 @@ const SwapWidget = () => {
   // Reset amount when the chainId changes.
   useEffect(() => {
     setBaseAmount(initialBaseAmount);
-  }, [chainId]);
+    dispatch(clearTradeTerms());
+    dispatch(clear());
+    LastLook.unsubscribeAllServers();
+  }, [chainId, dispatch, LastLook]);
 
   let swapType: SwapType = "swap";
 
@@ -530,6 +534,22 @@ const SwapWidget = () => {
         setShowWalletList(true);
         break;
 
+      case ButtonActions.switchNetwork:
+        try {
+          (window as any).ethereum.request!({
+            method: "wallet_switchEthereumChain",
+            params: [
+              {
+                chainId: "0x1",
+              },
+            ],
+          });
+        } catch (e) {
+          // unable to switch network, but doesn't matter too much as button
+          // looks like a call to action in this case anyway.
+        }
+        break;
+
       case ButtonActions.requestQuotes:
         dispatch(
           setTradeTerms({
@@ -607,6 +627,7 @@ const SwapWidget = () => {
                 ? baseAmount
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
+            disabled={!active}
             readOnly={
               !!bestTradeOption ||
               isWrapping ||
@@ -639,6 +660,9 @@ const SwapWidget = () => {
           {!isApproving && !isSwapping && (
             <ActionButtons
               walletIsActive={active}
+              unsupportedNetwork={
+                !!web3Error && web3Error instanceof UnsupportedChainIdError
+              }
               orderComplete={showOrderSubmitted}
               baseTokenInfo={baseTokenInfo}
               quoteTokenInfo={quoteTokenInfo}

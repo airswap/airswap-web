@@ -129,7 +129,7 @@ const TransactionsTab = ({
           </WalletLinkContainer>
         </WalletHeader>
 
-        <TransactionsContainer ref={transactionsScrollRef} overflow={overflow}>
+        <TransactionsContainer ref={transactionsScrollRef} $overflow={overflow}>
           <Legend>
             <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
           </Legend>
