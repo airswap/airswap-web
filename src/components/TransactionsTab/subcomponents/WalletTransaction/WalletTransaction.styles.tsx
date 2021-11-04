@@ -6,7 +6,7 @@ import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactio
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   padding: 1.125rem 1.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
@@ -46,8 +46,6 @@ export const SpanSubtitle = styled.span`
 
 export const StyledTransactionLink = styled(TransactionLink)`
   align-items: center;
-  margin-left: auto;
-
   &:hover {
     color: ${(props) => props.theme.colors.alwaysWhite};
   }
