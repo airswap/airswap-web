@@ -45,6 +45,9 @@ declare module "styled-components" {
       placeholderGradient: string;
       darkSubText: string;
     };
+    shadows: {
+      widgetGlow: string;
+    };
     typography: Record<Typography, FontProps>;
   }
 }
