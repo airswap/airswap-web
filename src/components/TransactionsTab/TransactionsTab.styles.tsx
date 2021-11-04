@@ -126,11 +126,11 @@ export const LegendLine = styled.span`
 `;
 
 type TransactionsContainerProps = {
-  overflow: boolean;
+  $overflow: boolean;
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
-  overflow-y: ${(props) => (props.overflow ? "scroll" : "hidden")};
+  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
   flex-grow: 99;
   height: 100%;
