@@ -45,6 +45,7 @@ import { fetchSupportedTokens } from "../registry/registrySlice";
 import handleTransaction from "../transactions/handleTransaction";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
+  selectPendingTransactions,
   selectTransactions,
   setTransactions,
   TransactionsState,
@@ -77,6 +78,7 @@ export const Wallet: FC = () => {
   const balances = useAppSelector(selectBalances);
   const { providerName } = useAppSelector(selectWallet);
   const transactions = useAppSelector(selectTransactions);
+  const pendingTransactions = useAppSelector(selectPendingTransactions);
   const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Local component state
@@ -322,6 +324,7 @@ export const Wallet: FC = () => {
           }
           walletOpen={walletOpen}
           setWalletOpen={handleWalletOpen}
+          glow={!!pendingTransactions.length}
         />
         <SettingsButton
           settingsOpen={settingsOpen}

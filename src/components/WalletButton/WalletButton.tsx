@@ -21,6 +21,7 @@ export type WalletButtonProps = {
   walletOpen: boolean;
   setWalletOpen: (x: boolean) => void;
   isUnsupportedNetwork?: boolean;
+  glow?: boolean;
 };
 
 export const WalletButton = ({
@@ -29,6 +30,7 @@ export const WalletButton = ({
   walletOpen,
   setWalletOpen,
   isUnsupportedNetwork = false,
+  glow,
 }: WalletButtonProps) => {
   const { t } = useTranslation(["wallet"]);
 
@@ -39,6 +41,7 @@ export const WalletButton = ({
         isButton
         address={address || null}
         onClick={() => setWalletOpen(!walletOpen)}
+        glow={glow}
       />
     );
   }

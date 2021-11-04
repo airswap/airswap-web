@@ -15,6 +15,7 @@ type WalletBlockiesProps = {
   isButton?: boolean;
   isUnsupportedNetwork?: boolean;
   showBlockies?: boolean;
+  glow?: boolean;
   onClick?: () => void;
 };
 
@@ -24,12 +25,13 @@ const WalletAddress = ({
   isButton = false,
   showBlockies = false,
   onClick,
+  glow,
 }: WalletBlockiesProps) => {
   const { t } = useTranslation("wallet");
   const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () => (
-    <BorderedButton>
+    <BorderedButton $glow={glow}>
       {address && showBlockies ? (
         <BlockiesContainer>
           <StyledBlockies
