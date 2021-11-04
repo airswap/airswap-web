@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useContext } from "react";
+import { useState, useMemo, useEffect, useContext, FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -84,7 +84,9 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-const SwapWidget = () => {
+const SwapWidget: FC<{ onTrackTransactionClicked: () => void }> = ({
+  onTrackTransactionClicked,
+}) => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -595,6 +597,10 @@ const SwapWidget = () => {
         } else if (swapType === "wrapOrUnwrap") {
           await doWrap();
         }
+        break;
+
+      case ButtonActions.trackTransaction:
+        onTrackTransactionClicked();
         break;
 
       default:
