@@ -3,10 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
-import truncateEthAddress from "truncate-eth-address";
-
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import Icon from "../Icon/Icon";
 import { StyledBlockies } from "../WalletButton/subcomponents/WalletAddress/WalletAddress.styles";
 import {
@@ -57,6 +56,8 @@ const TransactionsTab = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation(["wallet"]);
+
+  const addressOrName = useAddressOrEnsName(address);
 
   const handleClick = useCallback(
     (e) => {
@@ -123,7 +124,7 @@ const TransactionsTab = ({
             />
           </BlockiesContainer>
           <WalletLinkContainer>
-            <WalletAddress>{truncateEthAddress(address!)}</WalletAddress>
+            <WalletAddress>{addressOrName}</WalletAddress>
             <WalletLink chainId={chainId!} address={address!} />
           </WalletLinkContainer>
         </WalletHeader>

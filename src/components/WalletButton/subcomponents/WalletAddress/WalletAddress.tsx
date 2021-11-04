@@ -1,5 +1,4 @@
-import truncateEthAddress from "truncate-eth-address";
-
+import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
@@ -22,6 +21,8 @@ const WalletAddress = ({
   showBlockies = false,
   onClick,
 }: WalletBlockiesProps) => {
+  const addressOrName = useAddressOrEnsName(address);
+
   const renderContent = () => (
     <BorderedButton>
       {showBlockies ? (
@@ -37,7 +38,7 @@ const WalletAddress = ({
       ) : (
         <GreenCircle />
       )}
-      <InfoHeading>{truncateEthAddress(address)}</InfoHeading>
+      <InfoHeading>{addressOrName}</InfoHeading>
     </BorderedButton>
   );
 
