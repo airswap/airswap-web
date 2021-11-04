@@ -198,7 +198,10 @@ const SwapWidget = () => {
   // Reset amount when the chainId changes.
   useEffect(() => {
     setBaseAmount(initialBaseAmount);
-  }, [chainId]);
+    dispatch(clearTradeTerms());
+    dispatch(clear());
+    LastLook.unsubscribeAllServers();
+  }, [chainId, dispatch, LastLook]);
 
   let swapType: SwapType = "swap";
 
