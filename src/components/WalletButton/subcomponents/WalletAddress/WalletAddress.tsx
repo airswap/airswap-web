@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import truncateEthAddress from "truncate-eth-address";
-
+import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 import {
@@ -27,6 +26,7 @@ const WalletAddress = ({
   onClick,
 }: WalletBlockiesProps) => {
   const { t } = useTranslation("wallet");
+  const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () => (
     <BorderedButton>
@@ -46,8 +46,8 @@ const WalletAddress = ({
       <InfoHeading>
         {isUnsupportedNetwork
           ? t("unsupportedNetwork")
-          : address
-          ? truncateEthAddress(address)
+          : addressOrName
+          ? addressOrName
           : t("notConnected")}
       </InfoHeading>
     </BorderedButton>

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
+import { ScrollBar } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
@@ -27,15 +28,7 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
   overflow-x: hidden;
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-    background: ${(props) => props.theme.colors.black};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
-    border-radius: 0.5rem;
-  }
+  ${ScrollBar}
 `;
 
 export const ContentContainer = styled(motion.div)`
