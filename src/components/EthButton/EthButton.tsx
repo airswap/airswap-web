@@ -1,7 +1,7 @@
 import { formatUnits } from "ethers/lib/utils";
 
-import BorderedButton from "../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../Typography/Typography";
+import { Container } from "./EthButton.styles";
 
 type EthButtonPropType = {
   balance: string;
@@ -9,9 +9,9 @@ type EthButtonPropType = {
 
 const EthButton = ({ balance = "0" }: EthButtonPropType) => {
   return (
-    <BorderedButton>
+    <Container>
       <InfoHeading>{formatUnits(balance).substring(0, 5)} ETH</InfoHeading>
-    </BorderedButton>
+    </Container>
   );
 };
 
