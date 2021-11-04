@@ -13,7 +13,7 @@ export const LAST_LOOK_ORDER_EXPIRY_SEC = 2 * 60;
 /**
  * Time to wait for quotes before presenting "no peers" message.
  */
-export const RECEIVE_QUOTE_TIMEOUT_MS = 10 * 60 * 1000;
+export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
 
 /**
  * Time to wait between receiving the first quote from a maker
