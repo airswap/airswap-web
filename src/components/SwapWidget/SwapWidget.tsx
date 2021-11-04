@@ -504,7 +504,7 @@ const SwapWidget = () => {
           chainId: chainId!,
           senderAmount: baseAmount,
           senderTokenDecimals: baseTokenInfo!.decimals,
-          provider: library,
+          provider: library!,
         })
       );
       await unwrapResult(result);
