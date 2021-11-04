@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import { ScrollBar } from "../../style/mixins";
 import Button from "../Button/Button";
 import { InfoSubHeading } from "../Typography/Typography";
 import { InfoHeading } from "../Typography/Typography";
@@ -135,15 +136,7 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   height: 100%;
   padding-bottom: 1rem;
 
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-    background: ${(props) => props.theme.colors.black};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
-    border-radius: 0.5rem;
-  }
+  ${ScrollBar}
 `;
 
 export const TransactionContainer = styled.div`
