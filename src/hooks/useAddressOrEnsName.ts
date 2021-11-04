@@ -24,7 +24,10 @@ const useAddressOrEnsName = (
   const [result, setResult] = useState<string | null>(fallback);
 
   useLayoutEffect(() => {
-    if (!address || !chainId || !library) return;
+    if (!address || !chainId || !library) {
+      setResult(fallback);
+      return;
+    }
 
     const cached = ensCachedResponses[chainId]?.[address];
     if (cached !== undefined) {
