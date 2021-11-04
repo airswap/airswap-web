@@ -498,18 +498,24 @@ const SwapWidget = () => {
   const doWrap = async () => {
     const method = baseTokenInfo === nativeETH[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
-    const result = await dispatch(
-      method({
-        chainId: chainId!,
-        senderAmount: baseAmount,
-        senderTokenDecimals: baseTokenInfo!.decimals,
-        provider: library,
-      })
-    );
-    await unwrapResult(result);
-    setIsSwapping(false);
-    setIsWrapping(false);
-    setShowOrderSubmitted(true);
+    try {
+      const result = await dispatch(
+        method({
+          chainId: chainId!,
+          senderAmount: baseAmount,
+          senderTokenDecimals: baseTokenInfo!.decimals,
+          provider: library,
+        })
+      );
+      await unwrapResult(result);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setShowOrderSubmitted(true);
+    } catch (e) {
+      // user cancelled metamask dialog
+      setIsSwapping(false);
+      setIsWrapping(false);
+    }
   };
 
   const handleButtonClick = async (action: ButtonActions) => {
