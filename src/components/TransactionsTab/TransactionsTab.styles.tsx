@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import { motion } from "framer-motion";
+import styled from "styled-components/macro";
 
 import { ScrollBar } from "../../style/mixins";
 import Button from "../Button/Button";
@@ -6,30 +7,18 @@ import { InfoSubHeading } from "../Typography/Typography";
 import { InfoHeading } from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
 
-type BackgroundOverlayProps = {
-  open: boolean;
-};
-
-export const BackgroundOverlay = styled.div<BackgroundOverlayProps>`
+export const BackgroundOverlay = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  transform: scale(${(props) => (props.open ? "1" : "0")});
+  background-color: black;
   z-index: 1000;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+  will-change: opacity;
 `;
 
-type ContainerProps = {
-  open: boolean;
-};
-
-export const Container = styled.div<ContainerProps>`
+export const Container = styled(motion.div)`
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -40,10 +29,8 @@ export const Container = styled.div<ContainerProps>`
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
   top: 0;
   right: 0;
-  transform: ${({ open }) => (open ? "translateX(0)" : "translateX(24rem)")};
-  transition: transform 0.3s ease-in-out;
   z-index: 1001;
-
+  will-change: transform;
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }

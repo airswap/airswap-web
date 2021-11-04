@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ThemeType } from "styled-components";
+import { ThemeType } from "styled-components/macro";
 
 import { useAppDispatch } from "../../app/hooks";
 import {

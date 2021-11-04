@@ -1,6 +1,6 @@
 import { Story, Meta } from "@storybook/react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import { WalletButton, WalletButtonProps } from "./WalletButton";
 

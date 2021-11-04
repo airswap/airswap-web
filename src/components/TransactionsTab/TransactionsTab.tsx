@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
+import { AnimatePresence } from "framer-motion";
+
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
@@ -111,83 +113,104 @@ const TransactionsTab = ({
 
   return (
     <>
-      <BackgroundOverlay open={open} />
-      <Container open={open} ref={containerRef}>
-        <WalletHeader>
-          <BlockiesContainer>
-            <StyledBlockies
-              size={8}
-              scale={5}
-              seed={address}
-              bgColor="black"
-              color="#2b72ff"
-            />
-          </BlockiesContainer>
-          <WalletLinkContainer>
-            <WalletAddress>{addressOrName}</WalletAddress>
-            <WalletLink chainId={chainId!} address={address!} />
-          </WalletLinkContainer>
-        </WalletHeader>
-
-        <TransactionsContainer ref={transactionsScrollRef} $overflow={overflow}>
-          <Legend>
-            <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
-          </Legend>
-          <TransactionContainer>
-            {pendingTransactions.length ? (
-              pendingTransactions.map((transaction) => (
-                <WalletTransaction
-                  transaction={transaction}
-                  tokens={tokens}
-                  chainId={chainId!}
-                  key={transaction.hash}
-                />
-              ))
-            ) : (
-              <NoTransactions>
-                <IconContainer>
-                  <Icon name="transaction" />
-                </IconContainer>
-                {t("wallet:noActiveTransactions")}
-              </NoTransactions>
-            )}
-          </TransactionContainer>
-          {completedTransactions && (
-            <Legend>
-              <LegendLine>{t("wallet:completedTransactions")}</LegendLine>
-            </Legend>
-          )}
-          <TransactionContainer>
-            {completedTransactions.length > 0 ? (
-              completedTransactions
-                .slice(0, 10)
-                .map((transaction) => (
-                  <WalletTransaction
-                    transaction={transaction}
-                    tokens={tokens}
-                    chainId={chainId!}
-                    key={transaction.hash}
-                  />
-                ))
-            ) : (
-              <NoTransactions>
-                <IconContainer>
-                  <Icon name="transaction" />
-                </IconContainer>
-                {t("wallet:noCompletedTransactions")}
-              </NoTransactions>
-            )}
-          </TransactionContainer>
-        </TransactionsContainer>
-        <DiconnectButtonContainer>
-          <DisconnectButton
-            aria-label={t("wallet:disconnectWallet")}
-            onClick={onDisconnectWalletClicked}
+      <AnimatePresence>
+        {open && (
+          <BackgroundOverlay
+            animate={{ opacity: 0.5 }}
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {open && (
+          <Container
+            ref={containerRef}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.3 }}
+            initial={{ x: "24rem" }}
+            exit={{ x: "24rem" }}
           >
-            {t("wallet:disconnectWallet")}
-          </DisconnectButton>
-        </DiconnectButtonContainer>
-      </Container>
+            <WalletHeader>
+              <BlockiesContainer>
+                <StyledBlockies
+                  size={8}
+                  scale={5}
+                  seed={address}
+                  bgColor="black"
+                  color="#2b72ff"
+                />
+              </BlockiesContainer>
+              <WalletLinkContainer>
+                <WalletAddress>{addressOrName}</WalletAddress>
+                <WalletLink chainId={chainId!} address={address!} />
+              </WalletLinkContainer>
+            </WalletHeader>
+
+            <TransactionsContainer
+              ref={transactionsScrollRef}
+              $overflow={overflow}
+            >
+              <Legend>
+                <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
+              </Legend>
+              <TransactionContainer>
+                {pendingTransactions.length ? (
+                  pendingTransactions.map((transaction) => (
+                    <WalletTransaction
+                      transaction={transaction}
+                      tokens={tokens}
+                      chainId={chainId!}
+                      key={transaction.hash}
+                    />
+                  ))
+                ) : (
+                  <NoTransactions>
+                    <IconContainer>
+                      <Icon name="transaction" />
+                    </IconContainer>
+                    {t("wallet:noActiveTransactions")}
+                  </NoTransactions>
+                )}
+              </TransactionContainer>
+              {completedTransactions && (
+                <Legend>
+                  <LegendLine>{t("wallet:completedTransactions")}</LegendLine>
+                </Legend>
+              )}
+              <TransactionContainer>
+                {completedTransactions.length > 0 ? (
+                  completedTransactions
+                    .slice(0, 10)
+                    .map((transaction) => (
+                      <WalletTransaction
+                        transaction={transaction}
+                        tokens={tokens}
+                        chainId={chainId!}
+                        key={transaction.hash}
+                      />
+                    ))
+                ) : (
+                  <NoTransactions>
+                    <IconContainer>
+                      <Icon name="transaction" />
+                    </IconContainer>
+                    {t("wallet:noCompletedTransactions")}
+                  </NoTransactions>
+                )}
+              </TransactionContainer>
+            </TransactionsContainer>
+            <DiconnectButtonContainer>
+              <DisconnectButton
+                aria-label={t("wallet:disconnectWallet")}
+                onClick={onDisconnectWalletClicked}
+              >
+                {t("wallet:disconnectWallet")}
+              </DisconnectButton>
+            </DiconnectButtonContainer>
+          </Container>
+        )}
+      </AnimatePresence>
     </>
   );
 };

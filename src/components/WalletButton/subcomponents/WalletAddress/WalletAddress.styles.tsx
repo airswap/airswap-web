@@ -1,6 +1,6 @@
 import Blockies from "react-blockies";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 export const Button = styled.div`
   border: 0;

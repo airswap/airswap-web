@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import { StyledTitle } from "../../../Overlay/Overlay.styles";
 
