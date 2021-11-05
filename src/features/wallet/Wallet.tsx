@@ -60,7 +60,10 @@ import {
   setWalletDisconnected,
 } from "./walletSlice";
 
-export const Wallet: FC = () => {
+export const Wallet: FC<{
+  showTransactions: boolean;
+  setShowTransactions: (value: boolean) => void;
+}> = ({ showTransactions, setShowTransactions }) => {
   const {
     chainId,
     account,
@@ -87,9 +90,6 @@ export const Wallet: FC = () => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
-    false
-  );
   const [lightContract, setLightContract] = useState<Contract>();
 
   useBeforeunload(() => {
@@ -294,7 +294,7 @@ export const Wallet: FC = () => {
   }, [chainId, dispatch, library, account]);
 
   const handleWalletOpen = (state: boolean) => {
-    setTransactionsTabOpen(state);
+    setShowTransactions(state);
   };
 
   const handleSettingsOpen = (state: boolean) => {
@@ -331,15 +331,15 @@ export const Wallet: FC = () => {
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
+        open={showTransactions}
+        setTransactionsTabOpen={setShowTransactions}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setTransactionsTabOpen(false);
+          setShowTransactions(false);
         }}
         transactions={transactions}
         tokens={allTokens}
