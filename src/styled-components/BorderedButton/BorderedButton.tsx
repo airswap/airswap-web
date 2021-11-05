@@ -1,29 +1,47 @@
 import styled, { keyframes, css } from "styled-components/macro";
 
-const glowAnimation = keyframes`
-  0% {
-    transform: translate(-1.5%, -2%);
-  }
-  25% {
-    transform: translate(-1.5%, 2%);
-  }
-  50% {
-    transform: translate(1.5%, 2%);
-  }
-  75% {
-    transform: translate(1.5%, -2%);
-  }
-  100% {
-    transform: translate(-1.5%, -2%);
-  }
-`;
+// const glowAnimation = keyframes`
+//   0% {
+//     transform: translate(-1.5%, -2%);
+//   }
+//   25% {
+//     transform: translate(-1.5%, 2%);
+//   }
+//   50% {
+//     transform: translate(1.5%, 2%);
+//   }
+//   75% {
+//     transform: translate(1.5%, -2%);
+//   }
+//   100% {
+//     transform: translate(-1.5%, -2%);
+//   }
+// `;
 
-const pulseAnimation = keyframes`
-  0% {
+// const pulseAnimation = keyframes`
+//   0% {
+//     transform: scale(0.9);
+//   }
+//   50% {
+//     transform: scale(1);
+//   }
+//   100% {
+//     transform: scale(0.9);
+//   }
+// `;
+
+const beatAnimation = keyframes`
+ 0% {
+    transform: scale(0.9);
+  }
+ 20% {
     transform: scale(0.9);
   }
   50% {
     transform: scale(1);
+  }
+  80% {
+    transform: scale(0.9);
   }
   100% {
     transform: scale(0.9);
@@ -62,7 +80,7 @@ const BorderedButton = styled.div<{ $glow?: boolean }>`
         box-shadow: ${theme.shadows.buttonGlow};
         background: ${theme.shadows.buttonGlowFill};
         will-change: transform, opacity;
-        animation: ${pulseAnimation} 2s ease-in-out infinite;
+        animation: ${beatAnimation} 3s ease-in-out infinite;
         z-index: -1;
       }
     `}
