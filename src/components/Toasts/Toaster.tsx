@@ -25,7 +25,7 @@ const Toaster = ({ open }: ToasterPropType) => (
         right: open ? "25rem" : "1rem",
         transform: `${(open: boolean) =>
           open ? "translateX(0)" : "translateX(24rem)"}`,
-        transition: "transform 0.3s ease-in-out;",
+        transition: "transform 0.3s ease-in-out",
       }}
       toastOptions={{
         style: {
