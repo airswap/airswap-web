@@ -1,1 +1,9 @@
-{}
+{
+  "join": {
+    "title": "Bli med i AirSwap",
+    "intro": "AirSwap er et åpent samfunn for utviklere, designere, skribenter og tenkere som går sammen om å utvikle desentraliserte handelssystemer.",
+    "getStarted": "Kom i gang",
+    "paragraph": "Protokollgebyrene blir automatisk distribuert til medlemmene for å bidra til utviklingen av produktet og Airswapsamfunnet.",
+    "paragraph2": "Sjekk ut de følgende guidene for å komme i gang:"
+  }
+}
