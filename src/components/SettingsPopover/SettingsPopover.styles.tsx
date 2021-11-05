@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { InputOrButtonBorder, ScrollBar } from "../../style/mixins";
+import { InputOrButtonBorderStyle, ScrollBarStyle } from "../../style/mixins";
 
 export const Container = styled.div`
   position: absolute;
@@ -39,7 +39,7 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
   line-height: 1.5rem;
   font-size: 0.875rem;
 
-  ${InputOrButtonBorder}
+  ${InputOrButtonBorderStyle}
 `;
 
 type LocaleContainerType = {
@@ -53,7 +53,7 @@ export const LocaleContainer = styled.div<LocaleContainerType>`
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   flex-grow: 99;
 
-  ${ScrollBar}
+  ${ScrollBarStyle}
 
   &::-webkit-scrollbar {
     background: ${(props) => props.theme.colors.black};

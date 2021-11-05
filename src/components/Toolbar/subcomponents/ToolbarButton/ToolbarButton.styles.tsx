@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorder } from "../../../../style/mixins";
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 
 const ButtonStyle = css`
   display: flex;
@@ -16,7 +16,7 @@ const ButtonStyle = css`
     margin-top: 1rem;
   }
 
-  ${InputOrButtonBorder}
+  ${InputOrButtonBorderStyle}
 `;
 
 export const ToolbarButtonContainer = styled.button`

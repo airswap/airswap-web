@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { BorderedPill, InputOrButtonBorder } from "../../style/mixins";
+import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 
 export const Container = styled.div`
   position: relative;
@@ -8,7 +8,7 @@ export const Container = styled.div`
 
 export const SettingsButtonContainer = styled.button`
   ${BorderedPill}
-  ${InputOrButtonBorder}
+  ${InputOrButtonBorderStyle}
   
   width: 3rem;
   height: 3rem;

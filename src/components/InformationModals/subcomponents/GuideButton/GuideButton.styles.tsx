@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorder } from "../../../../style/mixins";
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
 export const StyledIcon = styled(Icon)`
@@ -42,7 +42,7 @@ export const GuideButtonContainer = styled.a`
     border-bottom-right-radius: 0.1875rem;
   }
 
-  ${InputOrButtonBorder}
+  ${InputOrButtonBorderStyle}
 
   &:focus {
     z-index: 1;

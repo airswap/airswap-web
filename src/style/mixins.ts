@@ -1,6 +1,6 @@
 import { css } from "styled-components";
 
-export const ScrollBar = css`
+export const ScrollBarStyle = css`
   &::-webkit-scrollbar {
     border-radius: 0.5rem;
     width: 0.5rem;
@@ -13,10 +13,23 @@ export const ScrollBar = css`
   }
 `;
 
-export const InputOrButtonBorder = css`
+export const InputOrButtonBorderStyle = css`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
 
   &:hover,
+  &:focus {
+    outline: 0;
+    border-color: ${(props) => props.theme.colors.lightGrey};
+  }
+
+  &:active {
+    border-color: ${(props) => props.theme.colors.primary};
+  }
+`;
+
+export const BorderlessButtonStyle = css`
+  border: 1px solid transparent;
+
   &:focus {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-import { BorderedPill, InputOrButtonBorder } from "../../style/mixins";
+import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 
 const BorderedButton = styled.button`
   ${BorderedPill}
-  ${InputOrButtonBorder}
+  ${InputOrButtonBorderStyle}
 `;
 
 export default BorderedButton;
