@@ -12,7 +12,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import EthButton from "../../components/EthButton/EthButton";
+import EthBalance from "../../components/EthButton/EthBalance";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -306,7 +306,7 @@ export const Wallet: FC = () => {
     <>
       <PopoverContainer>
         {balances && chainId && (
-          <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+          <EthBalance balance={balances.values[nativeETH[chainId!].address]!} />
         )}
         <WalletButton
           address={account}

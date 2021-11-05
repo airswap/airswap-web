@@ -1,21 +1,16 @@
 import styled from "styled-components";
 
-import IconButton from "../IconButton/IconButton";
+import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 
-export const SettingIconButtonContainer = styled.div`
-  border: 1px solid ${(props) => props.theme.colors.darkGrey};
-  border-radius: 50%;
-  padding: 0.5rem;
-  transition: border-color ease-out 0.3s;
-
-  &:hover,
-  &:focus {
-    border-color: ${(props) => props.theme.colors.white};
-  }
+export const Container = styled.div`
+  position: relative;
 `;
 
-export const SettingsIconButton = styled(IconButton)`
-  &:focus {
-    outline: none;
-  }
+export const SettingsButtonContainer = styled.button`
+  ${BorderedPill}
+  ${InputOrButtonBorderStyle}
+  
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
 `;

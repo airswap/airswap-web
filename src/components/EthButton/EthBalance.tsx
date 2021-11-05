@@ -1,18 +1,18 @@
 import { formatUnits } from "ethers/lib/utils";
 
 import { InfoHeading } from "../Typography/Typography";
-import { Container } from "./EthButton.styles";
+import { StyledEthBalance } from "./EthButton.styles";
 
 type EthButtonPropType = {
   balance: string;
 };
 
-const EthButton = ({ balance = "0" }: EthButtonPropType) => {
+const EthBalance = ({ balance = "0" }: EthButtonPropType) => {
   return (
-    <Container>
+    <StyledEthBalance>
       <InfoHeading>{formatUnits(balance).substring(0, 5)} ETH</InfoHeading>
-    </Container>
+    </StyledEthBalance>
   );
 };
 
-export default EthButton;
+export default EthBalance;

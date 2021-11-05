@@ -2,6 +2,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 import styled, { css, keyframes } from "styled-components/macro";
 
+import { BorderlessButtonStyle } from "../../style/mixins";
 import {
   SelectItem,
   FormLabel,
@@ -44,9 +45,10 @@ export const MaxButton = styled.button`
   color: ${(props) => props.theme.colors.black};
   opacity: 0.6;
 
+  ${BorderlessButtonStyle}
+
   &:hover,
   &:focus {
-    outline: 0;
     background-color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
