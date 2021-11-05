@@ -1,12 +1,12 @@
 import React, { FC, ReactElement, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import SwapWidget from "../../components/SwapWidget/SwapWidget";
 import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import InformationModals, {
   InformationType,
 } from "../InformationModals/InformationModals";
+import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
@@ -24,7 +24,10 @@ const Page: FC = (): ReactElement => {
     activeModalPage,
     setActiveModalPage,
   ] = useState<InformationType | null>(null);
+
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
+  const [transactionsOpen, setTransactionsOpen] = useState<boolean>(false);
+
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
@@ -42,11 +45,16 @@ const Page: FC = (): ReactElement => {
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
       <Toaster />
       <Toolbar onButtonClick={onToolbarButtonClick} />
-      <StyledWallet setShowWalletList={setShowWalletList} />
+      <StyledWallet
+        setShowWalletList={setShowWalletList}
+        showTransactions={transactionsOpen}
+        setShowTransactions={setTransactionsOpen}
+      />
       <WidgetFrame>
         <SwapWidget
           showWalletList={showWalletList}
           setShowWalletList={setShowWalletList}
+          onTrackTransactionClicked={() => setTransactionsOpen(true)}
         />
       </WidgetFrame>
       <InformationModals

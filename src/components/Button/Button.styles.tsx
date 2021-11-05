@@ -82,6 +82,10 @@ export const StyledButton = styled.button<StyledButtonProps>`
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>
-      props.intent === "neutral" ? props.theme.colors.white : "inherit"};
+      props.intent === "neutral" ? props.theme.colors.lightGrey : "inherit"};
+  }
+
+  &:active {
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;

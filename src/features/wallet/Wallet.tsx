@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
@@ -12,7 +12,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import EthButton from "../../components/EthButton/EthButton";
+import EthBalance from "../../components/EthButton/EthBalance";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -62,9 +62,15 @@ import {
 
 type WalletPropsType = {
   setShowWalletList: (x: boolean) => void;
+  showTransactions: boolean;
+  setShowTransactions: (value: boolean) => void;
 };
 
-export const Wallet = ({ setShowWalletList }: WalletPropsType) => {
+export const Wallet: FC<WalletPropsType> = ({
+  setShowWalletList,
+  showTransactions,
+  setShowTransactions,
+}) => {
   const {
     chainId,
     account,
@@ -90,9 +96,6 @@ export const Wallet = ({ setShowWalletList }: WalletPropsType) => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
-    false
-  );
   const [lightContract, setLightContract] = useState<Contract>();
 
   useBeforeunload(() => {
@@ -300,15 +303,15 @@ export const Wallet = ({ setShowWalletList }: WalletPropsType) => {
     <>
       <PopoverContainer>
         {balances && chainId && (
-          <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+          <EthBalance balance={balances.values[nativeETH[chainId!].address]!} />
         )}
         <WalletButton
           address={account}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
-          transactionsTabOpen={transactionsTabOpen}
-          setTransactionsTabOpen={setTransactionsTabOpen}
+          transactionsTabOpen={showTransactions}
+          setTransactionsTabOpen={() => setShowTransactions(true)}
           setShowWalletList={setShowWalletList}
         />
         <SettingsButton
@@ -319,15 +322,15 @@ export const Wallet = ({ setShowWalletList }: WalletPropsType) => {
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
+        open={showTransactions}
+        setTransactionsTabOpen={setShowTransactions}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setTransactionsTabOpen(false);
+          setShowTransactions(false);
         }}
         transactions={transactions}
         tokens={allTokens}

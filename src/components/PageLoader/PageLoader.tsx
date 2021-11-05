@@ -3,7 +3,7 @@ import React, { FC, ReactElement } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
-import { StyledPage, StyledSiteLogo } from "../Page/Page.styles";
+import { StyledPage } from "../Page/Page.styles";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 
 const PageLoader: FC = (): ReactElement => {
@@ -14,7 +14,6 @@ const PageLoader: FC = (): ReactElement => {
 
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
-      <StyledSiteLogo adjustForBookmarkWarning={adjustForBookmarkWarning} />
       <WidgetFrame />
     </StyledPage>
   );

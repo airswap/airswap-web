@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useContext } from "react";
+import { useState, useMemo, useEffect, useContext, FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -87,12 +87,14 @@ const initialBaseAmount = "";
 type SwapWidgetPropsType = {
   showWalletList: boolean;
   setShowWalletList: (x: boolean) => void;
+  onTrackTransactionClicked: () => void;
 };
 
-const SwapWidget = ({
+const SwapWidget: FC<SwapWidgetPropsType> = ({
   showWalletList,
   setShowWalletList,
-}: SwapWidgetPropsType) => {
+  onTrackTransactionClicked,
+}) => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -511,7 +513,7 @@ const SwapWidget = ({
           chainId: chainId!,
           senderAmount: baseAmount,
           senderTokenDecimals: baseTokenInfo!.decimals,
-          provider: library,
+          provider: library!,
         })
       );
       await unwrapResult(result);
@@ -602,6 +604,10 @@ const SwapWidget = ({
         } else if (swapType === "wrapOrUnwrap") {
           await doWrap();
         }
+        break;
+
+      case ButtonActions.trackTransaction:
+        onTrackTransactionClicked();
         break;
 
       default:

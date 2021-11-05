@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { BorderlessButtonStyle } from "../../style/mixins";
 import IconButton from "../IconButton/IconButton";
 import { InfoHeading } from "../Typography/Typography";
 
@@ -18,9 +19,10 @@ export const RevertPriceButton = styled(IconButton)`
 
   &:hover,
   &:focus {
-    border-color: transparent;
     color: ${(props) => props.theme.colors.white};
   }
+
+  ${BorderlessButtonStyle}
 `;
 
 export const TimerContainer = styled.div`

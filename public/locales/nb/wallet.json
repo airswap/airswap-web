@@ -1,10 +1,26 @@
 {
   "connectWallet": "Tilknytt lommebok",
+  "notConnected": "Not connected",
+  "unsupportedNetwork": "Unsupported network",
+  "switchNetwork": "Switch network",
   "disconnectWallet": "Koble fra",
   "noTransactions": "Ingen transaksjoner",
   "approve": "Godkjenn {{symbol}}",
   "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
   "lastLookTransaction": "{{signerAmount}} {{signerToken}} → {{senderAmount}} {{senderToken}}",
-  "transactionTimeAgo": "{{time}} siden",
-  "selectWallet": "Velg lommebok"
+  "selectWallet": "Velg lommebok",
+  "minuteAgo_one": "for {{count}} minutter siden",
+  "minuteAgo_other": "for {{count}} minutter siden",
+  "hourAgo_one": "for {{count}} time siden",
+  "hourAgo_other": "for {{count}} timer siden",
+  "dayAgo_one": "for {{count}} dag siden",
+  "dayAgo_other": "for {{count}} dager siden",
+  "monthAgo_one": "for {{count}} måned siden",
+  "monthAgo_other": "for {{count}} måneder siden",
+  "yearAgo_one": "for {{count}} år siden",
+  "yearAgo_other": "for {{count}} år siden",
+  "activeTransactions": "AKTIVE TRANSAKSJONER",
+  "noActiveTransactions": "Ingen aktive transaksjoner",
+  "completedTransactions": "FULLFØRTE TRANSAKSJONER",
+  "noCompletedTransactions": "Ingen fullførte transaksjoner"
 }
