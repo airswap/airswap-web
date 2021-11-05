@@ -84,7 +84,15 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-const SwapWidget = () => {
+type SwapWidgetPropsType = {
+  showWalletList: boolean;
+  setShowWalletList: (x: boolean) => void;
+};
+
+const SwapWidget = ({
+  showWalletList,
+  setShowWalletList,
+}: SwapWidgetPropsType) => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -107,7 +115,6 @@ const SwapWidget = () => {
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Modals
-  const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [
     showTokenSelectModalFor,
