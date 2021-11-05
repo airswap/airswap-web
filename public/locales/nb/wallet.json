@@ -1,8 +1,8 @@
 {
   "connectWallet": "Tilknytt lommebok",
-  "notConnected": "Not connected",
-  "unsupportedNetwork": "Unsupported network",
-  "switchNetwork": "Switch network",
+  "notConnected": "Ikke tilkoblet",
+  "unsupportedNetwork": "Nettverk er ikke støttet",
+  "switchNetwork": "Bytt nettverk",
   "disconnectWallet": "Koble fra",
   "noTransactions": "Ingen transaksjoner",
   "approve": "Godkjenn {{symbol}}",
