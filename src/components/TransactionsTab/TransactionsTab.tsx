@@ -140,7 +140,7 @@ const TransactionsTab = ({
                   transaction={transaction}
                   tokens={tokens}
                   chainId={chainId!}
-                  key={transaction.hash}
+                  key={`${transaction.hash}-${transaction.nonce}`}
                 />
               ))
             ) : (
