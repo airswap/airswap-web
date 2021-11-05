@@ -41,7 +41,7 @@ export const WalletButton = ({
         isButton
         address={address || null}
         onClick={() => setWalletOpen(!walletOpen)}
-        glow={glow}
+        glow={true}
       />
     );
   }

@@ -18,6 +18,18 @@ const glowAnimation = keyframes`
   }
 `;
 
+const pulseAnimation = keyframes`
+  0% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.9);
+  }
+`;
+
 const BorderedButton = styled.div<{ $glow?: boolean }>`
   display: flex;
   align-items: center;
@@ -50,7 +62,7 @@ const BorderedButton = styled.div<{ $glow?: boolean }>`
         box-shadow: ${theme.shadows.buttonGlow};
         background: ${theme.shadows.buttonGlowFill};
         will-change: transform, opacity;
-        animation: ${glowAnimation} 4s linear infinite reverse;
+        animation: ${pulseAnimation} 2s ease-in-out infinite;
         z-index: -1;
       }
     `}

@@ -104,7 +104,7 @@ export const darkTheme: DefaultTheme = {
   },
   shadows: {
     widgetGlow: "0 0 31.25rem 1rem #2B71FF99",
-    buttonGlow: "0 0 1rem 0rem #2b71ffdd",
+    buttonGlow: "0 0 2rem 0rem #2b71ff",
     buttonGlowFill: "#2b71ffdd",
   },
   typography,
