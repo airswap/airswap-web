@@ -61,7 +61,7 @@ export const notifyTransaction = (
           />
         ),
         {
-          duration: 15000,
+          duration: 3000,
         }
       );
     }
@@ -79,7 +79,7 @@ export const notifyTransaction = (
         />
       ),
       {
-        duration: 15000,
+        duration: 3000,
       }
     );
   }
@@ -95,7 +95,7 @@ export const notifyError = (props: { heading: string; cta: string }) => {
       />
     ),
     {
-      duration: 15000,
+      duration: 3000,
     }
   );
 };

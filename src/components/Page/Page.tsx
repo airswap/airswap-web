@@ -24,6 +24,9 @@ const Page: FC = (): ReactElement => {
     activeModalPage,
     setActiveModalPage,
   ] = useState<InformationType | null>(null);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
@@ -39,9 +42,12 @@ const Page: FC = (): ReactElement => {
 
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
-      <Toaster />
+      <Toaster open={transactionsTabOpen} />
       <Toolbar onButtonClick={onToolbarButtonClick} />
-      <StyledWallet />
+      <StyledWallet
+        transactionsTabOpen={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
+      />
       <WidgetFrame>
         <Orders />
       </WidgetFrame>

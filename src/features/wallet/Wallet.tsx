@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
@@ -60,7 +60,15 @@ import {
   setWalletDisconnected,
 } from "./walletSlice";
 
-export const Wallet: FC = () => {
+type WalletPropsType = {
+  transactionsTabOpen: boolean;
+  setTransactionsTabOpen: (x: boolean) => void;
+};
+
+export const Wallet = ({
+  transactionsTabOpen,
+  setTransactionsTabOpen,
+}: WalletPropsType) => {
   const {
     chainId,
     account,
@@ -87,9 +95,7 @@ export const Wallet: FC = () => {
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
-    false
-  );
+
   const [lightContract, setLightContract] = useState<Contract>();
 
   useBeforeunload(() => {
