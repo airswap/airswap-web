@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { ScrollBar } from "../../style/mixins";
+import { InputOrButtonBorder, ScrollBar } from "../../style/mixins";
 
 export const Container = styled.div`
   position: absolute;
@@ -39,12 +39,7 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
   line-height: 1.5rem;
   font-size: 0.875rem;
 
-  &:hover,
-  &:focus {
-    outline: 0;
-    background-color: ${(props) => props.theme.colors.borderGrey};
-    color: ${(props) => props.theme.colors.white};
-  }
+  ${InputOrButtonBorder}
 `;
 
 type LocaleContainerType = {

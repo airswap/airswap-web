@@ -72,7 +72,7 @@ export const SearchInput = styled(TextInput)`
 
     &:focus {
       outline: none;
-      border-color: ${(props) => props.theme.colors.lightGrey};
+      border-color: ${(props) => props.theme.colors.primary};
     }
   }
 `;
