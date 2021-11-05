@@ -13,7 +13,7 @@ const SettingsButton = ({
   settingsOpen,
   setSettingsOpen,
 }: SettingsButtonType) => {
-  const containerRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = useCallback(
     (e) => {
@@ -45,11 +45,8 @@ const SettingsButton = ({
   }, [handleClick, handleEscKey]);
 
   return (
-    <Container>
-      <SettingsButtonContainer
-        onClick={() => setSettingsOpen(!settingsOpen)}
-        ref={containerRef}
-      >
+    <Container ref={containerRef}>
+      <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
         <Icon iconSize={1.5} name="settings" />
       </SettingsButtonContainer>
       {settingsOpen && <SettingsPopover />}

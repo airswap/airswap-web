@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-import { InputOrButtonBorderStyle, ScrollBarStyle } from "../../style/mixins";
+import {
+  BorderlessButtonStyle,
+  InputOrButtonBorderStyle,
+  ScrollBarStyle,
+} from "../../style/mixins";
 
 export const Container = styled.div`
   position: absolute;
@@ -68,16 +72,16 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   padding: 0.5rem 0 0.5rem 1rem;
   border-radius: 1px;
   font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-size: 0.875rem;
   color: ${(props) =>
     props.active ? props.theme.colors.white : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.active ? props.theme.colors.borderGrey : "transparent"};
-  font-size: 0.875rem;
+
+  ${BorderlessButtonStyle}
 
   &:hover,
   &:focus {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.white};
     color: ${(props) => props.theme.colors.white};
   }
 `;
