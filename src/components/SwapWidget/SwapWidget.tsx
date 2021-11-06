@@ -18,6 +18,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
+  RFQ_EXPIRY_BUFFER_MS,
 } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
@@ -55,7 +56,10 @@ import {
   setTradeTerms,
   setTradeTermsQuoteAmount,
 } from "../../features/tradeTerms/tradeTermsSlice";
-import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
+import {
+  ProtocolType,
+  selectPendingApprovals,
+} from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
@@ -65,10 +69,8 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
-import { Title } from "../Typography/Typography";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
-  Header,
   InfoContainer,
   ButtonContainer,
   HugeTicks,
@@ -78,6 +80,7 @@ import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
+import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
@@ -618,11 +621,12 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   return (
     <>
       <StyledSwapWidget>
-        <Header>
-          <Title type="h2">
-            {isApproving ? t("orders:approve") : t("common:swap")}
-          </Title>
-        </Header>
+        <SwapWidgetHeader
+          title={isApproving ? t("orders:approve") : t("common:swap")}
+          isQuote={!isRequestingQuotes}
+          protocol={bestTradeOption?.protocol as ProtocolType}
+          expiry={bestTradeOption?.order?.expiry}
+        />
         {showOrderSubmitted ? (
           <HugeTicks />
         ) : isApproving || isSwapping ? (

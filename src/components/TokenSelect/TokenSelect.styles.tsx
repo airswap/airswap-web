@@ -11,6 +11,21 @@ import {
   Metadata,
 } from "../Typography/Typography";
 
+const fadeInOut = keyframes`
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+`;
+
+const quoteTransition = css`
+  transition: transform 0.25s ease-in-out;
+  will-change: transform;
+`;
+
 export const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
@@ -27,6 +42,7 @@ export const AmountAndDetailsContainer = styled.div`
 
 export const InputAndMaxButtonWrapper = styled.div`
   display: flex;
+  align-items: center;
   min-width: 0;
   gap: 0.75rem;
 `;
@@ -55,13 +71,19 @@ export const MaxButton = styled.button`
   }
 `;
 
-const fadeInOut = keyframes`
-  from {
-    opacity: 1;
-  }
+export const AmountInput = styled(FormInput)<{
+  hasSubtext: boolean;
+  disabled: boolean;
+}>`
+  ${quoteTransition}
 
-  to {
-    opacity: 0;
+  padding-right: 0;
+  margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
+  text-align: right;
+
+  &:focus {
+    outline: 0;
   }
 `;
 
@@ -81,14 +103,19 @@ export const PlaceholderBottom = styled(PlaceHolderBar)`
   animation-delay: 0.1s;
 `;
 
-export const StyledTokenLogo = styled(TokenLogo)`
-  transition: transform 0.25s ease-in-out;
-  will-change: transform;
+export const TokenLogoLeft = styled(TokenLogo)`
+  ${quoteTransition};
+`;
+
+export const TokenLogoRight = styled(TokenLogo)`
+  ${quoteTransition};
+  height: 2rem;
+  width: 2rem;
+  min-width: 2rem;
 `;
 
 export const StyledSelectButton = styled.button`
-  transition: transform 0.25s ease-in-out;
-  will-change: transform;
+  ${quoteTransition};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -101,6 +128,11 @@ export const StyledSelectButton = styled.button`
   &:focus {
     outline: 0;
   }
+`;
+
+export const StyledLabel = styled(FormLabel)`
+  text-align: left;
+  text-transform: uppercase;
 `;
 
 export const TokenSelectContainer = styled.div<{
@@ -127,7 +159,7 @@ export const TokenSelectContainer = styled.div<{
     ${(props) => (props.$isLoading ? "" : "animation: none;")}
   }
 
-  ${StyledTokenLogo} {
+  ${TokenLogoLeft} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
   }
@@ -136,6 +168,25 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
+  
+  ${AmountInput} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+  }
+  
+  ${MaxButton} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+  }
+
+  ${TokenLogoRight} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
+  }
+  
+  ${StyledLabel} {
+    font-size: ${(props) => (props.$isQuote ? "0.625rem" : "0.75rem")};
+  }
 }
 `;
 
@@ -143,11 +194,6 @@ const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
   transition: opacity ease-in-out 0.3s;
   will-change: opacity;
   opacity: ${(props) => (props.$invisible ? 0 : 1)};
-`;
-
-export const StyledLabel = styled(FormLabel)`
-  text-align: left;
-  text-transform: uppercase;
 `;
 
 export const StyledSelectButtonContent = styled.span``;
@@ -164,20 +210,6 @@ export const StyledSelectItem = styled(SelectItem)`
   align-items: center;
   line-height: 1;
   gap: 0.375rem;
-`;
-
-export const AmountInput = styled(FormInput)<{
-  hasSubtext: boolean;
-  disabled: boolean;
-}>`
-  padding-right: 0;
-  margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
-  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
-  text-align: right;
-
-  &:focus {
-    outline: 0;
-  }
 `;
 
 export const AmountSubtext = styled(Metadata)`

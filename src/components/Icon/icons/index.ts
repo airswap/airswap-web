@@ -14,6 +14,7 @@ import IconForbidden from "./IconForbidden";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconPending from "./IconPending";
+import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
 import IconTransaction from "./IconTransaction";
 import IconVote from "./IconVote";
@@ -36,6 +37,7 @@ export {
   IconLibrary,
   IconLink,
   IconPending,
+  IconStar,
   IconVote,
   IconX,
   IconSwap,

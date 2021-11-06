@@ -7,17 +7,9 @@ import { LightOrder } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
-import Timer from "../../components/Timer/Timer";
-import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
-import {
-  TimerContainer,
-  NewQuoteText,
-  TimerText,
-  StyledInfoHeading,
-  RevertPriceButton,
-} from "./InfoSection.styles";
+import { StyledInfoHeading, RevertPriceButton } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
   isConnected: boolean;
@@ -158,30 +150,9 @@ const InfoSection: FC<InfoSectionProps> = ({
             onClick={() => setInvertPrice((p) => !p)}
           />
         </StyledInfoHeading>
-        {requiresApproval ? (
+        {requiresApproval && (
           <InfoSubHeading>
             {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
-          </InfoSubHeading>
-        ) : (
-          <InfoSubHeading>
-            <TimerContainer>
-              {bestTradeOption.protocol === "request-for-quote" && (
-                <>
-                  <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
-                  <TimerText>
-                    <Timer
-                      expiryTime={
-                        parseInt(bestTradeOption!.order!.expiry) -
-                        RFQ_EXPIRY_BUFFER_MS / 1000
-                      }
-                    ></Timer>
-                  </TimerText>
-                </>
-              )}
-              {bestTradeOption.protocol === "last-look" && (
-                <NewQuoteText>{t("orders:gasFreeTrade")}</NewQuoteText>
-              )}
-            </TimerContainer>
           </InfoSubHeading>
         )}
       </>

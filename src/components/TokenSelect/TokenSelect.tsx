@@ -16,9 +16,10 @@ import {
   StyledLabel,
   StyledDownArrow,
   StyledSelectButtonContent,
-  StyledTokenLogo,
-  InputAndMaxButtonWrapper,
+  TokenLogoLeft,
+  TokenLogoRight,
   MaxButton,
+  InputAndMaxButtonWrapper,
 } from "./TokenSelect.styles";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
@@ -91,7 +92,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
       <FlexRow>
-        <StyledTokenLogo size="large" tokenInfo={selectedToken} />
+        <TokenLogoLeft size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
@@ -125,6 +126,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common:max")}</MaxButton>
           )}
+          <TokenLogoRight size="large" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

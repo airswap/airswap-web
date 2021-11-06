@@ -17,14 +17,15 @@ import {
   IconDarkModeSwitch,
   IconDeny,
   IconEdit,
+  IconForbidden,
   IconLibrary,
   IconLink,
   IconPending,
+  IconStar,
   IconSwap,
+  IconTransaction,
   IconVote,
   IconX,
-  IconForbidden,
-  IconTransaction,
 } from "./icons";
 
 type IconSet = {
@@ -55,6 +56,7 @@ export const icons: IconSet = {
   "exit-modal": HiX,
   forbidden: IconForbidden,
   "information-circle-outline": IoMdInformationCircleOutline,
+  star: IconStar,
   swap: IconSwap,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,

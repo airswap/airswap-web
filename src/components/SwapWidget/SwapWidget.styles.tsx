@@ -5,7 +5,9 @@ import styled from "styled-components/macro";
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
 
 export const Header = styled.div`
+  display: flex;
   margin-bottom: 2rem;
+  width: 100%;
 `;
 
 export const QuoteAndTimer = styled.div`
