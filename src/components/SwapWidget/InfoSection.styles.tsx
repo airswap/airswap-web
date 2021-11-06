@@ -3,10 +3,31 @@ import styled from "styled-components/macro";
 import { BorderlessButtonStyle } from "../../style/mixins";
 import IconButton from "../IconButton/IconButton";
 import { InfoHeading } from "../Typography/Typography";
+import { StyledParagraph } from "../Typography/Typography.styles";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
   align-items: center;
+`;
+
+export const FeeTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const FeeText = styled(StyledParagraph)`
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const InfoButton = styled(IconButton)`
+  display: inline-block;
+  padding: 0.25rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover,
+  &:focus {
+    color: ${(props) => props.theme.colors.white};
+  }
 `;
 
 export const RevertPriceButton = styled(IconButton)`

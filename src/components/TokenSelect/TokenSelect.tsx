@@ -10,9 +10,8 @@ import {
   TokenSelectContainer,
   StyledSelectItem,
   StyledSelectButton,
+  PlaceHolderBar,
   PlaceholderContainer,
-  PlaceholderTop,
-  PlaceholderBottom,
   StyledLabel,
   StyledDownArrow,
   StyledSelectButtonContent,
@@ -130,8 +129,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>
-          <PlaceholderTop />
-          <PlaceholderBottom />
+          <PlaceHolderBar />
         </PlaceholderContainer>
       )}
     </TokenSelectContainer>

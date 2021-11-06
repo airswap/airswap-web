@@ -75,7 +75,7 @@ export const AmountInput = styled(FormInput)<{
   hasSubtext: boolean;
   disabled: boolean;
 }>`
-  ${quoteTransition}
+  ${quoteTransition};
 
   padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
@@ -88,19 +88,10 @@ export const AmountInput = styled(FormInput)<{
 `;
 
 export const PlaceHolderBar = styled.div`
+  width: 100%;
+  height: 1.5rem;
   background-image: ${(props) => props.theme.colors.placeholderGradient};
   animation: ${fadeInOut} 0.35s ease-in-out infinite alternate;
-`;
-
-export const PlaceholderTop = styled(PlaceHolderBar)`
-  height: 1.25rem;
-  width: 100%;
-`;
-
-export const PlaceholderBottom = styled(PlaceHolderBar)`
-  height: 0.9375rem;
-  width: 75%;
-  animation-delay: 0.1s;
 `;
 
 export const TokenLogoLeft = styled(TokenLogo)`
@@ -131,6 +122,8 @@ export const StyledSelectButton = styled.button`
 `;
 
 export const StyledLabel = styled(FormLabel)`
+  transition: font-size 0.25s ease-in-out;
+  will-change: font-size;
   text-align: left;
   text-transform: uppercase;
 `;
@@ -156,7 +149,7 @@ export const TokenSelectContainer = styled.div<{
   overflow: hidden;
 
   ${PlaceHolderBar} {
-    ${(props) => (props.$isLoading ? "" : "animation: none;")}
+    display: ${(props) => (props.$isLoading ? "block" : "none")};
   }
 
   ${TokenLogoLeft} {
@@ -218,9 +211,7 @@ export const AmountSubtext = styled(Metadata)`
 
 export const PlaceholderContainer = styled.div`
   display: flex;
-  flex: 1 1 0;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3125rem;
-  max-width: 50%;
+  justify-content: center;
+  width: 50%;
 `;

@@ -29,7 +29,6 @@ import {
   submitTransaction,
 } from "../transactions/transactionActions";
 import {
-  ProtocolType,
   SubmittedApproval,
   SubmittedDepositOrder,
   SubmittedRFQOrder,

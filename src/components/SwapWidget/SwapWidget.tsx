@@ -18,7 +18,6 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
-  RFQ_EXPIRY_BUFFER_MS,
 } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";

@@ -9,7 +9,13 @@ import { BigNumber } from "bignumber.js";
 
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
-import { StyledInfoHeading, RevertPriceButton } from "./InfoSection.styles";
+import {
+  StyledInfoHeading,
+  RevertPriceButton,
+  FeeText,
+  InfoButton,
+  FeeTextContainer,
+} from "./InfoSection.styles";
 
 export type InfoSectionProps = {
   isConnected: boolean;
@@ -140,16 +146,22 @@ const InfoSection: FC<InfoSectionProps> = ({
 
     return (
       <>
-        <StyledInfoHeading>
-          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
-          {stringToSignificantDecimals(price.toString())}{" "}
-          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <RevertPriceButton
-            icon="swap"
-            iconSize={1}
-            onClick={() => setInvertPrice((p) => !p)}
-          />
-        </StyledInfoHeading>
+        <>
+          <StyledInfoHeading>
+            1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
+            {stringToSignificantDecimals(price.toString())}{" "}
+            {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
+            <RevertPriceButton
+              icon="swap"
+              iconSize={1}
+              onClick={() => setInvertPrice((p) => !p)}
+            />
+          </StyledInfoHeading>
+          <FeeTextContainer>
+            <FeeText>Includes 0.07% fee</FeeText>
+            <InfoButton icon="information-circle-outline" />
+          </FeeTextContainer>
+        </>
         {requiresApproval && (
           <InfoSubHeading>
             {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
