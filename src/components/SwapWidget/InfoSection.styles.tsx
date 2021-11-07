@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../style/mixins";
 import IconButton from "../IconButton/IconButton";
-import { InfoHeading } from "../Typography/Typography";
+import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import { StyledParagraph } from "../Typography/Typography.styles";
 
 export const StyledInfoHeading = styled(InfoHeading)`
@@ -17,6 +17,10 @@ export const FeeTextContainer = styled.div`
 
 export const FeeText = styled(StyledParagraph)`
   color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const ApprovalText = styled(InfoSubHeading)`
+  font-size: 1rem;
 `;
 
 export const InfoButton = styled(IconButton)`

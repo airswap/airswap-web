@@ -15,6 +15,7 @@ import {
   FeeText,
   InfoButton,
   FeeTextContainer,
+  ApprovalText,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -166,9 +167,9 @@ const InfoSection: FC<InfoSectionProps> = ({
           </FeeTextContainer>
         </>
         {requiresApproval && (
-          <InfoSubHeading>
+          <ApprovalText>
             {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
-          </InfoSubHeading>
+          </ApprovalText>
         )}
       </>
     );

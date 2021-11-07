@@ -65,7 +65,7 @@ import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
-import GasFreeModal from "../InformationModals/subcomponents/GasFreeModal/GasFreeModal";
+import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
@@ -776,7 +776,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         onClose={() => setShowGasFeeInfo(false)}
         isHidden={!showGasFeeInfo}
       >
-        <GasFreeModal onCloseButtonClick={() => setShowGasFeeInfo(false)} />
+        <GasFreeSwapsModal
+          onCloseButtonClick={() => setShowGasFeeInfo(false)}
+        />
       </Overlay>
       <Overlay
         title={t("information:protocolFeeDiscount.title")}
