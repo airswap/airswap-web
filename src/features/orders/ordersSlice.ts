@@ -495,7 +495,7 @@ export const selectBestOption = createSelector(
         new BigNumber(10).pow(terms.quoteToken.decimals)
       );
       rfqOrder = {
-        quoteAmount: bestRFQSignerUnits.toFixed(terms.quoteToken.decimals),
+        quoteAmount: bestRFQSignerUnits.toString(),
         protocol: "request-for-quote",
         order: bestRfqOrder,
       };
