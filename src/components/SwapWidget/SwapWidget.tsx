@@ -84,7 +84,15 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-const SwapWidget: FC<{ onTrackTransactionClicked: () => void }> = ({
+type SwapWidgetPropsType = {
+  showWalletList: boolean;
+  setShowWalletList: (x: boolean) => void;
+  onTrackTransactionClicked: () => void;
+};
+
+const SwapWidget: FC<SwapWidgetPropsType> = ({
+  showWalletList,
+  setShowWalletList,
   onTrackTransactionClicked,
 }) => {
   // Redux
@@ -109,7 +117,6 @@ const SwapWidget: FC<{ onTrackTransactionClicked: () => void }> = ({
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Modals
-  const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [
     showTokenSelectModalFor,

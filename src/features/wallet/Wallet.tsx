@@ -60,10 +60,17 @@ import {
   setWalletDisconnected,
 } from "./walletSlice";
 
-export const Wallet: FC<{
+type WalletPropsType = {
+  setShowWalletList: (x: boolean) => void;
   showTransactions: boolean;
   setShowTransactions: (value: boolean) => void;
-}> = ({ showTransactions, setShowTransactions }) => {
+};
+
+export const Wallet: FC<WalletPropsType> = ({
+  setShowWalletList,
+  showTransactions,
+  setShowTransactions,
+}) => {
   const {
     chainId,
     account,
@@ -84,7 +91,6 @@ export const Wallet: FC<{
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
-  const [walletOpen, setWalletOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
@@ -293,15 +299,6 @@ export const Wallet: FC<{
     };
   }, [chainId, dispatch, library, account]);
 
-  const handleWalletOpen = (state: boolean) => {
-    setShowTransactions(state);
-  };
-
-  const handleSettingsOpen = (state: boolean) => {
-    setSettingsOpen(state);
-    state && setWalletOpen(false);
-  };
-
   return (
     <>
       <PopoverContainer>
@@ -310,22 +307,16 @@ export const Wallet: FC<{
         )}
         <WalletButton
           address={account}
-          onDisconnectWalletClicked={() => {
-            clearLastAccount();
-            deactivate();
-            if (connector instanceof WalletConnectConnector) {
-              connector.close();
-            }
-          }}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
-          walletOpen={walletOpen}
-          setWalletOpen={handleWalletOpen}
+          transactionsTabOpen={showTransactions}
+          setTransactionsTabOpen={() => setShowTransactions(true)}
+          setShowWalletList={setShowWalletList}
         />
         <SettingsButton
           settingsOpen={settingsOpen}
-          setSettingsOpen={handleSettingsOpen}
+          setSettingsOpen={setSettingsOpen}
         />
       </PopoverContainer>
       <TransactionsTab
