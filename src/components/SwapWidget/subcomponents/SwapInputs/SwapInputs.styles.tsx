@@ -4,7 +4,7 @@ export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
   flex-direction: column;
   opacity: ${(props) => (props.$disabled ? 0.4 : 1)};
-  pointer-events: ${(props) => (props.$disabled ? "none" : "all")};
+  cursor: ${(props) => (props.$disabled ? "not-allowed" : "inherit")};
   will-change: opacity;
   transition: ease-in-out;
   transition-duration: 300ms;

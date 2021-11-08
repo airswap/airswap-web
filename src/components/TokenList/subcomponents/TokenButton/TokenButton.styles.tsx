@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components/macro";
 
+import { BorderlessButtonStyle } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
 
@@ -82,9 +83,7 @@ export const Container = styled.button<ContainerProps>`
     }
   }
 
-  &:focus {
-    outline-color: ${(props) => props.theme.colors.white};
-  }
+  ${BorderlessButtonStyle}
 `;
 
 export const TextContainer = styled.div`

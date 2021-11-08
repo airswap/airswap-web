@@ -6,20 +6,18 @@ import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactio
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   padding: 1.125rem 1.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 3px;
-  transition: border-color ease-out 0.3s;
+  border-radius: 0.1875rem;
 
   & + & {
     margin-top: 0.5rem;
   }
 
-  &:hover,
-  &:focus {
-    border-color: ${(props) => props.theme.colors.white};
+  &:hover {
+    border-color: ${(props) => props.theme.colors.lightGrey};
   }
 `;
 
@@ -46,8 +44,6 @@ export const SpanSubtitle = styled.span`
 
 export const StyledTransactionLink = styled(TransactionLink)`
   align-items: center;
-  margin-left: auto;
-
   &:hover {
     color: ${(props) => props.theme.colors.alwaysWhite};
   }

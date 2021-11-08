@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
 
 import IconButton from "../../components/IconButton/IconButton";
-import convertHexToRGBA from "../../helpers/transformHexToRgba";
 
 const CloseButton = styled(IconButton)`
   display: flex;
@@ -12,10 +11,6 @@ const CloseButton = styled(IconButton)`
   height: 1.5rem;
   padding: 0;
   background: ${(props) => props.theme.colors.black};
-
-  &:hover {
-    border-color: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.5)};
-  }
 `;
 
 export default CloseButton;

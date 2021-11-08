@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useContext } from "react";
+import { useState, useMemo, useEffect, useContext, FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -84,7 +84,17 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-const SwapWidget = () => {
+type SwapWidgetPropsType = {
+  showWalletList: boolean;
+  setShowWalletList: (x: boolean) => void;
+  onTrackTransactionClicked: () => void;
+};
+
+const SwapWidget: FC<SwapWidgetPropsType> = ({
+  showWalletList,
+  setShowWalletList,
+  onTrackTransactionClicked,
+}) => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -107,7 +117,6 @@ const SwapWidget = () => {
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Modals
-  const [showWalletList, setShowWalletList] = useState<boolean>(false);
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [
     showTokenSelectModalFor,
@@ -498,18 +507,24 @@ const SwapWidget = () => {
   const doWrap = async () => {
     const method = baseTokenInfo === nativeETH[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
-    const result = await dispatch(
-      method({
-        chainId: chainId!,
-        senderAmount: baseAmount,
-        senderTokenDecimals: baseTokenInfo!.decimals,
-        provider: library,
-      })
-    );
-    await unwrapResult(result);
-    setIsSwapping(false);
-    setIsWrapping(false);
-    setShowOrderSubmitted(true);
+    try {
+      const result = await dispatch(
+        method({
+          chainId: chainId!,
+          senderAmount: baseAmount,
+          senderTokenDecimals: baseTokenInfo!.decimals,
+          provider: library!,
+        })
+      );
+      await unwrapResult(result);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setShowOrderSubmitted(true);
+    } catch (e) {
+      // user cancelled metamask dialog
+      setIsSwapping(false);
+      setIsWrapping(false);
+    }
   };
 
   const handleButtonClick = async (action: ButtonActions) => {
@@ -591,6 +606,10 @@ const SwapWidget = () => {
         }
         break;
 
+      case ButtonActions.trackTransaction:
+        onTrackTransactionClicked();
+        break;
+
       default:
       // Do nothing.
     }
@@ -632,7 +651,8 @@ const SwapWidget = () => {
               !!bestTradeOption ||
               isWrapping ||
               isRequestingQuotes ||
-              pairUnavailable
+              pairUnavailable ||
+              !active
             }
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />

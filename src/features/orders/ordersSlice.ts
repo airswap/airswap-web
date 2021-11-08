@@ -10,7 +10,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import { Transaction } from "ethers";
+import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
@@ -79,7 +79,7 @@ export const deposit = createAsyncThunk(
       chainId: number;
       senderAmount: string;
       senderTokenDecimals: number;
-      provider: any;
+      provider: providers.Web3Provider;
     },
     { getState, dispatch }
   ) => {
@@ -111,7 +111,7 @@ export const deposit = createAsyncThunk(
         };
         dispatch(submitTransaction(transaction));
         params.provider.once(tx.hash, async () => {
-          const receipt = await params.provider.getTransactionReceipt(tx.hash);
+          const receipt = await params.provider.getTransactionReceipt(tx.hash!);
           const state: RootState = getState() as RootState;
           const tokens = Object.values(state.metadata.tokens.all);
           if (receipt.status === 1) {
@@ -128,7 +128,12 @@ export const deposit = createAsyncThunk(
               params.chainId
             );
           } else {
-            dispatch(revertTransaction(receipt.transactionHash));
+            dispatch(
+              revertTransaction({
+                hash: receipt.transactionHash,
+                reason: "Transaction reverted",
+              })
+            );
             notifyTransaction(
               "Deposit",
               transaction,

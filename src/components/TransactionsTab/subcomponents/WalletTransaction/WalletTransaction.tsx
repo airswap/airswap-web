@@ -82,20 +82,25 @@ const WalletTransaction = ({
           {tx && senderToken && signerToken && (
             <>
               <SpanTitle>
-                {t("wallet:transaction", {
-                  senderAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.senderAmount, senderToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  senderToken: senderToken.symbol,
-                  signerAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.signerAmount, signerToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  signerToken: signerToken.symbol,
-                })}
+                {t(
+                  tx.protocol === "last-look"
+                    ? "wallet:lastLookTransaction"
+                    : "wallet:transaction",
+                  {
+                    senderAmount: parseFloat(
+                      Number(
+                        formatUnits(tx.order.senderAmount, senderToken.decimals)
+                      ).toFixed(5)
+                    ),
+                    senderToken: senderToken.symbol,
+                    signerAmount: parseFloat(
+                      Number(
+                        formatUnits(tx.order.signerAmount, signerToken.decimals)
+                      ).toFixed(5)
+                    ),
+                    signerToken: signerToken.symbol,
+                  }
+                )}
               </SpanTitle>
               <SpanSubtitle>
                 {tx.status === "succeeded"
@@ -108,7 +113,11 @@ const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+        {tx.hash ? (
+          <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+        ) : (
+          <span></span>
+        )}
       </Container>
     );
   }
