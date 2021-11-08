@@ -4,6 +4,7 @@ import { HashRouter as Router, Route } from "react-router-dom";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
+import BigNumber from "bignumber.js";
 import { ThemeProvider } from "styled-components/macro";
 import { ModalProvider } from "styled-react-modal";
 
@@ -26,6 +27,7 @@ function getLibrary(provider: any): Web3Provider {
   library.pollingInterval = 12000;
   return library;
 }
+BigNumber.config({ EXPONENTIAL_AT: 18 });
 
 const App = (): JSX.Element => {
   const { theme, showBookmarkWarning } = useAppSelector(selectUserSettings);
