@@ -627,7 +627,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       <StyledSwapWidget>
         <SwapWidgetHeader
           title={isApproving ? t("orders:approve") : t("common:swap")}
-          isQuote={!isRequestingQuotes}
+          isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           protocol={bestTradeOption?.protocol as ProtocolType}
           expiry={bestTradeOption?.order?.expiry}

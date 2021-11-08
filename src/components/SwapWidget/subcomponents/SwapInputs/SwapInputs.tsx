@@ -48,7 +48,8 @@ const SwapInputs: FC<{
     fromAmount = stringToSignificantDecimals(quoteAmount);
     toAmount = baseAmount;
   }
-  const isQuote = !!fromAmount && !!toAmount;
+
+  const isQuote = !!fromAmount && !!toAmount && readOnly;
   const { t } = useTranslation(["orders"]);
 
   // Note: it will only be possible for the user to change the base amount.

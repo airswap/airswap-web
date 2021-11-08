@@ -125,11 +125,6 @@ const InfoSection: FC<InfoSectionProps> = ({
         <InfoHeading>
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <RevertPriceButton
-            icon="swap"
-            iconSize={1.25}
-            onClick={() => setInvertPrice((p) => !p)}
-          />
         </InfoHeading>
         <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
       </>
