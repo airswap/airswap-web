@@ -134,8 +134,7 @@ export const StyledSelectButton = styled.button`
   justify-content: center;
   margin-left: 0.9375rem;
   height: 100%;
-  cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
-  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 
   &:focus {
     outline: 0;

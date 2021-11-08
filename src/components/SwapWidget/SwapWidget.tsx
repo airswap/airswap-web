@@ -644,7 +644,8 @@ const SwapWidget: FC<{ onTrackTransactionClicked: () => void }> = ({
               !!bestTradeOption ||
               isWrapping ||
               isRequestingQuotes ||
-              pairUnavailable
+              pairUnavailable ||
+              !active
             }
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />

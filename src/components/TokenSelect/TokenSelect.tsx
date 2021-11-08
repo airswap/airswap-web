@@ -109,6 +109,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <AmountInput
               // @ts-ignore
               inputMode="decimal"
+              tabIndex={readOnly ? -1 : 0}
               autoComplete="off"
               pattern="^[0-9]*[.,]?[0-9]*$"
               minLength={1}
