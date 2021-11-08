@@ -62,14 +62,14 @@ import {
 
 type WalletPropsType = {
   setShowWalletList: (x: boolean) => void;
-  showTransactions: boolean;
-  setShowTransactions: (value: boolean) => void;
+  transactionsTabOpen: boolean;
+  setTransactionsTabOpen: (x: boolean) => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
   setShowWalletList,
-  showTransactions,
-  setShowTransactions,
+  transactionsTabOpen,
+  setTransactionsTabOpen,
 }) => {
   const {
     chainId,
@@ -310,8 +310,8 @@ export const Wallet: FC<WalletPropsType> = ({
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
-          transactionsTabOpen={showTransactions}
-          setTransactionsTabOpen={() => setShowTransactions(true)}
+          transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
           setShowWalletList={setShowWalletList}
         />
         <SettingsButton
@@ -322,15 +322,15 @@ export const Wallet: FC<WalletPropsType> = ({
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={showTransactions}
-        setTransactionsTabOpen={setShowTransactions}
+        open={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setShowTransactions(false);
+          setTransactionsTabOpen(false);
         }}
         transactions={transactions}
         tokens={allTokens}
