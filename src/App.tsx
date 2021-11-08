@@ -27,7 +27,8 @@ function getLibrary(provider: any): Web3Provider {
   library.pollingInterval = 12000;
   return library;
 }
-BigNumber.config({ EXPONENTIAL_AT: 18 });
+//1e+9 is the highest possible number
+BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
 const App = (): JSX.Element => {
   const { theme, showBookmarkWarning } = useAppSelector(selectUserSettings);
