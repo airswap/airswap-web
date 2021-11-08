@@ -1,11 +1,14 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
   flex-direction: column;
   opacity: ${(props) => (props.$disabled ? 0.4 : 1)};
-  pointer-events: ${(props) => (props.$disabled ? "none" : "all")};
-  will-change: opacity;
+  ${(props) =>
+    props.$disabled &&
+    css`
+      cursor: not-allowed;
+    `}
   transition: ease-in-out;
   transition-duration: 300ms;
 `;
