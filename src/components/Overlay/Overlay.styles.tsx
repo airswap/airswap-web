@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
-import { ScrollBar } from "../../style/mixins";
+import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
@@ -28,7 +28,7 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
   overflow-x: hidden;
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
-  ${ScrollBar}
+  ${ScrollBarStyle}
 `;
 
 export const ContentContainer = styled(motion.div)`

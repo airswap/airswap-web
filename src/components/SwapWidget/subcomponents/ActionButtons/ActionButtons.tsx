@@ -13,6 +13,7 @@ export enum ButtonActions {
   approve,
   requestQuotes,
   takeQuote,
+  trackTransaction,
 }
 
 const buttonTextMapping: Record<ButtonActions, string> = {
@@ -23,6 +24,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.approve]: "orders:approve",
   [ButtonActions.requestQuotes]: "orders:continue",
   [ButtonActions.takeQuote]: "orders:take",
+  [ButtonActions.trackTransaction]: "orders:track",
 };
 
 /**
@@ -77,6 +79,10 @@ const ActionButtons: FC<{
   else if (hasQuote) nextAction = ButtonActions.takeQuote;
   else nextAction = ButtonActions.requestQuotes;
 
+  // If a secondary action is defined, a secondary button will be displayed.
+  let secondaryAction: ButtonActions | null = null;
+  if (orderComplete) secondaryAction = ButtonActions.trackTransaction;
+
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
   let isDisabled =
@@ -110,12 +116,26 @@ const ActionButtons: FC<{
     mainButtonText = t(buttonTextMapping[nextAction]);
   }
 
+  let secondaryButtonText: string | null = !!secondaryAction
+    ? // @ts-ignore dynamic translation key.
+      t(buttonTextMapping[secondaryAction])
+    : null;
+
   return (
     <>
       {hasBackButton && (
         <BackButton onClick={onButtonClicked.bind(null, ButtonActions.goBack)}>
           {t("common:back")}
         </BackButton>
+      )}
+      {secondaryAction && (
+        // Note MainButton used to ensure secondary button is same size as main
+        <MainButton
+          intent="neutral"
+          onClick={onButtonClicked.bind(null, secondaryAction)}
+        >
+          {secondaryButtonText}
+        </MainButton>
       )}
       <MainButton
         intent={nextAction === ButtonActions.goBack ? "neutral" : "primary"}

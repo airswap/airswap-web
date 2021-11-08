@@ -1,12 +1,12 @@
 import React, { FC, ReactElement, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import { Orders } from "../../features/orders/Orders";
 import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import InformationModals, {
   InformationType,
 } from "../InformationModals/InformationModals";
+import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
@@ -27,6 +27,8 @@ const Page: FC = (): ReactElement => {
   const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
     false
   );
+  const [showWalletList, setShowWalletList] = useState<boolean>(false);
+
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
   /* using 480 from breakpoint size defined at src/style/breakpoints.ts */
@@ -47,9 +49,14 @@ const Page: FC = (): ReactElement => {
       <StyledWallet
         transactionsTabOpen={transactionsTabOpen}
         setTransactionsTabOpen={setTransactionsTabOpen}
+        setShowWalletList={setShowWalletList}
       />
       <WidgetFrame>
-        <Orders />
+        <SwapWidget
+          showWalletList={showWalletList}
+          setShowWalletList={setShowWalletList}
+          onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
+        />
       </WidgetFrame>
       <InformationModals
         onCloseModalClick={onCloseModalClick}

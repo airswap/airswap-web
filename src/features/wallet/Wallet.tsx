@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
 import { Light, Wrapper } from "@airswap/libraries";
@@ -12,7 +12,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import EthButton from "../../components/EthButton/EthButton";
+import EthBalance from "../../components/EthButton/EthBalance";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -61,14 +61,16 @@ import {
 } from "./walletSlice";
 
 type WalletPropsType = {
+  setShowWalletList: (x: boolean) => void;
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
 };
 
-export const Wallet = ({
+export const Wallet: FC<WalletPropsType> = ({
+  setShowWalletList,
   transactionsTabOpen,
   setTransactionsTabOpen,
-}: WalletPropsType) => {
+}) => {
   const {
     chainId,
     account,
@@ -89,13 +91,11 @@ export const Wallet = ({
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
-  const [walletOpen, setWalletOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-
   const [lightContract, setLightContract] = useState<Contract>();
 
   useBeforeunload(() => {
@@ -299,39 +299,24 @@ export const Wallet = ({
     };
   }, [chainId, dispatch, library, account]);
 
-  const handleWalletOpen = (state: boolean) => {
-    setTransactionsTabOpen(state);
-  };
-
-  const handleSettingsOpen = (state: boolean) => {
-    setSettingsOpen(state);
-    state && setWalletOpen(false);
-  };
-
   return (
     <>
       <PopoverContainer>
         {balances && chainId && (
-          <EthButton balance={balances.values[nativeETH[chainId!].address]!} />
+          <EthBalance balance={balances.values[nativeETH[chainId!].address]!} />
         )}
         <WalletButton
           address={account}
-          onDisconnectWalletClicked={() => {
-            clearLastAccount();
-            deactivate();
-            if (connector instanceof WalletConnectConnector) {
-              connector.close();
-            }
-          }}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
-          walletOpen={walletOpen}
-          setWalletOpen={handleWalletOpen}
+          transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+          setShowWalletList={setShowWalletList}
         />
         <SettingsButton
           settingsOpen={settingsOpen}
-          setSettingsOpen={handleSettingsOpen}
+          setSettingsOpen={setSettingsOpen}
         />
       </PopoverContainer>
       <TransactionsTab

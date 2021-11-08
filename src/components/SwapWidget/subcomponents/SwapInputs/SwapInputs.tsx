@@ -83,9 +83,7 @@ const SwapInputs: FC<{
         isLoading={!isSell && isRequesting}
         showMaxButton={showMaxButton}
       />
-      <SwapIconContainer>
-        {getSwapInputIcon(tradeNotAllowed, !!toAmount)}
-      </SwapIconContainer>
+      <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
         label={t("orders:to")}
         amount={toAmount}

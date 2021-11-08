@@ -29,4 +29,8 @@ export const StyledIconButton = styled.button<StyledIconButtonProps>`
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
+
+  &:active {
+    border-color: ${(props) => props.theme.colors.primary};
+  }
 `;

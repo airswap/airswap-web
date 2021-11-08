@@ -31,7 +31,7 @@ export const ButtonContainer = styled.div`
 
 export const HugeTicks = styled(MdDoneAll)`
   font-size: 8rem;
-  margin: 5rem auto 2px auto;
+  margin: 1rem auto -4rem auto;
 `;
 
 export const StyledSwapWidget = styled.div`
