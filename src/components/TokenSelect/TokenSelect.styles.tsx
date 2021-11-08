@@ -24,6 +24,19 @@ const fadeInOut = keyframes`
 const quoteTransition = css`
   transition: transform 0.25s cubic-bezier(0.57, 0.01, 0.3, 1);
   will-change: transform;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+const fontTransition = css`
+  transition: font-size 0.25s ease-in-out;
+  will-change: font-size;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 export const FlexRow = styled.div`
@@ -121,9 +134,17 @@ export const StyledSelectButton = styled.button`
   }
 `;
 
+export const StyledSelectItem = styled(SelectItem)`
+  ${fontTransition};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 1;
+  gap: 0.375rem;
+`;
+
 export const StyledLabel = styled(FormLabel)`
-  transition: font-size 0.25s ease-in-out;
-  will-change: font-size;
+  ${fontTransition};
   text-align: left;
   text-transform: uppercase;
 `;
@@ -180,6 +201,10 @@ export const TokenSelectContainer = styled.div<{
   ${StyledLabel} {
     font-size: ${(props) => (props.$isQuote ? "0.625rem" : "0.75rem")};
   }
+  
+  ${StyledSelectItem} {
+    font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
+  }
 }
 `;
 
@@ -195,14 +220,6 @@ export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
 }>`
   ${fadeOutWhenInvisible}
-`;
-
-export const StyledSelectItem = styled(SelectItem)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  line-height: 1;
-  gap: 0.375rem;
 `;
 
 export const AmountSubtext = styled(Metadata)`
