@@ -651,7 +651,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               !!bestTradeOption ||
               isWrapping ||
               isRequestingQuotes ||
-              pairUnavailable
+              pairUnavailable ||
+              !active
             }
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
           />
