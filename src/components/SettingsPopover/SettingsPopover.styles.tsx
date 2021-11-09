@@ -12,7 +12,7 @@ export const Container = styled.div`
   grid-template-rows: 5rem;
   width: 16rem;
   height: 17.25rem;
-  top: 5.5rem;
+  top: 4rem;
   right: 0rem;
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${(props) => props.theme.colors.darkGrey};

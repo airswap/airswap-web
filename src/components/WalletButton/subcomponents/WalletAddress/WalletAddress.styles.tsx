@@ -5,7 +5,7 @@ import styled from "styled-components/macro";
 export const Button = styled.div`
   border: 0;
   margin: 0;
-  padding: 1rem;
+  padding: 0 1rem;
   cursor: pointer;
   background: none;
 `;

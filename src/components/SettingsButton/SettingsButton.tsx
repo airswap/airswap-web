@@ -6,11 +6,13 @@ import { Container, SettingsButtonContainer } from "./SettingsButton.style";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
+  transactionsTabOpen: boolean;
   setSettingsOpen: (x: boolean) => void;
 };
 
 const SettingsButton = ({
   settingsOpen,
+  transactionsTabOpen,
   setSettingsOpen,
 }: SettingsButtonType) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +47,7 @@ const SettingsButton = ({
   }, [handleClick, handleEscKey]);
 
   return (
-    <Container ref={containerRef}>
+    <Container ref={containerRef} open={transactionsTabOpen}>
       <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
         <Icon iconSize={1.5} name="settings" />
       </SettingsButtonContainer>

@@ -4,19 +4,7 @@ import styled from "styled-components/macro";
 import { ScrollBarStyle } from "../../style/mixins";
 import Button from "../Button/Button";
 import { InfoSubHeading } from "../Typography/Typography";
-import { InfoHeading } from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
-
-export const BackgroundOverlay = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: black;
-  z-index: 1000;
-  will-change: opacity;
-`;
 
 export const Container = styled(motion.div)`
   position: absolute;
@@ -43,38 +31,6 @@ export const WalletHeader = styled.div`
   width: 100%;
   height: 3rem;
   margin: 1.5rem 0;
-`;
-
-export const BlockiesContainer = styled.div`
-  position: relative;
-  margin-right: 2.5rem;
-
-  &::after {
-    display: block;
-    content: "";
-    position: absolute;
-    background-color: ${(props) => props.theme.colors.green};
-    border-radius: 50%;
-    z-index: 5;
-    width: 0.75rem;
-    height: 0.75rem;
-    top: 1.75rem;
-    left: 1.75rem;
-  }
-`;
-
-export const WalletAddress = styled(InfoHeading)`
-  font-size: 1rem;
-`;
-
-export const WalletLinkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.125rem 1rem 1.125rem 1.5rem;
-  height: 3rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2500px;
 `;
 
 export const StyledTransactionLink = styled(TransactionLink)`
@@ -163,5 +119,63 @@ export const IconContainer = styled.div`
   height: 2.5rem;
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
+  border-radius: 50%;
+`;
+
+export const BackButton = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: -1.5rem;
+  top: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.white};
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    outline: 0;
+    border-color: ${(props) => props.theme.colors.lightGrey};
+  }
+`;
+
+export const NetworkInfoContainer = styled.div`
+  max-width: 5.5rem;
+  margin-left: 1rem;
+`;
+
+export const NetworkName = styled.div`
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const Balances = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1rem;
+  color: ${(props) => props.theme.colors.white};
+`;
+
+export const WalletAnchorTag = styled.a`
+  border: 0;
+  margin: 0;
+  padding: 0 1rem;
+  cursor: pointer;
+  background: none;
+`;
+
+export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
+  margin-right: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: ${(props) =>
+    props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
 `;

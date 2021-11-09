@@ -3,20 +3,19 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
+import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence } from "framer-motion";
 
+import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import BorderedButton from "../../styled-components/BorderedButton/BorderedButton";
 import Icon from "../Icon/Icon";
-import { StyledBlockies } from "../WalletButton/subcomponents/WalletAddress/WalletAddress.styles";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
-  BackgroundOverlay,
   WalletHeader,
-  BlockiesContainer,
-  WalletAddress,
-  WalletLinkContainer,
   Legend,
   LegendLine,
   TransactionContainer,
@@ -25,9 +24,24 @@ import {
   DisconnectButton,
   NoTransactions,
   IconContainer,
+  BackButton,
+  NetworkInfoContainer,
+  NetworkName,
+  Balances,
+  WalletAnchorTag,
+  ConnectionStatusCircle,
 } from "./TransactionsTab.styles";
-import WalletLink from "./subcomponents/WalletLink/WalletLink";
 import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
+
+const addressMapping: Record<number, string> = {
+  1: "Mainnet",
+  4: "Rinkeby",
+};
+
+const hrefAddressMapping: Record<number, string> = {
+  1: "",
+  4: "rinkeby.",
+};
 
 type TransactionsTabType = {
   address: string;
@@ -40,6 +54,8 @@ type TransactionsTabType = {
   onDisconnectWalletClicked: () => void;
   transactions: SubmittedTransaction[];
   tokens: TokenInfo[];
+  balances: BalancesState;
+  isUnsupportedNetwork?: boolean;
 };
 
 const TransactionsTab = ({
@@ -50,6 +66,8 @@ const TransactionsTab = ({
   onDisconnectWalletClicked,
   transactions = [],
   tokens = [],
+  balances,
+  isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
 
@@ -111,52 +129,93 @@ const TransactionsTab = ({
     );
   }, [transactions]);
 
-  return (
-    <>
-      <AnimatePresence>
-        {open && (
-          <BackgroundOverlay
-            animate={{ opacity: 0.5 }}
-            initial={{ opacity: 0 }}
-            exit={{ opacity: 0 }}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {open && (
-          <Container
-            ref={containerRef}
-            animate={{ x: 0 }}
-            transition={{ duration: 0.3 }}
-            initial={{ x: "24rem" }}
-            exit={{ x: "24rem" }}
-          >
-            <WalletHeader>
-              <BlockiesContainer>
-                <StyledBlockies
-                  size={8}
-                  scale={5}
-                  seed={address}
-                  bgColor="black"
-                  color="#2b72ff"
-                />
-              </BlockiesContainer>
-              <WalletLinkContainer>
-                <WalletAddress>{addressOrName}</WalletAddress>
-                <WalletLink chainId={chainId!} address={address!} />
-              </WalletLinkContainer>
-            </WalletHeader>
+  const balance =
+    balances.values["0x0000000000000000000000000000000000000000"] || "0";
 
-            <TransactionsContainer
-              ref={transactionsScrollRef}
-              $overflow={overflow}
+  return (
+    <AnimatePresence>
+      {open && (
+        <Container
+          ref={containerRef}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.3 }}
+          initial={{ x: "24rem" }}
+          exit={{ x: "24rem" }}
+        >
+          <BackButton
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5 }}
+            initial={{ y: "-5rem" }}
+            exit={{ opacity: 0 }}
+            onClick={() => setTransactionsTabOpen(false)}
+          >
+            <Icon name="chevron-right" iconSize={1} />
+          </BackButton>
+          <WalletHeader>
+            <NetworkInfoContainer>
+              <NetworkName>
+                {addressMapping[chainId] || t("wallet:unsupported")}
+              </NetworkName>
+              <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
+            </NetworkInfoContainer>
+            <WalletAnchorTag
+              target="_blank"
+              rel="noreferrer"
+              href={
+                chainId
+                  ? `https://${hrefAddressMapping[chainId]}etherscan.io/address/${address}`
+                  : ""
+              }
             >
+              <BorderedButton>
+                <ConnectionStatusCircle $connected={!!address} />
+                <InfoHeading>
+                  {isUnsupportedNetwork
+                    ? t("wallet:unsupported")
+                    : addressOrName
+                    ? addressOrName
+                    : t("wallet:notConnected")}
+                </InfoHeading>
+              </BorderedButton>
+            </WalletAnchorTag>
+          </WalletHeader>
+
+          <TransactionsContainer
+            ref={transactionsScrollRef}
+            $overflow={overflow}
+          >
+            <Legend>
+              <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
+            </Legend>
+            <TransactionContainer>
+              {pendingTransactions.length ? (
+                pendingTransactions.map((transaction) => (
+                  <WalletTransaction
+                    transaction={transaction}
+                    tokens={tokens}
+                    chainId={chainId!}
+                    key={transaction.hash}
+                  />
+                ))
+              ) : (
+                <NoTransactions>
+                  <IconContainer>
+                    <Icon name="transaction" />
+                  </IconContainer>
+                  {t("wallet:noActiveTransactions")}
+                </NoTransactions>
+              )}
+            </TransactionContainer>
+            {completedTransactions && (
               <Legend>
-                <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
+                <LegendLine>{t("wallet:completedTransactions")}</LegendLine>
               </Legend>
-              <TransactionContainer>
-                {pendingTransactions.length ? (
-                  pendingTransactions.map((transaction) => (
+            )}
+            <TransactionContainer>
+              {completedTransactions.length > 0 ? (
+                completedTransactions
+                  .slice(0, 10)
+                  .map((transaction) => (
                     <WalletTransaction
                       transaction={transaction}
                       tokens={tokens}
@@ -164,54 +223,27 @@ const TransactionsTab = ({
                       key={transaction.hash}
                     />
                   ))
-                ) : (
-                  <NoTransactions>
-                    <IconContainer>
-                      <Icon name="transaction" />
-                    </IconContainer>
-                    {t("wallet:noActiveTransactions")}
-                  </NoTransactions>
-                )}
-              </TransactionContainer>
-              {completedTransactions && (
-                <Legend>
-                  <LegendLine>{t("wallet:completedTransactions")}</LegendLine>
-                </Legend>
+              ) : (
+                <NoTransactions>
+                  <IconContainer>
+                    <Icon name="transaction" />
+                  </IconContainer>
+                  {t("wallet:noCompletedTransactions")}
+                </NoTransactions>
               )}
-              <TransactionContainer>
-                {completedTransactions.length > 0 ? (
-                  completedTransactions
-                    .slice(0, 10)
-                    .map((transaction) => (
-                      <WalletTransaction
-                        transaction={transaction}
-                        tokens={tokens}
-                        chainId={chainId!}
-                        key={transaction.hash}
-                      />
-                    ))
-                ) : (
-                  <NoTransactions>
-                    <IconContainer>
-                      <Icon name="transaction" />
-                    </IconContainer>
-                    {t("wallet:noCompletedTransactions")}
-                  </NoTransactions>
-                )}
-              </TransactionContainer>
-            </TransactionsContainer>
-            <DiconnectButtonContainer>
-              <DisconnectButton
-                aria-label={t("wallet:disconnectWallet")}
-                onClick={onDisconnectWalletClicked}
-              >
-                {t("wallet:disconnectWallet")}
-              </DisconnectButton>
-            </DiconnectButtonContainer>
-          </Container>
-        )}
-      </AnimatePresence>
-    </>
+            </TransactionContainer>
+          </TransactionsContainer>
+          <DiconnectButtonContainer>
+            <DisconnectButton
+              aria-label={t("wallet:disconnectWallet")}
+              onClick={onDisconnectWalletClicked}
+            >
+              {t("wallet:disconnectWallet")}
+            </DisconnectButton>
+          </DiconnectButtonContainer>
+        </Container>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -5,7 +5,7 @@ const PopoverContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 2rem;
+  margin: 1.5rem 1.5rem;
   top: 0;
   right: 0;
 `;

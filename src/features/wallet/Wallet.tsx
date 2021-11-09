@@ -12,11 +12,9 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import EthBalance from "../../components/EthButton/EthBalance";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
-import nativeETH from "../../constants/nativeETH";
 import {
   AbstractConnector,
   WalletProvider,
@@ -302,9 +300,11 @@ export const Wallet: FC<WalletPropsType> = ({
   return (
     <>
       <PopoverContainer>
-        {balances && chainId && (
-          <EthBalance balance={balances.values[nativeETH[chainId!].address]!} />
-        )}
+        <SettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={setSettingsOpen}
+          transactionsTabOpen={transactionsTabOpen}
+        />
         <WalletButton
           address={account}
           isUnsupportedNetwork={
@@ -313,10 +313,6 @@ export const Wallet: FC<WalletPropsType> = ({
           transactionsTabOpen={transactionsTabOpen}
           setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
           setShowWalletList={setShowWalletList}
-        />
-        <SettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
         />
       </PopoverContainer>
       <TransactionsTab
@@ -334,6 +330,8 @@ export const Wallet: FC<WalletPropsType> = ({
         }}
         transactions={transactions}
         tokens={allTokens}
+        balances={balances!}
+        isUnsupportedNetwork={error && error instanceof UnsupportedChainIdError}
       />
     </>
   );
