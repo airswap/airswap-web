@@ -11,8 +11,11 @@ const submitTransaction = createAction<
 >("transaction/submitTransaction");
 
 const declineTransaction = createAction<{
-  hash: string;
-  reason: string;
+  hash?: string;
+  signerWallet?: string;
+  nonce?: string;
+  reason?: string;
+  protocol?: ProtocolType;
 }>("transactions/declineTransaction");
 
 const mineTransaction = createAction<{
@@ -23,8 +26,10 @@ const mineTransaction = createAction<{
 }>("transaction/mineTransaction");
 
 const revertTransaction = createAction<{
-  hash: string;
-  reason: string;
+  hash?: string;
+  signerWallet?: string;
+  nonce?: string;
+  reason?: string;
 }>("transactions/revertTransaction");
 
 export {
