@@ -1,4 +1,4 @@
-import { createContext, FC } from "react";
+import { createContext, FC, useCallback, useMemo } from "react";
 
 import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
@@ -49,154 +49,166 @@ export const LastLookContext = createContext<{
   },
 });
 
+const connectedServers: Record<string, Server> = {};
 const LastLookProvider: FC = ({ children }) => {
-  const connectedServers: Record<string, Server> = {};
   const { account, library, chainId } = useWeb3React();
 
   const dispatch = useAppDispatch();
 
-  // TODO: check if these need to be memoized.
+  const subscribeAllServers = useCallback(
+    (servers: Server[], pair: Pair) => {
+      return servers.map(async (s) => {
+        return new Promise<Pricing>(async (resolve) => {
+          let server = s;
+          if (connectedServers[s.locator]) server = connectedServers[s.locator];
+          connectedServers[server.locator] = server;
 
-  const subscribeAllServers = (servers: Server[], pair: Pair) => {
-    return servers.map(async (s) => {
-      return new Promise<Pricing>(async (resolve) => {
-        let server = s;
-        if (connectedServers[s.locator]) server = connectedServers[s.locator];
-        connectedServers[server.locator] = server;
-
-        const handlePricing = (pricing: Pricing[]) => {
-          const pairPricing = pricing.find(
-            (p) =>
-              p &&
-              p.baseToken === pair.baseToken &&
-              p.quoteToken === pair.quoteToken
-          );
-          if (pairPricing) {
-            resolve(pairPricing);
-            dispatch(
-              updatePricing({
-                locator: server.locator,
-                pricing: pairPricing,
-              })
+          const handlePricing = (pricing: Pricing[]) => {
+            const pairPricing = pricing.find(
+              (p) =>
+                p &&
+                p.baseToken === pair.baseToken &&
+                p.quoteToken === pair.quoteToken
             );
-          } else {
-            console.warn(
-              `Didn't receive pricing for pair in update from ${server.locator}`
-            );
-          }
-        };
+            if (pairPricing) {
+              resolve(pairPricing);
+              dispatch(
+                updatePricing({
+                  locator: server.locator,
+                  pricing: pairPricing,
+                })
+              );
+            } else {
+              console.warn(
+                `Didn't receive pricing for pair in update from ${server.locator}`
+              );
+            }
+          };
 
-        server.on("pricing", handlePricing.bind(null));
-        server.on("error", (e) => {
-          console.error(
-            `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
-            e
-          );
+          server.on("pricing", handlePricing.bind(null));
+          server.on("error", (e) => {
+            console.error(
+              `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
+              e
+            );
+          });
+          const pricing = await server.subscribe([pair]);
+          handlePricing(pricing);
         });
-        const pricing = await server.subscribe([pair]);
-        handlePricing(pricing);
       });
-    });
-  };
+    },
+    [dispatch]
+  );
 
-  const unsubscribeAllServers = () => {
+  const unsubscribeAllServers = useCallback(() => {
     Object.keys(connectedServers).forEach((locator) => {
       const server = connectedServers[locator];
       server.removeAllListeners();
       server.disconnect();
       delete connectedServers[locator];
     });
-  };
+  }, []);
 
-  const getSignedOrder = async (params: {
-    locator: string;
-    terms: TradeTerms;
-  }): Promise<{ order: LightOrder; senderWallet: string }> => {
-    const { locator, terms } = params;
-    const server = connectedServers[locator];
+  const getSignedOrder = useCallback(
+    async (params: {
+      locator: string;
+      terms: TradeTerms;
+    }): Promise<{ order: LightOrder; senderWallet: string }> => {
+      const { locator, terms } = params;
+      const server = connectedServers[locator];
 
-    const isSell = terms.side === "sell";
+      const isSell = terms.side === "sell";
 
-    if (terms.quoteAmount === null)
-      throw new Error("No quote amount specified");
-    const baseAmountAtomic = new BigNumber(terms.baseAmount)
-      .multipliedBy(10 ** terms.baseToken.decimals)
-      .integerValue(BigNumber.ROUND_CEIL)
-      .toString();
-    const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
-      .multipliedBy(10 ** terms.quoteToken.decimals)
-      .integerValue(BigNumber.ROUND_FLOOR)
-      .toString();
+      if (terms.quoteAmount === null)
+        throw new Error("No quote amount specified");
+      const baseAmountAtomic = new BigNumber(terms.baseAmount)
+        .multipliedBy(10 ** terms.baseToken.decimals)
+        .integerValue(BigNumber.ROUND_CEIL)
+        .toString();
+      const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
+        .multipliedBy(10 ** terms.quoteToken.decimals)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .toString();
 
-    const unsignedOrder = createLightOrder({
-      expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
-      nonce: Date.now().toString(),
-      senderWallet: server.getSenderWallet(),
-      signerWallet: account,
-      signerToken: terms.baseToken.address,
-      senderToken: terms.quoteToken.address,
-      signerFee: "7",
-      signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
-      senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
-    });
-    const signature = await createLightSignature(
-      unsignedOrder,
-      library.getSigner(),
-      lightDeploys[chainId],
-      chainId!
-    );
+      const unsignedOrder = createLightOrder({
+        expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
+        nonce: Date.now().toString(),
+        senderWallet: server.getSenderWallet(),
+        signerWallet: account,
+        signerToken: terms.baseToken.address,
+        senderToken: terms.quoteToken.address,
+        signerFee: "7",
+        signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
+        senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
+      });
+      const signature = await createLightSignature(
+        unsignedOrder,
+        library.getSigner(),
+        lightDeploys[chainId],
+        chainId!
+      );
 
-    const order: LightOrder = {
-      expiry: unsignedOrder.expiry,
-      nonce: unsignedOrder.nonce,
-      senderToken: unsignedOrder.senderToken,
-      senderAmount: unsignedOrder.senderAmount,
-      signerWallet: unsignedOrder.signerWallet,
-      signerToken: unsignedOrder.signerToken,
-      signerAmount: unsignedOrder.signerAmount,
-      ...signature,
-    };
+      const order: LightOrder = {
+        expiry: unsignedOrder.expiry,
+        nonce: unsignedOrder.nonce,
+        senderToken: unsignedOrder.senderToken,
+        senderAmount: unsignedOrder.senderAmount,
+        signerWallet: unsignedOrder.signerWallet,
+        signerToken: unsignedOrder.signerToken,
+        signerAmount: unsignedOrder.signerAmount,
+        ...signature,
+      };
 
-    const transaction: SubmittedOrder = {
-      type: "Order",
-      order: order,
-      nonce: order.nonce,
-      status: "processing",
-      protocol: "last-look",
-      expiry: unsignedOrder.expiry,
-      timestamp: Date.now(),
-    };
-    dispatch(submitTransaction(transaction));
+      const transaction: SubmittedOrder = {
+        type: "Order",
+        order: order,
+        nonce: order.nonce,
+        status: "processing",
+        protocol: "last-look",
+        expiry: unsignedOrder.expiry,
+        timestamp: Date.now(),
+      };
+      dispatch(submitTransaction(transaction));
 
-    return {
-      order,
-      senderWallet: unsignedOrder.senderWallet,
-    };
-  };
+      return {
+        order,
+        senderWallet: unsignedOrder.senderWallet,
+      };
+    },
+    [account, chainId, dispatch, library]
+  );
 
-  const sendOrderForConsideration = async (params: {
-    locator: string;
-    order: LightOrder;
-  }) => {
-    const { locator, order } = params;
-    const server = connectedServers[locator];
-    try {
-      return server.consider(order);
-    } catch (e) {
-      console.error("Server unable to consider order: ", e);
-      throw e;
-    }
-  };
+  const sendOrderForConsideration = useCallback(
+    async (params: { locator: string; order: LightOrder }) => {
+      const { locator, order } = params;
+      const server = connectedServers[locator];
+      try {
+        return server.consider(order);
+      } catch (e) {
+        console.error("Server unable to consider order: ", e);
+        throw e;
+      }
+    },
+    []
+  );
+
+  const value = useMemo(
+    () => ({
+      subscribeAllServers,
+      unsubscribeAllServers,
+      sendOrderForConsideration,
+      getSignedOrder,
+    }),
+    [
+      getSignedOrder,
+      subscribeAllServers,
+      unsubscribeAllServers,
+      sendOrderForConsideration,
+    ]
+  );
 
   return (
-    <LastLookContext.Provider
-      value={{
-        subscribeAllServers,
-        unsubscribeAllServers,
-        sendOrderForConsideration,
-        getSignedOrder,
-      }}
-    >
+    <LastLookContext.Provider value={value}>
       {children}
     </LastLookContext.Provider>
   );

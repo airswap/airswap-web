@@ -13,12 +13,19 @@ const ToasterWrapper = styled.div`
   }
 `;
 
-const Toaster = () => (
+type ToasterPropType = {
+  open: boolean;
+};
+
+const Toaster = ({ open }: ToasterPropType) => (
   <ToasterWrapper>
     <T
       position="top-right"
       containerStyle={{
-        right: "80px",
+        right: open ? "25rem" : "1rem",
+        transform: `${(open: boolean) =>
+          open ? "translateX(0)" : "translateX(24rem)"}`,
+        transition: "transform 0.3s ease-in-out",
       }}
       toastOptions={{
         style: {

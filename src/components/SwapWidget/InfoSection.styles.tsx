@@ -2,11 +2,36 @@ import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../style/mixins";
 import IconButton from "../IconButton/IconButton";
-import { InfoHeading } from "../Typography/Typography";
+import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { StyledParagraph } from "../Typography/Typography.styles";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
   align-items: center;
+`;
+
+export const FeeTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const FeeText = styled(StyledParagraph)`
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
+
+export const ApprovalText = styled(InfoSubHeading)`
+  font-size: 1rem;
+`;
+
+export const InfoButton = styled(IconButton)`
+  display: inline-block;
+  padding: 0.25rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover,
+  &:focus {
+    color: ${(props) => props.theme.colors.white};
+  }
 `;
 
 export const RevertPriceButton = styled(IconButton)`
@@ -23,31 +48,4 @@ export const RevertPriceButton = styled(IconButton)`
   }
 
   ${BorderlessButtonStyle}
-`;
-
-export const TimerContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.25rem 1.5rem;
-  margin-top: 0.875rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 1rem;
-`;
-
-export const NewQuoteText = styled.span`
-  font-size: 0.75rem;
-  line-height: 2;
-  font-weight: 700;
-  text-transform: uppercase;
-`;
-
-export const TimerText = styled(NewQuoteText)`
-  /* Fixed width to prevent jumping around as timer reduces */
-  width: 2rem;
-  color: ${(props) =>
-    props.theme.name === "dark"
-      ? props.theme.colors.white
-      : props.theme.colors.primary};
-  margin-left: 0.25rem;
 `;

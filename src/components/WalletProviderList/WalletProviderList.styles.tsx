@@ -56,5 +56,4 @@ export const ButtonText = styled.h4`
   height: auto;
   font-weight: 600;
   text-align: left;
-  text-transform: uppercase;
 `;

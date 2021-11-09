@@ -3,6 +3,7 @@ import { FC, ReactElement, useState } from "react";
 import InformationModals, {
   InformationType,
 } from "../InformationModals/InformationModals";
+import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
@@ -14,8 +15,10 @@ const Page: FC = (): ReactElement => {
     activeModalPage,
     setActiveModalPage,
   ] = useState<InformationType | null>(null);
-
-  const [transactionsOpen, setTransactionsOpen] = useState<boolean>(false);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
+  const [showWalletList, setShowWalletList] = useState<boolean>(false);
 
   const onToolbarButtonClick = (type: InformationType) => {
     setActiveModalPage(type);
@@ -27,17 +30,22 @@ const Page: FC = (): ReactElement => {
 
   return (
     <StyledPage>
-      <Toaster />
+      <Toaster open={transactionsTabOpen} />
       <Toolbar onButtonClick={onToolbarButtonClick} />
       <StyledWallet
-        showTransactions={transactionsOpen}
-        setShowTransactions={setTransactionsOpen}
+        transactionsTabOpen={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
+        setShowWalletList={setShowWalletList}
       />
       <WidgetFrame>
         <SwapWidget
-          onTrackTransactionClicked={() => setTransactionsOpen(true)}
+          showWalletList={showWalletList}
+          setShowWalletList={setShowWalletList}
+          transactionsTabOpen={transactionsTabOpen}
+          onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
         />
       </WidgetFrame>
+      <SocialButtons />
       <InformationModals
         onCloseModalClick={onCloseModalClick}
         activeModal={activeModalPage}
