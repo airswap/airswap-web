@@ -20,7 +20,6 @@ const SwapInputs: FC<{
   disabled: boolean;
   readOnly: boolean;
   isRequesting: boolean;
-  noFee: boolean;
   onMaxButtonClick: (event: MouseEvent<HTMLButtonElement>) => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
@@ -35,7 +34,6 @@ const SwapInputs: FC<{
   onMaxButtonClick,
   onChangeTokenClick,
   isRequesting,
-  noFee,
   baseTokenInfo,
   quoteTokenInfo,
   onBaseAmountChange,
@@ -50,6 +48,8 @@ const SwapInputs: FC<{
     fromAmount = stringToSignificantDecimals(quoteAmount);
     toAmount = baseAmount;
   }
+
+  const isQuote = !!fromAmount && !!toAmount && readOnly;
   const { t } = useTranslation(["orders"]);
 
   // Note: it will only be possible for the user to change the base amount.
@@ -74,13 +74,9 @@ const SwapInputs: FC<{
         onMaxClicked={onMaxButtonClick}
         readOnly={readOnly}
         includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
-        amountDetails={
-          !isSell && !isRequesting && quoteAmount
-            ? t("orders:afterFee", { fee: "0.07%" })
-            : ""
-        }
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={!isSell && isRequesting}
+        isQuote={isQuote}
         showMaxButton={showMaxButton}
       />
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
@@ -93,13 +89,9 @@ const SwapInputs: FC<{
         }}
         readOnly={readOnly}
         includeAmountInput={!isSell || (!!quoteAmount && !isRequesting)}
-        amountDetails={
-          isSell && !isRequesting && quoteAmount && !noFee
-            ? t("orders:afterFee", { fee: "0.07%" })
-            : ""
-        }
         selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={isSell && isRequesting}
+        isQuote={isQuote}
       />
     </Container>
   );

@@ -3,23 +3,22 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
-import TokenLogo from "../TokenLogo/TokenLogo";
 import {
   AmountInput,
   AmountAndDetailsContainer,
-  AmountSubtext,
   FlexRow,
   TokenSelectContainer,
   StyledSelectItem,
   StyledSelectButton,
+  PlaceHolderBar,
   PlaceholderContainer,
-  PlaceholderTop,
-  PlaceholderBottom,
   StyledLabel,
   StyledDownArrow,
   StyledSelectButtonContent,
-  InputAndMaxButtonWrapper,
+  TokenLogoLeft,
+  TokenLogoRight,
   MaxButton,
+  InputAndMaxButtonWrapper,
 } from "./TokenSelect.styles";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
@@ -61,10 +60,6 @@ export type TokenSelectProps = {
    */
   onAmountChange?: FormEventHandler<HTMLInputElement>;
   /**
-   * Text to include beneath the amount. Currently used for fee information.
-   */
-  amountDetails?: string;
-  /**
    * Used for showing loading state
    */
   isLoading?: boolean;
@@ -72,6 +67,10 @@ export type TokenSelectProps = {
    * Show max button
    */
   showMaxButton?: boolean;
+  /**
+   * Used for showing quote style
+   */
+  isQuote?: boolean;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -83,19 +82,20 @@ const TokenSelect: FC<TokenSelectProps> = ({
   onMaxClicked,
   amount,
   onAmountChange,
-  amountDetails,
   isLoading = false,
+  isQuote = false,
   showMaxButton = false,
 }) => {
   const { t } = useTranslation(["common"]);
+
   return (
-    <TokenSelectContainer isLoading={isLoading}>
+    <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
       <FlexRow>
-        <TokenLogo size="large" tokenInfo={selectedToken} />
+        <TokenLogoLeft size="large" tokenInfo={selectedToken} />
         <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
-          <StyledLabel $invisible={readOnly}>{label}</StyledLabel>
+          <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
-            <StyledSelectButtonContent $emphasize={readOnly}>
+            <StyledSelectButtonContent>
               {selectedToken ? selectedToken.symbol : t("common:select")}
             </StyledSelectButtonContent>
             <StyledDownArrow $invisible={readOnly} />
@@ -119,19 +119,17 @@ const TokenSelect: FC<TokenSelectProps> = ({
               disabled={readOnly}
               onChange={onAmountChange}
               placeholder="0.00"
-              hasSubtext={!!amountDetails}
             />
             <TokenSelectFocusBorder position="right" />
-            {amountDetails && <AmountSubtext>{amountDetails}</AmountSubtext>}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common:max")}</MaxButton>
           )}
+          <TokenLogoRight size="large" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>
-          <PlaceholderTop />
-          <PlaceholderBottom />
+          <PlaceHolderBar />
         </PlaceholderContainer>
       )}
     </TokenSelectContainer>

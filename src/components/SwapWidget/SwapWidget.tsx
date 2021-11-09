@@ -55,20 +55,23 @@ import {
   setTradeTerms,
   setTradeTermsQuoteAmount,
 } from "../../features/tradeTerms/tradeTermsSlice";
-import { selectPendingApprovals } from "../../features/transactions/transactionsSlice";
+import {
+  ProtocolType,
+  selectPendingApprovals,
+} from "../../features/transactions/transactionsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
+import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
+import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
-import { Title } from "../Typography/Typography";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
-  Header,
   InfoContainer,
   ButtonContainer,
   HugeTicks,
@@ -78,6 +81,7 @@ import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
+import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
@@ -122,16 +126,18 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     showTokenSelectModalFor,
     setShowTokenSelectModalFor,
   ] = useState<TokenSelectModalTypes | null>(null);
+  const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
+  const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
 
   // Loading states
-  const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [isSwapping, setIsSwapping] = useState<boolean>(false);
-  const [isWrapping, setIsWrapping] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [isRequestingQuotes, setIsRequestingQuotes] = useState<boolean>(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isSwapping, setIsSwapping] = useState(false);
+  const [isWrapping, setIsWrapping] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
 
   // Error states
-  const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+  const [pairUnavailable, setPairUnavailable] = useState(false);
   const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
 
   const { t } = useTranslation([
@@ -141,6 +147,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     "balances",
     "toast",
     "validatorErrors",
+    "information",
   ]);
 
   const {
@@ -618,11 +625,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   return (
     <>
       <StyledSwapWidget>
-        <Header>
-          <Title type="h2">
-            {isApproving ? t("orders:approve") : t("common:swap")}
-          </Title>
-        </Header>
+        <SwapWidgetHeader
+          title={isApproving ? t("orders:approve") : t("common:swap")}
+          isQuote={!isRequestingQuotes && !showOrderSubmitted}
+          onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
+          protocol={bestTradeOption?.protocol as ProtocolType}
+          expiry={bestTradeOption?.order?.expiry}
+        />
         {showOrderSubmitted ? (
           <HugeTicks />
         ) : isApproving || isSwapping ? (
@@ -638,7 +647,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequesting={isRequestingQuotes}
-            noFee={swapType === "wrapOrUnwrap"}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={
@@ -674,6 +682,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
+            onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
           />
         </InfoContainer>
         <ButtonContainer>
@@ -761,6 +770,22 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             setValidatorErrors([]);
           }}
         />
+      </Overlay>
+      <Overlay
+        title={t("information:gasFreeSwaps.title")}
+        onClose={() => setShowGasFeeInfo(false)}
+        isHidden={!showGasFeeInfo}
+      >
+        <GasFreeSwapsModal
+          onCloseButtonClick={() => setShowGasFeeInfo(false)}
+        />
+      </Overlay>
+      <Overlay
+        title={t("information:protocolFeeDiscount.title")}
+        onClose={() => setProtocolFeeDiscountInfo(false)}
+        isHidden={!protocolFeeDiscountInfo}
+      >
+        <ProtocolFeeDiscountModal />
       </Overlay>
     </>
   );
