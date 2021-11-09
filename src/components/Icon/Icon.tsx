@@ -23,9 +23,13 @@ import {
   IconPending,
   IconStar,
   IconSwap,
+  IconTelegram,
   IconTransaction,
+  IconTwitter,
   IconVote,
   IconX,
+  IconDiscord,
+  IconMedium,
 } from "./icons";
 
 type IconSet = {
@@ -52,20 +56,24 @@ export const icons: IconSet = {
   "contact-support": IconContactSupport,
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,
+  discord: IconDiscord,
   edit: IconEdit,
   "exit-modal": HiX,
   forbidden: IconForbidden,
   "information-circle-outline": IoMdInformationCircleOutline,
+  medium: IconMedium,
+  settings: IoMdSettings,
   star: IconStar,
   swap: IconSwap,
+  telegram: IconTelegram,
   "transaction-completed": BiCheck,
   "transaction-failed": HiX,
   "transaction-pending": IconPending,
   "transaction-link": IconLink,
   transaction: IconTransaction,
+  twitter: IconTwitter,
   "wallet-link": IconLink,
   vote: IconVote,
-  settings: IoMdSettings,
 };
 
 interface IconProps extends SvgIconProps {
