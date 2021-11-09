@@ -41,7 +41,6 @@ const Page: FC = (): ReactElement => {
         <SwapWidget
           showWalletList={showWalletList}
           setShowWalletList={setShowWalletList}
-          transactionsTabOpen={transactionsTabOpen}
           onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
         />
       </WidgetFrame>
