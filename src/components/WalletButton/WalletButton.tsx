@@ -8,6 +8,7 @@ export type WalletButtonProps = {
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
   isUnsupportedNetwork?: boolean;
+  glow?: boolean;
   setShowWalletList: (x: boolean) => void;
 };
 
@@ -17,6 +18,7 @@ export const WalletButton = ({
   setTransactionsTabOpen,
   isUnsupportedNetwork = false,
   setShowWalletList,
+  glow,
 }: WalletButtonProps) => {
   return (
     <WalletAddress
@@ -25,6 +27,7 @@ export const WalletButton = ({
       transactionsTabOpen={transactionsTabOpen}
       setTransactionsTabOpen={setTransactionsTabOpen}
       setShowWalletList={setShowWalletList}
+      glow={glow}
     />
   );
 };

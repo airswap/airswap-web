@@ -7,9 +7,9 @@ import { ConnectionStatusCircle, Button } from "./WalletAddress.styles";
 
 type WalletAddressPropsType = {
   address: string | null;
-  isButton?: boolean;
   isUnsupportedNetwork?: boolean;
   showBlockies?: boolean;
+  glow?: boolean;
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
   setShowWalletList: (x: boolean) => void;
@@ -18,18 +18,17 @@ type WalletAddressPropsType = {
 const WalletAddress = ({
   address,
   isUnsupportedNetwork = false,
-  isButton = false,
   transactionsTabOpen,
   setTransactionsTabOpen,
   setShowWalletList,
+  glow,
 }: WalletAddressPropsType) => {
   const { t } = useTranslation("wallet");
   const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () => (
-    <BorderedButton>
+    <BorderedButton $glow={glow}>
       <ConnectionStatusCircle $connected={!!address} />
-
       <InfoHeading>
         {isUnsupportedNetwork
           ? t("unsupportedNetwork")
