@@ -638,7 +638,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequesting={isRequestingQuotes}
-            noFee={swapType === "wrapOrUnwrap"}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={
@@ -673,6 +672,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
+            noFee={swapType === "wrapOrUnwrap"}
             isWrapping={isWrapping}
           />
         </InfoContainer>

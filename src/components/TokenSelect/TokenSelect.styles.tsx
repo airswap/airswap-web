@@ -3,6 +3,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import styled, { css, keyframes } from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../style/mixins";
+import TokenLogo from "../TokenLogo/TokenLogo";
 import {
   SelectItem,
   FormLabel,
@@ -80,7 +81,32 @@ export const PlaceholderBottom = styled(PlaceHolderBar)`
   animation-delay: 0.1s;
 `;
 
-export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
+export const StyledTokenLogo = styled(TokenLogo)`
+  transition: transform 0.25s ease-in-out;
+  will-change: transform;
+`;
+
+export const StyledSelectButton = styled.button`
+  transition: transform 0.25s ease-in-out;
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -0.125rem;
+  margin-left: 0.9375rem;
+  height: 100%;
+  cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
+
+  &:focus {
+    outline: 0;
+  }
+`;
+
+export const TokenSelectContainer = styled.div<{
+  $isLoading: boolean;
+  $isQuote: boolean;
+}>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -95,10 +121,22 @@ export const TokenSelectContainer = styled.div<{ isLoading: boolean }>`
     props.theme.name === "dark"
       ? props.theme.colors.darkGrey
       : props.theme.colors.alwaysWhite};
+  overflow: hidden;
 
   ${PlaceHolderBar} {
-    ${(props) => (props.isLoading ? "" : "animation: none;")}
+    ${(props) => (props.$isLoading ? "" : "animation: none;")}
   }
+
+  ${StyledTokenLogo} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
+  }
+  
+  ${StyledSelectButton} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
+  }
+}
 `;
 
 const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
@@ -107,38 +145,17 @@ const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
   opacity: ${(props) => (props.$invisible ? 0 : 1)};
 `;
 
-export const StyledLabel = styled(FormLabel)<{ $invisible: boolean }>`
+export const StyledLabel = styled(FormLabel)`
   text-align: left;
   text-transform: uppercase;
-  ${fadeOutWhenInvisible}
 `;
 
-export const StyledSelectButtonContent = styled.span<{ $emphasize: boolean }>`
-  transition: transform ease-in-out 0.3s;
-  will-change: transform;
-  transform: ${(props) =>
-    props.$emphasize
-      ? "translateY(-0.625rem) scale(1.111111)"
-      : "translateY(0) scale(1)"};
-`;
+export const StyledSelectButtonContent = styled.span``;
 
 export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
 }>`
   ${fadeOutWhenInvisible}
-`;
-
-export const StyledSelectButton = styled.button`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 0.9375rem;
-  height: 100%;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-
-  &:focus {
-    outline: 0;
-  }
 `;
 
 export const StyledSelectItem = styled(SelectItem)`

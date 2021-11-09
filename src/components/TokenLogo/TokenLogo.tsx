@@ -6,6 +6,7 @@ import StyledTokenLogo, { StyledTokenLogoProps } from "./TokenLogo.styles";
 
 export type TokenLogoProps = {
   tokenInfo: TokenInfo | null;
+  className?: string;
 } & StyledTokenLogoProps &
   BaseHTMLAttributes<HTMLImageElement>;
 

@@ -65,16 +65,3 @@ ReadOnly.args = {
     /* do nothing */
   },
 };
-
-export const ReadOnlyWithFeeInfo = Template.bind({});
-ReadOnlyWithFeeInfo.args = {
-  readOnly: true,
-  includeAmountInput: true,
-  label: "From",
-  selectedToken: wethTokenInfo,
-  amount: "12.33",
-  amountDetails: "After 0.0037 fee",
-  onChangeTokenClicked: () => {
-    /* do nothing */
-  },
-};

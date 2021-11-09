@@ -43,6 +43,8 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  // TODO: Use this for show no fee information
+  noFee: boolean;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
