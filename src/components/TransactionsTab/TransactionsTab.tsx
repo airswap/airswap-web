@@ -10,7 +10,6 @@ import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
-import BorderedButton from "../../styled-components/BorderedButton/BorderedButton";
 import Icon from "../Icon/Icon";
 import { InfoHeading } from "../Typography/Typography";
 import {
@@ -79,16 +78,6 @@ const TransactionsTab = ({
 
   const addressOrName = useAddressOrEnsName(address);
 
-  const handleClick = useCallback(
-    (e) => {
-      if (containerRef.current && containerRef.current.contains(e.target)) {
-        return;
-      }
-      setTransactionsTabOpen(false);
-    },
-    [setTransactionsTabOpen]
-  );
-
   const handleEscKey = useCallback(
     (e) => {
       if (e.keyCode === 27) {
@@ -99,18 +88,16 @@ const TransactionsTab = ({
   );
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClick);
     document.addEventListener("keydown", handleEscKey, false);
     return () => {
-      document.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleEscKey, false);
     };
-  }, [handleClick, handleEscKey]);
+  }, [handleEscKey]);
 
   useEffect(() => {
     if (containerRef.current && transactionsScrollRef.current) {
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
-      // subtracting 78 to account for the disconnect button on the bottom
+      // subtracting 86 to account for the disconnect button on the bottom
       setOverflow(
         scrollHeight + offsetTop > containerRef.current.offsetHeight - 86
       );
@@ -167,16 +154,14 @@ const TransactionsTab = ({
                   : ""
               }
             >
-              <BorderedButton>
-                <ConnectionStatusCircle $connected={!!address} />
-                <InfoHeading>
-                  {isUnsupportedNetwork
-                    ? t("wallet:unsupported")
-                    : addressOrName
-                    ? addressOrName
-                    : t("wallet:notConnected")}
-                </InfoHeading>
-              </BorderedButton>
+              <ConnectionStatusCircle $connected={!!address} />
+              <InfoHeading>
+                {isUnsupportedNetwork
+                  ? t("wallet:unsupported")
+                  : addressOrName
+                  ? addressOrName
+                  : t("wallet:notConnected")}
+              </InfoHeading>
             </WalletAnchorTag>
           </WalletHeader>
 
@@ -185,7 +170,9 @@ const TransactionsTab = ({
             $overflow={overflow}
           >
             <Legend>
-              <LegendLine>{t("wallet:activeTransactions")}</LegendLine>
+              <LegendLine>
+                {t("wallet:activeTransactions").toUpperCase()}
+              </LegendLine>
             </Legend>
             <TransactionContainer>
               {pendingTransactions.length ? (
@@ -208,7 +195,9 @@ const TransactionsTab = ({
             </TransactionContainer>
             {completedTransactions && (
               <Legend>
-                <LegendLine>{t("wallet:completedTransactions")}</LegendLine>
+                <LegendLine>
+                  {t("wallet:completedTransactions").toUpperCase()}
+                </LegendLine>
               </Legend>
             )}
             <TransactionContainer>

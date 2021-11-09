@@ -1,9 +1,17 @@
 import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
-import { ScrollBarStyle } from "../../style/mixins";
+import {
+  ScrollBarStyle,
+  InputOrButtonBorderStyle,
+  BorderedPill,
+} from "../../style/mixins";
 import Button from "../Button/Button";
-import { InfoSubHeading } from "../Typography/Typography";
+import {
+  InfoSubHeading,
+  InfoHeading,
+  FormLabel,
+} from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
 
 export const Container = styled(motion.div)`
@@ -122,7 +130,9 @@ export const IconContainer = styled.div`
   border-radius: 50%;
 `;
 
-export const BackButton = styled(motion.div)`
+export const BackButton = styled(motion.button)`
+  ${InputOrButtonBorderStyle};
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,44 +141,31 @@ export const BackButton = styled(motion.div)`
   top: 1.5rem;
   width: 3rem;
   height: 3rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 50%;
   background-color: ${(props) => props.theme.colors.black};
   color: ${(props) => props.theme.colors.white};
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.lightGrey};
-  }
 `;
 
 export const NetworkInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
   max-width: 5.5rem;
   margin-left: 1rem;
 `;
 
-export const NetworkName = styled.div`
-  font-size: 0.75rem;
-  font-weight: 700;
-  line-height: 1rem;
-  color: ${(props) => props.theme.colors.lightGrey};
+export const NetworkName = styled(FormLabel)`
+  text-transform: uppercase;
 `;
 
-export const Balances = styled.div`
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1rem;
-  color: ${(props) => props.theme.colors.white};
+export const Balances = styled(InfoHeading)`
+  line-height: 1;
 `;
 
 export const WalletAnchorTag = styled.a`
-  border: 0;
-  margin: 0;
-  padding: 0 1rem;
-  cursor: pointer;
-  background: none;
+  ${BorderedPill}
+  ${InputOrButtonBorderStyle}
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`

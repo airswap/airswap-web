@@ -16,10 +16,14 @@ const SettingsButton = ({
   setSettingsOpen,
 }: SettingsButtonType) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   const handleClick = useCallback(
     (e) => {
-      if (containerRef.current && containerRef.current.contains(e.target)) {
+      if (
+        (containerRef.current && containerRef.current.contains(e.target)) ||
+        (popoverRef.current && popoverRef.current.contains(e.target))
+      ) {
         return;
       }
       setSettingsOpen(false);
@@ -47,12 +51,16 @@ const SettingsButton = ({
   }, [handleClick, handleEscKey]);
 
   return (
-    <Container ref={containerRef} open={transactionsTabOpen}>
-      <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
-        <Icon iconSize={1.5} name="settings" />
-      </SettingsButtonContainer>
-      {settingsOpen && <SettingsPopover />}
-    </Container>
+    <>
+      <Container ref={containerRef} open={transactionsTabOpen}>
+        <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
+          <Icon iconSize={1.5} name="settings" />
+        </SettingsButtonContainer>
+      </Container>
+      {settingsOpen && (
+        <SettingsPopover open={transactionsTabOpen} popoverRef={popoverRef} />
+      )}
+    </>
   );
 };
 
