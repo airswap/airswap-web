@@ -37,11 +37,12 @@
   "swapPending": "Prepared to swap",
   "swapMessage": "Accept on your wallet to proceed",
   "wrapMessage": "No protocol fee for ETH/WETH swaps",
-  "submitted": "Submitted!",
+  "submitted": "Transaction Submitted",
   "swapFailed": "Error submitting swap",
   "swapFailedCallToAction": "Please try again",
   "swapRejected": "Price expired",
   "swapRejectedCallToAction": "Please try again",
+  "track": "Track",
   "trackTransaction": "Track this transaction on the top right",
   "editCustomTokens": "Edit Custom Tokens"
 }

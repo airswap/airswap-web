@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 
+import Icon from "../Icon/Icon";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
-import {
-  SettingIconButtonContainer,
-  SettingsIconButton,
-} from "./SettingsButton.style";
+import { Container, SettingsButtonContainer } from "./SettingsButton.style";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
@@ -47,14 +45,12 @@ const SettingsButton = ({
   }, [handleClick, handleEscKey]);
 
   return (
-    <SettingIconButtonContainer ref={containerRef}>
-      <SettingsIconButton
-        iconSize={1.5}
-        icon="settings"
-        onClick={() => setSettingsOpen(!settingsOpen)}
-      />
+    <Container ref={containerRef}>
+      <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
+        <Icon iconSize={1.5} name="settings" />
+      </SettingsButtonContainer>
       {settingsOpen && <SettingsPopover />}
-    </SettingIconButtonContainer>
+    </Container>
   );
 };
 

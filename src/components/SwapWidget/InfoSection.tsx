@@ -7,16 +7,15 @@ import { LightOrder } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
-import Timer from "../../components/Timer/Timer";
-import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
-  TimerContainer,
-  NewQuoteText,
-  TimerText,
   StyledInfoHeading,
   RevertPriceButton,
+  FeeText,
+  InfoButton,
+  FeeTextContainer,
+  ApprovalText,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -43,6 +42,7 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  onFeeButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -58,6 +58,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
+  onFeeButtonClick,
 }) => {
   const { t } = useTranslation(["orders", "marketing"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -124,11 +125,6 @@ const InfoSection: FC<InfoSectionProps> = ({
         <InfoHeading>
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <RevertPriceButton
-            icon="swap"
-            iconSize={1.25}
-            onClick={() => setInvertPrice((p) => !p)}
-          />
         </InfoHeading>
         <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
       </>
@@ -146,41 +142,29 @@ const InfoSection: FC<InfoSectionProps> = ({
 
     return (
       <>
-        <StyledInfoHeading>
-          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
-          {stringToSignificantDecimals(price.toString())}{" "}
-          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-          <RevertPriceButton
-            icon="swap"
-            iconSize={1}
-            onClick={() => setInvertPrice((p) => !p)}
-          />
-        </StyledInfoHeading>
-        {requiresApproval ? (
-          <InfoSubHeading>
+        <>
+          <StyledInfoHeading>
+            1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
+            {stringToSignificantDecimals(price.toString())}{" "}
+            {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
+            <RevertPriceButton
+              icon="swap"
+              iconSize={1}
+              onClick={() => setInvertPrice((p) => !p)}
+            />
+          </StyledInfoHeading>
+          <FeeTextContainer>
+            <FeeText>{t("marketing:includesFee")}</FeeText>
+            <InfoButton
+              onClick={onFeeButtonClick}
+              icon="information-circle-outline"
+            />
+          </FeeTextContainer>
+        </>
+        {requiresApproval && (
+          <ApprovalText>
             {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
-          </InfoSubHeading>
-        ) : (
-          <InfoSubHeading>
-            <TimerContainer>
-              {bestTradeOption.protocol === "request-for-quote" && (
-                <>
-                  <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
-                  <TimerText>
-                    <Timer
-                      expiryTime={
-                        parseInt(bestTradeOption!.order!.expiry) -
-                        RFQ_EXPIRY_BUFFER_MS / 1000
-                      }
-                    ></Timer>
-                  </TimerText>
-                </>
-              )}
-              {bestTradeOption.protocol === "last-look" && (
-                <NewQuoteText>{t("orders:gasFreeTrade")}</NewQuoteText>
-              )}
-            </TimerContainer>
-          </InfoSubHeading>
+          </ApprovalText>
         )}
       </>
     );

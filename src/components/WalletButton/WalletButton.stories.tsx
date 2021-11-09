@@ -37,5 +37,4 @@ NotConnected.args = {};
 export const Connected = Template.bind({});
 Connected.args = {
   address: "0x73580000000000000000000000000000000bcBE5",
-  onDisconnectWalletClicked: () => void 0,
 };

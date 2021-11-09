@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
+import { css } from "styled-components";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
-import { ScrollBar } from "../../style/mixins";
+import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
+import { ButtonStyle } from "../Button/Button.styles";
 import { InfoSubHeading, Title } from "../Typography/Typography";
 
 type ContainerProps = {
@@ -28,7 +30,7 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
   overflow-x: hidden;
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
-  ${ScrollBar}
+  ${ScrollBarStyle}
 `;
 
 export const ContentContainer = styled(motion.div)`
@@ -76,7 +78,7 @@ export const StyledInfoSubHeading = styled(InfoSubHeading)`
   }
 `;
 
-export const OverlayActionButton = styled(Button)`
+const OverlayActionButtonStyle = css`
   margin-top: auto;
   justify-self: flex-end;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
@@ -86,6 +88,29 @@ export const OverlayActionButton = styled(Button)`
   &:hover {
     color: ${(props) => props.theme.colors.black};
     background-color: ${(props) => props.theme.colors.white};
+  }
+`;
+
+export const OverlayActionButton = styled(Button)`
+  ${OverlayActionButtonStyle};
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.black};
+    background-color: ${(props) => props.theme.colors.white};
+  }
+`;
+
+export const OverlayActionLink = styled.a`
+  ${ButtonStyle}
+  ${OverlayActionButtonStyle};
+  background-color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.white};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.primaryDark};
   }
 `;
 

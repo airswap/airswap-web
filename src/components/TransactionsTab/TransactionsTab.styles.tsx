@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { ScrollBar } from "../../style/mixins";
+import { ScrollBarStyle } from "../../style/mixins";
 import Button from "../Button/Button";
 import { InfoSubHeading } from "../Typography/Typography";
 import { InfoHeading } from "../Typography/Typography";
@@ -136,7 +136,7 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   height: 100%;
   padding-bottom: 1rem;
 
-  ${ScrollBar}
+  ${ScrollBarStyle}
 `;
 
 export const TransactionContainer = styled.div`
@@ -166,19 +166,6 @@ export const DiconnectButtonContainer = styled.div`
 export const DisconnectButton = styled(Button)`
   margin-top: auto;
   justify-self: flex-end;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2px;
-  height: 2.875rem;
-  padding: 1rem 3rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  background-color: transparent;
-
-  &:hover {
-    color: ${(props) => props.theme.colors.white};
-    border-color: ${(props) => props.theme.colors.white};
-    background: none;
-  }
 `;
 
 export const IconContainer = styled.div`

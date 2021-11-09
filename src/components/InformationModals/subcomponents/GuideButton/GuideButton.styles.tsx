@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
 export const StyledIcon = styled(Icon)`
@@ -41,9 +42,9 @@ export const GuideButtonContainer = styled.a`
     border-bottom-right-radius: 0.1875rem;
   }
 
+  ${InputOrButtonBorderStyle}
+
   &:focus {
-    outline: 0;
-    border: 1px solid ${(props) => props.theme.colors.lightGrey};
     z-index: 1;
 
     & + & {
@@ -56,6 +57,8 @@ export const GuideButtonContainer = styled.a`
   }
 
   &:hover {
+    border: 1px solid ${(props) => props.theme.colors.borderGrey};
+
     ${StyledIcon} {
       color: ${(props) => props.theme.colors.white};
     }
@@ -63,5 +66,9 @@ export const GuideButtonContainer = styled.a`
     ${Text} {
       color: ${(props) => props.theme.colors.white};
     }
+  }
+
+  &:active {
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;

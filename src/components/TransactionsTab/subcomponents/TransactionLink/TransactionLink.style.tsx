@@ -1,10 +1,14 @@
 import styled from "styled-components";
 
+import { BorderlessButtonStyle } from "../../../../style/mixins";
+
 export const Link = styled.a`
-  padding: 0.5rem;
+  padding: 0.25rem;
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
     color: ${(props) => props.theme.colors.white};
   }
+
+  ${BorderlessButtonStyle}
 `;

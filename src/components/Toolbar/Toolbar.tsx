@@ -10,13 +10,19 @@ import {
 import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 
 export type ToolbarProps = {
-  onButtonClick: (type: InformationType) => void;
+  onButtonClick?: (type: InformationType) => void;
 };
 
 const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
   const { t } = useTranslation(["common"]);
 
   // TODO: Add content for "about" in modals
+
+  const onToolbarButtonClick = (type: InformationType) => {
+    if (onButtonClick) {
+      onButtonClick(type);
+    }
+  };
 
   return (
     <ToolbarContainer>
@@ -41,7 +47,7 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
         <ToolbarButton
           iconName="contact-support"
           text={t("common:join")}
-          onClick={() => onButtonClick("join")}
+          onClick={() => onToolbarButtonClick("join")}
         />
       </ToolbarButtonsContainer>
     </ToolbarContainer>

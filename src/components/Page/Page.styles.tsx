@@ -3,15 +3,7 @@ import styled from "styled-components/macro";
 import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
-import SiteLogo from "../SiteLogo/SiteLogo";
 import { StyledPageProps } from "./Page";
-
-export const StyledSiteLogo = styled(SiteLogo)`
-  position: absolute;
-  top: 2.5rem;
-  top: ${(props) => (props.adjustForBookmarkWarning ? "1.2rem" : "2.5rem")};
-  left: 2.5rem;
-`;
 
 type StyledWalletProps = {
   isOpen?: boolean;

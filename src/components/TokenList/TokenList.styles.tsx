@@ -66,13 +66,15 @@ export const SearchInput = styled(TextInput)`
       color: ${(props) => props.theme.colors.lightGrey};
     }
 
-    &:hover {
-      border-color: ${(props) => props.theme.colors.lightGrey};
-    }
-
+    &:hover,
     &:focus {
       outline: none;
       border-color: ${(props) => props.theme.colors.lightGrey};
+    }
+
+    &:active {
+      outline: none;
+      border-color: ${(props) => props.theme.colors.primary};
     }
   }
 `;
