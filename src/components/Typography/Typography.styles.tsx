@@ -2,6 +2,7 @@ import styled, {
   DefaultTheme,
   ThemedStyledFunction,
   css,
+  StyledComponent,
 } from "styled-components/macro";
 
 const elementMap: Record<
@@ -95,13 +96,15 @@ export const StyledParagraph = makeTypographyComponent(
         : props.theme.colors.grey};
   `
 );
+
 export const StyledLink = makeTypographyComponent(
   "link",
   css`
     text-transform: uppercase;
     text-decoration: underline;
   `
-);
+) as StyledComponent<"a", DefaultTheme, {}>;
+
 export const StyledNavigation = makeTypographyComponent("nav");
 export const StyledInfoHeading = makeTypographyComponent("infoHeading");
 export const StyledInfoSubHeading = makeTypographyComponent(

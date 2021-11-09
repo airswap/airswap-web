@@ -1,5 +1,5 @@
 import { LightOrder } from "@airswap/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import {
@@ -143,6 +143,14 @@ export const transactionsSlice = createSlice({
 
 export const { clear, setTransactions } = transactionsSlice.actions;
 export const selectTransactions = (state: RootState) => state.transactions.all;
+
+export const selectPendingTransactions = createSelector(
+  selectTransactions,
+  (transactions) => {
+    return transactions.filter((tx) => tx.status === "processing");
+  }
+);
+
 export const selectPendingApprovals = (state: RootState) =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"

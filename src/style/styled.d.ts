@@ -47,6 +47,8 @@ declare module "styled-components" {
     };
     shadows: {
       widgetGlow: string;
+      buttonGlow: string;
+      buttonGlowFill: string;
     };
     typography: Record<Typography, FontProps>;
   }

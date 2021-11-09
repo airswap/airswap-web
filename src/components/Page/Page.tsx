@@ -6,6 +6,7 @@ import useWindowSize from "../../helpers/useWindowSize";
 import InformationModals, {
   InformationType,
 } from "../InformationModals/InformationModals";
+import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
@@ -59,6 +60,7 @@ const Page: FC = (): ReactElement => {
           transactionsTabOpen={transactionsTabOpen}
         />
       </WidgetFrame>
+      <SocialButtons />
       <InformationModals
         onCloseModalClick={onCloseModalClick}
         activeModal={activeModalPage}
