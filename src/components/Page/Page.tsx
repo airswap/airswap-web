@@ -25,8 +25,10 @@ const Page: FC = (): ReactElement => {
     activeModalPage,
     setActiveModalPage,
   ] = useState<InformationType | null>(null);
-
-  const [transactionsOpen, setTransactionsOpen] = useState<boolean>(false);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
+    false
+  );
+  const [showWalletList, setShowWalletList] = useState<boolean>(false);
 
   const { showBookmarkWarning } = useAppSelector(selectUserSettings);
   const { width } = useWindowSize();
@@ -43,15 +45,18 @@ const Page: FC = (): ReactElement => {
 
   return (
     <StyledPage adjustForBookmarkWarning={adjustForBookmarkWarning}>
-      <Toaster />
+      <Toaster open={transactionsTabOpen} />
       <Toolbar onButtonClick={onToolbarButtonClick} />
       <StyledWallet
-        showTransactions={transactionsOpen}
-        setShowTransactions={setTransactionsOpen}
+        transactionsTabOpen={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
+        setShowWalletList={setShowWalletList}
       />
       <WidgetFrame>
         <SwapWidget
-          onTrackTransactionClicked={() => setTransactionsOpen(true)}
+          showWalletList={showWalletList}
+          setShowWalletList={setShowWalletList}
+          onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
         />
       </WidgetFrame>
       <SocialButtons />

@@ -1,3 +1,4 @@
+import { css } from "styled-components";
 import styled, { DefaultTheme } from "styled-components/macro";
 
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
@@ -45,7 +46,7 @@ type StyledButtonProps = {
   justifyContent?: ButtonJustifyContent;
 };
 
-export const StyledButton = styled.button<StyledButtonProps>`
+export const ButtonStyle = css<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.justifyContent || "center"};
@@ -59,7 +60,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   overflow: hidden;
   text-overflow: ellipsis;
   border-radius: 2px;
-  border-style: ${(props) => (props.intent === "neutral" ? "solid" : "none")};
+  border-style: "solid";
   border-width: 1px;
   border-color: ${(props) => props.theme.colors.borderGrey};
   /* Use blue text on a netral light mode button, otherwise white. */
@@ -82,10 +83,16 @@ export const StyledButton = styled.button<StyledButtonProps>`
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>
-      props.intent === "neutral" ? props.theme.colors.lightGrey : "inherit"};
+      props.intent === "neutral"
+        ? props.theme.colors.lightGrey
+        : "props.theme.colors.primaryDark"};
   }
 
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
   }
+`;
+
+export const StyledButton = styled.button`
+  ${ButtonStyle}
 `;

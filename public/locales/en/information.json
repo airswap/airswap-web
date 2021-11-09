@@ -5,5 +5,18 @@
     "getStarted": "Get started",
     "paragraph": "Protocol fees are automatically distributed to members for contributing to product and community development.",
     "paragraph2": "Check out the following guides to get started as a..."
+  },
+  "gasFreeSwaps": {
+    "title": "Gas free swaps",
+    "paragraph": "AirSwap introduces gas-free swapping!",
+    "paragraph2": "With this protocol you will not need to pay any gas to swap!"
+  },
+  "protocolFeeDiscount": {
+    "title": "Protocol fee discount",
+    "paragraph": "AirSwap community members get a discount when trading on AirSwap by staking AST.",
+    "paragraph2": "Other than fee discounts, staking also gives you access to governance and other rewards. We welcome you to the AirSwap",
+    "link": "community",
+    "paragraph3": "Join us today by staking AST.",
+    "stakeYourAst": "Stake your AST"
   }
 }

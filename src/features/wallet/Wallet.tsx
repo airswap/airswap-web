@@ -60,10 +60,17 @@ import {
   setWalletDisconnected,
 } from "./walletSlice";
 
-export const Wallet: FC<{
-  showTransactions: boolean;
-  setShowTransactions: (value: boolean) => void;
-}> = ({ showTransactions, setShowTransactions }) => {
+type WalletPropsType = {
+  setShowWalletList: (x: boolean) => void;
+  transactionsTabOpen: boolean;
+  setTransactionsTabOpen: (x: boolean) => void;
+};
+
+export const Wallet: FC<WalletPropsType> = ({
+  setShowWalletList,
+  transactionsTabOpen,
+  setTransactionsTabOpen,
+}) => {
   const {
     chainId,
     account,
@@ -84,7 +91,6 @@ export const Wallet: FC<{
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
-  const [walletOpen, setWalletOpen] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
@@ -293,15 +299,6 @@ export const Wallet: FC<{
     };
   }, [chainId, dispatch, library, account]);
 
-  const handleWalletOpen = (state: boolean) => {
-    setShowTransactions(state);
-  };
-
-  const handleSettingsOpen = (state: boolean) => {
-    setSettingsOpen(state);
-    state && setWalletOpen(false);
-  };
-
   return (
     <>
       <PopoverContainer>
@@ -310,36 +307,30 @@ export const Wallet: FC<{
         )}
         <WalletButton
           address={account}
-          onDisconnectWalletClicked={() => {
-            clearLastAccount();
-            deactivate();
-            if (connector instanceof WalletConnectConnector) {
-              connector.close();
-            }
-          }}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
-          walletOpen={walletOpen}
-          setWalletOpen={handleWalletOpen}
+          transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+          setShowWalletList={setShowWalletList}
         />
         <SettingsButton
           settingsOpen={settingsOpen}
-          setSettingsOpen={handleSettingsOpen}
+          setSettingsOpen={setSettingsOpen}
         />
       </PopoverContainer>
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={showTransactions}
-        setTransactionsTabOpen={setShowTransactions}
+        open={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setShowTransactions(false);
+          setTransactionsTabOpen(false);
         }}
         transactions={transactions}
         tokens={allTokens}
