@@ -8,16 +8,11 @@ import BigNumber from "bignumber.js";
 import { ThemeProvider } from "styled-components/macro";
 import { ModalProvider } from "styled-react-modal";
 
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import BookmarkWarning from "./components/BookmarkWarning/BookmarkWarning";
+import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
 import LastLookProvider from "./contexts/lastLook/LastLook";
-import {
-  disableBookmarkWarning,
-  selectUserSettings,
-} from "./features/userSettings/userSettingsSlice";
-import useWindowSize from "./helpers/useWindowSize";
+import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
@@ -31,9 +26,7 @@ function getLibrary(provider: any): Web3Provider {
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
 const App = (): JSX.Element => {
-  const { theme, showBookmarkWarning } = useAppSelector(selectUserSettings);
-  const { width } = useWindowSize();
-  const dispatch = useAppDispatch();
+  const { theme } = useAppSelector(selectUserSettings);
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
@@ -41,10 +34,6 @@ const App = (): JSX.Element => {
           <ModalProvider>
             {/* Suspense needed here for loading i18n resources */}
             <Suspense fallback={<PageLoader />}>
-              <BookmarkWarning
-                hidden={width! < 480 || !showBookmarkWarning}
-                onClick={() => dispatch(disableBookmarkWarning())}
-              />
               <Router>
                 <Route path="/:tokenFrom?/:tokenTo?">
                   <Page />
