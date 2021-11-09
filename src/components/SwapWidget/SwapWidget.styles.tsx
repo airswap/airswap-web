@@ -10,11 +10,6 @@ export const Header = styled.div`
   width: 100%;
 `;
 
-export const QuoteAndTimer = styled.div`
-  display: flex;
-  margin-bottom: 1rem;
-`;
-
 export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;

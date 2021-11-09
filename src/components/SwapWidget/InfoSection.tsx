@@ -41,8 +41,7 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  // TODO: Use this for show no fee information
-  noFee: boolean;
+  onFeeButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -58,6 +57,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
+  onFeeButtonClick,
 }) => {
   const { t } = useTranslation(["orders", "marketing"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -158,8 +158,11 @@ const InfoSection: FC<InfoSectionProps> = ({
             />
           </StyledInfoHeading>
           <FeeTextContainer>
-            <FeeText>Includes 0.07% fee</FeeText>
-            <InfoButton icon="information-circle-outline" />
+            <FeeText>{t("marketing:includesFee")}</FeeText>
+            <InfoButton
+              onClick={onFeeButtonClick}
+              icon="information-circle-outline"
+            />
           </FeeTextContainer>
         </>
         {requiresApproval && (

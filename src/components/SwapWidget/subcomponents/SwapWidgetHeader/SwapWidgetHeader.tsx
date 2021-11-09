@@ -16,6 +16,7 @@ import {
 interface SwapWidgetHeaderProps {
   title: string;
   isQuote: boolean;
+  onGasFreeTradeButtonClick: () => void;
   protocol?: ProtocolType;
   expiry?: string;
 }
@@ -23,6 +24,7 @@ interface SwapWidgetHeaderProps {
 const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   title,
   isQuote,
+  onGasFreeTradeButtonClick,
   protocol,
   expiry,
 }) => {
@@ -37,7 +39,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
       <Title type="h2">{title}</Title>
 
       {protocol === "last-look" && isQuote && (
-        <Button>
+        <Button onClick={onGasFreeTradeButtonClick}>
           <StyledIcon name="star" iconSize={0.875} />
           {t("orders:gasFreeTrade")}
         </Button>

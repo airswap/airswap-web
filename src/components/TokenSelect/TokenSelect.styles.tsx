@@ -22,7 +22,7 @@ const fadeInOut = keyframes`
 `;
 
 const quoteTransition = css`
-  transition: transform 0.25s ease-in-out;
+  transition: transform 0.25s cubic-bezier(0.57, 0.01, 0.3, 1);
   will-change: transform;
 `;
 

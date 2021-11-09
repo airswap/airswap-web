@@ -1,5 +1,6 @@
 {
   "zeroSlippage": "Zero slippage atomic swaps",
   "useAtOwnRisk": "Use this preview at your own risk",
-  "alphaPreview": "Check back often for updates"
+  "alphaPreview": "Check back often for updates",
+  "includesFee": "Includes 0.07% fee"
 }

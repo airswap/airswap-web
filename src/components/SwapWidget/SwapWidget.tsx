@@ -65,6 +65,8 @@ import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
+import GasFreeModal from "../InformationModals/subcomponents/GasFreeModal/GasFreeModal";
+import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
@@ -124,16 +126,18 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     showTokenSelectModalFor,
     setShowTokenSelectModalFor,
   ] = useState<TokenSelectModalTypes | null>(null);
+  const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
+  const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
 
   // Loading states
-  const [isApproving, setIsApproving] = useState<boolean>(false);
-  const [isSwapping, setIsSwapping] = useState<boolean>(false);
-  const [isWrapping, setIsWrapping] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [isRequestingQuotes, setIsRequestingQuotes] = useState<boolean>(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isSwapping, setIsSwapping] = useState(false);
+  const [isWrapping, setIsWrapping] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
 
   // Error states
-  const [pairUnavailable, setPairUnavailable] = useState<boolean>(false);
+  const [pairUnavailable, setPairUnavailable] = useState(false);
   const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
 
   const { t } = useTranslation([
@@ -143,6 +147,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     "balances",
     "toast",
     "validatorErrors",
+    "information",
   ]);
 
   const {
@@ -623,6 +628,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         <SwapWidgetHeader
           title={isApproving ? t("orders:approve") : t("common:swap")}
           isQuote={!isRequestingQuotes}
+          onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           protocol={bestTradeOption?.protocol as ProtocolType}
           expiry={bestTradeOption?.order?.expiry}
         />
@@ -675,8 +681,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
-            noFee={swapType === "wrapOrUnwrap"}
             isWrapping={isWrapping}
+            onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
           />
         </InfoContainer>
         <ButtonContainer>
@@ -764,6 +770,20 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             setValidatorErrors([]);
           }}
         />
+      </Overlay>
+      <Overlay
+        title={t("information:gasFreeSwaps.title")}
+        onClose={() => setShowGasFeeInfo(false)}
+        isHidden={!showGasFeeInfo}
+      >
+        <GasFreeModal onCloseButtonClick={() => setShowGasFeeInfo(false)} />
+      </Overlay>
+      <Overlay
+        title={t("information:protocolFeeDiscount.title")}
+        onClose={() => setProtocolFeeDiscountInfo(false)}
+        isHidden={!protocolFeeDiscountInfo}
+      >
+        <ProtocolFeeDiscountModal />
       </Overlay>
     </>
   );
