@@ -5,14 +5,15 @@ import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
-import { ThemeProvider } from "styled-components/macro";
+import { ThemeProvider, ThemeType } from "styled-components/macro";
 import { ModalProvider } from "styled-react-modal";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
 import LastLookProvider from "./contexts/lastLook/LastLook";
-import { selectUserSettings } from "./features/userSettings/userSettingsSlice";
+import { selectTheme } from "./features/userSettings/userSettingsSlice";
+import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
@@ -26,9 +27,13 @@ function getLibrary(provider: any): Web3Provider {
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
 const App = (): JSX.Element => {
-  const { theme } = useAppSelector(selectUserSettings);
+  const theme = useAppSelector(selectTheme);
+  const systemTheme = useSystemTheme();
+  const renderedTheme: ThemeType =
+    theme === "system" ? systemTheme : (theme as ThemeType);
+
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    <ThemeProvider theme={renderedTheme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <LastLookProvider>
           <ModalProvider>
