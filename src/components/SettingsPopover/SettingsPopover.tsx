@@ -3,14 +3,16 @@ import { useTranslation } from "react-i18next";
 
 import { ThemeType } from "styled-components/macro";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   SUPPORTED_LOCALES,
   LOCALE_LABEL,
   DEFAULT_LOCALE,
 } from "../../constants/locales";
-import getInitialThemeValue from "../../features/userSettings/helpers/getInitialThemeValue";
-import { setTheme } from "../../features/userSettings/userSettingsSlice";
+import {
+  selectTheme,
+  setTheme,
+} from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import {
   Container,
@@ -29,9 +31,7 @@ type SettingsPopoverPropsType = {
 const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   const { width, height } = useWindowSize();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedButton, setSelectedButton] = useState<ThemeType | "system">(
-    getInitialThemeValue()
-  );
+  const selectedTheme = useAppSelector(selectTheme);
   const [overflow, setOverflow] = useState<boolean>(false);
 
   // selects i18nextLang first, window language, falls back to default locale (en)
@@ -45,7 +45,6 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   const { t, i18n } = useTranslation(["common"]);
 
   const handleThemeButtonClick = (newTheme: ThemeType | "system") => {
-    setSelectedButton(newTheme);
     dispatch(setTheme(newTheme));
   };
 
@@ -61,19 +60,19 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
       <PopoverSection title={t("common:theme")}>
         <ThemeContainer>
           <ThemeButton
-            active={selectedButton === "system"}
+            active={selectedTheme === "system"}
             onClick={() => handleThemeButtonClick("system")}
           >
             {t("common:system")}
           </ThemeButton>
           <ThemeButton
-            active={selectedButton === "light"}
+            active={selectedTheme === "light"}
             onClick={() => handleThemeButtonClick("light")}
           >
             {t("common:light")}
           </ThemeButton>
           <ThemeButton
-            active={selectedButton === "dark"}
+            active={selectedTheme === "dark"}
             onClick={() => handleThemeButtonClick("dark")}
           >
             {t("common:dark")}

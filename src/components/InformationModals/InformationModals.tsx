@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import { selectUserSettings } from "../../features/userSettings/userSettingsSlice";
+import { selectTheme } from "../../features/userSettings/userSettingsSlice";
 import { darkTheme, lightTheme } from "../../style/themes";
 import {
   ModalCloseButton,
@@ -21,7 +21,7 @@ const InformationModals: FC<InformationModalProps> = ({
   onCloseModalClick,
 }) => {
   // TODO: For some reason StyledModal doesn't inherit theme, so we have to import it again here.
-  const { theme } = useAppSelector(selectUserSettings);
+  const theme = useAppSelector(selectTheme);
 
   return (
     <StyledModal
