@@ -11,8 +11,10 @@ import {
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
+import ProgressBar from "../../../ProgressBar/ProgressBar";
 import {
   Container,
+  RotatedIcon,
   SpanSubtitle,
   SpanTitle,
   StyledTransactionLink,
@@ -76,12 +78,16 @@ const WalletTransaction = ({
       tokens,
       chainId
     );
+    const hasExpiry = !!tx.expiry;
     return (
       <Container>
+        {tx.status === "processing" && (
+          <RotatedIcon name="swap" iconSize={1.25} />
+        )}
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
-              <SpanTitle>
+              <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
                   tx.protocol === "last-look"
                     ? "wallet:lastLookTransaction"
@@ -102,22 +108,30 @@ const WalletTransaction = ({
                   }
                 )}
               </SpanTitle>
-              <SpanSubtitle>
-                {tx.status === "succeeded"
-                  ? t("common:success")
-                  : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
+              {hasExpiry && tx.status === "processing" ? (
+                <ProgressBar
+                  startTime={tx.timestamp}
+                  endTime={parseInt(tx.expiry!) * 1000}
+                />
+              ) : (
+                <SpanSubtitle>
+                  {tx.status === "succeeded"
+                    ? t("common:success")
+                    : tx.status === "processing"
+                    ? t("common:processing")
+                    : t("common:failed")}{" "}
+                  · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+                </SpanSubtitle>
+              )}
             </>
           )}
         </TextContainer>
-        {tx.hash ? (
-          <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-        ) : (
-          <span></span>
-        )}
+        {tx.status !== "processing" &&
+          (tx.hash ? (
+            <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+          ) : (
+            <span></span>
+          ))}
       </Container>
     );
   }
