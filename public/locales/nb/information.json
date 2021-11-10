@@ -13,10 +13,10 @@
   },
   "protocolFeeDiscount": {
     "title": "Rabatt på protokollgebyr",
-    "paragraph": "Når du staker AirSwap får du rabatt på protokollgebyret ved vekslinger.",
-    "paragraph2": "I tillegg til rabatt gir staking deg også rett til å stemme på videreutvikling av Airswap.",
+    "paragraph": "Når du låser AirSwap får du rabatt på protokollgebyrene ved vekslinger.",
+    "paragraph2": "I tillegg til rabatt gir låsing deg også rett til å stemme på videreutvikling av Airswap.",
     "link": "samfunn",
     "paragraph3": "Bli med oss i dag. Vi ønsker deg velkommen til AirSwap-samfunnet.",
-    "stakeYourAst": "Stake dine AST"
+    "stakeYourAst": "Lås dine AST"
   }
 }
