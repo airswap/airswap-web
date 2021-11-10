@@ -91,7 +91,7 @@ export const AmountInput = styled(FormInput)<{
   ${quoteTransition};
 
   padding-right: 0;
-  margin-top: ${(props) => (props?.hasSubtext ? "-0.75rem" : 0)};
+  margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
   cursor: ${(props) => (props.disabled ? "inherit" : "text")};
   text-align: right;
 
