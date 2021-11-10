@@ -25,7 +25,7 @@
   "gasCost": "Sendekostnad",
   "gasFreeTrade": "Gratis veksling",
   "protocolFee": "Protokoll-gebyr",
-  "searchByNameOrAddress": "Skriv inn navn eller kontraktaddresse",
+  "searchByNameOrAddress": "Skriv inn navn eller kontraktadresse",
   "removeFromActive": "Fjern fra aktive",
   "expandedResults": "Treff i liste med inaktive tokens",
   "newQuoteIn": "Ny pris om",
