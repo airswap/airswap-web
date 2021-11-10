@@ -25,7 +25,7 @@
   "gasCost": "Sendekostnad",
   "gasFreeTrade": "Gratis veksling",
   "protocolFee": "Protokoll-gebyr",
-  "searchByNameOrAddress": "Skriv inn navn eller lim inn addresse",
+  "searchByNameOrAddress": "Skriv inn navn eller kontraktaddresse",
   "removeFromActive": "Fjern fra aktive",
   "expandedResults": "Treff i liste med inaktive tokens",
   "newQuoteIn": "Ny pris om",
@@ -43,5 +43,5 @@
   "swapRejected": "Pris utløpt",
   "swapRejectedCallToAction": "Vennligst prøv igjen",
   "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
-  "editCustomTokens": "Endre dine tokens"
+  "editCustomTokens": "Endre liste"
 }
