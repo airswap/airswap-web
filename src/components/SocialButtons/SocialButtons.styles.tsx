@@ -35,7 +35,7 @@ export const PlainLink = styled(Link)<{ $deEmphasize: boolean }>`
   opacity: ${({ $deEmphasize }) => ($deEmphasize ? 0.5 : 1)};
 `;
 
-export const SocialButton = styled.a<{ showLocales: number }>`
+export const SocialButton = styled.div<{ showLocales: number }>`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
   display: flex;
