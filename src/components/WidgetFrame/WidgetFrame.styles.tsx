@@ -13,6 +13,7 @@ export const Container = styled.div`
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
   box-shadow: ${(props) => props.theme.shadows.widgetGlow};
+  will-change: transform;
 `;
 
 type StyledTradeContainerProps = {
