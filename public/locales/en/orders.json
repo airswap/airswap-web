@@ -38,6 +38,8 @@
   "swapMessage": "Accept on your wallet to proceed",
   "wrapMessage": "No protocol fee for ETH/WETH swaps",
   "submitted": "Transaction Submitted",
+  "swapExpired": "Swap expired",
+  "swapExpiredCallToAction": "Please try again",
   "swapFailed": "Error submitting swap",
   "swapFailedCallToAction": "Please try again",
   "swapRejected": "Price expired",

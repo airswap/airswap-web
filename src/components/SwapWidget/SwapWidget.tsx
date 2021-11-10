@@ -464,6 +464,12 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             order: bestTradeOption!.order!,
             library,
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            onExpired: () => {
+              notifyError({
+                heading: t("orders:swapExpired"),
+                cta: t("orders:swapExpiredCallToAction"),
+              });
+            },
           })
         );
         setIsSwapping(false);

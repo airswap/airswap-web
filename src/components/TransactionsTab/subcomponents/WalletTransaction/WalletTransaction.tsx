@@ -39,7 +39,29 @@ const WalletTransaction = ({
   tokens,
   chainId,
 }: WalletTransactionProps) => {
-  const { t } = useTranslation(["common", "wallet"]);
+  const { t } = useTranslation(["common", "wallet", "orders"]);
+
+  let statusText: string;
+
+  switch (transaction.status) {
+    case "succeeded":
+      statusText = t("common:success");
+      break;
+    case "processing":
+      statusText = t("common:processing");
+      break;
+    case "expired":
+      statusText = t("common:expired");
+      break;
+    case "reverted":
+      statusText = t("common:failed");
+      break;
+    case "declined":
+      statusText = t("orders:swapRejected");
+      break;
+    default:
+      statusText = t("common:unknown");
+  }
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
@@ -52,12 +74,7 @@ const WalletTransaction = ({
               {t("wallet:approve", { symbol: approvalToken?.symbol })}
             </SpanTitle>
             <SpanSubtitle>
-              {tx.status === "succeeded"
-                ? t("common:success")
-                : tx.status === "processing"
-                ? t("common:processing")
-                : t("common:failed")}{" "}
-              · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+              {statusText} · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
             </SpanSubtitle>
           </>
         </TextContainer>
@@ -103,12 +120,8 @@ const WalletTransaction = ({
                 )}
               </SpanTitle>
               <SpanSubtitle>
-                {tx.status === "succeeded"
-                  ? t("common:success")
-                  : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+                {statusText} ·{" "}
+                {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
               </SpanSubtitle>
             </>
           )}
