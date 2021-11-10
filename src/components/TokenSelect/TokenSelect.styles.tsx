@@ -39,10 +39,16 @@ const fontTransition = css`
   }
 `;
 
-export const FlexRow = styled.div`
+export const ContainingButton = styled.button`
   display: flex;
   flex-direction: row;
   height: 2.5rem;
+  cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
+
+  &:focus {
+    outline: 0;
+  }
 `;
 
 export const AmountAndDetailsContainer = styled.div`
@@ -118,7 +124,7 @@ export const TokenLogoRight = styled(TokenLogo)`
   min-width: 2rem;
 `;
 
-export const StyledSelectButton = styled.button`
+export const StyledSelector = styled.div`
   ${quoteTransition};
   display: flex;
   flex-direction: column;
@@ -126,12 +132,6 @@ export const StyledSelectButton = styled.button`
   margin-top: -0.125rem;
   margin-left: 0.9375rem;
   height: 100%;
-  cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
-  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
-
-  &:focus {
-    outline: 0;
-  }
 `;
 
 export const StyledSelectItem = styled(SelectItem)`
@@ -177,17 +177,17 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
   }
-  
-  ${StyledSelectButton} {
+
+  ${StyledSelector} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
-  
+
   ${AmountInput} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
   }
-  
+
   ${MaxButton} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
@@ -197,11 +197,11 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
   }
-  
+
   ${StyledLabel} {
     font-size: ${(props) => (props.$isQuote ? "0.625rem" : "0.75rem")};
   }
-  
+
   ${StyledSelectItem} {
     font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
   }
