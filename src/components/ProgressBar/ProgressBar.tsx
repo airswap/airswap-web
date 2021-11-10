@@ -16,7 +16,7 @@ const ProgressBar: FC<{
         animate={{ scaleX: 1 }}
         initial={{ scaleX: fractionDone }}
         transition={{ ease: "linear", duration: left / 1000 }}
-      ></Progress>
+      />
     </Track>
   );
 };
