@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ThemeType } from "styled-components";
+import { ThemeType } from "styled-components/macro";
 
 import { useAppDispatch } from "../../app/hooks";
 import {
@@ -21,9 +21,13 @@ import {
 } from "./SettingsPopover.styles";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
-const SettingsPopover = () => {
+type SettingsPopoverPropsType = {
+  open: boolean;
+  popoverRef: RefObject<HTMLDivElement>;
+};
+
+const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   const { width, height } = useWindowSize();
-  const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [selectedButton, setSelectedButton] = useState<ThemeType | "system">(
     getInitialThemeValue()
@@ -46,14 +50,14 @@ const SettingsPopover = () => {
   };
 
   useEffect(() => {
-    if (containerRef.current && scrollContainerRef.current) {
+    if (popoverRef.current && scrollContainerRef.current) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      setOverflow(scrollHeight + offsetTop > containerRef.current.offsetHeight);
+      setOverflow(scrollHeight + offsetTop > popoverRef.current.offsetHeight);
     }
-  }, [containerRef, scrollContainerRef, width, height]);
+  }, [popoverRef, scrollContainerRef, width, height]);
 
   return (
-    <Container ref={containerRef}>
+    <Container ref={popoverRef} open={open}>
       <PopoverSection title={t("common:theme")}>
         <ThemeContainer>
           <ThemeButton

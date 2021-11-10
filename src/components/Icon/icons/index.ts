@@ -5,6 +5,7 @@ import IconArrowRight from "./IconArrowRight";
 import IconBars from "./IconBars";
 import IconCampaign from "./IconCampaign";
 import IconChevronDown from "./IconChevronDown";
+import IconChevronRight from "./IconChevronRight";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
 import IconDarkModeSwitch from "./IconDarkModeSwitch";
@@ -32,6 +33,7 @@ export {
   IconBars,
   IconCampaign,
   IconChevronDown,
+  IconChevronRight,
   IconCode,
   IconContactSupport,
   IconDarkModeSwitch,

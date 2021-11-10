@@ -1,35 +1,20 @@
-import styled from "styled-components";
+import { motion } from "framer-motion";
+import styled from "styled-components/macro";
 
-import { ScrollBarStyle } from "../../style/mixins";
+import {
+  ScrollBarStyle,
+  InputOrButtonBorderStyle,
+  BorderedPill,
+} from "../../style/mixins";
 import Button from "../Button/Button";
-import { InfoSubHeading } from "../Typography/Typography";
-import { InfoHeading } from "../Typography/Typography";
+import {
+  InfoSubHeading,
+  InfoHeading,
+  FormLabel,
+} from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
 
-type BackgroundOverlayProps = {
-  open: boolean;
-};
-
-export const BackgroundOverlay = styled.div<BackgroundOverlayProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  transform: scale(${(props) => (props.open ? "1" : "0")});
-  z-index: 1000;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-`;
-
-type ContainerProps = {
-  open: boolean;
-};
-
-export const Container = styled.div<ContainerProps>`
+export const Container = styled(motion.div)`
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -40,10 +25,8 @@ export const Container = styled.div<ContainerProps>`
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
   top: 0;
   right: 0;
-  transform: ${({ open }) => (open ? "translateX(0)" : "translateX(24rem)")};
-  transition: transform 0.3s ease-in-out;
   z-index: 1001;
-
+  will-change: transform;
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
@@ -56,38 +39,6 @@ export const WalletHeader = styled.div`
   width: 100%;
   height: 3rem;
   margin: 1.5rem 0;
-`;
-
-export const BlockiesContainer = styled.div`
-  position: relative;
-  margin-right: 2.5rem;
-
-  &::after {
-    display: block;
-    content: "";
-    position: absolute;
-    background-color: ${(props) => props.theme.colors.green};
-    border-radius: 50%;
-    z-index: 5;
-    width: 0.75rem;
-    height: 0.75rem;
-    top: 1.75rem;
-    left: 1.75rem;
-  }
-`;
-
-export const WalletAddress = styled(InfoHeading)`
-  font-size: 1rem;
-`;
-
-export const WalletLinkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.125rem 1rem 1.125rem 1.5rem;
-  height: 3rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2500px;
 `;
 
 export const StyledTransactionLink = styled(TransactionLink)`
@@ -176,5 +127,52 @@ export const IconContainer = styled.div`
   height: 2.5rem;
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
+  border-radius: 50%;
+`;
+
+export const BackButton = styled(motion.button)`
+  ${InputOrButtonBorderStyle};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: -1.5rem;
+  top: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.white};
+`;
+
+export const NetworkInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-width: 5.5rem;
+  margin-left: 1rem;
+`;
+
+export const NetworkName = styled(FormLabel)`
+  text-transform: uppercase;
+`;
+
+export const Balances = styled(InfoHeading)`
+  line-height: 1;
+`;
+
+export const WalletAnchorTag = styled.a`
+  ${BorderedPill}
+  ${InputOrButtonBorderStyle}
+`;
+
+export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
+  margin-right: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: ${(props) =>
+    props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
 `;

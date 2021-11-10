@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 const PopoverContainer = styled.div`
   position: absolute;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 2rem;
+  margin: 1.5rem 1.5rem;
   top: 0;
   right: 0;
 `;

@@ -33,13 +33,18 @@ const useAddressOrEnsName = (
     if (cached !== undefined) {
       setResult(cached || fallback);
     } else {
-      library.lookupAddress(address).then((name) => {
-        ensCachedResponses[chainId] = {
-          ...ensCachedResponses[chainId],
-          [address]: name,
-        };
-        setResult(name || fallback);
-      });
+      library
+        .lookupAddress(address)
+        .then((name) => {
+          ensCachedResponses[chainId] = {
+            ...ensCachedResponses[chainId],
+            [address]: name,
+          };
+          setResult(name || fallback);
+        })
+        .catch(() => {
+          setResult(fallback);
+        });
     }
   }, [library, address, chainId, fallback]);
 

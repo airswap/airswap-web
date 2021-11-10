@@ -1,9 +1,15 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 
-export const Container = styled.div`
+type ContainerProps = {
+  open: boolean;
+};
+
+export const Container = styled.div<ContainerProps>`
   position: relative;
+  transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
+  transition: transform 0.3s ease-in-out;
 `;
 
 export const SettingsButtonContainer = styled.button`

@@ -1,11 +1,16 @@
 import Blockies from "react-blockies";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
+
+import {
+  BorderedPill,
+  InputOrButtonBorderStyle,
+} from "../../../../style/mixins";
 
 export const Button = styled.div`
   border: 0;
   margin: 0;
-  padding: 1rem;
+  padding: 0 1rem;
   cursor: pointer;
   background: none;
 `;
@@ -40,4 +45,11 @@ export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   background-color: ${(props) =>
     props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
+`;
+
+export const Placeholder = styled.div`
+  ${BorderedPill}
+  ${InputOrButtonBorderStyle}
+  width: 11.125rem;
+  height: 3rem;
 `;

@@ -2,9 +2,14 @@ import React, { FC, ReactElement } from "react";
 
 import { Container, StyledTradeContainer } from "./WidgetFrame.styles";
 
-const WidgetFrame: FC = ({ children }): ReactElement => {
+type WidgetFrameType = {
+  children?: React.ReactNode;
+  open?: boolean;
+};
+
+const WidgetFrame: FC<WidgetFrameType> = ({ children, open }): ReactElement => {
   return (
-    <StyledTradeContainer>
+    <StyledTradeContainer open={open}>
       <Container>{children}</Container>
     </StyledTradeContainer>
   );

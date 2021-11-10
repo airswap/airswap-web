@@ -37,11 +37,12 @@ const Page: FC = (): ReactElement => {
         setTransactionsTabOpen={setTransactionsTabOpen}
         setShowWalletList={setShowWalletList}
       />
-      <WidgetFrame>
+      <WidgetFrame open={transactionsTabOpen}>
         <SwapWidget
           showWalletList={showWalletList}
           setShowWalletList={setShowWalletList}
           onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
+          transactionsTabOpen={transactionsTabOpen}
         />
       </WidgetFrame>
       <SocialButtons />

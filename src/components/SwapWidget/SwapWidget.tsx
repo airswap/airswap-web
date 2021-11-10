@@ -90,12 +90,14 @@ const initialBaseAmount = "";
 
 type SwapWidgetPropsType = {
   showWalletList: boolean;
+  transactionsTabOpen: boolean;
   setShowWalletList: (x: boolean) => void;
   onTrackTransactionClicked: () => void;
 };
 
 const SwapWidget: FC<SwapWidgetPropsType> = ({
   showWalletList,
+  transactionsTabOpen,
   setShowWalletList,
   onTrackTransactionClicked,
 }) => {

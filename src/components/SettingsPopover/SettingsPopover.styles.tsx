@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import {
   BorderlessButtonStyle,
@@ -6,14 +6,19 @@ import {
   ScrollBarStyle,
 } from "../../style/mixins";
 
-export const Container = styled.div`
+type ContainerProps = {
+  open: boolean;
+};
+
+export const Container = styled.div<ContainerProps>`
   position: absolute;
   display: grid;
   grid-template-rows: 5rem;
   width: 16rem;
   height: 17.25rem;
-  top: 5.5rem;
-  right: 0rem;
+  top: 4rem;
+  right: 13rem;
+  transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${(props) => props.theme.colors.darkGrey};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;

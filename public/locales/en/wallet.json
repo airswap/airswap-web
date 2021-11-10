@@ -2,6 +2,7 @@
   "connectWallet": "Connect Wallet",
   "notConnected": "Not connected",
   "unsupportedNetwork": "Unsupported network",
+  "unsupported": "Unsupported",
   "switchNetwork": "Switch network",
   "disconnectWallet": "Disconnect",
   "noTransactions": "No Transactions",
@@ -19,8 +20,8 @@
   "monthAgo_other": "{{count}} months ago",
   "yearAgo_one": "{{count}} year ago",
   "yearAgo_other": "{{count}} years ago",
-  "activeTransactions": "ACTIVE TRANSACTIONS",
+  "activeTransactions": "Active transactions",
   "noActiveTransactions": "No active transactions",
-  "completedTransactions": "COMPLETED TRANSACTIONS",
+  "completedTransactions": "Completed transactions",
   "noCompletedTransactions": "No completed transactions"
 }

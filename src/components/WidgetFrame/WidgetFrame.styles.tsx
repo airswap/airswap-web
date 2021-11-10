@@ -13,11 +13,18 @@ export const Container = styled.div`
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
   box-shadow: ${(props) => props.theme.shadows.widgetGlow};
+  will-change: transform;
 `;
 
-export const StyledTradeContainer = styled.div`
+type StyledTradeContainerProps = {
+  open?: boolean;
+};
+
+export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   position: relative;
   display: flex;
   box-sizing: border-box;
   margin: 0 auto;
+  transform: ${(props) => (props.open ? "translate(-6.5rem, 0rem)" : "0")};
+  transition: transform 0.3s ease-in-out;
 `;

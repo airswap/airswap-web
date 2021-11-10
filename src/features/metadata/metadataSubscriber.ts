@@ -38,7 +38,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       previousChainId !== currentChainId
     ) {
       // handles change in transactions and persists all transactions to localStorage
-      // Store only the top 3 transactions
+      // Store only the top 10 transactions
       const txs: TransactionsState = JSON.parse(
         localStorage.getItem(
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
