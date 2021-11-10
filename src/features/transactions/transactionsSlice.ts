@@ -18,7 +18,7 @@ export interface DepositOrWithdrawOrder {
 
 export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
 
-export type StatusType = "processing" | "succeeded" | "reverted";
+export type StatusType = "processing" | "succeeded" | "reverted" | "declined";
 
 export type ProtocolType = "request-for-quote" | "last-look";
 
@@ -67,20 +67,21 @@ const initialState: TransactionsState = {
   all: [],
 };
 
-function updateTransaction(
-  state: TransactionsState,
-  nonce: string,
-  hash: string,
-  signerWallet: string,
-  status: StatusType,
-  protocol?: ProtocolType
-) {
+function updateTransaction(params: {
+  state: TransactionsState;
+  nonce?: string;
+  hash?: string;
+  signerWallet?: string;
+  status: StatusType;
+  protocol?: ProtocolType;
+}): void {
+  const { state, nonce, hash, signerWallet, status, protocol } = params;
   if (protocol === "last-look") {
     const swap = state.all.find(
       (s) =>
         s.nonce === nonce &&
         (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
-          signerWallet.toLowerCase()
+          signerWallet!.toLowerCase()
     );
     if (swap) {
       swap.timestamp = Date.now();
@@ -117,26 +118,31 @@ export const transactionsSlice = createSlice({
     });
     builder.addCase(declineTransaction, (state, action) => {
       console.error(action.payload);
+      updateTransaction({
+        state,
+        hash: action.payload.hash,
+        nonce: action.payload.nonce,
+        signerWallet: action.payload.signerWallet,
+        status: "declined",
+        protocol: action.payload.protocol,
+      });
     });
     builder.addCase(revertTransaction, (state, action) => {
-      updateTransaction(
+      updateTransaction({
         state,
-        "",
-        action.payload.hash,
-        "",
-        "reverted",
-        undefined
-      );
+        hash: action.payload.hash,
+        status: "reverted",
+      });
     });
     builder.addCase(mineTransaction, (state, action) => {
-      updateTransaction(
+      updateTransaction({
         state,
-        action.payload?.nonce || "",
-        action.payload?.hash || "",
-        action.payload?.signerWallet || "",
-        "succeeded",
-        action.payload?.protocol
-      );
+        hash: action.payload.hash,
+        nonce: action.payload.nonce,
+        signerWallet: action.payload.signerWallet,
+        status: "succeeded",
+        protocol: action.payload.protocol,
+      });
     });
   },
 });

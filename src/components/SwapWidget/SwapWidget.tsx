@@ -56,6 +56,10 @@ import {
   setTradeTermsQuoteAmount,
 } from "../../features/tradeTerms/tradeTermsSlice";
 import {
+  declineTransaction,
+  revertTransaction,
+} from "../../features/transactions/transactionActions";
+import {
   ProtocolType,
   selectPendingApprovals,
 } from "../../features/transactions/transactionsSlice";
@@ -433,6 +437,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const takeBestOption = async () => {
+    let order: LightOrder | null = null;
     try {
       setIsSwapping(true);
       // @ts-ignore
@@ -453,6 +458,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           }
         }
         LastLook.unsubscribeAllServers();
+        order = bestTradeOption!.order!;
         const result = await dispatch(
           take({
             order: bestTradeOption!.order!,
@@ -467,10 +473,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         // Setting quote amount prevents the UI from updating if pricing changes
         dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
         // Last look order.
-        const { order, senderWallet } = await LastLook.getSignedOrder({
+        const {
+          order: lastLookOrder,
+          senderWallet,
+        } = await LastLook.getSignedOrder({
           locator: bestTradeOption!.pricing!.locator,
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
+        order = lastLookOrder;
         const errors = (await validator.checkSwap(
           order,
           senderWallet
@@ -489,11 +499,18 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           setShowOrderSubmitted(true);
           LastLook.unsubscribeAllServers();
         } else {
-          // TODO: do something about the order here so that doesn't show as processing
           notifyError({
             heading: t("orders:swapRejected"),
             cta: t("orders:swapRejectedCallToAction"),
           });
+
+          dispatch(
+            declineTransaction({
+              signerWallet: order.signerWallet,
+              nonce: order.nonce,
+              reason: "Pricing expired",
+            })
+          );
         }
       }
     } catch (e: any) {
@@ -509,6 +526,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           heading: t("orders:swapFailed"),
           cta: t("orders:swapFailedCallToAction"),
         });
+
+        dispatch(
+          revertTransaction({
+            signerWallet: order?.signerWallet,
+            nonce: order?.nonce,
+            reason: e.message,
+          })
+        );
       }
     }
   };
