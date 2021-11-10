@@ -85,14 +85,14 @@ export const MaxButton = styled.button`
 `;
 
 export const AmountInput = styled(FormInput)<{
-  hasSubtext: boolean;
+  hasSubtext?: boolean;
   disabled: boolean;
 }>`
   ${quoteTransition};
 
   padding-right: 0;
   margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
-  pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
+  cursor: ${(props) => (props.disabled ? "inherit" : "text")};
   text-align: right;
 
   &:focus {
