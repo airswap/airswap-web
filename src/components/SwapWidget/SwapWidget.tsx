@@ -738,6 +738,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
                 ["approving", "taking"].includes(rfqOrderStatus) ||
                 (!!baseToken && hasApprovalPending(baseToken))
               }
+              transactionsTabOpen={transactionsTabOpen}
             />
           )}
         </ButtonContainer>
