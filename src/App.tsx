@@ -18,10 +18,14 @@ import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
 
+let cachedLibrary: Web3Provider | null;
+
 function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
-  return library;
+  if (!cachedLibrary) {
+    cachedLibrary = new Web3Provider(provider);
+    cachedLibrary.pollingInterval = 12000;
+  }
+  return cachedLibrary;
 }
 //1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });

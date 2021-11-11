@@ -242,6 +242,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
   };
 
+  const allowanceFetchFailed =
+    allowances.light.status === "failed" ||
+    allowances.wrapper.status === "failed";
+
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeETH[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -579,6 +583,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         setBaseAmount(initialBaseAmount);
         break;
 
+      case ButtonActions.reloadPage:
+        window.location.reload();
+        break;
+
       case ButtonActions.connectWallet:
         setShowWalletList(true);
         break;
@@ -681,7 +689,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
                 ? baseAmount
                 : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
             }
-            disabled={!active}
+            disabled={!active || allowanceFetchFailed}
             readOnly={
               !!bestTradeOption ||
               isWrapping ||
@@ -700,6 +708,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
             isSwapping={isSwapping}
+            failedToFetchAllowances={allowanceFetchFailed}
             // @ts-ignore
             bestTradeOption={bestTradeOption}
             requiresApproval={
@@ -719,6 +728,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               unsupportedNetwork={
                 !!web3Error && web3Error instanceof UnsupportedChainIdError
               }
+              requiresReload={allowanceFetchFailed}
               orderComplete={showOrderSubmitted}
               baseTokenInfo={baseTokenInfo}
               quoteTokenInfo={quoteTokenInfo}

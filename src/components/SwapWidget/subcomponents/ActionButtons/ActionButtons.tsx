@@ -11,6 +11,7 @@ export enum ButtonActions {
   restart,
   goBack,
   approve,
+  reloadPage,
   requestQuotes,
   takeQuote,
   trackTransaction,
@@ -19,6 +20,7 @@ export enum ButtonActions {
 const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.connectWallet]: "wallet:connectWallet",
   [ButtonActions.switchNetwork]: "wallet:switchNetwork",
+  [ButtonActions.reloadPage]: "common:reloadPage",
   [ButtonActions.restart]: "orders:newSwap",
   [ButtonActions.goBack]: "common:back",
   [ButtonActions.approve]: "orders:approve",
@@ -42,6 +44,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
 const ActionButtons: FC<{
   walletIsActive: boolean;
   unsupportedNetwork: boolean;
+  requiresReload: boolean;
   orderComplete: boolean;
   pairUnavailable: boolean;
   hasQuote: boolean;
@@ -56,6 +59,7 @@ const ActionButtons: FC<{
 }> = ({
   walletIsActive,
   unsupportedNetwork,
+  requiresReload,
   orderComplete,
   pairUnavailable,
   hasQuote,
@@ -74,6 +78,7 @@ const ActionButtons: FC<{
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
   if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
+  else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (pairUnavailable) nextAction = ButtonActions.goBack;
   else if (orderComplete) nextAction = ButtonActions.restart;
@@ -90,6 +95,7 @@ const ActionButtons: FC<{
   // be disabled. These disabled states never have a back button.
   let isDisabled =
     walletIsActive &&
+    !requiresReload &&
     (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);
 
   // Some actions require an additional back button
