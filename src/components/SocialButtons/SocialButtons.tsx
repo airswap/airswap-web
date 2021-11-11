@@ -33,6 +33,10 @@ const destinations: {
   {
     icon: "telegram",
     primary: "https://t.me/airswapofficial",
+    locales: {
+      en: "https://t.me/airswapofficial",
+      fr: "https://t.me/AirSwap_france",
+    },
   },
 ];
 
