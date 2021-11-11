@@ -107,6 +107,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   showWalletList,
   activeInformationModal,
   setShowWalletList,
+  transactionsTabOpen,
   onTrackTransactionClicked,
   afterInformationModalClose,
 }) => {
