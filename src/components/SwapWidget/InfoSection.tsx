@@ -25,6 +25,7 @@ export type InfoSectionProps = {
   isFetchingOrders: boolean;
   isApproving: boolean;
   isSwapping: boolean;
+  failedToFetchAllowances: boolean;
   bestTradeOption:
     | {
         protocol: "last-look";
@@ -51,6 +52,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   orderSubmitted,
   isApproving,
   isSwapping,
+  failedToFetchAllowances,
   bestTradeOption,
   isWrapping,
   isFetchingOrders,
@@ -60,7 +62,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   quoteTokenInfo,
   onFeeButtonClick,
 }) => {
-  const { t } = useTranslation(["orders", "marketing"]);
+  const { t } = useTranslation(["orders", "marketing", "balances"]);
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   // Wallet not connected.
   if (!isConnected) {
@@ -68,6 +70,17 @@ const InfoSection: FC<InfoSectionProps> = ({
       <>
         <InfoHeading>{t("marketing:useAtOwnRisk")}</InfoHeading>
         <InfoSubHeading>{t("marketing:alphaPreview")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (failedToFetchAllowances) {
+    return (
+      <>
+        <InfoHeading>{t("balances:failedToFetchAllowances")}</InfoHeading>
+        <InfoSubHeading>
+          {t("balances:failedToFetchAllowancesCta")}
+        </InfoSubHeading>
       </>
     );
   }

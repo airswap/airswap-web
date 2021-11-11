@@ -24,5 +24,6 @@
   "vote": "vote",
   "build": "build",
   "about": "about",
-  "join": "join"
+  "join": "join",
+  "reloadPage": "Reload Page"
 }

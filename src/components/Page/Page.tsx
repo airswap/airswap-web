@@ -10,7 +10,9 @@ import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledWallet } from "./Page.styles";
 
-const Page: FC = (): ReactElement => {
+const Page: FC<{ excludeWallet?: boolean }> = ({
+  excludeWallet,
+}): ReactElement => {
   const [
     activeModalPage,
     setActiveModalPage,
