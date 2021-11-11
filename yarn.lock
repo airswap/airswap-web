@@ -31,17 +31,17 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.13.tgz#d8d2e0bfb810f5691a42a728a4658944d13e676a"
-  integrity sha512-F+h+4fZDeN6vjYkfLnPY/wJq7CXHcZ0nmUP5DE9pmtALO3WNA6NKSUVuJEQV02dARarHzsXqdldxkiPbX+c6vQ==
+"@airswap/libraries@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.14.tgz#1728f37bb8c373e6e03a9deadc7826d9d67f5a78"
+  integrity sha512-WLoKC74dijaXqX38YyLY4QqTMjUniSwq4eSmKbPVsqCJhzx+2cF+TMbDJT9oYGAKHj8uoFviAkxSyO87vwZb5g==
   dependencies:
     "@airswap/constants" "0.4.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
     "@airswap/light" "2.3.1"
     "@airswap/registry" "4.8.2"
     "@airswap/types" "^3.7.0"
-    "@airswap/utils" "0.4.10"
+    "@airswap/utils" "0.4.13"
     "@airswap/validator" "2.3.0"
     "@airswap/wrapper" "2.5.2"
     bignumber.js "^9.0.0"
@@ -85,7 +85,7 @@
   dependencies:
     "@airswap/constants" "0.4.1"
 
-"@airswap/types@^3.7.0":
+"@airswap/types@3.7.0", "@airswap/types@^3.7.0":
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.7.0.tgz#be602ae478af2d488d267addfc5704242e74e894"
   integrity sha512-wP3mKwBgfZMW2Fv09AKLCEVK7hAH9IMvaOZm3JzPK60z0ONVLCSLGCTxRTDo2/bvBWFienE1FGBmgdr7DazPFw==
@@ -93,7 +93,20 @@
     "@airswap/constants" "0.4.3"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
-"@airswap/utils@0.4.10", "@airswap/utils@^0.4.10":
+"@airswap/utils@0.4.13":
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.13.tgz#7707dbb23ee02018f373ee1a2dedaf4e28a20c90"
+  integrity sha512-RRyfjLhJy0xYQT+wgIrK1ObfNeDZt2nSLynmBG7M8E97DTrD0X9fXbkOQjmfy1wEZOjDjSITt4gsRR3qxuyHpg==
+  dependencies:
+    "@airswap/constants" "0.4.3"
+    "@airswap/types" "3.7.0"
+    "@types/ethereumjs-util" "^6.1.0"
+    bignumber.js "^9.0.1"
+    eth-sig-util "^3.0.0"
+    ethereumjs-util "^6.2.0"
+    ethers "^5.4.7"
+
+"@airswap/utils@^0.4.10":
   version "0.4.10"
   resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.10.tgz#bac8c7d5e7a6ef288d47d2ae6f1aaf41fdaf9093"
   integrity sha512-YzR0G1hoVYPx/KsSjObX2XuMo+ySURHGRijiz4eM4EMU7udiH4upIpE2M/HeQ0HISWLVJrMJa89BJ/8szKorVQ==
