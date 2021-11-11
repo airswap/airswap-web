@@ -123,6 +123,9 @@ const LastLookProvider: FC = ({ children }) => {
         throw new Error("No quote amount specified");
       const baseAmountAtomic = new BigNumber(terms.baseAmount)
         .multipliedBy(10 ** terms.baseToken.decimals)
+        // Note that we remove the signer fee from the amount that we send.
+        // This was already done to determine quoteAmount.
+        .dividedBy(terms.side === "sell" ? 1.0007 : 1)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString();
       const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
