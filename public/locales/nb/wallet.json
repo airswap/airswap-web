@@ -2,6 +2,7 @@
   "connectWallet": "Tilknytt lommebok",
   "notConnected": "Ikke tilkoblet",
   "unsupportedNetwork": "Nettverk er ikke støttet",
+  "unsupported": "Ikke støttet",
   "switchNetwork": "Bytt nettverk",
   "disconnectWallet": "Koble fra",
   "noTransactions": "Ingen transaksjoner",

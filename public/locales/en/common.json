@@ -17,8 +17,6 @@
   "undefined": "undefined",
   "noResultsFound": "No results found",
   "done": "Done",
-  "bookmarkWarning1": "Make sure the URL is {{url}}",
-  "bookmarkWarning2": " - Press (Ctrl+D or Cmd+D) to bookmark it to be safe.",
   "light": "Light",
   "dark": "Dark",
   "system": "System",
@@ -28,5 +26,6 @@
   "vote": "vote",
   "build": "build",
   "about": "about",
-  "join": "join"
+  "join": "join",
+  "reloadPage": "Reload Page"
 }

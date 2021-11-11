@@ -11,28 +11,38 @@ export type WalletProvider = {
   getConnector: () => AbstractConnector;
 };
 
+const cachedConnectors: Record<string, AbstractConnector> = {};
+
 const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "MetaMask",
     logo: metamaskLogo,
-    getConnector: () =>
-      new InjectedConnector({
-        supportedChainIds: [
-          1, // Mainet
-          4, // Rinkeby
-        ],
-      }),
+    getConnector: () => {
+      if (!cachedConnectors.MetaMask) {
+        cachedConnectors.MetaMask = new InjectedConnector({
+          supportedChainIds: [
+            1, // Mainet
+            4, // Rinkeby
+          ],
+        });
+      }
+      return cachedConnectors.MetaMask;
+    },
   },
   {
     name: "WalletConnect",
     logo: walletconnectLogo,
-    getConnector: () =>
-      new WalletConnectConnector({
-        rpc: {
-          1: process.env.REACT_APP_RPC_URL_1 || "",
-          4: process.env.REACT_APP_RPC_URL_4 || "",
-        },
-      }),
+    getConnector: () => {
+      if (!cachedConnectors.WalletConect) {
+        cachedConnectors.MetaMask = new WalletConnectConnector({
+          rpc: {
+            1: process.env.REACT_APP_RPC_URL_1 || "",
+            4: process.env.REACT_APP_RPC_URL_4 || "",
+          },
+        });
+      }
+      return cachedConnectors.WalletConect;
+    },
   },
 ];
 

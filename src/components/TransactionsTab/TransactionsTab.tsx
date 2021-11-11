@@ -27,7 +27,7 @@ import {
   NetworkInfoContainer,
   NetworkName,
   Balances,
-  WalletAnchorTag,
+  WalletInfoButton,
   ConnectionStatusCircle,
 } from "./TransactionsTab.styles";
 import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
@@ -35,11 +35,6 @@ import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTrans
 const addressMapping: Record<number, string> = {
   1: "Mainnet",
   4: "Rinkeby",
-};
-
-const hrefAddressMapping: Record<number, string> = {
-  1: "",
-  4: "rinkeby.",
 };
 
 type TransactionsTabType = {
@@ -145,14 +140,8 @@ const TransactionsTab = ({
               </NetworkName>
               <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
             </NetworkInfoContainer>
-            <WalletAnchorTag
-              target="_blank"
-              rel="noreferrer"
-              href={
-                chainId
-                  ? `https://${hrefAddressMapping[chainId]}etherscan.io/address/${address}`
-                  : ""
-              }
+            <WalletInfoButton
+              onClick={setTransactionsTabOpen.bind(null, false)}
             >
               <ConnectionStatusCircle $connected={!!address} />
               <InfoHeading>
@@ -162,7 +151,7 @@ const TransactionsTab = ({
                   ? addressOrName
                   : t("wallet:notConnected")}
               </InfoHeading>
-            </WalletAnchorTag>
+            </WalletInfoButton>
           </WalletHeader>
 
           <TransactionsContainer

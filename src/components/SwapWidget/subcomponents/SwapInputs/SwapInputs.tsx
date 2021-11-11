@@ -58,6 +58,7 @@ const SwapInputs: FC<{
     if (value === "" || floatRegExp.test(value)) {
       if (value[value.length - 1] === ",")
         value = value.slice(0, value.length - 1) + ".";
+      value = value.replace(/^0+/, "0");
       onBaseAmountChange(value);
     }
   };

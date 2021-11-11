@@ -163,7 +163,7 @@ export const Balances = styled(InfoHeading)`
   line-height: 1;
 `;
 
-export const WalletAnchorTag = styled.a`
+export const WalletInfoButton = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 `;

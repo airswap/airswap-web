@@ -6,7 +6,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
 import { ThemeProvider, ThemeType } from "styled-components/macro";
-import { ModalProvider } from "styled-react-modal";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
@@ -18,10 +17,14 @@ import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
 
+let cachedLibrary: Record<string, Web3Provider> = {};
+
 function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
-  return library;
+  if (!cachedLibrary[provider.chainId]) {
+    cachedLibrary[provider.chainId] = new Web3Provider(provider);
+    cachedLibrary[provider.chainId].pollingInterval = 12000;
+  }
+  return cachedLibrary[provider.chainId];
 }
 //1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
@@ -38,13 +41,11 @@ const App = (): JSX.Element => {
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
           <LastLookProvider>
-            <ModalProvider>
-              <Router>
-                <Route path="/:tokenFrom?/:tokenTo?">
-                  <Page />
-                </Route>
-              </Router>
-            </ModalProvider>
+            <Router>
+              <Route path="/:tokenFrom?/:tokenTo?">
+                <Page />
+              </Route>
+            </Router>
           </LastLookProvider>
         </Suspense>
       </Web3ReactProvider>

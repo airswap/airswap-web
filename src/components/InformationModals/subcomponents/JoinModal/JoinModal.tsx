@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   ModalParagraph,
   ModalSubTitle,
-  ModalTitle,
+  ScrollableModalContainer,
 } from "../../../../styled-components/Modal/Modal";
 import GuideButton, { GuideButtonProps } from "../GuideButton/GuideButton";
 import { GuideButtons } from "./JoinModal.styles";
@@ -36,8 +36,7 @@ const JoinModal: FC = () => {
   const { t } = useTranslation(["information"]);
 
   return (
-    <>
-      <ModalTitle type="h2">{t("information:join.title")}</ModalTitle>
+    <ScrollableModalContainer>
       <ModalParagraph>{t("information:join.intro")}</ModalParagraph>
 
       <ModalParagraph>{t("information:join.paragraph")}</ModalParagraph>
@@ -60,7 +59,7 @@ const JoinModal: FC = () => {
           );
         })}
       </GuideButtons>
-    </>
+    </ScrollableModalContainer>
   );
 };
 

@@ -35,7 +35,7 @@ export const PlainLink = styled(Link)<{ $deEmphasize: boolean }>`
   opacity: ${({ $deEmphasize }) => ($deEmphasize ? 0.5 : 1)};
 `;
 
-export const SocialButton = styled.a<{ showLocales: number }>`
+export const SocialButton = styled.div<{ showLocales: number }>`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
   display: flex;
@@ -43,6 +43,9 @@ export const SocialButton = styled.a<{ showLocales: number }>`
   justify-content: flex-end;
   width: 2.5rem;
   height: ${({ showLocales }) => (1 + showLocales) * 2.5 + "rem"};
+  &:hover {
+    background-color: ${(props) => props.theme.colors.black};
+  }
 `;
 
 export const StyledIcon = styled(Icon)<{ $deEmphasize: boolean }>`

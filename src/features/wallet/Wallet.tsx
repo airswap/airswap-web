@@ -174,16 +174,6 @@ export const Wallet: FC<WalletPropsType> = ({
         })
       );
       saveLastAccount(account, provider);
-      dispatch(
-        requestActiveTokenAllowancesLight({
-          provider: library,
-        })
-      );
-      dispatch(
-        requestActiveTokenAllowancesWrapper({
-          provider: library,
-        })
-      );
 
       Promise.all([
         dispatch(fetchAllTokens()),
@@ -195,6 +185,16 @@ export const Wallet: FC<WalletPropsType> = ({
       ]).then(() => {
         dispatch(
           requestActiveTokenBalances({
+            provider: library,
+          })
+        );
+        dispatch(
+          requestActiveTokenAllowancesLight({
+            provider: library,
+          })
+        );
+        dispatch(
+          requestActiveTokenAllowancesWrapper({
             provider: library,
           })
         );

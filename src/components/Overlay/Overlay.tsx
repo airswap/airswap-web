@@ -31,6 +31,8 @@ export type OverlayProps = {
   isHidden?: boolean;
 };
 
+export const overlayShowHideAnimationDuration = 0.3;
+
 const Overlay: FC<OverlayProps> = ({
   onClose,
   title = "",
@@ -62,7 +64,9 @@ const Overlay: FC<OverlayProps> = ({
             key="content"
             transition={{
               ease: "easeOut",
-              duration: shouldReduceMotion ? 0 : 0.3,
+              duration: shouldReduceMotion
+                ? 0
+                : overlayShowHideAnimationDuration,
             }}
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}

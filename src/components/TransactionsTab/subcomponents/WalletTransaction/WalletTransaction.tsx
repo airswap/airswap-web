@@ -4,6 +4,8 @@ import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
+import BigNumber from "bignumber.js";
+
 import {
   SubmittedApproval,
   SubmittedOrder,
@@ -11,8 +13,10 @@ import {
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
+import ProgressBar from "../../../ProgressBar/ProgressBar";
 import {
   Container,
+  RotatedIcon,
   SpanSubtitle,
   SpanTitle,
   StyledTransactionLink,
@@ -93,12 +97,26 @@ const WalletTransaction = ({
       tokens,
       chainId
     );
+    const hasExpiry = !!tx.expiry;
+
+    // For last look transactions, the user has sent the signer amount plus
+    // the fee:
+    let signerAmountWithFee: string | null = null;
+    if (tx.protocol === "last-look") {
+      signerAmountWithFee = new BigNumber(tx.order.signerAmount)
+        .multipliedBy(1.0007)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .toString();
+    }
     return (
       <Container>
+        {tx.status === "processing" && (
+          <RotatedIcon name="swap" iconSize={1.25} />
+        )}
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
-              <SpanTitle>
+              <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
                   tx.protocol === "last-look"
                     ? "wallet:lastLookTransaction"
@@ -112,25 +130,36 @@ const WalletTransaction = ({
                     senderToken: senderToken.symbol,
                     signerAmount: parseFloat(
                       Number(
-                        formatUnits(tx.order.signerAmount, signerToken.decimals)
+                        formatUnits(
+                          signerAmountWithFee || tx.order.signerAmount,
+                          signerToken.decimals
+                        )
                       ).toFixed(5)
                     ),
                     signerToken: signerToken.symbol,
                   }
                 )}
               </SpanTitle>
-              <SpanSubtitle>
-                {statusText} ·{" "}
-                {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
+              {hasExpiry && tx.status === "processing" ? (
+                <ProgressBar
+                  startTime={tx.timestamp}
+                  endTime={parseInt(tx.expiry!) * 1000}
+                />
+              ) : (
+                <SpanSubtitle>
+                  {statusText} ·{" "}
+                  {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+                </SpanSubtitle>
+              )}
             </>
           )}
         </TextContainer>
-        {tx.hash ? (
-          <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-        ) : (
-          <span></span>
-        )}
+        {tx.status !== "processing" &&
+          (tx.hash ? (
+            <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+          ) : (
+            <span></span>
+          ))}
       </Container>
     );
   }
