@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useReducedMotion } from "framer-motion";
 
 import SUPPORTED_WALLET_PROVIDERS, {
