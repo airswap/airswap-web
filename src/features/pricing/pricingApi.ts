@@ -31,7 +31,16 @@ export const calculateQuoteAmount: (params: {
       // .integerValue(BigNumber.ROUND_CEIL)
       .toString();
 
-    // FIXME: this can throw if requested amount exceeds available.
+    // @ts-ignore - TODO: Fix when types updated
+    if (pricing.minimum) {
+      // @ts-ignore - TODO: Fix when types updated
+      const minimum = new BigNumber(pricing.minimum);
+      if (minimum.isGreaterThan(signerAmount)) {
+        throw new Error("Amount too low");
+      }
+    }
+
+    // NOTE: this can throw if requested amount exceeds available.
     const senderAmount = calculateCostFromLevels(
       signerAmount.toString(),
       levels

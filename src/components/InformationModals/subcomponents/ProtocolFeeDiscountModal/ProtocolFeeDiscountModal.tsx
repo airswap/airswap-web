@@ -16,7 +16,10 @@ const ProtocolFeeDiscountModal: FC = () => {
       </ModalParagraph>
       <ModalParagraph>
         {`${t("information:protocolFeeDiscount.paragraph2")} `}
-        <Link target="_blank" href="https://about.airswap.io/#protocols">
+        <Link
+          target="_blank"
+          href="https://etherscan.io/address/0x7296333e1615721f4bd9df1a3070537484a50cf8"
+        >
           {t("information:protocolFeeDiscount.link")}
         </Link>
         .

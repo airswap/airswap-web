@@ -12,7 +12,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import SettingsButton from "../../components/SettingsButton/SettingsButton";
+// import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
@@ -91,7 +91,7 @@ export const Wallet: FC<WalletPropsType> = ({
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
-  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  // const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -302,11 +302,11 @@ export const Wallet: FC<WalletPropsType> = ({
   return (
     <>
       <PopoverContainer>
-        <SettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabOpen}
-        />
+        {/*<SettingsButton*/}
+        {/*  settingsOpen={settingsOpen}*/}
+        {/*  setSettingsOpen={setSettingsOpen}*/}
+        {/*  transactionsTabOpen={transactionsTabOpen}*/}
+        {/*/>*/}
         <WalletButton
           address={account}
           isUnsupportedNetwork={

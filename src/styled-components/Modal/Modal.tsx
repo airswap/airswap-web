@@ -11,7 +11,7 @@ export const ScrollableModalContainer = styled.div`
   padding-right: 1.5rem;
   padding-bottom: 1.5rem;
   height: calc(100% - ${sizes.tradeContainerPadding});
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ModalParagraph = styled(InfoSubHeading)`

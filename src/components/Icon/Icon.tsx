@@ -44,7 +44,7 @@ export interface SvgIconProps {
 }
 
 export const icons: IconSet = {
-  about: IconLibrary,
+  learn: IconLibrary,
   airswap: IconAirswap,
   "arrow-down": IconArrowDown,
   "arrow-right": IconArrowRight,

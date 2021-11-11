@@ -93,24 +93,30 @@ export const selectBestPricing = createSelector(
       if (relevantIndex === -1) return;
       const relevantPricing: Pricing = locatorPricing[relevantIndex];
 
-      const quoteAmount = new BigNumber(
-        calculateQuoteAmount({
-          baseAmount: baseTokenAmount,
-          pricing: relevantPricing,
-          signerFee: "7",
-          side,
-        })
-      );
-
-      if (
-        (side === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
-        (side === "buy" && quoteAmount.lt(bestQuoteAmount))
-      ) {
-        bestQuoteAmount = quoteAmount;
-        bestPricing = {
-          locator,
-          quoteAmount: quoteAmount.toString(),
-        };
+      try {
+        const quoteAmount = new BigNumber(
+          calculateQuoteAmount({
+            baseAmount: baseTokenAmount,
+            pricing: relevantPricing,
+            signerFee: "7",
+            side,
+          })
+        );
+        if (
+          (side === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
+          (side === "buy" && quoteAmount.lt(bestQuoteAmount))
+        ) {
+          bestQuoteAmount = quoteAmount;
+          bestPricing = {
+            locator,
+            quoteAmount: quoteAmount.toString(),
+          };
+        }
+      } catch (e) {
+        // calculateQuoteAmount will throw if the amount exceeds the maximum or
+        // is less than the minimum - we can ignore these makers for the purpose
+        // of this quote.
+        return;
       }
     });
 
