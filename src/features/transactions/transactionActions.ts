@@ -32,9 +32,15 @@ const revertTransaction = createAction<{
   reason?: string;
 }>("transactions/revertTransaction");
 
+const expireTransaction = createAction<{
+  signerWallet: string;
+  nonce: string;
+}>("transactions/expireTransaction");
+
 export {
   submitTransaction,
   declineTransaction,
   mineTransaction,
   revertTransaction,
+  expireTransaction,
 };

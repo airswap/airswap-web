@@ -38,16 +38,16 @@ const App = (): JSX.Element => {
   return (
     <ThemeProvider theme={renderedTheme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <LastLookProvider>
-          {/* Suspense needed here for loading i18n resources */}
-          <Suspense fallback={<PageLoader />}>
+        {/* Suspense needed here for loading i18n resources */}
+        <Suspense fallback={<PageLoader />}>
+          <LastLookProvider>
             <Router>
               <Route path="/:tokenFrom?/:tokenTo?">
                 <Page />
               </Route>
             </Router>
-          </Suspense>
-        </LastLookProvider>
+          </LastLookProvider>
+        </Suspense>
       </Web3ReactProvider>
       <GlobalStyle />
     </ThemeProvider>

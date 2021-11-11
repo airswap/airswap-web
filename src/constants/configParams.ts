@@ -11,6 +11,11 @@ export const RFQ_EXPIRY_BUFFER_MS = 60 * 1000;
 export const LAST_LOOK_ORDER_EXPIRY_SEC = 2 * 60;
 
 /**
+ * Time to wait after a swap has expired
+ */
+export const ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS = 20 * 1000;
+
+/**
  * Time to wait for quotes before presenting "no peers" message.
  */
 export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
