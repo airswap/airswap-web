@@ -9,7 +9,7 @@ export const StyledIcon = styled(Icon)`
 `;
 
 export const Text = styled.div`
-  font-size: 0.75rem;
+  font-size: 0.675rem;
   font-weight: 700;
   text-transform: uppercase;
   line-height: 2;
@@ -25,7 +25,7 @@ export const GuideButtonContainer = styled.a`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
   width: 25%;
-  height: 6.625rem;
+  height: 5.5rem;
   overflow: hidden;
 
   &:not(&:last-of-type):not(:focus) {

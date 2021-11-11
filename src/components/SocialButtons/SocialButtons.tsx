@@ -44,43 +44,45 @@ const SocialButtons: FC<{}> = () => {
 
   return (
     <Container>
-      {destinations.map((dest) => (
-        <SocialButton
-          href={dest.primary}
-          key={dest.icon}
-          onPointerEnter={setHoveredIcon.bind(null, dest.icon)}
-          onPointerLeave={setHoveredIcon.bind(null, null)}
-          showLocales={
-            hoveredIcon === dest.icon
-              ? Object.keys(dest.locales || {}).length
-              : 0
-          }
-        >
-          {hoveredIcon === dest.icon && (
-            <>
-              {Object.keys(dest.locales || {}).map((locale) => (
-                <PlainLink
-                  onPointerEnter={setHoveredLocale.bind(null, locale)}
-                  onPointerLeave={setHoveredLocale.bind(null, null)}
-                  $deEmphasize={
-                    hoveredLocale !== null && hoveredLocale !== locale
-                  }
-                  href={dest.locales?.[locale]}
-                  key={`${dest.icon}-${locale}`}
-                >
-                  {locale}
-                </PlainLink>
-              ))}
-              <Divider />
-            </>
-          )}
-          <StyledIcon
-            iconSize={1}
-            name={dest.icon}
-            $deEmphasize={hoveredIcon !== null && hoveredIcon !== dest.icon}
-          />
-        </SocialButton>
-      ))}
+      {destinations.map((dest) => {
+        const locales = Object.keys(dest.locales || {});
+        return (
+          <SocialButton
+            key={dest.icon}
+            onPointerEnter={setHoveredIcon.bind(null, dest.icon)}
+            onPointerLeave={setHoveredIcon.bind(null, null)}
+            showLocales={hoveredIcon === dest.icon ? locales.length : 0}
+          >
+            {hoveredIcon === dest.icon && locales.length !== 0 && (
+              <>
+                {locales.map((locale) => (
+                  <PlainLink
+                    onPointerEnter={setHoveredLocale.bind(null, locale)}
+                    onPointerLeave={setHoveredLocale.bind(null, null)}
+                    $deEmphasize={
+                      hoveredLocale !== null && hoveredLocale !== locale
+                    }
+                    href={dest.locales?.[locale]}
+                    key={`${dest.icon}-${locale}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {locale}
+                  </PlainLink>
+                ))}
+                <Divider />
+              </>
+            )}
+            <a href={dest.primary} target="_blank" rel="noreferrer">
+              <StyledIcon
+                iconSize={1}
+                name={dest.icon}
+                $deEmphasize={hoveredIcon !== null && hoveredIcon !== dest.icon}
+              />
+            </a>
+          </SocialButton>
+        );
+      })}
     </Container>
   );
 };

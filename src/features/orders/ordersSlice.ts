@@ -33,6 +33,7 @@ import {
   SubmittedDepositOrder,
   SubmittedRFQOrder,
   SubmittedWithdrawOrder,
+  submitTransactionWithExpiry,
 } from "../transactions/transactionsSlice";
 import {
   setWalletConnected,
@@ -346,44 +347,55 @@ export const approve = createAsyncThunk<
   }
 });
 
-export const take = createAsyncThunk(
-  "orders/take",
-  async (
-    params: {
-      order: LightOrder;
-      library: any;
-      contractType: "Light" | "Wrapper";
-    },
-    { getState, dispatch }
-  ) => {
-    let tx: Transaction;
-    try {
-      tx = await takeOrder(params.order, params.library, params.contractType);
-      // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
-      // we should change the order tokens to WETH -> ETH
-      let newOrder =
-        params.contractType === "Light"
-          ? params.order
-          : refactorOrder(params.order, params.library._network.chainId);
-      if (tx.hash) {
-        const transaction: SubmittedRFQOrder = {
-          type: "Order",
-          order: newOrder,
-          protocol: "request-for-quote",
-          hash: tx.hash,
-          status: "processing",
-          timestamp: Date.now(),
-          nonce: params.order.nonce,
-          expiry: params.order.expiry,
-        };
-        dispatch(submitTransaction(transaction));
-      }
-    } catch (e: any) {
-      dispatch(declineTransaction(e.message));
-      throw e;
-    }
+export const take = createAsyncThunk<
+  // Return type of the payload creator
+  void,
+  // Params
+  {
+    order: LightOrder;
+    library: any;
+    contractType: "Light" | "Wrapper";
+    onExpired: () => void;
+  },
+  // Types for ThunkAPI
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>("orders/take", async (params, { getState, dispatch }) => {
+  let tx: Transaction;
+  try {
+    tx = await takeOrder(params.order, params.library, params.contractType);
+    // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
+    // we should change the order tokens to WETH -> ETH
+    let newOrder =
+      params.contractType === "Light"
+        ? params.order
+        : refactorOrder(params.order, params.library._network.chainId);
+    if (tx.hash) {
+      const transaction: SubmittedRFQOrder = {
+        type: "Order",
+        order: newOrder,
+        protocol: "request-for-quote",
+        hash: tx.hash,
+        status: "processing",
+        timestamp: Date.now(),
+        nonce: params.order.nonce,
+        expiry: params.order.expiry,
+      };
+      dispatch(
+        submitTransactionWithExpiry({
+          transaction,
+          signerWallet: params.order.signerWallet,
+          onExpired: params.onExpired,
+        })
+      );
+    }
+  } catch (e: any) {
+    dispatch(declineTransaction(e.message));
+    throw e;
+  }
+});
 
 export const ordersSlice = createSlice({
   name: "orders",

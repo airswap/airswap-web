@@ -4,6 +4,8 @@ import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
+import BigNumber from "bignumber.js";
+
 import {
   SubmittedApproval,
   SubmittedOrder,
@@ -11,8 +13,10 @@ import {
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
+import ProgressBar from "../../../ProgressBar/ProgressBar";
 import {
   Container,
+  RotatedIcon,
   SpanSubtitle,
   SpanTitle,
   StyledTransactionLink,
@@ -39,7 +43,29 @@ const WalletTransaction = ({
   tokens,
   chainId,
 }: WalletTransactionProps) => {
-  const { t } = useTranslation(["common", "wallet"]);
+  const { t } = useTranslation(["common", "wallet", "orders"]);
+
+  let statusText: string;
+
+  switch (transaction.status) {
+    case "succeeded":
+      statusText = t("common:success");
+      break;
+    case "processing":
+      statusText = t("common:processing");
+      break;
+    case "expired":
+      statusText = t("common:expired");
+      break;
+    case "reverted":
+      statusText = t("common:failed");
+      break;
+    case "declined":
+      statusText = t("orders:swapRejected");
+      break;
+    default:
+      statusText = t("common:unknown");
+  }
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
@@ -52,12 +78,7 @@ const WalletTransaction = ({
               {t("wallet:approve", { symbol: approvalToken?.symbol })}
             </SpanTitle>
             <SpanSubtitle>
-              {tx.status === "succeeded"
-                ? t("common:success")
-                : tx.status === "processing"
-                ? t("common:processing")
-                : t("common:failed")}{" "}
-              · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+              {statusText} · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
             </SpanSubtitle>
           </>
         </TextContainer>
@@ -76,12 +97,26 @@ const WalletTransaction = ({
       tokens,
       chainId
     );
+    const hasExpiry = !!tx.expiry;
+
+    // For last look transactions, the user has sent the signer amount plus
+    // the fee:
+    let signerAmountWithFee: string | null = null;
+    if (tx.protocol === "last-look") {
+      signerAmountWithFee = new BigNumber(tx.order.signerAmount)
+        .multipliedBy(1.0007)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .toString();
+    }
     return (
       <Container>
+        {tx.status === "processing" && (
+          <RotatedIcon name="swap" iconSize={1.25} />
+        )}
         <TextContainer>
           {tx && senderToken && signerToken && (
             <>
-              <SpanTitle>
+              <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
                   tx.protocol === "last-look"
                     ? "wallet:lastLookTransaction"
@@ -95,29 +130,36 @@ const WalletTransaction = ({
                     senderToken: senderToken.symbol,
                     signerAmount: parseFloat(
                       Number(
-                        formatUnits(tx.order.signerAmount, signerToken.decimals)
+                        formatUnits(
+                          signerAmountWithFee || tx.order.signerAmount,
+                          signerToken.decimals
+                        )
                       ).toFixed(5)
                     ),
                     signerToken: signerToken.symbol,
                   }
                 )}
               </SpanTitle>
-              <SpanSubtitle>
-                {tx.status === "succeeded"
-                  ? t("common:success")
-                  : tx.status === "processing"
-                  ? t("common:processing")
-                  : t("common:failed")}{" "}
-                · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
-              </SpanSubtitle>
+              {hasExpiry && tx.status === "processing" ? (
+                <ProgressBar
+                  startTime={tx.timestamp}
+                  endTime={parseInt(tx.expiry!) * 1000}
+                />
+              ) : (
+                <SpanSubtitle>
+                  {statusText} ·{" "}
+                  {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+                </SpanSubtitle>
+              )}
             </>
           )}
         </TextContainer>
-        {tx.hash ? (
-          <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-        ) : (
-          <span></span>
-        )}
+        {tx.status !== "processing" &&
+          (tx.hash ? (
+            <StyledTransactionLink chainId={chainId} hash={tx.hash} />
+          ) : (
+            <span></span>
+          ))}
       </Container>
     );
   }

@@ -95,8 +95,7 @@ const getThunk: (
         }));
       } catch (e: any) {
         console.error(`Error fetching ${type}: ` + e.message);
-        // TODO: error handling
-        return [];
+        throw e;
       }
     },
     {

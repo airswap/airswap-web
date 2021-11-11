@@ -1,6 +1,9 @@
+import { useReducedMotion } from "framer-motion";
+
 import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
+import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
 import {
   StyledButton,
   ButtonIconContainer,
@@ -20,15 +23,24 @@ const WalletProviderList = ({
   onClose,
   className,
 }: WalletProviderListProps) => {
+  const shouldReduceMotion = useReducedMotion();
+  const onProviderButtonClick = (provider: WalletProvider) => {
+    onClose();
+
+    setTimeout(
+      () => {
+        onProviderSelected(provider);
+      },
+      shouldReduceMotion ? 0 : overlayShowHideAnimationDuration * 1000
+    );
+  };
+
   return (
     <StyledWalletProviderList className={className}>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <StyledButton
           key={provider.name}
-          onClick={() => {
-            onProviderSelected(provider);
-            onClose();
-          }}
+          onClick={() => onProviderButtonClick(provider)}
         >
           <ButtonIconContainer>
             <ButtonIcon

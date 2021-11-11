@@ -11,6 +11,7 @@ export enum ButtonActions {
   restart,
   goBack,
   approve,
+  reloadPage,
   requestQuotes,
   takeQuote,
   trackTransaction,
@@ -19,6 +20,7 @@ export enum ButtonActions {
 const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.connectWallet]: "wallet:connectWallet",
   [ButtonActions.switchNetwork]: "wallet:switchNetwork",
+  [ButtonActions.reloadPage]: "common:reloadPage",
   [ButtonActions.restart]: "orders:newSwap",
   [ButtonActions.goBack]: "common:back",
   [ButtonActions.approve]: "orders:approve",
@@ -42,6 +44,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
 const ActionButtons: FC<{
   walletIsActive: boolean;
   unsupportedNetwork: boolean;
+  requiresReload: boolean;
   orderComplete: boolean;
   pairUnavailable: boolean;
   hasQuote: boolean;
@@ -51,10 +54,12 @@ const ActionButtons: FC<{
   quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
   isLoading: boolean;
+  transactionsTabOpen: boolean;
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
   unsupportedNetwork,
+  requiresReload,
   orderComplete,
   pairUnavailable,
   hasQuote,
@@ -64,6 +69,7 @@ const ActionButtons: FC<{
   quoteTokenInfo,
   hasSufficientBalance,
   isLoading,
+  transactionsTabOpen,
   onButtonClicked,
 }) => {
   const { t } = useTranslation(["wallet", "common", "orders"]);
@@ -75,13 +81,15 @@ const ActionButtons: FC<{
   else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (pairUnavailable) nextAction = ButtonActions.goBack;
   else if (orderComplete) nextAction = ButtonActions.restart;
+  else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
   else if (hasQuote) nextAction = ButtonActions.takeQuote;
   else nextAction = ButtonActions.requestQuotes;
 
   // If a secondary action is defined, a secondary button will be displayed.
   let secondaryAction: ButtonActions | null = null;
-  if (orderComplete) secondaryAction = ButtonActions.trackTransaction;
+  if (orderComplete && !transactionsTabOpen)
+    secondaryAction = ButtonActions.trackTransaction;
 
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.

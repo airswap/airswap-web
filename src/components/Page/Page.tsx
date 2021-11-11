@@ -1,8 +1,6 @@
 import { FC, ReactElement, useState } from "react";
 
-import InformationModals, {
-  InformationType,
-} from "../InformationModals/InformationModals";
+import { InformationModalType } from "../InformationModals/InformationModals";
 import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
@@ -10,22 +8,20 @@ import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledWallet } from "./Page.styles";
 
-const Page: FC = (): ReactElement => {
+const Page: FC<{ excludeWallet?: boolean }> = ({
+  excludeWallet,
+}): ReactElement => {
   const [
-    activeModalPage,
-    setActiveModalPage,
-  ] = useState<InformationType | null>(null);
+    activeInformationModal,
+    setActiveInformationModal,
+  ] = useState<InformationModalType | null>(null);
   const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
     false
   );
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
 
-  const onToolbarButtonClick = (type: InformationType) => {
-    setActiveModalPage(type);
-  };
-
-  const onCloseModalClick = () => {
-    setActiveModalPage(null);
+  const onToolbarButtonClick = (type: InformationModalType) => {
+    setActiveInformationModal(type);
   };
 
   return (
@@ -40,16 +36,14 @@ const Page: FC = (): ReactElement => {
       <WidgetFrame open={transactionsTabOpen}>
         <SwapWidget
           showWalletList={showWalletList}
+          activeInformationModal={activeInformationModal}
           setShowWalletList={setShowWalletList}
           onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
+          afterInformationModalClose={() => setActiveInformationModal(null)}
           transactionsTabOpen={transactionsTabOpen}
         />
       </WidgetFrame>
       <SocialButtons />
-      <InformationModals
-        onCloseModalClick={onCloseModalClick}
-        activeModal={activeModalPage}
-      />
     </StyledPage>
   );
 };

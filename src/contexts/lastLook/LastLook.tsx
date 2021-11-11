@@ -1,4 +1,5 @@
 import { createContext, FC, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
@@ -11,11 +12,14 @@ import { useWeb3React } from "@web3-react/core";
 import BigNumber from "bignumber.js";
 
 import { useAppDispatch } from "../../app/hooks";
+import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
-import { submitTransaction } from "../../features/transactions/transactionActions";
-import { SubmittedOrder } from "../../features/transactions/transactionsSlice";
+import {
+  SubmittedOrder,
+  submitTransactionWithExpiry,
+} from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;
@@ -52,6 +56,8 @@ export const LastLookContext = createContext<{
 const connectedServers: Record<string, Server> = {};
 const LastLookProvider: FC = ({ children }) => {
   const { account, library, chainId } = useWeb3React();
+
+  const { t } = useTranslation("orders");
 
   const dispatch = useAppDispatch();
 
@@ -123,6 +129,9 @@ const LastLookProvider: FC = ({ children }) => {
         throw new Error("No quote amount specified");
       const baseAmountAtomic = new BigNumber(terms.baseAmount)
         .multipliedBy(10 ** terms.baseToken.decimals)
+        // Note that we remove the signer fee from the amount that we send.
+        // This was already done to determine quoteAmount.
+        .dividedBy(terms.side === "sell" ? 1.0007 : 1)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString();
       const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
@@ -168,14 +177,25 @@ const LastLookProvider: FC = ({ children }) => {
         expiry: unsignedOrder.expiry,
         timestamp: Date.now(),
       };
-      dispatch(submitTransaction(transaction));
+      dispatch(
+        submitTransactionWithExpiry({
+          transaction,
+          signerWallet: unsignedOrder.signerWallet,
+          onExpired: () => {
+            notifyError({
+              heading: t("swapExpired"),
+              cta: t("swapExpiredCallToAction"),
+            });
+          },
+        })
+      );
 
       return {
         order,
         senderWallet: unsignedOrder.senderWallet,
       };
     },
-    [account, chainId, dispatch, library]
+    [account, chainId, dispatch, library, t]
   );
 
   const sendOrderForConsideration = useCallback(
