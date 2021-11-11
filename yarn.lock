@@ -31,10 +31,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.11.tgz#a530aa86143e5e959f6a282dd2f0738c489dcf8f"
-  integrity sha512-v7Tg20By5aoOH2KHNp1XLf3j1ZyNa9H+Z1RELYusOVEmkoOiANmMcC7cb+caQtYPOEOqKAglVY1aS64PxWCzDQ==
+"@airswap/libraries@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.12.tgz#5f85a10da76de58c5f7b3c0080c9c14412bb71ab"
+  integrity sha512-74iAvdXCVgrq+0ODPg+n6SPCVd6n4e0qKPnqVxk2u/qs18Z7QwO1VspVgAhRb2YqYsgbzamO4DUMCfYEYAz3GQ==
   dependencies:
     "@airswap/constants" "0.4.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
@@ -43,7 +43,7 @@
     "@airswap/types" "^3.7.0"
     "@airswap/utils" "0.4.10"
     "@airswap/validator" "2.3.0"
-    "@airswap/wrapper" "2.5.1"
+    "@airswap/wrapper" "2.5.2"
     bignumber.js "^9.0.0"
     browser-or-node "^1.3.0"
     ethers "^5.0.25"
@@ -120,10 +120,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.2"
 
-"@airswap/wrapper@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-2.5.1.tgz#d3c204b7f61e5aff507bd2d157d8e990ca02abb3"
-  integrity sha512-jA4kVVabvEADt8QZUjWs+huXKZlJzxHOz/5XXZwcjdLz76j5mgDzXDvCvwtVxX5AzIply6pLEROzvsgqck/BIQ==
+"@airswap/wrapper@2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-2.5.2.tgz#9932284fc75c38335bb79f62f3de13fcff4f7b66"
+  integrity sha512-bEcCgF27XRB2Uo25uW5XyxlUZE+6iVvvNX63Il7TJAEF0d9RbcdV2+s4ejBO/iypnPyrprT9diKLYoB4Gn5pSw==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
