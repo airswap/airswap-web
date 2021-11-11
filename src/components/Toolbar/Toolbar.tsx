@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { InformationType } from "../InformationModals/InformationModals";
+import { InformationModalType } from "../InformationModals/InformationModals";
 import {
   IconAirswap,
   ToolbarButtonsContainer,
@@ -10,7 +10,7 @@ import {
 import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 
 export type ToolbarProps = {
-  onButtonClick?: (type: InformationType) => void;
+  onButtonClick?: (type: InformationModalType) => void;
 };
 
 const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
@@ -18,7 +18,7 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
 
   // TODO: Add content for "about" in modals
 
-  const onToolbarButtonClick = (type: InformationType) => {
+  const onToolbarButtonClick = (type: InformationModalType) => {
     if (onButtonClick) {
       onButtonClick(type);
     }

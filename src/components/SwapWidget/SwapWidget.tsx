@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useContext, FC } from "react";
+import React, { useState, useMemo, useEffect, useContext, FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -69,7 +69,9 @@ import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
+import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
+import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
@@ -95,15 +97,18 @@ const initialBaseAmount = "";
 type SwapWidgetPropsType = {
   showWalletList: boolean;
   transactionsTabOpen: boolean;
+  activeInformationModal: InformationModalType | null;
   setShowWalletList: (x: boolean) => void;
   onTrackTransactionClicked: () => void;
+  afterInformationModalClose: () => void;
 };
 
 const SwapWidget: FC<SwapWidgetPropsType> = ({
   showWalletList,
-  transactionsTabOpen,
+  activeInformationModal,
   setShowWalletList,
   onTrackTransactionClicked,
+  afterInformationModalClose,
 }) => {
   // Redux
   const dispatch = useAppDispatch();
@@ -823,6 +828,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         isHidden={!protocolFeeDiscountInfo}
       >
         <ProtocolFeeDiscountModal />
+      </Overlay>
+
+      <Overlay
+        title={t("information:join.title")}
+        onClose={afterInformationModalClose}
+        isHidden={!activeInformationModal}
+      >
+        <JoinModal />
       </Overlay>
     </>
   );

@@ -6,7 +6,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
 import { ThemeProvider, ThemeType } from "styled-components/macro";
-import { ModalProvider } from "styled-react-modal";
 
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
@@ -40,16 +39,14 @@ const App = (): JSX.Element => {
     <ThemeProvider theme={renderedTheme === "dark" ? darkTheme : lightTheme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <LastLookProvider>
-          <ModalProvider>
-            {/* Suspense needed here for loading i18n resources */}
-            <Suspense fallback={<PageLoader />}>
-              <Router>
-                <Route path="/:tokenFrom?/:tokenTo?">
-                  <Page />
-                </Route>
-              </Router>
-            </Suspense>
-          </ModalProvider>
+          {/* Suspense needed here for loading i18n resources */}
+          <Suspense fallback={<PageLoader />}>
+            <Router>
+              <Route path="/:tokenFrom?/:tokenTo?">
+                <Page />
+              </Route>
+            </Router>
+          </Suspense>
         </LastLookProvider>
       </Web3ReactProvider>
       <GlobalStyle />
