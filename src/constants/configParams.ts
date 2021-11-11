@@ -25,4 +25,4 @@ export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
  * to let other quotes come in from other makers before displaying
  * a price.
  */
-export const ADDITIONAL_QUOTE_BUFFER = 2 * 60 * 1000;
+export const ADDITIONAL_QUOTE_BUFFER = 2 * 1000;
