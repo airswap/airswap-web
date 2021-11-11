@@ -1,5 +1,6 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
+import Icon from "../../../Icon/Icon";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 
@@ -8,7 +9,9 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 1.125rem 1.5rem;
+  height: 4.125rem;
+  padding: 0 1.5rem;
+  gap: 1rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 0.1875rem;
 
@@ -26,13 +29,23 @@ export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
+  flex: 1;
   flex-wrap: wrap;
+  justify-content: center;
 `;
 
-export const SpanTitle = styled.span`
+export const SpanTitle = styled.span<{
+  hasProgress?: boolean;
+}>`
   font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.25rem;
+  ${({ hasProgress }) =>
+    hasProgress &&
+    css`
+      margin-bottom: 0.5rem;
+    `}
 `;
 
 export const SpanSubtitle = styled.span`
@@ -47,4 +60,9 @@ export const StyledTransactionLink = styled(TransactionLink)`
   &:hover {
     color: ${(props) => props.theme.colors.alwaysWhite};
   }
+`;
+
+export const RotatedIcon = styled(Icon)`
+  transform: rotate(45deg);
+  margin-left: -0.5rem;
 `;

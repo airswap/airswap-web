@@ -150,6 +150,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
   const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
+  const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
+    false
+  );
 
   const { t } = useTranslation([
     "orders",
@@ -224,11 +227,19 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Reset amount when the chainId changes.
   useEffect(() => {
+    setAllowanceFetchFailed(false);
     setBaseAmount(initialBaseAmount);
     dispatch(clearTradeTerms());
     dispatch(clear());
     LastLook.unsubscribeAllServers();
   }, [chainId, dispatch, LastLook]);
+
+  useEffect(() => {
+    setAllowanceFetchFailed(
+      allowances.light.status === "failed" ||
+        allowances.wrapper.status === "failed"
+    );
+  }, [allowances.light.status, allowances.wrapper.status]);
 
   let swapType: SwapType = "swap";
 
@@ -242,24 +253,32 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     }
   }
 
+  const quoteAmount =
+    swapType === "wrapOrUnwrap"
+      ? baseAmount
+      : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
+
   const hasApprovalPending = (tokenId: string | undefined) => {
     if (tokenId === undefined) return false;
     return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
   };
 
-  const allowanceFetchFailed =
-    allowances.light.status === "failed" ||
-    allowances.wrapper.status === "failed";
-
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeETH[chainId || 1].address) return true;
     if (!tokenAddress) return false;
     if (
-      !allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
         tokenAddress
-      ]
-    )
-      return false;
+      ] === undefined
+    ) {
+      // We don't currently know what the user's allowance is, this is an error
+      // state we shouldn't repeatedly hit, so we'll prompt a reload.
+      if (!allowanceFetchFailed) setAllowanceFetchFailed(true);
+      // safter to return true here (has allowance) as validator will catch the
+      // missing allowance, so the user won't swap, and they won't pay
+      // unnecessary gas for an approval they may not need.
+      return true;
+    }
     return new BigNumber(
       allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
         tokenAddress
@@ -689,12 +708,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             isRequesting={isRequestingQuotes}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
-            quoteAmount={
-              swapType === "wrapOrUnwrap"
-                ? baseAmount
-                : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
-            }
-            disabled={!active || allowanceFetchFailed}
+            quoteAmount={quoteAmount}
+            disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
               !!bestTradeOption ||
               isWrapping ||

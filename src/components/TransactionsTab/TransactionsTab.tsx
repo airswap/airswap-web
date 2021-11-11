@@ -37,11 +37,6 @@ const addressMapping: Record<number, string> = {
   4: "Rinkeby",
 };
 
-const hrefAddressMapping: Record<number, string> = {
-  1: "",
-  4: "rinkeby.",
-};
-
 type TransactionsTabType = {
   address: string;
   chainId: number;
