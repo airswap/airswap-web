@@ -51,6 +51,7 @@ const ActionButtons: FC<{
   quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
   isLoading: boolean;
+  transactionsTabOpen: boolean;
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
@@ -64,6 +65,7 @@ const ActionButtons: FC<{
   quoteTokenInfo,
   hasSufficientBalance,
   isLoading,
+  transactionsTabOpen,
   onButtonClicked,
 }) => {
   const { t } = useTranslation(["wallet", "common", "orders"]);
@@ -81,7 +83,8 @@ const ActionButtons: FC<{
 
   // If a secondary action is defined, a secondary button will be displayed.
   let secondaryAction: ButtonActions | null = null;
-  if (orderComplete) secondaryAction = ButtonActions.trackTransaction;
+  if (orderComplete && !transactionsTabOpen)
+    secondaryAction = ButtonActions.trackTransaction;
 
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
