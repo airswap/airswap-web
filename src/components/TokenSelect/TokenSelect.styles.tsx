@@ -170,7 +170,7 @@ export const TokenSelectContainer = styled.div<{
   overflow: hidden;
 
   ${PlaceHolderBar} {
-    display: ${(props) => (props.$isLoading ? "block" : "none")};
+    ${(props) => (!props.$isLoading ? "animation: none" : "")};
   }
 
   ${TokenLogoLeft} {

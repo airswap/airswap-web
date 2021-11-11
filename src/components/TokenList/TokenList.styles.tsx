@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { InputOrButtonBorderStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
@@ -53,7 +54,7 @@ export const SearchInput = styled(TextInput)`
   background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
-    border: 1px solid ${(props) => props.theme.colors.borderGrey};
+    ${InputOrButtonBorderStyle};
     border-radius: 2px;
     line-height: 2.25;
     padding: 0.25rem 0.625rem;
@@ -66,14 +67,7 @@ export const SearchInput = styled(TextInput)`
       color: ${(props) => props.theme.colors.lightGrey};
     }
 
-    &:hover,
     &:focus {
-      outline: none;
-      border-color: ${(props) => props.theme.colors.lightGrey};
-    }
-
-    &:active {
-      outline: none;
       border-color: ${(props) => props.theme.colors.primary};
     }
   }
