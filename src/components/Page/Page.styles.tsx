@@ -45,4 +45,8 @@ export const StyledPage = styled.div`
   @media ${breakPoints.tabletLandscapeUp} {
     padding-left: 0;
   }
+
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
 `;

@@ -3,6 +3,7 @@ import { FC, ReactElement, useState } from "react";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
+import TemporaryMobileLanding from "../TemporaryMobileLanding/TemporaryMobileLanding";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
