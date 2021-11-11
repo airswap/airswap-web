@@ -11,7 +11,9 @@
   "success": "Success",
   "max": "Max",
   "processing": "Processing",
+  "expired": "Expired",
   "failed": "Failed",
+  "unknown": "Unknown",
   "undefined": "undefined",
   "noResultsFound": "No results found",
   "done": "Done",
@@ -24,5 +26,6 @@
   "vote": "vote",
   "build": "build",
   "about": "about",
-  "join": "join"
+  "join": "join",
+  "reloadPage": "Reload Page"
 }

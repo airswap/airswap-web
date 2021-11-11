@@ -1,28 +1,28 @@
 {
   "files": {
-    "main.js": "/static/js/main.fb6fc999.chunk.js",
-    "main.js.map": "/static/js/main.fb6fc999.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.5cfeba94.js",
-    "runtime-main.js.map": "/static/js/runtime-main.5cfeba94.js.map",
+    "main.js": "/static/js/main.55a07551.chunk.js",
+    "main.js.map": "/static/js/main.55a07551.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.1e608915.js",
+    "runtime-main.js.map": "/static/js/runtime-main.1e608915.js.map",
     "static/css/2.0c2baecd.chunk.css": "/static/css/2.0c2baecd.chunk.css",
-    "static/js/2.716d08e8.chunk.js": "/static/js/2.716d08e8.chunk.js",
-    "static/js/2.716d08e8.chunk.js.map": "/static/js/2.716d08e8.chunk.js.map",
-    "static/js/3.ddaf87c6.chunk.js": "/static/js/3.ddaf87c6.chunk.js",
-    "static/js/3.ddaf87c6.chunk.js.map": "/static/js/3.ddaf87c6.chunk.js.map",
-    "static/js/4.7c1ab420.chunk.js": "/static/js/4.7c1ab420.chunk.js",
-    "static/js/4.7c1ab420.chunk.js.map": "/static/js/4.7c1ab420.chunk.js.map",
+    "static/js/2.a0f00565.chunk.js": "/static/js/2.a0f00565.chunk.js",
+    "static/js/2.a0f00565.chunk.js.map": "/static/js/2.a0f00565.chunk.js.map",
+    "static/js/3.09862dcf.chunk.js": "/static/js/3.09862dcf.chunk.js",
+    "static/js/3.09862dcf.chunk.js.map": "/static/js/3.09862dcf.chunk.js.map",
+    "static/js/4.59dc35ab.chunk.js": "/static/js/4.59dc35ab.chunk.js",
+    "static/js/4.59dc35ab.chunk.js.map": "/static/js/4.59dc35ab.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.0c2baecd.chunk.css.map": "/static/css/2.0c2baecd.chunk.css.map",
-    "static/js/2.716d08e8.chunk.js.LICENSE.txt": "/static/js/2.716d08e8.chunk.js.LICENSE.txt",
+    "static/js/2.a0f00565.chunk.js.LICENSE.txt": "/static/js/2.a0f00565.chunk.js.LICENSE.txt",
     "static/media/500.css": "/static/media/dm-mono-latin-ext-500-normal.69047799.woff2",
     "static/media/getFetch.cjs": "/static/media/getFetch.582d29c4.cjs",
     "static/media/metamask.45038d58.svg": "/static/media/metamask.45038d58.svg",
     "static/media/walletconnect.dfa25e47.svg": "/static/media/walletconnect.dfa25e47.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.5cfeba94.js",
+    "static/js/runtime-main.1e608915.js",
     "static/css/2.0c2baecd.chunk.css",
-    "static/js/2.716d08e8.chunk.js",
-    "static/js/main.fb6fc999.chunk.js"
+    "static/js/2.a0f00565.chunk.js",
+    "static/js/main.55a07551.chunk.js"
   ]
 }
