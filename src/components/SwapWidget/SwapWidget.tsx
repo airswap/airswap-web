@@ -777,7 +777,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             activate(provider.getConnector()).finally(() =>
               setIsConnecting(false)
             );
-            setShowWalletList(false);
           }}
         />
       </Overlay>
