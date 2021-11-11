@@ -4,7 +4,7 @@ import breakPoints from "../../style/breakpoints";
 
 export const Container = styled.div`
   color: ${(props) => props.theme.colors.white};
-  padding: 2rem 1.375rem;
+  padding: 1rem 1.375rem;
   width: 100vw;
   overflow-x: hidden;
   display: none @media ${breakPoints.phoneOnly} {
@@ -84,7 +84,7 @@ export const Description = styled.h3`
 export const BackgroundImage = styled.div`
   display: none;
   position: absolute;
-  bottom: 8.5rem;
+  bottom: 0;
   left: 0rem;
   width: 100%;
   height: 80%;

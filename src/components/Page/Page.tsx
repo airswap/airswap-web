@@ -26,26 +26,29 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
   };
 
   return (
-    <StyledPage>
-      <Toaster open={transactionsTabOpen} />
-      <Toolbar onButtonClick={onToolbarButtonClick} />
-      <StyledWallet
-        transactionsTabOpen={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
-        setShowWalletList={setShowWalletList}
-      />
-      <WidgetFrame open={transactionsTabOpen}>
-        <SwapWidget
-          showWalletList={showWalletList}
-          activeInformationModal={activeInformationModal}
-          setShowWalletList={setShowWalletList}
-          onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
-          afterInformationModalClose={() => setActiveInformationModal(null)}
+    <>
+      <StyledPage>
+        <Toaster open={transactionsTabOpen} />
+        <Toolbar onButtonClick={onToolbarButtonClick} />
+        <StyledWallet
           transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={setTransactionsTabOpen}
+          setShowWalletList={setShowWalletList}
         />
-      </WidgetFrame>
-      <SocialButtons />
-    </StyledPage>
+        <WidgetFrame open={transactionsTabOpen}>
+          <SwapWidget
+            showWalletList={showWalletList}
+            activeInformationModal={activeInformationModal}
+            setShowWalletList={setShowWalletList}
+            onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
+            afterInformationModalClose={() => setActiveInformationModal(null)}
+            transactionsTabOpen={transactionsTabOpen}
+          />
+        </WidgetFrame>
+        <SocialButtons />
+      </StyledPage>
+      <TemporaryMobileLanding />
+    </>
   );
 };
 
