@@ -9,34 +9,19 @@ import {
 } from "../../styled-components/Modal/Modal";
 import JoinModal from "./subcomponents/JoinModal/JoinModal";
 
-export type InformationType = "stats" | "about" | "join";
+export type InformationPageType = "stats" | "join";
 
-type InformationModalProps = {
-  activeModal: InformationType | null;
-  onCloseModalClick: () => void;
+type InformationPageProps = {
+  activeModal: InformationPageType | null;
 };
 
-const InformationModals: FC<InformationModalProps> = ({
+const InformationModals: FC<InformationPageProps> = ({
   activeModal,
-  onCloseModalClick,
 }) => {
-  // TODO: For some reason StyledModal doesn't inherit theme, so we have to import it again here.
-  const theme = useAppSelector(selectTheme);
-
   return (
-    <StyledModal
-      theme={theme === "dark" ? darkTheme : lightTheme}
-      isOpen={!!activeModal}
-      onBackgroundClick={onCloseModalClick}
-      onEscapeKeydown={onCloseModalClick}
-    >
+    <>
       {activeModal === "join" && <JoinModal />}
-      <ModalCloseButton
-        icon="exit-modal"
-        iconSize={1.5}
-        onClick={onCloseModalClick}
-      />
-    </StyledModal>
+    </>
   );
 };
 
