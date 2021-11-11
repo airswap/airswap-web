@@ -7,7 +7,6 @@ export const Container = styled.div`
   padding: 0 1.375rem;
   width: 100vw;
   min-height: 100%;
-  overflow-x: hidden;
   position: relative;
   display: none;
   @media ${breakPoints.phoneOnly} {
@@ -16,7 +15,6 @@ export const Container = styled.div`
   @media ${breakPoints.phoneLandscape} {
     display: block;
   }
-  overflow-x: hidden;
 `;
 
 export const LogoHeader = styled.div`
