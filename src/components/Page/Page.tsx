@@ -35,6 +35,7 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
           setTransactionsTabOpen={setTransactionsTabOpen}
           setShowWalletList={setShowWalletList}
         />
+
         <WidgetFrame open={transactionsTabOpen}>
           <SwapWidget
             showWalletList={showWalletList}

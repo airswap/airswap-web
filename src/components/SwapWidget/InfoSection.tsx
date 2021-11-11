@@ -89,6 +89,21 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
+  if (
+    isConnected &&
+    failedToFetchAllowances &&
+    (!!bestTradeOption || isWrapping)
+  ) {
+    return (
+      <>
+        <InfoHeading>{t("balances:failedToFetchAllowances")}</InfoHeading>
+        <InfoSubHeading>
+          {t("balances:failedToFetchAllowancesCta")}
+        </InfoSubHeading>
+      </>
+    );
+  }
+
   if (isFetchingOrders) {
     return (
       <>
