@@ -100,10 +100,10 @@ export const BackgroundImage = styled.div`
   right: 0;
   width: 100%;
   height: 80%;
-  background-image: url("images/background-tokens.png");
+  background-image: url("images/background-mobile.png");
   background-position: right bottom;
   background-repeat: no-repeat;
-  background-size: 365px 400px;
+  background-size: 360px 227px;
   z-index: -1;
 
   display: none;
