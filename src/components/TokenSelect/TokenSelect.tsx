@@ -6,10 +6,10 @@ import { TokenInfo } from "@airswap/types";
 import {
   AmountInput,
   AmountAndDetailsContainer,
-  FlexRow,
+  ContainingButton,
   TokenSelectContainer,
   StyledSelectItem,
-  StyledSelectButton,
+  StyledSelector,
   PlaceHolderBar,
   PlaceholderContainer,
   StyledLabel,
@@ -90,9 +90,9 @@ const TokenSelect: FC<TokenSelectProps> = ({
 
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
-      <FlexRow>
+      <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
         <TokenLogoLeft size="large" tokenInfo={selectedToken} />
-        <StyledSelectButton onClick={onChangeTokenClicked} disabled={readOnly}>
+        <StyledSelector>
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
             <StyledSelectButtonContent>
@@ -100,9 +100,9 @@ const TokenSelect: FC<TokenSelectProps> = ({
             </StyledSelectButtonContent>
             <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
-        </StyledSelectButton>
-        <TokenSelectFocusBorder position="left" />
-      </FlexRow>
+        </StyledSelector>
+      </ContainingButton>
+      <TokenSelectFocusBorder position="left" />
       {includeAmountInput ? (
         <InputAndMaxButtonWrapper>
           <AmountAndDetailsContainer>
