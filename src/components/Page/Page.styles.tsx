@@ -46,6 +46,10 @@ export const StyledPage = styled.div`
     padding-left: 0;
   }
 
+  @media ${breakPoints.phoneLandscape} {
+    display: none;
+  }
+
   @media ${breakPoints.phoneOnly} {
     display: none;
   }
