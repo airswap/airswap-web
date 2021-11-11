@@ -101,8 +101,8 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelector>
-        <TokenSelectFocusBorder position="left" />
       </ContainingButton>
+      <TokenSelectFocusBorder position="left" />
       {includeAmountInput ? (
         <InputAndMaxButtonWrapper>
           <AmountAndDetailsContainer>
