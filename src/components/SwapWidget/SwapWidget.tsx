@@ -222,6 +222,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Reset amount when the chainId changes.
   useEffect(() => {
+    setAllowanceFetchFailed(false);
     setBaseAmount(initialBaseAmount);
     dispatch(clearTradeTerms());
     dispatch(clear());
@@ -246,6 +247,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       swapType = "swapWithWrap";
     }
   }
+
+  const quoteAmount =
+    swapType === "wrapOrUnwrap"
+      ? baseAmount
+      : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
 
   const hasApprovalPending = (tokenId: string | undefined) => {
     if (tokenId === undefined) return false;
@@ -697,12 +703,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             isRequesting={isRequestingQuotes}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
-            quoteAmount={
-              swapType === "wrapOrUnwrap"
-                ? baseAmount
-                : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || ""
-            }
-            disabled={!active || allowanceFetchFailed}
+            quoteAmount={quoteAmount}
+            disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
               !!bestTradeOption ||
               isWrapping ||
