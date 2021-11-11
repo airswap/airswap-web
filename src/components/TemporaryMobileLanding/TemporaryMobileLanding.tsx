@@ -16,14 +16,14 @@ import {
 
 const socialsList = [
   {
+    iconName: "learn",
+    title: "learn",
+    link: "https://about.airswap.io/",
+  },
+  {
     iconName: "vote",
     title: "vote",
     link: "https://about.airswap.io/guides/voters",
-  },
-  {
-    iconName: "about",
-    title: "learn",
-    link: "https://about.airswap.io/",
   },
   {
     iconName: "medium",
@@ -49,7 +49,7 @@ const TemporaryMobileLanding = () => {
         <AirSwapLogo />
       </LogoHeader>
       <Title>AirSwap powers peer-to-peer trading.</Title>
-      <Subtitle>Welcome! Please select a destination</Subtitle>
+      <Subtitle>Please select a destination</Subtitle>
       <SocialsContainer>
         {socialsList.map((social) => {
           return (
