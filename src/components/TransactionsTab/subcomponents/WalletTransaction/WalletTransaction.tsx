@@ -4,6 +4,8 @@ import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
+import BigNumber from "bignumber.js";
+
 import {
   SubmittedApproval,
   SubmittedOrder,
@@ -76,6 +78,16 @@ const WalletTransaction = ({
       tokens,
       chainId
     );
+
+    // For last look transactions, the user has sent the signer amount plus
+    // the fee:
+    let signerAmountWithFee: string | null = null;
+    if (tx.protocol === "last-look") {
+      signerAmountWithFee = new BigNumber(tx.order.signerAmount)
+        .multipliedBy(1.0007)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .toString();
+    }
     return (
       <Container>
         <TextContainer>
@@ -95,7 +107,10 @@ const WalletTransaction = ({
                     senderToken: senderToken.symbol,
                     signerAmount: parseFloat(
                       Number(
-                        formatUnits(tx.order.signerAmount, signerToken.decimals)
+                        formatUnits(
+                          signerAmountWithFee || tx.order.signerAmount,
+                          signerToken.decimals
+                        )
                       ).toFixed(5)
                     ),
                     signerToken: signerToken.symbol,

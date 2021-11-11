@@ -27,7 +27,7 @@ export const calculateQuoteAmount: (params: {
       throw new Error("formulaic pricing not yet supported");
     }
     const signerAmount = new BigNumber(baseAmount)
-      .multipliedBy(1 - parseInt(signerFee) / 1000)
+      .dividedBy(1.0007)
       // .integerValue(BigNumber.ROUND_CEIL)
       .toString();
 
@@ -49,7 +49,7 @@ export const calculateQuoteAmount: (params: {
     const signerAmount = new BigNumber(
       calculateCostFromLevels(senderAmount, levels)
     )
-      .multipliedBy(1 + parseInt(signerFee) / 1000)
+      .multipliedBy(1.0007)
       // .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
     return signerAmount;
