@@ -1,6 +1,5 @@
 {
-  "zeroSlippage": "Atomiske bytter uten prisglidning",
-  "useAtOwnRisk": "Denne versjonen brukes på egen risiko",
-  "alphaPreview": "Appen oppdateres regelmessig",
+  "welcomeHeading": "Denne versjonen brukes på egen risiko",
+  "welcomeMessage": "Appen oppdateres regelmessig",
   "includesFee": "Inkludert avgift på 0.07%"
 }

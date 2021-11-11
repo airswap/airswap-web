@@ -1,6 +1,5 @@
 {
-  "zeroSlippage": "Zero slippage atomic swaps",
-  "useAtOwnRisk": "Use this preview at your own risk",
-  "alphaPreview": "Check back often for updates",
+  "welcomeHeading": "Secure and efficient P2P swaps",
+  "welcomeMessage": "Decentralized trading with zero slippage ",
   "includesFee": "Includes 0.07% fee"
 }
