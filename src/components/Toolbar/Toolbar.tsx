@@ -30,6 +30,11 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
       <ToolbarButtonsContainer>
         {/*<ToolbarButton iconName="bars" text={t("common:stats")} />*/}
         <ToolbarButton
+          iconName="learn"
+          text={t("common:learn")}
+          href="https://about.airswap.io/"
+        />
+        <ToolbarButton
           iconName="vote"
           text={t("common:vote")}
           href="https://activate.codefi.network/staking/airswap/governance"
@@ -38,11 +43,6 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
           iconName="code"
           text={t("common:build")}
           href="https://github.com/airswap"
-        />
-        <ToolbarButton
-          iconName="about"
-          text={t("common:about")}
-          href="https://about.airswap.io/"
         />
         <ToolbarButton
           iconName="contact-support"

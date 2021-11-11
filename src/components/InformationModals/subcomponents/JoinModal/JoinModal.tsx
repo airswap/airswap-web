@@ -39,8 +39,6 @@ const JoinModal: FC = () => {
     <ScrollableModalContainer>
       <ModalParagraph>{t("information:join.intro")}</ModalParagraph>
 
-      <ModalParagraph>{t("information:join.paragraph")}</ModalParagraph>
-
       <ModalSubTitle type="h2">
         {t("information:join.getStarted")}
       </ModalSubTitle>
