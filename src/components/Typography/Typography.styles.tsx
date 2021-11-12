@@ -116,7 +116,10 @@ export const StyledInfoSubHeading = makeTypographyComponent(
 export const StyledFormLabel = makeTypographyComponent(
   "formLabel",
   css`
-    color: ${(props) => props.theme.colors.lightGrey};
+    color: ${({ theme }) =>
+      theme.name === "dark"
+        ? theme.colors.lightGrey
+        : theme.colors.placeholderGrey};
   `
 );
 export const StyledFormInput = makeTypographyComponent(
