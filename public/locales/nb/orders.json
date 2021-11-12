@@ -44,6 +44,7 @@
   "swapFailedCallToAction": "Vennligst prøv igjen",
   "swapRejected": "Pris utløpt",
   "swapRejectedCallToAction": "Vennligst prøv igjen",
+  "track": "Spor",
   "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
   "editCustomTokens": "Endre liste"
 }
