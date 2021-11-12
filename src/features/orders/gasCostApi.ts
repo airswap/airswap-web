@@ -1,10 +1,17 @@
+import { wethAddresses } from "@airswap/constants";
+import { TokenInfo } from "@airswap/types";
+
+import { BigNumber } from "bignumber.js";
+import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
+
+import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
+import uniswapPairAbi from "../../uniswap/abis/pair.json";
+import uniswapDeploys from "../../uniswap/deployments";
+
 const apiKey = process.env.REACT_APP_DEFIPULSE_API_KEY;
 const apiUrl = "https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json";
 
-// TODO:
-// - Estimate amount (i.e. number) of gas used for a swap
-// - Be able to convert the cost of the transaction in ETH into any
-//   token for comparisons
+const gasUsedPerSwap = 150000;
 
 type GasApiResponse = {
   fast: number;
@@ -21,16 +28,86 @@ type GasApiResponse = {
   gasPriceRange: Record<number, number>;
 };
 
-const getFastGasPrice: () => Promise<number | null> = async () => {
+const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
   const urlWithKey = `${apiUrl}?api-key=${apiKey}`;
   try {
     const response = await fetch(urlWithKey);
     const data: GasApiResponse = await response.json();
-    return data.fast;
+    // Note that the value returned is in 10ths of a gwei, hence divide by 10^10
+    return new BigNumber(data.fast).dividedBy(10 ** 10);
   } catch (e) {
     console.error("Error getting gas price from API: ", e);
     return null;
   }
 };
 
-export default getFastGasPrice;
+const getPriceOfTokenInWethFromUniswap: (
+  tokenInfo: TokenInfo,
+  provider: providers.Provider,
+  chainId: number
+) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
+  const tokenAddress = tokenInfo.address;
+  const wethAddress = wethAddresses[String(chainId)];
+  if (tokenAddress === wethAddress) return new BigNumber(1);
+
+  // Get factory so we can find the token <> weth pair pool.
+  const FactoryContract = new Contract(
+    uniswapDeploys.factory,
+    uniswapFactoryAbi,
+    provider
+  );
+  const pairAddress = await FactoryContract.getPair(tokenAddress, wethAddress);
+  const pairContract = new Contract(pairAddress, uniswapPairAbi, provider);
+
+  // Need to know which token (0 or 1) is WETH, plus how much of each token is
+  // in the pool.
+  const promises = [pairContract.token0(), pairContract.getReserves()];
+  const result = await Promise.all(promises);
+  const typedResult = result as [string, [EthersBigNumber, EthersBigNumber]];
+  const [token0Address, [reserve0, reserve1]] = typedResult;
+
+  let wethUnits: BigNumber, tokenUnits: BigNumber;
+
+  if (token0Address.toLowerCase() === wethAddress) {
+    wethUnits = new BigNumber(reserve0.toString()).dividedBy(10 ** 18);
+    tokenUnits = new BigNumber(reserve1.toString()).dividedBy(
+      10 ** tokenInfo.decimals
+    );
+  } else {
+    tokenUnits = new BigNumber(reserve0.toString()).dividedBy(
+      10 ** tokenInfo.decimals
+    );
+    wethUnits = new BigNumber(reserve1.toString()).dividedBy(10 ** 18);
+  }
+
+  // UniSwap has approximately equal value of each token in the pool.
+  return wethUnits.dividedBy(tokenUnits);
+};
+
+const calculateGasCostOfSwapInTokens: (
+  tokenInfo: TokenInfo,
+  provider: providers.Provider,
+  chainId: number
+) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
+  if (chainId !== 1) {
+    console.warn("-- GAS ESTIMATIONS CURRENTLY MAINNET ONLY --");
+  }
+
+  const [tokenPriceInWeth, gasPriceInEth] = await Promise.all([
+    getPriceOfTokenInWethFromUniswap(tokenInfo, provider, chainId),
+    getFastGasPrice(),
+  ]);
+  if (gasPriceInEth) {
+    return gasPriceInEth
+      ?.dividedBy(tokenPriceInWeth)
+      .multipliedBy(gasUsedPerSwap);
+  } else {
+    return new BigNumber(0);
+  }
+};
+
+export {
+  getFastGasPrice,
+  getPriceOfTokenInWethFromUniswap,
+  calculateGasCostOfSwapInTokens,
+};
