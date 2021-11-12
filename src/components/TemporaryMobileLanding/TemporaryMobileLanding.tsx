@@ -23,7 +23,7 @@ const socialsList = [
   {
     iconName: "vote",
     title: "vote",
-    link: "https://about.airswap.io/guides/voters",
+    link: "https://activate.codefi.network/staking/airswap/governance",
   },
   {
     iconName: "medium",
