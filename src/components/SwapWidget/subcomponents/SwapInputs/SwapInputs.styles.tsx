@@ -19,16 +19,12 @@ export const SwapIconContainer = styled.div`
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid
-    ${(props) =>
-      props.theme.name === "dark"
-        ? props.theme.colors.borderGrey
-        : props.theme.colors.darkGrey};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.lightGrey
-      : props.theme.colors.placeholderGrey};
+      : props.theme.colors.darkGrey};
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
   z-index: 1;

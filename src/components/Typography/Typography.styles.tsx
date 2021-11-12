@@ -117,9 +117,7 @@ export const StyledFormLabel = makeTypographyComponent(
   "formLabel",
   css`
     color: ${({ theme }) =>
-      theme.name === "dark"
-        ? theme.colors.lightGrey
-        : theme.colors.placeholderGrey};
+      theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
   `
 );
 export const StyledFormInput = makeTypographyComponent(

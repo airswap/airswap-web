@@ -1,10 +1,13 @@
 import { css } from "styled-components/macro";
 
+import convertHexToRGBA from "../helpers/transformHexToRgba";
+
 export const ScrollBarStyle = css`
   &::-webkit-scrollbar {
     border-radius: 0.5rem;
     width: 0.5rem;
-    background: ${(props) => props.theme.colors.darkGrey};
+    background: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.darkGrey : theme.colors.borderGrey};
   }
 
   &::-webkit-scrollbar-thumb {
@@ -15,7 +18,11 @@ export const ScrollBarStyle = css`
 `;
 
 export const InputOrButtonBorderStyle = css`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border: 1px solid
+    ${({ theme }) =>
+      theme.name === "dark"
+        ? theme.colors.borderGrey
+        : convertHexToRGBA(theme.colors.borderGrey, 0.2)};
 
   &:hover,
   &:focus {
@@ -32,9 +39,7 @@ export const InputOrButtonBorderStyle = css`
 `;
 
 export const InputOrButtonBorderStyleType2 = css`
-  border: 1px solid
-    ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.borderGrey : theme.colors.darkGrey};
+  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
 
   &:hover,
   &:focus {

@@ -3,8 +3,8 @@ import styled from "styled-components/macro";
 
 import {
   ScrollBarStyle,
-  InputOrButtonBorderStyle,
   BorderedPill,
+  InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import Button from "../Button/Button";
 import {
@@ -131,7 +131,7 @@ export const IconContainer = styled.div`
 `;
 
 export const BackButton = styled(motion.button)`
-  ${InputOrButtonBorderStyle};
+  ${InputOrButtonBorderStyleType2};
 
   display: flex;
   align-items: center;
@@ -166,7 +166,7 @@ export const Balances = styled(InfoHeading)`
 
 export const WalletInfoButton = styled.button`
   ${BorderedPill}
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyleType2}
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`

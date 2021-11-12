@@ -2,7 +2,6 @@ import styled from "styled-components/macro";
 
 import {
   BorderlessButtonStyle,
-  InputOrButtonBorderStyle,
   InputOrButtonBorderStyleType2,
   ScrollBarStyle,
 } from "../../style/mixins";
@@ -48,7 +47,9 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
   font-weight: ${(props) => (props.active ? "600" : "400")};
   color: ${(props) =>
     props.active
-      ? props.theme.colors.alwaysWhite
+      ? props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.active ? props.theme.colors.borderGrey : "transparent"};
@@ -92,6 +93,7 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
 
   &:hover,
   &:focus {
-    color: ${(props) => props.theme.colors.white};
+    color: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   }
 `;

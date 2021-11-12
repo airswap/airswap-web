@@ -5,7 +5,8 @@ import Icon from "../../../Icon/Icon";
 
 export const StyledIcon = styled(Icon)`
   margin-bottom: 0.375rem;
-  color: ${(props) => props.theme.colors.darkSubText};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.primary};
 `;
 
 export const Text = styled.div`
@@ -13,7 +14,8 @@ export const Text = styled.div`
   font-weight: 700;
   text-transform: uppercase;
   line-height: 2;
-  color: ${(props) => props.theme.colors.darkSubText};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.primary};
 `;
 
 export const GuideButtonContainer = styled.a`
@@ -27,7 +29,7 @@ export const GuideButtonContainer = styled.a`
   height: 5.5rem;
   overflow: hidden;
 
-  &:not(&:last-of-type):not(:focus) {
+  &:not(&:last-of-type):not(:focus):not(:hover) {
     border-right: 0;
   }
 
@@ -43,6 +45,7 @@ export const GuideButtonContainer = styled.a`
 
   ${InputOrButtonBorderStyleType2}
 
+  &:hover,
   &:focus {
     z-index: 1;
 
@@ -56,18 +59,14 @@ export const GuideButtonContainer = styled.a`
   }
 
   &:hover {
-    border: 1px solid
-      ${({ theme }) =>
-        theme.name === "dark"
-          ? theme.colors.borderGrey
-          : theme.colors.darkGrey};
-
     ${StyledIcon} {
-      color: ${(props) => props.theme.colors.white};
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
 
     ${Text} {
-      color: ${(props) => props.theme.colors.white};
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
   }
 

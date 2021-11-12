@@ -165,10 +165,7 @@ export const TokenSelectContainer = styled.div<{
   height: 4.5rem;
   padding: 1rem;
   margin-bottom: 0.5rem;
-  border: 1px solid ${(props) =>
-    props.theme.name === "dark"
-      ? props.theme.colors.borderGrey
-      : props.theme.colors.darkGrey};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background-color: ${(props) =>
     props.theme.name === "dark"

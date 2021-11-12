@@ -131,7 +131,7 @@ const TransactionsTab = ({
             exit={{ opacity: 0 }}
             onClick={() => setTransactionsTabOpen(false)}
           >
-            <Icon name="chevron-right" iconSize={1} />
+            <Icon name="chevron-right" iconSize={1.5} />
           </BackButton>
           <WalletHeader>
             <NetworkInfoContainer>

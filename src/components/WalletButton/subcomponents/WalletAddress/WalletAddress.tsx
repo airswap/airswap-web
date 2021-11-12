@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 
 import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
-import { InfoHeading } from "../../../Typography/Typography";
 import {
   ConnectionStatusCircle,
   Button,

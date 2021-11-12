@@ -1,9 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
-import {
-  InputOrButtonBorderStyle,
-  InputOrButtonBorderStyleType2,
-} from "../../../../style/mixins";
+import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
 export const Container = styled.div`

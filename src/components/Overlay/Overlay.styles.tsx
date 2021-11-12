@@ -81,21 +81,6 @@ export const StyledInfoSubHeading = styled(InfoSubHeading)`
 const OverlayActionButtonStyle = css`
   margin-top: auto;
   justify-self: flex-end;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  background-color: ${({ theme }) =>
-    theme.name === "dark" ? "transparent" : theme.colors.primary};
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.black};
-
-  &:hover,
-  &:focus {
-    color: ${({ theme }) => theme.colors.alwaysWhite};
-    border: 1px solid ${(props) => props.theme.colors.lightGrey};
-  }
-
-  &:active {
-    border: 1px solid ${(props) => props.theme.colors.primary};
-  }
 `;
 
 export const OverlayActionButton = styled(Button)`

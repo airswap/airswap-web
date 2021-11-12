@@ -94,7 +94,7 @@ export const LegendDivider = styled.div`
   margin: 0 1rem;
   width: 100%;
   height: 1px;
-  background: ${(props) => props.theme.colors.borderGrey};
+  background: ${({ theme }) => theme.colors.borderGrey};
 `;
 
 export const InactiveTitleContainer = styled.div`
