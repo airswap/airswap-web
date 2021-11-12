@@ -8,13 +8,33 @@ export const ScrollBarStyle = css`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.colors.white};
+    background: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     border-radius: 0.5rem;
   }
 `;
 
 export const InputOrButtonBorderStyle = css`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
+
+  &:hover,
+  &:focus {
+    outline: 0;
+    border-color: ${(props) => props.theme.colors.lightGrey};
+  }
+
+  &:active {
+    border-color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.primary
+        : props.theme.colors.alwaysWhite};
+  }
+`;
+
+export const InputOrButtonBorderStyleType2 = css`
+  border: 1px solid
+    ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.borderGrey : theme.colors.darkGrey};
 
   &:hover,
   &:focus {

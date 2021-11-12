@@ -7,6 +7,7 @@ import {
   ConnectionStatusCircle,
   Button,
   Placeholder,
+  WalletAddressText,
 } from "./WalletAddress.styles";
 
 type WalletAddressPropsType = {
@@ -36,13 +37,13 @@ const WalletAddress = ({
     ) : (
       <BorderedButton $glow={glow}>
         <ConnectionStatusCircle $connected={!!address} />
-        <InfoHeading>
+        <WalletAddressText>
           {isUnsupportedNetwork
             ? t("unsupportedNetwork")
             : addressOrName
             ? addressOrName
             : t("notConnected")}
-        </InfoHeading>
+        </WalletAddressText>
       </BorderedButton>
     );
 

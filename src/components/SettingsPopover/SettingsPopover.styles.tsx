@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
   ScrollBarStyle,
 } from "../../style/mixins";
 
@@ -20,7 +21,8 @@ export const Container = styled.div<ContainerProps>`
   right: 13rem;
   transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
-  background-color: ${(props) => props.theme.colors.darkGrey};
+  background-color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.black};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -39,16 +41,17 @@ type ButtonStyleProps = {
 };
 
 export const ThemeButton = styled.button<ButtonStyleProps>`
-  border: ${(props) => props.theme.colors.borderGrey} 1px solid;
+  ${InputOrButtonBorderStyleType2};
+
+  line-height: 1.5;
+  font-size: 0.875rem;
   font-weight: ${(props) => (props.active ? "600" : "400")};
   color: ${(props) =>
-    props.active ? props.theme.colors.white : props.theme.colors.darkSubText};
+    props.active
+      ? props.theme.colors.alwaysWhite
+      : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.active ? props.theme.colors.borderGrey : "transparent"};
-  line-height: 1.5rem;
-  font-size: 0.875rem;
-
-  ${InputOrButtonBorderStyle}
 `;
 
 type LocaleContainerType = {
@@ -70,6 +73,8 @@ export const LocaleContainer = styled.div<LocaleContainerType>`
 `;
 
 export const LocaleButton = styled.button<ButtonStyleProps>`
+  ${BorderlessButtonStyle};
+
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -79,11 +84,11 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   font-weight: ${(props) => (props.active ? "600" : "400")};
   font-size: 0.875rem;
   color: ${(props) =>
-    props.active ? props.theme.colors.white : props.theme.colors.darkSubText};
+    props.active
+      ? props.theme.colors.alwaysWhite
+      : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.active ? props.theme.colors.borderGrey : "transparent"};
-
-  ${BorderlessButtonStyle}
 
   &:hover,
   &:focus {

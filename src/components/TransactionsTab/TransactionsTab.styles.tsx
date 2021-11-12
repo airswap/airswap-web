@@ -143,7 +143,8 @@ export const BackButton = styled(motion.button)`
   height: 3rem;
   border-radius: 50%;
   background-color: ${(props) => props.theme.colors.black};
-  color: ${(props) => props.theme.colors.white};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const NetworkInfoContainer = styled.div`

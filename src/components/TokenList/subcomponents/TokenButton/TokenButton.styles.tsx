@@ -25,7 +25,8 @@ export const TokenName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${(props) => props.theme.colors.lightGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 `;
 
 const scaleInAnimation = keyframes`
@@ -109,4 +110,6 @@ export const Balance = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;

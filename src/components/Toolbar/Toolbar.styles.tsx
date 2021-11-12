@@ -17,7 +17,10 @@ export const ToolbarContainer = styled.div`
   padding: 0 1rem 0;
   border-right: 1px solid ${(props) => props.theme.colors.borderGrey};
   overflow: hidden;
-  background: ${(props) => props.theme.colors.black};
+  background: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.black
+      : props.theme.colors.primary};
   z-index: 1;
 
   @media ${breakPoints.tabletPortraitUp} {

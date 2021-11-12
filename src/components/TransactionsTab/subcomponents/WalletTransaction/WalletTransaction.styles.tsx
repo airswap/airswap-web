@@ -14,6 +14,8 @@ export const Container = styled.div`
   gap: 1rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 0.1875rem;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
   & + & {
     margin-top: 0.5rem;
@@ -58,7 +60,7 @@ export const SpanSubtitle = styled.span`
 export const StyledTransactionLink = styled(TransactionLink)`
   align-items: center;
   &:hover {
-    color: ${(props) => props.theme.colors.alwaysWhite};
+    color: ${(props) => props.theme.colors.white};
   }
 `;
 

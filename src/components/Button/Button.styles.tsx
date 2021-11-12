@@ -35,6 +35,14 @@ function getButtonHoverBackground(
   }
 }
 
+function getButtonHoverBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
+  if (intent === "neutral") {
+    return theme.colors.lightGrey;
+  }
+
+  return theme.colors.primaryDark;
+}
+
 export const Text = styled.div`
   transition: opacity 0.3s ease-out;
 `;
@@ -83,9 +91,7 @@ export const ButtonStyle = css<StyledButtonProps>`
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>
-      props.intent === "neutral"
-        ? props.theme.colors.lightGrey
-        : "props.theme.colors.primaryDark"};
+      getButtonHoverBorderColor(props.theme, props.intent)};
   }
 
   &:active {
