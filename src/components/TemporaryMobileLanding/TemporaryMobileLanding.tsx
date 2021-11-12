@@ -38,7 +38,7 @@ const socialsList = [
   {
     iconName: "discord",
     title: "discord",
-    link: "chat.airswap.io",
+    link: "https://chat.airswap.io/",
   },
 ];
 
