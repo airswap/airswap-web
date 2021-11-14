@@ -103,7 +103,10 @@ export const BackgroundImage = styled.div`
   right: 0;
   width: 100%;
   height: 80%;
-  background-image: url("images/background-mobile.png");
+  background-image: url(${({ theme }) =>
+    theme.name === "dark"
+      ? "images/background-mobile-dark.png"
+      : "images/background-mobile-light.png"});
   background-position: right bottom;
   background-repeat: no-repeat;
   background-size: 360px 227px;
