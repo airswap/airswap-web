@@ -13,13 +13,20 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     overflow-x: hidden;
     font-family: ${fontLoos};
-    color: ${(props) =>
+    color: ${(props) => props.theme.colors.alwaysWhite};
+    background: ${(props) =>
       props.theme.name === "dark"
-        ? props.theme.colors.white
+        ? props.theme.colors.black
         : props.theme.colors.primary};
-    background: ${(props) => props.theme.colors.black};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.alwaysWhite
+        : props.theme.colors.primary};
   }
 
   code {

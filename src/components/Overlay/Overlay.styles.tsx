@@ -81,36 +81,28 @@ export const StyledInfoSubHeading = styled(InfoSubHeading)`
 const OverlayActionButtonStyle = css`
   margin-top: auto;
   justify-self: flex-end;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.black};
-    background-color: ${(props) => props.theme.colors.white};
-  }
 `;
 
 export const OverlayActionButton = styled(Button)`
   ${OverlayActionButtonStyle};
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.black};
-    background-color: ${(props) => props.theme.colors.white};
-  }
 `;
 
 export const OverlayActionLink = styled.a`
   ${ButtonStyle}
   ${OverlayActionButtonStyle};
+  color: ${(props) => props.theme.colors.alwaysWhite};
   background-color: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.white};
 
+  &:focus,
   &:hover {
-    color: ${(props) => props.theme.colors.white};
+    outline: 0;
+    border-color: ${(props) => props.theme.colors.primaryDark};
+    color: ${(props) => props.theme.colors.alwaysWhite};
     background-color: ${(props) => props.theme.colors.primaryDark};
+  }
+
+  &:active {
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;
 

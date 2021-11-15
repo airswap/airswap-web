@@ -202,6 +202,7 @@ const TokenList = ({
           )}
         </StyledScrollContainer>
         <OverlayActionButton
+          intent="primary"
           ref={buttonRef}
           onClick={() => setEditMode(!editMode)}
         >

@@ -141,6 +141,10 @@ export const StyledSelectItem = styled(SelectItem)`
   align-items: center;
   line-height: 1;
   gap: 0.375rem;
+  color: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.white
+      : props.theme.colors.primary};
 `;
 
 export const StyledLabel = styled(FormLabel)`
@@ -166,7 +170,7 @@ export const TokenSelectContainer = styled.div<{
   background-color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.darkGrey
-      : props.theme.colors.alwaysWhite};
+      : props.theme.colors.primaryLight};
   overflow: hidden;
 
   ${PlaceHolderBar} {
