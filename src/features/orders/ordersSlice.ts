@@ -525,12 +525,6 @@ export const selectBestOption = createSelector(
     const rfqGasCost = gasPriceInQuoteTokens
       ?.multipliedBy(gasUsedPerSwap)
       .toString();
-    console.log({
-      lastLookQuoteAmount,
-      rfqQuoteAmount,
-      rfqQuoteAmountMinusGas,
-      rfqGasCost,
-    });
 
     if (
       pricing &&
