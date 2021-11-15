@@ -517,15 +517,6 @@ export const selectBestOption = createSelector(
       if (!lastLookOrder) return rfqOrder;
     }
 
-    const lastLookQuoteAmount = pricing?.quoteAmount;
-    const rfqQuoteAmount = bestRFQQuoteTokens?.toString();
-    const rfqQuoteAmountMinusGas = bestRFQQuoteTokens!
-      .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
-      .toString();
-    const rfqGasCost = gasPriceInQuoteTokens
-      ?.multipliedBy(gasUsedPerSwap)
-      .toString();
-
     if (
       pricing &&
       bestRFQQuoteTokens!
