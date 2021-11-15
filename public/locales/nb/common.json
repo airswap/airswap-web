@@ -25,6 +25,7 @@
   "stats": "stats",
   "vote": "stem",
   "build": "bygg",
-  "learn": "om",
-  "join": "bli med"
+  "learn": "lær",
+  "join": "bli med",
+  "reloadPage": "Last siden på nytt"
 }
