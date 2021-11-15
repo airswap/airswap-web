@@ -26,3 +26,10 @@ export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
  * a price.
  */
 export const ADDITIONAL_QUOTE_BUFFER = 2 * 1000;
+
+/**
+ * Interval at which to update the reference prices for gas and token prices
+ * that are used when determining the best order to estimate the approximate
+ * impact of the gas cost for RFQ transactions.
+ */
+export const REFERENCE_PRICE_UPDATE_INTERVAL_MS = 24 * 1000;

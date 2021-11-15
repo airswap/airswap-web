@@ -11,7 +11,7 @@ import uniswapDeploys from "../../uniswap/deployments";
 const apiKey = process.env.REACT_APP_DEFIPULSE_API_KEY;
 const apiUrl = "https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json";
 
-const gasUsedPerSwap = 150000;
+export const gasUsedPerSwap = 185555;
 
 type GasApiResponse = {
   fast: number;
@@ -34,7 +34,7 @@ const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
     const response = await fetch(urlWithKey);
     const data: GasApiResponse = await response.json();
     // Note that the value returned is in 10ths of a gwei, hence divide by 10^10
-    return new BigNumber(data.fast).dividedBy(10 ** 10);
+    return new BigNumber(data.fastest).dividedBy(10 ** 10);
   } catch (e) {
     console.error("Error getting gas price from API: ", e);
     return null;
