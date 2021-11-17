@@ -29,7 +29,7 @@ const useGasPriceSubscriber = () => {
       const updateGasPrice = async () => {
         const price = await getFastGasPrice();
         if (price) {
-          dispatch(setFastGasPrice(price));
+          dispatch(setFastGasPrice(price.toString()));
         }
       };
       intervals.current.gas = window.setInterval(
@@ -64,7 +64,7 @@ const useGasPriceSubscriber = () => {
         dispatch(
           setTokenPrice({
             tokenAddress: token.address,
-            tokenPriceInWeth: price,
+            tokenPriceInWeth: price.toString(),
           })
         );
       };

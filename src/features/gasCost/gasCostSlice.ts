@@ -29,25 +29,24 @@ const gasCostSlice = createSlice({
   name: "gasCost",
   initialState,
   reducers: {
-    setFastGasPrice: (state, action: PayloadAction<BigNumber>) => {
-      state.fastGasPrice = action.payload.toString();
+    setFastGasPrice: (state, action: PayloadAction<string>) => {
+      state.fastGasPrice = action.payload;
     },
     setTokenPrice: (
       state,
       action: PayloadAction<{
         tokenAddress: string;
-        tokenPriceInWeth: BigNumber;
+        tokenPriceInWeth: string;
       }>
     ) => {
-      state.tokenPrices[
-        action.payload.tokenAddress.toLowerCase()
-      ] = action.payload.tokenPriceInWeth.toString();
+      state.tokenPrices[action.payload.tokenAddress.toLowerCase()] =
+        action.payload.tokenPriceInWeth;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setWalletDisconnected, (state) => initialState)
-      .addCase(setWalletConnected, (state) => initialState);
+      .addCase(setWalletDisconnected, () => initialState)
+      .addCase(setWalletConnected, () => initialState);
   },
 });
 

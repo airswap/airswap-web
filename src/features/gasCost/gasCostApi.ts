@@ -84,30 +84,4 @@ const getPriceOfTokenInWethFromUniswap: (
   return wethUnits.dividedBy(tokenUnits);
 };
 
-const calculateGasCostOfSwapInTokens: (
-  tokenInfo: TokenInfo,
-  provider: providers.Provider,
-  chainId: number
-) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
-  if (chainId !== 1) {
-    console.warn("-- GAS ESTIMATIONS CURRENTLY MAINNET ONLY --");
-  }
-
-  const [tokenPriceInWeth, gasPriceInEth] = await Promise.all([
-    getPriceOfTokenInWethFromUniswap(tokenInfo, provider, chainId),
-    getFastGasPrice(),
-  ]);
-  if (gasPriceInEth) {
-    return gasPriceInEth
-      ?.dividedBy(tokenPriceInWeth)
-      .multipliedBy(gasUsedPerSwap);
-  } else {
-    return new BigNumber(0);
-  }
-};
-
-export {
-  getFastGasPrice,
-  getPriceOfTokenInWethFromUniswap,
-  calculateGasCostOfSwapInTokens,
-};
+export { getFastGasPrice, getPriceOfTokenInWethFromUniswap };
