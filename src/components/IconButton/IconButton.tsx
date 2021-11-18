@@ -5,6 +5,7 @@ import { StyledIcon, StyledIconButton } from "./IconButton.styles";
 
 export type IconButtonProps = {
   text?: string;
+  ariaLabel?: string;
   icon: keyof typeof icons;
   iconSize?: number;
   tabIndex?: number;
@@ -14,12 +15,13 @@ export type IconButtonProps = {
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   (
-    { text, icon, iconSize, tabIndex = 0, className, onClick },
+    { text, ariaLabel, icon, iconSize, tabIndex = 0, className, onClick },
     ref
   ): ReactElement => {
     return (
       <StyledIconButton
         hasText={!!text}
+        aria-label={ariaLabel}
         tabIndex={tabIndex}
         className={className}
         onClick={onClick}

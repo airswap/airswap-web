@@ -53,6 +53,7 @@ const Overlay: FC<OverlayProps> = ({
         </TitleSubContainer>
         <CloseButton
           icon="chevron-down"
+          ariaLabel="Close overlay"
           iconSize={1}
           tabIndex={isHidden ? -1 : 0}
           onClick={onClose}

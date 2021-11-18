@@ -53,8 +53,11 @@ const SettingsButton = ({
   return (
     <>
       <Container ref={containerRef} open={transactionsTabOpen}>
-        <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
-          <Icon iconSize={1.5} name="settings" />
+        <SettingsButtonContainer
+          aria-label="settings"
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
+          <Icon iconSize={1.5} name="Settings" />
         </SettingsButtonContainer>
       </Container>
       {settingsOpen && (
