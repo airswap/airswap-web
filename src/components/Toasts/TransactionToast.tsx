@@ -12,11 +12,12 @@ import {
   SubmittedTransaction,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   HiXContainer,
   IconContainer,
+  SwapAmounts,
   TextContainer,
 } from "./Toast.styles";
 
@@ -81,7 +82,7 @@ const TransactionToast = ({
             ? t("toast:approvalFail")
             : t("toast:approvalComplete")}
         </InfoHeading>
-        <InfoSubHeading>
+        <SwapAmounts>
           {(() => {
             if (type === "Order" || type === "Deposit" || type === "Withdraw") {
               if (transaction && senderToken && signerToken) {
@@ -112,8 +113,9 @@ const TransactionToast = ({
             }
             return t("toast:approve", { symbol: approvalToken?.symbol });
           })()}
-        </InfoSubHeading>
+        </SwapAmounts>
       </TextContainer>
+
       <HiXContainer>
         <HiX
           style={{
