@@ -82,6 +82,7 @@ type TransactionsContainerProps = {
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
+  padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
