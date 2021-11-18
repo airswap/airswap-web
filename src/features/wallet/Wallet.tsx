@@ -12,6 +12,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import * as Weth9Contract from "../../assets/weth9.abi.json";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
@@ -48,6 +49,7 @@ import {
   setTransactions,
   TransactionsState,
 } from "../transactions/transactionsSlice";
+import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
   clearLastAccount,
   loadLastAccount,
@@ -63,6 +65,11 @@ type WalletPropsType = {
   setShowWalletList: (x: boolean) => void;
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
+};
+
+const wrapDeploys: { [key: number]: string } = {
+  1: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  4: "0xc778417e063141139fce010982780140aa0cd5ab",
 };
 
 export const Wallet: FC<WalletPropsType> = ({
@@ -97,15 +104,20 @@ export const Wallet: FC<WalletPropsType> = ({
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
   const [lightContract, setLightContract] = useState<Contract>();
+  const [wrapContract, setWrapContract] = useState<Contract>();
 
   useBeforeunload(() => {
     if (lightContract) {
       lightContract.removeAllListeners("Swap");
     }
+    if (wrapContract) {
+      wrapContract.removeAllListeners("Withdrawal");
+      wrapContract.removeAllListeners("Deposit");
+    }
   });
 
   useEffect(() => {
-    if (library && chainId && account && lightContract) {
+    if (library && chainId && account && lightContract && wrapContract) {
       subscribeToSwapEvents({
         account: account!,
         lightContract,
@@ -114,13 +126,23 @@ export const Wallet: FC<WalletPropsType> = ({
         chainId,
         dispatch,
       });
+      subscribeToWrapEvents({
+        wrapContract,
+        //@ts-ignore
+        library,
+        dispatch,
+      });
       return () => {
         if (lightContract) {
           lightContract.removeAllListeners("Swap");
         }
+        if (wrapContract) {
+          wrapContract.removeAllListeners("Withdrawal");
+          wrapContract.removeAllListeners("Deposit");
+        }
       };
     }
-  }, [dispatch, library, chainId, account, lightContract]);
+  }, [dispatch, library, chainId, account, lightContract, wrapContract]);
   useEffect(() => {
     if (chainId && account && library) {
       const lightContract = new Contract(
@@ -130,6 +152,13 @@ export const Wallet: FC<WalletPropsType> = ({
         library
       );
       setLightContract(lightContract);
+      const wrapContract = new Contract(
+        wrapDeploys[chainId],
+        Weth9Contract.abi,
+        //@ts-ignore
+        library
+      );
+      setWrapContract(wrapContract);
     }
   }, [library, chainId, account]);
 
