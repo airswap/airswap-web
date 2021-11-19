@@ -20,6 +20,7 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 24rem;
   height: 100vh;
+  min-height: 100%;
   padding: 0 1.5rem;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
@@ -81,14 +82,13 @@ type TransactionsContainerProps = {
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
+  ${ScrollBarStyle};
+
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
-  padding-bottom: 1rem;
-
-  ${ScrollBarStyle}
 `;
 
 export const TransactionContainer = styled.div`
@@ -99,6 +99,10 @@ export const TransactionContainer = styled.div`
   flex-grow: 2;
   padding: 1.5rem 0;
   width: 100%;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 `;
 
 export const NoTransactions = styled.div`
@@ -112,12 +116,11 @@ export const NoTransactions = styled.div`
 `;
 
 export const DiconnectButtonContainer = styled.div`
-  padding: 1.5rem 0 1rem 0;
+  padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
-  margin-top: auto;
-  justify-self: flex-end;
+  ${InputOrButtonBorderStyleType2};
 `;
 
 export const IconContainer = styled.div`
