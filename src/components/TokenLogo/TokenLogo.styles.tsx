@@ -27,7 +27,6 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: ${(props) => props.theme.colors.black};
   border-radius: 50%;
   border-color: ${(props) => props.theme.colors.borderGrey};
   border-style: ${(props) => (!props.tokenInfo ? "solid" : "none")};

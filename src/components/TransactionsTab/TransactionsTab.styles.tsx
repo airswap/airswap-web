@@ -3,8 +3,8 @@ import styled from "styled-components/macro";
 
 import {
   ScrollBarStyle,
-  InputOrButtonBorderStyle,
   BorderedPill,
+  InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import Button from "../Button/Button";
 import {
@@ -20,6 +20,7 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 24rem;
   height: 100vh;
+  min-height: 100%;
   padding: 0 1.5rem;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
@@ -81,13 +82,13 @@ type TransactionsContainerProps = {
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
+  ${ScrollBarStyle};
+
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
+  padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
-  padding-bottom: 1rem;
-
-  ${ScrollBarStyle}
 `;
 
 export const TransactionContainer = styled.div`
@@ -98,6 +99,10 @@ export const TransactionContainer = styled.div`
   flex-grow: 2;
   padding: 1.5rem 0;
   width: 100%;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 `;
 
 export const NoTransactions = styled.div`
@@ -111,12 +116,11 @@ export const NoTransactions = styled.div`
 `;
 
 export const DiconnectButtonContainer = styled.div`
-  padding: 1.5rem 0 1rem 0;
+  padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
-  margin-top: auto;
-  justify-self: flex-end;
+  ${InputOrButtonBorderStyleType2};
 `;
 
 export const IconContainer = styled.div`
@@ -131,7 +135,7 @@ export const IconContainer = styled.div`
 `;
 
 export const BackButton = styled(motion.button)`
-  ${InputOrButtonBorderStyle};
+  ${InputOrButtonBorderStyleType2};
 
   display: flex;
   align-items: center;
@@ -143,7 +147,8 @@ export const BackButton = styled(motion.button)`
   height: 3rem;
   border-radius: 50%;
   background-color: ${(props) => props.theme.colors.black};
-  color: ${(props) => props.theme.colors.white};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const NetworkInfoContainer = styled.div`
@@ -165,7 +170,7 @@ export const Balances = styled(InfoHeading)`
 
 export const WalletInfoButton = styled.button`
   ${BorderedPill}
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyleType2}
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`

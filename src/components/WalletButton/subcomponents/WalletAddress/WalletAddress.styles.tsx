@@ -6,6 +6,7 @@ import {
   BorderedPill,
   InputOrButtonBorderStyle,
 } from "../../../../style/mixins";
+import { InfoHeading } from "../../../Typography/Typography";
 
 export const Button = styled.div`
   border: 0;
@@ -13,6 +14,10 @@ export const Button = styled.div`
   padding: 0 1rem;
   cursor: pointer;
   background: none;
+`;
+
+export const WalletAddressText = styled(InfoHeading)`
+  color: ${({ theme }) => theme.colors.alwaysWhite};
 `;
 
 export const BlockiesContainer = styled.div`

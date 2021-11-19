@@ -64,12 +64,13 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
+  const { t } = useTranslation(["wallet"]);
 
   const [overflow, setOverflow] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation(["wallet"]);
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
 
@@ -90,14 +91,26 @@ const TransactionsTab = ({
   }, [handleEscKey]);
 
   useEffect(() => {
-    if (containerRef.current && transactionsScrollRef.current) {
+    if (
+      containerRef.current &&
+      transactionsScrollRef.current &&
+      buttonRef.current
+    ) {
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
-      // subtracting 86 to account for the disconnect button on the bottom
-      setOverflow(
-        scrollHeight + offsetTop > containerRef.current.offsetHeight - 86
-      );
+      const containerHeight = containerRef.current.getBoundingClientRect()
+        .height;
+      const buttonHeight = buttonRef.current.getBoundingClientRect().height;
+      setOverflow(scrollHeight + offsetTop > containerHeight - buttonHeight);
     }
-  }, [containerRef, transactionsScrollRef, width, height]);
+  }, [
+    containerRef,
+    transactionsScrollRef,
+    buttonRef,
+    width,
+    height,
+    open,
+    transactions,
+  ]);
 
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
@@ -131,7 +144,7 @@ const TransactionsTab = ({
             exit={{ opacity: 0 }}
             onClick={() => setTransactionsTabOpen(false)}
           >
-            <Icon name="chevron-right" iconSize={1} />
+            <Icon name="chevron-right" iconSize={1.5} />
           </BackButton>
           <WalletHeader>
             <NetworkInfoContainer>
@@ -211,7 +224,7 @@ const TransactionsTab = ({
               )}
             </TransactionContainer>
           </TransactionsContainer>
-          <DiconnectButtonContainer>
+          <DiconnectButtonContainer ref={buttonRef}>
             <DisconnectButton
               aria-label={t("wallet:disconnectWallet")}
               onClick={onDisconnectWalletClicked}

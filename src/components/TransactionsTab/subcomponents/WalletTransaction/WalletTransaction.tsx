@@ -158,7 +158,7 @@ const WalletTransaction = ({
           (tx.hash ? (
             <StyledTransactionLink chainId={chainId} hash={tx.hash} />
           ) : (
-            <span></span>
+            <span />
           ))}
       </Container>
     );

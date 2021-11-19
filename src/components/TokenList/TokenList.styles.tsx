@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../style/mixins";
+import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
@@ -54,7 +54,7 @@ export const SearchInput = styled(TextInput)`
   background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
-    ${InputOrButtonBorderStyle};
+    ${InputOrButtonBorderStyleType2};
     border-radius: 2px;
     line-height: 2.25;
     padding: 0.25rem 0.625rem;
@@ -94,7 +94,7 @@ export const LegendDivider = styled.div`
   margin: 0 1rem;
   width: 100%;
   height: 1px;
-  background: ${(props) => props.theme.colors.borderGrey};
+  background: ${({ theme }) => theme.colors.borderGrey};
 `;
 
 export const InactiveTitleContainer = styled.div`

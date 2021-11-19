@@ -29,6 +29,8 @@ export const ButtonContainer = styled.div`
 export const HugeTicks = styled(MdDoneAll)`
   font-size: 8rem;
   margin: 1rem auto -4rem auto;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const StyledSwapWidget = styled.div`

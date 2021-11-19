@@ -25,7 +25,19 @@ export const TokenName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${(props) => props.theme.colors.lightGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
+`;
+
+export const Balance = styled.div`
+  font-family: ${fontMono};
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
 `;
 
 const scaleInAnimation = keyframes`
@@ -69,10 +81,17 @@ export const Container = styled.button<ContainerProps>`
 
   &:hover {
     ${TokenName} {
-      color: ${(props) =>
-        props.disabled
-          ? props.theme.colors.lightGrey
-          : props.theme.colors.white};
+      color: ${({ theme, disabled }) =>
+        disabled
+          ? theme.colors.lightGrey
+          : theme.name === "dark"
+          ? theme.colors.white
+          : theme.colors.primary};
+    }
+
+    ${Balance} {
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
 
     ${DeleteIcon} {
@@ -97,15 +116,6 @@ export const Symbol = styled.h3`
   font-size: 1.125rem;
   font-weight: 700;
   line-height: calc(1 + (1 / 3));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-export const Balance = styled.div`
-  font-family: ${fontMono};
-  font-weight: 500;
-  text-align: right;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

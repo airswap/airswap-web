@@ -35,6 +35,24 @@ function getButtonHoverBackground(
   }
 }
 
+function getButtonBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
+  if (intent === "neutral") {
+    return theme.name === "dark"
+      ? theme.colors.lightGrey
+      : theme.colors.borderGrey;
+  }
+
+  return theme.colors.borderGrey;
+}
+
+function getButtonHoverBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
+  if (intent === "neutral") {
+    return theme.colors.lightGrey;
+  }
+
+  return theme.colors.primaryDark;
+}
+
 export const Text = styled.div`
   transition: opacity 0.3s ease-out;
 `;
@@ -62,7 +80,7 @@ export const ButtonStyle = css<StyledButtonProps>`
   border-radius: 2px;
   border-style: "solid";
   border-width: 1px;
-  border-color: ${(props) => props.theme.colors.borderGrey};
+  border-color: ${(props) => getButtonBorderColor(props.theme, props.intent)};
   /* Use blue text on a netral light mode button, otherwise white. */
   color: ${(props) =>
     props.intent === "neutral" && props.theme.name === "light"
@@ -83,9 +101,7 @@ export const ButtonStyle = css<StyledButtonProps>`
     background: ${(props) =>
       getButtonHoverBackground(props.theme, props.intent)};
     border-color: ${(props) =>
-      props.intent === "neutral"
-        ? props.theme.colors.lightGrey
-        : "props.theme.colors.primaryDark"};
+      getButtonHoverBorderColor(props.theme, props.intent)};
   }
 
   &:active {
