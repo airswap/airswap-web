@@ -121,9 +121,6 @@ export const DiconnectButtonContainer = styled.div`
 
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
-
-  margin-top: auto;
-  justify-self: flex-end;
 `;
 
 export const IconContainer = styled.div`
