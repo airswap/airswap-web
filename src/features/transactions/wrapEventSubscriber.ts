@@ -8,14 +8,15 @@ import {
   decrementBalanceBy,
   incrementBalanceBy,
 } from "../balances/balancesSlice";
-import { SubmittedTransaction } from "./transactionsSlice";
+import { SubmittedTransactionWithOrder } from "./transactionsSlice";
 
 const handleWrapEvent = (data: any, dispatch: any) => {
   const transactions = store.getState().transactions;
 
-  const transaction: SubmittedTransaction | null =
-    transactions.all.find((t: any) => t.hash === data[2].transactionHash) ||
-    null;
+  const transaction: SubmittedTransactionWithOrder | null =
+    (transactions.all.find(
+      (t: any) => t.hash === data[2].transactionHash
+    ) as SubmittedTransactionWithOrder) || null;
 
   // If we don't have a 'transaction', we don't already know about this swap
   // and therefore don't need to update the UI.
@@ -23,17 +24,13 @@ const handleWrapEvent = (data: any, dispatch: any) => {
 
   dispatch(
     decrementBalanceBy({
-      //@ts-ignore
       tokenAddress: transaction.order.senderToken,
-      //@ts-ignore
       amount: transaction.order.senderAmount,
     })
   );
   dispatch(
     incrementBalanceBy({
-      //@ts-ignore
       tokenAddress: transaction.order.signerToken,
-      //@ts-ignore
       amount: transaction.order.senderAmount,
     })
   );
