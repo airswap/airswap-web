@@ -48,6 +48,7 @@ declare module "styled-components" {
     };
     shadows: {
       widgetGlow: string;
+      widgetGlowOff: string;
       buttonGlow: string;
       buttonGlowFill: string;
     };
