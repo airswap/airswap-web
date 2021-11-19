@@ -1,21 +1,20 @@
 {
   "join": {
     "title": "Bli med i AirSwap",
-    "intro": "AirSwap er et åpent samfunn for utviklere, designere, skribenter og tenkere som går sammen om å utvikle desentraliserte handelssystemer.",
+    "intro": "AirSwap er et åpent samfunn for utviklere, designere og forfattere som utvikler desentraliserte handelssystemer sammen. Protokollgebyrene blir automatisk distribuert til bidragsytere.",
     "getStarted": "Kom i gang",
-    "paragraph": "Protokollgebyrene blir automatisk distribuert til medlemmene for å bidra til utviklingen av produktet og Airswapsamfunnet.",
     "paragraph2": "Sjekk ut de følgende guidene for å komme i gang:"
     },
   "gasFreeSwaps": {
     "title": "Transaksjonsfrie vekslinger",
-    "paragraph": "AirSwap gir deg transaksjonsfrie vekslinger!",
-    "paragraph2": "Med denne protokollen slipper du å betale transaksjonskostnader når du veksler!"
+    "paragraph": "Du har funnet en transaksjonsfri veksling!",
+    "paragraph2": "Enkelte vekslinger er avgiftsfrie fordi transaksjonen håndteres av tilbyderen. Du må fortsatt signere transaksjonen for å gjennomføre den."
   },
   "protocolFeeDiscount": {
-    "title": "Rabatt på protokollgebyr",
-    "paragraph": "Når du låser dine AST får du rabatt på protokollgebyrene ved vekslinger.",
-    "paragraph2": "I tillegg gir låsing deg også stemmerett på videreutviklingen av Airswap.",
-    "link": "samfunn",
-    "stakeYourAst": "Lås dine AST"
+    "title": "Protokollgebyr",
+    "paragraph": "Protokollgebyrene blir overført til en smart-kontrakt som er kontrollert av AirSwaps DAO.",
+    "paragraph2": "Disse gebyrene blir distribuert til bidragsyterne som aktivt deltar i styrings- og utviklingsprosessen. Du kan sjekke balansen på denne kontrakten når som helst på",
+    "link": "Etherscan",
+    "stakeYourAst": "Lås dine AST og bli med AirSwaps DAO"
   }
 }
