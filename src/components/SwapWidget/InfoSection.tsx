@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
-import { Levels } from "@airswap/types";
-import { LightOrder } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
+import { Levels } from "@airswap/typescript";
+import { Order } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 
@@ -35,7 +35,7 @@ export type InfoSectionProps = {
     | {
         protocol: "request-for-quote";
         quoteAmount: string;
-        order: LightOrder;
+        order: Order;
       }
     | null;
   isWrapping: boolean;

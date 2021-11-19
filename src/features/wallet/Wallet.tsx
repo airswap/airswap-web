@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 
-import { Light, Wrapper } from "@airswap/libraries";
-import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
+import { Swap, Wrapper } from "@airswap/libraries";
+import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 //@ts-ignore
-import * as lightDeploys from "@airswap/light/deploys.js";
+import * as swapDeploys from "@airswap/swap/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -25,11 +25,11 @@ import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
-  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesSwap,
   requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
   selectBalances,
-  setAllowanceLight,
+  setAllowanceSwap,
   setAllowanceWrapper,
 } from "../balances/balancesSlice";
 import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
@@ -96,40 +96,40 @@ export const Wallet: FC<WalletPropsType> = ({
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [lightContract, setLightContract] = useState<Contract>();
+  const [swapContract, setSwapContract] = useState<Contract>();
 
   useBeforeunload(() => {
-    if (lightContract) {
-      lightContract.removeAllListeners("Swap");
+    if (swapContract) {
+      swapContract.removeAllListeners("Swap");
     }
   });
 
   useEffect(() => {
-    if (library && chainId && account && lightContract) {
+    if (library && chainId && account && swapContract) {
       subscribeToSwapEvents({
         account: account!,
-        lightContract,
+        swapContract,
         //@ts-ignore
         library,
         chainId,
         dispatch,
       });
       return () => {
-        if (lightContract) {
-          lightContract.removeAllListeners("Swap");
+        if (swapContract) {
+          swapContract.removeAllListeners("Swap");
         }
       };
     }
-  }, [dispatch, library, chainId, account, lightContract]);
+  }, [dispatch, library, chainId, account, swapContract]);
   useEffect(() => {
     if (chainId && account && library) {
-      const lightContract = new Contract(
-        lightDeploys[chainId],
-        LightContract.abi,
+      const swapContract = new Contract(
+        swapDeploys[chainId],
+        SwapContract.abi,
         //@ts-ignore
         library
       );
-      setLightContract(lightContract);
+      setSwapContract(swapContract);
     }
   }, [library, chainId, account]);
 
@@ -189,7 +189,7 @@ export const Wallet: FC<WalletPropsType> = ({
           })
         );
         dispatch(
-          requestActiveTokenAllowancesLight({
+          requestActiveTokenAllowancesSwap({
             provider: library,
           })
         );
@@ -229,7 +229,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: Light.getAddress(),
+        spenderAddress: Swap.getAddress(),
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
@@ -244,7 +244,7 @@ export const Wallet: FC<WalletPropsType> = ({
           const actionCreator =
             spenderAddress === Wrapper.getAddress().toLowerCase()
               ? setAllowanceWrapper
-              : setAllowanceLight;
+              : setAllowanceSwap;
           dispatch(
             actionCreator({
               tokenAddress,

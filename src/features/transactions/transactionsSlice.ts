@@ -1,4 +1,4 @@
-import { LightOrder } from "@airswap/types";
+import { Order } from "@airswap/typescript";
 import {
   createSlice,
   createSelector,
@@ -44,7 +44,7 @@ export interface SubmittedTransaction {
 }
 
 export interface SubmittedOrder extends SubmittedTransaction {
-  order: LightOrder;
+  order: Order;
 }
 
 export interface SubmittedRFQOrder extends SubmittedOrder {}

@@ -9,20 +9,10 @@
   dependencies:
     openzeppelin-solidity "2.4"
 
-"@airswap/constants@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.1.tgz#1664b9bb752ac9278edc16de46b5e25d8f20f04c"
-  integrity sha512-llPEcAZRizBejMBP2ZVlnIuK0uhLRL0VgqQYaBquPx2O+CXjWRkQNQVOZ3i09PW0SDTTV+WkwnQy0FAE8OBHVw==
-
-"@airswap/constants@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.2.tgz#021e76a048495836dd3ecf64943078c16a699fab"
-  integrity sha512-1G3kpLR2dJONU3qSrwdFXCXwf5OlNv1LOn+Zm259V9SnpBTRS5e3msPaKyBMvRm2AVY4QoQ9UnKRjVRMkO1g6Q==
-
-"@airswap/constants@0.4.3", "@airswap/constants@^0.4.0":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.3.tgz#83320d02d01fb53f7658d4deacecfbbd5992ebe6"
-  integrity sha512-CoAkvsdxLEw8PINuhC/0Q9aLG4iKlXFRF0zet7JVi6n7wM+iTHhhcJkrPAUVg2Qq9V3LWtUhTbX7R5EyHZeX6A==
+"@airswap/constants@1.0.0", "@airswap/constants@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-1.0.0.tgz#e16c6fff7aa2fda8635452762bd35451a0a8ffac"
+  integrity sha512-HFmLbz8TQsiuJcF8TtKt9Q0o52RzSdt6B0n9BS089ybTBwojg/AgWGGA8Jx18y3I5E62jC6X6myJuUsmCIvHYA==
 
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
@@ -31,17 +21,17 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-0.0.13.tgz#d8d2e0bfb810f5691a42a728a4658944d13e676a"
-  integrity sha512-F+h+4fZDeN6vjYkfLnPY/wJq7CXHcZ0nmUP5DE9pmtALO3WNA6NKSUVuJEQV02dARarHzsXqdldxkiPbX+c6vQ==
+"@airswap/libraries@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-1.0.0.tgz#86b2b503bb3e9904aa0849effe3d61bb54eba80a"
+  integrity sha512-ImEnnAMoY42/DQAzA6aUur60chyQqnOLIVfNmKRn13JDeEcyQ6i1iCTm1hO+82CWqlKsryqTCw72D7pXsjK8/w==
   dependencies:
-    "@airswap/constants" "0.4.3"
+    "@airswap/constants" "1.0.0"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/light" "2.3.1"
     "@airswap/registry" "4.8.2"
-    "@airswap/types" "^3.7.0"
-    "@airswap/utils" "0.4.10"
+    "@airswap/swap" "2.3.1"
+    "@airswap/typescript" "1.0.0"
+    "@airswap/utils" "1.0.0"
     "@airswap/validator" "2.3.0"
     "@airswap/wrapper" "2.5.2"
     bignumber.js "^9.0.0"
@@ -51,20 +41,13 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/light@2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@airswap/light/-/light-2.3.1.tgz#cfc588347a8b91c47af007feef935f9e42da729d"
-  integrity sha512-76aTtpmvh9mF2CGrYOdsplMcpspxZ0EGMoGwPpPdVAipfptVFJp75f0tAUMVwIUyyplqH+zSL4m0xGO31OBV8g==
+"@airswap/metadata@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-1.0.0.tgz#1a42ac0344cf755e298c5ac0cbadeb1780e11da2"
+  integrity sha512-5sqVMFox7RH9Oghm9dwYwZMd/FPzb5u8UmLZGhGZh8FgXsGwuVCjsS7kHNuRRWkoTxsPQd6DyP+K5ZhL5YKkqA==
   dependencies:
-    "@openzeppelin/contracts" "^4.3.1"
-
-"@airswap/metadata@^0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.7.tgz#31f8fce48877417c6c2c0b109a48404c753ef162"
-  integrity sha512-BXtXf6bDaselTPP4i/a7/heqoKhfsHtI+B2BlLg3KYTTbhnOaWA8/CYOUvR2QWQlz6RYN76+9qt+XMPpWkL/Og==
-  dependencies:
-    "@airswap/constants" "0.4.2"
-    "@airswap/types" "3.6.1"
+    "@airswap/constants" "1.0.0"
+    "@airswap/typescript" "1.0.0"
     "@uniswap/token-lists" "^1.0.0-beta.24"
     axios "^0.21.3"
     eth-contract-metadata "^1.12.1"
@@ -78,28 +61,36 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/types@3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.6.1.tgz#23beafff44cf8bec84f89ca8d545f73291212c9a"
-  integrity sha512-ryN9SxxbkOOU+MqYHlnm+lENh53P/6HDbQK6hyuv49ehRAn7BhzVLgYdINJWwj09oDrVME9DseWz521L8HzoPw==
+"@airswap/swap@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-2.3.1.tgz#a1f2ef13b4ab3c556ee7222af49a76ba0883a341"
+  integrity sha512-tv+5Gbo3bkDkAfTlqvkLqvHF6hJtekhk/LAMC8kC6jXhIDLrfoZRTIoKxULP8a8Q+ndyFYmKo48eVkjnr60CBw==
   dependencies:
-    "@airswap/constants" "0.4.1"
+    "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/types@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.7.0.tgz#be602ae478af2d488d267addfc5704242e74e894"
-  integrity sha512-wP3mKwBgfZMW2Fv09AKLCEVK7hAH9IMvaOZm3JzPK60z0ONVLCSLGCTxRTDo2/bvBWFienE1FGBmgdr7DazPFw==
+"@airswap/typescript@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-1.0.0.tgz#52c7250a822aa3396897e64a5f2b79ef69d8d3c1"
+  integrity sha512-UPytDGOzNwNh/b0rvdIcuHhMY51Id5R1ioCRNFC0O0p492sDQUOQlg6E2MW5QHUwNlZc8PHXVAO3tLcYUSvjaA==
   dependencies:
-    "@airswap/constants" "0.4.3"
+    "@airswap/constants" "1.0.0"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
-"@airswap/utils@0.4.10", "@airswap/utils@^0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.10.tgz#bac8c7d5e7a6ef288d47d2ae6f1aaf41fdaf9093"
-  integrity sha512-YzR0G1hoVYPx/KsSjObX2XuMo+ySURHGRijiz4eM4EMU7udiH4upIpE2M/HeQ0HISWLVJrMJa89BJ/8szKorVQ==
+"@airswap/typescript@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-1.0.1.tgz#4b9de505a23371a10ee21f0c5881fa586509cead"
+  integrity sha512-9neKyO0kWw3CKXYhT/xTZK63ExtCL9uMVFKxEHomL04yz7Wwdc9vvjpZKPNKqahitge3NK89+U19yb9cNynicw==
   dependencies:
-    "@airswap/constants" "0.4.2"
-    "@airswap/types" "3.6.1"
+    "@airswap/constants" "1.0.0"
+    "@uniswap/token-lists" "^1.0.0-beta.26"
+
+"@airswap/utils@1.0.0", "@airswap/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.0.tgz#bd554da9e639f92c57a59c4d77043e9d2e6c6383"
+  integrity sha512-Br5Xd3vs28PqyuXtSs+U6OloGfjJQMOoYHltakQA4AICWwBy9hJbqHxpee91IlzHoF+APbnOMyGLLQo0NfPvBA==
+  dependencies:
+    "@airswap/constants" "1.0.0"
+    "@airswap/typescript" "1.0.0"
     "@types/ethereumjs-util" "^6.1.0"
     bignumber.js "^9.0.1"
     eth-sig-util "^3.0.0"

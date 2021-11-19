@@ -1,5 +1,5 @@
 import { chainIds, chainNames } from "@airswap/constants";
-import { LightOrder } from "@airswap/types";
+import { Order } from "@airswap/typescript";
 import * as ValidatorContract from "@airswap/validator/build/contracts/Validator.sol/Validator.json";
 // @ts-ignore
 import * as ValidatorDeploys from "@airswap/validator/deploys.js";
@@ -37,7 +37,7 @@ export class Validator {
   }
 
   public async checkSwap(
-    order: LightOrder,
+    order: Order,
     senderWallet: string,
     signer?: ethers.Signer
   ): Promise<Array<string>> {

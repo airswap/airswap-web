@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence } from "framer-motion";

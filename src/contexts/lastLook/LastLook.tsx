@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
-import lightDeploys from "@airswap/light/deploys.js";
-import { LightOrder, Pricing } from "@airswap/types";
-import { createLightOrder, createLightSignature } from "@airswap/utils";
+import swapDeploys from "@airswap/swap/deploys.js";
+import { Order, Pricing } from "@airswap/typescript";
+import { createOrder, createSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
@@ -31,12 +31,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    order: LightOrder;
+    order: Order;
   }) => Promise<boolean>;
   getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-  }) => Promise<{ order: LightOrder; senderWallet: string }>;
+  }) => Promise<{ order: Order; senderWallet: string }>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -48,7 +48,7 @@ export const LastLookContext = createContext<{
   getSignedOrder: async (params: {
     locator: string;
     terms: TradeTerms;
-  }): Promise<LightOrder | any> => {
+  }): Promise<Order | any> => {
     return {};
   },
 });
@@ -119,7 +119,7 @@ const LastLookProvider: FC = ({ children }) => {
     async (params: {
       locator: string;
       terms: TradeTerms;
-    }): Promise<{ order: LightOrder; senderWallet: string }> => {
+    }): Promise<{ order: Order; senderWallet: string }> => {
       const { locator, terms } = params;
       const server = connectedServers[locator];
 
@@ -139,7 +139,7 @@ const LastLookProvider: FC = ({ children }) => {
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
 
-      const unsignedOrder = createLightOrder({
+      const unsignedOrder = createOrder({
         expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
         nonce: Date.now().toString(),
         senderWallet: server.getSenderWallet(),
@@ -150,14 +150,14 @@ const LastLookProvider: FC = ({ children }) => {
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
-      const signature = await createLightSignature(
+      const signature = await createSignature(
         unsignedOrder,
         library.getSigner(),
-        lightDeploys[chainId],
+        swapDeploys[chainId],
         chainId!
       );
 
-      const order: LightOrder = {
+      const order: Order = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,
         senderToken: unsignedOrder.senderToken,
@@ -199,7 +199,7 @@ const LastLookProvider: FC = ({ children }) => {
   );
 
   const sendOrderForConsideration = useCallback(
-    async (params: { locator: string; order: LightOrder }) => {
+    async (params: { locator: string; order: Order }) => {
       const { locator, order } = params;
       const server = connectedServers[locator];
       try {

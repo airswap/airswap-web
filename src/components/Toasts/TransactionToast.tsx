@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { HiX } from "react-icons/hi";
 import { MdBeenhere, MdError } from "react-icons/md";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import { formatUnits } from "ethers/lib/utils";
 

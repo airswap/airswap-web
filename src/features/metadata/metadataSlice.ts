@@ -1,5 +1,5 @@
 import { fetchTokens } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 import {
   createAsyncThunk,
   createSelector,

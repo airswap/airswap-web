@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 import { formatUnits } from "@ethersproject/units";
 
 import BigNumber from "bignumber.js";

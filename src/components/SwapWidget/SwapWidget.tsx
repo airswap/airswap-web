@@ -5,8 +5,8 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
-import { Pricing } from "@airswap/types";
-import { LightOrder } from "@airswap/types";
+import { Pricing } from "@airswap/typescript";
+import { Order } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -22,7 +22,7 @@ import {
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
-  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesSwap,
   requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
 } from "../../features/balances/balancesSlice";
@@ -237,10 +237,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   useEffect(() => {
     setAllowanceFetchFailed(
-      allowances.light.status === "failed" ||
+      allowances.swap.status === "failed" ||
         allowances.wrapper.status === "failed"
     );
-  }, [allowances.light.status, allowances.wrapper.status]);
+  }, [allowances.swap.status, allowances.wrapper.status]);
 
   let swapType: SwapType = "swap";
 
@@ -268,7 +268,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     if (tokenAddress === nativeETH[chainId || 1].address) return true;
     if (!tokenAddress) return false;
     if (
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
         tokenAddress
       ] === undefined
     ) {
@@ -281,7 +281,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       return true;
     }
     return new BigNumber(
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
         tokenAddress
       ]!
     )
@@ -320,7 +320,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     if (library) {
       dispatch(addActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
@@ -335,7 +335,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       }
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
@@ -377,7 +377,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         throw new Error("error requesting orders");
       }
 
-      let rfqPromise: Promise<LightOrder[]> | null = null,
+      let rfqPromise: Promise<Order[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
@@ -412,7 +412,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         }
       }
 
-      let orderPromises: Promise<LightOrder[] | Pricing>[] = [];
+      let orderPromises: Promise<Order[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
         orderPromises = orderPromises.concat(lastLookPromises);
@@ -466,7 +466,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const takeBestOption = async () => {
-    let order: LightOrder | null = null;
+    let order: Order | null = null;
     try {
       setIsSwapping(true);
       // @ts-ignore
@@ -492,7 +492,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           take({
             order: bestTradeOption!.order!,
             library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             onExpired: () => {
               notifyError({
                 heading: t("orders:swapExpired"),
@@ -664,7 +664,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           approve({
             token: baseToken!,
             library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             chainId: chainId!,
           })
         );
