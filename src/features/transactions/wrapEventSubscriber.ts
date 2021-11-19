@@ -10,10 +10,10 @@ import {
 } from "../balances/balancesSlice";
 import { SubmittedTransaction } from "./transactionsSlice";
 
-const handleWrapEvent = (eventName: string, data: any, dispatch: any) => {
+const handleWrapEvent = (data: any, dispatch: any) => {
   const transactions = store.getState().transactions;
 
-  let transaction: SubmittedTransaction | null =
+  const transaction: SubmittedTransaction | null =
     transactions.all.find((t: any) => t.hash === data[2].transactionHash) ||
     null;
 
@@ -46,9 +46,9 @@ export default function subscribeToWrapEvents(params: {
 }) {
   const { wrapContract, dispatch } = params;
   wrapContract.on("Deposit", async (...data) =>
-    handleWrapEvent("Deposit", data, dispatch)
+    handleWrapEvent(data, dispatch)
   );
   wrapContract.on("Withdrawal", async (...data) =>
-    handleWrapEvent("Withdrawal", data, dispatch)
+    handleWrapEvent(data, dispatch)
   );
 }
