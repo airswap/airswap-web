@@ -82,14 +82,13 @@ type TransactionsContainerProps = {
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
+  ${ScrollBarStyle};
+
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
-  padding-bottom: 1rem;
-
-  ${ScrollBarStyle}
 `;
 
 export const TransactionContainer = styled.div`
@@ -100,6 +99,10 @@ export const TransactionContainer = styled.div`
   flex-grow: 2;
   padding: 1.5rem 0;
   width: 100%;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 `;
 
 export const NoTransactions = styled.div`
@@ -113,10 +116,12 @@ export const NoTransactions = styled.div`
 `;
 
 export const DiconnectButtonContainer = styled.div`
-  padding: 1.5rem 0 1rem 0;
+  padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
+  ${InputOrButtonBorderStyleType2};
+
   margin-top: auto;
   justify-self: flex-end;
 `;
