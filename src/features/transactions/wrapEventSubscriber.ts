@@ -1,3 +1,4 @@
+import { Web3Provider } from "@ethersproject/providers";
 import { Dispatch } from "@reduxjs/toolkit";
 
 import { Contract } from "ethers";
@@ -40,7 +41,7 @@ const handleWrapEvent = (eventName: string, data: any, dispatch: any) => {
 
 export default function subscribeToWrapEvents(params: {
   wrapContract: Contract;
-  library: any;
+  library: Web3Provider;
   dispatch: Dispatch;
 }) {
   const { wrapContract, dispatch } = params;

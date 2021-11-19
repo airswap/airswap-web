@@ -16,6 +16,7 @@ import * as Weth9Contract from "../../assets/weth9.abi.json";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
+import Weth9Deploys from "../../constants/Weth9";
 import {
   AbstractConnector,
   WalletProvider,
@@ -67,11 +68,6 @@ type WalletPropsType = {
   setTransactionsTabOpen: (x: boolean) => void;
 };
 
-const wrapDeploys: { [key: number]: string } = {
-  1: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  4: "0xc778417e063141139fce010982780140aa0cd5ab",
-};
-
 export const Wallet: FC<WalletPropsType> = ({
   setShowWalletList,
   transactionsTabOpen,
@@ -121,14 +117,12 @@ export const Wallet: FC<WalletPropsType> = ({
       subscribeToSwapEvents({
         account: account!,
         lightContract,
-        //@ts-ignore
         library,
         chainId,
         dispatch,
       });
       subscribeToWrapEvents({
         wrapContract,
-        //@ts-ignore
         library,
         dispatch,
       });
@@ -153,7 +147,7 @@ export const Wallet: FC<WalletPropsType> = ({
       );
       setLightContract(lightContract);
       const wrapContract = new Contract(
-        wrapDeploys[chainId],
+        Weth9Deploys[chainId],
         Weth9Contract.abi,
         //@ts-ignore
         library
