@@ -21,7 +21,10 @@ import {
   allowancesWrapperActions,
 } from "../balances/balancesSlice";
 import { selectBestPricing } from "../pricing/pricingSlice";
-import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
+import {
+  clearTradeTerms,
+  selectTradeTerms,
+} from "../tradeTerms/tradeTermsSlice";
 import {
   declineTransaction,
   mineTransaction,
@@ -50,7 +53,7 @@ import {
 
 export interface OrdersState {
   orders: LightOrder[];
-  status: "idle" | "requesting" | "approving" | "taking" | "failed";
+  status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
   reRequestTimerId: number | null;
 }
 
@@ -150,6 +153,15 @@ export const deposit = createAsyncThunk(
       dispatch(declineTransaction(e.message));
       throw e;
     }
+  }
+);
+
+export const resetOrders = createAsyncThunk(
+  "orders/reset",
+  async (params: undefined, { getState, dispatch }) => {
+    await dispatch(setResetStatus());
+    dispatch(clear());
+    dispatch(clearTradeTerms());
   }
 );
 
@@ -401,6 +413,9 @@ export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
+    setResetStatus: (state) => {
+      state.status = "reset";
+    },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
@@ -455,7 +470,11 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear, setReRequestTimerId } = ordersSlice.actions;
+export const {
+  clear,
+  setResetStatus,
+  setReRequestTimerId,
+} = ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.

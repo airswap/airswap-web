@@ -46,6 +46,7 @@ import {
   request,
   deposit,
   withdraw,
+  resetOrders,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
@@ -117,7 +118,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
-  const rfqOrderStatus = useAppSelector(selectOrdersStatus);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -226,14 +227,27 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     );
   }, [balances, baseToken, baseTokenInfo]);
 
-  // Reset amount when the chainId changes.
   useEffect(() => {
-    setAllowanceFetchFailed(false);
-    setBaseAmount(initialBaseAmount);
-    dispatch(clearTradeTerms());
-    dispatch(clear());
-    LastLook.unsubscribeAllServers();
-  }, [chainId, dispatch, LastLook]);
+    if (ordersStatus === "reset") {
+      setIsApproving(false);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setIsRequestingQuotes(false);
+      setAllowanceFetchFailed(false);
+      setPairUnavailable(false);
+      setProtocolFeeDiscountInfo(false);
+      setShowGasFeeInfo(false);
+      setBaseAmount(initialBaseAmount);
+      LastLook.unsubscribeAllServers();
+    }
+  }, [ordersStatus, LastLook, dispatch]);
+
+  // Reset when the chainId changes.
+  useEffect(() => {
+    if (chainId) {
+      dispatch(resetOrders());
+    }
+  }, [chainId, dispatch]);
 
   useEffect(() => {
     setAllowanceFetchFailed(
@@ -772,7 +786,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
-                ["approving", "taking"].includes(rfqOrderStatus) ||
+                ["approving", "taking"].includes(ordersStatus) ||
                 (!!baseToken && hasApprovalPending(baseToken))
               }
               transactionsTabOpen={transactionsTabOpen}

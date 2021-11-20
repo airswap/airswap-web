@@ -1,9 +1,11 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "../../app/hooks";
+import { resetOrders } from "../../features/orders/ordersSlice";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
-  IconAirswap,
+  AirswapButton,
   ToolbarButtonsContainer,
   ToolbarContainer,
 } from "./Toolbar.styles";
@@ -15,6 +17,7 @@ export type ToolbarProps = {
 
 const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
   const { t } = useTranslation(["common"]);
+  const dispatch = useAppDispatch();
 
   // TODO: Add content for "about" in modals
 
@@ -24,9 +27,18 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
     }
   };
 
+  const onAirswapButtonClick = () => {
+    dispatch(resetOrders());
+  };
+
   return (
     <ToolbarContainer>
-      <IconAirswap iconSize={2.5} name="airswap" />
+      <AirswapButton
+        onClick={onAirswapButtonClick}
+        ariaLabel={t("common:AirSwap")}
+        icon="airswap"
+        iconSize={2.5}
+      />
       <ToolbarButtonsContainer>
         {/*<ToolbarButton iconName="bars" text={t("common:stats")} />*/}
         <ToolbarButton

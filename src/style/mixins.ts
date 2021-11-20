@@ -65,6 +65,17 @@ export const BorderlessButtonStyle = css`
   }
 `;
 
+export const BorderlessButtonStyleType2 = css`
+  ${BorderlessButtonStyle}
+
+  &:active {
+    border-color: ${(props) =>
+      props.theme.name === "dark"
+        ? props.theme.colors.primary
+        : props.theme.colors.alwaysWhite};
+  }
+`;
+
 export const BorderedPill = css`
   display: flex;
   align-items: center;
