@@ -118,7 +118,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
-  const rfqOrderStatus = useAppSelector(selectOrdersStatus);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -228,7 +228,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   }, [balances, baseToken, baseTokenInfo]);
 
   useEffect(() => {
-    if (rfqOrderStatus === "reset") {
+    if (ordersStatus === "reset") {
       setIsApproving(false);
       setIsSwapping(false);
       setIsWrapping(false);
@@ -240,7 +240,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setBaseAmount(initialBaseAmount);
       LastLook.unsubscribeAllServers();
     }
-  }, [rfqOrderStatus, LastLook, dispatch]);
+  }, [ordersStatus, LastLook, dispatch]);
 
   // Reset when the chainId changes.
   useEffect(() => {
@@ -790,7 +790,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
-                ["approving", "taking"].includes(rfqOrderStatus) ||
+                ["approving", "taking"].includes(ordersStatus) ||
                 (!!baseToken && hasApprovalPending(baseToken))
               }
               transactionsTabOpen={transactionsTabOpen}
