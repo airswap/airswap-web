@@ -64,7 +64,7 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
-  const { t } = useTranslation(["wallet"]);
+  const { t } = useTranslation(["wallet", "common"]);
 
   const [overflow, setOverflow] = useState<boolean>(false);
 
@@ -138,6 +138,7 @@ const TransactionsTab = ({
           exit={{ x: "24rem" }}
         >
           <BackButton
+            aria-label={t("common:back")}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
             initial={{ y: "-5rem" }}

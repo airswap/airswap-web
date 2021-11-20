@@ -27,5 +27,7 @@
   "build": "build",
   "learn": "learn",
   "join": "join",
-  "reloadPage": "Reload Page"
+  "reloadPage": "Reload Page",
+  "settings": "Settings",
+  "closeOverlay": "Close overlay"
 }

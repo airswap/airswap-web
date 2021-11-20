@@ -20,7 +20,7 @@ const beatAnimation = keyframes`
   }
 `;
 
-const BorderedButton = styled.div<{ $glow?: boolean }>`
+const BorderedButton = styled.button<{ $glow?: boolean }>`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 

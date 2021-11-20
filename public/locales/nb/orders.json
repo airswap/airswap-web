@@ -46,5 +46,7 @@
   "swapRejectedCallToAction": "Vennligst prøv igjen",
   "track": "Spor",
   "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
-  "editCustomTokens": "Endre liste"
+  "editCustomTokens": "Endre liste",
+  "revertPrice": "Tilbakeføre pris",
+  "moreInformation": "Mer informasjon"
 }
