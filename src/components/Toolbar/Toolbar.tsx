@@ -35,7 +35,7 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
     <ToolbarContainer>
       <AirswapButton
         onClick={onAirswapButtonClick}
-        ariaLabel="airswap logo"
+        ariaLabel={t("common:AirSwap")}
         icon="airswap"
         iconSize={2.5}
       />
