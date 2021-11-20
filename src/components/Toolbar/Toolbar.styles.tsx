@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
-import { BorderlessButtonStyle } from "../../style/mixins";
+import { BorderlessButtonStyleType2 } from "../../style/mixins";
 import IconButton from "../IconButton/IconButton";
 
 export const ToolbarContainer = styled.div`
@@ -35,7 +35,7 @@ export const ToolbarContainer = styled.div`
 `;
 
 export const AirswapButton = styled(IconButton)`
-  ${BorderlessButtonStyle};
+  ${BorderlessButtonStyleType2};
 
   margin-top: 2rem;
   align-self: center;
