@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import Icon from "../Icon/Icon";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
@@ -15,6 +16,8 @@ const SettingsButton = ({
   transactionsTabOpen,
   setSettingsOpen,
 }: SettingsButtonType) => {
+  const { t } = useTranslation(["common"]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +56,10 @@ const SettingsButton = ({
   return (
     <>
       <Container ref={containerRef} open={transactionsTabOpen}>
-        <SettingsButtonContainer onClick={() => setSettingsOpen(!settingsOpen)}>
+        <SettingsButtonContainer
+          aria-label={t("common:settings")}
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
           <Icon iconSize={1.5} name="settings" />
         </SettingsButtonContainer>
       </Container>

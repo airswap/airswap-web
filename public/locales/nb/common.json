@@ -27,5 +27,7 @@
   "build": "bygg",
   "learn": "lær",
   "join": "bli med",
-  "reloadPage": "Last siden på nytt"
+  "reloadPage": "Last siden på nytt",
+  "settings": "Innstillinger",
+  "closeOverlay": "Lukk"
 }

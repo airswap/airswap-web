@@ -46,5 +46,7 @@
   "swapRejectedCallToAction": "Please try again",
   "track": "Track",
   "trackTransaction": "Track this transaction on the top right",
-  "editCustomTokens": "Edit Custom Tokens"
+  "editCustomTokens": "Edit Custom Tokens",
+  "revertPrice": "Revert price",
+  "moreInformation": "More information"
 }

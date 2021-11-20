@@ -23,5 +23,6 @@
   "activeTransactions": "Active transactions",
   "noActiveTransactions": "No active transactions",
   "completedTransactions": "Completed transactions",
-  "noCompletedTransactions": "No completed transactions"
+  "noCompletedTransactions": "No completed transactions",
+  "transactionLink": "Transaction link"
 }

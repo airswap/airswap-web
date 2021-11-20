@@ -11,7 +11,7 @@
   "to": "Til",
   "amount": "Sum",
   "chooseToken": "Velg token",
-  "enterAmount": "Tast inn antall",
+  "enterAmount": "Skriv inn vekslingsbeløp",
   "errorRequesting": "Noe gikk galt med ordrehenting",
   "errorRequestingCta": "Vennligst oppdater siden og prøv igjen",
   "insufficentBalance": "Ikke nok {{symbol}} tilgjengelig",
@@ -46,5 +46,7 @@
   "swapRejectedCallToAction": "Vennligst prøv igjen",
   "track": "Spor",
   "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
-  "editCustomTokens": "Endre liste"
+  "editCustomTokens": "Endre liste",
+  "revertPrice": "Nullstill pris",
+  "moreInformation": "Mer informasjon"
 }
