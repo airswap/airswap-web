@@ -256,10 +256,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     );
   }, [allowances.light.status, allowances.wrapper.status]);
 
-  useEffect(() => {
-    console.log(tradeTerms);
-  }, [tradeTerms]);
-
   let swapType: SwapType = "swap";
 
   if (chainId && baseToken && quoteToken) {
