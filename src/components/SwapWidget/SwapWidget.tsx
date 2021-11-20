@@ -46,6 +46,7 @@ import {
   request,
   deposit,
   withdraw,
+  resetOrders,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
@@ -226,14 +227,27 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     );
   }, [balances, baseToken, baseTokenInfo]);
 
-  // Reset amount when the chainId changes.
   useEffect(() => {
-    setAllowanceFetchFailed(false);
-    setBaseAmount(initialBaseAmount);
-    dispatch(clearTradeTerms());
-    dispatch(clear());
-    LastLook.unsubscribeAllServers();
-  }, [chainId, dispatch, LastLook]);
+    if (rfqOrderStatus === "reset") {
+      setIsApproving(false);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setIsRequestingQuotes(false);
+      setAllowanceFetchFailed(false);
+      setPairUnavailable(false);
+      setProtocolFeeDiscountInfo(false);
+      setShowGasFeeInfo(false);
+      setBaseAmount(initialBaseAmount);
+      LastLook.unsubscribeAllServers();
+    }
+  }, [rfqOrderStatus, LastLook, dispatch]);
+
+  // Reset when the chainId changes.
+  useEffect(() => {
+    if (chainId) {
+      dispatch(resetOrders());
+    }
+  }, [chainId, dispatch]);
 
   useEffect(() => {
     setAllowanceFetchFailed(
@@ -241,6 +255,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         allowances.wrapper.status === "failed"
     );
   }, [allowances.light.status, allowances.wrapper.status]);
+
+  useEffect(() => {
+    console.log(tradeTerms);
+  }, [tradeTerms]);
 
   let swapType: SwapType = "swap";
 
