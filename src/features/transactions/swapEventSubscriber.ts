@@ -9,7 +9,7 @@ import { mineTransaction } from "./transactionActions";
 import {
   LastLookTransaction,
   ProtocolType,
-  SubmittedOrder,
+  SubmittedTransactionWithOrder,
   SubmittedTransaction,
   TransactionsState,
 } from "./transactionsSlice";
@@ -99,9 +99,9 @@ export const mapSwapEvent = (
   // swap. (Someone else includes "us" in another browser).
   if (!transaction && signerWallet.toLowerCase() === account.toLowerCase()) {
     transaction = transactions.all.find(
-      (t: SubmittedTransaction | SubmittedOrder) =>
+      (t: SubmittedTransaction | SubmittedTransactionWithOrder) =>
         t.nonce === nonce &&
-        (t as SubmittedOrder).order?.signerWallet.toLowerCase() ===
+        (t as SubmittedTransactionWithOrder).order?.signerWallet.toLowerCase() ===
           signerWallet.toLowerCase()
     ) as LastLookTransaction;
   }

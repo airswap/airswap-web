@@ -17,7 +17,7 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import {
-  SubmittedOrder,
+  SubmittedTransactionWithOrder,
   submitTransactionWithExpiry,
 } from "../../features/transactions/transactionsSlice";
 
@@ -168,7 +168,7 @@ const LastLookProvider: FC = ({ children }) => {
         ...signature,
       };
 
-      const transaction: SubmittedOrder = {
+      const transaction: SubmittedTransactionWithOrder = {
         type: "Order",
         order: order,
         nonce: order.nonce,

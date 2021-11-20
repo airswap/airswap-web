@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
 
 import {
   SubmittedApproval,
-  SubmittedOrder,
+  SubmittedTransactionWithOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -86,7 +86,7 @@ const WalletTransaction = ({
       </Container>
     );
   } else {
-    const tx: SubmittedOrder = transaction as SubmittedOrder;
+    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
     const senderToken = findEthOrTokenByAddress(
       tx.order.senderToken,
       tokens,
