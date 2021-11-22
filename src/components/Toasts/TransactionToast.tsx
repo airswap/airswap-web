@@ -61,7 +61,7 @@ const TransactionToast = ({
   signerToken,
   approvalToken,
 }: TransactionToastProps) => {
-  const { t } = useTranslation(["toast"]);
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -76,11 +76,11 @@ const TransactionToast = ({
         <InfoHeading>
           {type === "Order" || type === "Deposit" || type === "Withdraw"
             ? error
-              ? t("toast:swapFail")
-              : t("toast:swapComplete")
+              ? t("toast.swapFail")
+              : t("toast.swapComplete")
             : error
-            ? t("toast:approvalFail")
-            : t("toast:approvalComplete")}
+            ? t("toast.approvalFail")
+            : t("toast.approvalComplete")}
         </InfoHeading>
         <SwapAmounts>
           {(() => {
@@ -90,9 +90,9 @@ const TransactionToast = ({
                   transaction.protocol === "last-look"
                     ? (transaction as SubmittedLastLookOrder)
                     : (transaction as SubmittedRFQOrder);
-                let translationKey = "wallet:transaction";
+                let translationKey = "wallet.transaction";
                 if (tx.protocol === "last-look") {
-                  translationKey = "wallet:lastLookTransaction";
+                  translationKey = "wallet.lastLookTransaction";
                 }
                 // @ts-ignore dynamic translation key
                 return t(translationKey, {
@@ -111,7 +111,7 @@ const TransactionToast = ({
                 });
               }
             }
-            return t("toast:approve", { symbol: approvalToken?.symbol });
+            return t("toast.approve", { symbol: approvalToken?.symbol });
           })()}
         </SwapAmounts>
       </TextContainer>

@@ -24,7 +24,7 @@ type ErrorListProps = {
 };
 
 export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
-  const { t } = useTranslation(["validatorErrors", "common"]);
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,8 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
     return (
       <>
         {errors.map((error, idx) => {
-          const subText = error.toLowerCase() as Error;
+          //@ts-ignore
+          const subText = error.toLowerCase();
           return (
             <StyledError key={idx}>
               <StyledErrorIcon
@@ -44,8 +45,18 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
                 iconSize={1.5}
               />
               <ErrorTextContainer>
-                <InfoHeading>{t(`validatorErrors:${error}`)}</InfoHeading>
-                <StyledSubText>{t(`validatorErrors:${subText}`)}</StyledSubText>
+                <InfoHeading>
+                  {(() => {
+                    //@ts-ignore
+                    return t(`validatorErrors:${error}`);
+                  })()}
+                </InfoHeading>
+                <StyledSubText>
+                  {(() => {
+                    //@ts-ignore
+                    return t(`validatorErrors:${subText}`);
+                  })()}
+                </StyledSubText>
               </ErrorTextContainer>
             </StyledError>
           );
@@ -78,7 +89,7 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
         </StyledErrorList>
       </StyledScrollContainer>
       <OverlayActionButton ref={buttonRef} onClick={handleClick}>
-        {t("common:back")}
+        {t("common.back")}
       </OverlayActionButton>
     </Container>
   );

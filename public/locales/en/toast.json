@@ -1,8 +1,0 @@
-{
-  "swapComplete": "Swap Complete",
-  "swapFail": "Swap Failed",
-  "approvalComplete": "Approval Complete",
-  "approvalFail": "Approval Fail",
-  "approve": "Approve {{symbol}}",
-  "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
-}

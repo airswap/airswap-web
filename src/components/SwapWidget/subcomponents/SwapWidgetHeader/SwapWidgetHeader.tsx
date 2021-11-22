@@ -28,7 +28,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   protocol,
   expiry,
 }) => {
-  const { t } = useTranslation(["orders"]);
+  const { t } = useTranslation();
 
   const expiryTime = useMemo(() => {
     return expiry ? parseInt(expiry) - RFQ_EXPIRY_BUFFER_MS / 1000 : undefined;
@@ -41,13 +41,13 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
       {protocol === "last-look" && isQuote && (
         <Button onClick={onGasFreeTradeButtonClick}>
           <StyledIcon name="star" iconSize={0.875} />
-          {t("orders:gasFreeTrade")}
+          {t("orders.gasFreeTrade")}
         </Button>
       )}
 
       {protocol === "request-for-quote" && isQuote && (
         <Quote>
-          <NewQuoteText>{t("orders:newQuoteIn")}</NewQuoteText>
+          <NewQuoteText>{t("orders.newQuoteIn")}</NewQuoteText>
           {expiryTime && <Timer expiryTime={expiryTime} />}
         </Quote>
       )}

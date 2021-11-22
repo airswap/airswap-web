@@ -7,20 +7,20 @@ import { OverlayActionLink } from "../../../Overlay/Overlay.styles";
 import { Container } from "./ProtocolFeeDiscountModal.styles";
 
 const ProtocolFeeDiscountModal: FC = () => {
-  const { t } = useTranslation(["information"]);
+  const { t } = useTranslation();
 
   return (
     <Container>
       <ModalParagraph>
-        {t("information:protocolFeeDiscount.paragraph")}
+        {t("information.protocolFeeDiscount.paragraph")}
       </ModalParagraph>
       <ModalParagraph>
-        {`${t("information:protocolFeeDiscount.paragraph2")} `}
+        {`${t("information.protocolFeeDiscount.paragraph2")} `}
         <Link
           target="_blank"
           href="https://etherscan.io/address/0x7296333e1615721f4bd9df1a3070537484a50cf8"
         >
-          {t("information:protocolFeeDiscount.link")}
+          {t("information.protocolFeeDiscount.link")}
         </Link>
         .
       </ModalParagraph>
@@ -28,7 +28,7 @@ const ProtocolFeeDiscountModal: FC = () => {
         target="_blank"
         href="https://activate.codefi.network/staking/airswap/governance"
       >
-        {t("information:protocolFeeDiscount.stakeYourAst")}
+        {t("information.protocolFeeDiscount.stakeYourAst")}
       </OverlayActionLink>
     </Container>
   );

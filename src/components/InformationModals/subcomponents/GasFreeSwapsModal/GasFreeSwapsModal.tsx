@@ -12,16 +12,16 @@ interface GasFreeSwapsModalProps {
 const GasFreeSwapsModal: FC<GasFreeSwapsModalProps> = ({
   onCloseButtonClick,
 }) => {
-  const { t } = useTranslation(["common", "information"]);
+  const { t } = useTranslation();
 
   return (
     <Container>
-      <ModalParagraph>{t("information:gasFreeSwaps.paragraph")}</ModalParagraph>
+      <ModalParagraph>{t("information.gasFreeSwaps.paragraph")}</ModalParagraph>
       <ModalParagraph>
-        {t("information:gasFreeSwaps.paragraph2")}
+        {t("information.gasFreeSwaps.paragraph2")}
       </ModalParagraph>
       <OverlayActionButton onClick={onCloseButtonClick}>
-        {t("common:back")}
+        {t("common.back")}
       </OverlayActionButton>
     </Container>
   );

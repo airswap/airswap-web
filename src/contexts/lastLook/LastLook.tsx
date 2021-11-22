@@ -57,7 +57,7 @@ const connectedServers: Record<string, Server> = {};
 const LastLookProvider: FC = ({ children }) => {
   const { account, library, chainId } = useWeb3React();
 
-  const { t } = useTranslation("orders");
+  const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
 
@@ -183,8 +183,8 @@ const LastLookProvider: FC = ({ children }) => {
           signerWallet: unsignedOrder.signerWallet,
           onExpired: () => {
             notifyError({
-              heading: t("swapExpired"),
-              cta: t("swapExpiredCallToAction"),
+              heading: t("orders.swapExpired"),
+              cta: t("orders.swapExpiredCallToAction"),
             });
           },
         })

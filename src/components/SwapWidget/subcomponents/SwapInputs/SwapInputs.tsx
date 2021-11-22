@@ -50,7 +50,7 @@ const SwapInputs: FC<{
   }
 
   const isQuote = !!fromAmount && !!toAmount && readOnly;
-  const { t } = useTranslation(["orders"]);
+  const { t } = useTranslation();
 
   // Note: it will only be possible for the user to change the base amount.
   const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
@@ -66,7 +66,7 @@ const SwapInputs: FC<{
   return (
     <Container $disabled={disabled}>
       <TokenSelect
-        label={t("orders:from")}
+        label={t("orders.from")}
         amount={fromAmount}
         onAmountChange={(e) => handleTokenAmountChange(e)}
         onChangeTokenClicked={() => {
@@ -82,7 +82,7 @@ const SwapInputs: FC<{
       />
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
-        label={t("orders:to")}
+        label={t("orders.to")}
         amount={toAmount}
         onAmountChange={(e) => handleTokenAmountChange(e)}
         onChangeTokenClicked={() => {

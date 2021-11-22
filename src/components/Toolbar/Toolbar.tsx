@@ -16,7 +16,7 @@ export type ToolbarProps = {
 };
 
 const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   // TODO: Add content for "about" in modals
@@ -40,25 +40,25 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
         iconSize={2.5}
       />
       <ToolbarButtonsContainer>
-        {/*<ToolbarButton iconName="bars" text={t("common:stats")} />*/}
+        {/*<ToolbarButton iconName="bars" text={t("common.stats")} />*/}
         <ToolbarButton
           iconName="learn"
-          text={t("common:learn")}
+          text={t("common.learn")}
           href="https://about.airswap.io/"
         />
         <ToolbarButton
           iconName="vote"
-          text={t("common:vote")}
+          text={t("common.vote")}
           href="https://activate.codefi.network/staking/airswap/governance"
         />
         <ToolbarButton
           iconName="code"
-          text={t("common:build")}
+          text={t("common.build")}
           href="https://github.com/airswap"
         />
         <ToolbarButton
           iconName="contact-support"
-          text={t("common:join")}
+          text={t("common.join")}
           onClick={() => onToolbarButtonClick("join")}
         />
       </ToolbarButtonsContainer>

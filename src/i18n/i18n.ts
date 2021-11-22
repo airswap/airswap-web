@@ -12,11 +12,12 @@ i18n
   .use(LanguageDetector)
   // pass the i18n instance to react-i18next.
   .use(initReactI18next)
+
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     fallbackLng: "en",
-    ns: "common",
+    defaultNS: "toast",
     load: "languageOnly",
     debug: process.env.NODE_ENV !== "production",
     interpolation: {
@@ -26,7 +27,7 @@ i18n
       useSuspense: true,
     },
     backend: {
-      loadPath: process.env.PUBLIC_URL + "/locales/{{lng}}/{{ns}}.json",
+      loadPath: process.env.PUBLIC_URL + "/locales/{{lng}}/translation.json",
     },
   });
 

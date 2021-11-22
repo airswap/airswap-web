@@ -27,7 +27,7 @@ const WalletAddress = ({
   setShowWalletList,
   glow,
 }: WalletAddressPropsType) => {
-  const { t } = useTranslation("wallet");
+  const { t } = useTranslation();
   const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () =>
@@ -38,10 +38,10 @@ const WalletAddress = ({
         <ConnectionStatusCircle $connected={!!address} />
         <WalletAddressText>
           {isUnsupportedNetwork
-            ? t("unsupportedNetwork")
+            ? t("wallet.unsupportedNetwork")
             : addressOrName
             ? addressOrName
-            : t("notConnected")}
+            : t("wallet.notConnected")}
         </WalletAddressText>
       </BorderedButton>
     );
