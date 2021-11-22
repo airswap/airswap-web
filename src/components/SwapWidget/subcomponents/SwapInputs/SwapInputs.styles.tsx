@@ -3,17 +3,24 @@ import styled from "styled-components/macro";
 export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
   flex-direction: column;
-  opacity: ${(props) => (props.$disabled ? 0.4 : 1)};
+  position: relative;
+  opacity: ${(props) => (props.$disabled ? 0.6 : 1)};
   cursor: ${(props) => (props.$disabled ? "not-allowed" : "inherit")};
-  will-change: opacity;
-  transition: ease-in-out;
-  transition-duration: 300ms;
+  will-change: opacity, transform;
+  transition: opacity 0.3s ease-in-out,
+    transform 0.4s cubic-bezier(0.45, 0.22, 0, 1);
+  transform: scale(${(props) => (props.$disabled ? 0.95 : 1)});
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    transform: none;
+  }
 `;
 
 export const SwapIconContainer = styled.div`
   position: absolute;
-  right: 14.125rem;
-  top: 9.9375rem;
+  right: calc(50% - 0.75rem);
+  top: calc(50% - 0.75rem);
   display: flex;
   align-items: center;
   justify-content: center;

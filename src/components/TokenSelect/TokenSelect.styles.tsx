@@ -164,7 +164,6 @@ export const TokenSelectContainer = styled.div<{
   width: 100%;
   height: 4.5rem;
   padding: 1rem;
-  margin-bottom: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background-color: ${(props) =>
@@ -172,6 +171,10 @@ export const TokenSelectContainer = styled.div<{
       ? props.theme.colors.darkGrey
       : props.theme.colors.primaryLight};
   overflow: hidden;
+  
+  &:first-of-type {
+    margin-bottom: 0.5rem;
+  }
 
   ${PlaceHolderBar} {
     ${(props) => (!props.$isLoading ? "animation: none" : "")};

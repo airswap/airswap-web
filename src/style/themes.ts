@@ -105,6 +105,7 @@ export const darkTheme: DefaultTheme = {
   },
   shadows: {
     widgetGlow: "0 0 31.25rem 1rem #2B71FF99",
+    widgetGlowOff: "0 0 31.25rem 1rem #2B71FF22",
     buttonGlow: "0 0 2rem 0rem #2b71ff",
     buttonGlowFill: "#2b71ffdd",
   },
@@ -134,6 +135,7 @@ export const lightTheme: DefaultTheme = {
   },
   shadows: {
     widgetGlow: "0 0 15.625rem 1rem rgba(255, 255, 255, 0.4)",
+    widgetGlowOff: "0 0 31.25rem 1rem rgba(255, 255, 255, 0.1)",
     buttonGlow: "0 0 1rem 0rem #FFFFFF",
     buttonGlowFill: "#FFFFFF",
   },
