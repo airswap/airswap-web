@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import validatorErrors from "../../../public/locales/en/validatorErrors.json";
+import translation from "../../../public/locales/en/translation.json";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
@@ -16,7 +16,7 @@ import {
   StyledSubText,
 } from "./ErrorList.styles";
 
-export type Error = keyof typeof validatorErrors;
+export type Error = keyof typeof translation["validatorErrors"];
 
 type ErrorListProps = {
   errors: Error[];
