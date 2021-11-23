@@ -181,7 +181,7 @@ const InfoSection: FC<InfoSectionProps> = ({
             {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
             <RevertPriceButton
               icon="swap"
-              ariaLabel={t("orders:revertPrice")}
+              ariaLabel={t("orders.revertPrice")}
               iconSize={1}
               onClick={() => setInvertPrice((p) => !p)}
             />
@@ -190,7 +190,7 @@ const InfoSection: FC<InfoSectionProps> = ({
             <FeeText>{t("marketing.includesFee")}</FeeText>
             <InfoButton
               onClick={onFeeButtonClick}
-              ariaLabel={t("orders:moreInformation")}
+              ariaLabel={t("orders.moreInformation")}
               icon="information-circle-outline"
             />
           </FeeTextContainer>

@@ -41,7 +41,9 @@
     "build": "bygg",
     "learn": "lær",
     "join": "bli med",
-    "reloadPage": "Last siden på nytt"
+    "reloadPage": "Last siden på nytt",
+    "settings": "Innstillinger",
+    "closeOverlay": "Lukk modal"
   },
   "information": {
     "join.title": "Bli med i AirSwap",
@@ -105,7 +107,10 @@
     "swapRejectedCallToAction": "Vennligst prøv igjen",
     "track": "Spor",
     "trackTransaction": "Spor denne transaksjonen på toppen til høyre",
-    "editCustomTokens": "Endre liste"
+    "editCustomTokens": "Endre liste",
+    "settings": "Innstillinger",
+    "revertPrice": "Nullstill pris",
+    "moreInformation": "Mer informasjon"
   },
   "toast": {
     "swapComplete": "Veksling fullført",
@@ -156,6 +161,7 @@
     "activeTransactions": "AKTIVE TRANSAKSJONER",
     "noActiveTransactions": "Ingen aktive transaksjoner",
     "completedTransactions": "FULLFØRTE TRANSAKSJONER",
-    "noCompletedTransactions": "Ingen fullførte transaksjoner"
+    "noCompletedTransactions": "Ingen fullførte transaksjoner",
+    "transactionLink": "Transaksjonslenke"
   }
 }

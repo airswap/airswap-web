@@ -16,7 +16,7 @@ const SettingsButton = ({
   transactionsTabOpen,
   setSettingsOpen,
 }: SettingsButtonType) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -57,7 +57,7 @@ const SettingsButton = ({
     <>
       <Container ref={containerRef} open={transactionsTabOpen}>
         <SettingsButtonContainer
-          aria-label={t("common:settings")}
+          aria-label={t("common.settings")}
           onClick={() => setSettingsOpen(!settingsOpen)}
         >
           <Icon iconSize={1.5} name="settings" />

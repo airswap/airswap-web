@@ -41,7 +41,9 @@
     "build": "build",
     "learn": "learn",
     "join": "join",
-    "reloadPage": "Reload Page"
+    "reloadPage": "Reload Page",
+    "settings": "Settings",
+    "closeOverlay": "Close overlay"
   },
   "information": {
       "join.title": "Join AirSwap",
@@ -105,7 +107,10 @@
     "swapRejectedCallToAction": "Please try again",
     "track": "Track",
     "trackTransaction": "Track this transaction on the top right",
-    "editCustomTokens": "Edit Custom Tokens"
+    "editCustomTokens": "Edit Custom Tokens",
+    "settings": "Settings",
+    "revertPrice": "Revert price",
+    "moreInformation": "More information"
   },
   "toast": {
     "swapComplete": "Swap Complete",
@@ -156,6 +161,7 @@
     "activeTransactions": "Active transactions",
     "noActiveTransactions": "No active transactions",
     "completedTransactions": "Completed transactions",
-    "noCompletedTransactions": "No completed transactions"
+    "noCompletedTransactions": "No completed transactions",
+    "transactionLink": "Transaction link"
   }
 }

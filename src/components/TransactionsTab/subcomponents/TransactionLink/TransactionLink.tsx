@@ -16,14 +16,14 @@ const TransactionLink = ({
   hash,
   className = "",
 }: TransactionLinkProps) => {
-  const { t } = useTranslation(["wallet"]);
+  const { t } = useTranslation();
 
   return (
     <Link
       className={className}
       target="_blank"
       rel="noreferrer"
-      aria-label={t("wallet:transactionLink")}
+      aria-label={t("wallet.transactionLink")}
       href={`${getEtherscanURL(chainId, hash)}`}
     >
       <Icon iconSize={1} name="transaction-link" />
