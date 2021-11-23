@@ -36,8 +36,7 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
     return (
       <>
         {errors.map((error, idx) => {
-          //@ts-ignore
-          const subText = error.toLowerCase();
+          const subText = error.toLowerCase() as Error;
           return (
             <StyledError key={idx}>
               <StyledErrorIcon
@@ -45,18 +44,8 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
                 iconSize={1.5}
               />
               <ErrorTextContainer>
-                <InfoHeading>
-                  {(() => {
-                    //@ts-ignore
-                    return t(`validatorErrors:${error}`);
-                  })()}
-                </InfoHeading>
-                <StyledSubText>
-                  {(() => {
-                    //@ts-ignore
-                    return t(`validatorErrors:${subText}`);
-                  })()}
-                </StyledSubText>
+                <InfoHeading>{t(`validatorErrors.${error}`)}</InfoHeading>
+                <StyledSubText>{t(`validatorErrors.${subText}`)}</StyledSubText>
               </ErrorTextContainer>
             </StyledError>
           );
