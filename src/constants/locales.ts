@@ -3,6 +3,7 @@ export const SUPPORTED_LOCALES = [
   "en",
   "fr",
   "nb",
+  "zh",
 ];
 
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
@@ -13,4 +14,5 @@ export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   en: "English",
   nb: "Norsk Bokmål",
   fr: "Français",
+  zh: "漢語",
 };
