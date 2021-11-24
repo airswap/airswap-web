@@ -17,7 +17,6 @@ export const PillStyle = css`
   align-items: center;
   padding: 0 1rem;
   height: 2rem;
-  min-width: 9.5rem;
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 700;
