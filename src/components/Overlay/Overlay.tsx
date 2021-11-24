@@ -41,7 +41,7 @@ const Overlay: FC<OverlayProps> = ({
   subTitle = "",
   children,
 }) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -55,7 +55,7 @@ const Overlay: FC<OverlayProps> = ({
         </TitleSubContainer>
         <CloseButton
           icon="chevron-down"
-          ariaLabel={t("common:back")}
+          ariaLabel={t("common.back")}
           iconSize={1}
           tabIndex={isHidden ? -1 : 0}
           onClick={onClose}

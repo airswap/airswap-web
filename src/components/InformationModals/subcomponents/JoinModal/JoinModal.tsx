@@ -33,17 +33,17 @@ const guideButtons: GuideButtonProps[] = [
 ];
 
 const JoinModal: FC = () => {
-  const { t } = useTranslation(["information"]);
+  const { t } = useTranslation();
 
   return (
     <ScrollableModalContainer>
-      <ModalParagraph>{t("information:join.intro")}</ModalParagraph>
+      <ModalParagraph>{t("information.join.intro")}</ModalParagraph>
 
       <ModalSubTitle type="h2">
-        {t("information:join.getStarted")}
+        {t("information.join.getStarted")}
       </ModalSubTitle>
 
-      <ModalParagraph>{t("information:join.paragraph2")}</ModalParagraph>
+      <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
 
       <GuideButtons>
         {guideButtons.map((guideButton) => {

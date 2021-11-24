@@ -156,15 +156,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     false
   );
 
-  const { t } = useTranslation([
-    "orders",
-    "common",
-    "wallet",
-    "balances",
-    "toast",
-    "validatorErrors",
-    "information",
-  ]);
+  const { t } = useTranslation();
 
   const {
     chainId,
@@ -463,8 +455,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       switch (e.message) {
         case "error requesting orders": {
           notifyError({
-            heading: t("orders:errorRequesting"),
-            cta: t("orders:errorRequestingCta"),
+            heading: t("orders.errorRequesting"),
+            cta: t("orders.errorRequestingCta"),
           });
           break;
         }
@@ -509,8 +501,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
             onExpired: () => {
               notifyError({
-                heading: t("orders:swapExpired"),
-                cta: t("orders:swapExpiredCallToAction"),
+                heading: t("orders.swapExpired"),
+                cta: t("orders.swapExpiredCallToAction"),
               });
             },
           })
@@ -549,8 +541,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           LastLook.unsubscribeAllServers();
         } else {
           notifyError({
-            heading: t("orders:swapRejected"),
-            cta: t("orders:swapRejectedCallToAction"),
+            heading: t("orders.swapRejected"),
+            cta: t("orders.swapRejectedCallToAction"),
           });
 
           dispatch(
@@ -572,8 +564,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         // 4001 is metamask user declining transaction sig
       } else {
         notifyError({
-          heading: t("orders:swapFailed"),
-          cta: t("orders:swapFailedCallToAction"),
+          heading: t("orders.swapFailed"),
+          cta: t("orders.swapFailedCallToAction"),
         });
 
         dispatch(
@@ -706,7 +698,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
-          title={isApproving ? t("orders:approve") : t("common:swap")}
+          title={isApproving ? t("orders.approve") : t("common.swap")}
           isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           protocol={bestTradeOption?.protocol as ProtocolType}
@@ -817,7 +809,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
 
       <Overlay
-        title={t("wallet:selectWallet")}
+        title={t("wallet.selectWallet")}
         onClose={() => setShowWalletList(false)}
         isHidden={!showWalletList}
       >
@@ -833,8 +825,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("validatorErrors:unableSwap")}
-        subTitle={t("validatorErrors:swapFail")}
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
         onClose={async () => {
           await handleButtonClick(ButtonActions.restart);
           setValidatorErrors([]);
@@ -850,7 +842,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("information:gasFreeSwaps.title")}
+        title={t("information.gasFreeSwaps.title")}
         onClose={() => setShowGasFeeInfo(false)}
         isHidden={!showGasFeeInfo}
       >
@@ -859,7 +851,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("information:protocolFeeDiscount.title")}
+        title={t("information.protocolFeeDiscount.title")}
         onClose={() => setProtocolFeeDiscountInfo(false)}
         isHidden={!protocolFeeDiscountInfo}
       >
@@ -867,7 +859,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
 
       <Overlay
-        title={t("information:join.title")}
+        title={t("information.join.title")}
         onClose={afterInformationModalClose}
         isHidden={!activeInformationModal}
       >

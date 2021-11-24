@@ -1,8 +1,0 @@
-{
-  "tokenBalances": "Tokenbalanser",
-  "addToTokenSet": "Legg til",
-  "unsupportedToken": "Ikke støttet enda",
-  "balance": "Balanse",
-  "failedToFetchAllowances": "Henting av antall tokens som er tilgjengelig for veksling feilet",
-  "failedToFetchAllowancesCta": "Vennligst last siden på nytt"
-}

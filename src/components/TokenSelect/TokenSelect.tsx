@@ -86,7 +86,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   isQuote = false,
   showMaxButton = false,
 }) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
 
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
@@ -96,7 +96,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
             <StyledSelectButtonContent>
-              {selectedToken ? selectedToken.symbol : t("common:select")}
+              {selectedToken ? selectedToken.symbol : t("common.select")}
             </StyledSelectButtonContent>
             <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
@@ -123,7 +123,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <TokenSelectFocusBorder position="right" />
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
-            <MaxButton onClick={onMaxClicked}>{t("common:max")}</MaxButton>
+            <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
           )}
           <TokenLogoRight size="large" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>
