@@ -12,22 +12,22 @@ import { GuideButtons } from "./JoinModal.styles";
 const guideButtons: GuideButtonProps[] = [
   {
     iconName: "vote",
-    text: "voter",
+    text: "information.join.voter",
     href: "https://about.airswap.io/guides/voters",
   },
   {
     iconName: "code",
-    text: "developer",
+    text: "information.join.developer",
     href: "https://github.com/airswap",
   },
   {
     iconName: "campaign",
-    text: "ambassador",
+    text: "information.join.ambassador",
     href: "https://about.airswap.io/guides/ambassadors",
   },
   {
     iconName: "edit",
-    text: "author",
+    text: "information.join.author",
     href: "https://about.airswap.io/guides/authors",
   },
 ];
@@ -46,10 +46,10 @@ const JoinModal: FC = () => {
       <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
 
       <GuideButtons>
-        {guideButtons.map((guideButton) => {
+        {guideButtons.map((guideButton, index) => {
           return (
             <GuideButton
-              key={guideButton.text}
+              key={`${guideButton.iconName}-${index}`}
               iconName={guideButton.iconName}
               text={guideButton.text}
               href={guideButton.href}
