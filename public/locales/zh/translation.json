@@ -57,7 +57,11 @@
     "protocolFeeDiscount.paragraph": "AirSwap 協議費用轉移到由 DAO 控制的費用池智能合約。",
     "protocolFeeDiscount.paragraph2": "這些費用將分配給積極參與管理和開發過程的團隊貢獻者。您可以隨時查看費用池的餘額在",
     "protocolFeeDiscount.link": "Etherscan",
-    "protocolFeeDiscount.stakeYourAst": "持有量與加入DAO"
+    "protocolFeeDiscount.stakeYourAst": "持有量與加入DAO",
+    "join.voter": "投票者",
+    "join.developer": "程式開發員",
+    "join.ambassador": "大使",
+    "join.author": "作家"
   },
   "orders": {
     "continue": "繼續",
