@@ -21,7 +21,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
           supportedChainIds: [
-            1, // Mainet
+            1, // Mainnet
             4, // Rinkeby
           ],
         });
@@ -33,15 +33,15 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     name: "WalletConnect",
     logo: walletconnectLogo,
     getConnector: () => {
-      if (!cachedConnectors.WalletConect) {
-        cachedConnectors.MetaMask = new WalletConnectConnector({
+      if (!cachedConnectors.WalletConnect) {
+        cachedConnectors.WalletConnect = new WalletConnectConnector({
           rpc: {
             1: process.env.REACT_APP_RPC_URL_1 || "",
             4: process.env.REACT_APP_RPC_URL_4 || "",
           },
         });
       }
-      return cachedConnectors.WalletConect;
+      return cachedConnectors.WalletConnect;
     },
   },
 ];
