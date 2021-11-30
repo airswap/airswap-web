@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../style/mixins";
+import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
 export const Container = styled.div`
@@ -17,7 +17,6 @@ export const PillStyle = css`
   align-items: center;
   padding: 0 1rem;
   height: 2rem;
-  min-width: 9.5rem;
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -26,17 +25,23 @@ export const PillStyle = css`
 
 export const Button = styled.button`
   ${PillStyle}
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyleType2}
+
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const Quote = styled.span`
   ${PillStyle};
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const NewQuoteText = styled.span`
   margin-right: 0.25rem;
-  color: ${(props) => props.theme.colors.lightGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 `;
 
 export const StyledIcon = styled(Icon)`

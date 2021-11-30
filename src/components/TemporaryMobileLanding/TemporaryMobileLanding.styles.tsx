@@ -3,12 +3,13 @@ import styled from "styled-components/macro";
 import breakPoints from "../../style/breakpoints";
 
 export const Container = styled.div`
-  color: ${(props) => props.theme.colors.white};
+  position: relative;
+  display: none;
+  color: ${(props) => props.theme.colors.alwaysWhite};
   padding: 0 1.375rem;
   width: 100vw;
   min-height: 100%;
-  position: relative;
-  display: none;
+
   @media ${breakPoints.phoneOnly} {
     display: block;
   }
@@ -41,8 +42,9 @@ export const Subtitle = styled.h2`
   font-size: 1rem;
   font-weight: 400;
   width: 100%;
-  color: ${(props) => props.theme.colors.darkSubText};
   margin: 1rem 0;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.black};
 `;
 
 export const SocialsContainer = styled.div`
@@ -83,13 +85,16 @@ export const MobileContainer = styled.div`
 `;
 
 export const DexTitle = styled.h3`
+  margin: 1rem 0;
   font-size: 1rem;
   font-weight: 700;
-  margin: 1rem 0;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.primary : theme.colors.black};
 `;
 
 export const Description = styled.h3`
-  color: ${(props) => props.theme.colors.darkSubText};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.black};
 `;
 
 export const BackgroundImage = styled.div`
@@ -98,7 +103,10 @@ export const BackgroundImage = styled.div`
   right: 0;
   width: 100%;
   height: 80%;
-  background-image: url("images/background-mobile.png");
+  background-image: url(${({ theme }) =>
+    theme.name === "dark"
+      ? "images/background-mobile-dark.png"
+      : "images/background-mobile-light.png"});
   background-position: right bottom;
   background-repeat: no-repeat;
   background-size: 360px 227px;

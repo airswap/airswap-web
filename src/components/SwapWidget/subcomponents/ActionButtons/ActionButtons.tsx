@@ -18,15 +18,15 @@ export enum ButtonActions {
 }
 
 const buttonTextMapping: Record<ButtonActions, string> = {
-  [ButtonActions.connectWallet]: "wallet:connectWallet",
-  [ButtonActions.switchNetwork]: "wallet:switchNetwork",
-  [ButtonActions.reloadPage]: "common:reloadPage",
-  [ButtonActions.restart]: "orders:newSwap",
-  [ButtonActions.goBack]: "common:back",
-  [ButtonActions.approve]: "orders:approve",
-  [ButtonActions.requestQuotes]: "orders:continue",
-  [ButtonActions.takeQuote]: "orders:take",
-  [ButtonActions.trackTransaction]: "orders:track",
+  [ButtonActions.connectWallet]: "wallet.connectWallet",
+  [ButtonActions.switchNetwork]: "wallet.switchNetwork",
+  [ButtonActions.reloadPage]: "common.reloadPage",
+  [ButtonActions.restart]: "orders.newSwap",
+  [ButtonActions.goBack]: "common.back",
+  [ButtonActions.approve]: "orders.approve",
+  [ButtonActions.requestQuotes]: "orders.continue",
+  [ButtonActions.takeQuote]: "orders.take",
+  [ButtonActions.trackTransaction]: "orders.track",
 };
 
 /**
@@ -72,7 +72,7 @@ const ActionButtons: FC<{
   transactionsTabOpen,
   onButtonClicked,
 }) => {
-  const { t } = useTranslation(["wallet", "common", "orders"]);
+  const { t } = useTranslation();
 
   // First determine the next action.
   let nextAction: ButtonActions;
@@ -112,11 +112,11 @@ const ActionButtons: FC<{
   // it depends on the reason for being disabled instead.
   let mainButtonText;
   if (isDisabled) {
-    if (!hasAmount) mainButtonText = t("orders:enterAmount");
+    if (!hasAmount) mainButtonText = t("orders.enterAmount");
     else if (!baseTokenInfo || !quoteTokenInfo)
-      mainButtonText = t("orders:chooseToken");
+      mainButtonText = t("orders.chooseToken");
     else if (!hasSufficientBalance)
-      mainButtonText = t("orders:insufficentBalance", {
+      mainButtonText = t("orders.insufficentBalance", {
         symbol: baseTokenInfo.symbol,
       });
   } else {
@@ -124,6 +124,7 @@ const ActionButtons: FC<{
     mainButtonText = t(buttonTextMapping[nextAction]);
   }
 
+  //@ts-ignore
   let secondaryButtonText: string | null = !!secondaryAction
     ? // @ts-ignore dynamic translation key.
       t(buttonTextMapping[secondaryAction])
@@ -133,7 +134,7 @@ const ActionButtons: FC<{
     <>
       {hasBackButton && (
         <BackButton onClick={onButtonClicked.bind(null, ButtonActions.goBack)}>
-          {t("common:back")}
+          {t("common.back")}
         </BackButton>
       )}
       {secondaryAction && (

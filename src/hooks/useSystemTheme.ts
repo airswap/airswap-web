@@ -4,15 +4,13 @@ import { ThemeType } from "styled-components/macro";
 
 const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-// TODO: Remember to restore light mode
-
 const useSystemTheme = () => {
   const [systemTheme, setSystemTheme] = useState<ThemeType>(
-    mediaQuery.matches ? "dark" : "dark"
+    mediaQuery.matches ? "dark" : "light"
   );
   useEffect(() => {
     function listener(e: MediaQueryListEvent) {
-      setSystemTheme(e.matches ? "dark" : "dark");
+      setSystemTheme(e.matches ? "dark" : "light");
     }
     mediaQuery.addEventListener("change", listener);
 

@@ -141,6 +141,10 @@ export const StyledSelectItem = styled(SelectItem)`
   align-items: center;
   line-height: 1;
   gap: 0.375rem;
+  color: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.white
+      : props.theme.colors.primary};
 `;
 
 export const StyledLabel = styled(FormLabel)`
@@ -160,14 +164,17 @@ export const TokenSelectContainer = styled.div<{
   width: 100%;
   height: 4.5rem;
   padding: 1rem;
-  margin-bottom: 0.5rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
   background-color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.darkGrey
-      : props.theme.colors.alwaysWhite};
+      : props.theme.colors.primaryLight};
   overflow: hidden;
+  
+  &:first-of-type {
+    margin-bottom: 0.5rem;
+  }
 
   ${PlaceHolderBar} {
     ${(props) => (!props.$isLoading ? "animation: none" : "")};

@@ -32,7 +32,7 @@ const TokenImportButton = ({
   onClick,
   isUnsupported,
 }: TokenImportRowProps) => {
-  const { t } = useTranslation(["balances", "common"]);
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -44,11 +44,11 @@ const TokenImportButton = ({
       </TextContainer>
       {isUnsupported ? (
         <UnsupportedTokenText>
-          {t("balances:unsupportedToken")}
+          {t("balances.unsupportedToken")}
         </UnsupportedTokenText>
       ) : (
         <ImportButton onClick={() => onClick(token.address)}>
-          {t("balances:addToTokenSet")}
+          {t("balances.addToTokenSet")}
         </ImportButton>
       )}
     </Container>

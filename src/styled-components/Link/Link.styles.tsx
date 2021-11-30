@@ -10,7 +10,7 @@ const Link = styled.a`
   }
 
   &:visited {
-    color: ${(props) => props.theme.colors.orange};
+    color: ${(props) => props.theme.colors.white};
   }
 `;
 

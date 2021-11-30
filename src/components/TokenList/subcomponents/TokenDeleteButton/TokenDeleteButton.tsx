@@ -7,11 +7,11 @@ type TokenDeleteButtonProps = {
 };
 
 const TokenDeleteButton = ({ onClick }: TokenDeleteButtonProps) => {
-  const { t } = useTranslation(["orders"]);
+  const { t } = useTranslation();
 
   return (
     <Container onClick={onClick}>
-      <Text>{t("orders:removeFromActive")}</Text>
+      <Text>{t("orders.removeFromActive")}</Text>
     </Container>
   );
 };

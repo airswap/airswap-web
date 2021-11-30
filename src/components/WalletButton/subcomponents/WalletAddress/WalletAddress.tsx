@@ -2,11 +2,11 @@ import { useTranslation } from "react-i18next";
 
 import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
-import { InfoHeading } from "../../../Typography/Typography";
 import {
   ConnectionStatusCircle,
   Button,
   Placeholder,
+  WalletAddressText,
 } from "./WalletAddress.styles";
 
 type WalletAddressPropsType = {
@@ -27,7 +27,7 @@ const WalletAddress = ({
   setShowWalletList,
   glow,
 }: WalletAddressPropsType) => {
-  const { t } = useTranslation("wallet");
+  const { t } = useTranslation();
   const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () =>
@@ -36,13 +36,13 @@ const WalletAddress = ({
     ) : (
       <BorderedButton $glow={glow}>
         <ConnectionStatusCircle $connected={!!address} />
-        <InfoHeading>
+        <WalletAddressText>
           {isUnsupportedNetwork
-            ? t("unsupportedNetwork")
+            ? t("wallet.unsupportedNetwork")
             : addressOrName
             ? addressOrName
-            : t("notConnected")}
-        </InfoHeading>
+            : t("wallet.notConnected")}
+        </WalletAddressText>
       </BorderedButton>
     );
 

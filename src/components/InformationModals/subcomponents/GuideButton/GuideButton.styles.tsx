@@ -1,11 +1,12 @@
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../style/mixins";
+import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
 export const StyledIcon = styled(Icon)`
   margin-bottom: 0.375rem;
-  color: ${(props) => props.theme.colors.darkSubText};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.primary};
 `;
 
 export const Text = styled.div`
@@ -13,7 +14,8 @@ export const Text = styled.div`
   font-weight: 700;
   text-transform: uppercase;
   line-height: 2;
-  color: ${(props) => props.theme.colors.darkSubText};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkSubText : theme.colors.primary};
 `;
 
 export const GuideButtonContainer = styled.a`
@@ -22,13 +24,12 @@ export const GuideButtonContainer = styled.a`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
   width: 25%;
   height: 5.5rem;
   overflow: hidden;
 
-  &:not(&:last-of-type):not(:focus) {
+  &:not(&:last-of-type):not(:focus):not(:hover) {
     border-right: 0;
   }
 
@@ -42,8 +43,9 @@ export const GuideButtonContainer = styled.a`
     border-bottom-right-radius: 0.1875rem;
   }
 
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyleType2}
 
+  &:hover,
   &:focus {
     z-index: 1;
 
@@ -57,14 +59,14 @@ export const GuideButtonContainer = styled.a`
   }
 
   &:hover {
-    border: 1px solid ${(props) => props.theme.colors.borderGrey};
-
     ${StyledIcon} {
-      color: ${(props) => props.theme.colors.white};
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
 
     ${Text} {
-      color: ${(props) => props.theme.colors.white};
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
   }
 

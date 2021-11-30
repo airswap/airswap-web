@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 
 export const StyledWalletProviderList = styled.div`
@@ -17,20 +18,16 @@ export const TitleContainer = styled.div`
 `;
 
 export const StyledButton = styled.button`
+  ${InputOrButtonBorderStyleType2};
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
   height: 4.5rem;
-  background: ${(props) => props.theme.colors.darkGrey};
-
-  &:hover,
-  &:focus {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.lightGrey};
-  }
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
 
   & + & {
     margin-top: 0.5rem;

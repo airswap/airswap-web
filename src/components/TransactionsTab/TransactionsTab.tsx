@@ -64,12 +64,13 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
+  const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation(["wallet"]);
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
 
@@ -90,14 +91,26 @@ const TransactionsTab = ({
   }, [handleEscKey]);
 
   useEffect(() => {
-    if (containerRef.current && transactionsScrollRef.current) {
+    if (
+      containerRef.current &&
+      transactionsScrollRef.current &&
+      buttonRef.current
+    ) {
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
-      // subtracting 86 to account for the disconnect button on the bottom
-      setOverflow(
-        scrollHeight + offsetTop > containerRef.current.offsetHeight - 86
-      );
+      const containerHeight = containerRef.current.getBoundingClientRect()
+        .height;
+      const buttonHeight = buttonRef.current.getBoundingClientRect().height;
+      setOverflow(scrollHeight + offsetTop > containerHeight - buttonHeight);
     }
-  }, [containerRef, transactionsScrollRef, width, height]);
+  }, [
+    containerRef,
+    transactionsScrollRef,
+    buttonRef,
+    width,
+    height,
+    open,
+    transactions,
+  ]);
 
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
@@ -125,18 +138,19 @@ const TransactionsTab = ({
           exit={{ x: "24rem" }}
         >
           <BackButton
+            aria-label={t("common.back")}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
             initial={{ y: "-5rem" }}
             exit={{ opacity: 0 }}
             onClick={() => setTransactionsTabOpen(false)}
           >
-            <Icon name="chevron-right" iconSize={1} />
+            <Icon name="chevron-right" iconSize={1.5} />
           </BackButton>
           <WalletHeader>
             <NetworkInfoContainer>
               <NetworkName>
-                {addressMapping[chainId] || t("wallet:unsupported")}
+                {addressMapping[chainId] || t("wallet.unsupported")}
               </NetworkName>
               <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
             </NetworkInfoContainer>
@@ -146,10 +160,10 @@ const TransactionsTab = ({
               <ConnectionStatusCircle $connected={!!address} />
               <InfoHeading>
                 {isUnsupportedNetwork
-                  ? t("wallet:unsupported")
+                  ? t("wallet.unsupported")
                   : addressOrName
                   ? addressOrName
-                  : t("wallet:notConnected")}
+                  : t("wallet.notConnected")}
               </InfoHeading>
             </WalletInfoButton>
           </WalletHeader>
@@ -160,7 +174,7 @@ const TransactionsTab = ({
           >
             <Legend>
               <LegendLine>
-                {t("wallet:activeTransactions").toUpperCase()}
+                {t("wallet.activeTransactions").toUpperCase()}
               </LegendLine>
             </Legend>
             <TransactionContainer>
@@ -178,14 +192,14 @@ const TransactionsTab = ({
                   <IconContainer>
                     <Icon name="transaction" />
                   </IconContainer>
-                  {t("wallet:noActiveTransactions")}
+                  {t("wallet.noActiveTransactions")}
                 </NoTransactions>
               )}
             </TransactionContainer>
             {completedTransactions && (
               <Legend>
                 <LegendLine>
-                  {t("wallet:completedTransactions").toUpperCase()}
+                  {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
             )}
@@ -206,17 +220,17 @@ const TransactionsTab = ({
                   <IconContainer>
                     <Icon name="transaction" />
                   </IconContainer>
-                  {t("wallet:noCompletedTransactions")}
+                  {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
             </TransactionContainer>
           </TransactionsContainer>
-          <DiconnectButtonContainer>
+          <DiconnectButtonContainer ref={buttonRef}>
             <DisconnectButton
-              aria-label={t("wallet:disconnectWallet")}
+              aria-label={t("wallet.disconnectWallet")}
               onClick={onDisconnectWalletClicked}
             >
-              {t("wallet:disconnectWallet")}
+              {t("wallet.disconnectWallet")}
             </DisconnectButton>
           </DiconnectButtonContainer>
         </Container>

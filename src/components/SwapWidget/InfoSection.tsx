@@ -62,14 +62,14 @@ const InfoSection: FC<InfoSectionProps> = ({
   quoteTokenInfo,
   onFeeButtonClick,
 }) => {
-  const { t } = useTranslation(["orders", "marketing", "balances"]);
+  const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   // Wallet not connected.
   if (!isConnected) {
     return (
       <>
-        <InfoHeading>{t("marketing:welcomeHeading")}</InfoHeading>
-        <InfoSubHeading>{t("marketing:welcomeMessage")}</InfoSubHeading>
+        <InfoHeading>{t("marketing.welcomeHeading")}</InfoHeading>
+        <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
       </>
     );
   }
@@ -81,9 +81,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   ) {
     return (
       <>
-        <InfoHeading>{t("balances:failedToFetchAllowances")}</InfoHeading>
+        <InfoHeading>{t("balances.failedToFetchAllowances")}</InfoHeading>
         <InfoSubHeading>
-          {t("balances:failedToFetchAllowancesCta")}
+          {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
       </>
     );
@@ -96,9 +96,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   ) {
     return (
       <>
-        <InfoHeading>{t("balances:failedToFetchAllowances")}</InfoHeading>
+        <InfoHeading>{t("balances.failedToFetchAllowances")}</InfoHeading>
         <InfoSubHeading>
-          {t("balances:failedToFetchAllowancesCta")}
+          {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
       </>
     );
@@ -107,8 +107,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isFetchingOrders) {
     return (
       <>
-        <InfoHeading>{t("orders:findingBestPrice")}</InfoHeading>
-        <InfoSubHeading>{t("orders:scanningPeers")}</InfoSubHeading>
+        <InfoHeading>{t("orders.findingBestPrice")}</InfoHeading>
+        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
       </>
     );
   }
@@ -116,8 +116,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isPairUnavailable) {
     return (
       <>
-        <InfoHeading>{t("orders:tokenPairUnavailable")}</InfoHeading>
-        <InfoSubHeading>{t("orders:retryOrCancel")}</InfoSubHeading>
+        <InfoHeading>{t("orders.tokenPairUnavailable")}</InfoHeading>
+        <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
       </>
     );
   }
@@ -125,8 +125,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (orderSubmitted) {
     return (
       <>
-        <InfoHeading>{t("orders:submitted")}</InfoHeading>
-        <InfoSubHeading>{t("orders:trackTransaction")}</InfoSubHeading>
+        <InfoHeading>{t("orders.submitted")}</InfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
   }
@@ -135,9 +135,9 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <InfoHeading>
-          {t("orders:approvePending", { symbol: baseTokenInfo!.symbol })}
+          {t("orders.approvePending", { symbol: baseTokenInfo!.symbol })}
         </InfoHeading>
-        <InfoSubHeading>{t("orders:approveMessage")}</InfoSubHeading>
+        <InfoSubHeading>{t("orders.approveMessage")}</InfoSubHeading>
       </>
     );
   }
@@ -145,8 +145,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isSwapping) {
     return (
       <>
-        <InfoHeading>{t("orders:swapPending")}</InfoHeading>
-        <InfoSubHeading>{t("orders:swapMessage")}</InfoSubHeading>
+        <InfoHeading>{t("orders.swapPending")}</InfoHeading>
+        <InfoSubHeading>{t("orders.swapMessage")}</InfoSubHeading>
       </>
     );
   }
@@ -158,7 +158,7 @@ const InfoSection: FC<InfoSectionProps> = ({
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
         </InfoHeading>
-        <InfoSubHeading>{t("orders:wrapMessage")}</InfoSubHeading>
+        <InfoSubHeading>{t("orders.wrapMessage")}</InfoSubHeading>
       </>
     );
   }
@@ -181,21 +181,23 @@ const InfoSection: FC<InfoSectionProps> = ({
             {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
             <RevertPriceButton
               icon="swap"
+              ariaLabel={t("orders.revertPrice")}
               iconSize={1}
               onClick={() => setInvertPrice((p) => !p)}
             />
           </StyledInfoHeading>
           <FeeTextContainer>
-            <FeeText>{t("marketing:includesFee")}</FeeText>
+            <FeeText>{t("marketing.includesFee")}</FeeText>
             <InfoButton
               onClick={onFeeButtonClick}
+              ariaLabel={t("orders.moreInformation")}
               icon="information-circle-outline"
             />
           </FeeTextContainer>
         </>
         {requiresApproval && (
           <ApprovalText>
-            {t("orders:approvalRequired", { symbol: baseTokenInfo!.symbol })}
+            {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
           </ApprovalText>
         )}
       </>
@@ -205,8 +207,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   // No order & not fetching, but wallet connected.
   return (
     <>
-      <InfoHeading>{t("marketing:welcomeHeading")}</InfoHeading>
-      <InfoSubHeading>{t("marketing:welcomeMessage")}</InfoSubHeading>
+      <InfoHeading>{t("marketing.welcomeHeading")}</InfoHeading>
+      <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
     </>
   );
 };

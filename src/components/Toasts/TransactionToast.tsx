@@ -12,11 +12,12 @@ import {
   SubmittedTransaction,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   HiXContainer,
   IconContainer,
+  SwapAmounts,
   TextContainer,
 } from "./Toast.styles";
 
@@ -60,7 +61,7 @@ const TransactionToast = ({
   signerToken,
   approvalToken,
 }: TransactionToastProps) => {
-  const { t } = useTranslation(["toast"]);
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -75,13 +76,13 @@ const TransactionToast = ({
         <InfoHeading>
           {type === "Order" || type === "Deposit" || type === "Withdraw"
             ? error
-              ? t("toast:swapFail")
-              : t("toast:swapComplete")
+              ? t("toast.swapFail")
+              : t("toast.swapComplete")
             : error
-            ? t("toast:approvalFail")
-            : t("toast:approvalComplete")}
+            ? t("toast.approvalFail")
+            : t("toast.approvalComplete")}
         </InfoHeading>
-        <InfoSubHeading>
+        <SwapAmounts>
           {(() => {
             if (type === "Order" || type === "Deposit" || type === "Withdraw") {
               if (transaction && senderToken && signerToken) {
@@ -89,9 +90,9 @@ const TransactionToast = ({
                   transaction.protocol === "last-look"
                     ? (transaction as SubmittedLastLookOrder)
                     : (transaction as SubmittedRFQOrder);
-                let translationKey = "wallet:transaction";
+                let translationKey = "wallet.transaction";
                 if (tx.protocol === "last-look") {
-                  translationKey = "wallet:lastLookTransaction";
+                  translationKey = "wallet.lastLookTransaction";
                 }
                 // @ts-ignore dynamic translation key
                 return t(translationKey, {
@@ -110,10 +111,11 @@ const TransactionToast = ({
                 });
               }
             }
-            return t("toast:approve", { symbol: approvalToken?.symbol });
+            return t("toast.approve", { symbol: approvalToken?.symbol });
           })()}
-        </InfoSubHeading>
+        </SwapAmounts>
       </TextContainer>
+
       <HiXContainer>
         <HiX
           style={{
