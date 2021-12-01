@@ -57,7 +57,11 @@
         "protocolFeeDiscount.paragraph": "AirSwap protocol fees are transferred to a fee pool smart contract controlled by the DAO.",
         "protocolFeeDiscount.paragraph2": "These fees are then distributed to community contributors who actively participate in the governance and development process. You can check the balance of the fee pool anytime on",
         "protocolFeeDiscount.link": "Etherscan",
-        "protocolFeeDiscount.stakeYourAst": "Stake and Join the DAO"
+        "protocolFeeDiscount.stakeYourAst": "Stake and Join the DAO",
+        "join.voter": "Voter",
+        "join.developer": "Developer",
+        "join.ambassador": "Ambassador",
+        "join.author": "Author"
     },
     "orders": {
         "continue": "Continue",
