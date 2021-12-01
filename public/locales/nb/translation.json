@@ -57,7 +57,11 @@
         "protocolFeeDiscount.paragraph": "Protokollgebyrene blir overført til en smart-kontrakt som er kontrollert av AirSwaps DAO.",
         "protocolFeeDiscount.paragraph2": "Disse gebyrene blir distribuert til bidragsyterne som aktivt deltar i styrings- og utviklingsprosessen. Du kan sjekke balansen på denne kontrakten når som helst på",
         "protocolFeeDiscount.link": "Etherscan",
-        "protocolFeeDiscount.stakeYourAst": "Lås dine AST og bli med AirSwaps DAO"
+        "protocolFeeDiscount.stakeYourAst": "Lås dine AST og bli med AirSwaps DAO",
+        "join.voter": "Velger",
+        "join.developer": "Utvikler",
+        "join.ambassador": "Ambassadør",
+        "join.author": "Forfatter"
     },
     "orders": {
         "continue": "Fortsett",
@@ -97,7 +101,7 @@
         "newSwap": "Ny veksling",
         "swapPending": "Klar til å veksle",
         "swapMessage": "Aksepter handelen i lommeboken din for å fortsette",
-        "wrapMessage": "Vekslinger med ETH/WETH er gratis",
+        "wrapMessage": "Vekslinger med ETH/WETH er gebyfrie",
         "submitted": "Sendt!",
         "swapExpired": "Veksling utløpt",
         "swapExpiredCallToAction": "Vennligst prøv igjen",
