@@ -84,6 +84,7 @@ export const Legend = styled.div`
 `;
 
 export const LegendItem = styled.div`
+  word-break: keep-all;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.625rem;
