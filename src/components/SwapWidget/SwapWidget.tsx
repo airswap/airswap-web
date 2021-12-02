@@ -67,6 +67,7 @@ import {
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
@@ -132,6 +133,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   // Input states
   let { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+
+  // Pricing
+  const {
+    subscribeToGasPrice,
+    subscribeToTokenPrice,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  } = useReferencePriceSubscriber();
 
   // Modals
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
@@ -219,6 +228,22 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     );
   }, [balances, baseToken, baseTokenInfo]);
 
+  useEffect(() => {
+    setAllowanceFetchFailed(false);
+    setBaseAmount(initialBaseAmount);
+    dispatch(clearTradeTerms());
+    unsubscribeFromGasPrice();
+    unsubscribeFromTokenPrice();
+    dispatch(clear());
+    LastLook.unsubscribeAllServers();
+  }, [
+    chainId,
+    dispatch,
+    LastLook,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  ]);
+  
   useEffect(() => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
@@ -609,6 +634,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         setPairUnavailable(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        unsubscribeFromGasPrice();
+        unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         break;
 
@@ -616,6 +643,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         setShowOrderSubmitted(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        unsubscribeFromGasPrice();
+        unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount(initialBaseAmount);
         break;
@@ -659,6 +688,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             quoteAmount: null,
             side: "sell",
           })
+        );
+        subscribeToGasPrice();
+        subscribeToTokenPrice(
+          quoteTokenInfo!,
+          // @ts-ignore
+          library!,
+          chainId
         );
         await requestQuotes();
 

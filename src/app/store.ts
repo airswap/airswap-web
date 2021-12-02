@@ -4,6 +4,7 @@ import {
   balancesReducer,
   allowancesReducer,
 } from "../features/balances/balancesSlice";
+import gasCostReducer from "../features/gasCost/gasCostSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
 import ordersReducer from "../features/orders/ordersSlice";
@@ -23,6 +24,7 @@ export const store = configureStore({
     tradeTerms: tradeTermsReducer,
     orders: ordersReducer,
     pricing: pricingReducer,
+    gasCost: gasCostReducer,
     wallet: walletReducer,
     registry: registryReducer,
     userSettings: userSettingsReducer,

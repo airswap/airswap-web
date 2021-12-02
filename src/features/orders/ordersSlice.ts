@@ -20,6 +20,8 @@ import {
   allowancesLightActions,
   allowancesWrapperActions,
 } from "../balances/balancesSlice";
+import { gasUsedPerSwap } from "../gasCost/gasCostApi";
+import { selectGasPriceInQuoteTokens } from "../gasCost/gasCostSlice";
 import { selectBestPricing } from "../pricing/pricingSlice";
 import {
   clearTradeTerms,
@@ -493,7 +495,8 @@ export const selectBestOption = createSelector(
   selectTradeTerms,
   selectBestOrder,
   selectBestPricing,
-  (terms, bestRfqOrder, bestPricing) => {
+  selectGasPriceInQuoteTokens,
+  (terms, bestRfqOrder, bestPricing, gasPriceInQuoteTokens) => {
     if (!terms) return null;
 
     if (terms.side === "buy") {
@@ -520,23 +523,24 @@ export const selectBestOption = createSelector(
     }
 
     let rfqOrder;
-    let bestRFQSignerUnits: BigNumber | undefined;
+    let bestRFQQuoteTokens: BigNumber | undefined;
     if (bestRfqOrder) {
-      bestRFQSignerUnits = new BigNumber(bestRfqOrder.signerAmount).div(
+      bestRFQQuoteTokens = new BigNumber(bestRfqOrder.signerAmount).div(
         new BigNumber(10).pow(terms.quoteToken.decimals)
       );
       rfqOrder = {
-        quoteAmount: bestRFQSignerUnits.toString(),
+        quoteAmount: bestRFQQuoteTokens.toString(),
         protocol: "request-for-quote",
         order: bestRfqOrder,
       };
       if (!lastLookOrder) return rfqOrder;
     }
 
-    // TODO: this should factor in gas.
     if (
       pricing &&
-      bestRFQSignerUnits!.lte(new BigNumber(pricing.quoteAmount))
+      bestRFQQuoteTokens!
+        .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
+        .lte(new BigNumber(pricing.quoteAmount))
     ) {
       return lastLookOrder;
     } else {

@@ -48,6 +48,8 @@ const tradeTermsSlice = createSlice({
 });
 
 export const selectTradeTerms = (state: RootState) => state.tradeTerms;
+export const selectQuoteTokenAddress = (state: RootState) =>
+  state.tradeTerms.quoteToken.address;
 
 export const {
   set: setTradeTerms,
