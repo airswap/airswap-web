@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://preview.airswap.io/",
   "scripts": {
-    "start": "craco start",
+    "start": "craco start --port 5000",
     "build": "craco build",
     "lint": "prettier --write \"./src/**/*.{ts,tsx}\"",
     "test": "craco test",
