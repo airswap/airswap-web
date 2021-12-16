@@ -43,6 +43,11 @@ REACT_APP_ETHPLORER_API_KEY=
 yarn start
 ```
 
+## Libraries used
+
+- [`@uauth/js`](https://github.com/unstoppabledomains/uauth/tree/main/packages/js) - SDK used to integrate Unstoppable Auth.
+- [`@uauth/web3-react`](https://github.com/unstoppabledomains/uauth/tree/main/packages/web3-react) - Middleware used to help integrate @uauth/js into web3-react applications.
+
 ## Contact
 
 Discord ID: denimcodes#3820
