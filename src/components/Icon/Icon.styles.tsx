@@ -5,6 +5,7 @@ interface StyledIconProps {
 }
 
 export const StyledIcon = styled.div<StyledIconProps>`
+  color: ${(props) => props.theme.colors.alwaysWhite};
   svg {
     width: ${(props) => `${props.iconSize}rem`};
     height: ${(props) => `${props.iconSize}rem`};

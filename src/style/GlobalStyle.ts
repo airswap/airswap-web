@@ -13,7 +13,6 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     overflow-x: hidden;
     font-family: ${fontLoos};
-    color: ${(props) => props.theme.colors.alwaysWhite};
     background: ${(props) =>
       props.theme.name === "dark"
         ? props.theme.colors.black

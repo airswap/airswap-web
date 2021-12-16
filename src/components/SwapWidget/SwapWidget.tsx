@@ -243,7 +243,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     unsubscribeFromGasPrice,
     unsubscribeFromTokenPrice,
   ]);
-  
+
   useEffect(() => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
