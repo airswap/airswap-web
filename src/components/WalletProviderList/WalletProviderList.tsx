@@ -10,6 +10,7 @@ import {
   StyledWalletProviderList,
   ButtonIcon,
   ButtonText,
+  UAuthButton,
 } from "./WalletProviderList.styles";
 
 export type WalletProviderListProps = {
@@ -37,21 +38,28 @@ const WalletProviderList = ({
 
   return (
     <StyledWalletProviderList className={className}>
-      {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
-        <StyledButton
-          key={provider.name}
-          onClick={() => onProviderButtonClick(provider)}
-        >
-          <ButtonIconContainer>
-            <ButtonIcon
-              src={provider.logo}
-              alt={`${provider.name} logo`}
-              className="w-12 h-12"
-            />
-          </ButtonIconContainer>
-          <ButtonText>{provider.name}</ButtonText>
-        </StyledButton>
-      ))}
+      {SUPPORTED_WALLET_PROVIDERS.map((provider) =>
+        provider.name === "Login with Unstoppable" ? (
+          <UAuthButton
+            key={provider.name}
+            onClick={() => onProviderButtonClick(provider)}
+          />
+        ) : (
+          <StyledButton
+            key={provider.name}
+            onClick={() => onProviderButtonClick(provider)}
+          >
+            <ButtonIconContainer>
+              <ButtonIcon
+                src={provider.logo}
+                alt={`${provider.name} logo`}
+                className="w-12 h-12"
+              />
+            </ButtonIconContainer>
+            <ButtonText>{provider.name}</ButtonText>
+          </StyledButton>
+        )
+      )}
     </StyledWalletProviderList>
   );
 };
