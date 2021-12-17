@@ -19,6 +19,7 @@ import IconMedium from "./IconMedium";
 import IconPending from "./IconPending";
 import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
+import IconSwapHorizontal from "./IconSwapHorizontal";
 import IconTelegram from "./IconTelegram";
 import IconTransaction from "./IconTransaction";
 import IconTwitter from "./IconTwitter";
@@ -51,5 +52,6 @@ export {
   IconVote,
   IconX,
   IconSwap,
+  IconSwapHorizontal,
   IconTransaction,
 };

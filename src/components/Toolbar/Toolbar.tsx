@@ -40,11 +40,15 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
         iconSize={2.5}
       />
       <ToolbarButtonsContainer>
-        {/*<ToolbarButton iconName="bars" text={t("common.stats")} />*/}
         <ToolbarButton
-          iconName="learn"
-          text={t("common.learn")}
-          href="https://about.airswap.io/"
+          iconName="swap-horizontal"
+          text={t("common.otc")}
+          href="https://trader.airswap.io/"
+        />
+        <ToolbarButton
+          iconName="bars"
+          text={t("common.stats")}
+          href="https://dune.xyz/agrimony/AirSwap-v2"
         />
         <ToolbarButton
           iconName="vote"
@@ -55,6 +59,11 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
           iconName="code"
           text={t("common.build")}
           href="https://github.com/airswap"
+        />
+        <ToolbarButton
+          iconName="learn"
+          text={t("common.about")}
+          href="https://about.airswap.io/"
         />
         <ToolbarButton
           iconName="contact-support"
