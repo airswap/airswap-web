@@ -2,6 +2,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 import styled, { css, keyframes } from "styled-components/macro";
 
+import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { BorderlessButtonStyle } from "../../style/mixins";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import {
@@ -69,12 +70,13 @@ export const InputAndMaxButtonWrapper = styled.div`
 export const MaxButton = styled.button`
   position: relative;
   bottom: 1px;
-  letter-spacing: 0.07rem;
+  width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
+  letter-spacing: ${() => (isActiveLanguageLogographic() ? 0 : "0.0625rem")};
   align-self: center;
   padding: 0.125rem;
   border-radius: 0.125rem;
   font-weight: 600;
-  font-size: 0.5rem;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.5rem")};
   line-height: 1;
   text-transform: uppercase;
   background-color: ${(props) => props.theme.colors.lightGrey};

@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
@@ -10,12 +11,13 @@ export const StyledIcon = styled(Icon)`
 `;
 
 export const Text = styled.div`
-  font-size: 0.675rem;
   font-weight: 700;
   text-transform: uppercase;
+  white-space: nowrap;
   line-height: 2;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkSubText : theme.colors.primary};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.675rem")};
 `;
 
 export const GuideButtonContainer = styled.a`
@@ -24,7 +26,7 @@ export const GuideButtonContainer = styled.a`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
   width: 25%;
   height: 5.5rem;
   overflow: hidden;
@@ -54,7 +56,7 @@ export const GuideButtonContainer = styled.a`
     }
 
     &:not(:last-of-type) {
-      padding-right: calc(1rem - 1px);
+      padding-right: calc(0.5rem - 1px);
     }
   }
 
