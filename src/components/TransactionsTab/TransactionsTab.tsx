@@ -30,7 +30,7 @@ import {
   WalletInfoButton,
   ConnectionStatusCircle,
 } from "./TransactionsTab.styles";
-import { WalletTransaction } from "./subcomponents/WalletTransaction/WalletTransaction";
+import { WalletTransactionContainer } from "./subcomponents/WalletTransactionContainer/WalletTransactionContainer";
 
 const addressMapping: Record<number, string> = {
   1: "Mainnet",
@@ -178,23 +178,32 @@ const TransactionsTab = ({
               </LegendLine>
             </Legend>
             <TransactionContainer>
-              {pendingTransactions.length ? (
-                pendingTransactions.map((transaction) => (
-                  <WalletTransaction
+              <AnimatePresence initial={false}>
+                {pendingTransactions.map((transaction) => (
+                  <WalletTransactionContainer
+                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}-pending`}
                     transaction={transaction}
                     tokens={tokens}
                     chainId={chainId!}
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
                   />
-                ))
-              ) : (
-                <NoTransactions>
-                  <IconContainer>
-                    <Icon name="transaction" />
-                  </IconContainer>
-                  {t("wallet.noActiveTransactions")}
-                </NoTransactions>
-              )}
+                ))}
+              </AnimatePresence>
+              <AnimatePresence initial={false}>
+                {!pendingTransactions.length && (
+                  <NoTransactions
+                    animate={{ height: "4.5rem", opacity: 1 }}
+                    initial={{ height: "0rem", opacity: 0 }}
+                    transition={{
+                      duration: 0.3,
+                    }}
+                  >
+                    <IconContainer>
+                      <Icon name="transaction" />
+                    </IconContainer>
+                    {t("wallet.noActiveTransactions")}
+                  </NoTransactions>
+                )}
+              </AnimatePresence>
             </TransactionContainer>
             {completedTransactions && (
               <Legend>
@@ -204,18 +213,17 @@ const TransactionsTab = ({
               </Legend>
             )}
             <TransactionContainer>
-              {completedTransactions.length > 0 ? (
-                completedTransactions
-                  .slice(0, 10)
-                  .map((transaction) => (
-                    <WalletTransaction
-                      transaction={transaction}
-                      tokens={tokens}
-                      chainId={chainId!}
-                      key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
-                    />
-                  ))
-              ) : (
+              <AnimatePresence initial={false}>
+                {completedTransactions.slice(0, 10).map((transaction) => (
+                  <WalletTransactionContainer
+                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
+                    transaction={transaction}
+                    tokens={tokens}
+                    chainId={chainId!}
+                  />
+                ))}
+              </AnimatePresence>
+              {!completedTransactions.length && (
                 <NoTransactions>
                   <IconContainer>
                     <Icon name="transaction" />

@@ -1,32 +1,32 @@
+import { motion } from "framer-motion";
 import styled, { css } from "styled-components/macro";
 
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 
-export const Container = styled.div`
+export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
+
+export const Container = styled(motion.div)`
+  ${InputOrButtonBorderStyle};
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-color: ${({ theme }) => theme.colors.borderGrey};
+  border-radius: 0.1875rem;
   width: 100%;
   height: 4.125rem;
   padding: 0 1.5rem;
   gap: 1rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 0.1875rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
-  & + & {
-    margin-top: 0.5rem;
-  }
-
   &:hover {
-    border-color: ${(props) => props.theme.colors.lightGrey};
+    border-color: ${({ theme }) => theme.colors.lightGrey} !important;
   }
 `;
-
-export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 
 export const TextContainer = styled.div`
   display: flex;

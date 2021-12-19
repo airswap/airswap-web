@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
@@ -5,6 +6,7 @@ import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import BigNumber from "bignumber.js";
+import { HTMLMotionProps } from "framer-motion";
 
 import {
   SubmittedApproval,
@@ -14,6 +16,7 @@ import {
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
+import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
   Container,
   RotatedIcon,
@@ -23,7 +26,7 @@ import {
   TextContainer,
 } from "./WalletTransaction.styles";
 
-type WalletTransactionProps = {
+interface WalletTransactionProps extends HTMLMotionProps<"div"> {
   /**
    * The parent object of SubmittedOrder and SubmittedApproval
    */
@@ -36,36 +39,22 @@ type WalletTransactionProps = {
    * chainId of current Ethereum net
    */
   chainId: number;
-};
+}
 
 const WalletTransaction = ({
   transaction,
   tokens,
   chainId,
+  animate,
+  initial,
+  transition,
+  onAnimationComplete,
 }: WalletTransactionProps) => {
   const { t } = useTranslation();
 
-  let statusText: string;
-
-  switch (transaction.status) {
-    case "succeeded":
-      statusText = t("common.success");
-      break;
-    case "processing":
-      statusText = t("common.processing");
-      break;
-    case "expired":
-      statusText = t("common.expired");
-      break;
-    case "reverted":
-      statusText = t("common.failed");
-      break;
-    case "declined":
-      statusText = t("orders.swapRejected");
-      break;
-    default:
-      statusText = t("common.unknown");
-  }
+  const statusText = useMemo(() => {
+    return getWalletTransactionStatusText(transaction.status, t);
+  }, [transaction.status, t]);
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
@@ -73,7 +62,12 @@ const WalletTransaction = ({
     //@ts-ignore
     const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
     return (
-      <Container>
+      <Container
+        onAnimationComplete={onAnimationComplete}
+        transition={transition}
+        animate={animate}
+        initial={initial}
+      >
         <TextContainer>
           <>
             <SpanTitle>
@@ -114,7 +108,12 @@ const WalletTransaction = ({
     const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
 
     return (
-      <Container>
+      <Container
+        onAnimationComplete={onAnimationComplete}
+        transition={transition}
+        animate={animate}
+        initial={initial}
+      >
         {tx.status === "processing" && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
@@ -169,4 +168,4 @@ const WalletTransaction = ({
   }
 };
 
-export { WalletTransaction };
+export default WalletTransaction;

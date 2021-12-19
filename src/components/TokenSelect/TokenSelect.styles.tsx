@@ -12,7 +12,7 @@ import {
   Metadata,
 } from "../Typography/Typography";
 
-const fadeInOut = keyframes`
+const fadeOut = keyframes`
   from {
     opacity: 1;
   }
@@ -112,7 +112,7 @@ export const PlaceHolderBar = styled.div`
   width: 100%;
   height: 1.5rem;
   background-image: ${(props) => props.theme.colors.placeholderGradient};
-  animation: ${fadeInOut} 0.35s ease-in-out infinite alternate;
+  animation: ${fadeOut} 0.35s ease-in-out infinite alternate;
 `;
 
 export const TokenLogoLeft = styled(TokenLogo)`

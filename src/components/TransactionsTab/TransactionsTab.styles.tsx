@@ -99,19 +99,18 @@ export const TransactionContainer = styled.div`
   flex-grow: 2;
   padding: 1.5rem 0;
   width: 100%;
+  min-height: 4.125rem;
 
   &:last-of-type {
     padding-bottom: 0;
   }
 `;
 
-export const NoTransactions = styled.div`
+export const NoTransactions = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   height: 4.5rem;
-  margin: 0.25rem 0;
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
@@ -127,8 +126,9 @@ export const IconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 0.5rem;
   width: 2.5rem;
-  height: 2.5rem;
+  min-height: 2.5rem;
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
   border-radius: 50%;
