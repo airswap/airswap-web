@@ -2,7 +2,7 @@
   "name": "airswap-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://preview.airswap.io/",
+  "homepage": "https://www.airswap.io/",
   "scripts": {
     "start": "craco start",
     "build": "craco build",
