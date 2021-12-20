@@ -2,25 +2,12 @@
 import "react-i18next";
 
 // import all namespaces (for the default language, only)
-import balances from "../../public/locales/en/balances.json";
-import common from "../../public/locales/en/common.json";
-import information from "../../public/locales/en/information.json";
-import marketing from "../../public/locales/en/marketing.json";
-import orders from "../../public/locales/en/orders.json";
-import toast from "../../public/locales/en/toast.json";
-import validatorErrors from "../../public/locales/en/validatorErrors.json";
-import wallet from "../../public/locales/en/wallet.json";
+import en from "../../public/locales/en/translation.json";
 
 declare module "react-i18next" {
   // Extend with new types.
+  // Only need english as it's the base language
   interface Resources {
-    balances: typeof balances;
-    common: typeof common;
-    wallet: typeof wallet;
-    orders: typeof orders;
-    marketing: typeof marketing;
-    information: typeof information;
-    toast: typeof toast;
-    validatorErrors: typeof validatorErrors;
+    translation: typeof en;
   }
 }

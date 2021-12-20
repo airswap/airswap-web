@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
@@ -84,9 +85,10 @@ export const Legend = styled.div`
 `;
 
 export const LegendItem = styled.div`
+  word-break: keep-all;
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.625rem;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.625rem")};
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
@@ -109,7 +111,8 @@ export const InactiveTitleContainer = styled.div`
 
 export const InactiveTitle = styled.h3`
   display: flex;
-  font-size: 0.75rem;
+  align-items: center;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.75rem")};
 `;
 
 export const InformationIcon = styled(Icon)`

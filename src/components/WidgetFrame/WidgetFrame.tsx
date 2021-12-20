@@ -4,12 +4,17 @@ import { Container, StyledTradeContainer } from "./WidgetFrame.styles";
 
 type WidgetFrameType = {
   children?: React.ReactNode;
-  open?: boolean;
+  isConnected?: boolean;
+  isOpen?: boolean;
 };
 
-const WidgetFrame: FC<WidgetFrameType> = ({ children, open }): ReactElement => {
+const WidgetFrame: FC<WidgetFrameType> = ({
+  children,
+  isOpen,
+  isConnected,
+}): ReactElement => {
   return (
-    <StyledTradeContainer open={open}>
+    <StyledTradeContainer $isOpen={isOpen} $isConnected={isConnected}>
       <Container>{children}</Container>
     </StyledTradeContainer>
   );

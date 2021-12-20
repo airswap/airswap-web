@@ -46,6 +46,7 @@ import {
   request,
   deposit,
   withdraw,
+  resetOrders,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
@@ -66,6 +67,7 @@ import {
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
@@ -117,7 +119,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
-  const rfqOrderStatus = useAppSelector(selectOrdersStatus);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -131,6 +133,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   // Input states
   let { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+
+  // Pricing
+  const {
+    subscribeToGasPrice,
+    subscribeToTokenPrice,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  } = useReferencePriceSubscriber();
 
   // Modals
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
@@ -155,15 +165,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     false
   );
 
-  const { t } = useTranslation([
-    "orders",
-    "common",
-    "wallet",
-    "balances",
-    "toast",
-    "validatorErrors",
-    "information",
-  ]);
+  const { t } = useTranslation();
 
   const {
     chainId,
@@ -226,14 +228,43 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     );
   }, [balances, baseToken, baseTokenInfo]);
 
-  // Reset amount when the chainId changes.
   useEffect(() => {
     setAllowanceFetchFailed(false);
     setBaseAmount(initialBaseAmount);
     dispatch(clearTradeTerms());
+    unsubscribeFromGasPrice();
+    unsubscribeFromTokenPrice();
     dispatch(clear());
     LastLook.unsubscribeAllServers();
-  }, [chainId, dispatch, LastLook]);
+  }, [
+    chainId,
+    dispatch,
+    LastLook,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  ]);
+
+  useEffect(() => {
+    if (ordersStatus === "reset") {
+      setIsApproving(false);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setIsRequestingQuotes(false);
+      setAllowanceFetchFailed(false);
+      setPairUnavailable(false);
+      setProtocolFeeDiscountInfo(false);
+      setShowGasFeeInfo(false);
+      setBaseAmount(initialBaseAmount);
+      LastLook.unsubscribeAllServers();
+    }
+  }, [ordersStatus, LastLook, dispatch]);
+
+  // Reset when the chainId changes.
+  useEffect(() => {
+    if (chainId) {
+      dispatch(resetOrders());
+    }
+  }, [chainId, dispatch]);
 
   useEffect(() => {
     setAllowanceFetchFailed(
@@ -449,8 +480,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       switch (e.message) {
         case "error requesting orders": {
           notifyError({
-            heading: t("orders:errorRequesting"),
-            cta: t("orders:errorRequestingCta"),
+            heading: t("orders.errorRequesting"),
+            cta: t("orders.errorRequestingCta"),
           });
           break;
         }
@@ -495,8 +526,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
             onExpired: () => {
               notifyError({
-                heading: t("orders:swapExpired"),
-                cta: t("orders:swapExpiredCallToAction"),
+                heading: t("orders.swapExpired"),
+                cta: t("orders.swapExpiredCallToAction"),
               });
             },
           })
@@ -535,8 +566,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           LastLook.unsubscribeAllServers();
         } else {
           notifyError({
-            heading: t("orders:swapRejected"),
-            cta: t("orders:swapRejectedCallToAction"),
+            heading: t("orders.swapRejected"),
+            cta: t("orders.swapRejectedCallToAction"),
           });
 
           dispatch(
@@ -558,8 +589,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         // 4001 is metamask user declining transaction sig
       } else {
         notifyError({
-          heading: t("orders:swapFailed"),
-          cta: t("orders:swapFailedCallToAction"),
+          heading: t("orders.swapFailed"),
+          cta: t("orders.swapFailedCallToAction"),
         });
 
         dispatch(
@@ -603,6 +634,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         setPairUnavailable(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        unsubscribeFromGasPrice();
+        unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         break;
 
@@ -610,6 +643,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         setShowOrderSubmitted(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        unsubscribeFromGasPrice();
+        unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount(initialBaseAmount);
         break;
@@ -654,6 +689,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             side: "sell",
           })
         );
+        subscribeToGasPrice();
+        subscribeToTokenPrice(
+          quoteTokenInfo!,
+          // @ts-ignore
+          library!,
+          chainId
+        );
         await requestQuotes();
 
         break;
@@ -692,7 +734,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
-          title={isApproving ? t("orders:approve") : t("common:swap")}
+          title={isApproving ? t("orders.approve") : t("common.swap")}
           isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           protocol={bestTradeOption?.protocol as ProtocolType}
@@ -772,7 +814,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
-                ["approving", "taking"].includes(rfqOrderStatus) ||
+                ["approving", "taking"].includes(ordersStatus) ||
                 (!!baseToken && hasApprovalPending(baseToken))
               }
               transactionsTabOpen={transactionsTabOpen}
@@ -803,7 +845,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
 
       <Overlay
-        title={t("wallet:selectWallet")}
+        title={t("wallet.selectWallet")}
         onClose={() => setShowWalletList(false)}
         isHidden={!showWalletList}
       >
@@ -819,8 +861,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("validatorErrors:unableSwap")}
-        subTitle={t("validatorErrors:swapFail")}
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
         onClose={async () => {
           await handleButtonClick(ButtonActions.restart);
           setValidatorErrors([]);
@@ -836,7 +878,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("information:gasFreeSwaps.title")}
+        title={t("information.gasFreeSwaps.title")}
         onClose={() => setShowGasFeeInfo(false)}
         isHidden={!showGasFeeInfo}
       >
@@ -845,7 +887,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         />
       </Overlay>
       <Overlay
-        title={t("information:protocolFeeDiscount.title")}
+        title={t("information.protocolFeeDiscount.title")}
         onClose={() => setProtocolFeeDiscountInfo(false)}
         isHidden={!protocolFeeDiscountInfo}
       >
@@ -853,7 +895,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
 
       <Overlay
-        title={t("information:join.title")}
+        title={t("information.join.title")}
         onClose={afterInformationModalClose}
         isHidden={!activeInformationModal}
       >

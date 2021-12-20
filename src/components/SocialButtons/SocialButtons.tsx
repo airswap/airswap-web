@@ -77,7 +77,12 @@ const SocialButtons: FC<{}> = () => {
                 <Divider />
               </>
             )}
-            <a href={dest.primary} target="_blank" rel="noreferrer">
+            <a
+              href={dest.primary}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${dest.icon}`}
+            >
               <StyledIcon
                 iconSize={1}
                 name={dest.icon}

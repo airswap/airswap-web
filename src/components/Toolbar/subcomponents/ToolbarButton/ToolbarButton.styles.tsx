@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
+import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 
 const ButtonStyle = css`
@@ -30,6 +31,6 @@ export const ToolBarAnchorContainer = styled.a`
 export const Text = styled.div`
   margin-top: 0.25rem;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.75rem")};
   text-transform: uppercase;
 `;

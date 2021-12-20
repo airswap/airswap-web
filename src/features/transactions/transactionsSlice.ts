@@ -43,13 +43,13 @@ export interface SubmittedTransaction {
   protocol?: ProtocolType;
 }
 
-export interface SubmittedOrder extends SubmittedTransaction {
+export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
   order: LightOrder;
 }
 
-export interface SubmittedRFQOrder extends SubmittedOrder {}
+export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}
 
-export interface SubmittedLastLookOrder extends SubmittedOrder {}
+export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {}
 
 export interface LastLookTransaction
   extends SubmittedTransaction,

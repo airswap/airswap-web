@@ -86,7 +86,9 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   font-size: 0.875rem;
   color: ${(props) =>
     props.active
-      ? props.theme.colors.alwaysWhite
+      ? props.theme.name === "dark"
+        ? props.theme.colors.white
+        : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.active ? props.theme.colors.borderGrey : "transparent"};

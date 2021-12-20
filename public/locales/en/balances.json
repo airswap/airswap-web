@@ -1,8 +1,0 @@
-{
-  "tokenBalances": "Token balances",
-  "addToTokenSet": "Import",
-  "unsupportedToken": "Not yet supported",
-  "balance": "Balance",
-  "failedToFetchAllowances": "Failed to fetch token allowances",
-  "failedToFetchAllowancesCta": "Please reload the page"
-}

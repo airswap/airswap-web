@@ -21,13 +21,13 @@ const InactiveTokensList = ({
   inactiveTokens,
   onTokenClick,
 }: InactiveTokensListProps) => {
-  const { t } = useTranslation(["orders"]);
+  const { t } = useTranslation();
 
   return (
     <>
       <InactiveTitleContainer>
         <InactiveTitle>
-          {t("orders:expandedResults")}
+          {t("orders.expandedResults")}
           <InformationIcon name="information-circle-outline" />
         </InactiveTitle>
       </InactiveTitleContainer>

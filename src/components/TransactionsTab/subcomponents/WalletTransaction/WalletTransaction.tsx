@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
 
 import {
   SubmittedApproval,
-  SubmittedOrder,
+  SubmittedTransactionWithOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -43,42 +43,44 @@ const WalletTransaction = ({
   tokens,
   chainId,
 }: WalletTransactionProps) => {
-  const { t } = useTranslation(["common", "wallet", "orders"]);
+  const { t } = useTranslation();
 
   let statusText: string;
 
   switch (transaction.status) {
     case "succeeded":
-      statusText = t("common:success");
+      statusText = t("common.success");
       break;
     case "processing":
-      statusText = t("common:processing");
+      statusText = t("common.processing");
       break;
     case "expired":
-      statusText = t("common:expired");
+      statusText = t("common.expired");
       break;
     case "reverted":
-      statusText = t("common:failed");
+      statusText = t("common.failed");
       break;
     case "declined":
-      statusText = t("orders:swapRejected");
+      statusText = t("orders.swapRejected");
       break;
     default:
-      statusText = t("common:unknown");
+      statusText = t("common.unknown");
   }
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
+    //@ts-ignore
+    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
     return (
       <Container>
         <TextContainer>
           <>
             <SpanTitle>
-              {t("wallet:approve", { symbol: approvalToken?.symbol })}
+              {t("wallet.approve", { symbol: approvalToken?.symbol })}
             </SpanTitle>
             <SpanSubtitle>
-              {statusText} · {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+              {statusText} · {timeBetween}
             </SpanSubtitle>
           </>
         </TextContainer>
@@ -86,7 +88,7 @@ const WalletTransaction = ({
       </Container>
     );
   } else {
-    const tx: SubmittedOrder = transaction as SubmittedOrder;
+    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
     const senderToken = findEthOrTokenByAddress(
       tx.order.senderToken,
       tokens,
@@ -108,6 +110,9 @@ const WalletTransaction = ({
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
     }
+    //@ts-ignore
+    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+
     return (
       <Container>
         {tx.status === "processing" && (
@@ -119,8 +124,8 @@ const WalletTransaction = ({
               <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
                   tx.protocol === "last-look"
-                    ? "wallet:lastLookTransaction"
-                    : "wallet:transaction",
+                    ? "wallet.lastLookTransaction"
+                    : "wallet.transaction",
                   {
                     senderAmount: parseFloat(
                       Number(
@@ -147,8 +152,7 @@ const WalletTransaction = ({
                 />
               ) : (
                 <SpanSubtitle>
-                  {statusText} ·{" "}
-                  {getTimeBetweenTwoDates(new Date(tx.timestamp), t)}
+                  {statusText} · {timeBetween}
                 </SpanSubtitle>
               )}
             </>

@@ -1,9 +1,11 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "../../app/hooks";
+import { resetOrders } from "../../features/orders/ordersSlice";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
-  IconAirswap,
+  AirswapButton,
   ToolbarButtonsContainer,
   ToolbarContainer,
 } from "./Toolbar.styles";
@@ -14,7 +16,8 @@ export type ToolbarProps = {
 };
 
 const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   // TODO: Add content for "about" in modals
 
@@ -24,29 +27,47 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
     }
   };
 
+  const onAirswapButtonClick = () => {
+    dispatch(resetOrders());
+  };
+
   return (
     <ToolbarContainer>
-      <IconAirswap iconSize={2.5} name="airswap" />
+      <AirswapButton
+        onClick={onAirswapButtonClick}
+        ariaLabel={t("common.AirSwap")}
+        icon="airswap"
+        iconSize={2.5}
+      />
       <ToolbarButtonsContainer>
-        {/*<ToolbarButton iconName="bars" text={t("common:stats")} />*/}
         <ToolbarButton
-          iconName="learn"
-          text={t("common:learn")}
-          href="https://about.airswap.io/"
+          iconName="swap-horizontal"
+          text={t("common.otc")}
+          href="https://trader.airswap.io/"
+        />
+        <ToolbarButton
+          iconName="bars"
+          text={t("common.stats")}
+          href="https://dune.xyz/agrimony/AirSwap-v2"
         />
         <ToolbarButton
           iconName="vote"
-          text={t("common:vote")}
+          text={t("common.vote")}
           href="https://activate.codefi.network/staking/airswap/governance"
         />
         <ToolbarButton
           iconName="code"
-          text={t("common:build")}
+          text={t("common.build")}
           href="https://github.com/airswap"
         />
         <ToolbarButton
+          iconName="learn"
+          text={t("common.about")}
+          href="https://about.airswap.io/"
+        />
+        <ToolbarButton
           iconName="contact-support"
-          text={t("common:join")}
+          text={t("common.join")}
           onClick={() => onToolbarButtonClick("join")}
         />
       </ToolbarButtonsContainer>

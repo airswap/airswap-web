@@ -19,18 +19,13 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
-    !props.tokenInfo
-      ? "none"
-      : !props.tokenInfo.logoURI
-      ? "url(images/token-placeholder.svg)"
-      : "url(" + props.tokenInfo.logoURI + ")"};
+    !!props.tokenInfo?.logoURI ? `url("${props.tokenInfo.logoURI}")` : "none"};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 50%;
-  border-color: ${(props) => props.theme.colors.borderGrey};
-  border-style: ${(props) => (!props.tokenInfo ? "solid" : "none")};
-  /* Note this is only applied when not empty. */
+  border-color: ${(props) => props.theme.colors.lightGrey};
+  border-style: ${(props) => (props.tokenInfo?.logoURI ? "none" : "solid")};
   border-width: 1px;
 `;
 

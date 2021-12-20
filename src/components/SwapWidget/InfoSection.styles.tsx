@@ -40,7 +40,7 @@ export const RevertPriceButton = styled(IconButton)`
   margin-left: 0.25rem;
   padding: 0.25rem;
   font-size: 1rem;
-  color: ${(props) => props.theme.colors.lightGrey};
+  color: ${(props) => props.theme.colors.white};
 
   &:hover,
   &:focus {

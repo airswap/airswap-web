@@ -42,7 +42,7 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
       DEFAULT_LOCALE
   );
   const dispatch = useAppDispatch();
-  const { t, i18n } = useTranslation(["common"]);
+  const { t, i18n } = useTranslation();
 
   const handleThemeButtonClick = (newTheme: ThemeType | "system") => {
     dispatch(setTheme(newTheme));
@@ -57,29 +57,29 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
 
   return (
     <Container ref={popoverRef} open={open}>
-      <PopoverSection title={t("common:theme")}>
+      <PopoverSection title={t("common.theme")}>
         <ThemeContainer>
           <ThemeButton
             active={selectedTheme === "system"}
             onClick={() => handleThemeButtonClick("system")}
           >
-            {t("common:system")}
+            {t("common.system")}
           </ThemeButton>
           <ThemeButton
             active={selectedTheme === "light"}
             onClick={() => handleThemeButtonClick("light")}
           >
-            {t("common:light")}
+            {t("common.light")}
           </ThemeButton>
           <ThemeButton
             active={selectedTheme === "dark"}
             onClick={() => handleThemeButtonClick("dark")}
           >
-            {t("common:dark")}
+            {t("common.dark")}
           </ThemeButton>
         </ThemeContainer>
       </PopoverSection>
-      <PopoverSection title={t("common:language")}>
+      <PopoverSection title={t("common.language")}>
         <LocaleContainer ref={scrollContainerRef} $overflow={overflow}>
           {SUPPORTED_LOCALES.map((locale) => {
             return (

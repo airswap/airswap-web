@@ -6,7 +6,7 @@ import { TokenInfo } from "@airswap/types";
 import {
   SubmittedApproval,
   SubmittedDepositOrder,
-  SubmittedOrder,
+  SubmittedTransactionWithOrder,
   SubmittedWithdrawOrder,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
@@ -17,7 +17,7 @@ import TransactionToast from "./TransactionToast";
 export const notifyTransaction = (
   type: TransactionType,
   transaction:
-    | SubmittedOrder
+    | SubmittedTransactionWithOrder
     | SubmittedApproval
     | SubmittedDepositOrder
     | SubmittedWithdrawOrder,
@@ -31,7 +31,7 @@ export const notifyTransaction = (
     (type === "Order" || type === "Deposit" || type === "Withdraw") &&
     chainId
   ) {
-    const tx: SubmittedOrder = transaction as SubmittedOrder;
+    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
     /*  TODO: fix toaster for multiple tabs or apps
         now that we have a listener, you can have multiple
         tabs open that receives the same order event. Only one redux

@@ -229,7 +229,7 @@ export const {
 } = balancesSlice.actions;
 export const {
   incrementBy: incrementAllowanceLightBy,
-  decrementBy: decreementAllowanceLightBy,
+  decrementBy: decrementAllowanceLightBy,
   set: setAllowanceLight,
 } = allowancesLightSlice.actions;
 export const {

@@ -78,13 +78,7 @@ const TokenList = ({
   const [editMode, setEditMode] = useState(false);
 
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const { t } = useTranslation([
-    "common",
-    "wallet",
-    "orders",
-    "balances",
-    "orders",
-  ]);
+  const { t } = useTranslation();
 
   // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
@@ -149,9 +143,9 @@ const TokenList = ({
           hideLabel
           id="tokenQuery"
           type="text"
-          label={t("orders:searchByNameOrAddress")}
+          label={t("orders.searchByNameOrAddress")}
           value={tokenQuery}
-          placeholder={t("orders:searchByNameOrAddress")}
+          placeholder={t("orders.searchByNameOrAddress")}
           onChange={(e) => {
             setTokenQuery(e.currentTarget.value);
           }}
@@ -159,9 +153,9 @@ const TokenList = ({
 
         <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
           <Legend>
-            <LegendItem>{t("common:token")}</LegendItem>
+            <LegendItem>{t("common.token")}</LegendItem>
             <LegendDivider />
-            <LegendItem>{t("balances:balance")}</LegendItem>
+            <LegendItem>{t("balances.balance")}</LegendItem>
           </Legend>
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
@@ -197,7 +191,7 @@ const TokenList = ({
             )}
           {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
             <NoResultsContainer>
-              <InfoHeading>{t("common:noResultsFound")}</InfoHeading>
+              <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
             </NoResultsContainer>
           )}
         </StyledScrollContainer>
@@ -206,7 +200,7 @@ const TokenList = ({
           ref={buttonRef}
           onClick={() => setEditMode(!editMode)}
         >
-          {editMode ? t("common:done") : t("orders:editCustomTokens")}
+          {editMode ? t("common.done") : t("orders.editCustomTokens")}
         </OverlayActionButton>
       </ContentContainer>
     </Container>

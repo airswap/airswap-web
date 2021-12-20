@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import validatorErrors from "../../../public/locales/en/validatorErrors.json";
+import translation from "../../../public/locales/en/translation.json";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
@@ -16,7 +16,7 @@ import {
   StyledSubText,
 } from "./ErrorList.styles";
 
-export type Error = keyof typeof validatorErrors;
+export type Error = keyof typeof translation["validatorErrors"];
 
 type ErrorListProps = {
   errors: Error[];
@@ -24,7 +24,7 @@ type ErrorListProps = {
 };
 
 export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
-  const { t } = useTranslation(["validatorErrors", "common"]);
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -44,8 +44,8 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
                 iconSize={1.5}
               />
               <ErrorTextContainer>
-                <InfoHeading>{t(`validatorErrors:${error}`)}</InfoHeading>
-                <StyledSubText>{t(`validatorErrors:${subText}`)}</StyledSubText>
+                <InfoHeading>{t(`validatorErrors.${error}`)}</InfoHeading>
+                <StyledSubText>{t(`validatorErrors.${subText}`)}</StyledSubText>
               </ErrorTextContainer>
             </StyledError>
           );
@@ -78,7 +78,7 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
         </StyledErrorList>
       </StyledScrollContainer>
       <OverlayActionButton ref={buttonRef} onClick={handleClick}>
-        {t("common:back")}
+        {t("common.back")}
       </OverlayActionButton>
     </Container>
   );

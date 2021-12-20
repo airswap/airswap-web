@@ -64,7 +64,7 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
-  const { t } = useTranslation(["wallet"]);
+  const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
 
@@ -138,6 +138,7 @@ const TransactionsTab = ({
           exit={{ x: "24rem" }}
         >
           <BackButton
+            aria-label={t("common.back")}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
             initial={{ y: "-5rem" }}
@@ -149,7 +150,7 @@ const TransactionsTab = ({
           <WalletHeader>
             <NetworkInfoContainer>
               <NetworkName>
-                {addressMapping[chainId] || t("wallet:unsupported")}
+                {addressMapping[chainId] || t("wallet.unsupported")}
               </NetworkName>
               <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
             </NetworkInfoContainer>
@@ -159,10 +160,10 @@ const TransactionsTab = ({
               <ConnectionStatusCircle $connected={!!address} />
               <InfoHeading>
                 {isUnsupportedNetwork
-                  ? t("wallet:unsupported")
+                  ? t("wallet.unsupported")
                   : addressOrName
                   ? addressOrName
-                  : t("wallet:notConnected")}
+                  : t("wallet.notConnected")}
               </InfoHeading>
             </WalletInfoButton>
           </WalletHeader>
@@ -173,7 +174,7 @@ const TransactionsTab = ({
           >
             <Legend>
               <LegendLine>
-                {t("wallet:activeTransactions").toUpperCase()}
+                {t("wallet.activeTransactions").toUpperCase()}
               </LegendLine>
             </Legend>
             <TransactionContainer>
@@ -191,14 +192,14 @@ const TransactionsTab = ({
                   <IconContainer>
                     <Icon name="transaction" />
                   </IconContainer>
-                  {t("wallet:noActiveTransactions")}
+                  {t("wallet.noActiveTransactions")}
                 </NoTransactions>
               )}
             </TransactionContainer>
             {completedTransactions && (
               <Legend>
                 <LegendLine>
-                  {t("wallet:completedTransactions").toUpperCase()}
+                  {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
             )}
@@ -219,17 +220,17 @@ const TransactionsTab = ({
                   <IconContainer>
                     <Icon name="transaction" />
                   </IconContainer>
-                  {t("wallet:noCompletedTransactions")}
+                  {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
             </TransactionContainer>
           </TransactionsContainer>
           <DiconnectButtonContainer ref={buttonRef}>
             <DisconnectButton
-              aria-label={t("wallet:disconnectWallet")}
+              aria-label={t("wallet.disconnectWallet")}
               onClick={onDisconnectWalletClicked}
             >
-              {t("wallet:disconnectWallet")}
+              {t("wallet.disconnectWallet")}
             </DisconnectButton>
           </DiconnectButtonContainer>
         </Container>
