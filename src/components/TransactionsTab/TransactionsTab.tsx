@@ -31,7 +31,7 @@ import {
   ConnectionStatusCircle,
   LegendContainer,
 } from "./TransactionsTab.styles";
-import WalletTransactionContainer from "./subcomponents/WalletTransactionContainer/WalletTransactionContainer";
+import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
 const addressMapping: Record<number, string> = {
   1: "Mainnet",
@@ -191,7 +191,7 @@ const TransactionsTab = ({
             <TransactionContainer $isEmpty={!pendingTransactions.length}>
               <AnimatePresence initial={false}>
                 {pendingTransactions.map((transaction) => (
-                  <WalletTransactionContainer
+                  <AnimatedWalletTransaction
                     key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}-pending`}
                     transaction={transaction}
                     tokens={tokens}
@@ -210,7 +210,7 @@ const TransactionsTab = ({
             <TransactionContainer>
               <AnimatePresence initial={false}>
                 {completedTransactions.slice(0, 10).map((transaction) => (
-                  <WalletTransactionContainer
+                  <AnimatedWalletTransaction
                     key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
                     transaction={transaction}
                     tokens={tokens}

@@ -8,9 +8,9 @@ import { useTheme } from "styled-components";
 import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import WalletTransaction from "../WalletTransaction/WalletTransaction";
 import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.styles";
-import { Container } from "./WalletTransactionContainer.styles";
+import { Container } from "./AnimatedWalletTransaction.styles";
 
-interface WalletTransactionProps {
+interface AnimatedWalletTransactionProps {
   /**
    * The parent object of SubmittedOrder and SubmittedApproval
    */
@@ -25,11 +25,11 @@ interface WalletTransactionProps {
   chainId: number;
 }
 
-const WalletTransactionContainer = ({
+const AnimatedWalletTransaction = ({
   transaction,
   tokens,
   chainId,
-}: WalletTransactionProps) => {
+}: AnimatedWalletTransactionProps) => {
   const theme = useTheme();
   const shouldReduceMotion = useReducedMotion();
 
@@ -76,4 +76,4 @@ const WalletTransactionContainer = ({
   );
 };
 
-export default WalletTransactionContainer;
+export default AnimatedWalletTransaction;
