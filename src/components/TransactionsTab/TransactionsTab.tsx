@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@airswap/types";
 
 import { formatUnits } from "ethers/lib/utils";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
@@ -29,8 +29,9 @@ import {
   Balances,
   WalletInfoButton,
   ConnectionStatusCircle,
+  LegendContainer,
 } from "./TransactionsTab.styles";
-import { WalletTransactionContainer } from "./subcomponents/WalletTransactionContainer/WalletTransactionContainer";
+import WalletTransactionContainer from "./subcomponents/WalletTransactionContainer/WalletTransactionContainer";
 
 const addressMapping: Record<number, string> = {
   1: "Mainnet",
@@ -64,6 +65,7 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
+  const shouldReduceMotion = useReducedMotion();
   const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
@@ -112,6 +114,13 @@ const TransactionsTab = ({
     transactions,
   ]);
 
+  // Every time a new transactions is added, scroll to top.
+  useEffect(() => {
+    if (transactionsScrollRef && transactionsScrollRef.current) {
+      transactionsScrollRef.current.scrollTo({ top: 0 });
+    }
+  }, [transactionsScrollRef, transactions]);
+
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
       (transaction) => transaction.status === "processing"
@@ -133,14 +142,14 @@ const TransactionsTab = ({
         <Container
           ref={containerRef}
           animate={{ x: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
           initial={{ x: "24rem" }}
           exit={{ x: "24rem" }}
         >
           <BackButton
             aria-label={t("common.back")}
             animate={{ y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             initial={{ y: "-5rem" }}
             exit={{ opacity: 0 }}
             onClick={() => setTransactionsTabOpen(false)}
@@ -172,12 +181,14 @@ const TransactionsTab = ({
             ref={transactionsScrollRef}
             $overflow={overflow}
           >
-            <Legend>
-              <LegendLine>
-                {t("wallet.activeTransactions").toUpperCase()}
-              </LegendLine>
-            </Legend>
-            <TransactionContainer>
+            <LegendContainer $isVisible={!!pendingTransactions.length}>
+              <Legend>
+                <LegendLine>
+                  {t("wallet.activeTransactions").toUpperCase()}
+                </LegendLine>
+              </Legend>
+            </LegendContainer>
+            <TransactionContainer $isEmpty={!pendingTransactions.length}>
               <AnimatePresence initial={false}>
                 {pendingTransactions.map((transaction) => (
                   <WalletTransactionContainer
@@ -188,30 +199,14 @@ const TransactionsTab = ({
                   />
                 ))}
               </AnimatePresence>
-              <AnimatePresence initial={false}>
-                {!pendingTransactions.length && (
-                  <NoTransactions
-                    animate={{ height: "4.5rem", opacity: 1 }}
-                    initial={{ height: "0rem", opacity: 0 }}
-                    transition={{
-                      duration: 0.3,
-                    }}
-                  >
-                    <IconContainer>
-                      <Icon name="transaction" />
-                    </IconContainer>
-                    {t("wallet.noActiveTransactions")}
-                  </NoTransactions>
-                )}
-              </AnimatePresence>
             </TransactionContainer>
-            {completedTransactions && (
+            <LegendContainer $isVisible>
               <Legend>
                 <LegendLine>
                   {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
-            )}
+            </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>
                 {completedTransactions.slice(0, 10).map((transaction) => (

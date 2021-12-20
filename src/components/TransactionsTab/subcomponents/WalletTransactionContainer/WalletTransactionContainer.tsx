@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { TokenInfo } from "@airswap/types";
 
-import { usePresence } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
+import { useTheme } from "styled-components";
 
 import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import WalletTransaction from "../WalletTransaction/WalletTransaction";
+import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.styles";
 import { Container } from "./WalletTransactionContainer.styles";
 
 interface WalletTransactionProps {
@@ -28,32 +30,43 @@ const WalletTransactionContainer = ({
   tokens,
   chainId,
 }: WalletTransactionProps) => {
-  const [isPresent, safeToRemove] = usePresence();
+  const theme = useTheme();
+  const shouldReduceMotion = useReducedMotion();
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  const themeHasChanged = useMemo(() => isMounted, [theme.name]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const heightAnimationDuration = shouldReduceMotion ? 0 : 0.3;
+
+  // Border transition doesn't clear after animation ends, so when changing theme
+  // the border color animates, which looks weird.
+  const borderAnimationDuration = themeHasChanged ? 0 : 2;
 
   useEffect(() => {
-    !isPresent && safeToRemove && setTimeout(safeToRemove, 300);
-  }, [isPresent, safeToRemove, transaction]);
+    setIsMounted(true);
+  }, []);
 
   return (
     <Container
-      animate={{ height: "4.125rem" }}
+      animate={{ height: walletTransactionHeight }}
       initial={{ height: "0rem" }}
       exit={{
         height: "0rem",
         transition: {
-          duration: 0.3,
+          duration: heightAnimationDuration,
         },
       }}
       transition={{
-        duration: 0.3,
+        duration: heightAnimationDuration,
       }}
     >
       <WalletTransaction
-        animate={{ borderColor: "#1A1E25" }}
-        initial={{ borderColor: "#FFFFFF" }}
+        animate={{ borderColor: theme.colors.borderGrey }}
+        initial={{ borderColor: theme.colors.white }}
         transition={{
-          delay: 0.3,
-          duration: 2,
+          delay: heightAnimationDuration,
+          duration: borderAnimationDuration,
         }}
         transaction={transaction}
         tokens={tokens}
@@ -63,4 +76,4 @@ const WalletTransactionContainer = ({
   );
 };
 
-export { WalletTransactionContainer };
+export default WalletTransactionContainer;

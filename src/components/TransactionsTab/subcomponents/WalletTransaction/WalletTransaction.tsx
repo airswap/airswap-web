@@ -48,7 +48,6 @@ const WalletTransaction = ({
   animate,
   initial,
   transition,
-  onAnimationComplete,
 }: WalletTransactionProps) => {
   const { t } = useTranslation();
 
@@ -62,12 +61,7 @@ const WalletTransaction = ({
     //@ts-ignore
     const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
     return (
-      <Container
-        onAnimationComplete={onAnimationComplete}
-        transition={transition}
-        animate={animate}
-        initial={initial}
-      >
+      <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
           <>
             <SpanTitle>
@@ -108,12 +102,7 @@ const WalletTransaction = ({
     const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
 
     return (
-      <Container
-        onAnimationComplete={onAnimationComplete}
-        transition={transition}
-        animate={animate}
-        initial={initial}
-      >
+      <Container transition={transition} animate={animate} initial={initial}>
         {tx.status === "processing" && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
