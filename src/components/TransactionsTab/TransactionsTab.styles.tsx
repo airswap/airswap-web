@@ -51,6 +51,19 @@ export const StyledTransactionLink = styled(TransactionLink)`
   }
 `;
 
+export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
+  position: relative;
+  margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  width: 100%;
+  height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  overflow: hidden;
+  transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
 export const Legend = styled(InfoSubHeading)`
   display: flex;
   align-items: center;
@@ -60,6 +73,7 @@ export const Legend = styled(InfoSubHeading)`
   font-weight: 700;
   line-height: 1rem;
   color: ${(props) => props.theme.colors.lightGrey};
+
   &:after {
     margin: 0 0 0 0.5rem;
     background: ${(props) => props.theme.colors.borderGrey};
@@ -91,27 +105,27 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   height: 100%;
 `;
 
-export const TransactionContainer = styled.div`
+export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   flex-grow: 2;
-  padding: 1.5rem 0;
+  margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1rem")};
   width: 100%;
+  transition: margin-bottom ease-out 0.3s;
+  overflow: hidden;
 
-  &:last-of-type {
-    padding-bottom: 0;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 `;
 
-export const NoTransactions = styled.div`
+export const NoTransactions = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   height: 4.5rem;
-  margin: 0.25rem 0;
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
@@ -127,8 +141,9 @@ export const IconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 0.5rem;
   width: 2.5rem;
-  height: 2.5rem;
+  min-height: 2.5rem;
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
   border-radius: 50%;
