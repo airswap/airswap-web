@@ -3,6 +3,8 @@ export const SUPPORTED_LOCALES = [
   "en",
   "fr",
   "nb",
+  "nl",
+  "pt",
   "zh-tr",
 ];
 
@@ -13,6 +15,8 @@ export const DEFAULT_LOCALE: SupportedLocale = "en";
 export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   en: "English",
   nb: "Norsk Bokmål",
+  nl: "Nederlands",
+  pt: "Portugues",
   fr: "Français",
   "zh-tr": "中文繁體",
 };
