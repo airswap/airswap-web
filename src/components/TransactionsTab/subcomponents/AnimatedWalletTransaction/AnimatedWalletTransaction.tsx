@@ -57,7 +57,7 @@ const AnimatedWalletTransaction = ({
   return (
     <Container
       animate={{ height: walletTransactionHeight }}
-      initial={!transactionIsOlderThanHalfHour && { height: "0rem" }}
+      initial={!transactionTooOld && { height: "0rem" }}
       exit={{
         height: "0rem",
         transition: {
@@ -71,7 +71,7 @@ const AnimatedWalletTransaction = ({
       <WalletTransaction
         animate={{ borderColor: theme.colors.borderGrey }}
         initial={
-          !transactionIsOlderThanHalfHour && { borderColor: theme.colors.white }
+          !transactionTooOld && { borderColor: theme.colors.white }
         }
         transition={{
           delay: heightAnimationDuration,
