@@ -33,4 +33,5 @@ export const Text = styled.div`
   font-weight: 600;
   font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.75rem")};
   text-transform: uppercase;
+  color: ${(props) => props.theme.colors.alwaysWhite};
 `;

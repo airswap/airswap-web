@@ -1,5 +1,8 @@
 import styled from "styled-components/macro";
 
+import uauthLogoDefault from "../../assets/wallet-provider-logos/uauth-default.png";
+import uauthLogoHover from "../../assets/wallet-provider-logos/uauth-hover.png";
+import uauthLogoPressed from "../../assets/wallet-provider-logos/uauth-pressed.png";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 
@@ -45,6 +48,24 @@ export const ButtonIconContainer = styled.div`
 export const ButtonIcon = styled.img`
   width: 100%;
   height: auto;
+`;
+
+export const UAuthButton = styled.button`
+  margin-top: 0.5rem;
+  width: 100%;
+  height: 3.4rem;
+  background-image: url(${uauthLogoDefault});
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  &:hover {
+    background-image: url(${uauthLogoHover});
+  }
+
+  &:active {
+    background-image: url(${uauthLogoPressed});
+  }
 `;
 
 export const ButtonText = styled.h4`

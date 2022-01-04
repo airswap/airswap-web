@@ -18,6 +18,7 @@ export const StyledIconButton = styled.button<StyledIconButtonProps>`
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: 2px;
+  color: ${(props) => props.theme.colors.alwaysWhite};
 
   ${StyledIcon} {
     svg {

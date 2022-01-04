@@ -33,6 +33,7 @@ export const PlainLink = styled(Link)<{ $deEmphasize: boolean }>`
   width: 2.25rem;
   transition: opacity 0.3s ease-in-out;
   opacity: ${({ $deEmphasize }) => ($deEmphasize ? 0.5 : 1)};
+  color: ${(props) => props.theme.colors.alwaysWhite};
 `;
 
 export const SocialButton = styled.div<{ showLocales: number }>`
