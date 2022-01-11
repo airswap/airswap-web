@@ -70,9 +70,7 @@ const AnimatedWalletTransaction = ({
     >
       <WalletTransaction
         animate={{ borderColor: theme.colors.borderGrey }}
-        initial={
-          !transactionTooOld && { borderColor: theme.colors.white }
-        }
+        initial={!transactionTooOld && { borderColor: theme.colors.white }}
         transition={{
           delay: heightAnimationDuration,
           duration: borderAnimationDuration,
