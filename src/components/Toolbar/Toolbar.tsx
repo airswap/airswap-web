@@ -19,8 +19,6 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  // TODO: Add content for "about" in modals
-
   const onToolbarButtonClick = (type: InformationModalType) => {
     if (onButtonClick) {
       onButtonClick(type);

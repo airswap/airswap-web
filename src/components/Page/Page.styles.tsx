@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import { Wallet } from "../../features/wallet/Wallet";
-import breakPoints from "../../style/breakpoints";
+import breakPoints, { breakpointSizes } from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 
 type StyledWalletProps = {
@@ -23,33 +23,39 @@ export const StyledWallet = styled(Wallet)<StyledWalletProps>`
   }
 `;
 
-export const StyledPage = styled.div`
+export const InnerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  @media ${breakPoints.phoneOnly} {
+    display: block;
+    height: auto;
+  }
+`;
+
+export const StyledPage = styled.div`
   position: relative;
   min-width: 18rem;
   height: 100vh;
   min-height: 35rem;
 
-  @media (min-height: ${sizes.toolbarMaxHeight}) {
-    padding-top: 2rem;
-    min-height: inherit;
-  }
-
-  @media ${breakPoints.tabletPortraitUp} {
-    padding-left: ${sizes.toolBarWidth};
-  }
-
-  @media ${breakPoints.tabletLandscapeUp} {
-    padding-left: 0;
-  }
-
-  @media ${breakPoints.phoneLandscape} {
-    display: none;
-  }
-
   @media ${breakPoints.phoneOnly} {
-    display: none;
+    display: block;
+    width: 100%;
+    min-height: auto;
+    padding: 4rem ${sizes.pageMobilePadding};
+  }
+
+  @media (min-height: 38rem) and (max-width: ${breakpointSizes.phone}) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 `;

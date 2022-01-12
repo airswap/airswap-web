@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 
 export const Container = styled.div`
@@ -18,6 +19,11 @@ export const Container = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    height: 24rem;
+    padding: ${sizes.tradeContainerMobilePadding};
   }
 `;
 

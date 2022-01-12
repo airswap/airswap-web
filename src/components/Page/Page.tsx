@@ -6,11 +6,10 @@ import { useWeb3React } from "@web3-react/core";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
-import TemporaryMobileLanding from "../TemporaryMobileLanding/TemporaryMobileLanding";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
-import { StyledPage, StyledWallet } from "./Page.styles";
+import { InnerContainer, StyledPage, StyledWallet } from "./Page.styles";
 
 const Page: FC<{ excludeWallet?: boolean }> = ({
   excludeWallet,
@@ -30,8 +29,8 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
   };
 
   return (
-    <>
-      <StyledPage>
+    <StyledPage>
+      <InnerContainer>
         <Toaster open={transactionsTabOpen} />
         <Toolbar onButtonClick={onToolbarButtonClick} />
         <StyledWallet
@@ -54,9 +53,8 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
           />
         </WidgetFrame>
         <SocialButtons />
-      </StyledPage>
-      <TemporaryMobileLanding />
-    </>
+      </InnerContainer>
+    </StyledPage>
   );
 };
 

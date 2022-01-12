@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import Icon from "../Icon/Icon";
 import { Link } from "../Typography/Typography";
@@ -8,11 +9,14 @@ export const Container = styled.div`
   position: fixed;
   bottom: 2.25rem;
   right: 1.5rem;
-  display: flex;
+  display: none;
   flex-direction: row;
   align-items: flex-end;
-  /* justify-content: flex-end; */
   gap: 0.5rem;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    display: flex;
+  }
 `;
 
 export const Divider = styled.div`
