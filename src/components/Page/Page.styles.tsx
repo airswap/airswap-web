@@ -29,13 +29,12 @@ export const StyledPage = styled.div`
   align-items: center;
   position: relative;
   min-width: 18rem;
-  min-height: 100vh;
-  padding: 2rem 0 0;
+  height: 100vh;
+  min-height: 35rem;
 
-  @media (min-height: 50rem) {
-    align-items: center;
-    height: 100vh;
-    min-height: 50rem;
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    padding-top: 2rem;
+    min-height: inherit;
   }
 
   @media ${breakPoints.tabletPortraitUp} {

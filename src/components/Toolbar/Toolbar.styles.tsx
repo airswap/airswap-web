@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import { BorderlessButtonStyleType2 } from "../../style/mixins";
+import { sizes } from "../../style/sizes";
 import IconButton from "../IconButton/IconButton";
 
 export const ToolbarContainer = styled.div`
@@ -14,8 +15,6 @@ export const ToolbarContainer = styled.div`
   left: 0;
   width: 7rem;
   height: 100%;
-  min-height: 31rem;
-  // min-height: 37rem; // for 5 buttons, enable this when stats button is added in toolbar
   padding: 0 1rem 0;
   border-right: 1px solid
     ${({ theme }) =>
@@ -37,9 +36,13 @@ export const ToolbarContainer = styled.div`
 export const AirswapButton = styled(IconButton)`
   ${BorderlessButtonStyleType2};
 
-  margin-top: 2rem;
+  margin-top: 1rem;
   align-self: center;
   margin-bottom: auto;
+
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    margin-top: 2rem;
+  }
 `;
 
 export const ToolbarButtonsContainer = styled.div`
@@ -47,5 +50,9 @@ export const ToolbarButtonsContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   flex-grow: 2;
-  margin: 2rem 0 4.5rem;
+  margin: 0;
+
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    margin: 2rem 0 4.5rem;
+  }
 `;

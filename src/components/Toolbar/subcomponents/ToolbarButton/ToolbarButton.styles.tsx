@@ -2,6 +2,7 @@ import styled, { css } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
+import { sizes } from "../../../../style/sizes";
 
 const ButtonStyle = css`
   display: flex;
@@ -9,15 +10,24 @@ const ButtonStyle = css`
   align-items: center;
   justify-content: center;
   border-radius: 0.25rem;
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
+
+  ${InputOrButtonBorderStyle};
 
   & + a,
   & + button {
-    margin-top: 1rem;
+    margin-top: 0.75rem;
+
+    @media (min-height: ${sizes.toolbarMaxHeight}) {
+      margin-top: 1rem;
+    }
   }
 
-  ${InputOrButtonBorderStyle}
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    width: 5rem;
+    height: 5rem;
+  }
 `;
 
 export const ToolbarButtonContainer = styled.button`
@@ -29,8 +39,14 @@ export const ToolBarAnchorContainer = styled.a`
 `;
 
 export const Text = styled.div`
-  margin-top: 0.25rem;
+  margin-top: 0.125rem;
   font-weight: 600;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.75rem")};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.674rem")};
   text-transform: uppercase;
+
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    margin-top: 0.25rem;
+    font-size: ${() =>
+      isActiveLanguageLogographic() ? "0.875rem" : "0.75rem"};
+  }
 `;
