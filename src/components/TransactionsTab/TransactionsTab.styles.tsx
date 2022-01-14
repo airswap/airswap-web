@@ -20,7 +20,6 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 24rem;
   height: 100vh;
-  min-height: 100%;
   padding: 0 1.5rem;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};

@@ -22,6 +22,7 @@ export const Container = styled.div`
   }
 
   @media ${breakPoints.phoneOnly} {
+    width: 100%;
     height: 24rem;
     padding: ${sizes.tradeContainerMobilePadding};
   }
@@ -33,17 +34,25 @@ type StyledTradeContainerProps = {
 };
 
 export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
-  position: relative;
-  display: flex;
-  box-sizing: border-box;
-  margin: 0 auto;
   transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
   transition: transform 0.3s ease-in-out;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 24rem;
 
   ${Container} {
     box-shadow: ${(props) =>
       props.$isConnected
         ? props.theme.shadows.widgetGlow
         : props.theme.shadows.widgetGlowOff};
+  }
+
+  @media ${breakPoints.phoneOnly},
+    (max-width: 68rem) and (max-height: 41.5rem) {
+    margin-bottom: 1.5rem;
   }
 `;

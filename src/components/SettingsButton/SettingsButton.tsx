@@ -1,20 +1,26 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import Icon from "../Icon/Icon";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
-import { Container, SettingsButtonContainer } from "./SettingsButton.style";
+import {
+  Container,
+  DesktopIcon,
+  MobileIcon,
+  SettingsButtonContainer,
+} from "./SettingsButton.style";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
   transactionsTabOpen: boolean;
   setSettingsOpen: (x: boolean) => void;
+  className?: string;
 };
 
 const SettingsButton = ({
   settingsOpen,
   transactionsTabOpen,
   setSettingsOpen,
+  className,
 }: SettingsButtonType) => {
   const { t } = useTranslation();
 
@@ -55,12 +61,17 @@ const SettingsButton = ({
 
   return (
     <>
-      <Container ref={containerRef} open={transactionsTabOpen}>
+      <Container
+        className={className}
+        ref={containerRef}
+        open={transactionsTabOpen}
+      >
         <SettingsButtonContainer
           aria-label={t("common.settings")}
           onClick={() => setSettingsOpen(!settingsOpen)}
         >
-          <Icon iconSize={1.5} name="settings" />
+          <DesktopIcon iconSize={1.5} name="settings" />
+          <MobileIcon iconSize={1.25} name="settings" />
         </SettingsButtonContainer>
       </Container>
       {settingsOpen && (

@@ -4,12 +4,17 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { InformationModalType } from "../InformationModals/InformationModals";
-import SocialButtons from "../SocialButtons/SocialButtons";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
-import { InnerContainer, StyledPage, StyledWallet } from "./Page.styles";
+import {
+  InnerContainer,
+  StyledPage,
+  StyledSocialButtons,
+  StyledWallet,
+  TopBar,
+} from "./Page.styles";
 
 const Page: FC<{ excludeWallet?: boolean }> = ({
   excludeWallet,
@@ -33,11 +38,14 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
         <Toolbar onButtonClick={onToolbarButtonClick} />
-        <StyledWallet
-          transactionsTabOpen={transactionsTabOpen}
-          setTransactionsTabOpen={setTransactionsTabOpen}
-          setShowWalletList={setShowWalletList}
-        />
+
+        <TopBar>
+          <StyledWallet
+            transactionsTabOpen={transactionsTabOpen}
+            setTransactionsTabOpen={setTransactionsTabOpen}
+            setShowWalletList={setShowWalletList}
+          />
+        </TopBar>
 
         <WidgetFrame
           isOpen={transactionsTabOpen}
@@ -52,7 +60,7 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
             transactionsTabOpen={transactionsTabOpen}
           />
         </WidgetFrame>
-        <SocialButtons />
+        <StyledSocialButtons />
       </InnerContainer>
     </StyledPage>
   );

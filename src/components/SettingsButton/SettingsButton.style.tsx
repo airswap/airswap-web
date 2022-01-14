@@ -1,6 +1,8 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
+import Icon from "../Icon/Icon";
 
 type ContainerProps = {
   open: boolean;
@@ -23,4 +25,24 @@ export const SettingsButtonContainer = styled.button`
   width: 3rem;
   height: 3rem;
   padding: 0;
+
+  @media ${breakPoints.phoneOnly} {
+    border: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
+export const DesktopIcon = styled(Icon)`
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const MobileIcon = styled(Icon)`
+  display: none;
+
+  @media ${breakPoints.phoneOnly} {
+    display: block;
+  }
 `;

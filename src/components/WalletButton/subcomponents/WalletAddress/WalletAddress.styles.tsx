@@ -2,6 +2,7 @@ import Blockies from "react-blockies";
 
 import styled from "styled-components/macro";
 
+import breakPoints from "../../../../style/breakpoints";
 import {
   BorderedPill,
   InputOrButtonBorderStyle,
@@ -11,13 +12,17 @@ import { InfoHeading } from "../../../Typography/Typography";
 export const Button = styled.div`
   border: 0;
   margin: 0;
-  padding: 0 1rem;
+  padding: 0;
   cursor: pointer;
   background: none;
 `;
 
 export const WalletAddressText = styled(InfoHeading)`
   color: ${({ theme }) => theme.colors.alwaysWhite};
+
+  @media ${breakPoints.phoneOnly} {
+    font-size: 0.875rem;
+  }
 `;
 
 export const BlockiesContainer = styled.div`
