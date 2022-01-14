@@ -22,6 +22,7 @@ export const WalletAddressText = styled(InfoHeading)`
 
   @media ${breakPoints.phoneOnly} {
     font-size: 0.875rem;
+    font-weight: 500;
   }
 `;
 
@@ -49,7 +50,7 @@ export const StyledBlockies = styled(Blockies)`
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
   width: 0.75rem;
   height: 0.75rem;
   background-color: ${(props) =>

@@ -8,7 +8,7 @@ import { LightOrder } from "@airswap/types";
 import { BigNumber } from "bignumber.js";
 
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -68,7 +68,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (!isConnected) {
     return (
       <>
-        <InfoHeading>{t("marketing.welcomeHeading")}</InfoHeading>
+        <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
         <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
       </>
     );
@@ -81,7 +81,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   ) {
     return (
       <>
-        <InfoHeading>{t("balances.failedToFetchAllowances")}</InfoHeading>
+        <StyledInfoHeading>
+          {t("balances.failedToFetchAllowances")}
+        </StyledInfoHeading>
         <InfoSubHeading>
           {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
@@ -96,7 +98,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   ) {
     return (
       <>
-        <InfoHeading>{t("balances.failedToFetchAllowances")}</InfoHeading>
+        <StyledInfoHeading>
+          {t("balances.failedToFetchAllowances")}
+        </StyledInfoHeading>
         <InfoSubHeading>
           {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
@@ -107,7 +111,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isFetchingOrders) {
     return (
       <>
-        <InfoHeading>{t("orders.findingBestPrice")}</InfoHeading>
+        <StyledInfoHeading>{t("orders.findingBestPrice")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
       </>
     );
@@ -116,7 +120,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isPairUnavailable) {
     return (
       <>
-        <InfoHeading>{t("orders.tokenPairUnavailable")}</InfoHeading>
+        <StyledInfoHeading>
+          {t("orders.tokenPairUnavailable")}
+        </StyledInfoHeading>
         <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
       </>
     );
@@ -125,7 +131,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (orderSubmitted) {
     return (
       <>
-        <InfoHeading>{t("orders.submitted")}</InfoHeading>
+        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
@@ -134,9 +140,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isApproving) {
     return (
       <>
-        <InfoHeading>
+        <StyledInfoHeading>
           {t("orders.approvePending", { symbol: baseTokenInfo!.symbol })}
-        </InfoHeading>
+        </StyledInfoHeading>
         <InfoSubHeading>{t("orders.approveMessage")}</InfoSubHeading>
       </>
     );
@@ -145,7 +151,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isSwapping) {
     return (
       <>
-        <InfoHeading>{t("orders.swapPending")}</InfoHeading>
+        <StyledInfoHeading>{t("orders.swapPending")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.swapMessage")}</InfoSubHeading>
       </>
     );
@@ -154,10 +160,10 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (isWrapping) {
     return (
       <>
-        <InfoHeading>
+        <StyledInfoHeading>
           1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} = 1{" "}
           {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-        </InfoHeading>
+        </StyledInfoHeading>
         <InfoSubHeading>{t("orders.wrapMessage")}</InfoSubHeading>
       </>
     );
@@ -207,7 +213,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   // No order & not fetching, but wallet connected.
   return (
     <>
-      <InfoHeading>{t("marketing.welcomeHeading")}</InfoHeading>
+      <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
       <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
     </>
   );

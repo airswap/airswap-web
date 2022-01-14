@@ -2,6 +2,7 @@ import "@fontsource/dm-mono/500.css";
 
 import { createGlobalStyle } from "styled-components/macro";
 
+import breakPoints from "./breakpoints";
 import reset from "./reset";
 import { fontLoos, fontMono } from "./themes";
 
@@ -39,9 +40,22 @@ const GlobalStyle = createGlobalStyle`
   }
 
   p {
-    font-size: ${(props) => props.theme.typography.paragraph.fontSize};
-    font-weight: ${(props) => props.theme.typography.paragraph.fontWeight};
-    line-height: ${(props) => props.theme.typography.paragraph.lineHeight};
+    font-size: ${({ theme }) => theme.typography.paragraph.desktop.fontSize};
+    font-weight: ${({ theme }) =>
+      theme.typography.paragraph.desktop.fontWeight};
+    line-height: ${({ theme }) =>
+      theme.typography.paragraph.desktop.lineHeight};
+
+    ${(props) =>
+      props.theme.typography.paragraph.mobile
+        ? `
+      @media ${breakPoints.phoneOnly} {
+        font-size: ${props.theme.typography.paragraph.mobile?.fontSize};
+        font-weight: ${props.theme.typography.paragraph.mobile?.fontWeight};
+        line-height: ${props.theme.typography.paragraph.mobile?.lineHeight};
+      }`
+        : ""}
+
   }
 `;
 
