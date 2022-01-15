@@ -4,24 +4,30 @@ import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints from "../../style/breakpoints";
 import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButton";
 import IconButton from "../IconButton/IconButton";
+import SettingsButton from "../SettingsButton/SettingsButton";
 
-export const Container = styled.div`
+export const StyledTopBar = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  flex-direction: row-reverse;
   position: absolute;
+  box-sizing: content-box;
   top: 0;
   right: 0;
   width: 100%;
+  height: 3rem;
   padding: 1.5rem;
   z-index: 1;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    flex-direction: row;
+  }
 
   @media ${breakPoints.phoneOnly},
     (max-width: 68rem) and (max-height: 41.5rem) {
     position: relative;
-    box-sizing: content-box;
     margin-bottom: 1.5rem;
-    height: 2.5rem;
     width: calc(100% - 2.5rem);
     padding: 1.5rem 1.5rem 0 1rem;
   }
@@ -29,6 +35,7 @@ export const Container = styled.div`
   @media ${breakPoints.phoneOnly} {
     margin-bottom: 1rem;
     width: 100%;
+    height: 2.5rem;
     padding: 1rem 0 0;
   }
 `;
@@ -79,5 +86,14 @@ export const StyledMenuButton = styled(IconButton)`
     svg {
       width: 1.3125rem;
     }
+  }
+`;
+
+export const StyledSettingsButton = styled(SettingsButton)`
+  margin-left: 0.5rem;
+  margin-right: 0;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    margin-right: 1rem;
   }
 `;

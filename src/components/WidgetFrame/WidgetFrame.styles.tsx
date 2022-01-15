@@ -36,8 +36,6 @@ type StyledTradeContainerProps = {
 };
 
 export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
-  transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
-  transition: transform 0.3s ease-in-out;
   position: relative;
   display: flex;
   align-items: center;
@@ -51,6 +49,11 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
       props.$isConnected
         ? props.theme.shadows.widgetGlow
         : props.theme.shadows.widgetGlowOff};
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    transition: transform 0.3s ease-in-out;
+    transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
   }
 
   @media ${breakPoints.phoneOnly},

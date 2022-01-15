@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   BorderedPill,
@@ -18,7 +19,8 @@ export const Container = styled(motion.div)`
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: 24rem;
+  width: 100%;
+  max-width: 24rem;
   height: 100vh;
   padding: 0 1.5rem;
   background-color: ${(props) => props.theme.colors.black};
@@ -27,8 +29,14 @@ export const Container = styled(motion.div)`
   right: 0;
   z-index: 1001;
   will-change: transform;
+
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    position: fixed;
+    padding: 0 1.125rem;
   }
 `;
 
@@ -163,6 +171,10 @@ export const BackButton = styled(motion.button)`
   background-color: ${(props) => props.theme.colors.black};
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
 `;
 
 export const NetworkInfoContainer = styled.div`

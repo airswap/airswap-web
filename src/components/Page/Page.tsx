@@ -13,9 +13,7 @@ import TopBar from "../TopBar/TopBar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
-const Page: FC<{ excludeWallet?: boolean }> = ({
-  excludeWallet,
-}): ReactElement => {
+const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const [

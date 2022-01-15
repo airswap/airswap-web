@@ -13,6 +13,7 @@ import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as Weth9Contract from "../../assets/weth9.abi.json";
+import { StyledSettingsButton } from "../../components/TopBar/TopBar.styles";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import Weth9Deploys from "../../constants/Weth9";
@@ -21,9 +22,6 @@ import {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
-import PopoverContainer, {
-  StyledSettingsButton,
-} from "../../styled-components/PopoverContainer/PopoverContainer";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -325,23 +323,19 @@ export const Wallet: FC<WalletPropsType> = ({
 
   return (
     <>
-      <PopoverContainer>
-        <StyledSettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabOpen}
-        />
-        <WalletButton
-          address={account}
-          isUnsupportedNetwork={
-            error && error instanceof UnsupportedChainIdError
-          }
-          glow={!!pendingTransactions.length}
-          transactionsTabOpen={transactionsTabOpen}
-          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
-          setShowWalletList={setShowWalletList}
-        />
-      </PopoverContainer>
+      <StyledSettingsButton
+        settingsOpen={settingsOpen}
+        setSettingsOpen={setSettingsOpen}
+        transactionsTabOpen={transactionsTabOpen}
+      />
+      <WalletButton
+        address={account}
+        isUnsupportedNetwork={error && error instanceof UnsupportedChainIdError}
+        glow={!!pendingTransactions.length}
+        transactionsTabOpen={transactionsTabOpen}
+        setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+        setShowWalletList={setShowWalletList}
+      />
       <TransactionsTab
         address={account!}
         chainId={chainId!}

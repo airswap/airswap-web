@@ -2,7 +2,7 @@ import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  Container,
+  StyledTopBar,
   StyledAirswapButton,
   StyledMenuButton,
   StyledWallet,
@@ -24,25 +24,25 @@ const TopBar: FC<TopBarProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container>
-      <StyledAirswapButton
-        onClick={onAirswapButtonClick}
-        ariaLabel={t("common.AirSwap")}
-        icon="airswap"
-        iconSize={2}
-      />
-      <StyledWallet
-        transactionsTabOpen={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
-        setShowWalletList={setShowWalletList}
-      />
+    <StyledTopBar>
       <StyledMenuButton
         onClick={() => {}}
         ariaLabel={t("common.select")}
         icon="menu"
         iconSize={1.5625}
       />
-    </Container>
+      <StyledWallet
+        transactionsTabOpen={transactionsTabOpen}
+        setTransactionsTabOpen={setTransactionsTabOpen}
+        setShowWalletList={setShowWalletList}
+      />
+      <StyledAirswapButton
+        onClick={onAirswapButtonClick}
+        ariaLabel={t("common.AirSwap")}
+        icon="airswap"
+        iconSize={2}
+      />
+    </StyledTopBar>
   );
 };
 
