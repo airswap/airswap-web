@@ -2,9 +2,8 @@ import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
-import { BorderlessButtonStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
-import IconButton from "../IconButton/IconButton";
+import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButton";
 
 export const ToolbarContainer = styled.div`
   display: none;
@@ -33,18 +32,6 @@ export const ToolbarContainer = styled.div`
   }
 `;
 
-export const AirswapButton = styled(IconButton)`
-  ${BorderlessButtonStyleType2};
-
-  margin-top: 1rem;
-  align-self: center;
-  margin-bottom: auto;
-
-  @media (min-height: ${sizes.toolbarMaxHeight}) {
-    margin-top: 2rem;
-  }
-`;
-
 export const ToolbarButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,5 +41,13 @@ export const ToolbarButtonsContainer = styled.div`
 
   @media (min-height: ${sizes.toolbarMaxHeight}) {
     margin: 2rem 0 4.5rem;
+  }
+`;
+
+export const StyledAirswapButton = styled(AirswapButton)`
+  margin-top: 1rem;
+
+  @media (min-height: ${sizes.toolbarMaxHeight}) {
+    margin-top: 2rem;
   }
 `;

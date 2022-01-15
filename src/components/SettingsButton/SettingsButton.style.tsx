@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
-import Icon from "../Icon/Icon";
+import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
   open: boolean;
@@ -27,22 +27,12 @@ export const SettingsButtonContainer = styled.button`
   padding: 0;
 
   @media ${breakPoints.phoneOnly} {
-    border: 0;
+    ${IconButtonStyle};
     width: 2rem;
     height: 2rem;
-  }
-`;
 
-export const DesktopIcon = styled(Icon)`
-  @media ${breakPoints.phoneOnly} {
-    display: none;
-  }
-`;
-
-export const MobileIcon = styled(Icon)`
-  display: none;
-
-  @media ${breakPoints.phoneOnly} {
-    display: block;
+    svg {
+      width: 1.25rem;
+    }
   }
 `;

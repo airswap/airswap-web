@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import Icon from "../Icon/Icon";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
-import {
-  Container,
-  DesktopIcon,
-  MobileIcon,
-  SettingsButtonContainer,
-} from "./SettingsButton.style";
+import { Container, SettingsButtonContainer } from "./SettingsButton.style";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
@@ -70,8 +66,7 @@ const SettingsButton = ({
           aria-label={t("common.settings")}
           onClick={() => setSettingsOpen(!settingsOpen)}
         >
-          <DesktopIcon iconSize={1.5} name="settings" />
-          <MobileIcon iconSize={1.25} name="settings" />
+          <Icon iconSize={1.5} name="settings" />
         </SettingsButtonContainer>
       </Container>
       {settingsOpen && (

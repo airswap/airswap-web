@@ -3,22 +3,20 @@ import { FC, ReactElement, useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import { useAppDispatch } from "../../app/hooks";
+import { resetOrders } from "../../features/orders/ordersSlice";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
+import TopBar from "../TopBar/TopBar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
-import {
-  InnerContainer,
-  StyledPage,
-  StyledSocialButtons,
-  StyledWallet,
-  TopBar,
-} from "./Page.styles";
+import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
 const Page: FC<{ excludeWallet?: boolean }> = ({
   excludeWallet,
 }): ReactElement => {
+  const dispatch = useAppDispatch();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const [
     activeInformationModal,
@@ -29,24 +27,28 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
   );
   const [showWalletList, setShowWalletList] = useState<boolean>(false);
 
-  const onToolbarButtonClick = (type: InformationModalType) => {
+  const onLinkButtonClick = (type: InformationModalType) => {
     setActiveInformationModal(type);
+  };
+
+  const onAirswapButtonClick = () => {
+    dispatch(resetOrders());
   };
 
   return (
     <StyledPage>
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
-        <Toolbar onButtonClick={onToolbarButtonClick} />
-
-        <TopBar>
-          <StyledWallet
-            transactionsTabOpen={transactionsTabOpen}
-            setTransactionsTabOpen={setTransactionsTabOpen}
-            setShowWalletList={setShowWalletList}
-          />
-        </TopBar>
-
+        <Toolbar
+          onLinkButtonClick={onLinkButtonClick}
+          onAirswapButtonClick={onAirswapButtonClick}
+        />
+        <TopBar
+          transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={setTransactionsTabOpen}
+          setShowWalletList={setShowWalletList}
+          onAirswapButtonClick={onAirswapButtonClick}
+        />
         <WidgetFrame
           isOpen={transactionsTabOpen}
           isConnected={web3ProviderIsActive}

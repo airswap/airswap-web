@@ -1,35 +1,8 @@
 import styled from "styled-components/macro";
 
-import { Wallet } from "../../features/wallet/Wallet";
 import breakPoints, { breakpointSizes } from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 import SocialButtons from "../SocialButtons/SocialButtons";
-
-type StyledWalletProps = {
-  isOpen?: boolean;
-};
-
-export const StyledWallet = styled(Wallet)<StyledWalletProps>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  transition: transform 0.3s ease-in-out;
-  z-index: 1001;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    position: relative;
-    top: 0;
-    left: 0;
-    transition: none;
-  }
-`;
 
 export const InnerContainer = styled.div`
   display: flex;
@@ -48,28 +21,6 @@ export const InnerContainer = styled.div`
 
   @media ${breakPoints.phoneOnly} {
     height: 100%;
-  }
-`;
-
-export const TopBar = styled.div`
-  position: absolute;
-  padding: 1.5rem 1.5rem 0;
-  top: 0;
-  right: 0;
-  z-index: 1;
-
-  @media ${breakPoints.phoneOnly},
-    (max-width: 68rem) and (max-height: 41.5rem) {
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
-    margin-bottom: 1.5rem;
-    width: 100%;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    margin-bottom: 1rem;
-    padding: 1rem 0 0;
   }
 `;
 

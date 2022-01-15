@@ -7,6 +7,7 @@ import {
   BorderedPill,
   InputOrButtonBorderStyle,
 } from "../../../../style/mixins";
+import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 
 export const Button = styled.div`
@@ -17,8 +18,17 @@ export const Button = styled.div`
   background: none;
 `;
 
+export const StyledBorderedButton = styled(BorderedButton)`
+  @media ${breakPoints.phoneOnly} {
+    padding: 0 1rem;
+  }
+`;
+
 export const WalletAddressText = styled(InfoHeading)`
   color: ${({ theme }) => theme.colors.alwaysWhite};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media ${breakPoints.phoneOnly} {
     font-size: 0.875rem;

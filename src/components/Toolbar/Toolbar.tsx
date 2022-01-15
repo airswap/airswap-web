@@ -1,37 +1,34 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppDispatch } from "../../app/hooks";
-import { resetOrders } from "../../features/orders/ordersSlice";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
-  AirswapButton,
+  StyledAirswapButton,
   ToolbarButtonsContainer,
   ToolbarContainer,
 } from "./Toolbar.styles";
 import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 
 export type ToolbarProps = {
-  onButtonClick?: (type: InformationModalType) => void;
+  onLinkButtonClick?: (type: InformationModalType) => void;
+  onAirswapButtonClick?: () => void;
 };
 
-const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
+const Toolbar: FC<ToolbarProps> = ({
+  onLinkButtonClick,
+  onAirswapButtonClick,
+}) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const onToolbarButtonClick = (type: InformationModalType) => {
-    if (onButtonClick) {
-      onButtonClick(type);
+    if (onLinkButtonClick) {
+      onLinkButtonClick(type);
     }
-  };
-
-  const onAirswapButtonClick = () => {
-    dispatch(resetOrders());
   };
 
   return (
     <ToolbarContainer>
-      <AirswapButton
+      <StyledAirswapButton
         onClick={onAirswapButtonClick}
         ariaLabel={t("common.AirSwap")}
         icon="airswap"

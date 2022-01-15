@@ -8,6 +8,7 @@ export const Container = styled.div`
   flex-direction: column;
   position: relative;
   border-radius: 0.25rem;
+  margin: 0 ${sizes.pageMobilePadding};
   height: 30rem;
   width: 30rem;
   padding: ${sizes.tradeContainerPadding};
@@ -24,6 +25,7 @@ export const Container = styled.div`
   @media ${breakPoints.phoneOnly} {
     width: 100%;
     height: 24rem;
+    margin: 0;
     padding: ${sizes.tradeContainerMobilePadding};
   }
 `;

@@ -16,6 +16,7 @@ import IconForbidden from "./IconForbidden";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconMedium from "./IconMedium";
+import IconMenu from "./IconMenu";
 import IconPending from "./IconPending";
 import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
@@ -45,6 +46,7 @@ export {
   IconLibrary,
   IconLink,
   IconMedium,
+  IconMenu,
   IconPending,
   IconTelegram,
   IconTwitter,
