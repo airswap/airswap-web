@@ -22,7 +22,8 @@ export const Container = styled(motion.div)`
   width: 100%;
   max-width: 24rem;
   height: 100vh;
-  padding: 0 1.5rem;
+  min-height: 100%;
+  padding: 1.5rem 1.5rem 0;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
   top: 0;
@@ -36,7 +37,7 @@ export const Container = styled(motion.div)`
 
   @media ${breakPoints.phoneOnly} {
     position: fixed;
-    padding: 0 1.125rem;
+    padding: 1rem 1rem 0;
   }
 `;
 
@@ -44,9 +45,14 @@ export const WalletHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
   width: 100%;
   height: 3rem;
-  margin: 1.5rem 0;
+  padding-left: 1rem;
+
+  @media ${breakPoints.phoneOnly} {
+    padding-left: 0;
+  }
 `;
 
 export const StyledTransactionLink = styled(TransactionLink)`
@@ -136,12 +142,25 @@ export const NoTransactions = styled(motion.div)`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
-export const DiconnectButtonContainer = styled.div`
+export const BottomButtonContainer = styled.div`
   padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
+
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const MobileBackButton = styled(Button)`
+  ${InputOrButtonBorderStyleType2};
+  display: none;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
+  }
 `;
 
 export const IconContainer = styled.div`
@@ -159,7 +178,7 @@ export const IconContainer = styled.div`
 export const BackButton = styled(motion.button)`
   ${InputOrButtonBorderStyleType2};
 
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -173,7 +192,7 @@ export const BackButton = styled(motion.button)`
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
   @media ${breakPoints.phoneOnly} {
-    display: none;
+    display: none !important;
   }
 `;
 
@@ -183,7 +202,6 @@ export const NetworkInfoContainer = styled.div`
   justify-content: center;
   height: 100%;
   max-width: 5.5rem;
-  margin-left: 1rem;
 `;
 
 export const NetworkName = styled(FormLabel)`
@@ -206,4 +224,10 @@ export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   background-color: ${(props) =>
     props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
+`;
+
+export const StyledInfoHeading = styled(InfoHeading)`
+  @media ${breakPoints.phoneOnly} {
+    font-size: 0.875rem;
+  }
 `;

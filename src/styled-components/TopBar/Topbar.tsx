@@ -1,12 +1,11 @@
 import styled from "styled-components/macro";
 
-import { Wallet } from "../../features/wallet/Wallet";
+import IconButton from "../../components/IconButton/IconButton";
+import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import breakPoints from "../../style/breakpoints";
-import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButton";
-import IconButton from "../IconButton/IconButton";
-import SettingsButton from "../SettingsButton/SettingsButton";
+import { AirswapButton } from "../AirswapButton/AirswapButton";
 
-export const StyledTopBar = styled.div`
+export const TopBar = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -15,7 +14,7 @@ export const StyledTopBar = styled.div`
   box-sizing: content-box;
   top: 0;
   right: 0;
-  width: 100%;
+  width: calc(100% - 3rem);
   height: 3rem;
   padding: 1.5rem;
   z-index: 1;
@@ -37,28 +36,6 @@ export const StyledTopBar = styled.div`
     width: 100%;
     height: 2.5rem;
     padding: 1rem 0 0;
-  }
-`;
-
-export const StyledWallet = styled(Wallet)<{ isOpen?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  transition: transform 0.3s ease-in-out;
-  z-index: 1001;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    position: relative;
-    top: 0;
-    left: 0;
-    transition: none;
   }
 `;
 

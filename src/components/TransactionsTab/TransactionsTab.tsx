@@ -11,7 +11,6 @@ import { SubmittedTransaction } from "../../features/transactions/transactionsSl
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import Icon from "../Icon/Icon";
-import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   WalletHeader,
@@ -19,7 +18,7 @@ import {
   LegendLine,
   TransactionContainer,
   TransactionsContainer,
-  DiconnectButtonContainer,
+  BottomButtonContainer,
   DisconnectButton,
   NoTransactions,
   IconContainer,
@@ -30,6 +29,8 @@ import {
   WalletInfoButton,
   ConnectionStatusCircle,
   LegendContainer,
+  StyledInfoHeading,
+  MobileBackButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
@@ -167,13 +168,13 @@ const TransactionsTab = ({
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
               <ConnectionStatusCircle $connected={!!address} />
-              <InfoHeading>
+              <StyledInfoHeading>
                 {isUnsupportedNetwork
                   ? t("wallet.unsupported")
                   : addressOrName
                   ? addressOrName
                   : t("wallet.notConnected")}
-              </InfoHeading>
+              </StyledInfoHeading>
             </WalletInfoButton>
           </WalletHeader>
 
@@ -228,14 +229,20 @@ const TransactionsTab = ({
               )}
             </TransactionContainer>
           </TransactionsContainer>
-          <DiconnectButtonContainer ref={buttonRef}>
+          <BottomButtonContainer ref={buttonRef}>
             <DisconnectButton
               aria-label={t("wallet.disconnectWallet")}
               onClick={onDisconnectWalletClicked}
             >
               {t("wallet.disconnectWallet")}
             </DisconnectButton>
-          </DiconnectButtonContainer>
+            <MobileBackButton
+              aria-label={t("common.back")}
+              onClick={() => setTransactionsTabOpen(false)}
+            >
+              {t("common.back")}
+            </MobileBackButton>
+          </BottomButtonContainer>
         </Container>
       )}
     </AnimatePresence>

@@ -20,7 +20,7 @@ export const InnerContainer = styled.div`
   }
 
   @media ${breakPoints.phoneOnly} {
-    height: 100%;
+    height: auto;
   }
 `;
 
@@ -30,7 +30,7 @@ export const StyledPage = styled.div`
   height: 100vh;
   min-height: 35rem;
 
-  @media (min-height: 33rem) and (max-width: ${breakpointSizes.phone}) {
+  @media (min-height: 29rem) and (max-width: ${breakpointSizes.phone}) {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -41,7 +41,8 @@ export const StyledPage = styled.div`
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    min-height: auto;
+    height: auto;
+    min-height: 100vh;
     padding: 0 ${sizes.pageMobilePadding};
   }
 `;
@@ -49,7 +50,7 @@ export const StyledPage = styled.div`
 export const StyledSocialButtons = styled(SocialButtons)`
   display: flex;
   position: fixed;
-  bottom: 2.25rem;
+  bottom: 1.5rem;
   right: 1.5rem;
 
   @media ${breakPoints.phoneOnly},

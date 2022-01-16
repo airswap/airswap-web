@@ -5,11 +5,11 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
+import { Wallet } from "../../features/wallet/Wallet";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
-import TopBar from "../TopBar/TopBar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
@@ -41,7 +41,7 @@ const Page: FC = (): ReactElement => {
           onLinkButtonClick={onLinkButtonClick}
           onAirswapButtonClick={onAirswapButtonClick}
         />
-        <TopBar
+        <Wallet
           transactionsTabOpen={transactionsTabOpen}
           setTransactionsTabOpen={setTransactionsTabOpen}
           setShowWalletList={setShowWalletList}

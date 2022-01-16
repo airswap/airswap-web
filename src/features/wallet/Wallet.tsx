@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
+import { useTranslation } from "react-i18next";
 
 import { Light, Wrapper } from "@airswap/libraries";
 import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
@@ -13,7 +14,6 @@ import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as Weth9Contract from "../../assets/weth9.abi.json";
-import { StyledSettingsButton } from "../../components/TopBar/TopBar.styles";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import Weth9Deploys from "../../constants/Weth9";
@@ -22,6 +22,11 @@ import {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import {
+  StyledAirswapButton,
+  StyledMenuButton,
+  TopBar,
+} from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -65,13 +70,16 @@ type WalletPropsType = {
   setShowWalletList: (x: boolean) => void;
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
+  onAirswapButtonClick: () => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
   setShowWalletList,
   transactionsTabOpen,
   setTransactionsTabOpen,
+  onAirswapButtonClick,
 }) => {
+  const { t } = useTranslation();
   const {
     chainId,
     account,
@@ -93,7 +101,6 @@ export const Wallet: FC<WalletPropsType> = ({
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
-  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -323,19 +330,30 @@ export const Wallet: FC<WalletPropsType> = ({
 
   return (
     <>
-      <StyledSettingsButton
-        settingsOpen={settingsOpen}
-        setSettingsOpen={setSettingsOpen}
-        transactionsTabOpen={transactionsTabOpen}
-      />
-      <WalletButton
-        address={account}
-        isUnsupportedNetwork={error && error instanceof UnsupportedChainIdError}
-        glow={!!pendingTransactions.length}
-        transactionsTabOpen={transactionsTabOpen}
-        setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
-        setShowWalletList={setShowWalletList}
-      />
+      <TopBar>
+        <StyledMenuButton
+          onClick={() => {}}
+          ariaLabel={t("common.select")}
+          icon="menu"
+          iconSize={1.5625}
+        />
+        <WalletButton
+          address={account}
+          isUnsupportedNetwork={
+            error && error instanceof UnsupportedChainIdError
+          }
+          glow={!!pendingTransactions.length}
+          transactionsTabOpen={transactionsTabOpen}
+          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+          setShowWalletList={setShowWalletList}
+        />
+        <StyledAirswapButton
+          onClick={onAirswapButtonClick}
+          ariaLabel={t("common.AirSwap")}
+          icon="airswap"
+          iconSize={2}
+        />
+      </TopBar>
       <TransactionsTab
         address={account!}
         chainId={chainId!}

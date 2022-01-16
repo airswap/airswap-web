@@ -60,4 +60,8 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
     (max-width: 68rem) and (max-height: 41.5rem) {
     margin-bottom: 1.5rem;
   }
+
+  @media ${breakPoints.phoneOnly} {
+    margin-bottom: 0;
+  }
 `;
