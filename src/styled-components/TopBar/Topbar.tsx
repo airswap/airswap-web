@@ -21,6 +21,7 @@ export const TopBar = styled.div`
 
   @media ${breakPoints.tabletPortraitUp} {
     flex-direction: row;
+    width: auto;
   }
 
   @media ${breakPoints.phoneOnly},

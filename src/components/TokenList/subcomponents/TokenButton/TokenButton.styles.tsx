@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components/macro";
 
+import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
@@ -27,6 +28,11 @@ export const TokenName = styled.h3`
   text-overflow: ellipsis;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
+
+  @media ${breakPoints.phoneOnly} {
+    line-height: calc(1 + (1 / 3));
+    font-size: 0.75rem;
+  }
 `;
 
 export const Balance = styled.div`
@@ -64,20 +70,37 @@ export const DeleteIcon = styled(Icon)`
   }
 `;
 
+export const TokenSymbolAndName = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media ${breakPoints.phoneOnly} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
+
 export const Container = styled.button<ContainerProps>`
-  position: relative;
-  width: 100%;
-  padding: 0.5rem 0;
+  ${BorderlessButtonStyle};
+
   display: grid;
   grid-auto-flow: column;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   grid-template-columns: ${(props) =>
     props.showDeleteButton
-      ? "1.25rem 4rem calc(100% - 11.5rem) 3.25rem"
-      : "1.25rem 4rem calc(50% - 4rem) calc(50% - 4.5rem)"};
+      ? "1.25rem calc(100% - 7.5rem) 3.25rem"
+      : "1.25rem 50% calc(50% - 4.5rem)"};
   grid-gap: 1rem;
   align-items: center;
+  position: relative;
+  width: 100%;
+  height: 2rem;
+  padding: 0.25rem 0;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+
+  &:not(:first-of-type) {
+    margin-top: 0.5rem;
+  }
 
   &:hover {
     ${TokenName} {
@@ -102,7 +125,14 @@ export const Container = styled.button<ContainerProps>`
     }
   }
 
-  ${BorderlessButtonStyle}
+  @media ${breakPoints.phoneOnly} {
+    grid-template-columns: ${(props) =>
+      props.showDeleteButton
+        ? "1.25rem calc(100% - 7.5rem) 3.25rem"
+        : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
+    align-items: flex-start;
+    height: 2.5rem;
+  }
 `;
 
 export const TextContainer = styled.div`
@@ -112,11 +142,19 @@ export const TextContainer = styled.div`
 `;
 
 export const Symbol = styled.h3`
+  margin-right: 1rem;
+  width: 5rem;
   text-align: left;
+  line-height: calc(1 + (1 / 3));
   font-size: 1.125rem;
   font-weight: 700;
-  line-height: calc(1 + (1 / 3));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media ${breakPoints.phoneOnly} {
+    margin-right: 0;
+    line-height: 1;
+    font-size: 1rem;
+  }
 `;
