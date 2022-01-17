@@ -249,3 +249,21 @@ export const StyledWalletMobileMenu = styled(WalletMobileMenu)`
     display: flex;
   }
 `;
+
+export const BackdropFilter = styled.button`
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => props.theme.colors.black};
+  opacity: 0.5;
+  backdrop-filter: blur(20px);
+  z-index: 1;
+
+  @media ${breakPoints.phoneOnly} {
+    display: block;
+  }
+`;

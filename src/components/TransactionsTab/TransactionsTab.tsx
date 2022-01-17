@@ -34,6 +34,7 @@ import {
   DesktopWalletInfoButton,
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
+  BackdropFilter,
 } from "./TransactionsTab.styles";
 import writeAddressToClipboard from "./helpers/writeAddressToClipboard";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
@@ -285,6 +286,9 @@ const TransactionsTab = ({
               {t("common.back")}
             </MobileBackButton>
           </BottomButtonContainer>
+          {showMobileMenu && (
+            <BackdropFilter onClick={toggleWalletMobileMenu} />
+          )}
         </Container>
       )}
     </AnimatePresence>
