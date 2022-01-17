@@ -10,10 +10,15 @@ type ContainerProps = {
 
 export const Container = styled.div<ContainerProps>`
   position: relative;
-  transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
+  transform: ${(props) => (props.open ? "translate(-12.75rem, 0)" : "0")};
   transition: transform 0.3s ease-in-out;
 
   @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    transform: none;
     transition: none;
   }
 `;

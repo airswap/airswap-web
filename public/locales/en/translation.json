@@ -143,6 +143,7 @@
   },
   "wallet": {
     "connectWallet": "Connect Wallet",
+    "copyAddress": "Copy Address",
     "notConnected": "Not connected",
     "unsupportedNetwork": "Unsupported network",
     "unsupported": "Unsupported",
@@ -167,6 +168,7 @@
     "noActiveTransactions": "No active transactions",
     "completedTransactions": "Completed transactions",
     "noCompletedTransactions": "No completed transactions",
-    "transactionLink": "Transaction link"
+    "transactionLink": "Transaction link",
+    "viewOnExplorer": "View on explorer"
   }
 }

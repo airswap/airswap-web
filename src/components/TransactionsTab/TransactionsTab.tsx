@@ -9,8 +9,10 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import { getEtherscanWalletURL } from "../../helpers/getEtherscanWalletURL";
+import useMediaQuery from "../../helpers/useMediaQuery";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import breakPoints from "../../style/breakpoints";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -69,6 +71,7 @@ const TransactionsTab = ({
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
+  const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
@@ -177,8 +180,8 @@ const TransactionsTab = ({
           ref={containerRef}
           animate={{ x: 0 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          initial={{ x: "24rem" }}
-          exit={{ x: "24rem" }}
+          initial={{ x: isMobile ? "100%" : "24rem" }}
+          exit={{ x: isMobile ? "100%" : "24rem" }}
         >
           <BackButton
             aria-label={t("common.back")}

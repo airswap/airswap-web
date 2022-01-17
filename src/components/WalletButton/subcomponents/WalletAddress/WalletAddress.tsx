@@ -4,7 +4,6 @@ import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
 import {
   ConnectionStatusCircle,
   Button,
-  Placeholder,
   WalletAddressText,
   StyledBorderedButton,
 } from "./WalletAddress.styles";
@@ -14,7 +13,6 @@ type WalletAddressPropsType = {
   isUnsupportedNetwork?: boolean;
   showBlockies?: boolean;
   glow?: boolean;
-  transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
   setShowWalletList: (x: boolean) => void;
 };
@@ -22,7 +20,6 @@ type WalletAddressPropsType = {
 const WalletAddress = ({
   address,
   isUnsupportedNetwork = false,
-  transactionsTabOpen,
   setTransactionsTabOpen,
   setShowWalletList,
   glow,
@@ -30,28 +27,23 @@ const WalletAddress = ({
   const { t } = useTranslation();
   const addressOrName = useAddressOrEnsName(address);
 
-  const renderContent = () =>
-    transactionsTabOpen ? (
-      <Placeholder />
-    ) : (
-      <StyledBorderedButton $glow={glow}>
-        <ConnectionStatusCircle $connected={!!address} />
-        <WalletAddressText>
-          {isUnsupportedNetwork
-            ? t("wallet.unsupportedNetwork")
-            : addressOrName
-            ? addressOrName
-            : t("wallet.notConnected")}
-        </WalletAddressText>
-      </StyledBorderedButton>
-    );
+  const renderContent = () => (
+    <StyledBorderedButton $glow={glow}>
+      <ConnectionStatusCircle $connected={!!address} />
+      <WalletAddressText>
+        {isUnsupportedNetwork
+          ? t("wallet.unsupportedNetwork")
+          : addressOrName
+          ? addressOrName
+          : t("wallet.notConnected")}
+      </WalletAddressText>
+    </StyledBorderedButton>
+  );
 
   return (
     <Button
       onClick={() => {
-        !!address
-          ? setTransactionsTabOpen(!transactionsTabOpen)
-          : setShowWalletList(true);
+        !!address ? setTransactionsTabOpen(true) : setShowWalletList(true);
       }}
     >
       {renderContent()}

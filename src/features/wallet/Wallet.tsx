@@ -350,7 +350,6 @@ export const Wallet: FC<WalletPropsType> = ({
             error && error instanceof UnsupportedChainIdError
           }
           glow={!!pendingTransactions.length}
-          transactionsTabOpen={transactionsTabOpen}
           setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
           setShowWalletList={setShowWalletList}
         />

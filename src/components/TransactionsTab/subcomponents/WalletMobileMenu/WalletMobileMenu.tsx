@@ -30,7 +30,7 @@ const WalletMobileMenu: FC<WalletMobileMenuType> = ({
     <Container className={className}>
       {walletUrl && (
         <WalletMobileMenuLink href={walletUrl} target="_blank">
-          View on explorer
+          {t("wallet.viewOnExplorer")}
           <StyledIcon iconSize={1} name="transaction-link" />
         </WalletMobileMenuLink>
       )}
@@ -41,10 +41,7 @@ const WalletMobileMenu: FC<WalletMobileMenuType> = ({
         />
       )}
       {onDisconnectButtonClick && (
-        <WalletMobileMenuButton
-          onClick={onDisconnectButtonClick}
-          aria-label={t("wallet.disconnectWallet")}
-        >
+        <WalletMobileMenuButton onClick={onDisconnectButtonClick}>
           {t("wallet.disconnectWallet")}
         </WalletMobileMenuButton>
       )}
