@@ -8,6 +8,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import { getEtherscanWalletURL } from "../../helpers/getEtherscanWalletURL";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import Icon from "../Icon/Icon";
@@ -26,12 +27,13 @@ import {
   NetworkInfoContainer,
   NetworkName,
   Balances,
-  WalletInfoButton,
-  ConnectionStatusCircle,
   LegendContainer,
-  StyledInfoHeading,
   MobileBackButton,
+  DesktopWalletInfoButton,
+  MobileWalletInfoButton,
+  StyledWalletMobileMenu,
 } from "./TransactionsTab.styles";
+import writeAddressToClipboard from "./helpers/writeAddressToClipboard";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
 const addressMapping: Record<number, string> = {
@@ -70,12 +72,25 @@ const TransactionsTab = ({
   const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [copyAddressIsSuccess, setCopyAddressIsSuccess] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
+  const walletInfoText = useMemo(() => {
+    return isUnsupportedNetwork
+      ? t("wallet.unsupported")
+      : addressOrName
+      ? addressOrName
+      : t("wallet.notConnected");
+  }, [addressOrName, isUnsupportedNetwork, t]);
+  const walletUrl = useMemo(() => getEtherscanWalletURL(chainId, address), [
+    chainId,
+    address,
+  ]);
 
   const handleEscKey = useCallback(
     (e) => {
@@ -86,12 +101,30 @@ const TransactionsTab = ({
     [setTransactionsTabOpen]
   );
 
+  const toggleWalletMobileMenu = () => {
+    setShowMobileMenu(!showMobileMenu);
+    setCopyAddressIsSuccess(false);
+  };
+
+  const handleCopyAddressButtonClick = async () => {
+    if (address) {
+      const success = await writeAddressToClipboard(address);
+      setCopyAddressIsSuccess(success);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("keydown", handleEscKey, false);
     return () => {
       document.removeEventListener("keydown", handleEscKey, false);
     };
   }, [handleEscKey]);
+
+  useEffect(() => {
+    if (!open) {
+      setShowMobileMenu(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (
@@ -164,18 +197,24 @@ const TransactionsTab = ({
               </NetworkName>
               <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
             </NetworkInfoContainer>
-            <WalletInfoButton
+            <DesktopWalletInfoButton
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
-              <ConnectionStatusCircle $connected={!!address} />
-              <StyledInfoHeading>
-                {isUnsupportedNetwork
-                  ? t("wallet.unsupported")
-                  : addressOrName
-                  ? addressOrName
-                  : t("wallet.notConnected")}
-              </StyledInfoHeading>
-            </WalletInfoButton>
+              {walletInfoText}
+            </DesktopWalletInfoButton>
+            <MobileWalletInfoButton onClick={toggleWalletMobileMenu}>
+              {walletInfoText}
+            </MobileWalletInfoButton>
+            {showMobileMenu && (
+              <StyledWalletMobileMenu
+                walletUrl={walletUrl}
+                copyAddressIsSuccess={copyAddressIsSuccess}
+                onCopyAddressButtonClick={
+                  address ? handleCopyAddressButtonClick : undefined
+                }
+                onDisconnectButtonClick={onDisconnectWalletClicked}
+              />
+            )}
           </WalletHeader>
 
           <TransactionsContainer

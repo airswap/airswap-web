@@ -4,7 +4,6 @@ import styled from "styled-components/macro";
 import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
-  BorderedPill,
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import Button from "../Button/Button";
@@ -14,6 +13,8 @@ import {
   FormLabel,
 } from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
+import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
+import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
 export const Container = styled(motion.div)`
   position: absolute;
@@ -37,6 +38,8 @@ export const Container = styled(motion.div)`
 
   @media ${breakPoints.phoneOnly} {
     position: fixed;
+    width: 100%;
+    max-width: inherit;
     padding: 1rem 1rem 0;
   }
 `;
@@ -212,11 +215,6 @@ export const Balances = styled(InfoHeading)`
   line-height: 1;
 `;
 
-export const WalletInfoButton = styled.button`
-  ${BorderedPill}
-  ${InputOrButtonBorderStyleType2}
-`;
-
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   margin-right: 0.5rem;
   width: 0.75rem;
@@ -226,8 +224,28 @@ export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   border-radius: 50%;
 `;
 
-export const StyledInfoHeading = styled(InfoHeading)`
+export const DesktopWalletInfoButton = styled(WalletInfoButton)`
   @media ${breakPoints.phoneOnly} {
-    font-size: 0.875rem;
+    display: none;
+  }
+`;
+
+export const MobileWalletInfoButton = styled(WalletInfoButton)`
+  display: none;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
+  }
+`;
+
+export const StyledWalletMobileMenu = styled(WalletMobileMenu)`
+  display: none;
+  position: absolute;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 2;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
   }
 `;

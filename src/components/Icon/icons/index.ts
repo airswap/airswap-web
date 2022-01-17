@@ -4,10 +4,12 @@ import IconArrowLeft from "./IconArrowLeft";
 import IconArrowRight from "./IconArrowRight";
 import IconBars from "./IconBars";
 import IconCampaign from "./IconCampaign";
+import IconCheck from "./IconCheck";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
+import IconCopy from "./IconCopy";
 import IconDarkModeSwitch from "./IconDarkModeSwitch";
 import IconDeny from "./IconDeny";
 import IconDiscord from "./IconDiscord";
@@ -34,9 +36,11 @@ export {
   IconArrowLeft,
   IconBars,
   IconCampaign,
+  IconCheck,
   IconChevronDown,
   IconChevronRight,
   IconCode,
+  IconCopy,
   IconContactSupport,
   IconDarkModeSwitch,
   IconDeny,

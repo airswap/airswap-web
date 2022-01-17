@@ -33,7 +33,7 @@ export const Container = styled.div<ContainerProps>`
   }
 
   @media ${breakPoints.phoneOnly} {
-    top: 3rem;
+    top: 4rem;
     right: 0;
   }
 `;

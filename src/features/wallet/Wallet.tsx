@@ -25,6 +25,7 @@ import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders
 import {
   StyledAirswapButton,
   StyledMenuButton,
+  StyledSettingsButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
@@ -101,6 +102,7 @@ export const Wallet: FC<WalletPropsType> = ({
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -336,6 +338,11 @@ export const Wallet: FC<WalletPropsType> = ({
           ariaLabel={t("common.select")}
           icon="menu"
           iconSize={1.5625}
+        />
+        <StyledSettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={setSettingsOpen}
+          transactionsTabOpen={transactionsTabOpen}
         />
         <WalletButton
           address={account}
