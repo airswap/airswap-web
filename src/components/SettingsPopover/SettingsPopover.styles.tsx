@@ -90,6 +90,7 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  text-align: left;
   padding: 0.5rem 0 0.5rem 1rem;
   border-radius: 1px;
   font-weight: ${(props) => (props.active ? "600" : "400")};

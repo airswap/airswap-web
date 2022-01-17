@@ -17,6 +17,7 @@ const remSizes: Record<sizes, string> = {
 
 const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   width: ${(props) => remSizes[props.size]};
+  min-width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
     !!props.tokenInfo?.logoURI ? `url("${props.tokenInfo.logoURI}")` : "none"};
