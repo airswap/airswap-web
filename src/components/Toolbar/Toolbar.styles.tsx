@@ -62,7 +62,8 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
   width: ${({ $overflow }) => ($overflow ? "calc(100% - 1rem)" : "100%")};
   padding-right: ${({ $overflow }) => ($overflow ? "1rem" : "0")};
   overflow-y: ${({ $overflow }) => ($overflow ? "scroll" : "hidden")};
-  background: ${({ theme }) => theme.colors.black};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.black : theme.colors.primary};
 
   @media (min-height: ${sizes.toolbarMaxHeight}) and (${breakPoints.tabletPortraitUp}) {
     margin: 2rem 0 4.5rem;

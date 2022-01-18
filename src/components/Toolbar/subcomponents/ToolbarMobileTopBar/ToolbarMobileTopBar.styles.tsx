@@ -10,7 +10,8 @@ export const Container = styled.div`
   height: 4.125rem;
   min-height: 4.125rem;
   padding: 0 1.125rem;
-  background: ${({ theme }) => theme.colors.black};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.black : theme.colors.primary};
 
   @media ${breakPoints.tabletPortraitUp} {
     display: none;

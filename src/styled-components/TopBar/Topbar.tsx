@@ -1,8 +1,10 @@
 import styled from "styled-components/macro";
 
 import IconButton from "../../components/IconButton/IconButton";
+import { IconButtonStyle } from "../../components/IconButton/IconButton.styles";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import breakPoints from "../../style/breakpoints";
+import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import { AirswapButton } from "../AirswapButton/AirswapButton";
 
 export const TopBar = styled.div`
@@ -52,15 +54,23 @@ export const StyledAirswapButton = styled(AirswapButton)`
 `;
 
 export const StyledMenuButton = styled(IconButton)`
-  display: flex;
+  ${BorderedPill};
+  ${InputOrButtonBorderStyle};
+
   margin-left: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: none;
   }
 
   @media ${breakPoints.phoneOnly} {
+    ${IconButtonStyle};
     margin-left: 0;
+    width: 2rem;
+    height: 2rem;
 
     svg {
       width: 1.3125rem;

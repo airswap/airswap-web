@@ -18,7 +18,8 @@ const ButtonStyle = css`
   height: 3.5rem;
   min-height: 3.5rem;
   padding: 0 1.5rem;
-  background: ${({ theme }) => theme.colors.black};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.black : theme.colors.primary};
 
   & + a,
   & + button {
@@ -42,6 +43,7 @@ const ButtonStyle = css`
     height: 4rem;
     min-height: inherit;
     padding: 0;
+    background: none;
 
     & + a,
     & + button {
