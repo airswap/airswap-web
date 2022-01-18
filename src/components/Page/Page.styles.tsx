@@ -4,7 +4,7 @@ import breakPoints, { breakpointSizes } from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 import SocialButtons from "../SocialButtons/SocialButtons";
 
-export const InnerContainer = styled.div`
+export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -5,7 +5,4 @@ import { BorderlessButtonStyleType2 } from "../../style/mixins";
 
 export const AirswapButton = styled(IconButton)`
   ${BorderlessButtonStyleType2};
-
-  align-self: center;
-  margin-bottom: auto;
 `;

@@ -72,6 +72,7 @@ type WalletPropsType = {
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
   onAirswapButtonClick: () => void;
+  onMobileMenuButtonClick: () => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
@@ -79,6 +80,7 @@ export const Wallet: FC<WalletPropsType> = ({
   transactionsTabOpen,
   setTransactionsTabOpen,
   onAirswapButtonClick,
+  onMobileMenuButtonClick,
 }) => {
   const { t } = useTranslation();
   const {
@@ -334,7 +336,7 @@ export const Wallet: FC<WalletPropsType> = ({
     <>
       <TopBar>
         <StyledMenuButton
-          onClick={() => {}}
+          onClick={onMobileMenuButtonClick}
           ariaLabel={t("common.select")}
           icon="menu"
           iconSize={1.5625}

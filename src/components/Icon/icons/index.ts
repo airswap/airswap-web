@@ -7,6 +7,7 @@ import IconCampaign from "./IconCampaign";
 import IconCheck from "./IconCheck";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
+import IconClose from "./IconClose";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
 import IconCopy from "./IconCopy";
@@ -39,6 +40,7 @@ export {
   IconCheck,
   IconChevronDown,
   IconChevronRight,
+  IconClose,
   IconCode,
   IconCopy,
   IconContactSupport,

@@ -22,14 +22,15 @@ export const TopBar = styled.div`
   @media ${breakPoints.tabletPortraitUp} {
     flex-direction: row;
     width: auto;
+    padding: 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly},
     (max-width: 68rem) and (max-height: 41.5rem) {
     position: relative;
     margin-bottom: 1.5rem;
-    width: calc(100% - 2.5rem);
-    padding: 1.5rem 1.5rem 0 1rem;
+    width: calc(100% - 3rem);
+    padding: 1.5rem 1.5rem 0 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly} {

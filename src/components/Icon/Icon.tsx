@@ -36,6 +36,7 @@ import {
   IconVote,
   IconX,
 } from "./icons";
+import IconClose from "./icons/IconClose";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -59,6 +60,7 @@ export const icons: IconSet = {
   check: IconCheck,
   "chevron-down": IconChevronDown,
   "chevron-right": IconChevronRight,
+  close: IconClose,
   code: IconCode,
   copy: IconCopy,
   "contact-support": IconContactSupport,

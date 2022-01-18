@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -20,32 +20,52 @@ const Page: FC = (): ReactElement => {
     activeInformationModal,
     setActiveInformationModal,
   ] = useState<InformationModalType | null>(null);
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState<boolean>(
-    false
-  );
-  const [showWalletList, setShowWalletList] = useState<boolean>(false);
+  const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
+  const [showWalletList, setShowWalletList] = useState(false);
+  const [showMobileToolbar, setShowMobileToolbar] = useState(false);
 
-  const onLinkButtonClick = (type: InformationModalType) => {
+  const handleLinkButtonClick = (type: InformationModalType) => {
     setActiveInformationModal(type);
   };
 
-  const onAirswapButtonClick = () => {
+  const handleCloseMobileToolbarButtonClick = () => {
+    setShowMobileToolbar(false);
+  };
+
+  const handleOpenMobileToolbarButtonClick = () => {
+    setShowMobileToolbar(true);
+  };
+
+  const handleAirswapButtonClick = () => {
+    setActiveInformationModal(null);
+    setShowMobileToolbar(false);
     dispatch(resetOrders());
   };
+
+  useEffect(() => {
+    if (showMobileToolbar) {
+      document.body.classList.add("scroll-locked");
+    } else {
+      document.body.classList.remove("scroll-locked");
+    }
+  }, [showMobileToolbar]);
 
   return (
     <StyledPage>
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
         <Toolbar
-          onLinkButtonClick={onLinkButtonClick}
-          onAirswapButtonClick={onAirswapButtonClick}
+          isHiddenOnMobile={!showMobileToolbar}
+          onLinkButtonClick={handleLinkButtonClick}
+          onAirswapButtonClick={handleAirswapButtonClick}
+          onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
         />
         <Wallet
           transactionsTabOpen={transactionsTabOpen}
           setTransactionsTabOpen={setTransactionsTabOpen}
           setShowWalletList={setShowWalletList}
-          onAirswapButtonClick={onAirswapButtonClick}
+          onAirswapButtonClick={handleAirswapButtonClick}
+          onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
         />
         <WidgetFrame
           isOpen={transactionsTabOpen}
