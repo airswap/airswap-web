@@ -24,7 +24,11 @@ const GlobalStyle = createGlobalStyle`
   }
   
   body.scroll-locked {
-    overflow: hidden;
+    overflow-y: hidden;
+
+    @media ${breakPoints.tabletPortraitUp} {
+      overflow-y: auto;
+    }
   }
   
   p, h1, h2, h3, h4, h5, h6 {

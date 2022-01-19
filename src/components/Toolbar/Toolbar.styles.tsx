@@ -22,7 +22,10 @@ export const ToolbarContainer = styled.div<{
   width: 100%;
   height: 100vh;
   z-index: 5;
-  background: ${({ theme }) => convertHexToRGBA(theme.colors.black, 0.75)};
+  background: ${({ theme }) =>
+    theme.name === "dark"
+      ? convertHexToRGBA(theme.colors.black, 0.8)
+      : convertHexToRGBA(theme.colors.primary, 0.9)};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -62,8 +65,6 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
   width: ${({ $overflow }) => ($overflow ? "calc(100% - 1rem)" : "100%")};
   padding-right: ${({ $overflow }) => ($overflow ? "1rem" : "0")};
   overflow-y: ${({ $overflow }) => ($overflow ? "scroll" : "hidden")};
-  background: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.black : theme.colors.primary};
 
   @media (min-height: ${sizes.toolbarMaxHeight}) and (${breakPoints.tabletPortraitUp}) {
     margin: 2rem 0 4.5rem;

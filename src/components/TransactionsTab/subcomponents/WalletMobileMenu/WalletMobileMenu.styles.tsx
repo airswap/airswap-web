@@ -14,6 +14,7 @@ export const WalletMobileMenuButtonStyle = css`
   ${InputOrButtonBorderStyleType2};
 
   display: flex;
+  align-items: center;
   position: relative;
   padding: 0.625rem 1.5rem;
   width: 100%;

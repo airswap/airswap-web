@@ -13,7 +13,7 @@ type WalletMobileMenuType = {
   copyAddressIsSuccess?: boolean;
   walletUrl?: string;
   onDisconnectButtonClick?: () => void;
-  onCopyAddressButtonClick?: () => void;
+  onCopyAddressButtonClick?: (textNode?: HTMLDivElement) => void;
   className?: string;
 };
 

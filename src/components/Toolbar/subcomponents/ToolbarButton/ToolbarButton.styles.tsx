@@ -26,6 +26,10 @@ const ButtonStyle = css`
     margin-top: -1px;
   }
 
+  &:last-child:not(:hover):not(:active):not(:focus) {
+    border-bottom-style: hidden;
+  }
+
   &:hover,
   &:active,
   &:focus {
@@ -37,13 +41,13 @@ const ButtonStyle = css`
 
     flex-direction: column;
     justify-content: center;
+    border-bottom-style: solid !important;
     border-radius: 0.25rem;
     margin-top: 0;
     width: 4rem;
     height: 4rem;
     min-height: inherit;
     padding: 0;
-    background: none;
 
     & + a,
     & + button {

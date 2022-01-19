@@ -110,9 +110,9 @@ const TransactionsTab = ({
     setCopyAddressIsSuccess(false);
   };
 
-  const handleCopyAddressButtonClick = async () => {
+  const handleCopyAddressButtonClick = async (textNode?: HTMLDivElement) => {
     if (address) {
-      const success = await writeAddressToClipboard(address);
+      const success = await writeAddressToClipboard(address, textNode);
       setCopyAddressIsSuccess(success);
     }
   };
