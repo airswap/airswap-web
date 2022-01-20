@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
+import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
+import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
 import {
   InfoSubHeading,
@@ -21,7 +23,7 @@ export const Container = styled(motion.div)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 24rem;
+  max-width: ${sizes.widgetMobileSize};
   height: 100vh;
   min-height: 100%;
   padding: 1.5rem 1.5rem 0;
@@ -258,9 +260,8 @@ export const BackdropFilter = styled.button`
   border: 0;
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.theme.colors.black};
-  opacity: 0.5;
-  backdrop-filter: blur(20px);
+  background-color: ${({ theme }) => convertHexToRGBA(theme.colors.black, 0.5)};
+  backdrop-filter: blur(2px);
   z-index: 1;
 
   @media ${breakPoints.phoneOnly} {

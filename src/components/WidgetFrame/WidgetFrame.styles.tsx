@@ -9,8 +9,8 @@ export const Container = styled.div`
   position: relative;
   border-radius: 0.25rem;
   margin: 0 ${sizes.pageMobilePadding};
-  height: 30rem;
-  width: 30rem;
+  height: ${sizes.widgetSize};
+  width: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
@@ -24,7 +24,7 @@ export const Container = styled.div`
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    height: 24rem;
+    height: ${sizes.widgetMobileSize};
     margin: 0;
     padding: ${sizes.tradeContainerMobilePadding};
   }
@@ -42,7 +42,7 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   justify-content: center;
   width: 100%;
   height: 100%;
-  min-height: 30rem;
+  min-height: ${sizes.widgetSize};
 
   ${Container} {
     box-shadow: ${(props) =>
@@ -56,13 +56,12 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
     transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
   }
 
-  @media ${breakPoints.phoneOnly},
-    (max-width: 68rem) and (max-height: 41.5rem) {
+  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     margin-bottom: 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly} {
     margin-bottom: 0;
-    min-height: 24rem;
+    min-height: ${sizes.widgetMobileSize};
   }
 `;

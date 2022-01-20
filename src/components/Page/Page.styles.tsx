@@ -13,10 +13,9 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   width: 100%;
   height: 100%;
 
-  @media ${breakPoints.phoneOnly},
-    (max-width: 68rem) and (max-height: 41.5rem) {
+  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     justify-content: flex-start;
-    height: 100%;
+    height: auto;
   }
 
   @media ${breakPoints.phoneOnly} {
@@ -43,7 +42,7 @@ export const StyledPage = styled.div`
   @media ${breakPoints.phoneOnly} {
     width: 100%;
     height: 100vh;
-    min-height: 24rem;
+    min-height: ${sizes.widgetMobileSize};
     padding: 0 ${sizes.pageMobilePadding};
   }
 `;
@@ -54,8 +53,7 @@ export const StyledSocialButtons = styled(SocialButtons)`
   bottom: 1.5rem;
   right: 1.5rem;
 
-  @media ${breakPoints.phoneOnly},
-    (max-width: 68rem) and (max-height: 41.5rem) {
+  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     display: flex;
     justify-content: flex-end;
     position: relative;

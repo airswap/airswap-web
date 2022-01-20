@@ -27,6 +27,7 @@ export const ToolbarContainer = styled.div<{
     theme.name === "dark"
       ? convertHexToRGBA(theme.colors.black, $overflow ? 1 : 0.8)
       : convertHexToRGBA(theme.colors.primary, $overflow ? 1 : 0.9)};
+  backdrop-filter: blur(2px);
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -53,6 +54,7 @@ export const ToolbarContainer = styled.div<{
         ? props.theme.colors.black
         : props.theme.colors.primary};
     z-index: 3;
+    backdrop-filter: none;
   }
 `;
 
