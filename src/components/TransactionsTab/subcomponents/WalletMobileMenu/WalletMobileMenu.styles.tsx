@@ -1,6 +1,7 @@
 import { css } from "styled-components";
 import styled from "styled-components/macro";
 
+import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
@@ -18,8 +19,8 @@ export const WalletMobileMenuButtonStyle = css`
   position: relative;
   padding: 0.625rem 1.5rem;
   width: 100%;
-  height: 2.625rem;
-  font-size: 0.6875rem;
+  min-height: 2.625rem;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.6875rem")};
   font-weight: 600;
   text-transform: uppercase;
   color: ${({ theme }) =>
@@ -48,7 +49,8 @@ export const WalletMobileMenuDiv = styled.div`
   ${WalletMobileMenuButtonStyle};
 `;
 
-export const StyledIcon = styled(Icon)`
+export const StyledIcon = styled(Icon)<{ $isSuccess?: boolean }>`
   margin-left: 0.5rem;
-  color: ${({ theme }) => theme.colors.lightGrey};
+  color: ${({ theme, $isSuccess }) =>
+    $isSuccess ? theme.colors.primary : theme.colors.lightGrey};
 `;
