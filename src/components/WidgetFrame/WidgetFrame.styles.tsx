@@ -42,7 +42,7 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   justify-content: center;
   width: 100%;
   height: 100%;
-  min-height: 24rem;
+  min-height: 30rem;
 
   ${Container} {
     box-shadow: ${(props) =>
@@ -63,5 +63,6 @@ export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
 
   @media ${breakPoints.phoneOnly} {
     margin-bottom: 0;
+    min-height: 24rem;
   }
 `;

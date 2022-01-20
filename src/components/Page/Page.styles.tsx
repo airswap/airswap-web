@@ -16,11 +16,12 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   @media ${breakPoints.phoneOnly},
     (max-width: 68rem) and (max-height: 41.5rem) {
     justify-content: flex-start;
-    height: auto;
+    height: 100%;
   }
 
   @media ${breakPoints.phoneOnly} {
-    height: auto;
+    height: 100%;
+    padding-bottom: 2rem;
   }
 `;
 
@@ -41,8 +42,8 @@ export const StyledPage = styled.div`
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    height: auto;
-    min-height: 100vh;
+    height: 100vh;
+    min-height: 24rem;
     padding: 0 ${sizes.pageMobilePadding};
   }
 `;

@@ -44,6 +44,10 @@ export const WalletMobileMenuButton = styled.button`
   ${WalletMobileMenuButtonStyle};
 `;
 
+export const WalletMobileMenuDiv = styled.div`
+  ${WalletMobileMenuButtonStyle};
+`;
+
 export const StyledIcon = styled(Icon)`
   margin-left: 0.5rem;
   color: ${({ theme }) => theme.colors.lightGrey};

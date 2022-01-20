@@ -8,6 +8,7 @@ import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButt
 
 export const ToolbarContainer = styled.div<{
   $isHiddenOnMobile?: boolean;
+  $overflow?: boolean;
 }>`
   transform: translateX(
     ${({ $isHiddenOnMobile }) => ($isHiddenOnMobile ? "0" : "-100%")}
@@ -22,10 +23,10 @@ export const ToolbarContainer = styled.div<{
   width: 100%;
   height: 100vh;
   z-index: 5;
-  background: ${({ theme }) =>
+  background: ${({ theme, $overflow }) =>
     theme.name === "dark"
-      ? convertHexToRGBA(theme.colors.black, 0.8)
-      : convertHexToRGBA(theme.colors.primary, 0.9)};
+      ? convertHexToRGBA(theme.colors.black, $overflow ? 1 : 0.8)
+      : convertHexToRGBA(theme.colors.primary, $overflow ? 1 : 0.9)};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;

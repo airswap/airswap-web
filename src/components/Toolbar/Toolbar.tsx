@@ -63,6 +63,7 @@ const Toolbar: FC<ToolbarProps> = ({
   return (
     <ToolbarContainer
       ref={containerRef}
+      $overflow={overflow}
       $isHiddenOnMobile={isHiddenOnMobile || isTabletPortraitUp}
     >
       <ToolbarMobileTopBar

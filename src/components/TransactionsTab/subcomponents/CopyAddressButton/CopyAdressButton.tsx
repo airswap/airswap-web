@@ -1,37 +1,46 @@
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { StyledIcon } from "../WalletMobileMenu/WalletMobileMenu.styles";
-import { Container, Text } from "./CopyAdressButton.styles";
+import selectElement from "../../helpers/selectElement";
+import {
+  StyledIcon,
+  WalletMobileMenuButton,
+} from "../WalletMobileMenu/WalletMobileMenu.styles";
+import { Text, TextContainer } from "./CopyAdressButton.styles";
 
 type CopyAdressButtonProps = {
-  /**
-   * If address is successfully copied then show isSuccess state
-   */
-  isSuccess: boolean;
-  /**
-   * Optional textNode used for writing address to using document.execCommand (fallback method)
-   */
-  onClick: (textNode?: HTMLDivElement) => void;
+  address: string;
 };
 
-const CopyAdressButton: FC<CopyAdressButtonProps> = ({
-  isSuccess,
-  onClick,
-}) => {
+const CopyAdressButton: FC<CopyAdressButtonProps> = ({ address }) => {
   const { t } = useTranslation();
-  const textRef = useRef<HTMLDivElement>(null);
-  const icon = isSuccess ? "check" : "copy";
+  const walletTextRef = useRef<HTMLDivElement>(null);
+  const [showAddress, setShowAddress] = useState(false);
+
+  useEffect(() => {
+    if (showAddress && walletTextRef.current) {
+      selectElement(walletTextRef.current);
+    }
+  }, [showAddress]);
 
   const handleClick = () => {
-    onClick(textRef.current || undefined);
+    setShowAddress(true);
   };
 
+  if (showAddress) {
+    return (
+      <TextContainer onClick={handleClick}>
+        <Text ref={walletTextRef}>{address}</Text>
+        <StyledIcon iconSize={1} name="check" />
+      </TextContainer>
+    );
+  }
+
   return (
-    <Container onClick={handleClick} $isSuccess={isSuccess}>
-      <Text ref={textRef}>{t("wallet.copyAddress")}</Text>
-      <StyledIcon iconSize={1} name={icon} />
-    </Container>
+    <WalletMobileMenuButton onClick={handleClick}>
+      <Text>{t("wallet.copyAddress")}</Text>
+      <StyledIcon iconSize={1} name="copy" />
+    </WalletMobileMenuButton>
   );
 };
 

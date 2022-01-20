@@ -36,7 +36,6 @@ import {
   StyledWalletMobileMenu,
   BackdropFilter,
 } from "./TransactionsTab.styles";
-import writeAddressToClipboard from "./helpers/writeAddressToClipboard";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
 const addressMapping: Record<number, string> = {
@@ -77,7 +76,6 @@ const TransactionsTab = ({
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
-  const [copyAddressIsSuccess, setCopyAddressIsSuccess] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
@@ -107,14 +105,6 @@ const TransactionsTab = ({
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
-    setCopyAddressIsSuccess(false);
-  };
-
-  const handleCopyAddressButtonClick = async (textNode?: HTMLDivElement) => {
-    if (address) {
-      const success = await writeAddressToClipboard(address, textNode);
-      setCopyAddressIsSuccess(success);
-    }
   };
 
   useEffect(() => {
@@ -212,10 +202,7 @@ const TransactionsTab = ({
             {showMobileMenu && (
               <StyledWalletMobileMenu
                 walletUrl={walletUrl}
-                copyAddressIsSuccess={copyAddressIsSuccess}
-                onCopyAddressButtonClick={
-                  address ? handleCopyAddressButtonClick : undefined
-                }
+                address={address}
                 onDisconnectButtonClick={onDisconnectWalletClicked}
               />
             )}

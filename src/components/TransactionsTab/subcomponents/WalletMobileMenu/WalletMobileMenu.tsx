@@ -10,18 +10,16 @@ import {
 } from "./WalletMobileMenu.styles";
 
 type WalletMobileMenuType = {
-  copyAddressIsSuccess?: boolean;
   walletUrl?: string;
+  address?: string;
   onDisconnectButtonClick?: () => void;
-  onCopyAddressButtonClick?: (textNode?: HTMLDivElement) => void;
   className?: string;
 };
 
 const WalletMobileMenu: FC<WalletMobileMenuType> = ({
-  copyAddressIsSuccess,
   walletUrl,
+  address,
   onDisconnectButtonClick,
-  onCopyAddressButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -34,12 +32,7 @@ const WalletMobileMenu: FC<WalletMobileMenuType> = ({
           <StyledIcon iconSize={1} name="transaction-link" />
         </WalletMobileMenuLink>
       )}
-      {onCopyAddressButtonClick && (
-        <CopyAdressButton
-          onClick={onCopyAddressButtonClick}
-          isSuccess={!!copyAddressIsSuccess}
-        />
-      )}
+      {address && <CopyAdressButton address={address} />}
       {onDisconnectButtonClick && (
         <WalletMobileMenuButton onClick={onDisconnectButtonClick}>
           {t("wallet.disconnectWallet")}

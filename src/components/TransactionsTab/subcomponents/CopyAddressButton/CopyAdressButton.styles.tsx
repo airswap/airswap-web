@@ -1,13 +1,13 @@
 import styled from "styled-components/macro";
 
-import { WalletMobileMenuButton } from "../WalletMobileMenu/WalletMobileMenu.styles";
+import {
+  WalletMobileMenuDiv,
+  StyledIcon,
+} from "../WalletMobileMenu/WalletMobileMenu.styles";
 
-export const Container = styled(WalletMobileMenuButton)<{
-  $isSuccess?: boolean;
-}>`
-  svg {
-    color: ${({ $isSuccess, theme }) =>
-      $isSuccess ? theme.colors.primary : "inherit"};
+export const TextContainer = styled(WalletMobileMenuDiv)`
+  ${StyledIcon} {
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
