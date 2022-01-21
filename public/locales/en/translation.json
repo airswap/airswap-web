@@ -135,8 +135,8 @@
     "invalid_sig": "Invalid signature",
     "expiry_passed": "Order has expired",
     "unauthorized": "Signer has not authorized the signatory",
-    "signer_allowance_low": "Signer does not have enough balance",
-    "signer_balance_low": "Signer has not approved the signer amount",
+    "signer_allowance_low": "Signer has not approved the signer amount",
+    "signer_balance_low": "Signer does not have enough balance",
     "nonce_aleady_used": "Nonce has been already used or cancelled",
     "unableSwap": "Unable to swap",
     "swapFail": "The swap would fail for the following reasons."
