@@ -8,35 +8,29 @@ import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
 import uniswapPairAbi from "../../uniswap/abis/pair.json";
 import uniswapDeploys from "../../uniswap/deployments";
 
-const apiKey = process.env.REACT_APP_DEFIPULSE_API_KEY;
-const apiUrl = "https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json";
-
 export const gasUsedPerSwap = 185555;
 
-type GasApiResponse = {
-  fast: number;
-  fastest: number;
-  safeLow: number;
-  average: number;
-  block_time: number;
-  blockNum: number;
-  speed: number;
-  safeLowWait: number;
-  avgWait: number;
-  fastWait: number;
-  fastestWait: number;
-  gasPriceRange: Record<number, number>;
+type EthGasWatchGasInfo = {
+  gwei: number;
+  usd: number;
+};
+type EthGasWatchApiResponse = {
+  slow: EthGasWatchGasInfo;
+  normal: EthGasWatchGasInfo;
+  fast: EthGasWatchGasInfo;
+  instant: EthGasWatchGasInfo;
+  ethPrice: number;
+  lastUpdated: number;
 };
 
 const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
-  const urlWithKey = `${apiUrl}?api-key=${apiKey}`;
+  const url = "https://ethgas.watch/api/gas";
   try {
-    const response = await fetch(urlWithKey);
-    const data: GasApiResponse = await response.json();
-    // Note that the value returned is in 10ths of a gwei, hence divide by 10^10
-    return new BigNumber(data.fastest).dividedBy(10 ** 10);
-  } catch (e) {
-    console.error("Error getting gas price from API: ", e);
+    const response = await fetch(url);
+    const data: EthGasWatchApiResponse = await response.json();
+    return new BigNumber(data.fast.gwei).dividedBy(10 ** 9);
+  } catch (e: any) {
+    console.error("Error getting gas price from ethgas.watch API: ", e.message);
     return null;
   }
 };
