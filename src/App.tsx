@@ -8,7 +8,9 @@ import BigNumber from "bignumber.js";
 import { ThemeProvider, ThemeType } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
-import Page from "./components/Page/Page";
+//import Page from "./components/Page/Page";
+import HomePage from "./components/HomePage/HomePage";
+import Whitepaper from "./components/Whitepaper/Whitepaper";
 import PageLoader from "./components/PageLoader/PageLoader";
 import LastLookProvider from "./contexts/lastLook/LastLook";
 import { selectTheme } from "./features/userSettings/userSettingsSlice";
@@ -42,9 +44,20 @@ const App = (): JSX.Element => {
         <Suspense fallback={<PageLoader />}>
           <LastLookProvider>
             <Router>
-              <Route path="/:tokenFrom?/:tokenTo?">
-                <Page />
+
+              <Route exact path="/whitepaper">
+                <Whitepaper />
               </Route>
+
+
+              <Route path="/:tokenFrom?/:tokenTo?">
+                <HomePage />
+              </Route>
+
+
+
+
+
             </Router>
           </LastLookProvider>
         </Suspense>

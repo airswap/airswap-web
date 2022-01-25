@@ -1,21 +1,21 @@
-import { FC, ReactElement, useState } from "react";
+import React, { FC, ReactElement, useState } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+//import { Web3Provider } from "@ethersproject/providers";
+//import { useWeb3React } from "@web3-react/core";
 
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SocialButtons from "../SocialButtons/SocialButtons";
-import SwapWidget from "../SwapWidget/SwapWidget";
+//import SwapWidget from "../SwapWidget/SwapWidget";
 import TemporaryMobileLanding from "../TemporaryMobileLanding/TemporaryMobileLanding";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
-import WidgetFrame from "../WidgetFrame/WidgetFrame";
+//import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { StyledPage, StyledWallet } from "./Page.styles";
 
-const Page: FC<{ excludeWallet?: boolean }> = ({
-  excludeWallet,
+const Page: FC<{ excludeWallet?: boolean, children?: React.ReactNode }> = ({
+  excludeWallet, children
 }): ReactElement => {
-  const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
+  //const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const [
     activeInformationModal,
     setActiveInformationModal,
@@ -40,6 +40,11 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
           setShowWalletList={setShowWalletList}
         />
 
+        <div>{children}</div>
+
+
+
+        {/*
         <WidgetFrame
           isOpen={transactionsTabOpen}
           isConnected={web3ProviderIsActive}
@@ -53,6 +58,8 @@ const Page: FC<{ excludeWallet?: boolean }> = ({
             transactionsTabOpen={transactionsTabOpen}
           />
         </WidgetFrame>
+        */}
+
         <SocialButtons />
       </StyledPage>
       <TemporaryMobileLanding />
