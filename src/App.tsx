@@ -8,7 +8,6 @@ import BigNumber from "bignumber.js";
 import { ThemeProvider, ThemeType } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
-//import Page from "./components/Page/Page";
 import HomePage from "./components/HomePage/HomePage";
 import PageLoader from "./components/PageLoader/PageLoader";
 import Whitepaper from "./components/Whitepaper/Whitepaper";
@@ -47,7 +46,6 @@ const App = (): JSX.Element => {
               <Route exact path="/whitepaper">
                 <Whitepaper />
               </Route>
-
               <Route path="/:tokenFrom?/:tokenTo?">
                 <HomePage />
               </Route>
