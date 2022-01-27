@@ -22,7 +22,6 @@ const CopyAdressButton: FC<CopyAdressButtonProps> = ({ address }) => {
     writeAddressToClipboardSuccess,
     setWriteAddressToClipboardSuccess,
   ] = useState(false);
-  console.log(writeAddressToClipboardSuccess);
 
   const iconName = writeAddressToClipboardSuccess ? "check" : "copy";
 

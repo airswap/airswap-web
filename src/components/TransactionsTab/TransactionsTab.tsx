@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
+import { getEtherscanWalletURL } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
-import { getEtherscanWalletURL } from "../../helpers/getEtherscanWalletURL";
 import useMediaQuery from "../../helpers/useMediaQuery";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
