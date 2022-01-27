@@ -35,7 +35,7 @@ const Page: FC<{ excludeWallet?: boolean; children?: React.ReactNode }> = ({
           setShowWalletList={setShowWalletList}
         />
 
-        <div>{children}</div>
+        <>{children}</>
 
         <SocialButtons />
       </StyledPage>

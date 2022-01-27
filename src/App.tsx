@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -17,6 +17,8 @@ import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
+
+//import htmlTemplate from './components/Whitepaper/whitepaperContent';
 
 let cachedLibrary: Record<string, Web3Provider> = {};
 
@@ -37,24 +39,29 @@ const App = (): JSX.Element => {
     theme === "system" ? systemTheme : (theme as ThemeType);
 
   return (
-    <ThemeProvider theme={renderedTheme === "dark" ? darkTheme : lightTheme}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        {/* Suspense needed here for loading i18n resources */}
-        <Suspense fallback={<PageLoader />}>
-          <LastLookProvider>
-            <Router>
-              <Route exact path="/whitepaper">
-                <Whitepaper />
-              </Route>
-              <Route path="/:tokenFrom?/:tokenTo?">
-                <HomePage />
-              </Route>
-            </Router>
-          </LastLookProvider>
-        </Suspense>
-      </Web3ReactProvider>
-      <GlobalStyle />
-    </ThemeProvider>
+    <Router>
+      <Switch>
+        <Route exact path="/whitepaper">
+          <Whitepaper />
+        </Route>
+
+        <Route path="/:tokenFrom?/:tokenTo?">
+          <ThemeProvider
+            theme={renderedTheme === "dark" ? darkTheme : lightTheme}
+          >
+            <Web3ReactProvider getLibrary={getLibrary}>
+              {/* Suspense needed here for loading i18n resources */}
+              <Suspense fallback={<PageLoader />}>
+                <LastLookProvider>
+                  <HomePage />
+                </LastLookProvider>
+              </Suspense>
+            </Web3ReactProvider>
+            <GlobalStyle />
+          </ThemeProvider>
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 
