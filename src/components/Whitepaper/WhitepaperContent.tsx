@@ -35,7 +35,7 @@ const htmlContent = `<!DOCTYPE html>
     <link rel="canonical" href="https://www.airswap.io/whitepaper.htm" data-react-helmet="true"/>
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="whitepaper.css" />
+    <link rel="stylesheet" type="text/css" href="/whitepaper/Whitepaper.css" />
 
     <title>Swap Protocol Whitepaper</title>
   </head>
