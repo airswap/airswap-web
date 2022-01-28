@@ -70,6 +70,11 @@ const Toolbar: FC<ToolbarProps> = ({ onButtonClick }) => {
           text={t("common.join")}
           onClick={() => onToolbarButtonClick("join")}
         />
+        <ToolbarButton
+          iconName="learn"
+          text="Whitepaper"
+          href="/#/whitepaper"
+        />
       </ToolbarButtonsContainer>
     </ToolbarContainer>
   );
