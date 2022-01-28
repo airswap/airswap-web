@@ -1,5 +1,6 @@
 const htmlContent = `<!DOCTYPE html>
 <html lang="en">
+<div id = "loader" style = "display:none;"> 
   <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# medium-com: http://ogp.me/ns/fb/medium-com#">
     <!-- Required meta tags -->
     <meta charset="utf-8" />
@@ -539,6 +540,7 @@ cancel(&lt;makerAddress&gt;, 5, 'GNO', &lt;takerAddress&gt;, 10, 'BAT', &lt;expi
       ga('send', 'pageview', location.pathname)
     </script>
   </body>
+  </div>
 </html>`;
 
 export default htmlContent;
