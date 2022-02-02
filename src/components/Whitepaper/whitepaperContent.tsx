@@ -36,7 +36,7 @@ const htmlContent = `<!DOCTYPE html>
     <link rel="canonical" href="https://www.airswap.io/whitepaper.htm" data-react-helmet="true"/>
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/whitepaper/Whitepaper.css" />
+    <link rel="stylesheet" type="text/css" href="/whitepaper/whitepaper.css" />
 
     <title>Swap Protocol Whitepaper</title>
   </head>
@@ -53,12 +53,12 @@ const htmlContent = `<!DOCTYPE html>
 
         <div class="paper-links">
           <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="/whitepaper/pdfs/SwapWhitepaper.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">EN</a>
-            <a href="/whitepaper/pdfs/SwapWhitepaperChinese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">CN</a>
-            <a href="/whitepaper/pdfs/SwapWhitepaperJapanese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">JP</a>
-            <a href="/whitepaper/pdfs/SwapWhitepaperKorean.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">KR</a>
-            <a href="/whitepaper/pdfs/SwapWhitepaperRussian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">RU</a>
-            <a href="/whitepaper/pdfs/SwapWhitepaperUkrainian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">UA</a>
+            <a href="/whitepaper/pdfs/swapWhitepaper.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">EN</a>
+            <a href="/whitepaper/pdfs/swapWhitepaperChinese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">CN</a>
+            <a href="/whitepaper/pdfs/swapWhitepaperJapanese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">JP</a>
+            <a href="/whitepaper/pdfs/swapWhitepaperKorean.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">KR</a>
+            <a href="/whitepaper/pdfs/swapWhitepaperRussian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">RU</a>
+            <a href="/whitepaper/pdfs/swapWhitepaperUkrainian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">UA</a>
           </div>
         </div>
 
@@ -204,7 +204,7 @@ const htmlContent = `<!DOCTYPE html>
         </p>
 
         <div class="paper-figure">
-          <img alt="Find a counterparty and make a trade" src="/whitepaper/figures/PeerProtocol.png" />
+          <img alt="Find a counterparty and make a trade" src="/whitepaper/figures/peerProtocol.png" />
         </div>
 
         <ol>
@@ -275,7 +275,7 @@ provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BA
         </p>
 
         <div class="paper-figure">
-          <img alt="Announce and find intent on an Indexer" src="/whitepaper/figures/IndexerProtocolA.png" />
+          <img alt="Announce and find intent on an Indexer" src="/whitepaper/figures/indexerProtocolA.png" />
         </div>
 
         <ol>
@@ -294,7 +294,7 @@ provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BA
         </p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/IndexerProtocolB.png" />
+          <img alt="Request orders from multiple Makers" src="whitepaper/figures/indexerProtocolB.png" />
         </div>
 
         <ol>
@@ -310,7 +310,7 @@ provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BA
         </p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="/whitepaper/figures/IndexerProtocolC.png" />
+          <img alt="Request orders from multiple Makers" src="/whitepaper/figures/indexerProtocolC.png" />
         </div>
 
         <ol>
@@ -391,7 +391,7 @@ foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTo
         </p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/OracleProtocolA.png" />
+          <img alt="Request orders from multiple Makers" src="whitepaper/figures/oracleProtocolA.png" />
         </div>
 
         <ol>
@@ -405,7 +405,7 @@ foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTo
         <p>A very similar interaction happens between Taker and Oracle when the Taker receives an order.</p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/OracleProtocolB.png" />
+          <img alt="Request orders from multiple Makers" src="whitepaper/figures/oracleProtocolB.png" />
         </div>
 
         <ol>

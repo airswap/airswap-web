@@ -1,12 +1,10 @@
 import React, { FC } from "react";
 
-import htmlContent from "./WhitepaperContent";
+import htmlContent from "./whitepaperContent";
 
 const Whitepaper: FC = () => {
   return (
-    <>
       <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-    </>
   );
 };
 
