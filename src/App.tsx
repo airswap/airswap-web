@@ -1,7 +1,9 @@
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import BigNumber from "bignumber.js";
 
+import HelmetContainer from "./components/HelmetContainer/HelmetContainer";
 import "./i18n/i18n";
 import Home from "./pages/Home/Home";
 import Whitepaper from "./pages/Whitepaper/Whitepaper";
@@ -12,21 +14,28 @@ BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
 const App = (): JSX.Element => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path={AppRoutes.whitepaper}>
-          <Whitepaper />
-        </Route>
+    <>
+      <HelmetContainer
+        title={"AirSwap - Open source web app for instant swaps"}
+        description={"AirSwap powers peer-to-peer trading."}
+      />
 
-        <Route exact path={AppRoutes.swap}>
-          <Home />
-        </Route>
+      <Router>
+        <Switch>
+          <Route exact path={AppRoutes.whitepaper}>
+            <Whitepaper />
+          </Route>
 
-        <Route>
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
+          <Route exact path={AppRoutes.swap}>
+            <Home />
+          </Route>
+
+          <Route>
+            <Home />
+          </Route>
+        </Switch>
+      </Router>
+    </>
   );
 };
 
