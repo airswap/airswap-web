@@ -12,6 +12,8 @@ import {
   ButtonText,
 } from "./WalletProviderList.styles";
 
+declare let window: any;
+
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
   onClose: () => void;
@@ -35,12 +37,34 @@ const WalletProviderList = ({
     );
   };
 
+  const isProviderInstalled = (provider: WalletProvider) => {
+    switch (provider.name) {
+      case "MetaMask":
+        return window.ethereum;
+      default:
+        return true;
+    }
+  };
+
+  const clickEvent = (e: any, provider: WalletProvider) => {
+    if (isProviderInstalled(provider)) {
+      onProviderButtonClick(provider);
+    } else {
+      e.preventDefault();
+      switch (provider.name) {
+        case "MetaMask":
+          window.open("https://metamask.io", "_blank");
+          break;
+      }
+    }
+  };
+
   return (
     <StyledWalletProviderList className={className}>
       {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
         <StyledButton
           key={provider.name}
-          onClick={() => onProviderButtonClick(provider)}
+          onClick={(e) => clickEvent(e, provider)}
         >
           <ButtonIconContainer>
             <ButtonIcon
@@ -49,7 +73,11 @@ const WalletProviderList = ({
               className="w-12 h-12"
             />
           </ButtonIconContainer>
-          <ButtonText>{provider.name}</ButtonText>
+          <ButtonText>
+            {isProviderInstalled(provider)
+              ? provider.name
+              : `Get ${provider.name}`}
+          </ButtonText>
         </StyledButton>
       ))}
     </StyledWalletProviderList>
