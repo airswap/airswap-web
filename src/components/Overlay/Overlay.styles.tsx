@@ -9,7 +9,8 @@ import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
 import { ButtonStyle } from "../Button/Button.styles";
-import { InfoSubHeading, Title } from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
+import { StyledH2 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
   isHidden: boolean;
@@ -63,7 +64,10 @@ export const TitleSubContainer = styled.div`
   flex-direction: column;
 `;
 
-export const StyledTitle = styled(Title)`
+export const StyledTitle = styled(StyledH2)<{
+  type: keyof JSX.IntrinsicElements;
+  as?: keyof JSX.IntrinsicElements;
+}>`
   min-height: 1.875rem;
   padding-right: 1rem;
   flex-grow: 2;

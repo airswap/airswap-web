@@ -54,7 +54,9 @@ const Overlay: FC<OverlayProps> = ({
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
         <TitleSubContainer>
-          <StyledTitle type="h2">{title}</StyledTitle>
+          <StyledTitle type="h2" as="h1">
+            {title}
+          </StyledTitle>
           {!!subTitle && (
             <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
           )}
