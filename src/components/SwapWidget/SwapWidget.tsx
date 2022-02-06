@@ -68,7 +68,7 @@ import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
-import { AppRoutes } from "../../routes";
+import { AppRoutes, SwapRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -131,7 +131,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  let { tokenFrom, tokenTo } = useRouteMatch<AppRoutes>().params;
+  const match = useRouteMatch<{ tokenFrom?: string; tokenTo?: string }>(
+    `/${AppRoutes.swap}/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`
+  );
+  const { tokenFrom, tokenTo } = match?.params || {};
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Pricing
@@ -323,13 +326,19 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     if (type === "base") {
       value === quoteToken
-        ? history.push({ pathname: `/${value}/${baseToken}` })
-        : history.push({ pathname: `/${value}/${quoteToken}` });
+        ? history.push({ pathname: `/${AppRoutes.swap}/${value}/${baseToken}` })
+        : history.push({
+            pathname: `/${AppRoutes.swap}/${value}/${quoteToken}`,
+          });
       setBaseAmount("");
     } else {
       value === baseToken
-        ? history.push({ pathname: `/${quoteToken}/${value}` })
-        : history.push({ pathname: `/${baseToken}/${value}` });
+        ? history.push({
+            pathname: `/${AppRoutes.swap}/${quoteToken}/${value}`,
+          })
+        : history.push({
+            pathname: `/${AppRoutes.swap}/${baseToken}/${value}`,
+          });
     }
   };
 
@@ -359,10 +368,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       if (address === baseToken) {
-        history.push({ pathname: `/-/${quoteToken || "-"}` });
+        history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
         setBaseAmount(initialBaseAmount);
       } else if (address === quoteToken) {
-        history.push({ pathname: `/${baseToken || "-"}/-` });
+        history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
       }
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));

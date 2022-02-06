@@ -2,7 +2,7 @@ import React, { FC } from "react";
 
 import JoinModal from "./subcomponents/JoinModal/JoinModal";
 
-export type InformationModalType = "stats" | "join";
+export type InformationModalType = "join";
 
 type InformationModalProps = {
   activeModal: InformationModalType | null;
