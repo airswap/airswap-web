@@ -41,6 +41,8 @@ const WalletProviderList = ({
     switch (provider.name) {
       case "MetaMask":
         return window.ethereum;
+      case "xDefi":
+        return window.xfi;
       default:
         return true;
     }
@@ -54,6 +56,9 @@ const WalletProviderList = ({
       switch (provider.name) {
         case "MetaMask":
           window.open("https://metamask.io", "_blank");
+          break;
+        case "MetaMask":
+          window.open("https://www.xdefi.io", "_blank");
           break;
       }
     }

@@ -4,6 +4,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import metamaskLogo from "../assets/wallet-provider-logos/metamask.svg";
 import walletconnectLogo from "../assets/wallet-provider-logos/walletconnect.svg";
+import xDefiLogo from "../assets/wallet-provider-logos/xdefi.png";
 
 export type WalletProvider = {
   name: string;
@@ -27,6 +28,18 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
         });
       }
       return cachedConnectors.MetaMask;
+    },
+  },
+  {
+    name: "xDefi",
+    logo: xDefiLogo,
+    getConnector: () => {
+      if (!cachedConnectors.xDefi) {
+        cachedConnectors.xDefi = new InjectedConnector({
+          supportedChainIds: [1],
+        });
+      }
+      return cachedConnectors.xDefi;
     },
   },
   {
