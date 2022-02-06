@@ -17,7 +17,7 @@ export type OverlayProps = {
   /**
    * Function to close component
    */
-  onClose: () => void;
+  onCloseButtonClick: () => void;
   /**
    * Title shown on top
    */
@@ -35,7 +35,7 @@ export type OverlayProps = {
 export const overlayShowHideAnimationDuration = 0.3;
 
 const Overlay: FC<OverlayProps> = ({
-  onClose,
+  onCloseButtonClick,
   title = "",
   isHidden = true,
   subTitle = "",
@@ -64,7 +64,7 @@ const Overlay: FC<OverlayProps> = ({
           ariaLabel={t("common.back")}
           iconSize={1}
           tabIndex={isHidden ? -1 : 0}
-          onClick={onClose}
+          onClick={onCloseButtonClick}
         />
       </TitleContainer>
       <AnimatePresence>
