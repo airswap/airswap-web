@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -10,6 +10,7 @@ import { ThemeProvider, ThemeType } from "styled-components/macro";
 import { useAppSelector } from "./app/hooks";
 import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
+import Whitepaper from "./components/Whitepaper/Whitepaper";
 import LastLookProvider from "./contexts/lastLook/LastLook";
 import { selectTheme } from "./features/userSettings/userSettingsSlice";
 import useSystemTheme from "./hooks/useSystemTheme";
@@ -36,21 +37,29 @@ const App = (): JSX.Element => {
     theme === "system" ? systemTheme : (theme as ThemeType);
 
   return (
-    <ThemeProvider theme={renderedTheme === "dark" ? darkTheme : lightTheme}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        {/* Suspense needed here for loading i18n resources */}
-        <Suspense fallback={<PageLoader />}>
-          <LastLookProvider>
-            <Router>
-              <Route path="/:tokenFrom?/:tokenTo?">
-                <Page />
-              </Route>
-            </Router>
-          </LastLookProvider>
-        </Suspense>
-      </Web3ReactProvider>
-      <GlobalStyle />
-    </ThemeProvider>
+    <Router>
+      <Switch>
+        <Route exact path="/whitepaper">
+          <Whitepaper />
+        </Route>
+
+        <Route path="/:tokenFrom?/:tokenTo?">
+          <ThemeProvider
+            theme={renderedTheme === "dark" ? darkTheme : lightTheme}
+          >
+            <Web3ReactProvider getLibrary={getLibrary}>
+              {/* Suspense needed here for loading i18n resources */}
+              <Suspense fallback={<PageLoader />}>
+                <LastLookProvider>
+                  <Page />
+                </LastLookProvider>
+              </Suspense>
+            </Web3ReactProvider>
+            <GlobalStyle />
+          </ThemeProvider>
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 
