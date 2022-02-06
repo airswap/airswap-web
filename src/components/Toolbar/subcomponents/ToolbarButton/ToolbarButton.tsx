@@ -1,23 +1,29 @@
 import React, { FC } from "react";
 
+import { AppRoutes } from "../../../../routes";
 import Icon from "../../../Icon/Icon";
 import {
   Text,
   ToolBarAnchorContainer,
   ToolbarButtonContainer,
+  ToolBarLinkContainer,
 } from "./ToolbarButton.styles";
 
 type ToolbarButtonProps = {
   text: string;
   iconName: string;
   href?: string;
-  onClick?: () => void;
+  link?: AppRoutes;
+  onClick?: (
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+  ) => void;
 };
 
 const ToolbarButton: FC<ToolbarButtonProps> = ({
   text,
   iconName,
   href,
+  link,
   onClick,
 }) => {
   const renderInner = () => {
@@ -28,6 +34,14 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
       </>
     );
   };
+
+  if (link) {
+    return (
+      <ToolBarLinkContainer onClick={onClick} to={`/${link}`}>
+        {renderInner()}
+      </ToolBarLinkContainer>
+    );
+  }
 
   if (href) {
     return (
