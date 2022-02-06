@@ -43,6 +43,13 @@ const GlobalStyle = createGlobalStyle`
     font-weight: ${(props) => props.theme.typography.paragraph.fontWeight};
     line-height: ${(props) => props.theme.typography.paragraph.lineHeight};
   }
+  .walletconnect-modal__headerLogo {
+    width: 30px;
+  } 
+
+  .walletconnect-modal__mobile__toggle {
+    color: #8a8e97;
+  }
 `;
 
 export default GlobalStyle;
