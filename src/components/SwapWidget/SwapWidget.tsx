@@ -1,12 +1,11 @@
-import React, { useState, useMemo, useEffect, useContext, FC } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
-import { Pricing } from "@airswap/types";
-import { LightOrder } from "@airswap/types";
+import { LightOrder, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -14,7 +13,7 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
 
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
@@ -25,28 +24,26 @@ import {
   requestActiveTokenAllowancesLight,
   requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
-} from "../../features/balances/balancesSlice";
-import {
-  selectBalances,
   selectAllowances,
+  selectBalances,
 } from "../../features/balances/balancesSlice";
 import {
-  selectActiveTokens,
-  selectAllTokenInfo,
   addActiveToken,
   removeActiveToken,
+  selectActiveTokens,
+  selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import {
   approve,
-  take,
+  clear,
+  deposit,
+  request,
+  resetOrders,
+  selectBestOption,
   selectBestOrder,
   selectOrdersStatus,
-  clear,
-  selectBestOption,
-  request,
-  deposit,
+  take,
   withdraw,
-  resetOrders,
 } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
@@ -80,9 +77,9 @@ import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
-  InfoContainer,
   ButtonContainer,
   HugeTicks,
+  InfoContainer,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import ActionButtons, {
@@ -99,10 +96,10 @@ const initialBaseAmount = "";
 type SwapWidgetPropsType = {
   showWalletList: boolean;
   transactionsTabOpen: boolean;
-  activeInformationModal: InformationModalType | null;
+  activeInformationModal?: InformationModalType;
   setShowWalletList: (x: boolean) => void;
   onTrackTransactionClicked: () => void;
-  afterInformationModalClose: () => void;
+  onInformationModalCloseButtonClick: () => void;
 };
 
 const SwapWidget: FC<SwapWidgetPropsType> = ({
@@ -111,7 +108,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   setShowWalletList,
   transactionsTabOpen,
   onTrackTransactionClicked,
-  afterInformationModalClose,
+  onInformationModalCloseButtonClick,
 }) => {
   // Redux
   const dispatch = useAppDispatch();
@@ -134,7 +131,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const match = useRouteMatch<{ tokenFrom?: string; tokenTo?: string }>(
     `/${AppRoutes.swap}/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`
   );
-  const { tokenFrom, tokenTo } = match?.params || {};
+  const [tokenFrom, setTokenFrom] = useState<string | undefined>();
+  const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
 
   // Pricing
@@ -246,6 +244,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     unsubscribeFromGasPrice,
     unsubscribeFromTokenPrice,
   ]);
+
+  useEffect(() => {
+    if (match && match.params) {
+      setTokenFrom(match.params.tokenFrom);
+      setTokenTo(match.params.tokenTo);
+    }
+  }, [match]);
 
   useEffect(() => {
     if (ordersStatus === "reset") {
@@ -833,7 +838,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </StyledSwapWidget>
 
       <Overlay
-        onClose={() => setShowTokenSelectModalFor(null)}
+        onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
         isHidden={!showTokenSelectModalFor}
       >
         <TokenList
@@ -855,7 +860,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
       <Overlay
         title={t("wallet.selectWallet")}
-        onClose={() => setShowWalletList(false)}
+        onCloseButtonClick={() => setShowWalletList(false)}
         isHidden={!showWalletList}
       >
         <StyledWalletProviderList
@@ -872,7 +877,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onClose={async () => {
+        onCloseButtonClick={async () => {
           await handleButtonClick(ButtonActions.restart);
           setValidatorErrors([]);
         }}
@@ -888,7 +893,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
       <Overlay
         title={t("information.gasFreeSwaps.title")}
-        onClose={() => setShowGasFeeInfo(false)}
+        onCloseButtonClick={() => setShowGasFeeInfo(false)}
         isHidden={!showGasFeeInfo}
       >
         <GasFreeSwapsModal
@@ -897,7 +902,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       </Overlay>
       <Overlay
         title={t("information.protocolFeeDiscount.title")}
-        onClose={() => setProtocolFeeDiscountInfo(false)}
+        onCloseButtonClick={() => setProtocolFeeDiscountInfo(false)}
         isHidden={!protocolFeeDiscountInfo}
       >
         <ProtocolFeeDiscountModal />
@@ -905,8 +910,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
       <Overlay
         title={t("information.join.title")}
-        onClose={afterInformationModalClose}
-        isHidden={!activeInformationModal}
+        onCloseButtonClick={onInformationModalCloseButtonClick}
+        isHidden={activeInformationModal !== AppRoutes.join}
       >
         <JoinModal />
       </Overlay>

@@ -115,7 +115,7 @@ const Toolbar: FC<ToolbarProps> = ({
           iconName="contact-support"
           text={t("common.join")}
           onClick={(e) => {
-            onToolbarButtonClick(e, "join");
+            onToolbarButtonClick(e, AppRoutes.join);
           }}
           link={AppRoutes.join}
         />
