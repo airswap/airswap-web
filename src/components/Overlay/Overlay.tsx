@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -43,6 +43,12 @@ const Overlay: FC<OverlayProps> = ({
 }) => {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
+  const [initialized, setInitialized] = useState(false);
+  const animationIsDisabled = !isHidden && !initialized;
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
 
   return (
     <Container hasTitle={!!title} isHidden={isHidden}>
@@ -67,9 +73,10 @@ const Overlay: FC<OverlayProps> = ({
             key="content"
             transition={{
               ease: "easeOut",
-              duration: shouldReduceMotion
-                ? 0
-                : overlayShowHideAnimationDuration,
+              duration:
+                shouldReduceMotion || animationIsDisabled
+                  ? 0
+                  : overlayShowHideAnimationDuration,
             }}
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}

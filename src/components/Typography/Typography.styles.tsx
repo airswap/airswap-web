@@ -41,7 +41,7 @@ const elementMap: Record<
 const makeTypographyComponent = (
   key: keyof DefaultTheme["typography"],
   additionalCSS?: any
-) => {
+): StyledComponent<keyof JSX.IntrinsicElements, DefaultTheme> => {
   const tag = elementMap[key];
   const Component = (styled[tag] as ThemedStyledFunction<
     typeof tag,

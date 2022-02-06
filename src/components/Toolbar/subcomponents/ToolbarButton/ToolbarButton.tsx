@@ -31,7 +31,7 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
 
   if (href) {
     return (
-      <ToolBarAnchorContainer href={href} target="_blank">
+      <ToolBarAnchorContainer onClick={onClick} href={href} target="_blank">
         {renderInner()}
       </ToolBarAnchorContainer>
     );
