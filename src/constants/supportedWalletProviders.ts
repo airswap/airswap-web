@@ -39,6 +39,8 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "xDefi",
     logo: xDefiLogo,
+    isInstalled: typeof window.xfi !== "undefined",
+    url: "https://www.xdefi.io/",
     getConnector: () => {
       if (!cachedConnectors.xDefi) {
         cachedConnectors.xDefi = new InjectedConnector({
