@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
@@ -17,7 +17,7 @@ export const TitleContainer = styled.div`
   margin-bottom: 1.875rem;
 `;
 
-export const StyledButton = styled.button`
+export const ButtonStyle = css`
   ${InputOrButtonBorderStyleType2};
 
   display: flex;
@@ -33,7 +33,13 @@ export const StyledButton = styled.button`
     margin-top: 0.5rem;
   }
 `;
+export const StyledButton = styled.button`
+  ${ButtonStyle}
+`;
 
+export const StyledLink = styled.a`
+  ${ButtonStyle}
+`;
 export const ButtonIconContainer = styled.div`
   display: flex;
   justify-content: center;
