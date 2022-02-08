@@ -26,7 +26,7 @@ $ yarn lint
 
 ## Styled components
 
-We use styled-components for styling. When styling a component put your scss in a separate \*.styles.tsx file in the component folder.
+We use styled-components for styling. When styling a component put your scss in a separate *.styles.tsx file in the component folder.
 
 ## Pull Requests (PRs)
 

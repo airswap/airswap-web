@@ -4,15 +4,8 @@ import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
-import {
-  StyledButton,
-  ButtonIconContainer,
-  StyledWalletProviderList,
-  ButtonIcon,
-  ButtonText,
-} from "./WalletProviderList.styles";
-
-declare let window: any;
+import { StyledWalletProviderList } from "./WalletProviderList.styles";
+import WalletButtonProvider from "./subcomponents/WalletButtonProvider/WalletButtonProvider";
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
@@ -37,54 +30,22 @@ const WalletProviderList = ({
     );
   };
 
-  const isProviderInstalled = (provider: WalletProvider) => {
-    switch (provider.name) {
-      case "MetaMask":
-        return window.ethereum;
-      case "xDefi":
-        return window.xfi;
-      default:
-        return true;
-    }
-  };
-
-  const clickEvent = (e: any, provider: WalletProvider) => {
-    if (isProviderInstalled(provider)) {
-      onProviderButtonClick(provider);
-    } else {
-      e.preventDefault();
-      switch (provider.name) {
-        case "MetaMask":
-          window.open("https://metamask.io", "_blank");
-          break;
-        case "MetaMask":
-          window.open("https://www.xdefi.io", "_blank");
-          break;
-      }
-    }
-  };
-
   return (
     <StyledWalletProviderList className={className}>
-      {SUPPORTED_WALLET_PROVIDERS.map((provider) => (
-        <StyledButton
-          key={provider.name}
-          onClick={(e) => clickEvent(e, provider)}
-        >
-          <ButtonIconContainer>
-            <ButtonIcon
-              src={provider.logo}
-              alt={`${provider.name} logo`}
-              className="w-12 h-12"
-            />
-          </ButtonIconContainer>
-          <ButtonText>
-            {isProviderInstalled(provider)
-              ? provider.name
-              : `Get ${provider.name}`}
-          </ButtonText>
-        </StyledButton>
-      ))}
+      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) =>
+        provider.isInstalled ? (
+          <WalletButtonProvider
+            key={i}
+            provider={provider}
+            onClick={() => onProviderButtonClick(provider)}
+          ></WalletButtonProvider>
+        ) : (
+          <WalletButtonProvider
+            key={i}
+            provider={provider}
+          ></WalletButtonProvider>
+        )
+      )}
     </StyledWalletProviderList>
   );
 };

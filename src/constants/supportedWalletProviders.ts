@@ -6,9 +6,13 @@ import metamaskLogo from "../assets/wallet-provider-logos/metamask.svg";
 import walletconnectLogo from "../assets/wallet-provider-logos/walletconnect.svg";
 import xDefiLogo from "../assets/wallet-provider-logos/xdefi.png";
 
+declare let window: any;
+
 export type WalletProvider = {
   name: string;
   logo: string;
+  isInstalled: boolean;
+  url: string;
   getConnector: () => AbstractConnector;
 };
 
@@ -18,6 +22,8 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "MetaMask",
     logo: metamaskLogo,
+    isInstalled: typeof window.ethereum !== "undefined",
+    url: "https://metamask.io/",
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
@@ -45,6 +51,8 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "WalletConnect",
     logo: walletconnectLogo,
+    isInstalled: true,
+    url: "https://walletconnect.com/",
     getConnector: () => {
       if (!cachedConnectors.WalletConnect) {
         cachedConnectors.WalletConnect = new WalletConnectConnector({
