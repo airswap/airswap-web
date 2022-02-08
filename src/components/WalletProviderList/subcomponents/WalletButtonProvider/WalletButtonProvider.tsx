@@ -11,13 +11,11 @@ import {
 
 type ToolbarButtonProps = {
   provider: WalletProvider;
-  href?: string;
   onClick?: () => void;
 };
 
 const WalletButtonProvider: FC<ToolbarButtonProps> = ({
   provider,
-  href,
   onClick,
 }) => {
   const renderInner = () => {
@@ -36,9 +34,9 @@ const WalletButtonProvider: FC<ToolbarButtonProps> = ({
       </>
     );
   };
-  if (href) {
+  if (!provider.isInstalled) {
     return (
-      <StyledLink key={provider.name} href={href} target="_blank">
+      <StyledLink key={provider.name} href={provider.url} target="_blank">
         {renderInner()}
       </StyledLink>
     );

@@ -43,7 +43,6 @@ const WalletProviderList = ({
           <WalletButtonProvider
             key={i}
             provider={provider}
-            href={provider.url}
           ></WalletButtonProvider>
         )
       )}
