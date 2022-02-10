@@ -1,6 +1,7 @@
 import { css } from "styled-components/macro";
 
 import convertHexToRGBA from "../helpers/transformHexToRgba";
+import breakPoints from "./breakpoints";
 
 export const ScrollBarStyle = css`
   &::-webkit-scrollbar {
@@ -84,4 +85,8 @@ export const BorderedPill = css`
   border-radius: 24rem;
   height: 3rem;
   padding: 0 1.25rem;
+
+  @media ${breakPoints.phoneOnly} {
+    height: 2.5rem;
+  }
 `;

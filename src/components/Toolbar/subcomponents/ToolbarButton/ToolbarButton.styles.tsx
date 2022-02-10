@@ -1,32 +1,67 @@
 import styled, { css } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
+import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import { sizes } from "../../../../style/sizes";
 
 const ButtonStyle = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.25rem;
-  width: 4rem;
-  height: 4rem;
-
   ${InputOrButtonBorderStyle};
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border-left: 0;
+  border-right: 0;
+  width: 100%;
+  height: 3.5rem;
+  min-height: 3.5rem;
+  padding: 0 1.5rem;
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.black : theme.colors.primary};
 
   & + a,
   & + button {
-    margin-top: 0.75rem;
-
-    @media (min-height: ${sizes.toolbarMaxHeight}) {
-      margin-top: 1rem;
-    }
+    margin-top: -1px;
   }
 
-  @media (min-height: ${sizes.toolbarMaxHeight}) {
-    width: 5rem;
-    height: 5rem;
+  &:last-child:not(:hover):not(:active):not(:focus) {
+    border-bottom-style: hidden;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    z-index: 2;
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    ${InputOrButtonBorderStyle};
+
+    flex-direction: column;
+    justify-content: center;
+    border-bottom-style: solid !important;
+    border-radius: 0.25rem;
+    margin-top: 0;
+    width: 4rem;
+    height: 4rem;
+    min-height: inherit;
+    padding: 0;
+
+    & + a,
+    & + button {
+      margin-top: 0.75rem;
+
+      @media (min-height: ${sizes.toolbarMaxHeight}) {
+        margin-top: 1rem;
+      }
+    }
+
+    @media (min-height: ${sizes.toolbarMaxHeight}) {
+      width: 5rem;
+      height: 5rem;
+    }
   }
 `;
 
@@ -39,14 +74,22 @@ export const ToolBarAnchorContainer = styled.a`
 `;
 
 export const Text = styled.div`
-  margin-top: 0.125rem;
+  margin-left: 0.75rem;
   font-weight: 600;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.674rem")};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.675rem")};
   text-transform: uppercase;
 
   @media (min-height: ${sizes.toolbarMaxHeight}) {
-    margin-top: 0.25rem;
     font-size: ${() =>
       isActiveLanguageLogographic() ? "0.875rem" : "0.75rem"};
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    margin-left: 0;
+    margin-top: 0.125rem;
+  }
+
+  @media (min-height: ${sizes.toolbarMaxHeight}) and (${breakPoints.tabletPortraitUp}) {
+    margin-top: 0.25rem;
   }
 `;

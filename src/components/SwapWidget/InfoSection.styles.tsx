@@ -8,6 +8,10 @@ import { StyledParagraph } from "../Typography/Typography.styles";
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
   align-items: center;
+
+  & + ${InfoSubHeading} {
+    margin-top: 0.25rem;
+  }
 `;
 
 export const FeeTextContainer = styled.div`

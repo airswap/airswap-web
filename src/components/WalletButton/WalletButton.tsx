@@ -5,7 +5,6 @@ export type WalletButtonProps = {
    * Address of currenlty connected wallet, if any
    */
   address?: string | null;
-  transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
   isUnsupportedNetwork?: boolean;
   glow?: boolean;
@@ -14,7 +13,6 @@ export type WalletButtonProps = {
 
 export const WalletButton = ({
   address,
-  transactionsTabOpen,
   setTransactionsTabOpen,
   isUnsupportedNetwork = false,
   setShowWalletList,
@@ -24,7 +22,6 @@ export const WalletButton = ({
     <WalletAddress
       isUnsupportedNetwork={isUnsupportedNetwork}
       address={address || null}
-      transactionsTabOpen={transactionsTabOpen}
       setTransactionsTabOpen={setTransactionsTabOpen}
       setShowWalletList={setShowWalletList}
       glow={glow}

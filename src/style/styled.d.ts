@@ -52,6 +52,12 @@ declare module "styled-components" {
       buttonGlow: string;
       buttonGlowFill: string;
     };
-    typography: Record<Typography, FontProps>;
+    typography: Record<
+      Typography,
+      {
+        desktop: FontProps;
+        mobile?: FontProps;
+      }
+    >;
   }
 }

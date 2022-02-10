@@ -2,16 +2,18 @@ import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
+import { getEtherscanWalletURL } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import useMediaQuery from "../../helpers/useMediaQuery";
 import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import breakPoints from "../../style/breakpoints";
 import Icon from "../Icon/Icon";
-import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   WalletHeader,
@@ -19,7 +21,7 @@ import {
   LegendLine,
   TransactionContainer,
   TransactionsContainer,
-  DiconnectButtonContainer,
+  BottomButtonContainer,
   DisconnectButton,
   NoTransactions,
   IconContainer,
@@ -27,9 +29,12 @@ import {
   NetworkInfoContainer,
   NetworkName,
   Balances,
-  WalletInfoButton,
-  ConnectionStatusCircle,
   LegendContainer,
+  MobileBackButton,
+  DesktopWalletInfoButton,
+  MobileWalletInfoButton,
+  StyledWalletMobileMenu,
+  BackdropFilter,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
@@ -66,15 +71,28 @@ const TransactionsTab = ({
 }: TransactionsTabType) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
+  const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
   const [overflow, setOverflow] = useState<boolean>(false);
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
+  const walletInfoText = useMemo(() => {
+    return isUnsupportedNetwork
+      ? t("wallet.unsupported")
+      : addressOrName
+      ? addressOrName
+      : t("wallet.notConnected");
+  }, [addressOrName, isUnsupportedNetwork, t]);
+  const walletUrl = useMemo(() => getEtherscanWalletURL(chainId, address), [
+    chainId,
+    address,
+  ]);
 
   const handleEscKey = useCallback(
     (e) => {
@@ -85,12 +103,22 @@ const TransactionsTab = ({
     [setTransactionsTabOpen]
   );
 
+  const toggleWalletMobileMenu = () => {
+    setShowMobileMenu(!showMobileMenu);
+  };
+
   useEffect(() => {
     document.addEventListener("keydown", handleEscKey, false);
     return () => {
       document.removeEventListener("keydown", handleEscKey, false);
     };
   }, [handleEscKey]);
+
+  useEffect(() => {
+    if (!open) {
+      setShowMobileMenu(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (
@@ -143,8 +171,8 @@ const TransactionsTab = ({
           ref={containerRef}
           animate={{ x: 0 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          initial={{ x: "24rem" }}
-          exit={{ x: "24rem" }}
+          initial={{ x: isMobile ? "100%" : "24rem" }}
+          exit={{ x: isMobile ? "100%" : "24rem" }}
         >
           <BackButton
             aria-label={t("common.back")}
@@ -163,18 +191,21 @@ const TransactionsTab = ({
               </NetworkName>
               <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
             </NetworkInfoContainer>
-            <WalletInfoButton
+            <DesktopWalletInfoButton
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
-              <ConnectionStatusCircle $connected={!!address} />
-              <InfoHeading>
-                {isUnsupportedNetwork
-                  ? t("wallet.unsupported")
-                  : addressOrName
-                  ? addressOrName
-                  : t("wallet.notConnected")}
-              </InfoHeading>
-            </WalletInfoButton>
+              {walletInfoText}
+            </DesktopWalletInfoButton>
+            <MobileWalletInfoButton onClick={toggleWalletMobileMenu}>
+              {walletInfoText}
+            </MobileWalletInfoButton>
+            {showMobileMenu && (
+              <StyledWalletMobileMenu
+                walletUrl={walletUrl}
+                address={address}
+                onDisconnectButtonClick={onDisconnectWalletClicked}
+              />
+            )}
           </WalletHeader>
 
           <TransactionsContainer
@@ -228,14 +259,23 @@ const TransactionsTab = ({
               )}
             </TransactionContainer>
           </TransactionsContainer>
-          <DiconnectButtonContainer ref={buttonRef}>
+          <BottomButtonContainer ref={buttonRef}>
             <DisconnectButton
               aria-label={t("wallet.disconnectWallet")}
               onClick={onDisconnectWalletClicked}
             >
               {t("wallet.disconnectWallet")}
             </DisconnectButton>
-          </DiconnectButtonContainer>
+            <MobileBackButton
+              aria-label={t("common.back")}
+              onClick={() => setTransactionsTabOpen(false)}
+            >
+              {t("common.back")}
+            </MobileBackButton>
+          </BottomButtonContainer>
+          {showMobileMenu && (
+            <BackdropFilter onClick={toggleWalletMobileMenu} />
+          )}
         </Container>
       )}
     </AnimatePresence>

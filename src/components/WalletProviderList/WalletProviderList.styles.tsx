@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 
@@ -8,6 +9,10 @@ export const StyledWalletProviderList = styled.div`
   flex-direction: column;
   padding: 0 ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
+
+  @media ${breakPoints.phoneOnly} {
+    padding: 0 ${sizes.tradeContainerMobilePadding};
+  }
 `;
 
 export const TitleContainer = styled.div`
