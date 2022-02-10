@@ -5,8 +5,8 @@ const htmlContent = `<!DOCTYPE html>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Swap Protocol</title>
-    <meta name="description" content="Swap is a peer-to-peer (RFQ and OTC) trading protocol for Ethereum." data-react-helmet="true"/>
+    
+    
 
     <!-- Open Graph Metadata -->
     <meta property="og:title" content="Swap Protocol" data-react-helmet="true"/>
@@ -38,7 +38,7 @@ const htmlContent = `<!DOCTYPE html>
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="/whitepaper/whitepaper.css" />
 
-    <title>Swap Protocol Whitepaper</title>
+    
   </head>
   <body>
     <section>
@@ -99,7 +99,7 @@ const htmlContent = `<!DOCTYPE html>
           <li><a href="#summary">Summary</a></li>
         </ul>
 
-        <h1 id="introduction">Introduction</h1>
+        <h2 id="introduction">Introduction</h2>
         <p>
           The number of digital assets on Ethereum over the past twelve months has increased aggressively as more and
           more use cases are implemented as smart contracts. It is our thesis that this trend will continue into the
@@ -188,7 +188,7 @@ const htmlContent = `<!DOCTYPE html>
           applications.
         </p>
 
-        <h1 id="peer-protocol">Peer Protocol</h1>
+        <h2 id="peer-protocol">Peer Protocol</h2>
         <p>
           With only a few messages passed between counterparties, trades can be negotiated quickly, fairly, and
           privately. For the purposes of this document, a Maker is the party that provides an order, and a Taker is the
@@ -258,7 +258,7 @@ provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BA
           </div>
         </div>
 
-        <h1 id="indexer-protocol">Indexer Protocol</h1>
+        <h2 id="indexer-protocol">Indexer Protocol</h2>
         <p>
           An Indexer is an off-chain service that aggregates and matches peers based on their intent to trade: whether
           prospective Makers and Takers wish to buy or sell tokens. Indexers are off-chain services that aggregate this
@@ -381,7 +381,7 @@ foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTo
           </div>
         </div>
 
-        <h1 id="oracle-protocol">Oracle Protocol</h1>
+        <h2 id="oracle-protocol">Oracle Protocol</h2>
         <p>
           An Oracle is an off-chain service that provides pricing information to Makers and Takers. When pricing an
           order prior to delivering it to a Taker, a Maker may ask the Oracle for what it considers a fair price
@@ -444,7 +444,7 @@ providePrice(‘GNO’, ‘BAT’, 0.5)
           </div>
         </div>
 
-        <h1 id="smart-contract">Smart Contract</h1>
+        <h2 id="smart-contract">Smart Contract</h2>
         <p>An Ethereum smart contract to fill or cancel orders.</p>
 
         <h4 id="fill">fill</h4>
@@ -496,7 +496,7 @@ cancel(&lt;makerAddress&gt;, 5, 'GNO', &lt;takerAddress&gt;, 10, 'BAT', &lt;expi
           on behalf of the Taker to the Maker.
         </p>
 
-        <h1 id="summary">Summary</h1>
+        <h2 id="summary">Summary</h2>
         <p>
           The Swap protocol serves a growing demand for a decentralized asset exchange on the Ethereum network.
           Blockchain-based order books, while novel and certainly within the ethos of our ecosystem, have limitations
