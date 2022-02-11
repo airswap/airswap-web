@@ -1,46 +1,9 @@
 const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <div id = "loader" style = "display:none;"> 
-  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# medium-com: http://ogp.me/ns/fb/medium-com#">
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    
-    
 
-    <!-- Open Graph Metadata -->
-    <meta property="og:title" content="Swap Protocol" data-react-helmet="true"/>
-    <meta property="og:description" content="Swap is a peer-to-peer (RFQ and OTC) trading protocol for Ethereum." data-react-helmet="true" />
-    <meta property="og:image" content="https://www.airswap.io/airswap-ogp.png" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:url" content="https://www.airswap.io/whitepaper.htm" data-react-helmet="true"/>
-
-    <!-- Twitter Metadata -->
-    <meta name="twitter:title" content="Swap Protocol" data-react-helmet="true" />
-    <meta name="twitter:description" content="Swap is a peer-to-peer (RFQ and OTC) trading protocol for Ethereum." data-react-helmet="true" />
-    <meta name="twitter:image" content="https://www.airswap.io/airswap-ogp.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@AirSwap" />
-    <meta name="twitter:url" content="https://www.airswap.io/whitepaper.htm" data-react-helmet="true"/>
-
-    <!-- Mobile Touch Icons -->
-    <link rel="apple-touch-icon-precomposed" href="https://www.airswap.io/icons/72x72.png" sizes="72x72" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.airswap.io/icons/144x144.png" sizes="144x144" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.airswap.io/icons/57x57.png" sizes="57x57"/>
-    <link rel="apple-touch-icon-precomposed" href="https://www.airswap.io/icons/114x114.png" sizes="114x114"/>
-    <link rel="nokia-touch-icon" href="https://www.airswap.io/icons/57x57.png" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.airswap.io/icons/114x114.png" sizes="1x1" />
-
-    <link rel="canonical" href="https://www.airswap.io/whitepaper.htm" data-react-helmet="true"/>
-
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/whitepaper/whitepaper.css" />
-
-    
-  </head>
-  <body>
+  <!-- CSS, must be in here not index.html in /Public otherwise we get CSS conflicts with the main site -->
+  <link rel="stylesheet" type="text/css" href="/whitepaper/whitepaper.css" />
     <section>
       <div class="paper-container">
         <div class="paper-metadata">
@@ -294,7 +257,7 @@ provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BA
         </p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/indexerProtocolB.png" />
+          <img alt="Request orders from multiple Makers" src="/whitepaper/figures/indexerProtocolB.png" />
         </div>
 
         <ol>
@@ -391,7 +354,7 @@ foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTo
         </p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/oracleProtocolA.png" />
+          <img alt="Request orders from multiple Makers" src="/whitepaper/figures/oracleProtocolA.png"  />
         </div>
 
         <ol>
@@ -405,7 +368,7 @@ foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTo
         <p>A very similar interaction happens between Taker and Oracle when the Taker receives an order.</p>
 
         <div class="paper-figure">
-          <img alt="Request orders from multiple Makers" src="whitepaper/figures/oracleProtocolB.png" />
+          <img alt="Request orders from multiple Makers" src="/whitepaper/figures/oracleProtocolB.png" />
         </div>
 
         <ol>
@@ -539,7 +502,6 @@ cancel(&lt;makerAddress&gt;, 5, 'GNO', &lt;takerAddress&gt;, 10, 'BAT', &lt;expi
       ga('create', 'UA-98809379-1', 'auto')
       ga('send', 'pageview', location.pathname)
     </script>
-  </body>
   </div>
 </html>`;
 
