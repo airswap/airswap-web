@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import { WalletProvider } from "../../../../constants/supportedWalletProviders";
 import {
@@ -18,6 +19,7 @@ const WalletButtonProvider: FC<ToolbarButtonProps> = ({
   provider,
   onClick,
 }) => {
+  const { t } = useTranslation();
   const renderInner = () => {
     return (
       <>
@@ -29,7 +31,9 @@ const WalletButtonProvider: FC<ToolbarButtonProps> = ({
           />
         </ButtonIconContainer>
         <ButtonText>
-          {provider.isInstalled ? provider.name : `Get ${provider.name}`}
+          {provider.isInstalled
+            ? provider.name
+            : `${t("wallet.get")} ${provider.name}`}
         </ButtonText>
       </>
     );

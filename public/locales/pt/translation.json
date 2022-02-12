@@ -166,6 +166,7 @@
         "noActiveTransactions": "Sem transações ativas",
         "completedTransactions": "Transações concluídas",
         "noCompletedTransactions": "Sem transações concluídas",
-        "transactionLink": "Ligação para a transação"
+        "transactionLink": "Ligação para a transação",
+        "get": ""
     }
 }

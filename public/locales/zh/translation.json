@@ -166,6 +166,7 @@
     "noActiveTransactions": "無執行中的交易",
     "completedTransactions": "已完成的交易",
     "noCompletedTransactions": "無完成的交易",
-    "transactionLink": "交易連結"
+    "transactionLink": "交易連結",
+    "get":""
   }
 }
