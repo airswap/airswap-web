@@ -17,6 +17,7 @@ export const InfoContainer = styled.div`
   align-items: center;
   flex-grow: 2;
   margin-bottom: 0.5rem;
+  text-align: center;
 `;
 
 export const ButtonContainer = styled.div`

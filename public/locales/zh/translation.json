@@ -142,6 +142,7 @@
   },
   "wallet": {
     "connectWallet": "連接錢包",
+    "copyAddress": "複製地址",
     "notConnected": "未連接",
     "unsupportedNetwork": "未支持網路",
     "unsupported": "未支持",
@@ -167,6 +168,7 @@
     "completedTransactions": "已完成的交易",
     "noCompletedTransactions": "無完成的交易",
     "transactionLink": "交易連結",
-    "get":""
+    "get":"",
+    "viewOnExplorer": "在以太坊資源瀏覽器上查看"
   }
 }

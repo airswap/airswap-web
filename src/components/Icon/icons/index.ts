@@ -4,10 +4,13 @@ import IconArrowLeft from "./IconArrowLeft";
 import IconArrowRight from "./IconArrowRight";
 import IconBars from "./IconBars";
 import IconCampaign from "./IconCampaign";
+import IconCheck from "./IconCheck";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
+import IconClose from "./IconClose";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
+import IconCopy from "./IconCopy";
 import IconDarkModeSwitch from "./IconDarkModeSwitch";
 import IconDeny from "./IconDeny";
 import IconDiscord from "./IconDiscord";
@@ -16,6 +19,7 @@ import IconForbidden from "./IconForbidden";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconMedium from "./IconMedium";
+import IconMenu from "./IconMenu";
 import IconPending from "./IconPending";
 import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
@@ -33,9 +37,12 @@ export {
   IconArrowLeft,
   IconBars,
   IconCampaign,
+  IconCheck,
   IconChevronDown,
   IconChevronRight,
+  IconClose,
   IconCode,
+  IconCopy,
   IconContactSupport,
   IconDarkModeSwitch,
   IconDeny,
@@ -45,6 +52,7 @@ export {
   IconLibrary,
   IconLink,
   IconMedium,
+  IconMenu,
   IconPending,
   IconTelegram,
   IconTwitter,

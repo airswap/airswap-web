@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
+import convertHexToRGBA from "../../helpers/transformHexToRgba";
+import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
-  BorderedPill,
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
+import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
 import {
   InfoSubHeading,
@@ -13,23 +15,34 @@ import {
   FormLabel,
 } from "../Typography/Typography";
 import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
+import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
+import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
 export const Container = styled(motion.div)`
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: 24rem;
+  width: 100%;
+  max-width: ${sizes.widgetMobileSize};
   height: 100vh;
   min-height: 100%;
-  padding: 0 1.5rem;
+  padding: 1.5rem 1.5rem 0;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
   top: 0;
   right: 0;
   z-index: 1001;
   will-change: transform;
+
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    position: fixed;
+    width: 100%;
+    max-width: inherit;
+    padding: 1rem 1rem 0;
   }
 `;
 
@@ -37,9 +50,14 @@ export const WalletHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
   width: 100%;
   height: 3rem;
-  margin: 1.5rem 0;
+  padding-left: 1rem;
+
+  @media ${breakPoints.phoneOnly} {
+    padding-left: 0;
+  }
 `;
 
 export const StyledTransactionLink = styled(TransactionLink)`
@@ -129,12 +147,25 @@ export const NoTransactions = styled(motion.div)`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
-export const DiconnectButtonContainer = styled.div`
+export const BottomButtonContainer = styled.div`
   padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
+
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const MobileBackButton = styled(Button)`
+  ${InputOrButtonBorderStyleType2};
+  display: none;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
+  }
 `;
 
 export const IconContainer = styled.div`
@@ -152,7 +183,7 @@ export const IconContainer = styled.div`
 export const BackButton = styled(motion.button)`
   ${InputOrButtonBorderStyleType2};
 
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -164,6 +195,10 @@ export const BackButton = styled(motion.button)`
   background-color: ${(props) => props.theme.colors.black};
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+
+  @media ${breakPoints.phoneOnly} {
+    display: none !important;
+  }
 `;
 
 export const NetworkInfoContainer = styled.div`
@@ -172,7 +207,6 @@ export const NetworkInfoContainer = styled.div`
   justify-content: center;
   height: 100%;
   max-width: 5.5rem;
-  margin-left: 1rem;
 `;
 
 export const NetworkName = styled(FormLabel)`
@@ -183,11 +217,6 @@ export const Balances = styled(InfoHeading)`
   line-height: 1;
 `;
 
-export const WalletInfoButton = styled.button`
-  ${BorderedPill}
-  ${InputOrButtonBorderStyleType2}
-`;
-
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   margin-right: 0.5rem;
   width: 0.75rem;
@@ -195,4 +224,47 @@ export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
   background-color: ${(props) =>
     props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;
+`;
+
+export const DesktopWalletInfoButton = styled(WalletInfoButton)`
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const MobileWalletInfoButton = styled(WalletInfoButton)`
+  display: none;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
+  }
+`;
+
+export const StyledWalletMobileMenu = styled(WalletMobileMenu)`
+  display: none;
+  position: absolute;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 2;
+
+  @media ${breakPoints.phoneOnly} {
+    display: flex;
+  }
+`;
+
+export const BackdropFilter = styled.button`
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => convertHexToRGBA(theme.colors.black, 0.5)};
+  backdrop-filter: blur(2px);
+  z-index: 1;
+
+  @media ${breakPoints.phoneOnly} {
+    display: block;
+  }
 `;

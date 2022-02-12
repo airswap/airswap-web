@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
+import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
@@ -21,6 +22,10 @@ export const ContentContainer = styled.div`
   height: 100%;
   padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
+
+  @media ${breakPoints.phoneOnly} {
+    padding: 0 1.5rem ${sizes.tradeContainerMobilePadding};
+  }
 `;
 
 export const Container = styled.div`
@@ -31,14 +36,6 @@ export const Container = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-`;
-
-export const TitleContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 1.875rem;
-  padding: ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding} 0;
 `;
 
 export const StyledTitle = styled(Title)`
@@ -80,7 +77,7 @@ export const Legend = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
   min-height: 1.5rem;
 `;
 

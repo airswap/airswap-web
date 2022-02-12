@@ -5,80 +5,140 @@ export const fontMono = '"DM Mono", monospace';
 
 const typography: DefaultTheme["typography"] = {
   title1: {
-    fontSize: "2rem",
-    lineHeight: 1.167,
-    fontWeight: 500,
+    desktop: {
+      fontSize: "2rem",
+      lineHeight: 1.167,
+      fontWeight: 500,
+    },
   },
   title2: {
-    fontSize: "1.5rem",
-    lineHeight: 1.25,
-    fontWeight: 700,
+    desktop: {
+      fontSize: "1.5rem",
+      lineHeight: 1.25,
+      fontWeight: 700,
+    },
+    mobile: {
+      fontSize: "1.25rem",
+      lineHeight: 1.25,
+      fontWeight: 700,
+    },
   },
   title3: {
-    fontSize: "1.25rem",
-    lineHeight: 1.25,
-    fontWeight: 400,
+    desktop: {
+      fontSize: "1.25rem",
+      lineHeight: 1.25,
+      fontWeight: 400,
+    },
   },
   title4: {
-    fontSize: "1rem",
-    lineHeight: 1.33,
-    fontWeight: 700,
+    desktop: {
+      fontSize: "1rem",
+      lineHeight: 1.33,
+      fontWeight: 700,
+    },
   },
   subtitle: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
-    fontWeight: 700,
+    desktop: {
+      fontSize: "1rem",
+      lineHeight: 1.5,
+      fontWeight: 700,
+    },
   },
   paragraph: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
-    fontWeight: 400,
+    desktop: {
+      fontSize: "1rem",
+      lineHeight: 1.5,
+      fontWeight: 400,
+    },
   },
   infoHeading: {
-    fontSize: "1rem",
-    lineHeight: 1.5,
-    fontWeight: 600,
+    desktop: {
+      fontSize: "1rem",
+      lineHeight: 1.25,
+      fontWeight: 600,
+    },
+    mobile: {
+      fontSize: "1rem",
+      lineHeight: 1.25,
+      fontWeight: 600,
+    },
   },
   infoSubHeading: {
-    fontSize: "1.0625rem",
-    lineHeight: 1.41,
-    fontWeight: 400,
+    desktop: {
+      fontSize: "1.0625rem",
+      lineHeight: 1.25,
+      fontWeight: 400,
+    },
+    mobile: {
+      fontSize: "1rem",
+      lineHeight: 1.25,
+      fontWeight: 400,
+    },
   },
   formLabel: {
-    fontSize: "0.75rem",
-    lineHeight: 1.5,
-    fontWeight: 600,
+    desktop: {
+      fontSize: "0.75rem",
+      lineHeight: 1.5,
+      fontWeight: 600,
+    },
   },
   formInput: {
-    fontSize: "1.5rem",
-    lineHeight: 1.5,
-    fontWeight: 500,
+    desktop: {
+      fontSize: "1.5rem",
+      lineHeight: 1.5,
+      fontWeight: 500,
+    },
+    mobile: {
+      fontSize: "1.25rem",
+      lineHeight: 1.5,
+      fontWeight: 500,
+    },
   },
   subText: {
-    fontSize: "0.875rem",
-    lineHeight: 1.5,
-    fontWeight: 500,
+    desktop: {
+      fontSize: "0.875rem",
+      lineHeight: 1.5,
+      fontWeight: 500,
+    },
+    mobile: {
+      fontSize: "1rem",
+      lineHeight: 1.5,
+      fontWeight: 500,
+    },
   },
   // Form select inputs
   selectItem: {
-    fontSize: "1.125rem",
-    lineHeight: 1 + 1 / 3,
-    fontWeight: 600,
+    desktop: {
+      fontSize: "1.125rem",
+      lineHeight: 1 + 1 / 3,
+      fontWeight: 600,
+    },
   },
   link: {
-    fontSize: "0.75rem",
-    lineHeight: 2,
-    fontWeight: 700,
+    desktop: {
+      fontSize: "0.75rem",
+      lineHeight: 2,
+      fontWeight: 700,
+    },
   },
   nav: {
-    fontSize: "1rem",
-    lineHeight: 1.25,
-    fontWeight: 400,
+    desktop: {
+      fontSize: "1rem",
+      lineHeight: 1.25,
+      fontWeight: 400,
+    },
   },
   small: {
-    fontSize: "0.875rem",
-    lineHeight: 1.25,
-    fontWeight: 500,
+    desktop: {
+      fontSize: "0.875rem",
+      lineHeight: 1.25,
+      fontWeight: 500,
+    },
+    mobile: {
+      fontSize: "1rem",
+      lineHeight: 1.25,
+      fontWeight: 500,
+    },
   },
 };
 

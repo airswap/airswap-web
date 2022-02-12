@@ -40,14 +40,18 @@ const destinations: {
   },
 ];
 
-const SocialButtons: FC<{}> = () => {
+type SocialButtonsProps = {
+  className?: string;
+};
+
+const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
   const [hoveredIcon, setHoveredIcon] = useState<keyof typeof icons | null>(
     null
   );
   const [hoveredLocale, setHoveredLocale] = useState<string | null>(null);
 
   return (
-    <Container>
+    <Container className={className}>
       {destinations.map((dest) => {
         const locales = Object.keys(dest.locales || {});
         return (

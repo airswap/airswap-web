@@ -24,6 +24,11 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.3.tgz#83320d02d01fb53f7658d4deacecfbbd5992ebe6"
   integrity sha512-CoAkvsdxLEw8PINuhC/0Q9aLG4iKlXFRF0zet7JVi6n7wM+iTHhhcJkrPAUVg2Qq9V3LWtUhTbX7R5EyHZeX6A==
 
+"@airswap/constants@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-1.0.0.tgz#e16c6fff7aa2fda8635452762bd35451a0a8ffac"
+  integrity sha512-HFmLbz8TQsiuJcF8TtKt9Q0o52RzSdt6B0n9BS089ybTBwojg/AgWGGA8Jx18y3I5E62jC6X6myJuUsmCIvHYA==
+
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@airswap/jsonrpc-client-websocket/-/jsonrpc-client-websocket-0.0.1.tgz#e75932a0f19cb6c23cf145834277211cce150400"
@@ -93,6 +98,14 @@
     "@airswap/constants" "0.4.3"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
+"@airswap/typescript@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-1.0.1.tgz#4b9de505a23371a10ee21f0c5881fa586509cead"
+  integrity sha512-9neKyO0kWw3CKXYhT/xTZK63ExtCL9uMVFKxEHomL04yz7Wwdc9vvjpZKPNKqahitge3NK89+U19yb9cNynicw==
+  dependencies:
+    "@airswap/constants" "1.0.0"
+    "@uniswap/token-lists" "^1.0.0-beta.26"
+
 "@airswap/utils@0.4.13":
   version "0.4.13"
   resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.13.tgz#7707dbb23ee02018f373ee1a2dedaf4e28a20c90"
@@ -106,13 +119,13 @@
     ethereumjs-util "^6.2.0"
     ethers "^5.4.7"
 
-"@airswap/utils@^0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-0.4.10.tgz#bac8c7d5e7a6ef288d47d2ae6f1aaf41fdaf9093"
-  integrity sha512-YzR0G1hoVYPx/KsSjObX2XuMo+ySURHGRijiz4eM4EMU7udiH4upIpE2M/HeQ0HISWLVJrMJa89BJ/8szKorVQ==
+"@airswap/utils@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.1.tgz#c815624f18bb2722ec07ed71e2c0cbfcfbff4fd8"
+  integrity sha512-i98LzTGl4aEW9auX26GQP0msU3Q+0SsW2coUMeo+77iwUUZinIPJkKM8VOmAS0s8DSbl7SjgP4m4SpOxNgz4EQ==
   dependencies:
-    "@airswap/constants" "0.4.2"
-    "@airswap/types" "3.6.1"
+    "@airswap/constants" "1.0.0"
+    "@airswap/typescript" "1.0.1"
     "@types/ethereumjs-util" "^6.1.0"
     bignumber.js "^9.0.1"
     eth-sig-util "^3.0.0"
