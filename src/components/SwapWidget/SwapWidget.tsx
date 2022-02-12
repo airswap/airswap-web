@@ -655,6 +655,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
       case ButtonActions.restart:
         setShowOrderSubmitted(false);
+        setValidatorErrors([]);
         dispatch(clearTradeTerms());
         dispatch(clear());
         unsubscribeFromGasPrice();
@@ -877,18 +878,12 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={async () => {
-          await handleButtonClick(ButtonActions.restart);
-          setValidatorErrors([]);
-        }}
+        onCloseButtonClick={() => handleButtonClick(ButtonActions.restart)}
         isHidden={!validatorErrors.length}
       >
         <ErrorList
           errors={validatorErrors}
-          handleClick={async () => {
-            await handleButtonClick(ButtonActions.restart);
-            setValidatorErrors([]);
-          }}
+          handleClick={() => handleButtonClick(ButtonActions.restart)}
         />
       </Overlay>
       <Overlay
