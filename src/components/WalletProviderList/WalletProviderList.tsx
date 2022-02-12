@@ -32,20 +32,13 @@ const WalletProviderList = ({
 
   return (
     <StyledWalletProviderList className={className}>
-      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) =>
-        provider.isInstalled ? (
-          <WalletButtonProvider
-            key={i}
-            provider={provider}
-            onClick={() => onProviderButtonClick(provider)}
-          ></WalletButtonProvider>
-        ) : (
-          <WalletButtonProvider
-            key={i}
-            provider={provider}
-          ></WalletButtonProvider>
-        )
-      )}
+      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) => (
+        <WalletButtonProvider
+          key={i}
+          provider={provider}
+          onClick={() => onProviderButtonClick(provider)}
+        ></WalletButtonProvider>
+      ))}
     </StyledWalletProviderList>
   );
 };
