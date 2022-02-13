@@ -1,14 +1,12 @@
 import { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import { useAppSelector } from "../app/hooks";
 import {
   DEFAULT_LOCALE,
   getUserLanguage,
   SUPPORTED_LOCALES,
   SupportedLocale,
 } from "../constants/locales";
-import { selectUserTokens } from "../features/userSettings/userSettingsSlice";
 import { AppRoutes, SwapRoutes } from "../routes";
 
 export interface AppRouteParams {
@@ -16,8 +14,17 @@ export interface AppRouteParams {
   route?: AppRoutes;
   tokenFrom?: string;
   tokenTo?: string;
+  /**
+   * Url from useRouteMatch
+   */
   url: string;
+  /**
+   * Url without language, ie: /swap/0x1234/0x5678, or /join
+   */
   urlWithoutLang: string;
+  /**
+   * Base url with optional languge, ie: /join or /fr/swap
+   */
   justifiedBaseUrl: string;
 }
 
@@ -33,8 +40,6 @@ function transformStringToSupportedLanguage(
 }
 
 const useAppRouteParams = (): AppRouteParams => {
-  const userTokens = useAppSelector(selectUserTokens);
-
   const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
 
   const routeWithLangMatch = useRouteMatch<{
@@ -54,6 +59,8 @@ const useAppRouteParams = (): AppRouteParams => {
     tokenFrom?: string;
     tokenTo?: string;
   }>(`/:lang/:route/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`);
+
+  const userLanguage = useMemo(() => getUserLanguage(), []);
 
   const swapWithLangMatchData = useMemo(() => {
     if (swapWithLangMatch) {
@@ -83,13 +90,13 @@ const useAppRouteParams = (): AppRouteParams => {
         tokenFrom,
         tokenTo,
         route: swapMatch.params.route,
-        lang: getUserLanguage(),
+        lang: userLanguage,
         url: swapMatch.url,
         urlWithoutLang: swapMatch.url,
         justifiedBaseUrl: `/`,
       };
     }
-  }, [swapMatch]);
+  }, [swapMatch, userLanguage]);
 
   const routeWithLangMatchData = useMemo(() => {
     if (routeWithLangMatch) {
@@ -99,15 +106,13 @@ const useAppRouteParams = (): AppRouteParams => {
 
       return {
         lang,
-        tokenFrom: userTokens?.tokenFrom,
-        tokenTo: userTokens?.tokenTo,
         route: routeWithLangMatch.params.route,
         url: routeWithLangMatch.url,
         urlWithoutLang: `/${routeWithLangMatch.params.route}`,
         justifiedBaseUrl: `/${lang}`,
       };
     }
-  }, [routeWithLangMatch, userTokens?.tokenFrom, userTokens?.tokenTo]);
+  }, [routeWithLangMatch]);
 
   const routeMatchData = useMemo(() => {
     if (routeMatch) {
@@ -115,8 +120,6 @@ const useAppRouteParams = (): AppRouteParams => {
       const lang = transformStringToSupportedLanguage(routeOrLang as string);
 
       return {
-        tokenFrom: userTokens?.tokenFrom,
-        tokenTo: userTokens?.tokenTo,
         route: lang ? undefined : (routeMatch.params.routeOrLang as AppRoutes),
         lang: lang || DEFAULT_LOCALE,
         url: routeMatch.url,
@@ -124,19 +127,7 @@ const useAppRouteParams = (): AppRouteParams => {
         justifiedBaseUrl: lang ? `/${lang}` : "/",
       };
     }
-  }, [routeMatch, userTokens?.tokenFrom, userTokens?.tokenTo]);
-
-  const defaultData = useMemo(
-    () => ({
-      tokenFrom: userTokens?.tokenFrom,
-      tokenTo: userTokens?.tokenTo,
-      lang: getUserLanguage(),
-      url: "",
-      urlWithoutLang: "",
-      justifiedBaseUrl: "",
-    }),
-    [userTokens?.tokenFrom, userTokens?.tokenTo]
-  );
+  }, [routeMatch]);
 
   if (swapWithLangMatchData) {
     return swapWithLangMatchData;
@@ -154,7 +145,12 @@ const useAppRouteParams = (): AppRouteParams => {
     return routeMatchData;
   }
 
-  return defaultData;
+  return {
+    lang: userLanguage,
+    url: "",
+    urlWithoutLang: "",
+    justifiedBaseUrl: "",
+  };
 };
 
 export default useAppRouteParams;
