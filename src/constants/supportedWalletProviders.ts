@@ -1,4 +1,3 @@
-import detectEthereumProvider from "@metamask/detect-provider";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -6,37 +5,23 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import metamaskLogo from "../assets/wallet-provider-logos/metamask.svg";
 import walletconnectLogo from "../assets/wallet-provider-logos/walletconnect.svg";
 
-export type WalletProviderName = "MetaMask" | "WalletConnect";
+declare let window: any;
 
 export type WalletProvider = {
-  name: WalletProviderName;
+  name: string;
   logo: string;
-  isProviderInstalled: Promise<boolean>;
+  isInstalled: boolean;
   url: string;
   getConnector: () => AbstractConnector;
 };
 
 const cachedConnectors: Record<string, AbstractConnector> = {};
 
-const isWalletProviderInstalled = (
-  name: WalletProviderName
-): Promise<boolean> => {
-  return new Promise(async (resolve) => {
-    if (name === "MetaMask") {
-      return detectEthereumProvider().then((value) => {
-        resolve(!!value);
-      });
-    }
-
-    return resolve(true);
-  });
-};
-
 const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "MetaMask",
     logo: metamaskLogo,
-    isProviderInstalled: isWalletProviderInstalled("MetaMask"),
+    isInstalled: typeof window.ethereum !== "undefined",
     url: "https://metamask.io/",
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
@@ -53,7 +38,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
   {
     name: "WalletConnect",
     logo: walletconnectLogo,
-    isProviderInstalled: isWalletProviderInstalled("WalletConnect"),
+    isInstalled: true,
     url: "https://walletconnect.com/",
     getConnector: () => {
       if (!cachedConnectors.WalletConnect) {

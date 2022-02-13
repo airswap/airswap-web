@@ -23,7 +23,6 @@
     "@airswap/validator": "^2.3.1",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
-    "@metamask/detect-provider": "^1.2.0",
     "@reduxjs/toolkit": "~1.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
