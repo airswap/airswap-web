@@ -167,6 +167,6 @@
         "completedTransactions": "Voltooide transacties",
         "noCompletedTransactions": "Geen voltooide transacties",
         "transactionLink": "Transactie link",
-        "get": ""
+        "get": "Download"
     }
 }
