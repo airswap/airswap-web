@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 
 import { useAppSelector } from "../app/hooks";
@@ -32,8 +33,9 @@ function transformStringToSupportedLanguage(
 }
 
 const useAppRouteParams = (): AppRouteParams => {
-  const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
   const userTokens = useAppSelector(selectUserTokens);
+
+  const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
 
   const routeWithLangMatch = useRouteMatch<{
     lang: SupportedLocale;
@@ -53,77 +55,106 @@ const useAppRouteParams = (): AppRouteParams => {
     tokenTo?: string;
   }>(`/:lang/:route/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`);
 
-  if (swapWithLangMatch) {
-    const lang =
-      transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
-      DEFAULT_LOCALE;
+  const swapWithLangMatchData = useMemo(() => {
+    if (swapWithLangMatch) {
+      const lang =
+        transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
+        DEFAULT_LOCALE;
 
-    const { tokenFrom, tokenTo } = swapWithLangMatch.params;
+      const { tokenFrom, tokenTo } = swapWithLangMatch.params;
 
-    return {
-      lang,
-      tokenFrom,
-      tokenTo,
-      route: AppRoutes.swap,
-      url: swapWithLangMatch.url,
-      urlWithoutLang: `/${AppRoutes.swap}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}/`,
-      justifiedBaseUrl: `/${lang}`,
-    };
-  }
+      return {
+        lang,
+        tokenFrom,
+        tokenTo,
+        route: AppRoutes.swap,
+        url: swapWithLangMatch.url,
+        urlWithoutLang: `/${AppRoutes.swap}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}/`,
+        justifiedBaseUrl: `/${lang}`,
+      };
+    }
+  }, [swapWithLangMatch]);
 
-  if (swapMatch) {
-    const { tokenFrom, tokenTo } = swapMatch.params;
+  const swapMatchData = useMemo(() => {
+    if (swapMatch) {
+      const { tokenFrom, tokenTo } = swapMatch.params;
 
-    return {
-      tokenFrom,
-      tokenTo,
-      route: swapMatch.params.route,
+      return {
+        tokenFrom,
+        tokenTo,
+        route: swapMatch.params.route,
+        lang: getUserLanguage(),
+        url: swapMatch.url,
+        urlWithoutLang: swapMatch.url,
+        justifiedBaseUrl: `/`,
+      };
+    }
+  }, [swapMatch]);
+
+  const routeWithLangMatchData = useMemo(() => {
+    if (routeWithLangMatch) {
+      const lang =
+        transformStringToSupportedLanguage(routeWithLangMatch.params.lang) ||
+        DEFAULT_LOCALE;
+
+      return {
+        lang,
+        tokenFrom: userTokens?.tokenFrom,
+        tokenTo: userTokens?.tokenTo,
+        route: routeWithLangMatch.params.route,
+        url: routeWithLangMatch.url,
+        urlWithoutLang: `/${routeWithLangMatch.params.route}`,
+        justifiedBaseUrl: `/${lang}`,
+      };
+    }
+  }, [routeWithLangMatch, userTokens?.tokenFrom, userTokens?.tokenTo]);
+
+  const routeMatchData = useMemo(() => {
+    if (routeMatch) {
+      const { routeOrLang } = routeMatch.params;
+      const lang = transformStringToSupportedLanguage(routeOrLang as string);
+
+      return {
+        tokenFrom: userTokens?.tokenFrom,
+        tokenTo: userTokens?.tokenTo,
+        route: lang ? undefined : (routeMatch.params.routeOrLang as AppRoutes),
+        lang: lang || DEFAULT_LOCALE,
+        url: routeMatch.url,
+        urlWithoutLang: lang ? "/" : routeMatch.url,
+        justifiedBaseUrl: lang ? `/${lang}` : "/",
+      };
+    }
+  }, [routeMatch, userTokens?.tokenFrom, userTokens?.tokenTo]);
+
+  const defaultData = useMemo(
+    () => ({
+      tokenFrom: userTokens?.tokenFrom,
+      tokenTo: userTokens?.tokenTo,
       lang: getUserLanguage(),
-      url: swapMatch.url,
-      urlWithoutLang: swapMatch.url,
-      justifiedBaseUrl: `/`,
-    };
+      url: "",
+      urlWithoutLang: "",
+      justifiedBaseUrl: "",
+    }),
+    [userTokens?.tokenFrom, userTokens?.tokenTo]
+  );
+
+  if (swapWithLangMatchData) {
+    return swapWithLangMatchData;
   }
 
-  if (routeWithLangMatch) {
-    const lang =
-      transformStringToSupportedLanguage(routeWithLangMatch.params.lang) ||
-      DEFAULT_LOCALE;
-
-    return {
-      lang,
-      tokenFrom: userTokens?.tokenFrom,
-      tokenTo: userTokens?.tokenTo,
-      route: routeWithLangMatch.params.route,
-      url: routeWithLangMatch.url,
-      urlWithoutLang: `/${routeWithLangMatch.params.route}`,
-      justifiedBaseUrl: `/${lang}`,
-    };
+  if (swapMatchData) {
+    return swapMatchData;
   }
 
-  if (routeMatch) {
-    const { routeOrLang } = routeMatch.params;
-    const lang = transformStringToSupportedLanguage(routeOrLang as string);
-
-    return {
-      tokenFrom: userTokens?.tokenFrom,
-      tokenTo: userTokens?.tokenTo,
-      route: lang ? undefined : (routeMatch.params.routeOrLang as AppRoutes),
-      lang: lang || DEFAULT_LOCALE,
-      url: routeMatch.url,
-      urlWithoutLang: lang ? "/" : routeMatch.url,
-      justifiedBaseUrl: lang ? `/${lang}` : "/",
-    };
+  if (routeWithLangMatchData) {
+    return routeWithLangMatchData;
   }
 
-  return {
-    tokenFrom: userTokens?.tokenFrom,
-    tokenTo: userTokens?.tokenTo,
-    lang: getUserLanguage(),
-    url: "",
-    urlWithoutLang: "",
-    justifiedBaseUrl: "",
-  };
+  if (routeMatchData) {
+    return routeMatchData;
+  }
+
+  return defaultData;
 };
 
 export default useAppRouteParams;
