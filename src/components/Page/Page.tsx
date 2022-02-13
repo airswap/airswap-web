@@ -1,5 +1,5 @@
 import { FC, ReactElement, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useLastLocation } from "react-router-last-location";
 
 import { Web3Provider } from "@ethersproject/providers";
@@ -8,6 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../routes";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SwapWidget from "../SwapWidget/SwapWidget";
@@ -16,11 +17,11 @@ import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
-function getInformationModalFromLocation(
-  location: string
+function getInformationModalFromRoute(
+  route: AppRoutes | undefined
 ): InformationModalType | undefined {
-  switch (location) {
-    case `/${AppRoutes.join}`:
+  switch (route) {
+    case AppRoutes.join:
       return AppRoutes.join;
     default:
       return undefined;
@@ -30,19 +31,21 @@ function getInformationModalFromLocation(
 const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation().pathname;
   const lastLocation = useLastLocation();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
 
+  const appRouteParams = useAppRouteParams();
   const [activeInformationModal, setActiveInformationModal] = useState<
     InformationModalType | undefined
-  >(getInformationModalFromLocation(location));
+  >(getInformationModalFromRoute(appRouteParams.route));
   const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
 
   const handleLinkButtonClick = (type: InformationModalType) => {
-    history.push(`/${type}`);
+    history.push(
+      appRouteParams.langInRoute ? `${appRouteParams.lang}/${type}` : `/${type}`
+    );
   };
 
   const handleCloseMobileToolbarButtonClick = () => {
@@ -79,10 +82,10 @@ const Page: FC = (): ReactElement => {
   }, [showMobileToolbar]);
 
   useEffect(() => {
-    setActiveInformationModal(getInformationModalFromLocation(location));
-  }, [location]);
-
-  useEffect(() => {}, [location]);
+    setActiveInformationModal(
+      getInformationModalFromRoute(appRouteParams.route)
+    );
+  }, [appRouteParams.route]);
 
   return (
     <StyledPage>

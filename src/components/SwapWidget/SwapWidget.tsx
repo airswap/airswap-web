@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
@@ -64,8 +64,9 @@ import {
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
-import { AppRoutes, SwapRoutes } from "../../routes";
+import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -128,9 +129,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  const match = useRouteMatch<{ tokenFrom?: string; tokenTo?: string }>(
-    `/${AppRoutes.swap}/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`
-  );
+  const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
@@ -246,11 +245,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   ]);
 
   useEffect(() => {
-    if (match && match.params) {
-      setTokenFrom(match.params.tokenFrom);
-      setTokenTo(match.params.tokenTo);
-    }
-  }, [match]);
+    setTokenFrom(appRouteParams.tokenFrom);
+    setTokenTo(appRouteParams.tokenTo);
+  }, [appRouteParams]);
 
   useEffect(() => {
     if (ordersStatus === "reset") {
