@@ -166,6 +166,7 @@
     "noActiveTransactions": "Pas de transactions actives",
     "completedTransactions": "Transactions effectuées",
     "noCompletedTransactions": "Aucune transaction effectuée",
-    "transactionLink": "Lien de la transaction"
+    "transactionLink": "Lien de la transaction",
+    "get": "Obtenir"
   }
 }

@@ -169,6 +169,7 @@
     "completedTransactions": "Completed transactions",
     "noCompletedTransactions": "No completed transactions",
     "transactionLink": "Transaction link",
+    "get": "Get",
     "viewOnExplorer": "View on explorer"
   }
 }
