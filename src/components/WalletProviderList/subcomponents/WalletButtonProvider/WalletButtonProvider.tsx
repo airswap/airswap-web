@@ -7,7 +7,7 @@ import {
   ButtonText,
   StyledButton,
   StyledLink,
-} from "../../WalletProviderList.styles";
+} from "../WalletProviderButton/WalletProviderButton.styles";
 
 type ToolbarButtonProps = {
   provider: WalletProvider;
