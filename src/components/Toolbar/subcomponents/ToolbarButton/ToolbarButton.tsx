@@ -39,9 +39,7 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
   };
 
   if (link) {
-    const url = appRouteParams.langInRoute
-      ? `/${appRouteParams.lang}/${link}`
-      : `/${link}`;
+    const url = `${appRouteParams.justifiedBaseUrl}/${link}`;
 
     return (
       <ToolBarLinkContainer onClick={onClick} to={url}>

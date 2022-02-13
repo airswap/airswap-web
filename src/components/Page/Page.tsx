@@ -1,6 +1,5 @@
 import { FC, ReactElement, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useLastLocation } from "react-router-last-location";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -31,7 +30,6 @@ function getInformationModalFromRoute(
 const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const lastLocation = useLastLocation();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
 
   const appRouteParams = useAppRouteParams();
@@ -42,10 +40,22 @@ const Page: FC = (): ReactElement => {
   const [showWalletList, setShowWalletList] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
 
-  const handleLinkButtonClick = (type: InformationModalType) => {
-    history.push(
-      appRouteParams.langInRoute ? `${appRouteParams.lang}/${type}` : `/${type}`
-    );
+  const reset = () => {
+    setActiveInformationModal(undefined);
+    setShowMobileToolbar(false);
+    dispatch(resetOrders());
+  };
+
+  const handleLinkButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
+  };
+
+  const handleAirswapButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
+  };
+
+  const handleInformationModalCloseButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
   };
 
   const handleCloseMobileToolbarButtonClick = () => {
@@ -54,23 +64,6 @@ const Page: FC = (): ReactElement => {
 
   const handleOpenMobileToolbarButtonClick = () => {
     setShowMobileToolbar(true);
-  };
-
-  const handleAirswapButtonClick = () => {
-    history.push("");
-    setActiveInformationModal(undefined);
-    setShowMobileToolbar(false);
-    dispatch(resetOrders());
-  };
-
-  const handleInformationModalCloseButtonClick = () => {
-    // Check if user has a route before modal. If not then we can't use history.goBack
-    // because the user would route away from the website
-    if (lastLocation) {
-      history.goBack();
-    } else {
-      history.push("");
-    }
   };
 
   useEffect(() => {
@@ -85,6 +78,11 @@ const Page: FC = (): ReactElement => {
     setActiveInformationModal(
       getInformationModalFromRoute(appRouteParams.route)
     );
+
+    if (appRouteParams.route === undefined) {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appRouteParams.route]);
 
   return (

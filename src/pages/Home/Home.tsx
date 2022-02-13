@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect } from "react";
-import { LastLocationProvider } from "react-router-last-location";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -45,9 +44,7 @@ const Home = (): JSX.Element => {
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
           <LastLookProvider>
-            <LastLocationProvider>
-              <Page />
-            </LastLocationProvider>
+            <Page />
           </LastLookProvider>
         </Suspense>
       </Web3ReactProvider>

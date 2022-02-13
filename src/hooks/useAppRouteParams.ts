@@ -15,7 +15,7 @@ interface AppRouteParams {
   tokenTo?: string;
   url: string;
   urlWithoutLang: string;
-  langInRoute: boolean;
+  justifiedBaseUrl: string;
 }
 
 function transformStringToSupportedLanguage(
@@ -51,16 +51,18 @@ const useAppRouteParams = (): AppRouteParams => {
   }>(`/:lang/:route/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`);
 
   if (swapWithLangMatch) {
+    const lang =
+      transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
+      DEFAULT_LOCALE;
+
     return {
+      lang,
       tokenFrom: swapWithLangMatch.params.tokenFrom,
       tokenTo: swapWithLangMatch.params.tokenTo,
-      route: swapWithLangMatch.params.route,
-      lang:
-        transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
-        DEFAULT_LOCALE,
+      route: AppRoutes.swap,
       url: swapWithLangMatch.url,
-      urlWithoutLang: `/${swapWithLangMatch.params.route}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}`,
-      langInRoute: true,
+      urlWithoutLang: `/${AppRoutes.swap}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}/`,
+      justifiedBaseUrl: `/${lang}`,
     };
   }
 
@@ -72,19 +74,21 @@ const useAppRouteParams = (): AppRouteParams => {
       lang: getUserLanguage(),
       url: swapMatch.url,
       urlWithoutLang: swapMatch.url,
-      langInRoute: false,
+      justifiedBaseUrl: `/`,
     };
   }
 
   if (routeWithLangMatch) {
+    const lang =
+      transformStringToSupportedLanguage(routeWithLangMatch.params.lang) ||
+      DEFAULT_LOCALE;
+
     return {
+      lang,
       route: routeWithLangMatch.params.route,
-      lang:
-        transformStringToSupportedLanguage(routeWithLangMatch.params.lang) ||
-        DEFAULT_LOCALE,
       url: routeWithLangMatch.url,
       urlWithoutLang: `/${routeWithLangMatch.params.route}`,
-      langInRoute: true,
+      justifiedBaseUrl: `/${lang}`,
     };
   }
 
@@ -97,7 +101,7 @@ const useAppRouteParams = (): AppRouteParams => {
       lang: lang || DEFAULT_LOCALE,
       url: routeMatch.url,
       urlWithoutLang: lang ? "/" : routeMatch.url,
-      langInRoute: !!lang,
+      justifiedBaseUrl: lang ? `/${lang}` : "/",
     };
   }
 
@@ -105,7 +109,7 @@ const useAppRouteParams = (): AppRouteParams => {
     lang: getUserLanguage(),
     url: "/",
     urlWithoutLang: "/",
-    langInRoute: false,
+    justifiedBaseUrl: "/",
   };
 };
 

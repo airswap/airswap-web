@@ -326,20 +326,22 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+    const baseRoute = `${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`;
+
     if (type === "base") {
       value === quoteToken
-        ? history.push({ pathname: `/${AppRoutes.swap}/${value}/${baseToken}` })
+        ? history.push({ pathname: `${baseRoute}/${value}/${baseToken}` })
         : history.push({
-            pathname: `/${AppRoutes.swap}/${value}/${quoteToken}`,
+            pathname: `${baseRoute}/${value}/${quoteToken}`,
           });
       setBaseAmount("");
     } else {
       value === baseToken
         ? history.push({
-            pathname: `/${AppRoutes.swap}/${quoteToken}/${value}`,
+            pathname: `${baseRoute}/${quoteToken}/${value}`,
           })
         : history.push({
-            pathname: `/${AppRoutes.swap}/${baseToken}/${value}`,
+            pathname: `${baseRoute}/${baseToken}/${value}`,
           });
     }
   };
