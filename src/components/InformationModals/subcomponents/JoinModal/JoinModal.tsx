@@ -6,6 +6,7 @@ import {
   ModalSubTitle,
   ScrollableModalContainer,
 } from "../../../../styled-components/Modal/Modal";
+import HelmetContainer from "../../../HelmetContainer/HelmetContainer";
 import GuideButton, { GuideButtonProps } from "../GuideButton/GuideButton";
 import { GuideButtons } from "./JoinModal.styles";
 
@@ -36,28 +37,35 @@ const JoinModal: FC = () => {
   const { t } = useTranslation();
 
   return (
-    <ScrollableModalContainer>
-      <ModalParagraph>{t("information.join.intro")}</ModalParagraph>
+    <>
+      <HelmetContainer
+        title={`${t("common.AirSwap")} - ${t("information.join.title")}`}
+        description={t("information.join.intro")}
+      />
 
-      <ModalSubTitle type="h2">
-        {t("information.join.getStarted")}
-      </ModalSubTitle>
+      <ScrollableModalContainer>
+        <ModalParagraph>{t("information.join.intro")}</ModalParagraph>
 
-      <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
+        <ModalSubTitle type="h2">
+          {t("information.join.getStarted")}
+        </ModalSubTitle>
 
-      <GuideButtons>
-        {guideButtons.map((guideButton, index) => {
-          return (
-            <GuideButton
-              key={`${guideButton.iconName}-${index}`}
-              iconName={guideButton.iconName}
-              text={guideButton.text}
-              href={guideButton.href}
-            />
-          );
-        })}
-      </GuideButtons>
-    </ScrollableModalContainer>
+        <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
+
+        <GuideButtons>
+          {guideButtons.map((guideButton, index) => {
+            return (
+              <GuideButton
+                key={`${guideButton.iconName}-${index}`}
+                iconName={guideButton.iconName}
+                text={guideButton.text}
+                href={guideButton.href}
+              />
+            );
+          })}
+        </GuideButtons>
+      </ScrollableModalContainer>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import useMediaQuery from "../../helpers/useMediaQuery";
 import useWindowSize from "../../helpers/useWindowSize";
+import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
@@ -48,14 +49,21 @@ const Toolbar: FC<ToolbarProps> = ({
     }
   }, [containerRef, mobileTopBarRef, scrollContainerRef, width, height]);
 
-  const onToolbarButtonClick = (type: InformationModalType) => {
+  const onToolbarButtonClick = (
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+    type: InformationModalType
+  ) => {
     onMobileCloseButtonClick && onMobileCloseButtonClick();
-    if (onLinkButtonClick) {
+    if (!onLinkButtonClick) {
+      return;
+    }
+
+    // On smaller devices we want the mobile menu to animate out first before routing
+    if (!isTabletPortraitUp) {
+      e.preventDefault();
       setTimeout(
-        () => {
-          onLinkButtonClick(type);
-        },
-        isTabletPortraitUp ? 0 : mobileMenuShowHideAnimationDuration * 1000
+        () => onLinkButtonClick(type),
+        mobileMenuShowHideAnimationDuration * 1000
       );
     }
   };
@@ -106,7 +114,10 @@ const Toolbar: FC<ToolbarProps> = ({
         <ToolbarButton
           iconName="contact-support"
           text={t("common.join")}
-          onClick={() => onToolbarButtonClick("join")}
+          onClick={(e) => {
+            onToolbarButtonClick(e, AppRoutes.join);
+          }}
+          link={AppRoutes.join}
         />
       </ToolbarButtonsContainer>
     </ToolbarContainer>

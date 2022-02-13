@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -17,7 +17,7 @@ export type OverlayProps = {
   /**
    * Function to close component
    */
-  onClose: () => void;
+  onCloseButtonClick: () => void;
   /**
    * Title shown on top
    */
@@ -35,7 +35,7 @@ export type OverlayProps = {
 export const overlayShowHideAnimationDuration = 0.3;
 
 const Overlay: FC<OverlayProps> = ({
-  onClose,
+  onCloseButtonClick,
   title = "",
   isHidden = true,
   subTitle = "",
@@ -43,12 +43,20 @@ const Overlay: FC<OverlayProps> = ({
 }) => {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
+  const [initialized, setInitialized] = useState(false);
+  const animationIsDisabled = !isHidden && !initialized;
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
 
   return (
     <Container hasTitle={!!title} isHidden={isHidden}>
       <TitleContainer>
         <TitleSubContainer>
-          <StyledTitle type="h2">{title}</StyledTitle>
+          <StyledTitle type="h2" as="h1">
+            {title}
+          </StyledTitle>
           {!!subTitle && (
             <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
           )}
@@ -58,7 +66,7 @@ const Overlay: FC<OverlayProps> = ({
           ariaLabel={t("common.back")}
           iconSize={1}
           tabIndex={isHidden ? -1 : 0}
-          onClick={onClose}
+          onClick={onCloseButtonClick}
         />
       </TitleContainer>
       <AnimatePresence>
@@ -67,9 +75,10 @@ const Overlay: FC<OverlayProps> = ({
             key="content"
             transition={{
               ease: "easeOut",
-              duration: shouldReduceMotion
-                ? 0
-                : overlayShowHideAnimationDuration,
+              duration:
+                shouldReduceMotion || animationIsDisabled
+                  ? 0
+                  : overlayShowHideAnimationDuration,
             }}
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}

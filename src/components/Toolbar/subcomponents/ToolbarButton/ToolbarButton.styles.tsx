@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import styled, { css } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
@@ -70,6 +72,10 @@ export const ToolbarButtonContainer = styled.button`
 `;
 
 export const ToolBarAnchorContainer = styled.a`
+  ${ButtonStyle}
+`;
+
+export const ToolBarLinkContainer = styled(Link)`
   ${ButtonStyle}
 `;
 
