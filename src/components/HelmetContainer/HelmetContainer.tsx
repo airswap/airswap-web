@@ -6,7 +6,11 @@ type HelmetContainerProps = {
   description: string;
 };
 
-const HelmetContainer: FC<HelmetContainerProps> = ({ title, description }) => {
+const HelmetContainer: FC<HelmetContainerProps> = ({
+  title,
+  description,
+  children,
+}) => {
   return (
     <Helmet>
       <title>{title}</title>
@@ -15,6 +19,7 @@ const HelmetContainer: FC<HelmetContainerProps> = ({ title, description }) => {
       <meta property="og:description" content={description} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      {children}
     </Helmet>
   );
 };

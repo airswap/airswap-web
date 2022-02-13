@@ -24,12 +24,8 @@ const App = (): JSX.Element => {
 
       <Router>
         <Switch>
-          <Route exact path={AppRoutes.whitepaper}>
+          <Route exact path={`/${AppRoutes.whitepaper}`}>
             <Whitepaper />
-          </Route>
-
-          <Route exact path={AppRoutes.swap}>
-            <Home />
           </Route>
 
           <Route>

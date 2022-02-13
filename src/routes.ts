@@ -1,6 +1,6 @@
 export enum AppRoutes {
   join = "join",
-  whitepaper = "/whitepaper",
+  whitepaper = "whitepaper",
   swap = "swap",
 }
 

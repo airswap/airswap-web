@@ -11,7 +11,13 @@ const Whitepaper: FC = () => {
         description={
           "Learn how the Airswap protocol can save you money by powering gasless p2p crypto trades."
         }
-      />
+      >
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="/whitepaper/whitepaper.css"
+        />
+      </HelmetContainer>
 
       <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
     </>
