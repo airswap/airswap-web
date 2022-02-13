@@ -1,14 +1,15 @@
+import { css } from "styled-components";
 import styled from "styled-components/macro";
 
 import Icon from "../Icon/Icon";
 
 interface StyledIconButtonProps {
-  hasText: boolean;
+  hasText?: boolean;
 }
 
 export const StyledIcon = styled(Icon)``;
 
-export const StyledIconButton = styled.button<StyledIconButtonProps>`
+export const IconButtonStyle = css<StyledIconButtonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,4 +34,8 @@ export const StyledIconButton = styled.button<StyledIconButtonProps>`
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
   }
+`;
+
+export const StyledIconButton = styled.button<StyledIconButtonProps>`
+  ${IconButtonStyle};
 `;

@@ -1,4 +1,6 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, ElementType } from "react";
+
+import { DefaultTheme, StyledComponent } from "styled-components/macro";
 
 import { StyledH1, StyledH2, StyledH3, StyledH4 } from "./Typography.styles";
 
@@ -8,9 +10,13 @@ export type TitleProps = {
   children: React.ReactNode;
   className?: string;
   type: TitleType;
+  as?: ElementType;
 };
 
-const titles: Record<TitleType, FC<{ className?: string }>> = {
+const titles: Record<
+  TitleType,
+  StyledComponent<keyof JSX.IntrinsicElements, DefaultTheme>
+> = {
   h1: StyledH1,
   h2: StyledH2,
   h3: StyledH3,
@@ -21,10 +27,15 @@ export const Title: FC<TitleProps> = ({
   className,
   children,
   type,
+  as,
 }): ReactElement => {
   const StyledTitle = titles[type];
 
-  return <StyledTitle className={className}>{children}</StyledTitle>;
+  return (
+    <StyledTitle as={as || type} className={className}>
+      {children}
+    </StyledTitle>
+  );
 };
 
 export {

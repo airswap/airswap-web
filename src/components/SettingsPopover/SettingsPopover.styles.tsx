@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyleType2,
@@ -16,8 +17,8 @@ export const Container = styled.div<ContainerProps>`
   grid-template-rows: 5rem;
   width: 16rem;
   height: 17.25rem;
-  top: 4rem;
-  right: 13rem;
+  top: 5rem;
+  right: 3.75rem;
   transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
@@ -26,6 +27,15 @@ export const Container = styled.div<ContainerProps>`
   border-radius: 0.5rem;
   padding: 1rem;
   z-index: 1000;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    right: 13.75rem;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    top: 4rem;
+    right: 0;
+  }
 `;
 
 export const ThemeContainer = styled.div`
@@ -80,6 +90,7 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  text-align: left;
   padding: 0.5rem 0 0.5rem 1rem;
   border-radius: 1px;
   font-weight: ${(props) => (props.active ? "600" : "400")};

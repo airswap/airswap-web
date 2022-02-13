@@ -5,7 +5,7 @@ import SUPPORTED_WALLET_PROVIDERS, {
 } from "../../constants/supportedWalletProviders";
 import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
 import { StyledWalletProviderList } from "./WalletProviderList.styles";
-import WalletButtonProvider from "./subcomponents/WalletButtonProvider/WalletButtonProvider";
+import WalletProviderButton from "./subcomponents/WalletProviderButton/WalletProviderButton";
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
@@ -32,20 +32,13 @@ const WalletProviderList = ({
 
   return (
     <StyledWalletProviderList className={className}>
-      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) =>
-        provider.isInstalled ? (
-          <WalletButtonProvider
-            key={i}
-            provider={provider}
-            onClick={() => onProviderButtonClick(provider)}
-          ></WalletButtonProvider>
-        ) : (
-          <WalletButtonProvider
-            key={i}
-            provider={provider}
-          ></WalletButtonProvider>
-        )
-      )}
+      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) => (
+        <WalletProviderButton
+          key={i}
+          provider={provider}
+          onClick={() => onProviderButtonClick(provider)}
+        />
+      ))}
     </StyledWalletProviderList>
   );
 };

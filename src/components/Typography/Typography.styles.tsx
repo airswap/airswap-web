@@ -5,6 +5,8 @@ import styled, {
   StyledComponent,
 } from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
+
 const elementMap: Record<
   keyof DefaultTheme["typography"],
   keyof JSX.IntrinsicElements
@@ -39,7 +41,7 @@ const elementMap: Record<
 const makeTypographyComponent = (
   key: keyof DefaultTheme["typography"],
   additionalCSS?: any
-) => {
+): StyledComponent<keyof JSX.IntrinsicElements, DefaultTheme> => {
   const tag = elementMap[key];
   const Component = (styled[tag] as ThemedStyledFunction<
     typeof tag,
@@ -47,10 +49,20 @@ const makeTypographyComponent = (
     {},
     never
   >)`
-    font-size: ${(props) => props.theme.typography[key].fontSize};
-    font-weight: ${(props) => props.theme.typography[key].fontWeight};
-    line-height: ${(props) => props.theme.typography[key].lineHeight};
+    font-size: ${(props) => props.theme.typography[key].desktop.fontSize};
+    font-weight: ${(props) => props.theme.typography[key].desktop.fontWeight};
+    line-height: ${(props) => props.theme.typography[key].desktop.lineHeight};
     ${additionalCSS ? additionalCSS : ""}
+    
+    ${(props) =>
+      props.theme.typography[key].mobile
+        ? `
+      @media ${breakPoints.phoneOnly} {
+        font-size: ${props.theme.typography[key].mobile?.fontSize};
+        font-weight: ${props.theme.typography[key].mobile?.fontWeight};
+        line-height: ${props.theme.typography[key].mobile?.lineHeight};
+      }`
+        : ""}
   `;
   return Component;
 };

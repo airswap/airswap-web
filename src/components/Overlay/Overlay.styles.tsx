@@ -3,12 +3,14 @@ import { css } from "styled-components";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
+import breakPoints from "../../style/breakpoints";
 import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
 import { ButtonStyle } from "../Button/Button.styles";
-import { InfoSubHeading, Title } from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
+import { StyledH2 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
   isHidden: boolean;
@@ -38,6 +40,11 @@ export const ContentContainer = styled(motion.div)`
   height: calc(100% - 5.625rem);
   padding: 0 ${sizes.tradeContainerPadding};
   background-color: ${(props) => props.theme.colors.black};
+
+  @media ${breakPoints.phoneOnly} {
+    height: calc(100% - 3.625rem);
+    padding: 0 ${sizes.tradeContainerMobilePadding};
+  }
 `;
 
 export const TitleContainer = styled.div`
@@ -46,6 +53,10 @@ export const TitleContainer = styled.div`
   justify-content: space-between;
   padding: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
+
+  @media ${breakPoints.phoneOnly} {
+    padding: ${sizes.tradeContainerMobilePadding};
+  }
 `;
 
 export const TitleSubContainer = styled.div`
@@ -53,7 +64,10 @@ export const TitleSubContainer = styled.div`
   flex-direction: column;
 `;
 
-export const StyledTitle = styled(Title)`
+export const StyledTitle = styled(StyledH2)<{
+  type: keyof JSX.IntrinsicElements;
+  as?: keyof JSX.IntrinsicElements;
+}>`
   min-height: 1.875rem;
   padding-right: 1rem;
   flex-grow: 2;

@@ -1,4 +1,4 @@
-const sizes = {
+export const breakpointSizes = {
   tinyScreen: "320px",
   phone: "480px",
   phoneLandscape: "400px",
@@ -9,13 +9,14 @@ const sizes = {
 };
 
 const breakPoints = {
-  tinyScreenOnly: `(max-width: ${sizes.tinyScreen})`,
-  phoneOnly: `(max-width: ${sizes.phone})`,
-  phoneLandscape: `(orientation: landscape) and (max-height: ${sizes.phoneLandscape})`,
-  tabletPortraitUp: `(min-width: ${sizes.tabletPortrait})`,
-  tabletLandscapeUp: `(min-width: ${sizes.tabletLandscape})`,
-  desktopUp: `(min-width: ${sizes.desktop})`,
-  bigDesktopUp: `(min-width: ${sizes.bigDesktop})`,
+  tinyScreenOnly: `(max-width: ${breakpointSizes.tinyScreen})`,
+  phoneOnly: `(max-width: ${breakpointSizes.phone})`,
+  phoneLandscape: `(orientation: landscape) and (max-height: ${breakpointSizes.phoneLandscape})`,
+  shallowScreenOnly: `(max-width: 1088px) and (max-height: 664px)`,
+  tabletPortraitUp: `(min-width: ${breakpointSizes.tabletPortrait})`,
+  tabletLandscapeUp: `(min-width: ${breakpointSizes.tabletLandscape})`,
+  desktopUp: `(min-width: ${breakpointSizes.desktop})`,
+  bigDesktopUp: `(min-width: ${breakpointSizes.bigDesktop})`,
 };
 
 export default breakPoints;

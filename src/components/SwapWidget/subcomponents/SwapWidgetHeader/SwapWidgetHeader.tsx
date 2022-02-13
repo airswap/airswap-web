@@ -36,7 +36,9 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
 
   return (
     <Container>
-      <Title type="h2">{title}</Title>
+      <Title type="h2" as="h1">
+        {title}
+      </Title>
 
       {protocol === "last-look" && isQuote && (
         <Button onClick={onGasFreeTradeButtonClick}>

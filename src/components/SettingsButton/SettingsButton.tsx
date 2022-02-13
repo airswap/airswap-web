@@ -9,12 +9,14 @@ type SettingsButtonType = {
   settingsOpen: boolean;
   transactionsTabOpen: boolean;
   setSettingsOpen: (x: boolean) => void;
+  className?: string;
 };
 
 const SettingsButton = ({
   settingsOpen,
   transactionsTabOpen,
   setSettingsOpen,
+  className,
 }: SettingsButtonType) => {
   const { t } = useTranslation();
 
@@ -55,7 +57,11 @@ const SettingsButton = ({
 
   return (
     <>
-      <Container ref={containerRef} open={transactionsTabOpen}>
+      <Container
+        className={className}
+        ref={containerRef}
+        open={transactionsTabOpen}
+      >
         <SettingsButtonContainer
           aria-label={t("common.settings")}
           onClick={() => setSettingsOpen(!settingsOpen)}
