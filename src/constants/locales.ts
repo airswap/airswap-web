@@ -5,6 +5,7 @@ export const SUPPORTED_LOCALES = [
   "nb",
   "nl",
   "pt",
+  "ro",
   "zh-tr",
 ];
 
@@ -18,5 +19,6 @@ export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   nl: "Nederlands",
   pt: "Portugues",
   fr: "Français",
+  ro: "Romanian",
   "zh-tr": "中文繁體",
 };
