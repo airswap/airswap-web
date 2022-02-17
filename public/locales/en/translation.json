@@ -37,10 +37,9 @@
     "language": "LANGUAGE",
     "theme": "THEME",
     "stats": "stats",
-    "otc": "OTC",
     "vote": "vote",
     "build": "build",
-    "about": "about",
+    "learn": "learn",
     "join": "join",
     "reloadPage": "Reload Page",
     "settings": "Settings",
@@ -135,15 +134,14 @@
     "invalid_sig": "Invalid signature",
     "expiry_passed": "Order has expired",
     "unauthorized": "Signer has not authorized the signatory",
-    "signer_allowance_low": "Signer has not approved the signer amount",
-    "signer_balance_low": "Signer does not have enough balance",
+    "signer_allowance_low": "Signer does not have enough balance",
+    "signer_balance_low": "Signer has not approved the signer amount",
     "nonce_aleady_used": "Nonce has been already used or cancelled",
     "unableSwap": "Unable to swap",
     "swapFail": "The swap would fail for the following reasons."
   },
   "wallet": {
     "connectWallet": "Connect Wallet",
-    "copyAddress": "Copy Address",
     "notConnected": "Not connected",
     "unsupportedNetwork": "Unsupported network",
     "unsupported": "Unsupported",
@@ -169,7 +167,12 @@
     "completedTransactions": "Completed transactions",
     "noCompletedTransactions": "No completed transactions",
     "transactionLink": "Transaction link",
-    "get": "Get",
-    "viewOnExplorer": "View on explorer"
+    "copyAddress": "Copy address",
+    "viewOnExplorer": "View on explorer",
+    "get": "Get"
+  },
+  "app": {
+    "title": "AirSwap: Peer-to-peer Token Trading DEX and Open Source Developer DAO",
+    "description": "AirSwap powers peer-to-peer trading."
   }
 }

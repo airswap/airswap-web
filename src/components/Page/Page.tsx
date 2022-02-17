@@ -1,4 +1,5 @@
-import { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
@@ -9,6 +10,7 @@ import { resetOrders } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../routes";
+import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
@@ -30,6 +32,7 @@ function getInformationModalFromRoute(
 const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { t } = useTranslation();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
 
   const appRouteParams = useAppRouteParams();
@@ -87,6 +90,7 @@ const Page: FC = (): ReactElement => {
 
   return (
     <StyledPage>
+      <HelmetContainer title={t("app.title")} />
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
         <Toolbar
