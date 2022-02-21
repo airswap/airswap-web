@@ -27,9 +27,15 @@ const useGasPriceSubscriber = () => {
     () => () => {
       if (intervals.current.gas) return;
       const updateGasPrice = async () => {
-        const price = await getFastGasPrice();
-        if (price) {
-          dispatch(setFastGasPrice(price.toString()));
+        let price = "0";
+        try {
+          let _price = await getFastGasPrice();
+          if (_price) price = _price.toString();
+        } catch (e) {
+          console.error(e);
+        }
+        if (parseFloat(price)!==0) {
+          dispatch(setFastGasPrice(price));
         }
       };
       intervals.current.gas = window.setInterval(
