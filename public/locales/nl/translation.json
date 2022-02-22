@@ -43,7 +43,8 @@
         "join": "Join",
         "reloadPage": "Ververs Pagina",
         "settings": "Instellingen",
-        "closeOverlay": "Overlay sluiten"
+        "closeOverlay": "Overlay sluiten",
+        "about": ""
     },
     "information": {
         "join.title": "Word lid van AirSwap",
@@ -58,10 +59,10 @@
         "protocolFeeDiscount.paragraph2": "Deze kosten worden dan verdeeld naar de bijdragers in de community die actief hebben bijgedragen in het bestuur en ontwikkelingsproces. Je kunt de balans van de fee pool altijd bekijken op",
         "protocolFeeDiscount.link": "Etherscan",
         "protocolFeeDiscount.stakeYourAst": "Stake en word lid van de DAO",
-        "join.voter": "Stemmer",
-        "join.developer": "Ontwikkelaar",
-        "join.ambassador": "Ambassadeur",
-        "join.author": "Auteur"
+        "join.voter": "",
+        "join.developer": "",
+        "join.ambassador": "",
+        "join.author": ""
     },
     "orders": {
         "continue": "Ga verder",
