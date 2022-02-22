@@ -43,7 +43,8 @@
         "join": "Join",
         "reloadPage": "Ververs Pagina",
         "settings": "Instellingen",
-        "closeOverlay": "Overlay sluiten"
+        "closeOverlay": "Overlay sluiten",
+        "about": ""
     },
     "information": {
         "join.title": "Word lid van AirSwap",

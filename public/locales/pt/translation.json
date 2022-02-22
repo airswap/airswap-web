@@ -43,7 +43,8 @@
         "join": "participar",
         "reloadPage": "Atualizar a página",
         "settings": "Definições",
-        "closeOverlay": "Fechar sobreposição"
+        "closeOverlay": "Fechar sobreposição",
+        "about": ""
     },
     "information": {
         "join.title": "Participe na AirSwap",
