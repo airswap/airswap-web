@@ -43,7 +43,8 @@
         "join": "participar",
         "reloadPage": "Atualizar a página",
         "settings": "Definições",
-        "closeOverlay": "Fechar sobreposição"
+        "closeOverlay": "Fechar sobreposição",
+        "about": ""
     },
     "information": {
         "join.title": "Participe na AirSwap",
@@ -58,10 +59,10 @@
         "protocolFeeDiscount.paragraph2": "Essas taxas são então distribuídas pelos membros da comunidade que participam ativamente no processo de governação e desenvolvimento. Pode verificar o saldo de taxas agrupadas a qualquer momento em",
         "protocolFeeDiscount.link": "Etherscan",
         "protocolFeeDiscount.stakeYourAst": "Tranque e participe na DAO",
-        "join.voter": "Eleitor",
-        "join.developer": "Developer",
-        "join.ambassador": "Embaixador",
-        "join.author": "Autor"
+        "join.voter": "",
+        "join.developer": "",
+        "join.ambassador": "",
+        "join.author": ""
     },
     "orders": {
         "continue": "Continuar",
