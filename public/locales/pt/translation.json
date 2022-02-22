@@ -167,6 +167,12 @@
         "completedTransactions": "Transações concluídas",
         "noCompletedTransactions": "Sem transações concluídas",
         "transactionLink": "Ligação para a transação",
+        "copyAddress": "",
+        "viewOnExplorer": "",
         "get": ""
+    },
+    "app": {
+        "title": "",
+        "description": ""
     }
 }
