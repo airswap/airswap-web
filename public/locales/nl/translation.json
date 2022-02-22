@@ -167,6 +167,12 @@
         "completedTransactions": "Voltooide transacties",
         "noCompletedTransactions": "Geen voltooide transacties",
         "transactionLink": "Transactie link",
-        "get": "Download"
+        "copyAddress": "",
+        "viewOnExplorer": "",
+        "get": ""
+    },
+    "app": {
+        "title": "",
+        "description": ""
     }
 }
