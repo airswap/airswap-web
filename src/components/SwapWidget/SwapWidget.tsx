@@ -351,8 +351,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     if (tokenFrom && tokenTo) {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
-
-    console.log(`${baseRoute}/${tokenFrom}/${tokenTo}`);
     history.push({
       pathname: `${baseRoute}/${tokenFrom}/${tokenTo}`,
     });
