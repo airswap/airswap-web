@@ -332,7 +332,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
-    const baseRoute = `${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`;
+    const baseUrl =
+      appRouteParams.justifiedBaseUrl !== "/"
+        ? appRouteParams.justifiedBaseUrl
+        : "";
+    const baseRoute = `${baseUrl}/${AppRoutes.swap}`;
     const { tokenFrom, tokenTo } = getTokenPairs(
       type,
       value,
@@ -348,6 +352,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
 
+    console.log(`${baseRoute}/${tokenFrom}/${tokenTo}`);
     history.push({
       pathname: `${baseRoute}/${tokenFrom}/${tokenTo}`,
     });

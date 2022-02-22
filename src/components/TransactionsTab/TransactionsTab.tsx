@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
-import { getEtherscanWalletURL } from "@airswap/utils";
+import { getEtherscanURL } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -89,7 +89,7 @@ const TransactionsTab = ({
       ? addressOrName
       : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
-  const walletUrl = useMemo(() => getEtherscanWalletURL(chainId, address), [
+  const walletUrl = useMemo(() => getEtherscanURL(chainId, address), [
     chainId,
     address,
   ]);
