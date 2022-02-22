@@ -9,16 +9,6 @@
   dependencies:
     openzeppelin-solidity "2.4"
 
-"@airswap/constants@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.1.tgz#1664b9bb752ac9278edc16de46b5e25d8f20f04c"
-  integrity sha512-llPEcAZRizBejMBP2ZVlnIuK0uhLRL0VgqQYaBquPx2O+CXjWRkQNQVOZ3i09PW0SDTTV+WkwnQy0FAE8OBHVw==
-
-"@airswap/constants@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.2.tgz#021e76a048495836dd3ecf64943078c16a699fab"
-  integrity sha512-1G3kpLR2dJONU3qSrwdFXCXwf5OlNv1LOn+Zm259V9SnpBTRS5e3msPaKyBMvRm2AVY4QoQ9UnKRjVRMkO1g6Q==
-
 "@airswap/constants@0.4.3", "@airswap/constants@^0.4.0":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-0.4.3.tgz#83320d02d01fb53f7658d4deacecfbbd5992ebe6"
@@ -63,13 +53,13 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/metadata@^0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-0.3.7.tgz#31f8fce48877417c6c2c0b109a48404c753ef162"
-  integrity sha512-BXtXf6bDaselTPP4i/a7/heqoKhfsHtI+B2BlLg3KYTTbhnOaWA8/CYOUvR2QWQlz6RYN76+9qt+XMPpWkL/Og==
+"@airswap/metadata@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-1.0.7.tgz#a19c6b1df2d0d698cba4cc3365207bbbaf3bc827"
+  integrity sha512-35z8nxME/TRb8r2T44tkkUUGnzpYUNHluC9oa4aeJ9rKJ/2cdcSlAEIMA2gAgSlw+ED7RgbhcPeFFNruY2hEWQ==
   dependencies:
-    "@airswap/constants" "0.4.2"
-    "@airswap/types" "3.6.1"
+    "@airswap/constants" "1.0.0"
+    "@airswap/typescript" "1.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.24"
     axios "^0.21.3"
     eth-contract-metadata "^1.12.1"
@@ -82,13 +72,6 @@
   integrity sha512-0sUMHePUUv4cqCZcebHWhMHCMJI9rVmbrP/QqMe52g/holZ3zquEtySY3OzYqBppjlLvodPJX/XcfArjpGljVA==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
-
-"@airswap/types@3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@airswap/types/-/types-3.6.1.tgz#23beafff44cf8bec84f89ca8d545f73291212c9a"
-  integrity sha512-ryN9SxxbkOOU+MqYHlnm+lENh53P/6HDbQK6hyuv49ehRAn7BhzVLgYdINJWwj09oDrVME9DseWz521L8HzoPw==
-  dependencies:
-    "@airswap/constants" "0.4.1"
 
 "@airswap/types@3.7.0", "@airswap/types@^3.7.0":
   version "3.7.0"

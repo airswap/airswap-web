@@ -17,7 +17,7 @@
     "@airswap/balances": "^1.1.2",
     "@airswap/constants": "^0.4.0",
     "@airswap/libraries": "0.0.14",
-    "@airswap/metadata": "^0.3.7",
+    "@airswap/metadata": "^1.0.7",
     "@airswap/types": "^3.7.0",
     "@airswap/utils": "^1.0.1",
     "@airswap/validator": "^2.3.1",
