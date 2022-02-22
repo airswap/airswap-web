@@ -150,7 +150,7 @@ const LastLookProvider: FC = ({ children }) => {
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
-      console.log({unsignedOrder})
+      console.log({ unsignedOrder });
       const signature = await createClaimSignature(
         unsignedOrder,
         library.getSigner(),
