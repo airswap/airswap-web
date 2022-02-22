@@ -81,9 +81,14 @@ export const ToolBarLinkContainer = styled(Link)`
 
 export const Text = styled.div`
   margin-left: 0.75rem;
+  width: 100%;
   font-weight: 600;
   font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.675rem")};
   text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (min-height: ${sizes.toolbarMaxHeight}) {
     font-size: ${() =>

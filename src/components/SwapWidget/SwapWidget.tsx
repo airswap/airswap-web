@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
@@ -61,11 +61,16 @@ import {
   ProtocolType,
   selectPendingApprovals,
 } from "../../features/transactions/transactionsSlice";
+import {
+  setUserTokens,
+  selectUserTokens,
+} from "../../features/userSettings/userSettingsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
-import { AppRoutes, SwapRoutes } from "../../routes";
+import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -82,13 +87,14 @@ import StyledSwapWidget, {
   InfoContainer,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
+import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-type TokenSelectModalTypes = "base" | "quote" | null;
+export type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
@@ -123,14 +129,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const pendingApprovals = useAppSelector(selectPendingApprovals);
   const tradeTerms = useAppSelector(selectTradeTerms);
+  const userTokens = useAppSelector(selectUserTokens);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  const match = useRouteMatch<{ tokenFrom?: string; tokenTo?: string }>(
-    `/${AppRoutes.swap}/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`
-  );
+  const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
@@ -177,24 +182,24 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  let defaultBaseTokenAddress: string | null = allTokens.length
+  const defaultBaseTokenAddress: string | null = allTokens.length
     ? findTokensBySymbol("USDT", allTokens)[0].address
     : null;
-  let defaultQuoteTokenAddress: string | null = allTokens.length
+  const defaultQuoteTokenAddress: string | null = allTokens.length
     ? findTokensBySymbol("WETH", allTokens)[0].address
     : null;
 
-  // Use default tokens only if neither are specified in the URL.
+  // Use default tokens only if neither are specified in the URL or store.
   const baseToken = tokenFrom
     ? tokenFrom
     : tokenTo
     ? null
-    : defaultBaseTokenAddress;
+    : userTokens.tokenFrom || defaultBaseTokenAddress;
   const quoteToken = tokenTo
     ? tokenTo
     : tokenFrom
     ? null
-    : defaultQuoteTokenAddress;
+    : userTokens.tokenTo || defaultQuoteTokenAddress;
 
   const baseTokenInfo = useMemo(
     () =>
@@ -246,11 +251,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   ]);
 
   useEffect(() => {
-    if (match && match.params) {
-      setTokenFrom(match.params.tokenFrom);
-      setTokenTo(match.params.tokenTo);
-    }
-  }, [match]);
+    setTokenFrom(appRouteParams.tokenFrom);
+    setTokenTo(appRouteParams.tokenTo);
+  }, [appRouteParams]);
 
   useEffect(() => {
     if (ordersStatus === "reset") {
@@ -329,22 +332,25 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+    const baseRoute = `${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`;
+    const { tokenFrom, tokenTo } = getTokenPairs(
+      type,
+      value,
+      quoteToken,
+      baseToken
+    );
+
     if (type === "base") {
-      value === quoteToken
-        ? history.push({ pathname: `/${AppRoutes.swap}/${value}/${baseToken}` })
-        : history.push({
-            pathname: `/${AppRoutes.swap}/${value}/${quoteToken}`,
-          });
       setBaseAmount("");
-    } else {
-      value === baseToken
-        ? history.push({
-            pathname: `/${AppRoutes.swap}/${quoteToken}/${value}`,
-          })
-        : history.push({
-            pathname: `/${AppRoutes.swap}/${baseToken}/${value}`,
-          });
     }
+
+    if (tokenFrom && tokenTo) {
+      dispatch(setUserTokens({ tokenFrom, tokenTo }));
+    }
+
+    history.push({
+      pathname: `${baseRoute}/${tokenFrom}/${tokenTo}`,
+    });
   };
 
   let insufficientBalance: boolean = false;

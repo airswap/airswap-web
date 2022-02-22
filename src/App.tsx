@@ -19,7 +19,6 @@ const App = (): JSX.Element => {
         title={
           "AirSwap: Peer-to-peer Token Trading DEX and Open Source Developer DAO"
         }
-        description={"AirSwap powers peer-to-peer trading."}
       />
 
       <Router>

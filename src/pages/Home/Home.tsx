@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
-import { LastLocationProvider } from "react-router-last-location";
+import React, { Suspense, useEffect } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
+import i18n from "i18next";
 import { ThemeProvider, ThemeType } from "styled-components/macro";
 
 import { useAppSelector } from "../../app/hooks";
@@ -11,6 +11,7 @@ import Page from "../../components/Page/Page";
 import PageLoader from "../../components/PageLoader/PageLoader";
 import LastLookProvider from "../../contexts/lastLook/LastLook";
 import { selectTheme } from "../../features/userSettings/userSettingsSlice";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useSystemTheme from "../../hooks/useSystemTheme";
 import GlobalStyle from "../../style/GlobalStyle";
 import { darkTheme, lightTheme } from "../../style/themes";
@@ -28,6 +29,12 @@ function getLibrary(provider: any): Web3Provider {
 const Home = (): JSX.Element => {
   const theme = useAppSelector(selectTheme);
   const systemTheme = useSystemTheme();
+  const appRouteParams = useAppRouteParams();
+
+  useEffect(() => {
+    i18n.changeLanguage(appRouteParams.lang);
+  }, [appRouteParams.lang]);
+
   const renderedTheme: ThemeType =
     theme === "system" ? systemTheme : (theme as ThemeType);
 
@@ -37,9 +44,7 @@ const Home = (): JSX.Element => {
         {/* Suspense needed here for loading i18n resources */}
         <Suspense fallback={<PageLoader />}>
           <LastLookProvider>
-            <LastLocationProvider>
-              <Page />
-            </LastLocationProvider>
+            <Page />
           </LastLookProvider>
         </Suspense>
       </Web3ReactProvider>

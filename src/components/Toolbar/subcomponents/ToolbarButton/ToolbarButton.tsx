@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 
+import useAppRouteParams from "../../../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../../../routes";
 import Icon from "../../../Icon/Icon";
 import {
@@ -26,6 +27,8 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
   link,
   onClick,
 }) => {
+  const appRouteParams = useAppRouteParams();
+
   const renderInner = () => {
     return (
       <>
@@ -37,7 +40,10 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
 
   if (link) {
     return (
-      <ToolBarLinkContainer onClick={onClick} to={`/${link}`}>
+      <ToolBarLinkContainer
+        onClick={onClick}
+        to={`${appRouteParams.justifiedBaseUrl}/${link}`}
+      >
         {renderInner()}
       </ToolBarLinkContainer>
     );

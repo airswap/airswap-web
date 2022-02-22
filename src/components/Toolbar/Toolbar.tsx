@@ -88,7 +88,7 @@ const Toolbar: FC<ToolbarProps> = ({
       <ToolbarButtonsContainer ref={scrollContainerRef} $overflow={overflow}>
         <ToolbarButton
           iconName="swap-horizontal"
-          text={t("common.otc")}
+          text="OTC"
           href="https://trader.airswap.io/"
         />
         <ToolbarButton
@@ -108,7 +108,7 @@ const Toolbar: FC<ToolbarProps> = ({
         />
         <ToolbarButton
           iconName="learn"
-          text={t("common.about")}
+          text={t("common.learn")}
           href="https://about.airswap.io/"
         />
         <ToolbarButton

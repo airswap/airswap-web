@@ -1,6 +1,6 @@
-import { FC, ReactElement, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import { useLastLocation } from "react-router-last-location";
+import React, { FC, ReactElement, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -8,7 +8,9 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../routes";
+import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
@@ -16,11 +18,11 @@ import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
-function getInformationModalFromLocation(
-  location: string
+function getInformationModalFromRoute(
+  route: AppRoutes | undefined
 ): InformationModalType | undefined {
-  switch (location) {
-    case `/${AppRoutes.join}`:
+  switch (route) {
+    case AppRoutes.join:
       return AppRoutes.join;
     default:
       return undefined;
@@ -30,19 +32,33 @@ function getInformationModalFromLocation(
 const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation().pathname;
-  const lastLocation = useLastLocation();
+  const { t } = useTranslation();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
 
+  const appRouteParams = useAppRouteParams();
   const [activeInformationModal, setActiveInformationModal] = useState<
     InformationModalType | undefined
-  >(getInformationModalFromLocation(location));
+  >(getInformationModalFromRoute(appRouteParams.route));
   const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
 
-  const handleLinkButtonClick = (type: InformationModalType) => {
-    history.push(`/${type}`);
+  const reset = () => {
+    setActiveInformationModal(undefined);
+    setShowMobileToolbar(false);
+    dispatch(resetOrders());
+  };
+
+  const handleLinkButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
+  };
+
+  const handleAirswapButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
+  };
+
+  const handleInformationModalCloseButtonClick = () => {
+    history.push(appRouteParams.justifiedBaseUrl);
   };
 
   const handleCloseMobileToolbarButtonClick = () => {
@@ -51,23 +67,6 @@ const Page: FC = (): ReactElement => {
 
   const handleOpenMobileToolbarButtonClick = () => {
     setShowMobileToolbar(true);
-  };
-
-  const handleAirswapButtonClick = () => {
-    history.push("");
-    setActiveInformationModal(undefined);
-    setShowMobileToolbar(false);
-    dispatch(resetOrders());
-  };
-
-  const handleInformationModalCloseButtonClick = () => {
-    // Check if user has a route before modal. If not then we can't use history.goBack
-    // because the user would route away from the website
-    if (lastLocation) {
-      history.goBack();
-    } else {
-      history.push("");
-    }
   };
 
   useEffect(() => {
@@ -79,13 +78,19 @@ const Page: FC = (): ReactElement => {
   }, [showMobileToolbar]);
 
   useEffect(() => {
-    setActiveInformationModal(getInformationModalFromLocation(location));
-  }, [location]);
+    setActiveInformationModal(
+      getInformationModalFromRoute(appRouteParams.route)
+    );
 
-  useEffect(() => {}, [location]);
+    if (appRouteParams.route === undefined) {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appRouteParams.route]);
 
   return (
     <StyledPage>
+      <HelmetContainer title={t("app.title")} />
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
         <Toolbar
