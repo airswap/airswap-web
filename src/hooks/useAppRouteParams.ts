@@ -93,7 +93,7 @@ const useAppRouteParams = (): AppRouteParams => {
         lang: userLanguage,
         url: swapMatch.url,
         urlWithoutLang: swapMatch.url,
-        justifiedBaseUrl: `/`,
+        justifiedBaseUrl: "",
       };
     }
   }, [swapMatch, userLanguage]);
@@ -124,7 +124,7 @@ const useAppRouteParams = (): AppRouteParams => {
         lang: lang || DEFAULT_LOCALE,
         url: routeMatch.url,
         urlWithoutLang: lang ? "/" : routeMatch.url,
-        justifiedBaseUrl: lang ? `/${lang}` : "/",
+        justifiedBaseUrl: lang ? `/${lang}` : "",
       };
     }
   }, [routeMatch]);
