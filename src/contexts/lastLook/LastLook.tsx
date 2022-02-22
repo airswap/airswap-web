@@ -6,7 +6,7 @@ import { Server } from "@airswap/libraries";
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
 import { LightOrder, Pricing } from "@airswap/types";
-import { createLightOrder, createLightSignature } from "@airswap/utils";
+import { createOrder, createSwapSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
@@ -139,7 +139,7 @@ const LastLookProvider: FC = ({ children }) => {
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
 
-      const unsignedOrder = createLightOrder({
+      const unsignedOrder = createOrder({
         expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
         nonce: Date.now().toString(),
         senderWallet: server.getSenderWallet(),
@@ -150,13 +150,12 @@ const LastLookProvider: FC = ({ children }) => {
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
-      const signature = await createLightSignature(
+      const signature = await createSwapSignature(
         unsignedOrder,
         library.getSigner(),
         lightDeploys[chainId],
         chainId!
       );
-
       const order: LightOrder = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,

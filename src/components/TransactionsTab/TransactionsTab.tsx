@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { etherscanDomains } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
+import { getEtherscanWalletURL } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -37,11 +37,6 @@ import {
   BackdropFilter,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-
-/* temporary copy of function from latest @airswap/utils */
-function getEtherscanWalletURL(chainId: number, address: string): string {
-  return `https://${etherscanDomains[chainId]}/address/${address}`;
-}
 
 const addressMapping: Record<number, string> = {
   1: "Mainnet",
