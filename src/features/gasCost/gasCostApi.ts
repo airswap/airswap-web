@@ -10,25 +10,16 @@ import uniswapDeploys from "../../uniswap/deployments";
 
 export const gasUsedPerSwap = 185555;
 
-type EthGasWatchGasInfo = {
-  gwei: number;
-  usd: number;
-};
 type EthGasWatchApiResponse = {
-  slow: EthGasWatchGasInfo;
-  normal: EthGasWatchGasInfo;
-  fast: EthGasWatchGasInfo;
-  instant: EthGasWatchGasInfo;
-  ethPrice: number;
-  lastUpdated: number;
+  fast: number;
 };
 
 const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
-  const url = "https://ethgas.watch/api/gas";
+  const url = "https://ethgasstation.info/api/ethgasAPI.json";
   try {
     const response = await fetch(url);
     const data: EthGasWatchApiResponse = await response.json();
-    return new BigNumber(data.fast.gwei).dividedBy(10 ** 9);
+    return new BigNumber(data.fast).dividedBy(10);
   } catch (e: any) {
     console.error("Error getting gas price from ethgas.watch API: ", e.message);
     return null;
