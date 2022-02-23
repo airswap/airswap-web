@@ -102,7 +102,7 @@
     ethereumjs-util "^6.2.0"
     ethers "^5.4.7"
 
-"@airswap/utils@^1.0.1":
+"@airswap/utils@^1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.1.tgz#c815624f18bb2722ec07ed71e2c0cbfcfbff4fd8"
   integrity sha512-i98LzTGl4aEW9auX26GQP0msU3Q+0SsW2coUMeo+77iwUUZinIPJkKM8VOmAS0s8DSbl7SjgP4m4SpOxNgz4EQ==

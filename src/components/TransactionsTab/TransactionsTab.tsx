@@ -93,7 +93,6 @@ const TransactionsTab = ({
     chainId,
     address,
   ]);
-
   const handleEscKey = useCallback(
     (e) => {
       if (e.keyCode === 27) {
