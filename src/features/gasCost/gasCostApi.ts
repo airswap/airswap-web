@@ -33,7 +33,8 @@ const getPriceOfTokenInWethFromUniswap: (
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
   const wethAddress = wethAddresses[String(chainId)];
-  if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO) return new BigNumber(1);
+  if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
+    return new BigNumber(1);
 
   // Get factory so we can find the token <> weth pair pool.
   const FactoryContract = new Contract(
