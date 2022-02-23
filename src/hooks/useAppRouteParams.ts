@@ -19,11 +19,11 @@ export interface AppRouteParams {
    */
   url: string;
   /**
-   * Url without language, ie: /swap/0x1234/0x5678, or /join
+   * Url without language, ie: /swap/0x1234/0x5678, or /join or empty string
    */
   urlWithoutLang: string;
   /**
-   * Base url with optional languge, ie: /join or /fr/swap
+   * Base url with optional languge, ie: /join or /fr/swap or empty string
    */
   justifiedBaseUrl: string;
 }
@@ -93,7 +93,7 @@ const useAppRouteParams = (): AppRouteParams => {
         lang: userLanguage,
         url: swapMatch.url,
         urlWithoutLang: swapMatch.url,
-        justifiedBaseUrl: `/`,
+        justifiedBaseUrl: "",
       };
     }
   }, [swapMatch, userLanguage]);
@@ -123,8 +123,8 @@ const useAppRouteParams = (): AppRouteParams => {
         route: lang ? undefined : (routeMatch.params.routeOrLang as AppRoutes),
         lang: lang || DEFAULT_LOCALE,
         url: routeMatch.url,
-        urlWithoutLang: lang ? "/" : routeMatch.url,
-        justifiedBaseUrl: lang ? `/${lang}` : "/",
+        urlWithoutLang: lang ? "" : routeMatch.url,
+        justifiedBaseUrl: lang ? `/${lang}` : "",
       };
     }
   }, [routeMatch]);
