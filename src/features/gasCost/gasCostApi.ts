@@ -1,4 +1,4 @@
-import { wethAddresses } from "@airswap/constants";
+import { ADDRESS_ZERO, wethAddresses } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
@@ -33,7 +33,7 @@ const getPriceOfTokenInWethFromUniswap: (
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
   const wethAddress = wethAddresses[String(chainId)];
-  if (tokenAddress === wethAddress) return new BigNumber(1);
+  if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO) return new BigNumber(1);
 
   // Get factory so we can find the token <> weth pair pool.
   const FactoryContract = new Contract(
