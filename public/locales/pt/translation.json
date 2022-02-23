@@ -43,7 +43,8 @@
         "join": "participar",
         "reloadPage": "Atualizar a página",
         "settings": "Definições",
-        "closeOverlay": "Fechar sobreposição"
+        "closeOverlay": "Fechar sobreposição",
+        "about": ""
     },
     "information": {
         "join.title": "Participe na AirSwap",
@@ -167,6 +168,12 @@
         "completedTransactions": "Transações concluídas",
         "noCompletedTransactions": "Sem transações concluídas",
         "transactionLink": "Ligação para a transação",
+        "copyAddress": "",
+        "viewOnExplorer": "",
         "get": ""
+    },
+    "app": {
+        "title": "",
+        "description": ""
     }
 }

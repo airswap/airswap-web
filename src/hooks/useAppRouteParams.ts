@@ -19,11 +19,11 @@ export interface AppRouteParams {
    */
   url: string;
   /**
-   * Url without language, ie: /swap/0x1234/0x5678, or /join
+   * Url without language, ie: /swap/0x1234/0x5678, or /join or empty string
    */
   urlWithoutLang: string;
   /**
-   * Base url with optional languge, ie: /join or /fr/swap
+   * Base url with optional languge, ie: /join or /fr/swap or empty string
    */
   justifiedBaseUrl: string;
 }
