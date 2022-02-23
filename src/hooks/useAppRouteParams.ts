@@ -123,7 +123,7 @@ const useAppRouteParams = (): AppRouteParams => {
         route: lang ? undefined : (routeMatch.params.routeOrLang as AppRoutes),
         lang: lang || DEFAULT_LOCALE,
         url: routeMatch.url,
-        urlWithoutLang: lang ? "/" : routeMatch.url,
+        urlWithoutLang: lang ? "" : routeMatch.url,
         justifiedBaseUrl: lang ? `/${lang}` : "",
       };
     }
