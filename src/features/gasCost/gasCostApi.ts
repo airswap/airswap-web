@@ -19,7 +19,7 @@ const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
   try {
     const response = await fetch(url);
     const data: EthGasWatchApiResponse = await response.json();
-    return new BigNumber(data.fast).dividedBy(10 ** 8);
+    return new BigNumber(data.fast).dividedBy(10 ** 10);
   } catch (e: any) {
     console.error("Error getting gas price from ethgas.watch API: ", e.message);
     return null;
