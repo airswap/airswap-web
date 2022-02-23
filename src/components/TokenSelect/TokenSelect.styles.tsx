@@ -43,6 +43,7 @@ const fontTransition = css`
 export const ContainingButton = styled.button`
   display: flex;
   flex-direction: row;
+  width: 40%;
   height: 2.5rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
@@ -63,6 +64,7 @@ export const AmountAndDetailsContainer = styled.div`
 export const InputAndMaxButtonWrapper = styled.div`
   display: flex;
   align-items: center;
+  width: 60%;
   min-width: 0;
   gap: 0.75rem;
 `;
@@ -121,9 +123,6 @@ export const TokenLogoLeft = styled(TokenLogo)`
 
 export const TokenLogoRight = styled(TokenLogo)`
   ${quoteTransition};
-  height: 2rem;
-  width: 2rem;
-  min-width: 2rem;
 `;
 
 export const StyledSelector = styled.div`

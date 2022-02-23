@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
+import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 
@@ -74,5 +75,26 @@ export const GuideButtonContainer = styled.a`
 
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    width: 50%;
+
+    &:nth-of-type(n+1) {
+      margin-top: -1px;
+    }
+    
+    &:nth-of-type(even):not(&:last-of-type):not(:focus):not(:hover) { {
+      border-right: 1px solid ${({ theme }) => theme.colors.borderGrey};
+    }
+
+    &:hover,
+    &:focus {
+      border-right: 1px solid ${({ theme }) => theme.colors.lightGrey};
+    }
+
+    &:active {
+      border-color: ${(props) => props.theme.colors.primary};
+    }
   }
 `;

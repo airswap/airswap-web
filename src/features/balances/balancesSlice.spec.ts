@@ -1,4 +1,3 @@
-import { store } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
 import {
   balancesReducer,

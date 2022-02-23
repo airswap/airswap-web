@@ -271,7 +271,7 @@ describe("handleTransaction", () => {
     );
   });
   it("should map regular rfq orders correctly", () => {
-    const { /* nonce, */ signerWallet, transactionHash } = mapSwapEvent(
+    const { transactionHash } = mapSwapEvent(
       rfqTransaction as SwapRow[],
       4,
       walletAccount,

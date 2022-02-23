@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 
 export const Container = styled.div`
@@ -7,8 +8,9 @@ export const Container = styled.div`
   flex-direction: column;
   position: relative;
   border-radius: 0.25rem;
-  height: 30rem;
-  width: 30rem;
+  margin: 0 ${sizes.pageMobilePadding};
+  height: ${sizes.widgetSize};
+  width: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
   overflow: hidden;
@@ -18,6 +20,13 @@ export const Container = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    width: 100%;
+    height: ${sizes.widgetMobileSize};
+    margin: 0;
+    padding: ${sizes.tradeContainerMobilePadding};
   }
 `;
 
@@ -29,15 +38,30 @@ type StyledTradeContainerProps = {
 export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
   position: relative;
   display: flex;
-  box-sizing: border-box;
-  margin: 0 auto;
-  transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
-  transition: transform 0.3s ease-in-out;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: ${sizes.widgetSize};
 
   ${Container} {
     box-shadow: ${(props) =>
       props.$isConnected
         ? props.theme.shadows.widgetGlow
         : props.theme.shadows.widgetGlowOff};
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    transition: transform 0.3s ease-in-out;
+    transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
+  }
+
+  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
+    margin-bottom: 1.5rem;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    margin-bottom: 0;
+    min-height: ${sizes.widgetMobileSize};
   }
 `;

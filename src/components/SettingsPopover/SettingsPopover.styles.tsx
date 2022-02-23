@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom";
+
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyleType2,
@@ -16,8 +19,8 @@ export const Container = styled.div<ContainerProps>`
   grid-template-rows: 5rem;
   width: 16rem;
   height: 17.25rem;
-  top: 4rem;
-  right: 13rem;
+  top: 5rem;
+  right: 3.75rem;
   transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
@@ -26,6 +29,15 @@ export const Container = styled.div<ContainerProps>`
   border-radius: 0.5rem;
   padding: 1rem;
   z-index: 1000;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    right: 13.75rem;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    top: 4rem;
+    right: 0;
+  }
 `;
 
 export const ThemeContainer = styled.div`
@@ -36,7 +48,7 @@ export const ThemeContainer = styled.div`
 `;
 
 type ButtonStyleProps = {
-  active: boolean;
+  $isActive: boolean;
 };
 
 export const ThemeButton = styled.button<ButtonStyleProps>`
@@ -44,15 +56,15 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
 
   line-height: 1.5;
   font-size: 0.875rem;
-  font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-weight: ${(props) => (props.$isActive ? "600" : "400")};
   color: ${(props) =>
-    props.active
+    props.$isActive
       ? props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
-    props.active ? props.theme.colors.borderGrey : "transparent"};
+    props.$isActive ? props.theme.colors.borderGrey : "transparent"};
 `;
 
 type LocaleContainerType = {
@@ -73,25 +85,26 @@ export const LocaleContainer = styled.div<LocaleContainerType>`
   }
 `;
 
-export const LocaleButton = styled.button<ButtonStyleProps>`
+export const LocaleButton = styled(Link)<ButtonStyleProps>`
   ${BorderlessButtonStyle};
 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  text-align: left;
   padding: 0.5rem 0 0.5rem 1rem;
   border-radius: 1px;
-  font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-weight: ${(props) => (props.$isActive ? "600" : "400")};
   font-size: 0.875rem;
   color: ${(props) =>
-    props.active
+    props.$isActive
       ? props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
-    props.active ? props.theme.colors.borderGrey : "transparent"};
+    props.$isActive ? props.theme.colors.borderGrey : "transparent"};
 
   &:hover,
   &:focus {

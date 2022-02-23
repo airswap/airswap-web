@@ -125,7 +125,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
           )}
-          <TokenLogoRight size="large" tokenInfo={selectedToken} />
+          <TokenLogoRight size="medium" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

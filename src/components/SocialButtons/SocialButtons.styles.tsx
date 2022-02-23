@@ -5,13 +5,9 @@ import Icon from "../Icon/Icon";
 import { Link } from "../Typography/Typography";
 
 export const Container = styled.div`
-  position: fixed;
-  bottom: 2.25rem;
-  right: 1.5rem;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  /* justify-content: flex-end; */
   gap: 0.5rem;
 `;
 

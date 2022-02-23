@@ -37,7 +37,14 @@ const AnimatedWalletTransaction = ({
 
   const themeHasChanged = useMemo(() => isMounted, [theme.name]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const heightAnimationDuration = shouldReduceMotion ? 0 : 0.3;
+  // Prevents all older (half hour) transactions animating simultaneously when user changes wallet
+  const transactionTooOld = useMemo(
+    () => (new Date().getTime() - transaction.timestamp) / 1000 > 1800,
+    [transaction]
+  );
+
+  const heightAnimationDuration =
+    shouldReduceMotion || transactionTooOld ? 0 : 0.3;
 
   // Border transition doesn't clear after animation ends, so when changing theme
   // the border color animates, which looks weird.
@@ -50,7 +57,7 @@ const AnimatedWalletTransaction = ({
   return (
     <Container
       animate={{ height: walletTransactionHeight }}
-      initial={{ height: "0rem" }}
+      initial={!transactionTooOld && { height: "0rem" }}
       exit={{
         height: "0rem",
         transition: {
@@ -63,7 +70,7 @@ const AnimatedWalletTransaction = ({
     >
       <WalletTransaction
         animate={{ borderColor: theme.colors.borderGrey }}
-        initial={{ borderColor: theme.colors.white }}
+        initial={!transactionTooOld && { borderColor: theme.colors.white }}
         transition={{
           delay: heightAnimationDuration,
           duration: borderAnimationDuration,

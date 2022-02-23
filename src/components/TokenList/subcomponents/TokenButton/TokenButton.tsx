@@ -8,6 +8,7 @@ import {
   TokenName,
   Balance,
   DeleteIcon,
+  TokenSymbolAndName,
 } from "./TokenButton.styles";
 
 export type TokenRowProps = {
@@ -65,9 +66,10 @@ const TokenButton = ({
     >
       <TokenLogo tokenInfo={token} size="small" />
 
-      <Symbol>{token.symbol}</Symbol>
-
-      <TokenName>{token.name}</TokenName>
+      <TokenSymbolAndName>
+        <Symbol>{token.symbol}</Symbol>
+        <TokenName>{token.name}</TokenName>
+      </TokenSymbolAndName>
 
       {showDeleteButton ? (
         <DeleteIcon name="deny" />

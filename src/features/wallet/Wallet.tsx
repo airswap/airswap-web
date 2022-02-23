@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
+import { useTranslation } from "react-i18next";
 
 import { Light, Wrapper } from "@airswap/libraries";
 import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
@@ -13,7 +14,6 @@ import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as Weth9Contract from "../../assets/weth9.abi.json";
-import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import Weth9Deploys from "../../constants/Weth9";
@@ -22,7 +22,12 @@ import {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
-import PopoverContainer from "../../styled-components/PopoverContainer/PopoverContainer";
+import {
+  StyledAirswapButton,
+  StyledMenuButton,
+  StyledSettingsButton,
+  TopBar,
+} from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -66,13 +71,18 @@ type WalletPropsType = {
   setShowWalletList: (x: boolean) => void;
   transactionsTabOpen: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
+  onAirswapButtonClick: () => void;
+  onMobileMenuButtonClick: () => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
   setShowWalletList,
   transactionsTabOpen,
   setTransactionsTabOpen,
+  onAirswapButtonClick,
+  onMobileMenuButtonClick,
 }) => {
+  const { t } = useTranslation();
   const {
     chainId,
     account,
@@ -324,8 +334,14 @@ export const Wallet: FC<WalletPropsType> = ({
 
   return (
     <>
-      <PopoverContainer>
-        <SettingsButton
+      <TopBar>
+        <StyledMenuButton
+          onClick={onMobileMenuButtonClick}
+          ariaLabel={t("common.select")}
+          icon="menu"
+          iconSize={1.5625}
+        />
+        <StyledSettingsButton
           settingsOpen={settingsOpen}
           setSettingsOpen={setSettingsOpen}
           transactionsTabOpen={transactionsTabOpen}
@@ -336,11 +352,16 @@ export const Wallet: FC<WalletPropsType> = ({
             error && error instanceof UnsupportedChainIdError
           }
           glow={!!pendingTransactions.length}
-          transactionsTabOpen={transactionsTabOpen}
           setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
           setShowWalletList={setShowWalletList}
         />
-      </PopoverContainer>
+        <StyledAirswapButton
+          onClick={onAirswapButtonClick}
+          ariaLabel={t("common.AirSwap")}
+          icon="airswap"
+          iconSize={2}
+        />
+      </TopBar>
       <TransactionsTab
         address={account!}
         chainId={chainId!}
