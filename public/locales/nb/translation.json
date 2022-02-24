@@ -44,7 +44,7 @@
         "reloadPage": "Last siden på nytt",
         "settings": "Innstillinger",
         "closeOverlay": "Lukk modal",
-        "about": ""
+        "about": "om"
     },
     "information": {
         "join.title": "Bli med i AirSwap",
@@ -59,10 +59,10 @@
         "protocolFeeDiscount.paragraph2": "Disse gebyrene blir distribuert til bidragsyterne som aktivt deltar i styrings- og utviklingsprosessen. Du kan sjekke balansen på denne kontrakten når som helst på",
         "protocolFeeDiscount.link": "Etherscan",
         "protocolFeeDiscount.stakeYourAst": "Lås dine AST og bli med AirSwaps DAO",
-        "join.voter": "",
-        "join.developer": "",
-        "join.ambassador": "",
-        "join.author": ""
+        "join.voter": "Stemmegiver",
+        "join.developer": "Utvikler",
+        "join.ambassador": "Ambassdør",
+        "join.author": "Skribent"
     },
     "orders": {
         "continue": "Fortsett",
@@ -168,12 +168,12 @@
         "completedTransactions": "FULLFØRTE TRANSAKSJONER",
         "noCompletedTransactions": "Ingen fullførte transaksjoner",
         "transactionLink": "Transaksjonslenke",
-        "copyAddress": "",
-        "viewOnExplorer": "",
-        "get": ""
+        "copyAddress": "Kopier adresse",
+        "viewOnExplorer": "Se i utforsker",
+        "get": "Hent"
     },
     "app": {
-        "title": "",
-        "description": ""
+        "title": "AirSwap: Open Source DAO og desentralisert plattform for peer-to-peer handler",
+        "description": "AirSwap er et verktøy for P2P-handel."
     }
 }
