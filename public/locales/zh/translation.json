@@ -59,10 +59,10 @@
         "protocolFeeDiscount.paragraph2": "這些費用將分配給積極參與管理和開發過程的團隊貢獻者。您可以隨時查看費用池的餘額在",
         "protocolFeeDiscount.link": "Etherscan",
         "protocolFeeDiscount.stakeYourAst": "持有量與加入DAO",
-        "join.voter": "",
-        "join.developer": "",
-        "join.ambassador": "",
-        "join.author": ""
+        "join.voter": "投票者",
+        "join.developer": "程式開發員",
+        "join.ambassador": "大使",
+        "join.author": "作家"
     },
     "orders": {
         "continue": "繼續",
@@ -168,12 +168,12 @@
         "completedTransactions": "已完成的交易",
         "noCompletedTransactions": "無完成的交易",
         "transactionLink": "交易連結",
-        "copyAddress": "",
-        "viewOnExplorer": "",
-        "get": ""
+        "copyAddress": "複製地址",
+        "viewOnExplorer": "在以太坊資源瀏覽器上查看",
+        "get": "下載"
     },
     "app": {
-        "title": "",
+        "title": "AirSwap: P2P交易代幣的去中心化交易所和由程式開發DAO",
         "description": ""
     }
 }
