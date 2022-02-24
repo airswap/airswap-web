@@ -59,10 +59,10 @@
         "protocolFeeDiscount.paragraph2": "These fees are then distributed to community contributors who actively participate in the governance and development process. You can check the balance of the fee pool anytime on",
         "protocolFeeDiscount.link": "Etherscan",
         "protocolFeeDiscount.stakeYourAst": "Stake and Join the DAO",
-        "join.voter": "",
-        "join.developer": "",
-        "join.ambassador": "",
-        "join.author": ""
+        "join.voter": "Voter",
+        "join.developer": "Developer",
+        "join.ambassador": "Ambassador",
+        "join.author": "Author"
     },
     "orders": {
         "continue": "Continue",
@@ -168,12 +168,12 @@
         "completedTransactions": "Completed transactions",
         "noCompletedTransactions": "No completed transactions",
         "transactionLink": "Transaction link",
-        "copyAddress": "",
-        "viewOnExplorer": "",
-        "get": ""
+        "copyAddress": "Copy address",
+        "viewOnExplorer": "View on explorer",
+        "get": "Get"
     },
     "app": {
-        "title": "",
-        "description": ""
+        "title": "AirSwap: Peer-to-peer Token Trading DEX and Open Source Developer DAO",
+        "description": "AirSwap powers peer-to-peer trading."
     }
 }
