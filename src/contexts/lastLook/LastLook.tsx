@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
-import lightDeploys from "@airswap/light/deploys.js";
+import * as lightDeploys from "@airswap/swap/deploys.js";
 import { LightOrder, Pricing } from "@airswap/types";
 import { createOrder, createSwapSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";

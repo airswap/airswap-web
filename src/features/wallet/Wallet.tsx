@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Light, Wrapper } from "@airswap/libraries";
 import * as LightContract from "@airswap/light/build/contracts/Light.sol/Light.json";
 //@ts-ignore
-import * as lightDeploys from "@airswap/light/deploys.js";
+import * as lightDeploys from "@airswap/swap/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
