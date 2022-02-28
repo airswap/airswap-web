@@ -1,6 +1,6 @@
 import { wethAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-import { Levels, LightOrder } from "@airswap/types";
+import { Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
@@ -17,7 +17,7 @@ import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import nativeETH from "../../constants/nativeETH";
 import {
-  allowancesLightActions,
+  allowancesSwapActions,
   allowancesWrapperActions,
 } from "../balances/balancesSlice";
 import { gasUsedPerSwap } from "../gasCost/gasCostApi";
@@ -54,7 +54,7 @@ import {
 } from "./orderApi";
 
 export interface OrdersState {
-  orders: LightOrder[];
+  orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
   reRequestTimerId: number | null;
 }
@@ -68,7 +68,7 @@ const initialState: OrdersState = {
 const APPROVE_AMOUNT = "90071992547409910000000000";
 
 // replaces WETH to ETH on Wrapper orders
-const refactorOrder = (order: LightOrder, chainId: number) => {
+const refactorOrder = (order: Order, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wethAddresses[chainId]) {
     newOrder.senderToken = nativeETH[chainId].address;
@@ -285,7 +285,7 @@ export const approve = createAsyncThunk<
   {
     token: string;
     library: any;
-    contractType: "Wrapper" | "Light";
+    contractType: "Wrapper" | "Swap";
     chainId: number;
   },
   // Types for ThunkAPI
@@ -319,9 +319,9 @@ export const approve = createAsyncThunk<
           );
           // Optimistically update allowance (this is not really optimistic,
           // but it preempts receiving the event)
-          if (params.contractType === "Light") {
+          if (params.contractType === "Swap") {
             dispatch(
-              allowancesLightActions.set({
+              allowancesSwapActions.set({
                 tokenAddress: params.token,
                 amount: APPROVE_AMOUNT,
               })
@@ -366,9 +366,9 @@ export const take = createAsyncThunk<
   void,
   // Params
   {
-    order: LightOrder;
+    order: Order;
     library: any;
-    contractType: "Light" | "Wrapper";
+    contractType: "Swap" | "Wrapper";
     onExpired: () => void;
   },
   // Types for ThunkAPI
@@ -383,7 +383,7 @@ export const take = createAsyncThunk<
     // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
     // we should change the order tokens to WETH -> ETH
     let newOrder =
-      params.contractType === "Light"
+      params.contractType === "Swap"
         ? params.order
         : refactorOrder(params.order, params.library._network.chainId);
     if (tx.hash) {

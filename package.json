@@ -17,9 +17,10 @@
   "dependencies": {
     "@airswap/balances": "^1.1.2",
     "@airswap/constants": "^0.4.0",
-    "@airswap/libraries": "0.0.14",
+    "@airswap/libraries": "^3.0.0-beta",
     "@airswap/metadata": "^1.0.7",
-    "@airswap/types": "^3.7.0",
+    "@airswap/swap": "3.0.0-beta",
+    "@airswap/typescript": "^1.0.1",
     "@airswap/utils": "^1",
     "@airswap/validator": "^2.3.1",
     "@craco/craco": "^6.2.0",

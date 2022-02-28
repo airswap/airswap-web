@@ -118,14 +118,14 @@ export const mapSwapEvent = (
 };
 
 export default function subscribeToSwapEvents(params: {
-  lightContract: Contract;
+  swapContract: Contract;
   chainId: number;
   account: string;
   library: any;
   dispatch: Dispatch;
 }) {
-  const { lightContract, account, dispatch, chainId } = params;
-  lightContract.on("Swap", async (...data) => {
+  const { swapContract, account, dispatch, chainId } = params;
+  swapContract.on("Swap", async (...data) => {
     const transactions = store.getState().transactions;
     const {
       nonce,
