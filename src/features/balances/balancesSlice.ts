@@ -201,8 +201,7 @@ const getSlice = (
 
 export const selectBalances = (state: RootState) => state.balances;
 export const selectAllowances = (state: RootState) => state.allowances;
-export const selectAllowancesSwap = (state: RootState) =>
-  state.allowances.swap;
+export const selectAllowancesSwap = (state: RootState) => state.allowances.swap;
 export const selectAllowancesWrapper = (state: RootState) =>
   state.allowances.wrapper;
 
