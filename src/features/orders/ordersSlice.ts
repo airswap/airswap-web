@@ -1,6 +1,6 @@
 import { wethAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-import { Levels, LightOrder } from "@airswap/types";
+import { Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
@@ -54,7 +54,7 @@ import {
 } from "./orderApi";
 
 export interface OrdersState {
-  orders: LightOrder[];
+  orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
   reRequestTimerId: number | null;
 }
@@ -68,7 +68,7 @@ const initialState: OrdersState = {
 const APPROVE_AMOUNT = "90071992547409910000000000";
 
 // replaces WETH to ETH on Wrapper orders
-const refactorOrder = (order: LightOrder, chainId: number) => {
+const refactorOrder = (order: Order, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wethAddresses[chainId]) {
     newOrder.senderToken = nativeETH[chainId].address;
@@ -366,7 +366,7 @@ export const take = createAsyncThunk<
   void,
   // Params
   {
-    order: LightOrder;
+    order: Order;
     library: any;
     contractType: "Light" | "Wrapper";
     onExpired: () => void;

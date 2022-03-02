@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { wethAddresses } from "@airswap/constants";
 import { Registry, Wrapper } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
-import { LightOrder, Pricing } from "@airswap/types";
+import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -427,7 +427,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         throw new Error("error requesting orders");
       }
 
-      let rfqPromise: Promise<LightOrder[]> | null = null,
+      let rfqPromise: Promise<Order[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
@@ -462,7 +462,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         }
       }
 
-      let orderPromises: Promise<LightOrder[] | Pricing>[] = [];
+      let orderPromises: Promise<Order[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
         orderPromises = orderPromises.concat(lastLookPromises);
@@ -516,7 +516,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const takeBestOption = async () => {
-    let order: LightOrder | null = null;
+    let order: Order | null = null;
     try {
       setIsSwapping(true);
       // @ts-ignore

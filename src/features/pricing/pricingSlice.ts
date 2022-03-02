@@ -1,4 +1,4 @@
-import { Pricing } from "@airswap/types";
+import { Pricing } from "@airswap/typescript";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";

@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import { providers } from "ethers";
 

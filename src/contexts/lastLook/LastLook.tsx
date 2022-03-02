@@ -5,7 +5,7 @@ import { Server } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import lightDeploys from "@airswap/light/deploys.js";
-import { LightOrder, Pricing } from "@airswap/types";
+import { Order, Pricing } from "@airswap/typescript";
 import { createOrder, createSwapSignature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
@@ -31,12 +31,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    order: LightOrder;
+    order: Order;
   }) => Promise<boolean>;
   getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-  }) => Promise<{ order: LightOrder; senderWallet: string }>;
+  }) => Promise<{ order: Order; senderWallet: string }>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -48,7 +48,7 @@ export const LastLookContext = createContext<{
   getSignedOrder: async (params: {
     locator: string;
     terms: TradeTerms;
-  }): Promise<LightOrder | any> => {
+  }): Promise<Order | any> => {
     return {};
   },
 });
@@ -119,7 +119,7 @@ const LastLookProvider: FC = ({ children }) => {
     async (params: {
       locator: string;
       terms: TradeTerms;
-    }): Promise<{ order: LightOrder; senderWallet: string }> => {
+    }): Promise<{ order: Order; senderWallet: string }> => {
       const { locator, terms } = params;
       const server = connectedServers[locator];
 
@@ -156,7 +156,7 @@ const LastLookProvider: FC = ({ children }) => {
         lightDeploys[chainId],
         chainId!
       );
-      const order: LightOrder = {
+      const order: Order = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,
         senderToken: unsignedOrder.senderToken,
@@ -198,7 +198,7 @@ const LastLookProvider: FC = ({ children }) => {
   );
 
   const sendOrderForConsideration = useCallback(
-    async (params: { locator: string; order: LightOrder }) => {
+    async (params: { locator: string; order: Order }) => {
       const { locator, order } = params;
       const server = connectedServers[locator];
       try {
