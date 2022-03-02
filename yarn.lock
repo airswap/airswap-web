@@ -14,6 +14,11 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-1.0.1.tgz#c39fa8b955e9da20392d080270cd32f8976a586f"
   integrity sha512-EPbWfruo4nXGRYg9f2Dmr7tFrS2pIPq3iTpRBR2oLqJloioq5EwY9skOb/sCptyJLWH+K19Fys/EOZJvLauhCQ==
 
+"@airswap/constants@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-1.0.2.tgz#39270d4c4067c661bf822abdf304a5fadabc8e71"
+  integrity sha512-rQIx46qOw5nKxPoD5+06kAmphfwfrkyteIUyd6elXtJUOZ4uqKr14X19T9OKBs9SGbzspFwBZ6RzmMU1pcCcGQ==
+
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@airswap/jsonrpc-client-websocket/-/jsonrpc-client-websocket-0.0.1.tgz#e75932a0f19cb6c23cf145834277211cce150400"
@@ -21,17 +26,17 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-1.0.4.tgz#5e96f942f85501079e81385306344cac4f2582db"
-  integrity sha512-HHTqPzCT7OEDQ87uaJivvjJY/70OKtw9fjL3hMZNXPRlELgXT6HwaYjEgGCMftmyI6Hi8Jc39DZWHSxT4CGakg==
+"@airswap/libraries@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-1.0.5.tgz#288dd4913bb89ae5ae71bef54b841f66211e5e3d"
+  integrity sha512-c0sMx6XLHtxKAtEnAK+DNc5xfDjRSL7xCl8gvUVYRTxHyfHrvTxAxv694KDN85EXD2WyWHiGRW2fHyN9sr++EQ==
   dependencies:
-    "@airswap/constants" "1.0.1"
+    "@airswap/constants" "1.0.2"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
     "@airswap/light" "2.3.1"
     "@airswap/registry" "4.8.2"
-    "@airswap/typescript" "1.0.3"
-    "@airswap/utils" "1.0.3"
+    "@airswap/typescript" "1.0.4"
+    "@airswap/utils" "1.0.5"
     "@airswap/validator" "2.3.0"
     "@airswap/wrapper" "2.5.2"
     bignumber.js "^9.0.0"
@@ -76,13 +81,42 @@
     "@airswap/constants" "1.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
-"@airswap/utils@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.3.tgz#2d618471b635f033eb6a3be543565574d22a3e52"
-  integrity sha512-aAWhZW+36LO6FYNN9SYL0R0y/zF27oS7fXQUAhURyrXd903ONwkpb+/zvYQYkX7VpbGnq3WDO0cGbcUtEQo3Vg==
+"@airswap/typescript@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-1.0.4.tgz#7230623656396bf09aff9ecaec535c426911b74f"
+  integrity sha512-R8XrC7b/T0zM4kP+so/NXmpldKq/NXFUjcUBTSVveEut6GYS7NBWu9Py+sHB9QHOCeVHBqq6h4oFQcjVTtk2gQ==
   dependencies:
-    "@airswap/constants" "1.0.1"
-    "@airswap/typescript" "1.0.3"
+    "@airswap/constants" "1.0.2"
+    "@uniswap/token-lists" "^1.0.0-beta.26"
+
+"@airswap/typescript@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-1.0.5.tgz#bf7c6b88e6457eebb1df4ce19b5dcc5cccddf8f6"
+  integrity sha512-w1wj7mcTCoeArqnnrvzXoKr9JKjZnvo8NSYE7cPZ06kOOpnY/a+Z6WWa+u4kka4FE2KSf6jdlBvyJibU4luP1A==
+  dependencies:
+    "@airswap/constants" "1.0.2"
+    "@uniswap/token-lists" "^1.0.0-beta.26"
+
+"@airswap/utils@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.5.tgz#67491a2001ae25b2719336cd924f64a28b708a6f"
+  integrity sha512-kUZVVWhXk5E9vmrrzgpsDVHyrUrNOI0STFDu4GM0CwqT6MFOn4wCapJuuvk6RL4qkguStJWsj2zbPe+gAFAm4Q==
+  dependencies:
+    "@airswap/constants" "1.0.2"
+    "@airswap/typescript" "1.0.4"
+    "@types/ethereumjs-util" "^6.1.0"
+    bignumber.js "^9.0.1"
+    eth-sig-util "^3.0.0"
+    ethereumjs-util "^6.2.0"
+    ethers "^5.4.7"
+
+"@airswap/utils@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-1.0.6.tgz#90a9ec898f0dcf8fb0d6eb5587968d328a625c2d"
+  integrity sha512-yvntmFYl1hBEZ+7slsXPHPksgCInWr0zDCQWaI8oY0feb+g7RonwYgZ6DRldPFZtlBTjirqqVqRdJhv434U4hQ==
+  dependencies:
+    "@airswap/constants" "1.0.2"
+    "@airswap/typescript" "1.0.5"
     "@types/ethereumjs-util" "^6.1.0"
     bignumber.js "^9.0.1"
     eth-sig-util "^3.0.0"
