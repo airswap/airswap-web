@@ -17,7 +17,7 @@
   "dependencies": {
     "@airswap/balances": "^1.1.2",
     "@airswap/constants": "1.0.2",
-    "@airswap/libraries": "1.0.5",
+    "@airswap/libraries": "1.0.6",
     "@airswap/light": "2.3.1",
     "@airswap/metadata": "1.0.8",
     "@airswap/typescript": "1.0.6",
