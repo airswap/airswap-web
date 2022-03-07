@@ -146,7 +146,7 @@ const LastLookProvider: FC = ({ children }) => {
         signerWallet: account,
         signerToken: terms.baseToken.address,
         senderToken: terms.quoteToken.address,
-        signerFee: "7",
+        protocolFee: "7",
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });

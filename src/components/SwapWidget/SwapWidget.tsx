@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
-import { Registry, Wrapper } from "@airswap/libraries";
+import { Registry, Wrapper, Swap } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
 import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
@@ -66,7 +66,6 @@ import {
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
-import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
@@ -521,14 +520,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsSwapping(true);
       // @ts-ignore
       // TODO: figure out type issues
-      const validator = new Validator(chainId, library?.getSigner());
       if (bestTradeOption!.protocol === "request-for-quote") {
         if (swapType !== "swapWithWrap") {
-          const errors = (await validator.checkSwap(
+          const errors = (await new Swap(chainId).check(
             bestTradeOption!.order!,
             // NOTE: once new swap contract is used, this (senderAddress) needs
             // to be the wrapper address for wrapped swaps.
-            account!
+            account!,
+            library?.getSigner()
           )) as Error[];
           if (errors.length) {
             setValidatorErrors(errors);
@@ -566,7 +565,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         order = lastLookOrder;
-        const errors = (await validator.checkSwap(
+        const errors = (await new Swap(chainId).check(
           order,
           senderWallet
         )) as Error[];

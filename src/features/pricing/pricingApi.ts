@@ -14,9 +14,9 @@ export function pricingIsLevels(value: Levels | Formula): value is Levels {
 export const calculateQuoteAmount: (params: {
   baseAmount: string;
   side: "buy" | "sell";
-  signerFee: string;
+  protocolFee: string;
   pricing: Pricing;
-}) => string = ({ baseAmount, side, signerFee, pricing }) => {
+}) => string = ({ baseAmount, side, protocolFee, pricing }) => {
   // baseAmount always known.
   // For a sell, baseAmount is signerAmount.
   // For a buy, baseAmount is senderAmount.

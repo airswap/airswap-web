@@ -98,7 +98,7 @@ export const selectBestPricing = createSelector(
           calculateQuoteAmount({
             baseAmount: baseTokenAmount,
             pricing: relevantPricing,
-            signerFee: "7",
+            protocolFee: "7",
             side,
           })
         );
