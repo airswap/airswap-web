@@ -567,7 +567,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         order = lastLookOrder;
         const errors = (await new Swap(chainId).check(
           order,
-          senderWallet
+          senderWallet,
+          library?.getSigner()
         )) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
@@ -619,6 +620,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           })
         );
       }
+      console.error("Error taking order:", e);
     }
   };
 
