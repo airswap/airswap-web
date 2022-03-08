@@ -60,17 +60,21 @@ const useGasPriceSubscriber = () => {
     () => (token: TokenInfo, provider: providers.Provider, chainId: number) => {
       if (intervals.current.tokens[token.address]) return;
       const updateTokenPrice = async () => {
-        const price = await getPriceOfTokenInWethFromUniswap(
-          token,
-          provider,
-          chainId
-        );
-        dispatch(
-          setTokenPrice({
-            tokenAddress: token.address,
-            tokenPriceInWeth: price.toString(),
-          })
-        );
+        try {
+          const price = await getPriceOfTokenInWethFromUniswap(
+            token,
+            provider,
+            chainId
+          );
+          dispatch(
+            setTokenPrice({
+              tokenAddress: token.address,
+              tokenPriceInWeth: price.toString(),
+            })
+          );
+        } catch (e: any) {
+          console.error(e)
+        }
       };
       intervals.current.tokens[token.address] = window.setInterval(
         updateTokenPrice,
