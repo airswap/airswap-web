@@ -73,7 +73,7 @@ const useGasPriceSubscriber = () => {
             })
           );
         } catch (e: any) {
-          console.error(e)
+          console.error(e);
         }
       };
       intervals.current.tokens[token.address] = window.setInterval(

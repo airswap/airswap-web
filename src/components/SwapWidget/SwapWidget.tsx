@@ -182,10 +182,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   } = useWeb3React<Web3Provider>();
 
   const defaultBaseTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("USDT", allTokens)[0].address
+    ? findTokensBySymbol("USDT", allTokens)[0]?.address
     : null;
   const defaultQuoteTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("WETH", allTokens)[0].address
+    ? findTokensBySymbol("WETH", allTokens)[0]?.address
     : null;
 
   // Use default tokens only if neither are specified in the URL or store.

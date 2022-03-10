@@ -14,6 +14,11 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.0-beta.0.tgz#9eaa49f6c1cc001a1e2d7be16118497b6ac1e0c1"
   integrity sha512-gG+/Yg5d/BBV7hhLa3QRRDkQePWyW7huPwmWlnpyqSNIBfje8RB1SQgwxnNmPM3YzaXWKiLQo166zVBs3UG4aw==
 
+"@airswap/constants@3.0.0-beta.1":
+  version "3.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.0-beta.1.tgz#7efd6e4e0641f95279a6bcb7d40020d19573bc2e"
+  integrity sha512-GFnXzeLq8JzAw44UqEC2T6ShNn0xdhTXB8OB78GN3tHBG8F0fi1kji679kTWyk4VZTtpEXUquzvaTJXxKLftnw==
+
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@airswap/jsonrpc-client-websocket/-/jsonrpc-client-websocket-0.0.1.tgz#e75932a0f19cb6c23cf145834277211cce150400"
@@ -40,12 +45,12 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/metadata@1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-1.0.9.tgz#ac5e4fd1ac2fc808ffc273f3e3eebd1e14821027"
-  integrity sha512-ZQjQIjsMI9mukijmYmFBFlHlnowFJRWF49pgm4//NMEU0bEUn3IHX+ZbD0OqqaeqISW39OY6ANLyIi1RaxVLBA==
+"@airswap/metadata@3.0.0-beta.0":
+  version "3.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.0-beta.0.tgz#781d0875306cfb094d5f51875873048397d7e0d7"
+  integrity sha512-Ge1aDzj4hJqo5g7pgw0vMfKIHneYjS6FxokzcGQOFyHf92EgNBkF3r15gbRxrG31fB4Oai6K8rqd6RhhjpBebA==
   dependencies:
-    "@airswap/constants" "3.0.0-beta.0"
+    "@airswap/constants" "3.0.0-beta.1"
     "@airswap/typescript" "3.0.0-beta.1"
     "@uniswap/token-lists" "^1.0.0-beta.24"
     axios "^0.21.3"
