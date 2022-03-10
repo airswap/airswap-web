@@ -43,7 +43,8 @@
         "join": "Join",
         "reloadPage": "Ververs Pagina",
         "settings": "Instellingen",
-        "closeOverlay": "Overlay sluiten"
+        "closeOverlay": "Overlay sluiten",
+        "about": ""
     },
     "information": {
         "join.title": "Word lid van AirSwap",
@@ -167,6 +168,12 @@
         "completedTransactions": "Voltooide transacties",
         "noCompletedTransactions": "Geen voltooide transacties",
         "transactionLink": "Transactie link",
-        "get": "Download"
+        "copyAddress": "",
+        "viewOnExplorer": "",
+        "get": ""
+    },
+    "app": {
+        "title": "",
+        "description": ""
     }
 }

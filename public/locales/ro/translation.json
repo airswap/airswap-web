@@ -43,7 +43,8 @@
         "join": "alătură-te",
         "reloadPage": "Reîncarcă pagina",
         "settings": "Setări",
-        "closeOverlay": "Închide suprapunerea"
+        "closeOverlay": "Închide suprapunerea",
+        "about": ""
     },
     "information": {
         "join.title": "Alătură-te AirSwap",

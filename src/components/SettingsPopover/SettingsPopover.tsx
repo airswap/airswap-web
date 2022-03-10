@@ -4,16 +4,13 @@ import { useTranslation } from "react-i18next";
 import { ThemeType } from "styled-components/macro";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  SUPPORTED_LOCALES,
-  LOCALE_LABEL,
-  DEFAULT_LOCALE,
-} from "../../constants/locales";
+import { SUPPORTED_LOCALES, LOCALE_LABEL } from "../../constants/locales";
 import {
   selectTheme,
   setTheme,
 } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../helpers/useWindowSize";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import {
   Container,
   ThemeContainer,
@@ -34,15 +31,9 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   const selectedTheme = useAppSelector(selectTheme);
   const [overflow, setOverflow] = useState<boolean>(false);
 
-  // selects i18nextLang first, window language, falls back to default locale (en)
-  // TODO: keep track of different langauage locale (e.g. en-US, en-AU)?
-  const [selectedLocale, setSelectedLocale] = useState<string>(
-    localStorage.getItem("i18nextLng")?.substring(0, 2) ||
-      window.navigator.language.substring(0, 2) ||
-      DEFAULT_LOCALE
-  );
+  const appRouteParams = useAppRouteParams();
   const dispatch = useAppDispatch();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleThemeButtonClick = (newTheme: ThemeType | "system") => {
     dispatch(setTheme(newTheme));
@@ -60,19 +51,19 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
       <PopoverSection title={t("common.theme")}>
         <ThemeContainer>
           <ThemeButton
-            active={selectedTheme === "system"}
+            $isActive={selectedTheme === "system"}
             onClick={() => handleThemeButtonClick("system")}
           >
             {t("common.system")}
           </ThemeButton>
           <ThemeButton
-            active={selectedTheme === "light"}
+            $isActive={selectedTheme === "light"}
             onClick={() => handleThemeButtonClick("light")}
           >
             {t("common.light")}
           </ThemeButton>
           <ThemeButton
-            active={selectedTheme === "dark"}
+            $isActive={selectedTheme === "dark"}
             onClick={() => handleThemeButtonClick("dark")}
           >
             {t("common.dark")}
@@ -85,11 +76,8 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
             return (
               <LocaleButton
                 key={locale}
-                active={selectedLocale === locale}
-                onClick={() => {
-                  setSelectedLocale(locale);
-                  i18n.changeLanguage(locale);
-                }}
+                $isActive={appRouteParams.lang === locale}
+                to={`/${locale}${appRouteParams.urlWithoutLang}`}
               >
                 {LOCALE_LABEL[locale]}
               </LocaleButton>

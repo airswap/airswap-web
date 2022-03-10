@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
@@ -46,7 +48,7 @@ export const ThemeContainer = styled.div`
 `;
 
 type ButtonStyleProps = {
-  active: boolean;
+  $isActive: boolean;
 };
 
 export const ThemeButton = styled.button<ButtonStyleProps>`
@@ -54,15 +56,15 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
 
   line-height: 1.5;
   font-size: 0.875rem;
-  font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-weight: ${(props) => (props.$isActive ? "600" : "400")};
   color: ${(props) =>
-    props.active
+    props.$isActive
       ? props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
-    props.active ? props.theme.colors.borderGrey : "transparent"};
+    props.$isActive ? props.theme.colors.borderGrey : "transparent"};
 `;
 
 type LocaleContainerType = {
@@ -83,7 +85,7 @@ export const LocaleContainer = styled.div<LocaleContainerType>`
   }
 `;
 
-export const LocaleButton = styled.button<ButtonStyleProps>`
+export const LocaleButton = styled(Link)<ButtonStyleProps>`
   ${BorderlessButtonStyle};
 
   display: flex;
@@ -93,16 +95,16 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
   text-align: left;
   padding: 0.5rem 0 0.5rem 1rem;
   border-radius: 1px;
-  font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-weight: ${(props) => (props.$isActive ? "600" : "400")};
   font-size: 0.875rem;
   color: ${(props) =>
-    props.active
+    props.$isActive
       ? props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
-    props.active ? props.theme.colors.borderGrey : "transparent"};
+    props.$isActive ? props.theme.colors.borderGrey : "transparent"};
 
   &:hover,
   &:focus {

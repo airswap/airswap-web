@@ -1,6 +1,6 @@
 import { BaseHTMLAttributes, FC } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import StyledTokenLogo, { StyledTokenLogoProps } from "./TokenLogo.styles";
 

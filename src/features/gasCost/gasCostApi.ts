@@ -1,5 +1,5 @@
-import { wethAddresses } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
+import { ADDRESS_ZERO, wethAddresses } from "@airswap/constants";
+import { TokenInfo } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
@@ -10,25 +10,16 @@ import uniswapDeploys from "../../uniswap/deployments";
 
 export const gasUsedPerSwap = 185555;
 
-type EthGasWatchGasInfo = {
-  gwei: number;
-  usd: number;
-};
 type EthGasWatchApiResponse = {
-  slow: EthGasWatchGasInfo;
-  normal: EthGasWatchGasInfo;
-  fast: EthGasWatchGasInfo;
-  instant: EthGasWatchGasInfo;
-  ethPrice: number;
-  lastUpdated: number;
+  fast: number;
 };
 
 const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
-  const url = "https://ethgas.watch/api/gas";
+  const url = "https://ethgasstation.info/api/ethgasAPI.json";
   try {
     const response = await fetch(url);
     const data: EthGasWatchApiResponse = await response.json();
-    return new BigNumber(data.fast.gwei).dividedBy(10 ** 9);
+    return new BigNumber(data.fast).dividedBy(10 ** 10);
   } catch (e: any) {
     console.error("Error getting gas price from ethgas.watch API: ", e.message);
     return null;
@@ -42,7 +33,8 @@ const getPriceOfTokenInWethFromUniswap: (
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
   const wethAddress = wethAddresses[String(chainId)];
-  if (tokenAddress === wethAddress) return new BigNumber(1);
+  if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
+    return new BigNumber(1);
 
   // Get factory so we can find the token <> weth pair pool.
   const FactoryContract = new Contract(

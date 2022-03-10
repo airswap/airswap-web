@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import { providers } from "ethers";
 
@@ -27,9 +27,13 @@ const useGasPriceSubscriber = () => {
     () => () => {
       if (intervals.current.gas) return;
       const updateGasPrice = async () => {
-        const price = await getFastGasPrice();
-        if (price) {
-          dispatch(setFastGasPrice(price.toString()));
+        try {
+          let price = await getFastGasPrice();
+          if (price) {
+            dispatch(setFastGasPrice(price.toString()));
+          }
+        } catch (e) {
+          console.error(e);
         }
       };
       intervals.current.gas = window.setInterval(
@@ -56,17 +60,21 @@ const useGasPriceSubscriber = () => {
     () => (token: TokenInfo, provider: providers.Provider, chainId: number) => {
       if (intervals.current.tokens[token.address]) return;
       const updateTokenPrice = async () => {
-        const price = await getPriceOfTokenInWethFromUniswap(
-          token,
-          provider,
-          chainId
-        );
-        dispatch(
-          setTokenPrice({
-            tokenAddress: token.address,
-            tokenPriceInWeth: price.toString(),
-          })
-        );
+        try {
+          const price = await getPriceOfTokenInWethFromUniswap(
+            token,
+            provider,
+            chainId
+          );
+          dispatch(
+            setTokenPrice({
+              tokenAddress: token.address,
+              tokenPriceInWeth: price.toString(),
+            })
+          );
+        } catch (e: any) {
+          console.error(e);
+        }
       };
       intervals.current.tokens[token.address] = window.setInterval(
         updateTokenPrice,

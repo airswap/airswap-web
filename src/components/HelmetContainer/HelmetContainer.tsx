@@ -3,12 +3,12 @@ import { Helmet } from "react-helmet";
 
 type HelmetContainerProps = {
   title: string;
-  description: string;
+  description?: string;
 };
 
 const HelmetContainer: FC<HelmetContainerProps> = ({
   title,
-  description,
+  description = "",
   children,
 }) => {
   return (

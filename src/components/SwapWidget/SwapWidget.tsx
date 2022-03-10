@@ -1,11 +1,11 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { wethAddresses } from "@airswap/constants";
-import { Registry, Wrapper } from "@airswap/libraries";
+import { Registry, Wrapper, Swap } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
-import { LightOrder, Pricing } from "@airswap/types";
+import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -21,7 +21,7 @@ import {
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
-  requestActiveTokenAllowancesLight,
+  requestActiveTokenAllowancesSwap,
   requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
   selectAllowances,
@@ -61,11 +61,15 @@ import {
   ProtocolType,
   selectPendingApprovals,
 } from "../../features/transactions/transactionsSlice";
+import {
+  setUserTokens,
+  selectUserTokens,
+} from "../../features/userSettings/userSettingsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
-import { Validator } from "../../helpers/Validator";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
-import { AppRoutes, SwapRoutes } from "../../routes";
+import { AppRoutes } from "../../routes";
 import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -82,13 +86,14 @@ import StyledSwapWidget, {
   InfoContainer,
   StyledWalletProviderList,
 } from "./SwapWidget.styles";
+import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-type TokenSelectModalTypes = "base" | "quote" | null;
+export type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
@@ -123,14 +128,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const pendingApprovals = useAppSelector(selectPendingApprovals);
   const tradeTerms = useAppSelector(selectTradeTerms);
+  const userTokens = useAppSelector(selectUserTokens);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
 
   // Input states
-  const match = useRouteMatch<{ tokenFrom?: string; tokenTo?: string }>(
-    `/${AppRoutes.swap}/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}`
-  );
+  const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
@@ -177,24 +181,24 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  let defaultBaseTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("USDT", allTokens)[0].address
+  const defaultBaseTokenAddress: string | null = allTokens.length
+    ? findTokensBySymbol("USDT", allTokens)[0]?.address
     : null;
-  let defaultQuoteTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("WETH", allTokens)[0].address
+  const defaultQuoteTokenAddress: string | null = allTokens.length
+    ? findTokensBySymbol("WETH", allTokens)[0]?.address
     : null;
 
-  // Use default tokens only if neither are specified in the URL.
+  // Use default tokens only if neither are specified in the URL or store.
   const baseToken = tokenFrom
     ? tokenFrom
     : tokenTo
     ? null
-    : defaultBaseTokenAddress;
+    : userTokens.tokenFrom || defaultBaseTokenAddress;
   const quoteToken = tokenTo
     ? tokenTo
     : tokenFrom
     ? null
-    : defaultQuoteTokenAddress;
+    : userTokens.tokenTo || defaultQuoteTokenAddress;
 
   const baseTokenInfo = useMemo(
     () =>
@@ -246,11 +250,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   ]);
 
   useEffect(() => {
-    if (match && match.params) {
-      setTokenFrom(match.params.tokenFrom);
-      setTokenTo(match.params.tokenTo);
-    }
-  }, [match]);
+    setTokenFrom(appRouteParams.tokenFrom);
+    setTokenTo(appRouteParams.tokenTo);
+  }, [appRouteParams]);
 
   useEffect(() => {
     if (ordersStatus === "reset") {
@@ -276,10 +278,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   useEffect(() => {
     setAllowanceFetchFailed(
-      allowances.light.status === "failed" ||
+      allowances.swap.status === "failed" ||
         allowances.wrapper.status === "failed"
     );
-  }, [allowances.light.status, allowances.wrapper.status]);
+  }, [allowances.swap.status, allowances.wrapper.status]);
 
   let swapType: SwapType = "swap";
 
@@ -307,7 +309,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     if (tokenAddress === nativeETH[chainId || 1].address) return true;
     if (!tokenAddress) return false;
     if (
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
         tokenAddress
       ] === undefined
     ) {
@@ -320,7 +322,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       return true;
     }
     return new BigNumber(
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "light"].values[
+      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
         tokenAddress
       ]!
     )
@@ -329,22 +331,24 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+    const baseRoute = `${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`;
+    const { tokenFrom, tokenTo } = getTokenPairs(
+      type,
+      value,
+      quoteToken,
+      baseToken
+    );
+
     if (type === "base") {
-      value === quoteToken
-        ? history.push({ pathname: `/${AppRoutes.swap}/${value}/${baseToken}` })
-        : history.push({
-            pathname: `/${AppRoutes.swap}/${value}/${quoteToken}`,
-          });
       setBaseAmount("");
-    } else {
-      value === baseToken
-        ? history.push({
-            pathname: `/${AppRoutes.swap}/${quoteToken}/${value}`,
-          })
-        : history.push({
-            pathname: `/${AppRoutes.swap}/${baseToken}/${value}`,
-          });
     }
+
+    if (tokenFrom && tokenTo) {
+      dispatch(setUserTokens({ tokenFrom, tokenTo }));
+    }
+    history.push({
+      pathname: `${baseRoute}/${tokenFrom}/${tokenTo}`,
+    });
   };
 
   let insufficientBalance: boolean = false;
@@ -365,7 +369,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     if (library) {
       dispatch(addActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
@@ -380,7 +384,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       }
       dispatch(removeActiveToken(address));
       dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesLight({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
     }
   };
@@ -422,7 +426,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         throw new Error("error requesting orders");
       }
 
-      let rfqPromise: Promise<LightOrder[]> | null = null,
+      let rfqPromise: Promise<Order[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
@@ -457,7 +461,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         }
       }
 
-      let orderPromises: Promise<LightOrder[] | Pricing>[] = [];
+      let orderPromises: Promise<Order[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
         orderPromises = orderPromises.concat(lastLookPromises);
@@ -511,19 +515,19 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const takeBestOption = async () => {
-    let order: LightOrder | null = null;
+    let order: Order | null = null;
     try {
       setIsSwapping(true);
       // @ts-ignore
       // TODO: figure out type issues
-      const validator = new Validator(chainId, library?.getSigner());
       if (bestTradeOption!.protocol === "request-for-quote") {
         if (swapType !== "swapWithWrap") {
-          const errors = (await validator.checkSwap(
+          const errors = (await new Swap(chainId).check(
             bestTradeOption!.order!,
             // NOTE: once new swap contract is used, this (senderAddress) needs
             // to be the wrapper address for wrapped swaps.
-            account!
+            account!,
+            library?.getSigner()
           )) as Error[];
           if (errors.length) {
             setValidatorErrors(errors);
@@ -537,7 +541,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           take({
             order: bestTradeOption!.order!,
             library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             onExpired: () => {
               notifyError({
                 heading: t("orders.swapExpired"),
@@ -561,9 +565,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         order = lastLookOrder;
-        const errors = (await validator.checkSwap(
+        const errors = (await new Swap(chainId).check(
           order,
-          senderWallet
+          senderWallet,
+          library?.getSigner()
         )) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
@@ -615,6 +620,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           })
         );
       }
+      console.error("Error taking order:", e);
     }
   };
 
@@ -721,7 +727,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           approve({
             token: baseToken!,
             library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Light",
+            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             chainId: chainId!,
           })
         );

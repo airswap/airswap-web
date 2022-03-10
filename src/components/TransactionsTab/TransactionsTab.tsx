@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 import { getEtherscanWalletURL } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
@@ -93,7 +93,6 @@ const TransactionsTab = ({
     chainId,
     address,
   ]);
-
   const handleEscKey = useCallback(
     (e) => {
       if (e.keyCode === 27) {

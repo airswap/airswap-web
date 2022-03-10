@@ -1,6 +1,6 @@
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
-import { Light, Wrapper } from "@airswap/libraries";
+import { Swap, Wrapper } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event, providers } from "ethers";
@@ -53,7 +53,7 @@ const getContract = (
  */
 const fetchBalancesOrAllowances: (
   method: "walletBalances" | "walletAllowances",
-  spenderAddressType: "Wrapper" | "Light" | "None",
+  spenderAddressType: "Wrapper" | "Swap" | "None",
   params: WalletParams
 ) => Promise<string[]> = async (
   method,
@@ -64,9 +64,9 @@ const fetchBalancesOrAllowances: (
   const args =
     method === "walletBalances"
       ? [walletAddress, tokenAddresses]
-      : spenderAddressType === "Light"
+      : spenderAddressType === "Swap"
       ? // sender, spender, tokens.
-        [walletAddress, Light.getAddress(chainId), tokenAddresses]
+        [walletAddress, Swap.getAddress(chainId), tokenAddresses]
       : [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());
@@ -77,10 +77,10 @@ const fetchBalances = fetchBalancesOrAllowances.bind(
   "walletBalances",
   "None"
 );
-const fetchAllowancesLight = fetchBalancesOrAllowances.bind(
+const fetchAllowancesSwap = fetchBalancesOrAllowances.bind(
   null,
   "walletAllowances",
-  "Light"
+  "Swap"
 );
 const fetchAllowancesWrapper = fetchBalancesOrAllowances.bind(
   null,
@@ -168,7 +168,7 @@ subscribeToTransfersAndApprovals = ({
 
 export {
   fetchBalances,
-  fetchAllowancesLight,
+  fetchAllowancesSwap,
   fetchAllowancesWrapper,
   subscribeToTransfersAndApprovals,
 };
