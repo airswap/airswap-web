@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenLogo from "../../../TokenLogo/TokenLogo";

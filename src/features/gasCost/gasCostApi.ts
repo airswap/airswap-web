@@ -1,5 +1,5 @@
 import { ADDRESS_ZERO, wethAddresses } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
