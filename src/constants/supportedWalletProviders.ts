@@ -26,15 +26,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
-          supportedChainIds: [
-            1,
-            4,
-            5,
-            56,
-            97,
-            43113,
-            43114,
-          ],
+          supportedChainIds: [1, 4, 5, 56, 97, 43113, 43114],
         });
       }
       return cachedConnectors.MetaMask;

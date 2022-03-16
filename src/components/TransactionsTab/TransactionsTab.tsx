@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { chainCurrencies, chainNames } from "@airswap/constants";
 import { TokenInfo } from "@airswap/typescript";
 import { getEtherscanWalletURL } from "@airswap/utils";
-import { chainCurrencies, chainNames } from '@airswap/constants';
-import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -72,9 +72,7 @@ const TransactionsTab = ({
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
-  const {
-    active,
-  } = useWeb3React<Web3Provider>();
+  const { active } = useWeb3React<Web3Provider>();
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -190,7 +188,12 @@ const TransactionsTab = ({
               <NetworkName>
                 {chainNames[chainId] || t("wallet.unsupported")}
               </NetworkName>
-              {active && (<Balances>{formatUnits(balance).substring(0, 4)} {chainCurrencies[chainId]}</Balances>)}
+              {active && (
+                <Balances>
+                  {formatUnits(balance).substring(0, 4)}{" "}
+                  {chainCurrencies[chainId]}
+                </Balances>
+              )}
             </NetworkInfoContainer>
             <DesktopWalletInfoButton
               isConnected={active}
