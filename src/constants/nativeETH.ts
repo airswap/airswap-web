@@ -17,6 +17,14 @@ const nativeETH: Record<number, TokenInfo> = {
     symbol: "ETH",
     logoURI: "images/ethereum-logo.png",
   },
+  5: {
+    chainId: 5,
+    address: "0x0000000000000000000000000000000000000000",
+    name: "Ether",
+    decimals: 18,
+    symbol: "ETH",
+    logoURI: "images/ethereum-logo.png",
+  },
 };
 
 export default nativeETH;

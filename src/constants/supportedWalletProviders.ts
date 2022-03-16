@@ -29,6 +29,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
           supportedChainIds: [
             1, // Mainnet
             4, // Rinkeby
+            5, // Goerli
           ],
         });
       }
