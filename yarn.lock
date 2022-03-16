@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@airswap/balances@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-1.1.2.tgz#fd25a6ff23ab74c34a8ef81ec7b18d9f4b091061"
-  integrity sha512-79xZg1xnrsuwAAO81d8OSIII/i0Cu/uu3FD+0bLNm1V6ty8iyX4hd3QOH4WdL25izHwd+XulnBKGEx5KRuVCcw==
+"@airswap/balances@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-2.0.0.tgz#226c90617ceb389dfec74f9079629f76c81b1b81"
+  integrity sha512-VZJF8vSMGXU97C87iZ4RKcrOoqySy758il37kmXucsGUeztqS0YGa0CO7IdvQJYhzuw1k/Pch/LiqHZ+2UCawQ==
   dependencies:
     openzeppelin-solidity "2.4"
 
@@ -18,6 +18,11 @@
   version "3.0.0-beta.1"
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.0-beta.1.tgz#7efd6e4e0641f95279a6bcb7d40020d19573bc2e"
   integrity sha512-GFnXzeLq8JzAw44UqEC2T6ShNn0xdhTXB8OB78GN3tHBG8F0fi1kji679kTWyk4VZTtpEXUquzvaTJXxKLftnw==
+
+"@airswap/constants@3.0.0-beta.2":
+  version "3.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.0-beta.2.tgz#aaadfa777e4349f0691b75db85d9d2725787b031"
+  integrity sha512-2FSxhkZ68IIkd5oJg1kS8b4GJh91JkfKJEJXuc5vJjLt3mTxmdreTJFw0tePSOeG2k0DGjZLWkuGRBQBa1FlBQ==
 
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"

@@ -27,9 +27,13 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
           supportedChainIds: [
-            1, // Mainnet
-            4, // Rinkeby
-            5, // Goerli
+            1,
+            4,
+            5,
+            56,
+            97,
+            43113,
+            43114,
           ],
         });
       }

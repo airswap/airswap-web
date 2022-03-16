@@ -2,8 +2,8 @@ import React, { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
+import { wethAddresses } from "@airswap/constants";
 import { Swap, Wrapper } from "@airswap/libraries";
-import { wethAddresses } from "@airswap/constants"
 import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 //@ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
