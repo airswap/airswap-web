@@ -44,7 +44,7 @@ const nativeETH: Record<number, TokenInfo> = {
   43113: {
     chainId: 43113,
     address: "0x0000000000000000000000000000000000000000",
-    name: "Ether",
+    name: "AVAX",
     decimals: 18,
     symbol: "AVAX",
     logoURI: "images/avalanche-logo.png",
