@@ -41,6 +41,14 @@ const nativeETH: Record<number, TokenInfo> = {
     symbol: "BNB",
     logoURI: "images/bnb-logo.png",
   },
+  137: {
+    chainId: 137,
+    address: "0x0000000000000000000000000000000000000000",
+    name: "MATIC",
+    decimals: 18,
+    symbol: "MATIC",
+    logoURI: "images/matic-logo.png",
+  },
   43113: {
     chainId: 43113,
     address: "0x0000000000000000000000000000000000000000",
@@ -56,6 +64,14 @@ const nativeETH: Record<number, TokenInfo> = {
     decimals: 18,
     symbol: "AVAX",
     logoURI: "images/avalanche-logo.png",
+  },
+  80001: {
+    chainId: 80001,
+    address: "0x0000000000000000000000000000000000000000",
+    name: "MATIC",
+    decimals: 18,
+    symbol: "MATIC",
+    logoURI: "images/matic-logo.png",
   },
 };
 
