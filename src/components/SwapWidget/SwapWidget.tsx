@@ -625,7 +625,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const doWrap = async () => {
-    const method = baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
+    const method =
+      baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
     try {
       const result = await dispatch(

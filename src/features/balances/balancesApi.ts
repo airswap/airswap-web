@@ -60,7 +60,6 @@ const fetchBalancesOrAllowances: (
   spenderAddressType,
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
-  console.log('going')
   const contract = getContract(chainId, provider);
   const args =
     method === "walletBalances"
@@ -70,7 +69,6 @@ const fetchBalancesOrAllowances: (
         [walletAddress, Swap.getAddress(chainId), tokenAddresses]
       : [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
-  console.log(amounts)
   return amounts.map((amount) => amount.toString());
 };
 

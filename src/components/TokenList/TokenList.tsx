@@ -160,21 +160,24 @@ const TokenList = ({
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              {[nativeCurrency[chainId], ...sortedFilteredTokens].map((token) => (
-                <TokenButton
-                  showDeleteButton={
-                    editMode && token.address !== nativeCurrency[chainId].address
-                  }
-                  token={token}
-                  balance={formatUnits(
-                    balances.values[token.address] || 0,
-                    token.decimals
-                  )}
-                  setToken={onSelectToken}
-                  removeActiveToken={removeActiveToken}
-                  key={token.address}
-                />
-              ))}
+              {[nativeCurrency[chainId], ...sortedFilteredTokens].map(
+                (token) => (
+                  <TokenButton
+                    showDeleteButton={
+                      editMode &&
+                      token.address !== nativeCurrency[chainId].address
+                    }
+                    token={token}
+                    balance={formatUnits(
+                      balances.values[token.address] || 0,
+                      token.decimals
+                    )}
+                    setToken={onSelectToken}
+                    removeActiveToken={removeActiveToken}
+                    key={token.address}
+                  />
+                )
+              )}
             </TokenContainer>
           )}
           {inactiveTokens.length !== 0 &&
