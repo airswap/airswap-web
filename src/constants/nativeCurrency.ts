@@ -1,6 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
-const nativeETH: Record<number, TokenInfo> = {
+const nativeCurrency: Record<number, TokenInfo> = {
   1: {
     chainId: 1,
     address: "0x0000000000000000000000000000000000000000",
@@ -75,4 +75,4 @@ const nativeETH: Record<number, TokenInfo> = {
   },
 };
 
-export default nativeETH;
+export default nativeCurrency;

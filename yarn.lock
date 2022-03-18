@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@airswap/balances@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-2.0.0.tgz#226c90617ceb389dfec74f9079629f76c81b1b81"
-  integrity sha512-VZJF8vSMGXU97C87iZ4RKcrOoqySy758il37kmXucsGUeztqS0YGa0CO7IdvQJYhzuw1k/Pch/LiqHZ+2UCawQ==
+"@airswap/balances@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/balances/-/balances-2.0.2.tgz#7b7ea05a2a6998fa1d1c475aa5278592a4853fa2"
+  integrity sha512-V5XOaDZajIES9Q4CZToAoebj5PpMYrtEdZ6Tj3MfE3Q27uxCkOarFAY5tPucHdzILizNJlTMwHi8N2N6oDH+5w==
   dependencies:
     openzeppelin-solidity "2.4"
 

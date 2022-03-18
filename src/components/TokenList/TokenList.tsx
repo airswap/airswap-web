@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@airswap/typescript";
 import { formatUnits } from "@ethersproject/units";
 
-import nativeETH from "../../constants/nativeETH";
+import nativeCurrency from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
@@ -160,10 +160,10 @@ const TokenList = ({
 
           {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
             <TokenContainer>
-              {[nativeETH[chainId], ...sortedFilteredTokens].map((token) => (
+              {[nativeCurrency[chainId], ...sortedFilteredTokens].map((token) => (
                 <TokenButton
                   showDeleteButton={
-                    editMode && token.address !== nativeETH[chainId].address
+                    editMode && token.address !== nativeCurrency[chainId].address
                   }
                   token={token}
                   balance={formatUnits(

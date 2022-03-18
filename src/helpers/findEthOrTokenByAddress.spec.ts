@@ -1,4 +1,4 @@
-import nativeETH from "../constants/nativeETH";
+import nativeCurrency from "../constants/nativeCurrency";
 import findEthOrTokenByAddress from "./findEthOrTokenByAddress";
 
 const WETH = {
@@ -35,7 +35,7 @@ describe("findEthOrTokenByAddress", () => {
       allTokens,
       chainId
     );
-    expect(tokenInfo).toBe(nativeETH[chainId]);
+    expect(tokenInfo).toBe(nativeCurrency[chainId]);
   });
 
   it("should return WETH TokenInfo", () => {

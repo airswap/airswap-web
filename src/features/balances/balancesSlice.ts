@@ -60,6 +60,7 @@ const getThunk: (
     "allowances.swap": fetchAllowancesSwap,
     "allowances.wrapper": fetchAllowancesWrapper,
   };
+  console.log(methods)
   return createAsyncThunk<
     { address: string; amount: string }[],
     {
@@ -73,6 +74,7 @@ const getThunk: (
   >(
     `${type}/requestForActiveTokens`,
     async (params, { getState, dispatch }) => {
+      console.log('trying')
       try {
         const state = getState();
         const activeTokensAddresses = [
@@ -101,6 +103,7 @@ const getThunk: (
     {
       // Logic to prevent fetching again if we're already fetching the same or more tokens.
       condition: (params, { getState }) => {
+        console.log('what')
         const pathParts = type.split(".");
         const sliceState =
           pathParts.length > 1
