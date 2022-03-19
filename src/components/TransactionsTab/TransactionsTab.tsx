@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { chainCurrencies, chainNames } from "@airswap/constants";
 import { TokenInfo } from "@airswap/typescript";
 import { getEtherscanWalletURL } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
@@ -38,11 +41,6 @@ import {
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
-const addressMapping: Record<number, string> = {
-  1: "Mainnet",
-  4: "Rinkeby",
-};
-
 type TransactionsTabType = {
   address: string;
   chainId: number;
@@ -73,6 +71,8 @@ const TransactionsTab = ({
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
+
+  const { active } = useWeb3React<Web3Provider>();
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -186,11 +186,17 @@ const TransactionsTab = ({
           <WalletHeader>
             <NetworkInfoContainer>
               <NetworkName>
-                {addressMapping[chainId] || t("wallet.unsupported")}
+                {chainNames[chainId] || t("wallet.unsupported")}
               </NetworkName>
-              <Balances>{formatUnits(balance).substring(0, 5)} ETH</Balances>
+              {active && (
+                <Balances>
+                  {formatUnits(balance).substring(0, 4)}{" "}
+                  {chainCurrencies[chainId]}
+                </Balances>
+              )}
             </NetworkInfoContainer>
             <DesktopWalletInfoButton
+              isConnected={active}
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
               {walletInfoText}

@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
+import { wethAddresses } from "@airswap/constants";
 import { Swap, Wrapper } from "@airswap/libraries";
 import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 //@ts-ignore
@@ -16,7 +17,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as Weth9Contract from "../../assets/weth9.abi.json";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
-import Weth9Deploys from "../../constants/Weth9";
 import {
   AbstractConnector,
   WalletProvider,
@@ -157,7 +157,7 @@ export const Wallet: FC<WalletPropsType> = ({
       );
       setSwapContract(swapContract);
       const wrapContract = new Contract(
-        Weth9Deploys[chainId],
+        wethAddresses[chainId],
         Weth9Contract.abi,
         //@ts-ignore
         library
