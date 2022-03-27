@@ -14,11 +14,11 @@ import BigNumber from "bignumber.js";
 import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { Error } from "../../constants/errors";
 import nativeETH from "../../constants/nativeETH";
+import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import {
   allowancesSwapActions,
   allowancesWrapperActions,
@@ -85,9 +85,7 @@ const refactorOrder = (order: Order, chainId: number) => {
 const handleError = (dispatch: Dispatch, e: any) => {
   console.error(e);
   dispatch(declineTransaction(e.message));
-  const errorType = e?.code
-    ? transformErrorCodeToError(e?.code)
-    : undefined;
+  const errorType = e?.code ? transformErrorCodeToError(e?.code) : undefined;
   if (errorType) {
     dispatch(setError(errorType));
   }
