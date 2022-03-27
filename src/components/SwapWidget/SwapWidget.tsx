@@ -18,6 +18,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
+import { ErrorType } from "../../constants/errors";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -71,6 +72,7 @@ import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import { ErrorList } from "../ErrorList/ErrorList";
+import transformMetaMaskErrorToError from "../ErrorList/helpers/transformMetaMaskErrorToError";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
@@ -91,8 +93,6 @@ import ActionButtons, {
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
-import { ErrorType } from "../../constants/errors";
-import transformMetaMaskErrorToError from "../ErrorList/helpers/transformMetaMaskErrorToError";
 
 export type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
@@ -166,7 +166,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>(['NONCE_ALREADY_USED', 'SIGNER_BALANCE_LOW']);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([
+    "NONCE_ALREADY_USED",
+    "SIGNER_BALANCE_LOW",
+  ]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -523,13 +526,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       // TODO: figure out type issues
       if (bestTradeOption!.protocol === "request-for-quote") {
         if (swapType !== "swapWithWrap") {
-          const errors = (await new Swap(chainId).check(
+          const errors = ((await new Swap(chainId).check(
             bestTradeOption!.order!,
             // NOTE: once new swap contract is used, this (senderAddress) needs
             // to be the wrapper address for wrapped swaps.
             account!,
             library?.getSigner()
-          )) as unknown as ErrorType[];
+          )) as unknown) as ErrorType[];
           if (errors.length) {
             setValidatorErrors(errors);
             setIsSwapping(false);
@@ -566,11 +569,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         order = lastLookOrder;
-        const errors = (await new Swap(chainId).check(
+        const errors = ((await new Swap(chainId).check(
           order,
           senderWallet,
           library?.getSigner()
-        )) as unknown as ErrorType[];
+        )) as unknown) as ErrorType[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -605,9 +608,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         dispatch(clearTradeTermsQuoteAmount());
       }
 
-      const error = e.message ? transformMetaMaskErrorToError("-32600") : undefined;
+      const error = e.message
+        ? transformMetaMaskErrorToError("-32600")
+        : undefined;
 
-      if (error === 'userRejectedRequest') {
+      if (error === "userRejectedRequest") {
         notifyError({
           heading: t("orders.swapFailed"),
           cta: t("orders.swapRejectedByUser"),
@@ -646,10 +651,12 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsWrapping(false);
       setShowOrderSubmitted(true);
     } catch (e: any) {
-      const error = e.message ? transformMetaMaskErrorToError(e.message) : undefined;
+      const error = e.message
+        ? transformMetaMaskErrorToError(e.message)
+        : undefined;
       console.log(error);
 
-      if (error === 'chainDisconnected') {
+      if (error === "chainDisconnected") {
         notifyError({
           heading: t("orders.swapFailed"),
           cta: t("orders.swapRejectedByUser"),
