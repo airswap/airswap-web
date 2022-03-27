@@ -42,6 +42,7 @@ import {
   resetOrders,
   selectBestOption,
   selectBestOrder,
+  selectOrdersError,
   selectOrdersStatus,
   take,
   withdraw,
@@ -72,7 +73,6 @@ import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import { ErrorList } from "../ErrorList/ErrorList";
-import transformMetaMaskErrorToError from "../ErrorList/helpers/transformMetaMaskErrorToError";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
@@ -123,6 +123,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
+  const ordersError = useAppSelector(selectOrdersError);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -166,10 +167,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([
-    "NONCE_ALREADY_USED",
-    "SIGNER_BALANCE_LOW",
-  ]);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>(['NONCE_ALREADY_USED', 'chainDisconnected']);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -286,6 +284,20 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
+
+  useEffect(() => {
+    if (ordersError === 'userRejectedRequest') {
+      notifyError({
+        heading: t("orders.swapFailed"),
+        cta: t("orders.swapRejectedByUser"),
+      });
+    }
+
+    if (ordersError && ordersError !== 'userRejectedRequest') {
+      setValidatorErrors([ordersError]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordersError]);
 
   let swapType: SwapType = "swap";
 
@@ -532,7 +544,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             // to be the wrapper address for wrapped swaps.
             account!,
             library?.getSigner()
-          )) as unknown) as ErrorType[];
+          ))) as ErrorType[];
           if (errors.length) {
             setValidatorErrors(errors);
             setIsSwapping(false);
@@ -573,7 +585,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           order,
           senderWallet,
           library?.getSigner()
-        )) as unknown) as ErrorType[];
+        ))) as ErrorType[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -608,20 +620,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         dispatch(clearTradeTermsQuoteAmount());
       }
 
-      const error = e.message
-        ? transformMetaMaskErrorToError("-32600")
-        : undefined;
-
-      if (error === "userRejectedRequest") {
-        notifyError({
-          heading: t("orders.swapFailed"),
-          cta: t("orders.swapRejectedByUser"),
-        });
-      } else {
-        if (error) {
-          setValidatorErrors([error]);
-        }
-
+      if (e?.message.indexOf('User denied') === -1) {
         dispatch(
           revertTransaction({
             signerWallet: order?.signerWallet,
@@ -651,20 +650,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsWrapping(false);
       setShowOrderSubmitted(true);
     } catch (e: any) {
-      const error = e.message
-        ? transformMetaMaskErrorToError(e.message)
-        : undefined;
-      console.log(error);
-
-      if (error === "chainDisconnected") {
-        notifyError({
-          heading: t("orders.swapFailed"),
-          cta: t("orders.swapRejectedByUser"),
-        });
-      } else if (error) {
-        setValidatorErrors([error]);
-      }
-
       setIsSwapping(false);
       setIsWrapping(false);
     }

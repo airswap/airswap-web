@@ -10,7 +10,7 @@ import {
 } from "../../constants/errors";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   StyledErrorList,
@@ -21,7 +21,6 @@ import {
   StyledErrorIcon,
   StyledSubText,
 } from "./ErrorList.styles";
-import getErrorTranslation from "./helpers/getErrorTranslation";
 
 type ErrorListProps = {
   errors: ErrorType[];
@@ -42,9 +41,10 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
     return (
       <>
         {errors.map((error, idx) => {
-          // @ts-ignore
-          const translation = airswapProviderErrorList.find((a) => a === error)
-            ? t(`validatorErrors.${error.toLowerCase()}`)
+          const airswapProviderError = airswapProviderErrorList.find((a) => a === error);
+          const translation = airswapProviderError
+            // @ts-ignore
+            ? t(`validatorErrors.${airswapProviderError.toLowerCase()}`)
             : getMessageFromCode(ErrorCodes[error]);
 
           return (

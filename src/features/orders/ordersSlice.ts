@@ -5,7 +5,7 @@ import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
   createSelector,
-  createSlice,
+  createSlice, Dispatch,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
@@ -52,10 +52,13 @@ import {
   takeOrder,
   withdrawETH,
 } from "./orderApi";
+import {ErrorType} from "../../constants/errors";
+import transformMetaMaskErrorToError from "../../components/ErrorList/helpers/transformMetaMaskErrorToError";
 
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
+  error?: ErrorType;
   reRequestTimerId: number | null;
 }
 
@@ -77,6 +80,15 @@ const refactorOrder = (order: Order, chainId: number) => {
   }
   return newOrder;
 };
+
+const handleError = (dispatch: Dispatch, e: any) => {
+  console.error(e);
+  dispatch(declineTransaction(e.message));
+  const errorType = e?.code ? transformMetaMaskErrorToError(e?.code) : undefined;
+  if (errorType) {
+    dispatch(setError(errorType));
+  }
+}
 
 export const deposit = createAsyncThunk(
   "orders/deposit",
@@ -151,8 +163,7 @@ export const deposit = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.log(e);
-      dispatch(declineTransaction(e.message));
+      handleError(dispatch, e);
       throw e;
     }
   }
@@ -236,8 +247,7 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
+      handleError(dispatch, e);
       throw e;
     }
   }
@@ -355,9 +365,7 @@ export const approve = createAsyncThunk<
       });
     }
   } catch (e: any) {
-    console.log(e);
-    console.error(e);
-    dispatch(declineTransaction(e.message));
+    handleError(dispatch, e);
     throw e;
   }
 });
@@ -407,7 +415,7 @@ export const take = createAsyncThunk<
       );
     }
   } catch (e: any) {
-    dispatch(declineTransaction(e.message));
+    handleError(dispatch, e);
     throw e;
   }
 });
@@ -419,9 +427,13 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
+    setError: (state, action: PayloadAction<ErrorType>) => {
+      state.error = action.payload;
+    },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
+      state.error = undefined;
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -475,6 +487,7 @@ export const ordersSlice = createSlice({
 
 export const {
   clear,
+  setError,
   setResetStatus,
   setReRequestTimerId,
 } = ordersSlice.actions;
@@ -551,4 +564,5 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
+export const selectOrdersError = (state: RootState) => state.orders.error;
 export default ordersSlice.reducer;

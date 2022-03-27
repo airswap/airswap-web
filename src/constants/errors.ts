@@ -1,6 +1,6 @@
 import { errorCodes } from "eth-rpc-errors";
 
-export type AirswapProviderErrors =
+export type AirswapProviderErrorType =
   | "INVALID_SIG"
   | "EXPIRY_PASSED"
   | "UNAUTHORIZED"
@@ -8,13 +8,13 @@ export type AirswapProviderErrors =
   | "SIGNER_BALANCE_LOW"
   | "NONCE_ALREADY_USED";
 
-export type RPCErrors = keyof typeof errorCodes.rpc;
+export type RPCErrorType = keyof typeof errorCodes.rpc;
 
-export type ProviderErrors = keyof typeof errorCodes.provider;
+export type EthereumProviderErrorType = keyof typeof errorCodes.provider;
 
-export type ErrorType = AirswapProviderErrors | RPCErrors | ProviderErrors;
+export type ErrorType = AirswapProviderErrorType | RPCErrorType | EthereumProviderErrorType;
 
-export const airswapProviderErrorList: AirswapProviderErrors[] = [
+export const airswapProviderErrorList: AirswapProviderErrorType[] = [
   "INVALID_SIG",
   "EXPIRY_PASSED",
   "UNAUTHORIZED",
