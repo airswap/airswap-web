@@ -5,8 +5,8 @@ import { getMessageFromCode } from "eth-rpc-errors";
 
 import {
   airswapProviderErrorList,
-  ErrorCodes,
-  Error,
+  ErrorCodesMap,
+  Error, airswapProviderErrorTranslationMap,
 } from "../../constants/errors";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
@@ -45,9 +45,8 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
             (a) => a === error
           );
           const translation = airswapProviderError
-            ? // @ts-ignore
-              t(`validatorErrors.${airswapProviderError.toLowerCase()}`)
-            : getMessageFromCode(ErrorCodes[error]);
+            ? t(`validatorErrors.${airswapProviderErrorTranslationMap[airswapProviderError]}`)
+            : getMessageFromCode(ErrorCodesMap[error], t('common.undefined'));
 
           return (
             <StyledError key={idx}>

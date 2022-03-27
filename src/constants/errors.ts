@@ -1,6 +1,8 @@
 import { errorCodes } from "eth-rpc-errors";
+import translation from "../../public/locales/en/translation.json";
 
-export type AirswapProviderErrorType =
+// This is hard coded in solidity contracts, there is no way to source this right now.
+export type AirswapProviderError =
   | "INVALID_SIG"
   | "EXPIRY_PASSED"
   | "UNAUTHORIZED"
@@ -8,25 +10,16 @@ export type AirswapProviderErrorType =
   | "SIGNER_BALANCE_LOW"
   | "NONCE_ALREADY_USED";
 
-export type RPCErrorType = keyof typeof errorCodes.rpc;
+export type EthereumRPCError = keyof typeof errorCodes.rpc;
 
-export type EthereumProviderErrorType = keyof typeof errorCodes.provider;
+export type EthereumProviderError = keyof typeof errorCodes.provider;
 
 export type Error =
-  | AirswapProviderErrorType
-  | RPCErrorType
-  | EthereumProviderErrorType;
+  | AirswapProviderError
+  | EthereumRPCError
+  | EthereumProviderError;
 
-export const airswapProviderErrorList: AirswapProviderErrorType[] = [
-  "INVALID_SIG",
-  "EXPIRY_PASSED",
-  "UNAUTHORIZED",
-  "SIGNER_ALLOWANCE_LOW",
-  "SIGNER_BALANCE_LOW",
-  "NONCE_ALREADY_USED",
-];
-
-export const ErrorCodes: Record<Error, number> = {
+export const ErrorCodesMap: Record<Error, number> = {
   INVALID_SIG: 0,
   EXPIRY_PASSED: 0,
   UNAUTHORIZED: 0,
@@ -36,3 +29,23 @@ export const ErrorCodes: Record<Error, number> = {
   ...errorCodes.rpc,
   ...errorCodes.provider,
 };
+
+type ErrorTranslationKey = keyof typeof translation["validatorErrors"];
+
+export const airswapProviderErrorList: AirswapProviderError[] = [
+  "INVALID_SIG",
+  "EXPIRY_PASSED",
+  "UNAUTHORIZED",
+  "SIGNER_ALLOWANCE_LOW",
+  "SIGNER_BALANCE_LOW",
+  "NONCE_ALREADY_USED",
+];
+
+export const airswapProviderErrorTranslationMap: Record<AirswapProviderError, ErrorTranslationKey> = {
+  "INVALID_SIG": "invalid_sig",
+  "EXPIRY_PASSED": "expiry_passed",
+  "UNAUTHORIZED": "unauthorized",
+  "SIGNER_ALLOWANCE_LOW": "signer_allowance_low",
+  "SIGNER_BALANCE_LOW": "signer_balance_low",
+  "NONCE_ALREADY_USED": "nonce_already_used",
+}
