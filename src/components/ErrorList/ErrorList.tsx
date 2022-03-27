@@ -45,13 +45,9 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
       <LegendDivider />
       <StyledScrollContainer $overflow={overflow} ref={scrollContainerRef}>
         <StyledErrorList>
-          {
-            errors.map((error) => {
-              return (
-                <ErrorListItem error={error} />
-              )
-            })
-          }
+          {errors.map((error) => {
+            return <ErrorListItem error={error} />;
+          })}
         </StyledErrorList>
       </StyledScrollContainer>
       <OverlayActionButton ref={buttonRef} onClick={handleClick}>
