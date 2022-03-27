@@ -6,7 +6,7 @@ import { getMessageFromCode } from "eth-rpc-errors";
 import {
   airswapProviderErrorList,
   ErrorCodes,
-  ErrorType,
+  Error,
 } from "../../constants/errors";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
@@ -23,7 +23,7 @@ import {
 } from "./ErrorList.styles";
 
 type ErrorListProps = {
-  errors: ErrorType[];
+  errors: Error[];
   handleClick: () => void;
 };
 

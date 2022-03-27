@@ -17,7 +17,7 @@ import { AppDispatch, RootState } from "../../app/store";
 import transformMetaMaskErrorToError from "../../components/ErrorList/helpers/transformMetaMaskErrorToError";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { ErrorType } from "../../constants/errors";
+import { Error } from "../../constants/errors";
 import nativeETH from "../../constants/nativeETH";
 import {
   allowancesSwapActions,
@@ -59,7 +59,7 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
-  error?: ErrorType;
+  error?: Error;
   reRequestTimerId: number | null;
 }
 
@@ -430,7 +430,7 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
-    setError: (state, action: PayloadAction<ErrorType>) => {
+    setError: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
     },
     clear: (state) => {

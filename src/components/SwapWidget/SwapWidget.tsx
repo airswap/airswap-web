@@ -18,7 +18,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
-import { ErrorType } from "../../constants/errors";
+import { Error } from "../../constants/errors";
 import nativeETH from "../../constants/nativeETH";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -167,10 +167,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([
-    "NONCE_ALREADY_USED",
-    "chainDisconnected",
-  ]);
+  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -547,7 +544,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             // to be the wrapper address for wrapped swaps.
             account!,
             library?.getSigner()
-          )) as ErrorType[];
+          )) as Error[];
           if (errors.length) {
             setValidatorErrors(errors);
             setIsSwapping(false);
@@ -588,7 +585,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           order,
           senderWallet,
           library?.getSigner()
-        )) as ErrorType[];
+        )) as Error[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);

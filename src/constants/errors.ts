@@ -12,7 +12,7 @@ export type RPCErrorType = keyof typeof errorCodes.rpc;
 
 export type EthereumProviderErrorType = keyof typeof errorCodes.provider;
 
-export type ErrorType =
+export type Error =
   | AirswapProviderErrorType
   | RPCErrorType
   | EthereumProviderErrorType;
@@ -26,7 +26,7 @@ export const airswapProviderErrorList: AirswapProviderErrorType[] = [
   "NONCE_ALREADY_USED",
 ];
 
-export const ErrorCodes: Record<ErrorType, number> = {
+export const ErrorCodes: Record<Error, number> = {
   INVALID_SIG: 0,
   EXPIRY_PASSED: 0,
   UNAUTHORIZED: 0,
