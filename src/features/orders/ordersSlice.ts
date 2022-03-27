@@ -14,7 +14,7 @@ import BigNumber from "bignumber.js";
 import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import transformMetaMaskErrorToError from "../../components/ErrorList/helpers/transformMetaMaskErrorToError";
+import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { Error } from "../../constants/errors";
@@ -86,7 +86,7 @@ const handleError = (dispatch: Dispatch, e: any) => {
   console.error(e);
   dispatch(declineTransaction(e.message));
   const errorType = e?.code
-    ? transformMetaMaskErrorToError(e?.code)
+    ? transformErrorCodeToError(e?.code)
     : undefined;
   if (errorType) {
     dispatch(setError(errorType));
