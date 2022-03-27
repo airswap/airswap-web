@@ -649,7 +649,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsSwapping(false);
       setIsWrapping(false);
       setShowOrderSubmitted(true);
-    } catch (e: any) {
+    } catch {
       setIsSwapping(false);
       setIsWrapping(false);
     }

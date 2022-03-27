@@ -2,7 +2,7 @@ import { errorCodes } from "eth-rpc-errors";
 
 import translation from "../../public/locales/en/translation.json";
 
-// This is hard coded in solidity contracts, there is no way to source this right now.
+// These errors are located in the solidity contracts, so there is no way to directly source them.
 export type AirswapProviderError =
   | "INVALID_SIG"
   | "EXPIRY_PASSED"
