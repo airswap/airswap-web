@@ -1,4 +1,5 @@
 import { errorCodes } from "eth-rpc-errors";
+
 import translation from "../../public/locales/en/translation.json";
 
 // This is hard coded in solidity contracts, there is no way to source this right now.
@@ -41,11 +42,14 @@ export const airswapProviderErrorList: AirswapProviderError[] = [
   "NONCE_ALREADY_USED",
 ];
 
-export const airswapProviderErrorTranslationMap: Record<AirswapProviderError, ErrorTranslationKey> = {
-  "INVALID_SIG": "invalid_sig",
-  "EXPIRY_PASSED": "expiry_passed",
-  "UNAUTHORIZED": "unauthorized",
-  "SIGNER_ALLOWANCE_LOW": "signer_allowance_low",
-  "SIGNER_BALANCE_LOW": "signer_balance_low",
-  "NONCE_ALREADY_USED": "nonce_already_used",
-}
+export const airswapProviderErrorTranslationMap: Record<
+  AirswapProviderError,
+  ErrorTranslationKey
+> = {
+  INVALID_SIG: "invalid_sig",
+  EXPIRY_PASSED: "expiry_passed",
+  UNAUTHORIZED: "unauthorized",
+  SIGNER_ALLOWANCE_LOW: "signer_allowance_low",
+  SIGNER_BALANCE_LOW: "signer_balance_low",
+  NONCE_ALREADY_USED: "nonce_already_used",
+};
