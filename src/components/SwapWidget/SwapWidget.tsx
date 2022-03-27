@@ -70,7 +70,6 @@ import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
-import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -92,6 +91,8 @@ import ActionButtons, {
 } from "./subcomponents/ActionButtons/ActionButtons";
 import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
+import { ErrorType } from "../../constants/errors";
+import transformMetaMaskErrorToError from "../ErrorList/helpers/transformMetaMaskErrorToError";
 
 export type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
@@ -165,7 +166,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>(['NONCE_ALREADY_USED', 'SIGNER_BALANCE_LOW']);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -528,7 +529,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
             // to be the wrapper address for wrapped swaps.
             account!,
             library?.getSigner()
-          )) as Error[];
+          )) as unknown as ErrorType[];
           if (errors.length) {
             setValidatorErrors(errors);
             setIsSwapping(false);
@@ -569,7 +570,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           order,
           senderWallet,
           library?.getSigner()
-        )) as Error[];
+        )) as unknown as ErrorType[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -604,13 +605,17 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         dispatch(clearTradeTermsQuoteAmount());
       }
 
-      if (e.code && e.code === 4001) {
-        // 4001 is metamask user declining transaction sig
-      } else {
+      const error = e.message ? transformMetaMaskErrorToError("-32600") : undefined;
+
+      if (error === 'userRejectedRequest') {
         notifyError({
           heading: t("orders.swapFailed"),
-          cta: t("orders.swapFailedCallToAction"),
+          cta: t("orders.swapRejectedByUser"),
         });
+      } else {
+        if (error) {
+          setValidatorErrors([error]);
+        }
 
         dispatch(
           revertTransaction({
@@ -640,8 +645,19 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsSwapping(false);
       setIsWrapping(false);
       setShowOrderSubmitted(true);
-    } catch (e) {
-      // user cancelled metamask dialog
+    } catch (e: any) {
+      const error = e.message ? transformMetaMaskErrorToError(e.message) : undefined;
+      console.log(error);
+
+      if (error === 'chainDisconnected') {
+        notifyError({
+          heading: t("orders.swapFailed"),
+          cta: t("orders.swapRejectedByUser"),
+        });
+      } else if (error) {
+        setValidatorErrors([error]);
+      }
+
       setIsSwapping(false);
       setIsWrapping(false);
     }

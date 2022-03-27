@@ -151,7 +151,7 @@ export const deposit = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
+      console.log(e);
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -355,6 +355,7 @@ export const approve = createAsyncThunk<
       });
     }
   } catch (e: any) {
+    console.log(e);
     console.error(e);
     dispatch(declineTransaction(e.message));
     throw e;

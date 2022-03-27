@@ -1,10 +1,9 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import translation from "../../../public/locales/en/translation.json";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
-import { InfoHeading } from "../Typography/Typography";
+import {InfoHeading, InfoSubHeading} from "../Typography/Typography";
 import {
   Container,
   StyledErrorList,
@@ -15,11 +14,12 @@ import {
   StyledErrorIcon,
   StyledSubText,
 } from "./ErrorList.styles";
-
-export type Error = keyof typeof translation["validatorErrors"];
+import {airswapProviderErrorList, ErrorCodes, ErrorType} from "../../constants/errors";
+import { getMessageFromCode } from "eth-rpc-errors";
+import getErrorTranslation from "./helpers/getErrorTranslation";
 
 type ErrorListProps = {
-  errors: Error[];
+  errors: ErrorType[];
   handleClick: () => void;
 };
 
@@ -33,10 +33,13 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
 
   const StyledErrors = () => {
     if (!errors.length) return <></>;
+
     return (
       <>
         {errors.map((error, idx) => {
-          const subText = error.toLowerCase() as Error;
+          // @ts-ignore
+          const translation = airswapProviderErrorList.find(a => a === error) ? t(`validatorErrors.${error.toLowerCase()}`) : getMessageFromCode(ErrorCodes[error]);
+
           return (
             <StyledError key={idx}>
               <StyledErrorIcon
@@ -44,8 +47,8 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
                 iconSize={1.5}
               />
               <ErrorTextContainer>
-                <InfoHeading>{t(`validatorErrors.${error}`)}</InfoHeading>
-                <StyledSubText>{t(`validatorErrors.${subText}`)}</StyledSubText>
+                <InfoHeading>{error}</InfoHeading>
+                <StyledSubText>{translation}</StyledSubText>
               </ErrorTextContainer>
             </StyledError>
           );
