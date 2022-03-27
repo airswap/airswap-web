@@ -12,7 +12,10 @@ export type RPCErrorType = keyof typeof errorCodes.rpc;
 
 export type EthereumProviderErrorType = keyof typeof errorCodes.provider;
 
-export type ErrorType = AirswapProviderErrorType | RPCErrorType | EthereumProviderErrorType;
+export type ErrorType =
+  | AirswapProviderErrorType
+  | RPCErrorType
+  | EthereumProviderErrorType;
 
 export const airswapProviderErrorList: AirswapProviderErrorType[] = [
   "INVALID_SIG",

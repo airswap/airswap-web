@@ -41,10 +41,12 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
     return (
       <>
         {errors.map((error, idx) => {
-          const airswapProviderError = airswapProviderErrorList.find((a) => a === error);
+          const airswapProviderError = airswapProviderErrorList.find(
+            (a) => a === error
+          );
           const translation = airswapProviderError
-            // @ts-ignore
-            ? t(`validatorErrors.${airswapProviderError.toLowerCase()}`)
+            ? // @ts-ignore
+              t(`validatorErrors.${airswapProviderError.toLowerCase()}`)
             : getMessageFromCode(ErrorCodes[error]);
 
           return (

@@ -5,7 +5,8 @@ import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
   createSelector,
-  createSlice, Dispatch,
+  createSlice,
+  Dispatch,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
@@ -13,8 +14,10 @@ import BigNumber from "bignumber.js";
 import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
+import transformMetaMaskErrorToError from "../../components/ErrorList/helpers/transformMetaMaskErrorToError";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { ErrorType } from "../../constants/errors";
 import nativeETH from "../../constants/nativeETH";
 import {
   allowancesSwapActions,
@@ -52,8 +55,6 @@ import {
   takeOrder,
   withdrawETH,
 } from "./orderApi";
-import {ErrorType} from "../../constants/errors";
-import transformMetaMaskErrorToError from "../../components/ErrorList/helpers/transformMetaMaskErrorToError";
 
 export interface OrdersState {
   orders: Order[];
@@ -84,11 +85,13 @@ const refactorOrder = (order: Order, chainId: number) => {
 const handleError = (dispatch: Dispatch, e: any) => {
   console.error(e);
   dispatch(declineTransaction(e.message));
-  const errorType = e?.code ? transformMetaMaskErrorToError(e?.code) : undefined;
+  const errorType = e?.code
+    ? transformMetaMaskErrorToError(e?.code)
+    : undefined;
   if (errorType) {
     dispatch(setError(errorType));
   }
-}
+};
 
 export const deposit = createAsyncThunk(
   "orders/deposit",

@@ -167,7 +167,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>(['NONCE_ALREADY_USED', 'chainDisconnected']);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([
+    "NONCE_ALREADY_USED",
+    "chainDisconnected",
+  ]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -286,17 +289,17 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   }, [allowances.swap.status, allowances.wrapper.status]);
 
   useEffect(() => {
-    if (ordersError === 'userRejectedRequest') {
+    if (ordersError === "userRejectedRequest") {
       notifyError({
         heading: t("orders.swapFailed"),
         cta: t("orders.swapRejectedByUser"),
       });
     }
 
-    if (ordersError && ordersError !== 'userRejectedRequest') {
+    if (ordersError && ordersError !== "userRejectedRequest") {
       setValidatorErrors([ordersError]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ordersError]);
 
   let swapType: SwapType = "swap";
@@ -538,13 +541,13 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       // TODO: figure out type issues
       if (bestTradeOption!.protocol === "request-for-quote") {
         if (swapType !== "swapWithWrap") {
-          const errors = ((await new Swap(chainId).check(
+          const errors = (await new Swap(chainId).check(
             bestTradeOption!.order!,
             // NOTE: once new swap contract is used, this (senderAddress) needs
             // to be the wrapper address for wrapped swaps.
             account!,
             library?.getSigner()
-          ))) as ErrorType[];
+          )) as ErrorType[];
           if (errors.length) {
             setValidatorErrors(errors);
             setIsSwapping(false);
@@ -581,11 +584,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
         order = lastLookOrder;
-        const errors = ((await new Swap(chainId).check(
+        const errors = (await new Swap(chainId).check(
           order,
           senderWallet,
           library?.getSigner()
-        ))) as ErrorType[];
+        )) as ErrorType[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -620,7 +623,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         dispatch(clearTradeTermsQuoteAmount());
       }
 
-      if (e?.message.indexOf('User denied') === -1) {
+      if (e?.message.indexOf("User denied") === -1) {
         dispatch(
           revertTransaction({
             signerWallet: order?.signerWallet,
