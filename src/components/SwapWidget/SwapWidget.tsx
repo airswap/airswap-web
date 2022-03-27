@@ -649,7 +649,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       setIsSwapping(false);
       setIsWrapping(false);
       setShowOrderSubmitted(true);
-    } catch {
+    } catch (e) {
+      // user cancelled metamask dialog
       setIsSwapping(false);
       setIsWrapping(false);
     }
