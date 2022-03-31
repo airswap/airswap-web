@@ -19,7 +19,7 @@ import {
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
 import type { Error } from "../../constants/errors";
-import nativeETH from "../../constants/nativeETH";
+import nativeCurrency from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowancesSwap,
@@ -187,7 +187,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     ? findTokensBySymbol("USDT", allTokens)[0]?.address
     : null;
   const defaultQuoteTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("WETH", allTokens)[0]?.address
+    ? nativeCurrency[chainId!]?.address
     : null;
 
   // Use default tokens only if neither are specified in the URL or store.
@@ -302,7 +302,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   let swapType: SwapType = "swap";
 
   if (chainId && baseToken && quoteToken) {
-    const eth = nativeETH[chainId].address;
+    const eth = nativeCurrency[chainId].address;
     const weth = wethAddresses[chainId];
     if ([weth, eth].includes(baseToken) && [weth, eth].includes(quoteToken)) {
       swapType = "wrapOrUnwrap";
@@ -322,7 +322,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
-    if (tokenAddress === nativeETH[chainId || 1].address) return true;
+    if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
     if (
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
@@ -415,7 +415,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
     const usesWrapper = swapType === "swapWithWrap";
     const weth = wethAddresses[chainId!];
-    const eth = nativeETH[chainId!];
+    const eth = nativeCurrency[chainId!];
     const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
     const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
@@ -634,7 +634,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   const doWrap = async () => {
-    const method = baseTokenInfo === nativeETH[chainId!] ? deposit : withdraw;
+    const method =
+      baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
     try {
       const result = await dispatch(

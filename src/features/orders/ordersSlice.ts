@@ -17,7 +17,7 @@ import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { Error } from "../../constants/errors";
-import nativeETH from "../../constants/nativeETH";
+import nativeCurrency from "../../constants/nativeCurrency";
 import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import {
   allowancesSwapActions,
@@ -75,9 +75,9 @@ const APPROVE_AMOUNT = "90071992547409910000000000";
 const refactorOrder = (order: Order, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wethAddresses[chainId]) {
-    newOrder.senderToken = nativeETH[chainId].address;
+    newOrder.senderToken = nativeCurrency[chainId].address;
   } else if (order.signerToken === wethAddresses[chainId]) {
-    newOrder.signerToken = nativeETH[chainId].address;
+    newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
 };
@@ -121,7 +121,7 @@ export const deposit = createAsyncThunk(
           order: {
             signerToken: wethAddresses[params.chainId],
             signerAmount: senderAmount,
-            senderToken: nativeETH[params.chainId].address,
+            senderToken: nativeCurrency[params.chainId].address,
             senderAmount: senderAmount,
           },
           hash: tx.hash,
@@ -202,7 +202,7 @@ export const withdraw = createAsyncThunk(
         const transaction: SubmittedWithdrawOrder = {
           type: "Withdraw",
           order: {
-            signerToken: nativeETH[params.chainId].address,
+            signerToken: nativeCurrency[params.chainId].address,
             signerAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals

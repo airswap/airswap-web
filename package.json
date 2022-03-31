@@ -15,11 +15,11 @@
     "build-storybook": "build-storybook -s public"
   },
   "dependencies": {
-    "@airswap/balances": "2.0.0",
-    "@airswap/constants": "3.0.0-beta.2",
-    "@airswap/libraries": "3.0.0-beta.4",
+    "@airswap/balances": "2.0.2",
+    "@airswap/constants": "3.0.0-beta.3",
+    "@airswap/libraries": "3.0.0-beta.6",
     "@airswap/metadata": "3.0.0-beta.1",
-    "@airswap/swap": "3.0.0-beta.5",
+    "@airswap/swap": "3.0.0-beta.6",
     "@airswap/typescript": "3.0.0-beta.1",
     "@airswap/utils": "3.0.0-beta.0",
     "@craco/craco": "^6.2.0",
