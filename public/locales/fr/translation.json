@@ -126,18 +126,12 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "INVALID_SIG": "SIG_INVALIDE",
-        "EXPIRY_PASSED": "EXPIRÉ_PASSÉ",
-        "UNAUTHORIZED": "NONAUTORISÉ",
-        "SIGNER_ALLOWANCE_LOW": "AUTORISATION_SIGNATAIRE_FAIBLE",
-        "SIGNER_BALANCE_LOW": "SOLDE_SIGNATAIRE_BAS",
-        "NONCE_ALREADY_USED": "NONCE_DÉJÀ_UTILISÉ",
         "invalid_sig": "Signature invalide",
         "expiry_passed": "L'ordre a expiré",
         "unauthorized": "Le signataire n'a pas autorisé la signature",
         "signer_allowance_low": "Le signataire ne dispose pas d'un solde suffisant",
         "signer_balance_low": "Le signataire n'a pas approuvé le montant",
-        "nonce_aleady_used": "Le nonce a déjà été utilisé ou annulé",
+        "nonce_already_used": "Le nonce a déjà été utilisé ou annulé",
         "unableSwap": "Impossible de swaper",
         "swapFail": "Le swap échouerait pour les raisons suivantes."
     },

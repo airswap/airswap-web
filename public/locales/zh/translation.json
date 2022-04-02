@@ -126,18 +126,12 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "INVALID_SIG": "簽名無效",
-        "EXPIRY_PASSED": "已到期",
-        "UNAUTHORIZED": "未經授權",
-        "SIGNER_ALLOWANCE_LOW": "簽名器未批准數額",
-        "SIGNER_BALANCE_LOW": "簽名器餘額不足",
-        "NONCE_ALREADY_USED": "nonce已用過",
         "invalid_sig": "無效簽名",
         "expiry_passed": "訂單已到期",
         "unauthorized": "簽名器無權限簽名",
         "signer_allowance_low": "簽名器餘額不足",
         "signer_balance_low": "簽名器未批准自己的數額",
-        "nonce_aleady_used": "nonce已用過或是被取消",
+        "nonce_already_used": "nonce已用過或是被取消",
         "unableSwap": "兌換無效",
         "swapFail": "兌換失敗因為以下原因"
     },
