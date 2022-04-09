@@ -82,8 +82,7 @@ const refactorOrder = (order: Order, chainId: number) => {
   return newOrder;
 };
 
-const handleError = (dispatch: Dispatch, e: any) => {
-  console.error(e);
+export const handleOrderError = (dispatch: Dispatch, e: any) => {
   dispatch(declineTransaction(e.message));
   const errorType = e?.code ? transformErrorCodeToError(e?.code) : undefined;
   if (errorType) {
@@ -164,7 +163,7 @@ export const deposit = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      handleError(dispatch, e);
+      handleOrderError(dispatch, e);
       throw e;
     }
   }
@@ -248,7 +247,7 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      handleError(dispatch, e);
+      handleOrderError(dispatch, e);
       throw e;
     }
   }
@@ -366,7 +365,7 @@ export const approve = createAsyncThunk<
       });
     }
   } catch (e: any) {
-    handleError(dispatch, e);
+    handleOrderError(dispatch, e);
     throw e;
   }
 });
@@ -416,7 +415,18 @@ export const take = createAsyncThunk<
       );
     }
   } catch (e: any) {
-    handleError(dispatch, e);
+    if (e?.code === 4001) {
+      // 4001 is metamask user declining transaction sig
+      dispatch(
+        revertTransaction({
+          signerWallet: params.order.signerWallet,
+          nonce: params.order.nonce,
+          reason: e.message,
+        })
+      );
+    }
+
+    handleOrderError(dispatch, e);
     throw e;
   }
 });
