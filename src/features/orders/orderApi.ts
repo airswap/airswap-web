@@ -1,5 +1,5 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
-import { wethAddresses } from "@airswap/constants";
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { Swap, Server, Wrapper } from "@airswap/libraries";
 import { Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
@@ -146,7 +146,7 @@ export async function depositETH(
   provider: ethers.providers.Web3Provider
 ) {
   const WETHContract = new Contract(
-    wethAddresses[chainId],
+    wrappedTokenAddresses[chainId],
     WETHInterface,
     provider as providers.Provider
   );
@@ -164,7 +164,7 @@ export async function withdrawETH(
   provider: ethers.providers.Web3Provider
 ) {
   const WETHContract = new Contract(
-    wethAddresses[chainId],
+    wrappedTokenAddresses[chainId],
     WETHInterface,
     // @ts-ignore
     provider

@@ -1,4 +1,4 @@
-import { wethAddresses } from "@airswap/constants";
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
 import { Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
@@ -70,9 +70,9 @@ const APPROVE_AMOUNT = "90071992547409910000000000";
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: Order, chainId: number) => {
   let newOrder = { ...order };
-  if (order.senderToken === wethAddresses[chainId]) {
+  if (order.senderToken === wrappedTokenAddresses[chainId]) {
     newOrder.senderToken = nativeCurrency[chainId].address;
-  } else if (order.signerToken === wethAddresses[chainId]) {
+  } else if (order.signerToken === wrappedTokenAddresses[chainId]) {
     newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
@@ -106,7 +106,7 @@ export const deposit = createAsyncThunk(
         const transaction: SubmittedDepositOrder = {
           type: "Deposit",
           order: {
-            signerToken: wethAddresses[params.chainId],
+            signerToken: wrappedTokenAddresses[params.chainId],
             signerAmount: senderAmount,
             senderToken: nativeCurrency[params.chainId].address,
             senderAmount: senderAmount,
@@ -195,7 +195,7 @@ export const withdraw = createAsyncThunk(
               params.senderAmount,
               params.senderTokenDecimals
             ),
-            senderToken: wethAddresses[params.chainId],
+            senderToken: wrappedTokenAddresses[params.chainId],
             senderAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals

@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { wethAddresses } from "@airswap/constants";
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { Registry, Wrapper, Swap } from "@airswap/libraries";
 import { findTokensBySymbol } from "@airswap/metadata";
 import { Order, Pricing } from "@airswap/typescript";
@@ -287,7 +287,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   if (chainId && baseToken && quoteToken) {
     const eth = nativeCurrency[chainId].address;
-    const weth = wethAddresses[chainId];
+    const weth = wrappedTokenAddresses[chainId];
     if ([weth, eth].includes(baseToken) && [weth, eth].includes(quoteToken)) {
       swapType = "wrapOrUnwrap";
     } else if ([quoteToken, baseToken].includes(eth)) {
@@ -398,7 +398,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     setIsRequestingQuotes(true);
 
     const usesWrapper = swapType === "swapWithWrap";
-    const weth = wethAddresses[chainId!];
+    const weth = wrappedTokenAddresses[chainId!];
     const eth = nativeCurrency[chainId!];
     const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
     const _baseToken = baseToken === eth.address ? weth : baseToken!;

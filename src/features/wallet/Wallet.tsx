@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
-import { wethAddresses } from "@airswap/constants";
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { Swap, Wrapper } from "@airswap/libraries";
 import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 //@ts-ignore
@@ -157,7 +157,7 @@ export const Wallet: FC<WalletPropsType> = ({
       );
       setSwapContract(swapContract);
       const wrapContract = new Contract(
-        wethAddresses[chainId],
+        wrappedTokenAddresses[chainId],
         Weth9Contract.abi,
         //@ts-ignore
         library
