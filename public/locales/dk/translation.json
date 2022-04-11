@@ -126,18 +126,12 @@
         "transaction": ""
     },
     "validatorErrors": {
-        "INVALID_SIG": "",
-        "EXPIRY_PASSED": "",
-        "UNAUTHORIZED": "",
-        "SIGNER_ALLOWANCE_LOW": "",
-        "SIGNER_BALANCE_LOW": "",
-        "NONCE_ALREADY_USED": "",
         "invalid_sig": "",
         "expiry_passed": "",
         "unauthorized": "",
         "signer_allowance_low": "",
         "signer_balance_low": "",
-        "nonce_aleady_used": "",
+        "nonce_already_used": "",
         "unableSwap": "",
         "swapFail": ""
     },

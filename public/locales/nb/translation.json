@@ -126,18 +126,12 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "INVALID_SIG": "Ugyldig signatur",
-        "EXPIRY_PASSED": "Ordren er utløpt",
-        "UNAUTHORIZED": "Handling ikke tillatt",
-        "SIGNER_ALLOWANCE_LOW": "Balanse er for lav",
-        "SIGNER_BALANCE_LOW": "Balanse er for lav",
-        "NONCE_ALREADY_USED": "Nonce er allerede brukt",
         "invalid_sig": "Ugyldig signatur",
         "expiry_passed": "Ordren er utløpt",
         "unauthorized": "Underskriver godkjente ikke ordren",
         "signer_allowance_low": "Underskriver godkjente ikke beløpet",
         "signer_balance_low": "Underskriver godkjente ikke beløpet",
-        "nonce_aleady_used": "Nonce er allerede brukt eller utløpt",
+        "nonce_already_used": "Nonce er allerede brukt eller utløpt",
         "unableSwap": "Kunne ikke veksle",
         "swapFail": "Vekslingen feilet av følgende grunner."
     },
