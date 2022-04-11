@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { getMessageFromCode } from "eth-rpc-errors";
 
 import {
-  airswapProviderErrorList,
-  airswapProviderErrorTranslationMap,
+  swapErrorList,
+  swapErrorTranslationMap,
   Error,
   ErrorCodesMap,
 } from "../../../../constants/errors";
@@ -25,14 +25,12 @@ const ErrorListItem: FC<ErrorListItemProps> = ({ error }) => {
   const { t } = useTranslation();
 
   const translation = useMemo(() => {
-    const airswapProviderError = airswapProviderErrorList.find(
-      (a) => a === error
-    );
+    const airswapProviderError = swapErrorList.find((a) => a === error);
 
-    // Translations for airswap provider errors are in the translation file
+    // Translations for contract errors are in the translation file
     if (airswapProviderError) {
       return t(
-        `validatorErrors.${airswapProviderErrorTranslationMap[airswapProviderError]}`
+        `validatorErrors.${swapErrorTranslationMap[airswapProviderError]}`
       );
     }
 

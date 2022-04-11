@@ -1,15 +1,25 @@
 import { errorCodes } from "eth-rpc-errors/dist/error-constants";
 
-import { EthereumProviderError, EthereumRPCError } from "../constants/errors";
+import {
+  SwapError,
+  swapErrorList,
+  Error,
+  EthereumProviderError,
+  EthereumRPCError,
+} from "../constants/errors";
 
 export default function transformErrorCodeToError(
-  code: number
-): EthereumRPCError | EthereumProviderError | undefined {
+  code: number | SwapError
+): Error | undefined {
   const ethRpcErrors = { ...errorCodes.rpc, ...errorCodes.provider };
-  const keys = Object.keys(ethRpcErrors) as (
+  const ethRpcErrorKeys = Object.keys(ethRpcErrors) as (
     | EthereumRPCError
     | EthereumProviderError
   )[];
 
-  return keys.find((key) => ethRpcErrors[key] === code);
+  if (swapErrorList.some((error) => error === code)) {
+    return code as SwapError;
+  }
+
+  return ethRpcErrorKeys.find((key) => ethRpcErrors[key] === code);
 }

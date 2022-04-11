@@ -18,7 +18,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
-import type { Error } from "../../constants/errors";
+import type { Error, SwapError } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -540,7 +540,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           // to be the wrapper address for wrapped swaps.
           account!,
           library?.getSigner()
-        )) as Error[];
+        )) as SwapError[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
@@ -591,7 +591,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         order,
         senderWallet,
         library?.getSigner()
-      )) as Error[];
+      )) as SwapError[];
 
       if (errors.length) {
         setValidatorErrors(errors);

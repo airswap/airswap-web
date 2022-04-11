@@ -46,7 +46,7 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
       <StyledScrollContainer $overflow={overflow} ref={scrollContainerRef}>
         <StyledErrorList>
           {errors.map((error) => {
-            return <ErrorListItem error={error} />;
+            return <ErrorListItem key={error} error={error} />;
           })}
         </StyledErrorList>
       </StyledScrollContainer>

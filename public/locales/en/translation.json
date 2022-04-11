@@ -127,13 +127,16 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "invalid_sig": "Invalid signature",
+        "signature_invalid": "Invalid signature",
         "expiry_passed": "Order has expired",
         "unauthorized": "Signature is incorrect or signer is not authorized",
         "signer_allowance_low": "Signer does not have enough balance",
         "signer_balance_low": "Signer has not approved the signer amount",
+        "sender_allowance_low": "Sender does not have enough balance",
+        "sender_balance_low": "Sender has not approved the signer amount",
         "nonce_already_used": "Nonce has been already used or cancelled",
         "unableSwap": "Unable to swap",
+        "unpredictable_gas_limit": "The gas limit is unpredictable",
         "swapFail": "The swap would fail for the following reasons."
     },
     "wallet": {

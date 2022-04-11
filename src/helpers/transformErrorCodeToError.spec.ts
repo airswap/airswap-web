@@ -18,6 +18,15 @@ describe("transformErrorCodeToError", () => {
     const result14 = transformErrorCodeToError(4200);
     const result15 = transformErrorCodeToError(4900);
     const result16 = transformErrorCodeToError(4901);
+    const result17 = transformErrorCodeToError("SIGNATURE_INVALID");
+    const result18 = transformErrorCodeToError("EXPIRY_PASSED");
+    const result19 = transformErrorCodeToError("UNAUTHORIZED");
+    const result20 = transformErrorCodeToError("SIGNER_ALLOWANCE_LOW");
+    const result21 = transformErrorCodeToError("SIGNER_BALANCE_LOW");
+    const result22 = transformErrorCodeToError("SENDER_ALLOWANCE_LOW");
+    const result23 = transformErrorCodeToError("SENDER_BALANCE_LOW");
+    const result24 = transformErrorCodeToError("NONCE_ALREADY_USED");
+    const result25 = transformErrorCodeToError("UNPREDICTABLE_GAS_LIMIT");
 
     expect(result1).toBe("invalidRequest");
     expect(result2).toBe("invalidInput");
@@ -35,6 +44,15 @@ describe("transformErrorCodeToError", () => {
     expect(result14).toBe("unsupportedMethod");
     expect(result15).toBe("disconnected");
     expect(result16).toBe("chainDisconnected");
+    expect(result17).toBe("SIGNATURE_INVALID");
+    expect(result18).toBe("EXPIRY_PASSED");
+    expect(result19).toBe("UNAUTHORIZED");
+    expect(result20).toBe("SIGNER_ALLOWANCE_LOW");
+    expect(result21).toBe("SIGNER_BALANCE_LOW");
+    expect(result22).toBe("SENDER_ALLOWANCE_LOW");
+    expect(result23).toBe("SENDER_BALANCE_LOW");
+    expect(result24).toBe("NONCE_ALREADY_USED");
+    expect(result25).toBe("UNPREDICTABLE_GAS_LIMIT");
   });
 
   it("should return undefined when invalid code is provided", () => {
