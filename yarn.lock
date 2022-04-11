@@ -72,13 +72,6 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/tokens@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@airswap/tokens/-/tokens-0.1.4.tgz#86f2ce399fa9ad2f108c8e21e4272d6a8b81fc05"
-  integrity sha512-ynOrf0StyNGVGQbfw2QoMD5MFmLbynRP2QF0GadOCY54fnIL/iFs3iaZ2jYIu35Pt9LX9FGg5m4ll9K5Uin0rg==
-  dependencies:
-    openzeppelin-solidity "2.4"
-
 "@airswap/typescript@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-3.0.0.tgz#9ecc6ad543ad09de46ff772a5701f486630a3476"
