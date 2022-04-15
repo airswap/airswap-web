@@ -18,6 +18,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
+import type { Error, SwapError } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -37,10 +38,12 @@ import {
   approve,
   clear,
   deposit,
+  handleOrderError,
   request,
   resetOrders,
   selectBestOption,
   selectBestOrder,
+  selectOrdersError,
   selectOrdersStatus,
   take,
   withdraw,
@@ -70,7 +73,6 @@ import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
-import type { Error } from "../ErrorList/ErrorList";
 import { ErrorList } from "../ErrorList/ErrorList";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -122,6 +124,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
+  const ordersError = useAppSelector(selectOrdersError);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -282,6 +285,20 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
+
+  useEffect(() => {
+    if (ordersError === "userRejectedRequest") {
+      notifyError({
+        heading: t("orders.swapFailed"),
+        cta: t("orders.swapRejectedByUser"),
+      });
+    }
+
+    if (ordersError && ordersError !== "userRejectedRequest") {
+      setValidatorErrors([ordersError]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordersError]);
 
   let swapType: SwapType = "swap";
 
@@ -514,104 +531,102 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     }
   };
 
-  const takeBestOption = async () => {
-    let order: Order | null = null;
+  const swapWithRequestForQuote = async () => {
     try {
-      setIsSwapping(true);
-      // @ts-ignore
-      // TODO: figure out type issues
-      if (bestTradeOption!.protocol === "request-for-quote") {
-        if (swapType !== "swapWithWrap") {
-          const errors = (await new Swap(chainId).check(
-            bestTradeOption!.order!,
-            // NOTE: once new swap contract is used, this (senderAddress) needs
-            // to be the wrapper address for wrapped swaps.
-            account!,
-            library?.getSigner()
-          )) as Error[];
-          if (errors.length) {
-            setValidatorErrors(errors);
-            setIsSwapping(false);
-            return;
-          }
-        }
-        LastLook.unsubscribeAllServers();
-        order = bestTradeOption!.order!;
-        const result = await dispatch(
-          take({
-            order: bestTradeOption!.order!,
-            library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-            onExpired: () => {
-              notifyError({
-                heading: t("orders.swapExpired"),
-                cta: t("orders.swapExpiredCallToAction"),
-              });
-            },
-          })
-        );
-        setIsSwapping(false);
-        await unwrapResult(result);
-        setShowOrderSubmitted(true);
-      } else {
-        // Setting quote amount prevents the UI from updating if pricing changes
-        dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
-        // Last look order.
-        const {
-          order: lastLookOrder,
-          senderWallet,
-        } = await LastLook.getSignedOrder({
-          locator: bestTradeOption!.pricing!.locator,
-          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        });
-        order = lastLookOrder;
+      if (swapType !== "swapWithWrap") {
         const errors = (await new Swap(chainId).check(
-          order,
-          senderWallet,
+          bestTradeOption!.order!,
+          // NOTE: once new swap contract is used, this (senderAddress) needs
+          // to be the wrapper address for wrapped swaps.
+          account!,
           library?.getSigner()
-        )) as Error[];
+        )) as SwapError[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
           return;
         }
-        const accepted = await LastLook.sendOrderForConsideration({
-          locator: bestTradeOption!.pricing!.locator,
-          order: order,
-        });
-        setIsSwapping(false);
-        if (accepted) {
-          setShowOrderSubmitted(true);
-          LastLook.unsubscribeAllServers();
-        } else {
-          notifyError({
-            heading: t("orders.swapRejected"),
-            cta: t("orders.swapRejectedCallToAction"),
-          });
-
-          dispatch(
-            declineTransaction({
-              signerWallet: order.signerWallet,
-              nonce: order.nonce,
-              reason: "Pricing expired",
-            })
-          );
-        }
       }
-    } catch (e: any) {
-      if (bestTradeOption!.protocol !== "request-for-quote") {
-        setIsSwapping(false);
-        dispatch(clearTradeTermsQuoteAmount());
-      }
+      LastLook.unsubscribeAllServers();
 
-      if (e.code && e.code === 4001) {
-        // 4001 is metamask user declining transaction sig
+      const result = await dispatch(
+        take({
+          order: bestTradeOption!.order!,
+          library,
+          contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
+          onExpired: () => {
+            notifyError({
+              heading: t("orders.swapExpired"),
+              cta: t("orders.swapExpiredCallToAction"),
+            });
+          },
+        })
+      );
+      setIsSwapping(false);
+      await unwrapResult(result);
+      setShowOrderSubmitted(true);
+    } catch (e) {
+      console.error("Error taking order:", e);
+    }
+  };
+
+  const swapWithLastLook = async () => {
+    let order: Order | null = null;
+
+    try {
+      setIsSwapping(true);
+      // Setting quote amount prevents the UI from updating if pricing changes
+      dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
+      // Last look order.
+      const {
+        order: lastLookOrder,
+        senderWallet,
+      } = await LastLook.getSignedOrder({
+        locator: bestTradeOption!.pricing!.locator,
+        terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+      });
+      order = lastLookOrder;
+
+      const errors = (await new Swap(chainId).check(
+        order,
+        senderWallet,
+        library?.getSigner()
+      )) as SwapError[];
+
+      if (errors.length) {
+        setValidatorErrors(errors);
+        setIsSwapping(false);
+        return;
+      }
+      const accepted = await LastLook.sendOrderForConsideration({
+        locator: bestTradeOption!.pricing!.locator,
+        order: order,
+      });
+      setIsSwapping(false);
+      if (accepted) {
+        setShowOrderSubmitted(true);
+        LastLook.unsubscribeAllServers();
       } else {
         notifyError({
-          heading: t("orders.swapFailed"),
-          cta: t("orders.swapFailedCallToAction"),
+          heading: t("orders.swapRejected"),
+          cta: t("orders.swapRejectedCallToAction"),
         });
 
+        dispatch(
+          declineTransaction({
+            signerWallet: order.signerWallet,
+            nonce: order.nonce,
+            reason: "Pricing expired",
+          })
+        );
+      }
+    } catch (e: any) {
+      setIsSwapping(false);
+      dispatch(clearTradeTermsQuoteAmount());
+      handleOrderError(dispatch, e);
+
+      if (e?.code === 4001) {
+        // 4001 is metamask user declining transaction sig
         dispatch(
           revertTransaction({
             signerWallet: order?.signerWallet,
@@ -620,7 +635,16 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           })
         );
       }
+
       console.error("Error taking order:", e);
+    }
+  };
+
+  const takeBestOption = async () => {
+    if (bestTradeOption!.protocol === "request-for-quote") {
+      await swapWithRequestForQuote();
+    } else {
+      await swapWithLastLook();
     }
   };
 

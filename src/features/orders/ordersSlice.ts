@@ -6,6 +6,7 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  Dispatch,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
@@ -15,7 +16,9 @@ import { Transaction, providers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { Error } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
+import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import {
   allowancesSwapActions,
   allowancesWrapperActions,
@@ -56,6 +59,7 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
+  error?: Error;
   reRequestTimerId: number | null;
 }
 
@@ -76,6 +80,14 @@ const refactorOrder = (order: Order, chainId: number) => {
     newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
+};
+
+export const handleOrderError = (dispatch: Dispatch, e: any) => {
+  dispatch(declineTransaction(e.message));
+  const errorType = e?.code ? transformErrorCodeToError(e?.code) : undefined;
+  if (errorType) {
+    dispatch(setError(errorType));
+  }
 };
 
 export const deposit = createAsyncThunk(
@@ -151,8 +163,7 @@ export const deposit = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
+      handleOrderError(dispatch, e);
       throw e;
     }
   }
@@ -236,8 +247,7 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
-      dispatch(declineTransaction(e.message));
+      handleOrderError(dispatch, e);
       throw e;
     }
   }
@@ -355,8 +365,7 @@ export const approve = createAsyncThunk<
       });
     }
   } catch (e: any) {
-    console.error(e);
-    dispatch(declineTransaction(e.message));
+    handleOrderError(dispatch, e);
     throw e;
   }
 });
@@ -406,7 +415,18 @@ export const take = createAsyncThunk<
       );
     }
   } catch (e: any) {
-    dispatch(declineTransaction(e.message));
+    if (e?.code === 4001) {
+      // 4001 is metamask user declining transaction sig
+      dispatch(
+        revertTransaction({
+          signerWallet: params.order.signerWallet,
+          nonce: params.order.nonce,
+          reason: e.message,
+        })
+      );
+    }
+
+    handleOrderError(dispatch, e);
     throw e;
   }
 });
@@ -418,9 +438,13 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
+    setError: (state, action: PayloadAction<Error>) => {
+      state.error = action.payload;
+    },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
+      state.error = undefined;
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -474,6 +498,7 @@ export const ordersSlice = createSlice({
 
 export const {
   clear,
+  setError,
   setResetStatus,
   setReRequestTimerId,
 } = ordersSlice.actions;
@@ -550,4 +575,5 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
+export const selectOrdersError = (state: RootState) => state.orders.error;
 export default ordersSlice.reducer;
