@@ -19,6 +19,7 @@ import {
   StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
+  SizingContainer,
 } from "./TokenList.styles";
 import { filterTokens } from "./filter";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
@@ -71,7 +72,7 @@ const TokenList = ({
   removeActiveToken,
 }: TokenListProps) => {
   const { width, height } = useWindowSize();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
@@ -114,19 +115,20 @@ const TokenList = ({
 
   useEffect(() => {
     if (
-      containerRef.current &&
+      sizingContainerRef.current &&
       scrollContainerRef.current &&
       buttonRef.current
     ) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      const { scrollHeight: buttonHeight } = buttonRef.current;
+      const { clientHeight: buttonHeight } = buttonRef.current;
+
       setOverflow(
         scrollHeight + offsetTop + buttonHeight >
-          containerRef.current.offsetHeight
+          sizingContainerRef.current.offsetHeight
       );
     }
   }, [
-    containerRef,
+    sizingContainerRef,
     scrollContainerRef,
     activeTokens,
     sortedTokens,
@@ -137,74 +139,76 @@ const TokenList = ({
   ]);
 
   return (
-    <Container ref={containerRef}>
+    <Container>
       <ContentContainer>
-        <SearchInput
-          hideLabel
-          id="tokenQuery"
-          type="text"
-          label={t("orders.searchByNameOrAddress")}
-          value={tokenQuery}
-          placeholder={t("orders.searchByNameOrAddress")}
-          onChange={(e) => {
-            setTokenQuery(e.currentTarget.value);
-          }}
-        />
+        <SizingContainer ref={sizingContainerRef}>
+          <SearchInput
+            hideLabel
+            id="tokenQuery"
+            type="text"
+            label={t("orders.searchByNameOrAddress")}
+            value={tokenQuery}
+            placeholder={t("orders.searchByNameOrAddress")}
+            onChange={(e) => {
+              setTokenQuery(e.currentTarget.value);
+            }}
+          />
 
-        <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
-          <Legend>
-            <LegendItem>{t("common.token")}</LegendItem>
-            <LegendDivider />
-            <LegendItem>{t("balances.balance")}</LegendItem>
-          </Legend>
+          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
+            <Legend>
+              <LegendItem>{t("common.token")}</LegendItem>
+              <LegendDivider />
+              <LegendItem>{t("balances.balance")}</LegendItem>
+            </Legend>
 
-          {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
-            <TokenContainer>
-              {[nativeCurrency[chainId], ...sortedFilteredTokens].map(
-                (token) => (
-                  <TokenButton
-                    showDeleteButton={
-                      editMode &&
-                      token.address !== nativeCurrency[chainId].address
-                    }
-                    token={token}
-                    balance={formatUnits(
-                      balances.values[token.address] || 0,
-                      token.decimals
-                    )}
-                    setToken={onSelectToken}
-                    removeActiveToken={removeActiveToken}
-                    key={token.address}
-                  />
-                )
-              )}
-            </TokenContainer>
-          )}
-          {inactiveTokens.length !== 0 &&
-            tokenQuery &&
-            sortedFilteredTokens.length < 5 && (
-              <InactiveTokensList
-                inactiveTokens={inactiveTokens}
-                supportedTokenAddresses={supportedTokenAddresses}
-                onTokenClick={(tokenAddress) => {
-                  addActiveToken(tokenAddress);
-                  setTokenQuery("");
-                }}
-              />
+            {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
+              <TokenContainer>
+                {[nativeCurrency[chainId], ...sortedFilteredTokens].map(
+                  (token) => (
+                    <TokenButton
+                      showDeleteButton={
+                        editMode &&
+                        token.address !== nativeCurrency[chainId].address
+                      }
+                      token={token}
+                      balance={formatUnits(
+                        balances.values[token.address] || 0,
+                        token.decimals
+                      )}
+                      setToken={onSelectToken}
+                      removeActiveToken={removeActiveToken}
+                      key={token.address}
+                    />
+                  )
+                )}
+              </TokenContainer>
             )}
-          {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
-            <NoResultsContainer>
-              <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
-            </NoResultsContainer>
-          )}
-        </StyledScrollContainer>
-        <OverlayActionButton
-          intent="primary"
-          ref={buttonRef}
-          onClick={() => setEditMode(!editMode)}
-        >
-          {editMode ? t("common.done") : t("orders.editCustomTokens")}
-        </OverlayActionButton>
+            {inactiveTokens.length !== 0 &&
+              tokenQuery &&
+              sortedFilteredTokens.length < 5 && (
+                <InactiveTokensList
+                  inactiveTokens={inactiveTokens}
+                  supportedTokenAddresses={supportedTokenAddresses}
+                  onTokenClick={(tokenAddress) => {
+                    addActiveToken(tokenAddress);
+                    setTokenQuery("");
+                  }}
+                />
+              )}
+            {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
+              <NoResultsContainer>
+                <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
+              </NoResultsContainer>
+            )}
+          </StyledScrollContainer>
+          <OverlayActionButton
+            intent="primary"
+            ref={buttonRef}
+            onClick={() => setEditMode(!editMode)}
+          >
+            {editMode ? t("common.done") : t("orders.editCustomTokens")}
+          </OverlayActionButton>
+        </SizingContainer>
       </ContentContainer>
     </Container>
   );
