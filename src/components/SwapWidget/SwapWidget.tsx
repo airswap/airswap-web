@@ -367,7 +367,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `${baseRoute}/${tokenFromAlias}/${tokenToAlias}`,
+      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
+        tokenToAlias || tokenTo
+      }`,
     });
   };
 

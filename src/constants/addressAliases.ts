@@ -15,7 +15,7 @@ export function transformAddressToAddressAlias(
     return nativeAddressAlias;
   }
 
-  return address;
+  return undefined;
 }
 
 export function transformAddressAliasToAddress(

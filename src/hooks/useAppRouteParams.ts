@@ -90,7 +90,9 @@ const useAppRouteParams = (): AppRouteParams => {
         tokenToAlias,
         route: AppRoutes.swap,
         url: swapWithLangMatch.url,
-        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias}/${tokenToAlias}/`,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
+          tokenToAlias || tokenTo
+        }/`,
         justifiedBaseUrl: `/${lang}`,
       };
     }
@@ -108,12 +110,14 @@ const useAppRouteParams = (): AppRouteParams => {
       return {
         tokenFrom,
         tokenTo,
-        readableTokenFrom: tokenFromAlias,
-        readableTokenTo: tokenToAlias,
+        tokenFromAlias: tokenFromAlias,
+        tokenToAlias: tokenToAlias,
         route: swapMatch.params.route,
         lang: userLanguage,
         url: swapMatch.url,
-        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias}/${tokenToAlias}/`,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
+          tokenToAlias || tokenTo
+        }/`,
         justifiedBaseUrl: "",
       };
     }
