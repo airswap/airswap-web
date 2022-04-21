@@ -2,6 +2,10 @@ import { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 
 import {
+  transformAddressToAddressAlias,
+  transformAddressAliasToAddress,
+} from "../constants/addressAliases";
+import {
   DEFAULT_LOCALE,
   getUserLanguage,
   SUPPORTED_LOCALES,
@@ -14,6 +18,8 @@ export interface AppRouteParams {
   route?: AppRoutes;
   tokenFrom?: string;
   tokenTo?: string;
+  tokenFromAlias?: string;
+  tokenToAlias?: string;
   /**
    * Url from useRouteMatch
    */
@@ -67,16 +73,24 @@ const useAppRouteParams = (): AppRouteParams => {
       const lang =
         transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
         DEFAULT_LOCALE;
-
-      const { tokenFrom, tokenTo } = swapWithLangMatch.params;
+      const tokenFrom = transformAddressAliasToAddress(
+        swapWithLangMatch.params.tokenFrom
+      );
+      const tokenTo = transformAddressAliasToAddress(
+        swapWithLangMatch.params.tokenTo
+      );
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo);
 
       return {
         lang,
         tokenFrom,
         tokenTo,
+        tokenFromAlias,
+        tokenToAlias,
         route: AppRoutes.swap,
         url: swapWithLangMatch.url,
-        urlWithoutLang: `/${AppRoutes.swap}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}/`,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias}/${tokenToAlias}/`,
         justifiedBaseUrl: `/${lang}`,
       };
     }
@@ -84,15 +98,22 @@ const useAppRouteParams = (): AppRouteParams => {
 
   const swapMatchData = useMemo(() => {
     if (swapMatch) {
-      const { tokenFrom, tokenTo } = swapMatch.params;
+      const tokenFrom = transformAddressAliasToAddress(
+        swapMatch.params.tokenFrom
+      );
+      const tokenTo = transformAddressAliasToAddress(swapMatch.params.tokenTo);
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo);
 
       return {
         tokenFrom,
         tokenTo,
+        readableTokenFrom: tokenFromAlias,
+        readableTokenTo: tokenToAlias,
         route: swapMatch.params.route,
         lang: userLanguage,
         url: swapMatch.url,
-        urlWithoutLang: swapMatch.url,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias}/${tokenToAlias}/`,
         justifiedBaseUrl: "",
       };
     }
