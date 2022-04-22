@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+
 import {
   transformAddressToAddressAlias,
   transformAddressAliasToAddress,
@@ -47,6 +50,7 @@ function transformStringToSupportedLanguage(
 
 const useAppRouteParams = (): AppRouteParams => {
   const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
+  const { chainId } = useWeb3React<Web3Provider>();
 
   const routeWithLangMatch = useRouteMatch<{
     lang: SupportedLocale;
@@ -74,13 +78,15 @@ const useAppRouteParams = (): AppRouteParams => {
         transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
         DEFAULT_LOCALE;
       const tokenFrom = transformAddressAliasToAddress(
-        swapWithLangMatch.params.tokenFrom
+        swapWithLangMatch.params.tokenFrom,
+        chainId
       );
       const tokenTo = transformAddressAliasToAddress(
-        swapWithLangMatch.params.tokenTo
+        swapWithLangMatch.params.tokenTo,
+        chainId
       );
-      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
-      const tokenToAlias = transformAddressToAddressAlias(tokenTo);
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom, chainId);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo, chainId);
 
       return {
         lang,
@@ -96,16 +102,20 @@ const useAppRouteParams = (): AppRouteParams => {
         justifiedBaseUrl: `/${lang}`,
       };
     }
-  }, [swapWithLangMatch]);
+  }, [swapWithLangMatch, chainId]);
 
   const swapMatchData = useMemo(() => {
     if (swapMatch) {
       const tokenFrom = transformAddressAliasToAddress(
-        swapMatch.params.tokenFrom
+        swapMatch.params.tokenFrom,
+        chainId
       );
-      const tokenTo = transformAddressAliasToAddress(swapMatch.params.tokenTo);
-      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
-      const tokenToAlias = transformAddressToAddressAlias(tokenTo);
+      const tokenTo = transformAddressAliasToAddress(
+        swapMatch.params.tokenTo,
+        chainId
+      );
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom, chainId);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo, chainId);
 
       return {
         tokenFrom,
@@ -121,7 +131,7 @@ const useAppRouteParams = (): AppRouteParams => {
         justifiedBaseUrl: "",
       };
     }
-  }, [swapMatch, userLanguage]);
+  }, [swapMatch, userLanguage, chainId]);
 
   const routeWithLangMatchData = useMemo(() => {
     if (routeWithLangMatch) {
