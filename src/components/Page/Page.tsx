@@ -49,8 +49,8 @@ const Page: FC = (): ReactElement => {
     dispatch(resetOrders());
   };
 
-  const handleLinkButtonClick = () => {
-    history.push(appRouteParams.justifiedBaseUrl);
+  const handleLinkButtonClick = (type: InformationModalType) => {
+    history.push(`/${type}`);
   };
 
   const handleAirswapButtonClick = () => {
