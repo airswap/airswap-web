@@ -2,6 +2,8 @@
 // to multiple addresses.
 import nativeCurrency from "./nativeCurrency";
 
+const nativeAddressAlias = "native";
+
 export function transformAddressToAddressAlias(
   address?: string,
   chainId: number = 1
@@ -11,7 +13,7 @@ export function transformAddressToAddressAlias(
   }
 
   if (address === nativeCurrency[chainId].address) {
-    return nativeCurrency[chainId].symbol.toLowerCase();
+    return nativeAddressAlias;
   }
 
   return undefined;
@@ -25,7 +27,7 @@ export function transformAddressAliasToAddress(
     return undefined;
   }
 
-  if (address === nativeCurrency[chainId].symbol.toLowerCase()) {
+  if (address === nativeAddressAlias) {
     return nativeCurrency[chainId].address;
   }
 

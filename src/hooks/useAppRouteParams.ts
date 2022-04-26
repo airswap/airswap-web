@@ -98,7 +98,7 @@ const useAppRouteParams = (): AppRouteParams => {
         url: swapWithLangMatch.url,
         urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
           tokenToAlias || tokenTo
-        }/`,
+        }`,
         justifiedBaseUrl: `/${lang}`,
       };
     }
@@ -127,7 +127,7 @@ const useAppRouteParams = (): AppRouteParams => {
         url: swapMatch.url,
         urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
           tokenToAlias || tokenTo
-        }/`,
+        }`,
         justifiedBaseUrl: "",
       };
     }
