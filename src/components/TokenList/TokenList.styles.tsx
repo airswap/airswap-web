@@ -16,8 +16,6 @@ export const StyledScrollContainer = styled(ScrollContainer)`
 `;
 
 export const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   position: relative;
   height: 100%;
   padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
@@ -26,6 +24,11 @@ export const ContentContainer = styled.div`
   @media ${breakPoints.phoneOnly} {
     padding: 0 1.5rem ${sizes.tradeContainerMobilePadding};
   }
+`;
+
+export const SizingContainer = styled.div`
+  position: relative;
+  height: 100%;
 `;
 
 export const Container = styled.div`
