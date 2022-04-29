@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import styled from "styled-components/macro";
 
 export const Track = styled.div`
@@ -9,9 +8,15 @@ export const Track = styled.div`
   overflow: hidden;
 `;
 
-export const Progress = styled(motion.div)`
+interface ProgressBarProps {
+  initialWidth: number;
+  duration: number;
+}
+
+export const Progress = styled.div<ProgressBarProps>`
   height: 100%;
-  width: 100%;
+  width: ${(props) => props.initialWidth}%;
   background-color: ${(props) => props.theme.colors.primary};
   transform-origin: left;
+  transition: width ${(props) => props.duration}s linear;
 `;

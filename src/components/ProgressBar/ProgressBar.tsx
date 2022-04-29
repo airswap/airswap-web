@@ -1,21 +1,30 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { Track, Progress } from "./ProgressBar.styles";
+import getProgressBarAnimationProps from "./helpers/getProgressBarAnimationProps";
 
 const ProgressBar: FC<{
   startTime: number;
   endTime: number;
 }> = ({ startTime, endTime }) => {
-  const now = Date.now();
-  const done = now - startTime;
-  const left = endTime - startTime;
-  const fractionDone = done / left;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { progress, duration } = getProgressBarAnimationProps(
+    new Date(startTime),
+    new Date(endTime),
+    new Date()
+  );
+
   return (
     <Track>
       <Progress
-        animate={{ scaleX: 1 }}
-        initial={{ scaleX: fractionDone }}
-        transition={{ ease: "linear", duration: left / 1000 }}
+        initialWidth={progress * 100}
+        duration={duration}
+        style={{ ...(isMounted && { width: "100%" }) }}
       />
     </Track>
   );
