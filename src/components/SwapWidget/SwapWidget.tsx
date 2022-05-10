@@ -15,6 +15,10 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  transformAddressToAddressAlias,
+  transformAddressAliasToAddress,
+} from "../../constants/addressAliases";
+import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
@@ -349,12 +353,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     const baseRoute = `${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`;
-    const { tokenFrom, tokenTo } = getTokenPairs(
-      type,
-      value,
-      quoteToken,
-      baseToken
-    );
+    const tokenPairs = getTokenPairs(type, value, quoteToken, baseToken);
+    const tokenFrom = transformAddressAliasToAddress(tokenPairs.tokenFrom!);
+    const tokenTo = transformAddressAliasToAddress(tokenPairs.tokenTo!);
+    const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
+    const tokenToAlias = transformAddressToAddressAlias(tokenTo);
 
     if (type === "base") {
       setBaseAmount("");
@@ -364,7 +367,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `${baseRoute}/${tokenFrom}/${tokenTo}`,
+      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
+        tokenToAlias || tokenTo
+      }`,
     });
   };
 

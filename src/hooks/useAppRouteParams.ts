@@ -1,6 +1,13 @@
 import { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+
+import {
+  transformAddressToAddressAlias,
+  transformAddressAliasToAddress,
+} from "../constants/addressAliases";
 import {
   DEFAULT_LOCALE,
   getUserLanguage,
@@ -14,6 +21,8 @@ export interface AppRouteParams {
   route?: AppRoutes;
   tokenFrom?: string;
   tokenTo?: string;
+  tokenFromAlias?: string;
+  tokenToAlias?: string;
   /**
    * Url from useRouteMatch
    */
@@ -41,6 +50,7 @@ function transformStringToSupportedLanguage(
 
 const useAppRouteParams = (): AppRouteParams => {
   const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
+  const { chainId } = useWeb3React<Web3Provider>();
 
   const routeWithLangMatch = useRouteMatch<{
     lang: SupportedLocale;
@@ -67,36 +77,61 @@ const useAppRouteParams = (): AppRouteParams => {
       const lang =
         transformStringToSupportedLanguage(swapWithLangMatch.params.lang) ||
         DEFAULT_LOCALE;
-
-      const { tokenFrom, tokenTo } = swapWithLangMatch.params;
+      const tokenFrom = transformAddressAliasToAddress(
+        swapWithLangMatch.params.tokenFrom,
+        chainId
+      );
+      const tokenTo = transformAddressAliasToAddress(
+        swapWithLangMatch.params.tokenTo,
+        chainId
+      );
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom, chainId);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo, chainId);
 
       return {
         lang,
         tokenFrom,
         tokenTo,
+        tokenFromAlias,
+        tokenToAlias,
         route: AppRoutes.swap,
         url: swapWithLangMatch.url,
-        urlWithoutLang: `/${AppRoutes.swap}/${swapWithLangMatch.params.tokenFrom}/${swapWithLangMatch.params.tokenTo}/`,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
+          tokenToAlias || tokenTo
+        }`,
         justifiedBaseUrl: `/${lang}`,
       };
     }
-  }, [swapWithLangMatch]);
+  }, [swapWithLangMatch, chainId]);
 
   const swapMatchData = useMemo(() => {
     if (swapMatch) {
-      const { tokenFrom, tokenTo } = swapMatch.params;
+      const tokenFrom = transformAddressAliasToAddress(
+        swapMatch.params.tokenFrom,
+        chainId
+      );
+      const tokenTo = transformAddressAliasToAddress(
+        swapMatch.params.tokenTo,
+        chainId
+      );
+      const tokenFromAlias = transformAddressToAddressAlias(tokenFrom, chainId);
+      const tokenToAlias = transformAddressToAddressAlias(tokenTo, chainId);
 
       return {
         tokenFrom,
         tokenTo,
+        tokenFromAlias: tokenFromAlias,
+        tokenToAlias: tokenToAlias,
         route: swapMatch.params.route,
         lang: userLanguage,
         url: swapMatch.url,
-        urlWithoutLang: swapMatch.url,
+        urlWithoutLang: `/${AppRoutes.swap}/${tokenFromAlias || tokenFrom}/${
+          tokenToAlias || tokenTo
+        }`,
         justifiedBaseUrl: "",
       };
     }
-  }, [swapMatch, userLanguage]);
+  }, [swapMatch, userLanguage, chainId]);
 
   const routeWithLangMatchData = useMemo(() => {
     if (routeWithLangMatch) {
