@@ -10,6 +10,5 @@ export default function findEthOrTokenByAddress(
 ) {
   return tokenAddress === "0x0000000000000000000000000000000000000000"
     ? nativeCurrency[chainId!]
-    // TODO: Remove toLowerCase() when this PR is in production: https://github.com/airswap/airswap-protocols/pull/849
-    : findTokenByAddress(tokenAddress.toLowerCase(), activeTokens);
+    : findTokenByAddress(tokenAddress, activeTokens);
 }
