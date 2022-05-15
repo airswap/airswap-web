@@ -2,6 +2,18 @@ import { errorCodes } from "eth-rpc-errors";
 
 import translation from "../../public/locales/en/translation.json";
 
+export type RPCError = {
+  jsonrpc: "2.0";
+  id: number;
+  error: string;
+};
+
+export type RPCErrorWithCode = {
+  code: number;
+  message: string;
+  stack: string;
+};
+
 // These errors come from the airswap swap contracts.
 export type SwapError =
   | "SIGNATURE_INVALID"

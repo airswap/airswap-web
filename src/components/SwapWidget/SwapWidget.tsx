@@ -47,7 +47,7 @@ import {
   resetOrders,
   selectBestOption,
   selectBestOrder,
-  selectOrdersError,
+  selectOrdersErrors,
   selectOrdersStatus,
   take,
   withdraw,
@@ -128,7 +128,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const ordersError = useAppSelector(selectOrdersError);
+  const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -291,18 +291,18 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   }, [allowances.swap.status, allowances.wrapper.status]);
 
   useEffect(() => {
-    if (ordersError === "userRejectedRequest") {
+    if (ordersErrors.some((error) => error === "userRejectedRequest")) {
       notifyError({
         heading: t("orders.swapFailed"),
         cta: t("orders.swapRejectedByUser"),
       });
     }
 
-    if (ordersError && ordersError !== "userRejectedRequest") {
-      setValidatorErrors([ordersError]);
-    }
+    setValidatorErrors(
+      ordersErrors.filter((error) => error !== "userRejectedRequest")
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ordersError]);
+  }, [ordersErrors]);
 
   let swapType: SwapType = "swap";
 
