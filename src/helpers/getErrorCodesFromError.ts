@@ -1,6 +1,6 @@
 import {
   RPCError,
-  RPCErrorWithCode,
+  ErrorWithCode,
   SwapError,
   swapErrorList,
 } from "../constants/errors";
@@ -9,7 +9,7 @@ import {
 // for extracting the SwapError or error code.
 
 export default function getErrorCodesFromError(
-  error: RPCError | RPCErrorWithCode
+  error: RPCError | ErrorWithCode
 ): (number | SwapError)[] {
   if ("code" in error) {
     return [error.code];

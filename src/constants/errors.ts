@@ -8,11 +8,15 @@ export type RPCError = {
   error: string;
 };
 
-export type RPCErrorWithCode = {
-  code: number;
-  message: string;
-  stack: string;
-};
+export class ErrorWithCode extends Error {
+  code: number = 0;
+
+  constructor(message: string) {
+    super(message);
+
+    Object.setPrototypeOf(this, ErrorWithCode.prototype);
+  }
+}
 
 // These errors come from the airswap swap contracts.
 export type SwapError =
@@ -30,9 +34,9 @@ export type EthereumRPCError = keyof typeof errorCodes.rpc;
 
 export type EthereumProviderError = keyof typeof errorCodes.provider;
 
-export type Error = SwapError | EthereumRPCError | EthereumProviderError;
+export type ErrorType = SwapError | EthereumRPCError | EthereumProviderError;
 
-export const ErrorCodesMap: Record<Error, number> = {
+export const ErrorCodesMap: Record<ErrorType, number> = {
   SIGNATURE_INVALID: 0,
   EXPIRY_PASSED: 0,
   UNAUTHORIZED: 0,

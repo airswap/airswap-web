@@ -1,4 +1,4 @@
-import { RPCError, RPCErrorWithCode } from "../constants/errors";
+import { RPCError, ErrorWithCode } from "../constants/errors";
 import getErrorCodesFromError from "./getErrorCodesFromError";
 
 describe("getErrorCodesFromError", () => {
@@ -16,7 +16,7 @@ describe("getErrorCodesFromError", () => {
   });
 
   it("should return error code from an RPCErrorWithCode error", () => {
-    const error: RPCErrorWithCode = {
+    const error: ErrorWithCode = {
       code: 2,
       message: "",
       stack: "",

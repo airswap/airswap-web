@@ -22,7 +22,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
-import type { Error, SwapError } from "../../constants/errors";
+import type { ErrorType, SwapError } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -172,7 +172,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );

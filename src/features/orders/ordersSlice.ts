@@ -16,7 +16,12 @@ import { Transaction, providers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { Error, RPCError, RPCErrorWithCode } from "../../constants/errors";
+import {
+  ErrorType,
+  RPCError,
+  ErrorWithCode,
+  SwapError,
+} from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
 import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
@@ -60,7 +65,7 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
-  errors: Error[];
+  errors: ErrorType[];
   reRequestTimerId: number | null;
 }
 
@@ -86,12 +91,15 @@ const refactorOrder = (order: Order, chainId: number) => {
 
 export const handleOrderError = (
   dispatch: Dispatch,
-  error: RPCError | RPCErrorWithCode
+  error: RPCError | ErrorWithCode
 ) => {
-  const errorCodes = getSwapErrorCodesFromError(error);
+  const errorCodes = getSwapErrorCodesFromError(error) as (
+    | number
+    | SwapError
+  )[];
   const errorTypes = errorCodes
     .map((errorCode) => transformErrorCodeToError(errorCode))
-    .filter((errorCode) => !!errorCode) as Error[];
+    .filter((errorCode) => !!errorCode) as ErrorType[];
   dispatch(setErrors(errorTypes));
 };
 
@@ -446,7 +454,7 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
-    setErrors: (state, action: PayloadAction<Error[]>) => {
+    setErrors: (state, action: PayloadAction<ErrorType[]>) => {
       state.errors = action.payload;
     },
     clear: (state) => {
