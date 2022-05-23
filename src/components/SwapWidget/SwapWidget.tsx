@@ -22,7 +22,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
-import type { Error, SwapError } from "../../constants/errors";
+import type { ErrorType, SwapError } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
@@ -47,7 +47,7 @@ import {
   resetOrders,
   selectBestOption,
   selectBestOrder,
-  selectOrdersError,
+  selectOrdersErrors,
   selectOrdersStatus,
   take,
   withdraw,
@@ -128,7 +128,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const ordersError = useAppSelector(selectOrdersError);
+  const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -172,7 +172,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<Error[]>([]);
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
     false
   );
@@ -291,18 +291,18 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   }, [allowances.swap.status, allowances.wrapper.status]);
 
   useEffect(() => {
-    if (ordersError === "userRejectedRequest") {
+    if (ordersErrors.some((error) => error === "userRejectedRequest")) {
       notifyError({
         heading: t("orders.swapFailed"),
         cta: t("orders.swapRejectedByUser"),
       });
     }
 
-    if (ordersError && ordersError !== "userRejectedRequest") {
-      setValidatorErrors([ordersError]);
-    }
+    setValidatorErrors(
+      ordersErrors.filter((error) => error !== "userRejectedRequest")
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ordersError]);
+  }, [ordersErrors]);
 
   let swapType: SwapType = "swap";
 

@@ -16,8 +16,14 @@ import { Transaction, providers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { Error } from "../../constants/errors";
+import {
+  ErrorType,
+  RPCError,
+  ErrorWithCode,
+  SwapError,
+} from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
+import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
 import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import {
   allowancesSwapActions,
@@ -59,13 +65,14 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
-  error?: Error;
+  errors: ErrorType[];
   reRequestTimerId: number | null;
 }
 
 const initialState: OrdersState = {
   orders: [],
   status: "idle",
+  errors: [],
   reRequestTimerId: null,
 };
 
@@ -82,12 +89,18 @@ const refactorOrder = (order: Order, chainId: number) => {
   return newOrder;
 };
 
-export const handleOrderError = (dispatch: Dispatch, e: any) => {
-  dispatch(declineTransaction(e.message));
-  const errorType = e?.code ? transformErrorCodeToError(e?.code) : undefined;
-  if (errorType) {
-    dispatch(setError(errorType));
-  }
+export const handleOrderError = (
+  dispatch: Dispatch,
+  error: RPCError | ErrorWithCode
+) => {
+  const errorCodes = getSwapErrorCodesFromError(error) as (
+    | number
+    | SwapError
+  )[];
+  const errorTypes = errorCodes
+    .map((errorCode) => transformErrorCodeToError(errorCode))
+    .filter((errorCode) => !!errorCode) as ErrorType[];
+  dispatch(setErrors(errorTypes));
 };
 
 export const deposit = createAsyncThunk(
@@ -164,6 +177,7 @@ export const deposit = createAsyncThunk(
       }
     } catch (e: any) {
       handleOrderError(dispatch, e);
+      dispatch(declineTransaction(e.message));
       throw e;
     }
   }
@@ -248,6 +262,7 @@ export const withdraw = createAsyncThunk(
       }
     } catch (e: any) {
       handleOrderError(dispatch, e);
+      dispatch(declineTransaction(e.message));
       throw e;
     }
   }
@@ -366,6 +381,7 @@ export const approve = createAsyncThunk<
     }
   } catch (e: any) {
     handleOrderError(dispatch, e);
+    dispatch(declineTransaction(e.message));
     throw e;
   }
 });
@@ -425,8 +441,8 @@ export const take = createAsyncThunk<
         })
       );
     }
-
     handleOrderError(dispatch, e);
+    dispatch(declineTransaction(e.message));
     throw e;
   }
 });
@@ -438,13 +454,13 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
-    setError: (state, action: PayloadAction<Error>) => {
-      state.error = action.payload;
+    setErrors: (state, action: PayloadAction<ErrorType[]>) => {
+      state.errors = action.payload;
     },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
-      state.error = undefined;
+      state.errors = [];
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -498,7 +514,7 @@ export const ordersSlice = createSlice({
 
 export const {
   clear,
-  setError,
+  setErrors,
   setResetStatus,
   setReRequestTimerId,
 } = ordersSlice.actions;
@@ -575,5 +591,5 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
-export const selectOrdersError = (state: RootState) => state.orders.error;
+export const selectOrdersErrors = (state: RootState) => state.orders.errors;
 export default ordersSlice.reducer;

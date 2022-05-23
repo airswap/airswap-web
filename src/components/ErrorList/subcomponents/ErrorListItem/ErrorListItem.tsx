@@ -6,7 +6,7 @@ import { getMessageFromCode } from "eth-rpc-errors";
 import {
   swapErrorList,
   swapErrorTranslationMap,
-  Error,
+  ErrorType,
   ErrorCodesMap,
 } from "../../../../constants/errors";
 import { InfoHeading } from "../../../Typography/Typography";
@@ -18,7 +18,7 @@ import {
 } from "./ErrorListItem.styles";
 
 export interface ErrorListItemProps {
-  error: Error;
+  error: ErrorType;
 }
 
 const ErrorListItem: FC<ErrorListItemProps> = ({ error }) => {

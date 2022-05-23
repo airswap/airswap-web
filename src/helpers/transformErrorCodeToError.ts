@@ -3,14 +3,14 @@ import { errorCodes } from "eth-rpc-errors/dist/error-constants";
 import {
   SwapError,
   swapErrorList,
-  Error,
+  ErrorType,
   EthereumProviderError,
   EthereumRPCError,
 } from "../constants/errors";
 
 export default function transformErrorCodeToError(
   code: number | SwapError
-): Error | undefined {
+): ErrorType | undefined {
   const ethRpcErrors = { ...errorCodes.rpc, ...errorCodes.provider };
   const ethRpcErrorKeys = Object.keys(ethRpcErrors) as (
     | EthereumRPCError

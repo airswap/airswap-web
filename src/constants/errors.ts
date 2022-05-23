@@ -2,6 +2,22 @@ import { errorCodes } from "eth-rpc-errors";
 
 import translation from "../../public/locales/en/translation.json";
 
+export type RPCError = {
+  jsonrpc: "2.0";
+  id: number;
+  error: string;
+};
+
+export class ErrorWithCode extends Error {
+  code: number = 0;
+
+  constructor(message: string) {
+    super(message);
+
+    Object.setPrototypeOf(this, ErrorWithCode.prototype);
+  }
+}
+
 // These errors come from the airswap swap contracts.
 export type SwapError =
   | "SIGNATURE_INVALID"
@@ -18,9 +34,9 @@ export type EthereumRPCError = keyof typeof errorCodes.rpc;
 
 export type EthereumProviderError = keyof typeof errorCodes.provider;
 
-export type Error = SwapError | EthereumRPCError | EthereumProviderError;
+export type ErrorType = SwapError | EthereumRPCError | EthereumProviderError;
 
-export const ErrorCodesMap: Record<Error, number> = {
+export const ErrorCodesMap: Record<ErrorType, number> = {
   SIGNATURE_INVALID: 0,
   EXPIRY_PASSED: 0,
   UNAUTHORIZED: 0,

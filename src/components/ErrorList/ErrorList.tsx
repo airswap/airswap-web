@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { Error } from "../../constants/errors";
+import type { ErrorType } from "../../constants/errors";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import {
@@ -13,7 +13,7 @@ import {
 import ErrorListItem from "./subcomponents/ErrorListItem/ErrorListItem";
 
 type ErrorListProps = {
-  errors: Error[];
+  errors: ErrorType[];
   handleClick: () => void;
 };
 

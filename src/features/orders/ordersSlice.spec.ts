@@ -4,6 +4,7 @@ import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 describe("orders reducer", () => {
   const initialState: OrdersState = {
     orders: [],
+    errors: [],
     status: "idle",
     reRequestTimerId: null,
   };
