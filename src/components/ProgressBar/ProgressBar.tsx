@@ -9,11 +9,15 @@ const ProgressBar: FC<{
 }> = ({ startTime, endTime }) => {
   const [isMounted, setIsMounted] = useState(false);
 
+  // `isMounted` will be false until the component has rendered once. We use this
+  // so that we can set the initial width of the progress bar to correspond with
+  // the initial progress, before setting the "target" to 100% for the CSS transition
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const { progress, duration } = getProgressBarAnimationProps(
+  const { initialProgress, duration } = getProgressBarAnimationProps(
     new Date(startTime),
     new Date(endTime),
     new Date()
@@ -22,9 +26,9 @@ const ProgressBar: FC<{
   return (
     <Track>
       <Progress
-        initialWidth={progress * 100}
+        initialWidth={initialProgress}
         duration={duration}
-        style={{ ...(isMounted && { width: "100%" }) }}
+        style={{ ...(isMounted && { transform: "scaleX(1)" }) }}
       />
     </Track>
   );

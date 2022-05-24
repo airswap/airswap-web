@@ -15,8 +15,9 @@ interface ProgressBarProps {
 
 export const Progress = styled.div<ProgressBarProps>`
   height: 100%;
-  width: ${(props) => props.initialWidth}%;
+  transform: scaleX(${({ initialWidth }) => initialWidth});
   background-color: ${(props) => props.theme.colors.primary};
   transform-origin: left;
-  transition: width ${(props) => props.duration}s linear;
+  transition: transform ${({ duration }) => duration}s linear;
+  will-change: transform;
 `;

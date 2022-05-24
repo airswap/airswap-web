@@ -24,12 +24,12 @@ describe("getProgressBarAnimationProps", () => {
     );
 
     expect(result1.duration).toBe(58.385);
-    expect(result1.progress).toBe(0.5);
+    expect(result1.initialProgress).toBe(0.5);
     expect(result2.duration).toBe(0);
-    expect(result2.progress).toBe(1);
+    expect(result2.initialProgress).toBe(1);
     expect(result3.duration).toBe(116.77);
-    expect(result3.progress).toBe(0);
+    expect(result3.initialProgress).toBe(0);
     expect(result4.duration).toBe(116.77);
-    expect(result4.progress).toBe(0);
+    expect(result4.initialProgress).toBe(0);
   });
 });

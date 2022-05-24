@@ -2,7 +2,7 @@ interface ProgressBarAnimationProps {
   /**
    * Progression since startTime compared to now, number between 0 and 1.
    */
-  progress: number; // Progress
+  initialProgress: number;
   /**
    * Difference of startTime and endTime in seconds divided by progress ;
    */
@@ -21,6 +21,6 @@ export default function getProgressBarAnimationProps(
 
   return {
     duration: durationLeftInSeconds,
-    progress,
+    initialProgress: progress,
   };
 }
