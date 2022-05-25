@@ -1,25 +1,19 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import translation from "../../../public/locales/en/translation.json";
+import type { ErrorType } from "../../constants/errors";
 import useWindowSize from "../../helpers/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
-import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   StyledErrorList,
-  StyledError,
-  ErrorTextContainer,
   LegendDivider,
   StyledScrollContainer,
-  StyledErrorIcon,
-  StyledSubText,
 } from "./ErrorList.styles";
-
-export type Error = keyof typeof translation["validatorErrors"];
+import ErrorListItem from "./subcomponents/ErrorListItem/ErrorListItem";
 
 type ErrorListProps = {
-  errors: Error[];
+  errors: ErrorType[];
   handleClick: () => void;
 };
 
@@ -30,29 +24,6 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
   const { width, height } = useWindowSize();
-
-  const StyledErrors = () => {
-    if (!errors.length) return <></>;
-    return (
-      <>
-        {errors.map((error, idx) => {
-          const subText = error.toLowerCase() as Error;
-          return (
-            <StyledError key={idx}>
-              <StyledErrorIcon
-                name="information-circle-outline"
-                iconSize={1.5}
-              />
-              <ErrorTextContainer>
-                <InfoHeading>{t(`validatorErrors.${error}`)}</InfoHeading>
-                <StyledSubText>{t(`validatorErrors.${subText}`)}</StyledSubText>
-              </ErrorTextContainer>
-            </StyledError>
-          );
-        })}
-      </>
-    );
-  };
 
   useEffect(() => {
     if (
@@ -74,7 +45,9 @@ export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
       <LegendDivider />
       <StyledScrollContainer $overflow={overflow} ref={scrollContainerRef}>
         <StyledErrorList>
-          <StyledErrors />
+          {errors.map((error) => {
+            return <ErrorListItem key={error} error={error} />;
+          })}
         </StyledErrorList>
       </StyledScrollContainer>
       <OverlayActionButton ref={buttonRef} onClick={handleClick}>

@@ -1,10 +1,10 @@
 import { setWalletConnected } from "../wallet/walletSlice";
 import {
   balancesReducer,
-  allowancesLightReducer,
+  allowancesSwapReducer,
   allowancesWrapperReducer,
   balancesActions,
-  allowancesLightActions,
+  allowancesSwapActions,
   allowancesWrapperActions,
   BalancesState,
   initialState,
@@ -12,7 +12,7 @@ import {
 
 const reducers: [string, typeof balancesReducer, typeof balancesActions][] = [
   ["balances", balancesReducer, balancesActions],
-  ["allowances.light", allowancesLightReducer, allowancesLightActions],
+  ["allowances.swap", allowancesSwapReducer, allowancesSwapActions],
   ["allowances.wrapper", allowancesWrapperReducer, allowancesWrapperActions],
 ];
 

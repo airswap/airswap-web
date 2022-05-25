@@ -126,18 +126,12 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "INVALID_SIG": "INVALID_SIG",
-        "EXPIRY_PASSED": "EXPIRY_PASSED",
-        "UNAUTHORIZED": "UNAUTHORIZED",
-        "SIGNER_ALLOWANCE_LOW": "SIGNER_ALLOWANCE_LOW",
-        "SIGNER_BALANCE_LOW": "SIGNER_BALANCE_LOW",
-        "NONCE_ALREADY_USED": "NONCE_ALREADY_USED",
         "invalid_sig": "Assinatura inválida",
         "expiry_passed": "O pedido expirou",
         "unauthorized": "O assinante não autorizou o signatário",
         "signer_allowance_low": "O assinante não tem saldo suficiente",
         "signer_balance_low": "O assinante não validou a quantia do signatário",
-        "nonce_aleady_used": "Nonce já está em uso ou foi cancelado",
+        "nonce_already_used": "Nonce já está em uso ou foi cancelado",
         "unableSwap": "Indisponível para troca",
         "swapFail": "A troca pode falhar pelos seguintes motivos."
     },

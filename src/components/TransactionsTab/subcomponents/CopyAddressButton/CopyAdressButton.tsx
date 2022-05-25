@@ -18,10 +18,8 @@ const CopyAdressButton: FC<CopyAdressButtonProps> = ({ address }) => {
   const { t } = useTranslation();
   const walletTextRef = useRef<HTMLDivElement>(null);
   const [showAddress, setShowAddress] = useState(false);
-  const [
-    writeAddressToClipboardSuccess,
-    setWriteAddressToClipboardSuccess,
-  ] = useState(false);
+  const [writeAddressToClipboardSuccess, setWriteAddressToClipboardSuccess] =
+    useState(false);
 
   const iconName = writeAddressToClipboardSuccess ? "check" : "copy";
 

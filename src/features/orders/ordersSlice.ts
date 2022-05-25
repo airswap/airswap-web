@@ -1,11 +1,12 @@
-import { wethAddresses } from "@airswap/constants";
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-import { Levels, LightOrder } from "@airswap/types";
+import { Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  Dispatch,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
@@ -15,9 +16,17 @@ import { Transaction, providers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import nativeETH from "../../constants/nativeETH";
 import {
-  allowancesLightActions,
+  ErrorType,
+  RPCError,
+  ErrorWithCode,
+  SwapError,
+} from "../../constants/errors";
+import nativeCurrency from "../../constants/nativeCurrency";
+import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
+import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
+import {
+  allowancesSwapActions,
   allowancesWrapperActions,
 } from "../balances/balancesSlice";
 import { gasUsedPerSwap } from "../gasCost/gasCostApi";
@@ -54,28 +63,44 @@ import {
 } from "./orderApi";
 
 export interface OrdersState {
-  orders: LightOrder[];
+  orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
+  errors: ErrorType[];
   reRequestTimerId: number | null;
 }
 
 const initialState: OrdersState = {
   orders: [],
   status: "idle",
+  errors: [],
   reRequestTimerId: null,
 };
 
 const APPROVE_AMOUNT = "90071992547409910000000000";
 
 // replaces WETH to ETH on Wrapper orders
-const refactorOrder = (order: LightOrder, chainId: number) => {
+const refactorOrder = (order: Order, chainId: number) => {
   let newOrder = { ...order };
-  if (order.senderToken === wethAddresses[chainId]) {
-    newOrder.senderToken = nativeETH[chainId].address;
-  } else if (order.signerToken === wethAddresses[chainId]) {
-    newOrder.signerToken = nativeETH[chainId].address;
+  if (order.senderToken === wrappedTokenAddresses[chainId]) {
+    newOrder.senderToken = nativeCurrency[chainId].address;
+  } else if (order.signerToken === wrappedTokenAddresses[chainId]) {
+    newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
+};
+
+export const handleOrderError = (
+  dispatch: Dispatch,
+  error: RPCError | ErrorWithCode
+) => {
+  const errorCodes = getSwapErrorCodesFromError(error) as (
+    | number
+    | SwapError
+  )[];
+  const errorTypes = errorCodes
+    .map((errorCode) => transformErrorCodeToError(errorCode))
+    .filter((errorCode) => !!errorCode) as ErrorType[];
+  dispatch(setErrors(errorTypes));
 };
 
 export const deposit = createAsyncThunk(
@@ -106,9 +131,9 @@ export const deposit = createAsyncThunk(
         const transaction: SubmittedDepositOrder = {
           type: "Deposit",
           order: {
-            signerToken: wethAddresses[params.chainId],
+            signerToken: wrappedTokenAddresses[params.chainId],
             signerAmount: senderAmount,
-            senderToken: nativeETH[params.chainId].address,
+            senderToken: nativeCurrency[params.chainId].address,
             senderAmount: senderAmount,
           },
           hash: tx.hash,
@@ -151,7 +176,7 @@ export const deposit = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
+      handleOrderError(dispatch, e);
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -190,12 +215,12 @@ export const withdraw = createAsyncThunk(
         const transaction: SubmittedWithdrawOrder = {
           type: "Withdraw",
           order: {
-            signerToken: nativeETH[params.chainId].address,
+            signerToken: nativeCurrency[params.chainId].address,
             signerAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals
             ),
-            senderToken: wethAddresses[params.chainId],
+            senderToken: wrappedTokenAddresses[params.chainId],
             senderAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals
@@ -236,7 +261,7 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      console.error(e);
+      handleOrderError(dispatch, e);
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -285,7 +310,7 @@ export const approve = createAsyncThunk<
   {
     token: string;
     library: any;
-    contractType: "Wrapper" | "Light";
+    contractType: "Wrapper" | "Swap";
     chainId: number;
   },
   // Types for ThunkAPI
@@ -319,9 +344,9 @@ export const approve = createAsyncThunk<
           );
           // Optimistically update allowance (this is not really optimistic,
           // but it preempts receiving the event)
-          if (params.contractType === "Light") {
+          if (params.contractType === "Swap") {
             dispatch(
-              allowancesLightActions.set({
+              allowancesSwapActions.set({
                 tokenAddress: params.token,
                 amount: APPROVE_AMOUNT,
               })
@@ -355,7 +380,7 @@ export const approve = createAsyncThunk<
       });
     }
   } catch (e: any) {
-    console.error(e);
+    handleOrderError(dispatch, e);
     dispatch(declineTransaction(e.message));
     throw e;
   }
@@ -366,9 +391,9 @@ export const take = createAsyncThunk<
   void,
   // Params
   {
-    order: LightOrder;
+    order: Order;
     library: any;
-    contractType: "Light" | "Wrapper";
+    contractType: "Swap" | "Wrapper";
     onExpired: () => void;
   },
   // Types for ThunkAPI
@@ -383,7 +408,7 @@ export const take = createAsyncThunk<
     // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
     // we should change the order tokens to WETH -> ETH
     let newOrder =
-      params.contractType === "Light"
+      params.contractType === "Swap"
         ? params.order
         : refactorOrder(params.order, params.library._network.chainId);
     if (tx.hash) {
@@ -406,6 +431,17 @@ export const take = createAsyncThunk<
       );
     }
   } catch (e: any) {
+    if (e?.code === 4001) {
+      // 4001 is metamask user declining transaction sig
+      dispatch(
+        revertTransaction({
+          signerWallet: params.order.signerWallet,
+          nonce: params.order.nonce,
+          reason: e.message,
+        })
+      );
+    }
+    handleOrderError(dispatch, e);
     dispatch(declineTransaction(e.message));
     throw e;
   }
@@ -418,9 +454,13 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
+    setErrors: (state, action: PayloadAction<ErrorType[]>) => {
+      state.errors = action.payload;
+    },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
+      state.errors = [];
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -472,11 +512,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const {
-  clear,
-  setResetStatus,
-  setReRequestTimerId,
-} = ordersSlice.actions;
+export const { clear, setErrors, setResetStatus, setReRequestTimerId } =
+  ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
@@ -504,7 +541,7 @@ export const selectBestOption = createSelector(
       return null;
     }
 
-    let pricing = (bestPricing as unknown) as {
+    let pricing = bestPricing as unknown as {
       pricing: Levels;
       locator: string;
       quoteAmount: string;
@@ -550,4 +587,5 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
+export const selectOrdersErrors = (state: RootState) => state.orders.errors;
 export default ordersSlice.reducer;

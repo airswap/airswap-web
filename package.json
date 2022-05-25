@@ -15,13 +15,13 @@
     "build-storybook": "build-storybook -s public"
   },
   "dependencies": {
-    "@airswap/balances": "^1.1.2",
-    "@airswap/constants": "^0.4.0",
-    "@airswap/libraries": "0.0.14",
-    "@airswap/metadata": "^1.0.7",
-    "@airswap/types": "^3.7.0",
-    "@airswap/utils": "^1",
-    "@airswap/validator": "^2.3.1",
+    "@airswap/balances": "2.0.2",
+    "@airswap/constants": "3.0.1",
+    "@airswap/libraries": "3.0.3",
+    "@airswap/metadata": "3.0.2",
+    "@airswap/swap": "3.0.1",
+    "@airswap/typescript": "3.0.0",
+    "@airswap/utils": "3.0.0",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@reduxjs/toolkit": "~1.5.1",
@@ -40,7 +40,8 @@
     "bignumber.js": "^9.0.1",
     "classnames": "^2.3.1",
     "erc-20-abi": "^1.0.0",
-    "ethers": "^5.4.4",
+    "eth-rpc-errors": "^4.0.3",
+    "ethers": "^5.5.4",
     "framer-motion": "^4.1.17",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
@@ -80,7 +81,8 @@
     "autoprefixer": "^9",
     "husky": "^7.0.1",
     "jest-canvas-mock": "^2.3.1",
-    "postcss": "^7"
+    "postcss": "^7",
+    "prettier": "2.6.2"
   },
   "eslintConfig": {
     "extends": "react-app",

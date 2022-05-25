@@ -1,5 +1,5 @@
-import { ADDRESS_ZERO, wethAddresses } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
+import { ADDRESS_ZERO, wrappedTokenAddresses } from "@airswap/constants";
+import { TokenInfo } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
@@ -32,7 +32,7 @@ const getPriceOfTokenInWethFromUniswap: (
   chainId: number
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
-  const wethAddress = wethAddresses[String(chainId)];
+  const wethAddress = wrappedTokenAddresses[String(chainId)];
   if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
     return new BigNumber(1);
 

@@ -1,7 +1,7 @@
 import { FC, MouseEvent, FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../../../TokenSelect/TokenSelect";

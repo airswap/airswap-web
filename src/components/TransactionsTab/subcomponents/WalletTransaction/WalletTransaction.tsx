@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 import { formatUnits } from "@ethersproject/units";
 
 import BigNumber from "bignumber.js";
@@ -76,7 +76,8 @@ const WalletTransaction = ({
       </Container>
     );
   } else {
-    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedTransactionWithOrder =
+      transaction as SubmittedTransactionWithOrder;
     const senderToken = findEthOrTokenByAddress(
       tx.order.senderToken,
       tokens,

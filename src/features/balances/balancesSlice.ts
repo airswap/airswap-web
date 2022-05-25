@@ -12,7 +12,7 @@ import { BigNumber, ethers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import { setWalletConnected } from "../wallet/walletSlice";
 import {
-  fetchAllowancesLight,
+  fetchAllowancesSwap,
   fetchAllowancesWrapper,
   fetchBalances,
 } from "./balancesApi";
@@ -41,23 +41,23 @@ export const initialState: BalancesState = {
 };
 
 const getSetInFlightRequestTokensAction = (
-  type: "balances" | "allowances.light" | "allowances.wrapper"
+  type: "balances" | "allowances.swap" | "allowances.wrapper"
 ) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
 const getThunk: (
-  type: "balances" | "allowances.light" | "allowances.wrapper"
+  type: "balances" | "allowances.swap" | "allowances.wrapper"
 ) => AsyncThunk<
   { address: string; amount: string }[],
   {
     provider: ethers.providers.Web3Provider;
   },
   {}
-> = (type: "balances" | "allowances.light" | "allowances.wrapper") => {
+> = (type: "balances" | "allowances.swap" | "allowances.wrapper") => {
   const methods = {
     balances: fetchBalances,
-    "allowances.light": fetchAllowancesLight,
+    "allowances.swap": fetchAllowancesSwap,
     "allowances.wrapper": fetchAllowancesWrapper,
   };
   return createAsyncThunk<
@@ -121,7 +121,7 @@ const getThunk: (
 };
 
 const getSlice = (
-  type: "balances" | "allowances.light" | "allowances.wrapper",
+  type: "balances" | "allowances.swap" | "allowances.wrapper",
   asyncThunk: ReturnType<typeof getThunk>
 ) => {
   return createSlice({
@@ -135,9 +135,9 @@ const getSlice = (
         const currentAmount = BigNumber.from(
           state.values[action.payload.tokenAddress.toLowerCase()] || 0
         );
-        state.values[
-          action.payload.tokenAddress.toLowerCase()
-        ] = currentAmount.add(action.payload.amount).toString();
+        state.values[action.payload.tokenAddress.toLowerCase()] = currentAmount
+          .add(action.payload.amount)
+          .toString();
       },
       decrementBy: (
         state,
@@ -148,9 +148,8 @@ const getSlice = (
         );
         let newAmount = currentAmount.sub(action.payload.amount);
         if (newAmount.lt("0")) newAmount = BigNumber.from("0");
-        state.values[
-          action.payload.tokenAddress.toLowerCase()
-        ] = newAmount.toString();
+        state.values[action.payload.tokenAddress.toLowerCase()] =
+          newAmount.toString();
       },
       set: (
         state,
@@ -201,21 +200,19 @@ const getSlice = (
 
 export const selectBalances = (state: RootState) => state.balances;
 export const selectAllowances = (state: RootState) => state.allowances;
-export const selectAllowancesLight = (state: RootState) =>
-  state.allowances.light;
+export const selectAllowancesSwap = (state: RootState) => state.allowances.swap;
 export const selectAllowancesWrapper = (state: RootState) =>
   state.allowances.wrapper;
 
 export const requestActiveTokenBalances = getThunk("balances");
-export const requestActiveTokenAllowancesLight = getThunk("allowances.light");
-export const requestActiveTokenAllowancesWrapper = getThunk(
-  "allowances.wrapper"
-);
+export const requestActiveTokenAllowancesSwap = getThunk("allowances.swap");
+export const requestActiveTokenAllowancesWrapper =
+  getThunk("allowances.wrapper");
 
 export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
-export const allowancesLightSlice = getSlice(
-  "allowances.light",
-  requestActiveTokenAllowancesLight
+export const allowancesSwapSlice = getSlice(
+  "allowances.swap",
+  requestActiveTokenAllowancesSwap
 );
 export const allowancesWrapperSlice = getSlice(
   "allowances.wrapper",
@@ -228,10 +225,10 @@ export const {
   set: setBalance,
 } = balancesSlice.actions;
 export const {
-  incrementBy: incrementAllowanceLightBy,
-  decrementBy: decrementAllowanceLightBy,
-  set: setAllowanceLight,
-} = allowancesLightSlice.actions;
+  incrementBy: incrementAllowanceSwapBy,
+  decrementBy: decrementAllowanceSwapBy,
+  set: setAllowanceSwap,
+} = allowancesSwapSlice.actions;
 export const {
   incrementBy: incrementAllowanceWrapperBy,
   decrementBy: decreementAllowanceWrapperBy,
@@ -239,13 +236,13 @@ export const {
 } = allowancesWrapperSlice.actions;
 
 export const balancesActions = balancesSlice.actions;
-export const allowancesLightActions = allowancesLightSlice.actions;
+export const allowancesSwapActions = allowancesSwapSlice.actions;
 export const allowancesWrapperActions = allowancesWrapperSlice.actions;
 
 export const balancesReducer = balancesSlice.reducer;
-export const allowancesLightReducer = allowancesLightSlice.reducer;
+export const allowancesSwapReducer = allowancesSwapSlice.reducer;
 export const allowancesWrapperReducer = allowancesWrapperSlice.reducer;
 export const allowancesReducer = combineReducers({
-  light: allowancesLightReducer,
+  swap: allowancesSwapReducer,
   wrapper: allowancesWrapperReducer,
 });

@@ -126,18 +126,12 @@
         "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
     },
     "validatorErrors": {
-        "INVALID_SIG": "SEM_INVALIDĂ",
-        "EXPIRY_PASSED": "EXPRARE_TRECUTA",
-        "UNAUTHORIZED": "NEAUTORIZAT",
-        "SIGNER_ALLOWANCE_LOW": "SEMNATAR_ACCORD_SLAB",
-        "SIGNER_BALANCE_LOW": "SEMNATAR_SOLD_MIC",
-        "NONCE_ALREADY_USED": "NONCE_UTILIZAT_DEJA",
         "invalid_sig": "Semnătură invalidă",
         "expiry_passed": "Comanda a expirat",
         "unauthorized": "Semnatura neautorizată de semnatar.",
         "signer_allowance_low": "Sold insuficient pentru semnatar",
         "signer_balance_low": "Semnatarul nu a aprobat suma ",
-        "nonce_aleady_used": "Nonce folosit sau anulat.",
+        "nonce_already_used": "Nonce folosit sau anulat.",
         "unableSwap": "Conversie  imposibilă",
         "swapFail": "Conversia ar putea sa esueze pentru motivele următoarele"
     },

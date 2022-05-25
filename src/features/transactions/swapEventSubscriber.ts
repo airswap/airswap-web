@@ -101,8 +101,9 @@ export const mapSwapEvent = (
     transaction = transactions.all.find(
       (t: SubmittedTransaction | SubmittedTransactionWithOrder) =>
         t.nonce === nonce &&
-        (t as SubmittedTransactionWithOrder).order?.signerWallet.toLowerCase() ===
-          signerWallet.toLowerCase()
+        (
+          t as SubmittedTransactionWithOrder
+        ).order?.signerWallet.toLowerCase() === signerWallet.toLowerCase()
     ) as LastLookTransaction;
   }
 
@@ -118,22 +119,17 @@ export const mapSwapEvent = (
 };
 
 export default function subscribeToSwapEvents(params: {
-  lightContract: Contract;
+  swapContract: Contract;
   chainId: number;
   account: string;
   library: any;
   dispatch: Dispatch;
 }) {
-  const { lightContract, account, dispatch, chainId } = params;
-  lightContract.on("Swap", async (...data) => {
+  const { swapContract, account, dispatch, chainId } = params;
+  swapContract.on("Swap", async (...data) => {
     const transactions = store.getState().transactions;
-    const {
-      nonce,
-      signerWallet,
-      transactionHash,
-      protocol,
-      transaction,
-    } = mapSwapEvent(data, chainId, account, transactions);
+    const { nonce, signerWallet, transactionHash, protocol, transaction } =
+      mapSwapEvent(data, chainId, account, transactions);
 
     // If we don't have a 'transaction', we don't already know about this swap
     // and therefore don't need to update the UI.

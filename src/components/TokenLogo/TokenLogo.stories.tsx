@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/typescript";
 import { Story, Meta } from "@storybook/react";
 
 import styled from "styled-components/macro";

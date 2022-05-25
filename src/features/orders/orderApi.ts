@@ -1,7 +1,7 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
-import { wethAddresses } from "@airswap/constants";
-import { Light, Server, Wrapper } from "@airswap/libraries";
-import { LightOrder } from "@airswap/types";
+import { wrappedTokenAddresses } from "@airswap/constants";
+import { Swap, Server, Wrapper } from "@airswap/libraries";
+import { Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
@@ -21,13 +21,13 @@ const erc20Interface = new ethers.utils.Interface(erc20Abi);
 
 const WETHInterface = new utils.Interface(JSON.stringify(WETHContract.abi));
 
-async function swapLight(
+async function swap(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: LightOrder
+  order: Order
 ) {
   // @ts-ignore TODO: type compatability issue with AirSwap lib
-  return await new Light(chainId, provider).swap(
+  return await new Swap(chainId, provider).swap(
     order,
     // @ts-ignore
     provider.getSigner()
@@ -37,7 +37,7 @@ async function swapLight(
 async function swapWrapper(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: LightOrder
+  order: Order
 ) {
   // @ts-ignore TODO: type compatability issue with AirSwap lib
   return await new Wrapper(chainId, provider).swap(
@@ -54,7 +54,7 @@ export async function requestOrders(
   baseTokenAmount: string,
   baseTokenDecimals: number,
   senderWallet: string
-): Promise<LightOrder[]> {
+): Promise<Order[]> {
   if (!servers.length) {
     throw new Error("no counterparties");
   }
@@ -73,23 +73,23 @@ export async function requestOrders(
         }, REQUEST_ORDER_TIMEOUT_MS)
       ),
     ]);
-    return (order as any) as LightOrder;
+    return order as any as Order;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   return rfqOrders
     .filter((result) => result.status === "fulfilled")
-    .map((result) => (result as PromiseFulfilledResult<LightOrder>).value)
+    .map((result) => (result as PromiseFulfilledResult<Order>).value)
     .filter((o) => BigNumber.from(o.signerAmount).gt("0"));
 }
 
 export async function approveToken(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Light" | "Wrapper"
+  contractType: "Swap" | "Wrapper"
 ) {
   const spender =
-    contractType === "Light"
-      ? Light.getAddress(provider.network.chainId)
+    contractType === "Swap"
+      ? Swap.getAddress(provider.network.chainId)
       : Wrapper.getAddress(provider.network.chainId);
   const erc20Contract = new ethers.Contract(
     baseToken,
@@ -101,23 +101,23 @@ export async function approveToken(
     spender,
     constants.MaxUint256
   );
-  return (approvalTxHash as any) as Transaction;
+  return approvalTxHash as any as Transaction;
 }
 
 export async function takeOrder(
-  order: LightOrder,
+  order: Order,
   provider: ethers.providers.Web3Provider,
-  contractType: "Light" | "Wrapper"
+  contractType: "Swap" | "Wrapper"
 ) {
   const tx =
-    contractType === "Light"
-      ? await swapLight(provider.network.chainId, provider, order)
+    contractType === "Swap"
+      ? await swap(provider.network.chainId, provider, order)
       : await swapWrapper(provider.network.chainId, provider, order);
 
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
 
-export function orderSortingFunction(a: LightOrder, b: LightOrder) {
+export function orderSortingFunction(a: Order, b: Order) {
   // If tokens transferred are the same
   if (a.signerAmount === b.signerAmount && a.senderAmount === b.senderAmount) {
     return parseInt(b.expiry) - parseInt(a.expiry);
@@ -146,7 +146,7 @@ export async function depositETH(
   provider: ethers.providers.Web3Provider
 ) {
   const WETHContract = new Contract(
-    wethAddresses[chainId],
+    wrappedTokenAddresses[chainId],
     WETHInterface,
     provider as providers.Provider
   );
@@ -154,7 +154,7 @@ export async function depositETH(
   const tx = await signer.deposit({
     value: toAtomicString(senderAmount, senderTokenDecimals),
   });
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
 
 export async function withdrawETH(
@@ -164,7 +164,7 @@ export async function withdrawETH(
   provider: ethers.providers.Web3Provider
 ) {
   const WETHContract = new Contract(
-    wethAddresses[chainId],
+    wrappedTokenAddresses[chainId],
     WETHInterface,
     // @ts-ignore
     provider
@@ -174,5 +174,5 @@ export async function withdrawETH(
   const tx = await signer.withdraw(
     toAtomicString(senderAmount, senderTokenDecimals)
   );
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
