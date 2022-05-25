@@ -89,10 +89,10 @@ const TransactionsTab = ({
       ? addressOrName
       : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
-  const walletUrl = useMemo(() => getEtherscanWalletURL(chainId, address), [
-    chainId,
-    address,
-  ]);
+  const walletUrl = useMemo(
+    () => getEtherscanWalletURL(chainId, address),
+    [chainId, address]
+  );
   const handleEscKey = useCallback(
     (e) => {
       if (e.keyCode === 27) {
@@ -126,8 +126,8 @@ const TransactionsTab = ({
       buttonRef.current
     ) {
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
-      const containerHeight = containerRef.current.getBoundingClientRect()
-        .height;
+      const containerHeight =
+        containerRef.current.getBoundingClientRect().height;
       const buttonHeight = buttonRef.current.getBoundingClientRect().height;
       setOverflow(scrollHeight + offsetTop > containerHeight - buttonHeight);
     }

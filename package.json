@@ -81,7 +81,8 @@
     "autoprefixer": "^9",
     "husky": "^7.0.1",
     "jest-canvas-mock": "^2.3.1",
-    "postcss": "^7"
+    "postcss": "^7",
+    "prettier": "2.6.2"
   },
   "eslintConfig": {
     "extends": "react-app",

@@ -76,7 +76,8 @@ const WalletTransaction = ({
       </Container>
     );
   } else {
-    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedTransactionWithOrder =
+      transaction as SubmittedTransactionWithOrder;
     const senderToken = findEthOrTokenByAddress(
       tx.order.senderToken,
       tokens,

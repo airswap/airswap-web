@@ -156,10 +156,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Modals
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
-  const [
-    showTokenSelectModalFor,
-    setShowTokenSelectModalFor,
-  ] = useState<TokenSelectModalTypes | null>(null);
+  const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
+    useState<TokenSelectModalTypes | null>(null);
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
 
@@ -173,9 +171,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
   const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
-  const [allowanceFetchFailed, setAllowanceFetchFailed] = useState<boolean>(
-    false
-  );
+  const [allowanceFetchFailed, setAllowanceFetchFailed] =
+    useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -538,19 +535,15 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   const swapWithRequestForQuote = async () => {
     try {
-      if (swapType !== "swapWithWrap") {
-        const errors = (await new Swap(chainId).check(
-          bestTradeOption!.order!,
-          // NOTE: once new swap contract is used, this (senderAddress) needs
-          // to be the wrapper address for wrapped swaps.
-          account!,
-          library?.getSigner()
-        )) as SwapError[];
-        if (errors.length) {
-          setValidatorErrors(errors);
-          setIsSwapping(false);
-          return;
-        }
+      const errors = (await new Swap(chainId).check(
+        bestTradeOption!.order!,
+        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account!,
+        library?.getSigner()
+      )) as SwapError[];
+      if (errors.length) {
+        setValidatorErrors(errors);
+        setIsSwapping(false);
+        return;
       }
       LastLook.unsubscribeAllServers();
 
@@ -583,13 +576,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       // Setting quote amount prevents the UI from updating if pricing changes
       dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
       // Last look order.
-      const {
-        order: lastLookOrder,
-        senderWallet,
-      } = await LastLook.getSignedOrder({
-        locator: bestTradeOption!.pricing!.locator,
-        terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-      });
+      const { order: lastLookOrder, senderWallet } =
+        await LastLook.getSignedOrder({
+          locator: bestTradeOption!.pricing!.locator,
+          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
+        });
       order = lastLookOrder;
 
       const errors = (await new Swap(chainId).check(
