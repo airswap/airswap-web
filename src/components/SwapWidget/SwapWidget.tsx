@@ -538,19 +538,15 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   const swapWithRequestForQuote = async () => {
     try {
-      if (swapType !== "swapWithWrap") {
         const errors = (await new Swap(chainId).check(
           bestTradeOption!.order!,
-          // NOTE: once new swap contract is used, this (senderAddress) needs
-          // to be the wrapper address for wrapped swaps.
-          account!,
+        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account!,
           library?.getSigner()
         )) as SwapError[];
         if (errors.length) {
           setValidatorErrors(errors);
           setIsSwapping(false);
           return;
-        }
       }
       LastLook.unsubscribeAllServers();
 
