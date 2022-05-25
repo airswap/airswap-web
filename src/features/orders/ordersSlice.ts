@@ -476,8 +476,13 @@ export const ordersSlice = createSlice({
         state.status = "requesting";
       })
       .addCase(request.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.orders = action.payload!;
+        // Only update the orders if we were requesting them. This prevents a
+        // very slow request influencing the state if we have since moved away
+        // from it.
+        if (state.status === "requesting") {
+          state.status = "idle";
+          state.orders = action.payload!;
+        }
       })
       .addCase(request.rejected, (state, action) => {
         state.status = "failed";
@@ -488,6 +493,10 @@ export const ordersSlice = createSlice({
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
+        if (state.reRequestTimerId) {
+          clearTimeout(state.reRequestTimerId);
+          state.reRequestTimerId = null;
+        }
       })
       .addCase(take.rejected, (state, action) => {
         state.status = "failed";
