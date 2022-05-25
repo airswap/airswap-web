@@ -135,9 +135,9 @@ const getSlice = (
         const currentAmount = BigNumber.from(
           state.values[action.payload.tokenAddress.toLowerCase()] || 0
         );
-        state.values[
-          action.payload.tokenAddress.toLowerCase()
-        ] = currentAmount.add(action.payload.amount).toString();
+        state.values[action.payload.tokenAddress.toLowerCase()] = currentAmount
+          .add(action.payload.amount)
+          .toString();
       },
       decrementBy: (
         state,
@@ -148,9 +148,8 @@ const getSlice = (
         );
         let newAmount = currentAmount.sub(action.payload.amount);
         if (newAmount.lt("0")) newAmount = BigNumber.from("0");
-        state.values[
-          action.payload.tokenAddress.toLowerCase()
-        ] = newAmount.toString();
+        state.values[action.payload.tokenAddress.toLowerCase()] =
+          newAmount.toString();
       },
       set: (
         state,
@@ -207,9 +206,8 @@ export const selectAllowancesWrapper = (state: RootState) =>
 
 export const requestActiveTokenBalances = getThunk("balances");
 export const requestActiveTokenAllowancesSwap = getThunk("allowances.swap");
-export const requestActiveTokenAllowancesWrapper = getThunk(
-  "allowances.wrapper"
-);
+export const requestActiveTokenAllowancesWrapper =
+  getThunk("allowances.wrapper");
 
 export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSwapSlice = getSlice(

@@ -512,12 +512,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const {
-  clear,
-  setErrors,
-  setResetStatus,
-  setReRequestTimerId,
-} = ordersSlice.actions;
+export const { clear, setErrors, setResetStatus, setReRequestTimerId } =
+  ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
@@ -545,7 +541,7 @@ export const selectBestOption = createSelector(
       return null;
     }
 
-    let pricing = (bestPricing as unknown) as {
+    let pricing = bestPricing as unknown as {
       pricing: Levels;
       locator: string;
       quoteAmount: string;

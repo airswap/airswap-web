@@ -73,7 +73,7 @@ export async function requestOrders(
         }, REQUEST_ORDER_TIMEOUT_MS)
       ),
     ]);
-    return (order as any) as Order;
+    return order as any as Order;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   return rfqOrders
@@ -101,7 +101,7 @@ export async function approveToken(
     spender,
     constants.MaxUint256
   );
-  return (approvalTxHash as any) as Transaction;
+  return approvalTxHash as any as Transaction;
 }
 
 export async function takeOrder(
@@ -114,7 +114,7 @@ export async function takeOrder(
       ? await swap(provider.network.chainId, provider, order)
       : await swapWrapper(provider.network.chainId, provider, order);
 
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
 
 export function orderSortingFunction(a: Order, b: Order) {
@@ -154,7 +154,7 @@ export async function depositETH(
   const tx = await signer.deposit({
     value: toAtomicString(senderAmount, senderTokenDecimals),
   });
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }
 
 export async function withdrawETH(
@@ -174,5 +174,5 @@ export async function withdrawETH(
   const tx = await signer.withdraw(
     toAtomicString(senderAmount, senderTokenDecimals)
   );
-  return (tx as any) as Transaction;
+  return tx as any as Transaction;
 }

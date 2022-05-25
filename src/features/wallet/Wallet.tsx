@@ -83,15 +83,8 @@ export const Wallet: FC<WalletPropsType> = ({
   onMobileMenuButtonClick,
 }) => {
   const { t } = useTranslation();
-  const {
-    chainId,
-    account,
-    activate,
-    deactivate,
-    active,
-    library,
-    error,
-  } = useWeb3React<Web3Provider>();
+  const { chainId, account, activate, deactivate, active, library, error } =
+    useWeb3React<Web3Provider>();
 
   // Redux
   const dispatch = useAppDispatch();

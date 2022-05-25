@@ -31,7 +31,8 @@ export const notifyTransaction = (
     (type === "Order" || type === "Deposit" || type === "Withdraw") &&
     chainId
   ) {
-    const tx: SubmittedTransactionWithOrder = transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedTransactionWithOrder =
+      transaction as SubmittedTransactionWithOrder;
     /*  TODO: fix toaster for multiple tabs or apps
         now that we have a listener, you can have multiple
         tabs open that receives the same order event. Only one redux
