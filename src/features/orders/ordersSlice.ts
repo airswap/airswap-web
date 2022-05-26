@@ -15,7 +15,10 @@ import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
-import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import {
+  RFQ_EXPIRY_BUFFER_MS,
+  RFQ_MINIMUM_REREQUEST_DELAY_MS,
+} from "../../constants/configParams";
 import {
   ErrorType,
   RPCError,
@@ -291,8 +294,17 @@ export const request = createAsyncThunk(
     );
     if (orders.length) {
       const bestOrder = [...orders].sort(orderSortingFunction)[0];
+      const now = Date.now();
       const expiry = parseInt(bestOrder.expiry) * 1000;
-      const timeTilReRequest = expiry - Date.now() - RFQ_EXPIRY_BUFFER_MS;
+      // Due to the sorting in orderSorting function, these orders will be at
+      // the bottom of the list, so if the best one has a very short expiry
+      // so do all the others. Return an empty order array as none are viable.
+      if (expiry - now < RFQ_EXPIRY_BUFFER_MS) return [];
+
+      const timeTilReRequest = Math.min(
+        expiry - now - RFQ_EXPIRY_BUFFER_MS,
+        RFQ_MINIMUM_REREQUEST_DELAY_MS
+      );
       const reRequestTimerId = window.setTimeout(
         () => dispatch(request(params)),
         timeTilReRequest
