@@ -301,7 +301,7 @@ export const request = createAsyncThunk(
       // so do all the others. Return an empty order array as none are viable.
       if (expiry - now < RFQ_EXPIRY_BUFFER_MS) return [];
 
-      const timeTilReRequest = Math.min(
+      const timeTilReRequest = Math.max(
         expiry - now - RFQ_EXPIRY_BUFFER_MS,
         RFQ_MINIMUM_REREQUEST_DELAY_MS
       );

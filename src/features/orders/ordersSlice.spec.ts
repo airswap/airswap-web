@@ -1,7 +1,17 @@
 import { RootState } from "../../app/store";
 import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 
+const RealDate = Date.now;
+
 describe("orders reducer", () => {
+  beforeEach(() => {
+    global.Date.now = jest.fn(() => new Date("2022-01-01T00:00:00Z").getTime());
+  });
+
+  afterEach(() => {
+    global.Date.now = RealDate;
+  });
+
   const initialState: OrdersState = {
     orders: [],
     errors: [],
