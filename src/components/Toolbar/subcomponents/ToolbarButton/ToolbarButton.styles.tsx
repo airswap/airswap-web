@@ -28,10 +28,6 @@ const ButtonStyle = css`
     margin-top: -1px;
   }
 
-  &:last-child:not(:hover):not(:active):not(:focus) {
-    border-bottom-style: hidden;
-  }
-
   &:hover,
   &:active,
   &:focus {
