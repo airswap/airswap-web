@@ -20,7 +20,7 @@ export const TokenNameContainer = styled.div`
 export const TokenName = styled.h3`
   width: 100%;
   text-align: left;
-  line-height: 1;
+  line-height: 1.25;
   font-size: 1rem;
   font-weight: 400;
   white-space: nowrap;
