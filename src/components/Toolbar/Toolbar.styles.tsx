@@ -100,8 +100,11 @@ export const StyledAirswapButton = styled(AirswapButton)`
 
 export const StyledSocialButtons = styled(SocialButtons)`
   justify-content: center;
-  margin-top: 2rem;
+  justify-self: flex-end;
+  box-sizing: content-box;
+  margin-top: auto;
   width: 100%;
+  padding-top: 2rem;
   gap: 1.5rem;
 
   @media ${breakPoints.tabletPortraitUp} {

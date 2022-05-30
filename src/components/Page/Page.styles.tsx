@@ -48,23 +48,23 @@ export const StyledPage = styled.div`
 `;
 
 export const StyledSocialButtons = styled(SocialButtons)`
-  display: flex;
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  display: none;
 
-  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
+  @media ${breakPoints.tabletPortraitUp} {
     display: flex;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  @media ${breakPoints.shallowScreenOnly} {
     justify-content: flex-end;
     position: relative;
+    box-sizing: content-box;
     bottom: 0;
     right: 0;
     width: 100%;
-    padding-right: 1.5rem;
+    padding-right: 2rem;
     padding-bottom: 1.5rem;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    display: none;
   }
 `;
