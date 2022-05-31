@@ -8,6 +8,7 @@ import breakPoints from "../../style/breakpoints";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
   StyledAirswapButton,
+  StyledSocialButtons,
   ToolbarButtonsContainer,
   ToolbarContainer,
 } from "./Toolbar.styles";
@@ -119,6 +120,7 @@ const Toolbar: FC<ToolbarProps> = ({
           }}
           link={AppRoutes.join}
         />
+        <StyledSocialButtons />
       </ToolbarButtonsContainer>
     </ToolbarContainer>
   );

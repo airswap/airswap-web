@@ -5,6 +5,7 @@ import breakPoints from "../../style/breakpoints";
 import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButton";
+import SocialButtons from "../SocialButtons/SocialButtons";
 
 export const ToolbarContainer = styled.div<{
   $isHiddenOnMobile?: boolean;
@@ -67,6 +68,7 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
   margin: 0;
   width: ${({ $overflow }) => ($overflow ? "calc(100% - 1rem)" : "100%")};
   padding-right: ${({ $overflow }) => ($overflow ? "1rem" : "0")};
+  padding-bottom: 2rem;
   overflow-x: hidden;
   overflow-y: ${({ $overflow }) => ($overflow ? "scroll" : "hidden")};
 
@@ -93,5 +95,19 @@ export const StyledAirswapButton = styled(AirswapButton)`
     display: flex;
     align-self: center;
     margin-top: 2rem;
+  }
+`;
+
+export const StyledSocialButtons = styled(SocialButtons)`
+  justify-content: center;
+  justify-self: flex-end;
+  box-sizing: content-box;
+  margin-top: auto;
+  width: 100%;
+  padding-top: 2rem;
+  gap: 1.5rem;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    display: none;
   }
 `;
