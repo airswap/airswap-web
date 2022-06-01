@@ -9,6 +9,9 @@ export const Container = styled.div`
   flex-direction: row;
   align-items: flex-end;
   gap: 0.5rem;
+  position: relative;
+  height: 2.5rem;
+  z-index: 1;
 `;
 
 export const Divider = styled.div`
@@ -27,18 +30,19 @@ export const PlainLink = styled(Link)<{ $deEmphasize: boolean }>`
   line-height: 1;
   height: 2.25rem;
   width: 2.25rem;
-  transition: opacity 0.3s ease-in-out;
   opacity: ${({ $deEmphasize }) => ($deEmphasize ? 0.5 : 1)};
 `;
 
-export const SocialButton = styled.div<{ showLocales: number }>`
+export const SocialButton = styled.div<{ showLocales?: number }>`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
+
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   width: 2.5rem;
-  height: ${({ showLocales }) => (1 + showLocales) * 2.5 + "rem"};
+  height: ${({ showLocales = 0 }) =>
+    (1 + showLocales) * 2.5 + "rem"} !important;
   &:hover {
     background-color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.black : theme.colors.primary};
@@ -46,7 +50,7 @@ export const SocialButton = styled.div<{ showLocales: number }>`
 `;
 
 export const StyledIcon = styled(Icon)<{ $deEmphasize: boolean }>`
-  padding: 0.6666rem;
+  padding: calc(1rem / 1.5);
   transition: opacity 0.3s ease-in-out;
   opacity: ${({ $deEmphasize }) => ($deEmphasize ? 0.5 : 1)};
 `;

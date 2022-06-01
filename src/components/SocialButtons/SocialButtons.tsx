@@ -9,11 +9,13 @@ import {
   Divider,
 } from "./SocialButtons.styles";
 
-const destinations: {
+type Destination = {
   icon: keyof typeof icons;
   primary: string;
   locales?: Record<string, string>;
-}[] = [
+};
+
+const destinations: Destination[] = [
   {
     icon: "twitter",
     primary: "https://twitter.com/airswap",
@@ -49,27 +51,65 @@ const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
     null
   );
   const [hoveredLocale, setHoveredLocale] = useState<string | null>(null);
+  const [userIsUsingTouch, setUserIsUsingTouch] = useState(false);
+
+  const handleSocialButtonTouchStart = (dest: Destination) => {
+    setUserIsUsingTouch(true);
+    setHoveredIcon(hoveredIcon ? null : dest.icon);
+  };
+
+  const handleSocialButtonMouseEnter = (dest: Destination) => {
+    setHoveredIcon(dest.icon);
+  };
+
+  const handleSocialButtonMouseLeave = () => {
+    if (!userIsUsingTouch) {
+      setHoveredIcon(null);
+    }
+  };
 
   return (
     <Container className={className}>
       {destinations.map((dest) => {
         const locales = Object.keys(dest.locales || {});
+
+        if (!locales.length) {
+          return (
+            <SocialButton
+              as="a"
+              aria-label={`${dest.icon}`}
+              key={dest.icon}
+              showLocales={hoveredIcon === dest.icon ? locales.length : 0}
+              onMouseEnter={() => handleSocialButtonMouseEnter(dest)}
+              onMouseLeave={handleSocialButtonMouseLeave}
+              onTouchStart={() => handleSocialButtonTouchStart(dest)}
+              href={dest.primary}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <StyledIcon
+                iconSize={1}
+                name={dest.icon}
+                $deEmphasize={hoveredIcon !== null && hoveredIcon !== dest.icon}
+              />
+            </SocialButton>
+          );
+        }
+
         return (
           <SocialButton
+            as="div"
             key={dest.icon}
-            onPointerEnter={setHoveredIcon.bind(null, dest.icon)}
-            onPointerLeave={setHoveredIcon.bind(null, null)}
             showLocales={hoveredIcon === dest.icon ? locales.length : 0}
+            onMouseLeave={handleSocialButtonMouseLeave}
           >
             {hoveredIcon === dest.icon && locales.length !== 0 && (
               <>
                 {locales.map((locale) => (
                   <PlainLink
-                    onPointerEnter={setHoveredLocale.bind(null, locale)}
-                    onPointerLeave={setHoveredLocale.bind(null, null)}
-                    $deEmphasize={
-                      hoveredLocale !== null && hoveredLocale !== locale
-                    }
+                    onMouseEnter={setHoveredLocale.bind(null, locale)}
+                    onMouseLeave={setHoveredLocale.bind(null, null)}
+                    $deEmphasize={hoveredLocale !== locale}
                     href={dest.locales?.[locale]}
                     key={`${dest.icon}-${locale}`}
                     target="_blank"
@@ -81,18 +121,17 @@ const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
                 <Divider />
               </>
             )}
-            <a
-              href={dest.primary}
-              target="_blank"
-              rel="noreferrer"
+            <button
               aria-label={`${dest.icon}`}
+              onMouseEnter={() => handleSocialButtonMouseEnter(dest)}
+              onTouchStart={() => handleSocialButtonTouchStart(dest)}
             >
               <StyledIcon
                 iconSize={1}
                 name={dest.icon}
                 $deEmphasize={hoveredIcon !== null && hoveredIcon !== dest.icon}
               />
-            </a>
+            </button>
           </SocialButton>
         );
       })}
