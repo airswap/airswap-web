@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import useMediaQuery from "../../helpers/useMediaQuery";
-import useWindowSize from "../../helpers/useWindowSize";
+import useMediaQuery from "../../hooks/useMediaQuery";
+import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
 import { InformationModalType } from "../InformationModals/InformationModals";

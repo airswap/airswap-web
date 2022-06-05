@@ -12,9 +12,9 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
-import useMediaQuery from "../../helpers/useMediaQuery";
-import useWindowSize from "../../helpers/useWindowSize";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import useMediaQuery from "../../hooks/useMediaQuery";
+import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import Icon from "../Icon/Icon";
 import {

@@ -53,10 +53,12 @@ export const ImportButton = styled.button`
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   justify-self: center;
-  color: ${({ theme }) => theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
   &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+    background: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     color: ${(props) => props.theme.colors.black};
     transition: 0.25s ease-in-out;
   }
