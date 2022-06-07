@@ -6,7 +6,7 @@ import { formatUnits } from "@ethersproject/units";
 
 import nativeCurrency from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import useWindowSize from "../../helpers/useWindowSize";
+import useWindowSize from "../../hooks/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
 import {

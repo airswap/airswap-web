@@ -9,8 +9,8 @@ import {
   selectTheme,
   setTheme,
 } from "../../features/userSettings/userSettingsSlice";
-import useWindowSize from "../../helpers/useWindowSize";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import useWindowSize from "../../hooks/useWindowSize";
 import {
   Container,
   ThemeContainer,

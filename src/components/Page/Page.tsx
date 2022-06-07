@@ -9,6 +9,8 @@ import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import useDebounce from "../../hooks/useDebounce";
+import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -33,6 +35,7 @@ const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { t } = useTranslation();
+  const { height: windowHeight } = useWindowSize();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
 
   const appRouteParams = useAppRouteParams();
@@ -42,6 +45,7 @@ const Page: FC = (): ReactElement => {
   const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
+  const [pageHeight, setPageHeight] = useState(windowHeight);
 
   const reset = () => {
     setActiveInformationModal(undefined);
@@ -69,6 +73,14 @@ const Page: FC = (): ReactElement => {
     setShowMobileToolbar(true);
   };
 
+  useDebounce(
+    () => {
+      setPageHeight(windowHeight);
+    },
+    100,
+    [windowHeight]
+  );
+
   useEffect(() => {
     if (showMobileToolbar) {
       document.body.classList.add("scroll-locked");
@@ -89,7 +101,7 @@ const Page: FC = (): ReactElement => {
   }, [appRouteParams.route]);
 
   return (
-    <StyledPage>
+    <StyledPage style={{ height: `${pageHeight}px` }}>
       <HelmetContainer title={t("app.title")} />
       <InnerContainer>
         <Toaster open={transactionsTabOpen} />
