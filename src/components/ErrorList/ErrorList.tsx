@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ErrorType } from "../../constants/errors";
-import useWindowSize from "../../helpers/useWindowSize";
+import useWindowSize from "../../hooks/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import {
   Container,
