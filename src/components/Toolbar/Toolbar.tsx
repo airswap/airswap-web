@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
-import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
@@ -50,25 +49,6 @@ const Toolbar: FC<ToolbarProps> = ({
     }
   }, [containerRef, mobileTopBarRef, scrollContainerRef, width, height]);
 
-  const onToolbarButtonClick = (
-    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
-    type: InformationModalType
-  ) => {
-    onMobileCloseButtonClick && onMobileCloseButtonClick();
-    if (!onLinkButtonClick) {
-      return;
-    }
-
-    // On smaller devices we want the mobile menu to animate out first before routing
-    if (!isTabletPortraitUp) {
-      e.preventDefault();
-      setTimeout(
-        () => onLinkButtonClick(type),
-        mobileMenuShowHideAnimationDuration * 1000
-      );
-    }
-  };
-
   return (
     <ToolbarContainer
       ref={containerRef}
@@ -103,22 +83,9 @@ const Toolbar: FC<ToolbarProps> = ({
           href="https://activate.codefi.network/staking/airswap/governance"
         />
         <ToolbarButton
-          iconName="code"
-          text={t("common.build")}
-          href="https://github.com/airswap"
-        />
-        <ToolbarButton
-          iconName="learn"
-          text={t("common.learn")}
-          href="https://about.airswap.io/"
-        />
-        <ToolbarButton
           iconName="contact-support"
           text={t("common.join")}
-          onClick={(e) => {
-            onToolbarButtonClick(e, AppRoutes.join);
-          }}
-          link={AppRoutes.join}
+          href="https://about.airswap.io/community/onboarding"
         />
         <StyledSocialButtons />
       </ToolbarButtonsContainer>

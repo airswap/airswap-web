@@ -71,6 +71,7 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
   padding-bottom: 2rem;
   overflow-x: hidden;
   overflow-y: ${({ $overflow }) => ($overflow ? "scroll" : "hidden")};
+  margin-top: -90px;
 
   @media (min-height: ${sizes.toolbarMaxHeight}) and (${breakPoints.tabletPortraitUp}) {
     margin: 2rem 0 4.5rem;
