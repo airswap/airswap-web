@@ -184,7 +184,6 @@ const TokenList = ({
               </TokenContainer>
             )}
             {inactiveTokens.length !== 0 &&
-              tokenQuery &&
               sortedFilteredTokens.length < 5 && (
                 <InactiveTokensList
                   inactiveTokens={inactiveTokens}
