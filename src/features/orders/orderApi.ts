@@ -139,7 +139,7 @@ export function orderSortingFunction(a: Order, b: Order) {
   }
   // If tokens transferred are the same
   if (a.signerAmount === b.signerAmount && a.senderAmount === b.senderAmount) {
-    return aTimeToExpiry - bTimeToExpiry;
+    return parseInt(b.expiry) - parseInt(a.expiry);
   }
   if (a.signerAmount === b.signerAmount) {
     // Likely senderSide
