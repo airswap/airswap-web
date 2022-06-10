@@ -6,6 +6,14 @@
 export const RFQ_EXPIRY_BUFFER_MS = 60 * 1000;
 
 /**
+ * In the event that an order has an expiry very close to RFQ_EXPIRY_BUFFER
+ * we will re-request it closer to the expiry than we would otherwise to prevent
+ * constantly re-requesting orders. This gives the user a fair amount of time to
+ * evaluate and accept the order.
+ */
+export const RFQ_MINIMUM_REREQUEST_DELAY_MS = 30 * 1000;
+
+/**
  * Time in seconds of last look order expiry duration
  */
 export const LAST_LOOK_ORDER_EXPIRY_SEC = 2 * 60;
