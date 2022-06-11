@@ -11,7 +11,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -74,6 +73,7 @@ import {
 } from "../../features/userSettings/userSettingsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
@@ -221,20 +221,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   );
 
   const maxAmount = useMemo(() => {
-    if (
-      !baseToken ||
-      !balances ||
-      !baseTokenInfo ||
-      !balances.values[baseToken] ||
-      balances.values[baseToken] === "0"
-    ) {
+    if (!baseToken || !balances || !baseTokenInfo) {
       return null;
     }
-
-    return formatUnits(
-      balances.values[baseToken] || "0",
-      baseTokenInfo.decimals
-    );
+    return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
   }, [balances, baseToken, baseTokenInfo]);
 
   useEffect(() => {
