@@ -13,7 +13,6 @@ export const Container = styled.div`
   width: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
-  overflow: hidden;
   box-shadow: ${(props) => props.theme.shadows.widgetGlow};
   transition: box-shadow 0.3s ease-in-out;
   will-change: transform;

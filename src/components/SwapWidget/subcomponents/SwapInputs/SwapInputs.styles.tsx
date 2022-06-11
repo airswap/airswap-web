@@ -1,5 +1,7 @@
 import styled from "styled-components/macro";
 
+import convertHexToRGBA from "../../../../helpers/transformHexToRgba";
+
 export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
   flex-direction: column;
@@ -35,4 +37,25 @@ export const SwapIconContainer = styled.div`
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
   z-index: 1;
+`;
+
+export const MaxAmountInfoContainer = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: calc(100% + 1.25rem);
+  top: 0;
+  width: 100%;
+  max-width: 15rem;
+  height: 4.5rem;
+`;
+
+export const MaxAmountInfo = styled.div`
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  line-height: 1.2;
+  font-size: 0.8125rem;
+  color: ${(props) => props.theme.colors.white};
+  background: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.1)};
+  pointer-events: none;
 `;

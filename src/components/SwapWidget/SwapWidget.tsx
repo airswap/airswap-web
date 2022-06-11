@@ -799,6 +799,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               !active
             }
             showMaxButton={!!maxAmount && baseAmount !== maxAmount}
+            maxAmount={maxAmount}
           />
         )}
         <InfoContainer>

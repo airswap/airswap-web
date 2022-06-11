@@ -1,4 +1,4 @@
-import { FC, MouseEvent, FormEvent } from "react";
+import { FC, MouseEvent, FormEvent, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -6,7 +6,13 @@ import { TokenInfo } from "@airswap/typescript";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../../../TokenSelect/TokenSelect";
 import getSwapInputIcon from "../../helpers/getSwapInputIcon";
-import { Container, SwapIconContainer } from "./SwapInputs.styles";
+import getTokenMaxInfoText from "../../helpers/getTokenMaxInfoText";
+import {
+  Container,
+  MaxAmountInfoContainer,
+  MaxAmountInfo,
+  SwapIconContainer,
+} from "./SwapInputs.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -24,6 +30,7 @@ const SwapInputs: FC<{
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
   showMaxButton: boolean;
+  maxAmount: string | null;
 }> = ({
   tradeNotAllowed,
   baseAmount,
@@ -38,19 +45,25 @@ const SwapInputs: FC<{
   quoteTokenInfo,
   onBaseAmountChange,
   showMaxButton = false,
+  maxAmount,
 }) => {
-  let fromAmount: string, toAmount: string;
-  const isSell = side === "sell";
-  if (isSell) {
-    fromAmount = baseAmount;
-    toAmount = stringToSignificantDecimals(quoteAmount);
-  } else {
-    fromAmount = stringToSignificantDecimals(quoteAmount);
-    toAmount = baseAmount;
-  }
-
-  const isQuote = !!fromAmount && !!toAmount && readOnly;
   const { t } = useTranslation();
+  const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
+
+  const isSell = side === "sell";
+  const fromAmount = useMemo(
+    () => (isSell ? baseAmount : stringToSignificantDecimals(quoteAmount)),
+    [isSell, baseAmount, quoteAmount]
+  );
+  const toAmount = useMemo(
+    () => (isSell ? stringToSignificantDecimals(quoteAmount) : baseAmount),
+    [isSell, baseAmount, quoteAmount]
+  );
+  const maxAmountInfoText = useMemo(
+    () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
+    [baseTokenInfo, maxAmount, t]
+  );
+  const isQuote = !!fromAmount && !!toAmount && readOnly;
 
   // Note: it will only be possible for the user to change the base amount.
   const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
@@ -63,6 +76,14 @@ const SwapInputs: FC<{
     }
   };
 
+  const handleOnMaxMouseEnter = () => {
+    setShowMaxAmountInfo(true);
+  };
+
+  const handleOnMaxMouseLeave = () => {
+    setShowMaxAmountInfo(false);
+  };
+
   return (
     <Container $disabled={disabled}>
       <TokenSelect
@@ -73,6 +94,8 @@ const SwapInputs: FC<{
           onChangeTokenClick(isSell ? "base" : "quote");
         }}
         onMaxClicked={onMaxButtonClick}
+        onMaxMouseEnter={handleOnMaxMouseEnter}
+        onMaxMouseLeave={handleOnMaxMouseLeave}
         readOnly={readOnly}
         includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
@@ -94,6 +117,11 @@ const SwapInputs: FC<{
         isLoading={isSell && isRequesting}
         isQuote={isQuote}
       />
+      {showMaxButton && showMaxAmountInfo && maxAmountInfoText && (
+        <MaxAmountInfoContainer>
+          <MaxAmountInfo>{maxAmountInfoText}</MaxAmountInfo>
+        </MaxAmountInfoContainer>
+      )}
     </Container>
   );
 };

@@ -51,6 +51,9 @@ export type TokenSelectProps = {
    * to imply presence of use max button in DOM.
    */
   onMaxClicked?: MouseEventHandler<HTMLButtonElement>;
+
+  onMaxMouseEnter?: () => void;
+  onMaxMouseLeave?: () => void;
   /**
    * Currently selected amount. Not used if `includeAmountInput` is false.
    */
@@ -80,6 +83,8 @@ const TokenSelect: FC<TokenSelectProps> = ({
   selectedToken,
   onChangeTokenClicked,
   onMaxClicked,
+  onMaxMouseEnter,
+  onMaxMouseLeave,
   amount,
   onAmountChange,
   isLoading = false,
@@ -123,7 +128,13 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <TokenSelectFocusBorder position="right" />
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
-            <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
+            <MaxButton
+              onClick={onMaxClicked}
+              onMouseEnter={onMaxMouseEnter}
+              onMouseLeave={onMaxMouseLeave}
+            >
+              {t("common.max")}
+            </MaxButton>
           )}
           <TokenLogoRight size="medium" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>
