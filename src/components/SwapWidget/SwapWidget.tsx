@@ -231,11 +231,22 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
       return null;
     }
 
+    // If native currency is being used, save 0.01 for gas.
+    if (chainId && baseToken === nativeCurrency[chainId].address) {
+      const usable = new BigNumber(balances.values[baseToken] || 0).minus(
+        new BigNumber("0.01").multipliedBy(10 ** baseTokenInfo.decimals)
+      );
+      return formatUnits(
+        usable.gt(0) ? usable.toString() : "0",
+        baseTokenInfo.decimals
+      );
+    }
+
     return formatUnits(
       balances.values[baseToken] || "0",
       baseTokenInfo.decimals
     );
-  }, [balances, baseToken, baseTokenInfo]);
+  }, [balances, baseToken, baseTokenInfo, chainId]);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
