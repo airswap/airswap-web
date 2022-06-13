@@ -5,9 +5,8 @@ import { TokenInfo } from "@airswap/typescript";
 
 import {
   SubmittedApproval,
-  SubmittedDepositOrder,
+  SubmittedTransaction,
   SubmittedTransactionWithOrder,
-  SubmittedWithdrawOrder,
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
@@ -16,11 +15,7 @@ import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
   type: TransactionType,
-  transaction:
-    | SubmittedTransactionWithOrder
-    | SubmittedApproval
-    | SubmittedDepositOrder
-    | SubmittedWithdrawOrder,
+  transaction: SubmittedTransaction,
   tokens: TokenInfo[],
   error: boolean,
   chainId?: number
