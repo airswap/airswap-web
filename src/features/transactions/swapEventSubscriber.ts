@@ -12,6 +12,7 @@ import {
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
+import { LastLookTransaction } from "./transactionsSlice";
 
 // Event from interface for reference.
 // event Swap(
@@ -106,9 +107,19 @@ export default function subscribeToSwapEvents(params: {
 
     const transactions = store.getState().transactions;
 
-    const matchingTransaction = transactions.all.find(
-      (tx) => tx.hash === swapEvent.transactionHash
-    );
+    const matchingTransaction = transactions.all.find((tx) => {
+      if (tx.protocol === "last-look") {
+        // Last look transactions don't have a nonce, but the
+        const llTransaction = tx as LastLookTransaction;
+        return (
+          llTransaction.order.nonce === args.nonce.toString() &&
+          llTransaction.order.signerWallet.toLowerCase() === _account
+        );
+      } else {
+        // rfq transactions will have a hash
+        return tx.hash === swapEvent.transactionHash;
+      }
+    });
 
     if (matchingTransaction) {
       notifyTransaction(
