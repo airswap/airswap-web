@@ -6,6 +6,7 @@ import { Event } from "ethers";
 import { useAppDispatch } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
+  checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
   SwapEventArgs,
 } from "./transactionUtils";
@@ -17,7 +18,7 @@ import useSwapLogs from "./useSwapLogs";
 import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 
 const useHistoricalTransactions = () => {
-  const { chainId } = useWeb3React();
+  const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
   const {
     transactions: localStorageTransactions,
@@ -27,7 +28,14 @@ const useHistoricalTransactions = () => {
 
   useCustomCompareEffect(
     () => {
-      if (swapLogStatus === "loading") return;
+      if (swapLogStatus === "loading" || swapLogStatus === "not-executed")
+        return;
+      if (
+        !swapLogs ||
+        swapLogs.chainId !== chainId ||
+        swapLogs.account !== account
+      )
+        return;
 
       const localTransactionsCopy = { all: [...localStorageTransactions.all] };
 
@@ -121,43 +129,41 @@ const useHistoricalTransactions = () => {
 
         setLocalStorageTransactions(localTransactionsCopy);
         dispatch(setTransactions(localTransactionsCopy));
+
+        localTransactionsCopy.all
+          .filter((tx) => tx.status === "processing")
+          .forEach((tx) => {
+            checkPendingTransactionState(tx, dispatch, library);
+          });
       };
 
       updateStorage();
     },
     [
-      localStorageTransactions,
-      setLocalStorageTransactions,
+      account,
+      chainId,
       swapLogs,
       swapLogStatus,
+      localStorageTransactions,
+      setLocalStorageTransactions,
       dispatch,
-      chainId,
+      library,
     ],
     (
-      [
-        localStorageTransactions,
-        setLocalStorageTransactions,
-        swapLogs,
-        swapLogStatus,
-        dispatch,
-        chainId,
-      ],
-      [
-        localStorageTransactionsNew,
-        setLocalStorageTransactionsNew,
-        swapLogsNew,
-        swapLogStatusNew,
-        dispatchNew,
-        chainIdNew,
-      ]
+      [account, chainId, swapLogs, swapLogStatus],
+      [accountNew, chainIdNew, swapLogsNew, swapLogStatusNew]
     ) => {
-      return (
+      // This is a change comparator so that we don't run this effect too
+      // frequently. Without this, we'd get an infinite loop because the
+      // effect modifies the transactions stored in localStorage.
+      return !(
         swapLogStatus === swapLogStatusNew &&
         swapLogs === swapLogsNew &&
         chainId === chainIdNew &&
-        JSON.stringify(localStorageTransactions) ===
-          JSON.stringify(localStorageTransactionsNew)
-      );
+        account === accountNew
+      )
+        ? false
+        : true;
     }
   );
 };

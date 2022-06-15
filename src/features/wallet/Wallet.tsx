@@ -39,7 +39,6 @@ import {
   setAllowanceSwap,
   setAllowanceWrapper,
 } from "../balances/balancesSlice";
-import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
   fetchAllTokens,
   fetchUnkownTokens,
@@ -47,13 +46,10 @@ import {
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
-import handleTransaction from "../transactions/handleTransaction";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectPendingTransactions,
   selectTransactions,
-  setTransactions,
-  TransactionsState,
 } from "../transactions/transactionsSlice";
 import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
@@ -296,34 +292,6 @@ export const Wallet: FC<WalletPropsType> = ({
     balances.lastFetch,
     balances.status,
   ]);
-
-  useEffect(() => {
-    // Create a flag we can set to handle wallet changing between async operations
-    let walletHasChanged = false;
-
-    // get transaction state from local storage and update the transactions
-    if (chainId && account && library) {
-      const transactionsLocalStorage: TransactionsState = JSON.parse(
-        localStorage.getItem(
-          getTransactionsLocalStorageKey(account!, chainId!)
-        )!
-      ) || { all: [] };
-      dispatch(setTransactions(transactionsLocalStorage));
-
-      // check from all responses if one is pending... if pending, call getTransaction
-      // to see if it was a success/failure/pending. update accordingly. if pending: wait()
-      // and poll at a sensible interval.
-      transactionsLocalStorage.all.forEach(async (tx) => {
-        await handleTransaction(tx, walletHasChanged, dispatch, library);
-      });
-    }
-    return () => {
-      // Library & dispatch won't change, so when we tear down it's because
-      // the wallet has changed. The useEffect will run after this and set up
-      // everything for the new wallet.
-      walletHasChanged = true;
-    };
-  }, [chainId, dispatch, library, account]);
 
   return (
     <>

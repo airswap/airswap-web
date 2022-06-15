@@ -57,8 +57,11 @@ const useSwapLogs = () => {
         lastLookSwapLogs,
         rfqSwapLogs,
         wrappedSwapLogs,
+        chainId,
+        account,
       };
-    }
+    },
+    null
   );
 
   const {
