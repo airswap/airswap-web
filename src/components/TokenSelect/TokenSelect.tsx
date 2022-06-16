@@ -19,6 +19,7 @@ import {
   TokenLogoRight,
   MaxButton,
   InputAndMaxButtonWrapper,
+  InfoLabel,
 } from "./TokenSelect.styles";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
@@ -71,6 +72,10 @@ export type TokenSelectProps = {
    */
   showMaxButton?: boolean;
   /**
+   * Show max info button
+   */
+  showMaxInfoButton?: boolean;
+  /**
    * Used for showing quote style
    */
   isQuote?: boolean;
@@ -90,6 +95,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   isLoading = false,
   isQuote = false,
   showMaxButton = false,
+  showMaxInfoButton = false,
 }) => {
   const { t } = useTranslation();
 
@@ -130,11 +136,19 @@ const TokenSelect: FC<TokenSelectProps> = ({
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton
               onClick={onMaxClicked}
-              onMouseEnter={onMaxMouseEnter}
-              onMouseLeave={onMaxMouseLeave}
+              onMouseOver={onMaxMouseEnter}
+              onMouseOut={onMaxMouseLeave}
             >
               {t("common.max")}
             </MaxButton>
+          )}
+          {showMaxInfoButton && !showMaxButton && !readOnly && (
+            <InfoLabel
+              onMouseOver={onMaxMouseEnter}
+              onMouseOut={onMaxMouseLeave}
+            >
+              i
+            </InfoLabel>
           )}
           <TokenLogoRight size="medium" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>

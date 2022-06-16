@@ -46,7 +46,7 @@ export const MaxAmountInfoContainer = styled.div`
   left: calc(100% + 1.25rem);
   top: 0;
   width: 100%;
-  max-width: 15rem;
+  max-width: 17rem;
   height: 4.5rem;
 `;
 
@@ -58,4 +58,18 @@ export const MaxAmountInfo = styled.div`
   color: ${(props) => props.theme.colors.white};
   background: ${(props) => convertHexToRGBA(props.theme.colors.white, 0.1)};
   pointer-events: none;
+
+  &:after {
+    display: block;
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: calc(50% - 7px);
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 7px solid
+      ${(props) => convertHexToRGBA(props.theme.colors.white, 0.1)};
+  }
 `;

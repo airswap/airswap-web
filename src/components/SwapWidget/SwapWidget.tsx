@@ -22,7 +22,10 @@ import {
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
 import type { ErrorType, SwapError } from "../../constants/errors";
-import nativeCurrency from "../../constants/nativeCurrency";
+import nativeCurrency, {
+  nativeCurrencyAddress,
+  nativeCurrencySafeTransactionFee,
+} from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowancesSwap,
@@ -226,6 +229,11 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     }
     return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
   }, [balances, baseToken, baseTokenInfo]);
+
+  const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
+  const showMaxInfoButton =
+    baseTokenInfo?.address === nativeCurrencyAddress &&
+    !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -798,7 +806,8 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               pairUnavailable ||
               !active
             }
-            showMaxButton={!!maxAmount && baseAmount !== maxAmount}
+            showMaxButton={showMaxButton}
+            showMaxInfoButton={showMaxInfoButton}
             maxAmount={maxAmount}
           />
         )}

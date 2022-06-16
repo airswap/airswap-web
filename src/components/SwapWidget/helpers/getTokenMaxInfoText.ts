@@ -28,5 +28,5 @@ export default function getTokenMaxInfoText(
     });
   }
 
-  return amountAndSymbolText;
+  return `Balance: ${amountAndSymbolText}`;
 }

@@ -1,4 +1,4 @@
-import { FC, MouseEvent, FormEvent, useState, useMemo } from "react";
+import { FC, FormEvent, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -26,10 +26,11 @@ const SwapInputs: FC<{
   disabled: boolean;
   readOnly: boolean;
   isRequesting: boolean;
-  onMaxButtonClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  onMaxButtonClick: () => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
   showMaxButton: boolean;
+  showMaxInfoButton: boolean;
   maxAmount: string | null;
 }> = ({
   tradeNotAllowed,
@@ -45,6 +46,7 @@ const SwapInputs: FC<{
   quoteTokenInfo,
   onBaseAmountChange,
   showMaxButton = false,
+  showMaxInfoButton = false,
   maxAmount,
 }) => {
   const { t } = useTranslation();
@@ -76,6 +78,11 @@ const SwapInputs: FC<{
     }
   };
 
+  const handleMaxButtonClick = () => {
+    onMaxButtonClick();
+    setShowMaxAmountInfo(false);
+  };
+
   const handleOnMaxMouseEnter = () => {
     setShowMaxAmountInfo(true);
   };
@@ -93,7 +100,7 @@ const SwapInputs: FC<{
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
         }}
-        onMaxClicked={onMaxButtonClick}
+        onMaxClicked={handleMaxButtonClick}
         onMaxMouseEnter={handleOnMaxMouseEnter}
         onMaxMouseLeave={handleOnMaxMouseLeave}
         readOnly={readOnly}
@@ -102,6 +109,7 @@ const SwapInputs: FC<{
         isLoading={!isSell && isRequesting}
         isQuote={isQuote}
         showMaxButton={showMaxButton}
+        showMaxInfoButton={showMaxInfoButton}
       />
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
@@ -117,11 +125,13 @@ const SwapInputs: FC<{
         isLoading={isSell && isRequesting}
         isQuote={isQuote}
       />
-      {showMaxButton && showMaxAmountInfo && maxAmountInfoText && (
-        <MaxAmountInfoContainer>
-          <MaxAmountInfo>{maxAmountInfoText}</MaxAmountInfo>
-        </MaxAmountInfoContainer>
-      )}
+      {(showMaxButton || showMaxInfoButton) &&
+        showMaxAmountInfo &&
+        maxAmountInfoText && (
+          <MaxAmountInfoContainer>
+            <MaxAmountInfo>{maxAmountInfoText}</MaxAmountInfo>
+          </MaxAmountInfoContainer>
+        )}
     </Container>
   );
 };
