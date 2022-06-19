@@ -7,12 +7,8 @@ import stringToSignificantDecimals from "../../../../helpers/stringToSignificant
 import TokenSelect from "../../../TokenSelect/TokenSelect";
 import getSwapInputIcon from "../../helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "../../helpers/getTokenMaxInfoText";
-import {
-  Container,
-  MaxAmountInfoContainer,
-  MaxAmountInfo,
-  SwapIconContainer,
-} from "./SwapInputs.styles";
+import ToolTip from "../ToolTip/ToolTip";
+import { Container, SwapIconContainer } from "./SwapInputs.styles";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -127,11 +123,7 @@ const SwapInputs: FC<{
       />
       {(showMaxButton || showMaxInfoButton) &&
         showMaxAmountInfo &&
-        maxAmountInfoText && (
-          <MaxAmountInfoContainer>
-            <MaxAmountInfo>{maxAmountInfoText}</MaxAmountInfo>
-          </MaxAmountInfoContainer>
-        )}
+        maxAmountInfoText && <ToolTip>{maxAmountInfoText}</ToolTip>}
     </Container>
   );
 };
