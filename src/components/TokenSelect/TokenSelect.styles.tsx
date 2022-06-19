@@ -70,6 +70,9 @@ export const InputAndMaxButtonWrapper = styled.div`
 `;
 
 export const MaxButtonStyle = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   bottom: 1px;
   align-self: center;

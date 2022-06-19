@@ -168,6 +168,7 @@ export const darkTheme: DefaultTheme = {
     widgetGlowOff: "0 0 31.25rem 1rem #2B71FF22",
     buttonGlow: "0 0 2rem 0rem #2b71ff",
     buttonGlowFill: "#2b71ffdd",
+    tooltipGlow: "0.25rem 0.25rem 0.625rem rgba(0, 0, 0, 0.5)",
   },
   typography,
 };
@@ -198,6 +199,7 @@ export const lightTheme: DefaultTheme = {
     widgetGlowOff: "0 0 31.25rem 1rem rgba(255, 255, 255, 0.1)",
     buttonGlow: "0 0 1rem 0rem #FFFFFF",
     buttonGlowFill: "#FFFFFF",
+    tooltipGlow: "0.25rem 0.25rem 0.625rem rgba(255, 255, 255, 0.5)",
   },
   typography,
 };
