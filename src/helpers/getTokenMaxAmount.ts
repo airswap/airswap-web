@@ -27,7 +27,8 @@ const getTokenMaxAmount = (
   );
 
   if (transactionFee) {
-    return new BigNumber(formattedAmount).minus(transactionFee).toString();
+    const usable = new BigNumber(formattedAmount).minus(transactionFee);
+    return usable.gt(0) ? usable.toString() : "0";
   }
 
   return formattedAmount;

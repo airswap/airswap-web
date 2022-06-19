@@ -79,11 +79,11 @@ const SwapInputs: FC<{
     setShowMaxAmountInfo(false);
   };
 
-  const handleOnMaxMouseEnter = () => {
+  const handleInfoLabelMouseEnter = () => {
     setShowMaxAmountInfo(true);
   };
 
-  const handleOnMaxMouseLeave = () => {
+  const handleInfoLabelMouseLeave = () => {
     setShowMaxAmountInfo(false);
   };
 
@@ -97,8 +97,8 @@ const SwapInputs: FC<{
           onChangeTokenClick(isSell ? "base" : "quote");
         }}
         onMaxClicked={handleMaxButtonClick}
-        onMaxMouseEnter={handleOnMaxMouseEnter}
-        onMaxMouseLeave={handleOnMaxMouseLeave}
+        onInfoLabelMouseEnter={handleInfoLabelMouseEnter}
+        onInfoLabelMouseLeave={handleInfoLabelMouseLeave}
         readOnly={readOnly}
         includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}

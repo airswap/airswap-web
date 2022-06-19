@@ -35,7 +35,7 @@ export const ContentContainer = styled.div`
 `;
 
 export const Triangle = styled.div`
-  transform: rotate(45deg);
+  transform: rotate(-45deg);
   position: absolute;
   width: ${triangleSize}px;
   height: ${triangleSize}px;
@@ -55,7 +55,7 @@ export const Triangle = styled.div`
   }
 
   @media ${breakPoints.tabletLandscapeUp} {
-    transform: rotate(-45deg);
+    transform: rotate(45deg);
     top: calc(50% - ${triangleSize / 2}px);
     left: -${triangleSize / 2}px;
   }
