@@ -107,10 +107,7 @@ const TokenList = ({
 
   // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
-      0,
-      10
-    );
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(0, 100);
   }, [sortedInactiveTokens, tokenQuery]);
 
   useEffect(() => {
@@ -183,18 +180,16 @@ const TokenList = ({
                 )}
               </TokenContainer>
             )}
-            {inactiveTokens.length !== 0 &&
-              tokenQuery &&
-              sortedFilteredTokens.length < 5 && (
-                <InactiveTokensList
-                  inactiveTokens={inactiveTokens}
-                  supportedTokenAddresses={supportedTokenAddresses}
-                  onTokenClick={(tokenAddress) => {
-                    addActiveToken(tokenAddress);
-                    setTokenQuery("");
-                  }}
-                />
-              )}
+            {inactiveTokens.length !== 0 && (
+              <InactiveTokensList
+                inactiveTokens={inactiveTokens}
+                supportedTokenAddresses={supportedTokenAddresses}
+                onTokenClick={(tokenAddress) => {
+                  addActiveToken(tokenAddress);
+                  setTokenQuery("");
+                }}
+              />
+            )}
             {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
               <NoResultsContainer>
                 <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
