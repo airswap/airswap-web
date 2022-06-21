@@ -107,8 +107,7 @@ const TokenList = ({
 
   // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
-    const tokens = filterTokens(Object.values(sortedInactiveTokens), tokenQuery!);
-    return tokens.length >= 100 ? tokens.slice(0, 100) : tokens;
+    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(0, 100);
   }, [sortedInactiveTokens, tokenQuery]);
 
   useEffect(() => {
