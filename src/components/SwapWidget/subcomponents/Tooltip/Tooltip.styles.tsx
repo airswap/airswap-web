@@ -28,7 +28,7 @@ export const ContentContainer = styled.div`
   border-radius: 2px;
   padding: 0.75rem;
   line-height: 1.2;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
   background: ${({ theme }) =>
