@@ -29,7 +29,8 @@ export const ContentContainer = styled.div`
   padding: 0.75rem;
   line-height: 1.2;
   font-size: 0.8125rem;
-  color: ${(props) => props.theme.colors.white};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
   background: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
