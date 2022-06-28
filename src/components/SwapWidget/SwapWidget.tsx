@@ -232,6 +232,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
+    !!maxAmount &&
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 

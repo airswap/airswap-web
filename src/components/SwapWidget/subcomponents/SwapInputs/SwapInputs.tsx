@@ -121,9 +121,11 @@ const SwapInputs: FC<{
         isLoading={isSell && isRequesting}
         isQuote={isQuote}
       />
-      {(showMaxButton || showMaxInfoButton) &&
+      {!showMaxButton &&
+        showMaxInfoButton &&
         showMaxAmountInfo &&
-        maxAmountInfoText && <Tooltip>{maxAmountInfoText}</Tooltip>}
+        maxAmountInfoText &&
+        !readOnly && <Tooltip>{maxAmountInfoText}</Tooltip>}
     </Container>
   );
 };
