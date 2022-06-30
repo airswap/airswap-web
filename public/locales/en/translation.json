@@ -94,6 +94,7 @@
         "searchByNameOrAddress": "Search name or paste address",
         "removeFromActive": "Remove from active",
         "expandedResults": "Expanded results from inactive Token Lists",
+        "nativeCurrencyMaxInfoText": "{{amount}}. This amount is calculated after subtracting a {{fee}} gas fee from your total balance.",
         "newQuoteIn": "New Quote In",
         "protocolFeeActive": "{{fee}} protocol fee active",
         "afterFee": "After {{fee}} fee",

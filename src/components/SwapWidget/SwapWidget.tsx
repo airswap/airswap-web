@@ -11,7 +11,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -23,7 +22,10 @@ import {
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
 import type { ErrorType, SwapError } from "../../constants/errors";
-import nativeCurrency from "../../constants/nativeCurrency";
+import nativeCurrency, {
+  nativeCurrencyAddress,
+  nativeCurrencySafeTransactionFee,
+} from "../../constants/nativeCurrency";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowancesSwap,
@@ -74,6 +76,7 @@ import {
 } from "../../features/userSettings/userSettingsSlice";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
@@ -221,21 +224,17 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   );
 
   const maxAmount = useMemo(() => {
-    if (
-      !baseToken ||
-      !balances ||
-      !baseTokenInfo ||
-      !balances.values[baseToken] ||
-      balances.values[baseToken] === "0"
-    ) {
+    if (!baseToken || !balances || !baseTokenInfo) {
       return null;
     }
-
-    return formatUnits(
-      balances.values[baseToken] || "0",
-      baseTokenInfo.decimals
-    );
+    return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
   }, [balances, baseToken, baseTokenInfo]);
+
+  const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
+  const showMaxInfoButton =
+    !!maxAmount &&
+    baseTokenInfo?.address === nativeCurrencyAddress &&
+    !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -808,7 +807,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               pairUnavailable ||
               !active
             }
-            showMaxButton={!!maxAmount && baseAmount !== maxAmount}
+            showMaxButton={showMaxButton}
+            showMaxInfoButton={showMaxInfoButton}
+            maxAmount={maxAmount}
           />
         )}
         <InfoContainer>
