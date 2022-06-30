@@ -54,7 +54,6 @@ const getSenderWalletForWrapperSwapLog: (
     try {
       const parsedLog = wrapperInterface.parseLog(receipt.logs[i]);
       if (parsedLog.name === "WrappedSwapFor") {
-        console.log(parsedLog.args.senderWallet);
         return parsedLog.args.senderWallet.toLowerCase();
       }
     } catch (e) {

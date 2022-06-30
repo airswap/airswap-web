@@ -156,14 +156,12 @@ const useHistoricalTransactions = () => {
       // This is a change comparator so that we don't run this effect too
       // frequently. Without this, we'd get an infinite loop because the
       // effect modifies the transactions stored in localStorage.
-      return !(
+      return (
         swapLogStatus === swapLogStatusNew &&
         swapLogs === swapLogsNew &&
         chainId === chainIdNew &&
         account === accountNew
-      )
-        ? false
-        : true;
+      );
     }
   );
 };
