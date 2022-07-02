@@ -1,10 +1,10 @@
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import Timer from "../../../../components/Timer/Timer";
-import { Title } from "../../../../components/Typography/Typography";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../constants/configParams";
 import { ProtocolType } from "../../../../features/transactions/transactionsSlice";
+import Timer from "../../../Timer/Timer";
+import { Title } from "../../../Typography/Typography";
 import {
   Button,
   Container,

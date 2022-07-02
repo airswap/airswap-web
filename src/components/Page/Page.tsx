@@ -26,7 +26,11 @@ import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 import { getInformationModalFromRoute } from "./helpers";
 
-const Page: FC = ({ children }): ReactElement => {
+type PageProps = {
+  className?: string;
+};
+
+const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   useHistoricalTransactions();
@@ -104,7 +108,7 @@ const Page: FC = ({ children }): ReactElement => {
         setShowWalletList,
         setTransactionsTabIsOpen,
       }) => (
-        <StyledPage style={{ height: `${pageHeight}px` }}>
+        <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
           <HelmetContainer title={t("app.title")} />
           <InnerContainer>
             <Toaster open={transactionsTabIsOpen} />

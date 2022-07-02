@@ -1,20 +1,17 @@
 import React, { FC } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
-import CreateOtcPage from "../../pages/CreateOtc/CreateOtc";
+import MakePage from "../../pages/Make/Make";
+import MySwapsPage from "../../pages/MySwaps/MySwaps";
 import SwapPage from "../../pages/Swap/Swap";
 
 const Routes: FC = () => {
   return (
-    <>
-      <Route
-        path="/create-swap"
-        render={() => <CreateOtcPage />}
-        key="create-otc"
-      />
-
-      <Route path="/*" render={() => <SwapPage />} key="swap" />
-    </>
+    <Switch>
+      <Route path="/make" component={MakePage} key="make" />
+      <Route path="/my-swaps" component={MySwapsPage} key="my-swaps" />
+      <Route path="/*" component={SwapPage} key="swap" />
+    </Switch>
   );
 };
 

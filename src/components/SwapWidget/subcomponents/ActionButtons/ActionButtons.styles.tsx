@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import Button from "../../../../components/Button/Button";
+import Button from "../../../Button/Button";
 
 export const BackButton = styled(Button)`
   flex: 1 0 0;

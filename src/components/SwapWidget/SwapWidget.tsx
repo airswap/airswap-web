@@ -13,12 +13,6 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { ErrorList } from "../../components/ErrorList/ErrorList";
-import GasFreeSwapsModal from "../../components/InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
-import ProtocolFeeDiscountModal from "../../components/InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
-import Overlay from "../../components/Overlay/Overlay";
-import { notifyError } from "../../components/Toasts/ToastController";
-import TokenList from "../../components/TokenList/TokenList";
 import {
   transformAddressToAddressAlias,
   transformAddressAliasToAddress,
@@ -87,6 +81,12 @@ import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
+import { ErrorList } from "../ErrorList/ErrorList";
+import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
+import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
+import Overlay from "../Overlay/Overlay";
+import { notifyError } from "../Toasts/ToastController";
+import TokenList from "../TokenList/TokenList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   ButtonContainer,
