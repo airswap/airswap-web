@@ -9,8 +9,9 @@ import { ThemeProvider, ThemeType } from "styled-components/macro";
 
 import { useAppSelector } from "./app/hooks";
 import HelmetContainer from "./components/HelmetContainer/HelmetContainer";
-import Page from "./components/Page/Page";
 import PageLoader from "./components/PageLoader/PageLoader";
+import Routes from "./components/Routes/Routes";
+import InterfaceProvider from "./contexts/interface/Interface";
 import LastLookProvider from "./contexts/lastLook/LastLook";
 import { selectTheme } from "./features/userSettings/userSettingsSlice";
 import useSystemTheme from "./hooks/useSystemTheme";
@@ -54,7 +55,9 @@ const App = (): JSX.Element => {
             {/* Suspense needed here for loading i18n resources */}
             <Suspense fallback={<PageLoader />}>
               <LastLookProvider>
-                <Page />
+                <InterfaceProvider>
+                  <Routes />
+                </InterfaceProvider>
               </LastLookProvider>
             </Suspense>
           </Web3ReactProvider>

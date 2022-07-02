@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components/macro";
 
+import Icon from "../../../../components/Icon/Icon";
 import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
-import Icon from "../../../Icon/Icon";
 
 export const Container = styled.div`
   display: flex;

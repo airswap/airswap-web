@@ -8,6 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 import i18n from "i18next";
 
 import { useAppDispatch } from "../../app/hooks";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
@@ -19,24 +20,13 @@ import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
 import Overlay from "../Overlay/Overlay";
-import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
+import { getInformationModalFromRoute } from "./helpers";
 
-function getInformationModalFromRoute(
-  route: AppRoutes | undefined
-): InformationModalType | undefined {
-  switch (route) {
-    case AppRoutes.join:
-      return AppRoutes.join;
-    default:
-      return undefined;
-  }
-}
-
-const Page: FC = (): ReactElement => {
+const Page: FC = ({ children }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   useHistoricalTransactions();
@@ -47,8 +37,6 @@ const Page: FC = (): ReactElement => {
   const [activeInformationModal, setActiveInformationModal] = useState<
     InformationModalType | undefined
   >(getInformationModalFromRoute(appRouteParams.route));
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
-  const [showWalletList, setShowWalletList] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
 
@@ -76,10 +64,6 @@ const Page: FC = (): ReactElement => {
 
   const handleOpenMobileToolbarButtonClick = () => {
     setShowMobileToolbar(true);
-  };
-
-  const handleTrackTransactionClicked = () => {
-    setTransactionsTabOpen(true);
   };
 
   useDebounce(
@@ -114,44 +98,47 @@ const Page: FC = (): ReactElement => {
   }, [appRouteParams.route]);
 
   return (
-    <StyledPage style={{ height: `${pageHeight}px` }}>
-      <HelmetContainer title={t("app.title")} />
-      <InnerContainer>
-        <Toaster open={transactionsTabOpen} />
-        <Toolbar
-          isHiddenOnMobile={!showMobileToolbar}
-          onLinkButtonClick={handleLinkButtonClick}
-          onAirswapButtonClick={handleAirswapButtonClick}
-          onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
-        />
-        <Wallet
-          transactionsTabOpen={transactionsTabOpen}
-          setTransactionsTabOpen={setTransactionsTabOpen}
-          setShowWalletList={setShowWalletList}
-          onAirswapButtonClick={handleAirswapButtonClick}
-          onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
-        />
-        <WidgetFrame
-          isOpen={transactionsTabOpen}
-          isConnected={web3ProviderIsActive}
-        >
-          <SwapWidget
-            showWalletList={showWalletList}
-            transactionsTabOpen={transactionsTabOpen}
-            setShowWalletList={setShowWalletList}
-            onTrackTransactionClicked={handleTrackTransactionClicked}
-          />
-          <Overlay
-            title={t("information.join.title")}
-            onCloseButtonClick={handleInformationModalCloseButtonClick}
-            isHidden={activeInformationModal !== AppRoutes.join}
-          >
-            <JoinModal />
-          </Overlay>
-        </WidgetFrame>
-        <StyledSocialButtons />
-      </InnerContainer>
-    </StyledPage>
+    <InterfaceContext.Consumer>
+      {({
+        transactionsTabIsOpen,
+        setShowWalletList,
+        setTransactionsTabIsOpen,
+      }) => (
+        <StyledPage style={{ height: `${pageHeight}px` }}>
+          <HelmetContainer title={t("app.title")} />
+          <InnerContainer>
+            <Toaster open={transactionsTabIsOpen} />
+            <Toolbar
+              isHiddenOnMobile={!showMobileToolbar}
+              onLinkButtonClick={handleLinkButtonClick}
+              onAirswapButtonClick={handleAirswapButtonClick}
+              onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
+            />
+            <Wallet
+              transactionsTabOpen={transactionsTabIsOpen}
+              setTransactionsTabOpen={setTransactionsTabIsOpen}
+              setShowWalletList={setShowWalletList}
+              onAirswapButtonClick={handleAirswapButtonClick}
+              onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
+            />
+            <WidgetFrame
+              isOpen={transactionsTabIsOpen}
+              isConnected={web3ProviderIsActive}
+            >
+              {children}
+              <Overlay
+                title={t("information.join.title")}
+                onCloseButtonClick={handleInformationModalCloseButtonClick}
+                isHidden={activeInformationModal !== AppRoutes.join}
+              >
+                <JoinModal />
+              </Overlay>
+            </WidgetFrame>
+            <StyledSocialButtons />
+          </InnerContainer>
+        </StyledPage>
+      )}
+    </InterfaceContext.Consumer>
   );
 };
 

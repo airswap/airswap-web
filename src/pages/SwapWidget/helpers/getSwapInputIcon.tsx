@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-import Icon from "../../Icon/Icon";
+import Icon from "../../../components/Icon/Icon";
 
 export default function getSwapInputIcon(
   tradeNotAllowed: boolean

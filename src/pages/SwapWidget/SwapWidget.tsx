@@ -13,6 +13,12 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { ErrorList } from "../../components/ErrorList/ErrorList";
+import GasFreeSwapsModal from "../../components/InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
+import ProtocolFeeDiscountModal from "../../components/InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
+import Overlay from "../../components/Overlay/Overlay";
+import { notifyError } from "../../components/Toasts/ToastController";
+import TokenList from "../../components/TokenList/TokenList";
 import {
   transformAddressToAddressAlias,
   transformAddressAliasToAddress,
@@ -26,6 +32,7 @@ import nativeCurrency, {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../constants/nativeCurrency";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowancesSwap,
@@ -80,12 +87,6 @@ import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
-import { ErrorList } from "../ErrorList/ErrorList";
-import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
-import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
-import Overlay from "../Overlay/Overlay";
-import { notifyError } from "../Toasts/ToastController";
-import TokenList from "../TokenList/TokenList";
 import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   ButtonContainer,
@@ -105,19 +106,7 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-type SwapWidgetPropsType = {
-  showWalletList: boolean;
-  transactionsTabOpen: boolean;
-  setShowWalletList: (x: boolean) => void;
-  onTrackTransactionClicked: () => void;
-};
-
-const SwapWidget: FC<SwapWidgetPropsType> = ({
-  showWalletList,
-  setShowWalletList,
-  transactionsTabOpen,
-  onTrackTransactionClicked,
-}) => {
+const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -661,7 +650,10 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     }
   };
 
-  const handleButtonClick = async (action: ButtonActions) => {
+  const handleButtonClick = async (
+    action: ButtonActions,
+    onChangeTransactionsTabIsOpen: Function
+  ) => {
     switch (action) {
       case ButtonActions.goBack:
         setIsWrapping(false);
@@ -689,7 +681,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         break;
 
       case ButtonActions.connectWallet:
-        setShowWalletList(true);
+        onChangeTransactionsTabIsOpen(true);
         break;
 
       case ButtonActions.switchNetwork:
@@ -757,7 +749,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         break;
 
       case ButtonActions.trackTransaction:
-        onTrackTransactionClicked();
+        onChangeTransactionsTabIsOpen(true);
         break;
 
       default:
@@ -766,165 +758,186 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   };
 
   return (
-    <>
-      <StyledSwapWidget>
-        <SwapWidgetHeader
-          title={isApproving ? t("orders.approve") : t("common.swap")}
-          isQuote={!isRequestingQuotes && !showOrderSubmitted}
-          onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
-          protocol={bestTradeOption?.protocol as ProtocolType}
-          expiry={bestTradeOption?.order?.expiry}
-        />
-        {showOrderSubmitted ? (
-          <HugeTicks />
-        ) : isApproving || isSwapping ? (
-          <></>
-        ) : (
-          <SwapInputs
-            baseAmount={baseAmount}
-            onBaseAmountChange={setBaseAmount}
-            baseTokenInfo={baseTokenInfo}
-            quoteTokenInfo={quoteTokenInfo}
-            onChangeTokenClick={setShowTokenSelectModalFor}
-            onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
-            side="sell"
-            tradeNotAllowed={pairUnavailable}
-            isRequesting={isRequestingQuotes}
-            // Note that using the quoteAmount from tradeTerms will stop this
-            // updating when the user clicks the take button.
-            quoteAmount={quoteAmount}
-            disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
-            readOnly={
-              !!bestTradeOption ||
-              isWrapping ||
-              isRequestingQuotes ||
-              pairUnavailable ||
-              !active
-            }
-            showMaxButton={showMaxButton}
-            showMaxInfoButton={showMaxInfoButton}
-            maxAmount={maxAmount}
-          />
-        )}
-        <InfoContainer>
-          <InfoSection
-            orderSubmitted={showOrderSubmitted}
-            isConnected={active}
-            isPairUnavailable={pairUnavailable}
-            isFetchingOrders={isRequestingQuotes}
-            isApproving={isApproving}
-            isSwapping={isSwapping}
-            failedToFetchAllowances={allowanceFetchFailed}
-            // @ts-ignore
-            bestTradeOption={bestTradeOption}
-            requiresApproval={
-              bestRfqOrder && !hasSufficientAllowance(baseToken!)
-            }
-            baseTokenInfo={baseTokenInfo}
-            baseAmount={baseAmount}
-            quoteTokenInfo={quoteTokenInfo}
-            isWrapping={isWrapping}
-            onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
-          />
-        </InfoContainer>
-        <ButtonContainer>
-          {!isApproving && !isSwapping && (
-            <ActionButtons
-              walletIsActive={active}
-              unsupportedNetwork={
-                !!web3Error && web3Error instanceof UnsupportedChainIdError
-              }
-              requiresReload={allowanceFetchFailed}
-              orderComplete={showOrderSubmitted}
-              baseTokenInfo={baseTokenInfo}
-              quoteTokenInfo={quoteTokenInfo}
-              hasAmount={
-                !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
-              }
-              hasQuote={
-                !isRequestingQuotes && (!!bestTradeOption || isWrapping)
-              }
-              hasSufficientBalance={!insufficientBalance}
-              needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
-              pairUnavailable={pairUnavailable}
-              onButtonClicked={handleButtonClick}
-              isLoading={
-                isConnecting ||
-                isRequestingQuotes ||
-                ["approving", "taking"].includes(ordersStatus) ||
-                (!!baseToken && hasApprovalPending(baseToken))
-              }
-              transactionsTabOpen={transactionsTabOpen}
+    <InterfaceContext.Consumer>
+      {({
+        showWalletList,
+        transactionsTabIsOpen,
+        setShowWalletList,
+        setTransactionsTabIsOpen,
+      }) => (
+        <>
+          <StyledSwapWidget>
+            <SwapWidgetHeader
+              title={isApproving ? t("orders.approve") : t("common.swap")}
+              isQuote={!isRequestingQuotes && !showOrderSubmitted}
+              onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
+              protocol={bestTradeOption?.protocol as ProtocolType}
+              expiry={bestTradeOption?.order?.expiry}
             />
-          )}
-        </ButtonContainer>
-      </StyledSwapWidget>
+            {showOrderSubmitted ? (
+              <HugeTicks />
+            ) : isApproving || isSwapping ? (
+              <></>
+            ) : (
+              <SwapInputs
+                baseAmount={baseAmount}
+                onBaseAmountChange={setBaseAmount}
+                baseTokenInfo={baseTokenInfo}
+                quoteTokenInfo={quoteTokenInfo}
+                onChangeTokenClick={setShowTokenSelectModalFor}
+                onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
+                side="sell"
+                tradeNotAllowed={pairUnavailable}
+                isRequesting={isRequestingQuotes}
+                // Note that using the quoteAmount from tradeTerms will stop this
+                // updating when the user clicks the take button.
+                quoteAmount={quoteAmount}
+                disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
+                readOnly={
+                  !!bestTradeOption ||
+                  isWrapping ||
+                  isRequestingQuotes ||
+                  pairUnavailable ||
+                  !active
+                }
+                showMaxButton={showMaxButton}
+                showMaxInfoButton={showMaxInfoButton}
+                maxAmount={maxAmount}
+              />
+            )}
+            <InfoContainer>
+              <InfoSection
+                orderSubmitted={showOrderSubmitted}
+                isConnected={active}
+                isPairUnavailable={pairUnavailable}
+                isFetchingOrders={isRequestingQuotes}
+                isApproving={isApproving}
+                isSwapping={isSwapping}
+                failedToFetchAllowances={allowanceFetchFailed}
+                // @ts-ignore
+                bestTradeOption={bestTradeOption}
+                requiresApproval={
+                  bestRfqOrder && !hasSufficientAllowance(baseToken!)
+                }
+                baseTokenInfo={baseTokenInfo}
+                baseAmount={baseAmount}
+                quoteTokenInfo={quoteTokenInfo}
+                isWrapping={isWrapping}
+                onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
+              />
+            </InfoContainer>
+            <ButtonContainer>
+              {!isApproving && !isSwapping && (
+                <ActionButtons
+                  walletIsActive={active}
+                  unsupportedNetwork={
+                    !!web3Error && web3Error instanceof UnsupportedChainIdError
+                  }
+                  requiresReload={allowanceFetchFailed}
+                  orderComplete={showOrderSubmitted}
+                  baseTokenInfo={baseTokenInfo}
+                  quoteTokenInfo={quoteTokenInfo}
+                  hasAmount={
+                    !!baseAmount.length &&
+                    baseAmount !== "0" &&
+                    baseAmount !== "."
+                  }
+                  hasQuote={
+                    !isRequestingQuotes && (!!bestTradeOption || isWrapping)
+                  }
+                  hasSufficientBalance={!insufficientBalance}
+                  needsApproval={
+                    !!baseToken && !hasSufficientAllowance(baseToken)
+                  }
+                  pairUnavailable={pairUnavailable}
+                  onButtonClicked={(action) =>
+                    handleButtonClick(action, setTransactionsTabIsOpen)
+                  }
+                  isLoading={
+                    isConnecting ||
+                    isRequestingQuotes ||
+                    ["approving", "taking"].includes(ordersStatus) ||
+                    (!!baseToken && hasApprovalPending(baseToken))
+                  }
+                  transactionsTabOpen={transactionsTabIsOpen}
+                />
+              )}
+            </ButtonContainer>
+          </StyledSwapWidget>
 
-      <Overlay
-        onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
-        isHidden={!showTokenSelectModalFor}
-      >
-        <TokenList
-          onSelectToken={(newTokenAddress) => {
-            // e.g. handleSetToken("base", "0x123")
-            handleSetToken(showTokenSelectModalFor, newTokenAddress);
-            // Close the modal
-            setShowTokenSelectModalFor(null);
-          }}
-          balances={balances}
-          allTokens={allTokens}
-          activeTokens={activeTokens}
-          supportedTokenAddresses={supportedTokens}
-          addActiveToken={handleAddActiveToken}
-          removeActiveToken={handleRemoveActiveToken}
-          chainId={chainId || 1}
-        />
-      </Overlay>
-
-      <Overlay
-        title={t("wallet.selectWallet")}
-        onCloseButtonClick={() => setShowWalletList(false)}
-        isHidden={!showWalletList}
-      >
-        <StyledWalletProviderList
-          onClose={() => setShowWalletList(false)}
-          onProviderSelected={(provider) => {
-            dispatch(setActiveProvider(provider.name));
-            setIsConnecting(true);
-            activate(provider.getConnector()).finally(() =>
-              setIsConnecting(false)
-            );
-          }}
-        />
-      </Overlay>
-      <Overlay
-        title={t("validatorErrors.unableSwap")}
-        subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() => handleButtonClick(ButtonActions.restart)}
-        isHidden={!validatorErrors.length}
-      >
-        <ErrorList
-          errors={validatorErrors}
-          handleClick={() => handleButtonClick(ButtonActions.restart)}
-        />
-      </Overlay>
-      <Overlay
-        title={t("information.gasFreeSwaps.title")}
-        onCloseButtonClick={() => setShowGasFeeInfo(false)}
-        isHidden={!showGasFeeInfo}
-      >
-        <GasFreeSwapsModal
-          onCloseButtonClick={() => setShowGasFeeInfo(false)}
-        />
-      </Overlay>
-      <Overlay
-        title={t("information.protocolFeeDiscount.title")}
-        onCloseButtonClick={() => setProtocolFeeDiscountInfo(false)}
-        isHidden={!protocolFeeDiscountInfo}
-      >
-        <ProtocolFeeDiscountModal />
-      </Overlay>
-    </>
+          <Overlay
+            onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
+            isHidden={!showTokenSelectModalFor}
+          >
+            <TokenList
+              onSelectToken={(newTokenAddress) => {
+                // e.g. handleSetToken("base", "0x123")
+                handleSetToken(showTokenSelectModalFor, newTokenAddress);
+                // Close the modal
+                setShowTokenSelectModalFor(null);
+              }}
+              balances={balances}
+              allTokens={allTokens}
+              activeTokens={activeTokens}
+              supportedTokenAddresses={supportedTokens}
+              addActiveToken={handleAddActiveToken}
+              removeActiveToken={handleRemoveActiveToken}
+              chainId={chainId || 1}
+            />
+          </Overlay>
+          <Overlay
+            title={t("wallet.selectWallet")}
+            onCloseButtonClick={() => setShowWalletList(false)}
+            isHidden={!showWalletList}
+          >
+            <StyledWalletProviderList
+              onClose={() => setShowWalletList(false)}
+              onProviderSelected={(provider) => {
+                dispatch(setActiveProvider(provider.name));
+                setIsConnecting(true);
+                activate(provider.getConnector()).finally(() =>
+                  setIsConnecting(false)
+                );
+              }}
+            />
+          </Overlay>
+          <Overlay
+            title={t("validatorErrors.unableSwap")}
+            subTitle={t("validatorErrors.swapFail")}
+            onCloseButtonClick={() =>
+              handleButtonClick(ButtonActions.restart, setTransactionsTabIsOpen)
+            }
+            isHidden={!validatorErrors.length}
+          >
+            <ErrorList
+              errors={validatorErrors}
+              handleClick={() =>
+                handleButtonClick(
+                  ButtonActions.restart,
+                  setTransactionsTabIsOpen
+                )
+              }
+            />
+          </Overlay>
+          <Overlay
+            title={t("information.gasFreeSwaps.title")}
+            onCloseButtonClick={() => setShowGasFeeInfo(false)}
+            isHidden={!showGasFeeInfo}
+          >
+            <GasFreeSwapsModal
+              onCloseButtonClick={() => setShowGasFeeInfo(false)}
+            />
+          </Overlay>
+          <Overlay
+            title={t("information.protocolFeeDiscount.title")}
+            onCloseButtonClick={() => setProtocolFeeDiscountInfo(false)}
+            isHidden={!protocolFeeDiscountInfo}
+          >
+            <ProtocolFeeDiscountModal />
+          </Overlay>
+        </>
+      )}
+    </InterfaceContext.Consumer>
   );
 };
 

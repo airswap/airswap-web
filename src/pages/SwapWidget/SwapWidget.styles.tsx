@@ -2,7 +2,7 @@ import { MdDoneAll } from "react-icons/md";
 
 import styled from "styled-components/macro";
 
-import WalletProviderList from "../WalletProviderList/WalletProviderList";
+import WalletProviderList from "../../components/WalletProviderList/WalletProviderList";
 
 export const Header = styled.div`
   display: flex;
