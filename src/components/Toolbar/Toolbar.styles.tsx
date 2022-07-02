@@ -79,7 +79,6 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
   @media ${breakPoints.tabletPortraitUp} {
     justify-content: center;
     width: auto;
-    padding-bottom: 4rem;
     overflow-y: auto;
   }
 `;

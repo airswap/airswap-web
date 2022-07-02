@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
+import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
 import { InformationModalType } from "../InformationModals/InformationModals";
 import {
@@ -69,8 +70,15 @@ const Toolbar: FC<ToolbarProps> = ({
       <ToolbarButtonsContainer ref={scrollContainerRef} $overflow={overflow}>
         <ToolbarButton
           iconName="swap-horizontal"
-          text="OTC"
-          href="https://trader.airswap.io/"
+          iconSize={1.25}
+          text="Swap"
+          link={AppRoutes.swap}
+        />
+        <ToolbarButton
+          iconName="plus"
+          iconSize={0.875}
+          text="Make"
+          link={AppRoutes.mySwaps}
         />
         <ToolbarButton
           iconName="bars"
