@@ -45,7 +45,8 @@
         "settings": "Settings",
         "closeOverlay": "Close overlay",
         "about": "",
-        "sign": "Sign"
+        "sign": "Sign",
+        "make": "Make"
     },
     "information": {
         "join.title": "Join AirSwap",

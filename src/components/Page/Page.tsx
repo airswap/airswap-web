@@ -1,4 +1,10 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, {
+  FC,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -38,10 +44,17 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const { height: windowHeight } = useWindowSize();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
+  const {
+    showMobileToolbar,
+    transactionsTabIsOpen,
+    setShowMobileToolbar,
+    setShowWalletList,
+    setTransactionsTabIsOpen,
+  } = useContext(InterfaceContext);
+
   const [activeInformationModal, setActiveInformationModal] = useState<
     InformationModalType | undefined
   >(getInformationModalFromRoute(appRouteParams.route));
-  const [showMobileToolbar, setShowMobileToolbar] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
 
   const reset = () => {
@@ -101,48 +114,47 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appRouteParams.route]);
 
+  useEffect(() => {
+    if (showMobileToolbar) {
+      setShowMobileToolbar(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <InterfaceContext.Consumer>
-      {({
-        transactionsTabIsOpen,
-        setShowWalletList,
-        setTransactionsTabIsOpen,
-      }) => (
-        <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
-          <HelmetContainer title={t("app.title")} />
-          <InnerContainer>
-            <Toaster open={transactionsTabIsOpen} />
-            <Toolbar
-              isHiddenOnMobile={!showMobileToolbar}
-              onLinkButtonClick={handleLinkButtonClick}
-              onAirswapButtonClick={handleAirswapButtonClick}
-              onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
-            />
-            <Wallet
-              transactionsTabOpen={transactionsTabIsOpen}
-              setTransactionsTabOpen={setTransactionsTabIsOpen}
-              setShowWalletList={setShowWalletList}
-              onAirswapButtonClick={handleAirswapButtonClick}
-              onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
-            />
-            <WidgetFrame
-              isOpen={transactionsTabIsOpen}
-              isConnected={web3ProviderIsActive}
-            >
-              {children}
-              <Overlay
-                title={t("information.join.title")}
-                onCloseButtonClick={handleInformationModalCloseButtonClick}
-                isHidden={activeInformationModal !== AppRoutes.join}
-              >
-                <JoinModal />
-              </Overlay>
-            </WidgetFrame>
-            <StyledSocialButtons />
-          </InnerContainer>
-        </StyledPage>
-      )}
-    </InterfaceContext.Consumer>
+    <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
+      <HelmetContainer title={t("app.title")} />
+      <InnerContainer>
+        <Toaster open={transactionsTabIsOpen} />
+        <Toolbar
+          isHiddenOnMobile={!showMobileToolbar}
+          onLinkButtonClick={handleLinkButtonClick}
+          onAirswapButtonClick={handleAirswapButtonClick}
+          onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
+        />
+        <Wallet
+          transactionsTabOpen={transactionsTabIsOpen}
+          setTransactionsTabOpen={setTransactionsTabIsOpen}
+          setShowWalletList={setShowWalletList}
+          onAirswapButtonClick={handleAirswapButtonClick}
+          onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
+        />
+        <WidgetFrame
+          isOpen={transactionsTabIsOpen}
+          isConnected={web3ProviderIsActive}
+        >
+          {children}
+          <Overlay
+            title={t("information.join.title")}
+            onCloseButtonClick={handleInformationModalCloseButtonClick}
+            isHidden={activeInformationModal !== AppRoutes.join}
+          >
+            <JoinModal />
+          </Overlay>
+        </WidgetFrame>
+        <StyledSocialButtons />
+      </InnerContainer>
+    </StyledPage>
   );
 };
 

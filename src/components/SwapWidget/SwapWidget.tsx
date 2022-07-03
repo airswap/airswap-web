@@ -757,8 +757,6 @@ const SwapWidget: FC = () => {
     }
   };
 
-  console.log(baseTokenInfo);
-
   return (
     <InterfaceContext.Consumer>
       {({
