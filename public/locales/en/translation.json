@@ -47,7 +47,8 @@
         "about": "",
         "sign": "Sign",
         "make": "Make",
-        "mySwaps": "My swaps"
+        "mySwaps": "My swaps",
+        "makeSwap": "Make swap"
     },
     "information": {
         "join.title": "Join AirSwap",

@@ -11,7 +11,7 @@ const MySwapsWidget: FC = () => {
   return (
     <Container>
       <MakeWidgetHeader title={t("common.mySwaps")} />
-      <StyledLink to={AppRoutes.make}>{t("common.make")}</StyledLink>
+      <StyledLink to={AppRoutes.make}>{t("common.makeSwap")}</StyledLink>
     </Container>
   );
 };
