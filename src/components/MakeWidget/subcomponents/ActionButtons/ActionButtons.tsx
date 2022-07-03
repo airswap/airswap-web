@@ -17,7 +17,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   return (
     <Container>
       <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
-      <SignButton onClick={onSignButtonClick}>{t("common.sign")}</SignButton>
+      <SignButton intent="primary" onClick={onSignButtonClick}>
+        {t("common.sign")}
+      </SignButton>
     </Container>
   );
 };

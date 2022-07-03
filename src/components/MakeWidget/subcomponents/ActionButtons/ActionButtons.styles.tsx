@@ -9,6 +9,10 @@ export const Container = styled.div`
   margin-top: auto;
 `;
 
-export const BackButton = styled(Button)``;
+export const BackButton = styled(Button)`
+  width: calc(50% - 0.5rem);
+`;
 
-export const SignButton = styled(Button)``;
+export const SignButton = styled(Button)`
+  width: calc(50% - 0.5rem);
+`;
