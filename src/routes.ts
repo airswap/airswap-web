@@ -1,9 +1,9 @@
 export enum AppRoutes {
   join = "join",
-  whitepaper = "whitepaper",
-  swap = "swap",
   make = "make",
   mySwaps = "my-swaps",
+  swap = "swap",
+  swapId = "swap-id",
 }
 
 export interface SwapRouteType {
