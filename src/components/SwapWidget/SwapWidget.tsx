@@ -85,9 +85,9 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
+import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
-import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   ButtonContainer,
   HugeTicks,
@@ -98,7 +98,7 @@ import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
-import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
+import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 export type TokenSelectModalTypes = "base" | "quote" | null;

@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
-import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import TokenSelect from "../../../TokenSelect/TokenSelect";
-import getSwapInputIcon from "../../helpers/getSwapInputIcon";
-import getTokenMaxInfoText from "../../helpers/getTokenMaxInfoText";
-import Tooltip from "../Tooltip/Tooltip";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
+import TokenSelect from "../TokenSelect/TokenSelect";
 import { Container, SwapIconContainer } from "./SwapInputs.styles";
+import getSwapInputIcon from "./helpers/getSwapInputIcon";
+import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
+import Tooltip from "./subcomponents/Tooltip/Tooltip";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 

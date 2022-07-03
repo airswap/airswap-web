@@ -7,8 +7,8 @@ import { Order } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
-import { InfoSubHeading } from "../Typography/Typography";
+import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
+import { InfoSubHeading } from "../../../Typography/Typography";
 import {
   StyledInfoHeading,
   RevertPriceButton,
