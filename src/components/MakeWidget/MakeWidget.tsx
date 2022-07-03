@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import SwapInputs from "../SwapInputs/SwapInputs";
@@ -7,6 +8,7 @@ import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
 const MakeWidget: FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   const handleBackButtonClick = () => {
@@ -15,7 +17,7 @@ const MakeWidget: FC = () => {
 
   return (
     <Container>
-      <MakeWidgetHeader title="Make" />
+      <MakeWidgetHeader title={t("common.make")} />
       <SwapInputs
         baseAmount="0.00"
         baseTokenInfo={null}
