@@ -6,6 +6,7 @@ import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLog
 import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import { sizes } from "../../../../style/sizes";
+import Icon from "../../../Icon/Icon";
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyle};
@@ -73,6 +74,12 @@ export const ToolBarAnchorContainer = styled.a`
 
 export const ToolBarLinkContainer = styled(Link)`
   ${ButtonStyle}
+`;
+
+export const StyledIcon = styled(Icon)`
+  display: flex;
+  justify-content: center;
+  min-width: 1.5rem;
 `;
 
 export const Text = styled.div`

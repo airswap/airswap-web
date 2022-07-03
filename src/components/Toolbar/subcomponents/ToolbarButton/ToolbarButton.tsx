@@ -4,6 +4,7 @@ import useAppRouteParams from "../../../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../../../routes";
 import Icon from "../../../Icon/Icon";
 import {
+  StyledIcon,
   Text,
   ToolBarAnchorContainer,
   ToolbarButtonContainer,
@@ -34,7 +35,7 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
   const renderInner = () => {
     return (
       <>
-        <Icon name={iconName} iconSize={iconSize} />
+        <StyledIcon name={iconName} iconSize={iconSize} />
         <Text>{text}</Text>
       </>
     );
