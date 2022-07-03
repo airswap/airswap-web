@@ -46,7 +46,8 @@
         "closeOverlay": "Close overlay",
         "about": "",
         "sign": "Sign",
-        "make": "Make"
+        "make": "Make",
+        "mySwaps": "My swaps"
     },
     "information": {
         "join.title": "Join AirSwap",
