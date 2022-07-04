@@ -2,7 +2,6 @@ import React, { FC } from "react";
 
 import useAppRouteParams from "../../../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../../../routes";
-import Icon from "../../../Icon/Icon";
 import {
   StyledIcon,
   Text,
