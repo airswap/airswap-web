@@ -229,7 +229,8 @@ export const Wallet: FC<WalletPropsType> = ({
     } else {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library, connector, provider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId]);
 
   // Subscribe to changes in balance
 

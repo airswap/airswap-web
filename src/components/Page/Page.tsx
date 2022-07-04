@@ -1,17 +1,9 @@
-import React, {
-  FC,
-  ReactElement,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, ReactElement, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
-import i18n from "i18next";
 
 import { useAppDispatch } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
@@ -19,8 +11,6 @@ import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
-import useDebounce from "../../hooks/useDebounce";
-import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
@@ -41,21 +31,18 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const history = useHistory();
   useHistoricalTransactions();
   const { t } = useTranslation();
-  const { height: windowHeight } = useWindowSize();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
   const {
     showMobileToolbar,
     transactionsTabIsOpen,
+    activeInformationModal,
+    pageHeight,
+    setActiveInformationModal,
     setShowMobileToolbar,
     setShowWalletList,
     setTransactionsTabIsOpen,
   } = useContext(InterfaceContext);
-
-  const [activeInformationModal, setActiveInformationModal] = useState<
-    InformationModalType | undefined
-  >(getInformationModalFromRoute(appRouteParams.route));
-  const [pageHeight, setPageHeight] = useState(windowHeight);
 
   const reset = () => {
     setActiveInformationModal(undefined);
@@ -82,26 +69,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const handleOpenMobileToolbarButtonClick = () => {
     setShowMobileToolbar(true);
   };
-
-  useDebounce(
-    () => {
-      setPageHeight(windowHeight);
-    },
-    100,
-    [windowHeight]
-  );
-
-  useEffect(() => {
-    i18n.changeLanguage(appRouteParams.lang);
-  }, [appRouteParams.lang]);
-
-  useEffect(() => {
-    if (showMobileToolbar) {
-      document.body.classList.add("scroll-locked");
-    } else {
-      document.body.classList.remove("scroll-locked");
-    }
-  }, [showMobileToolbar]);
 
   useEffect(() => {
     setActiveInformationModal(
