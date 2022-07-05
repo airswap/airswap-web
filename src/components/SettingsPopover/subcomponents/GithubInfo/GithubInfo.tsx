@@ -5,11 +5,13 @@ import Icon from "../../../Icon/Icon";
 import { CommitButton, Container, GithubButton } from "./GithubInfo.styles";
 
 const githubLink = "https://github.com/airswap/airswap-web";
-const githubInfo = process.env.BUILD_VERSION;
+const githubLastCommitId = process.env.BUILD_VERSION;
 const commitDate = process.env.BUILD_DATE;
-const commitReadableHash = githubInfo ? githubInfo.substr(0, 6) : undefined;
-const commitReadableDate = commitDate ? commitDate.substr(0, 10) : undefined;
-const commitLink = `${githubLink}/commit/${githubInfo}`;
+const readableCommitId = githubLastCommitId
+  ? githubLastCommitId.substr(0, 6)
+  : undefined;
+const readableCommitDate = commitDate ? commitDate.substr(0, 10) : undefined;
+const commitLink = `${githubLink}/commit/${githubLastCommitId}`;
 
 const GithubInfo: FC = () => {
   const { t } = useTranslation();
@@ -19,13 +21,13 @@ const GithubInfo: FC = () => {
       <GithubButton target="_blank" aria-label="github" href={githubLink}>
         <Icon name="github" />
       </GithubButton>
-      {githubInfo && (
+      {githubLastCommitId && (
         <CommitButton
           target="_blank"
           aria-label={t("wallet.latestGithubCommit")}
           href={commitLink}
         >
-          {commitReadableHash}
+          {readableCommitId}
         </CommitButton>
       )}
       {commitDate && (
@@ -34,7 +36,7 @@ const GithubInfo: FC = () => {
           aria-label={t("wallet.latestGithubCommit")}
           href={commitLink}
         >
-          {commitReadableDate}
+          {readableCommitDate}
         </CommitButton>
       )}
     </Container>
