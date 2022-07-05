@@ -16,14 +16,8 @@ import useSystemTheme from "../../hooks/useSystemTheme";
 import GlobalStyle from "../../style/GlobalStyle";
 import { darkTheme, lightTheme } from "../../style/themes";
 
-let cachedLibrary: Record<string, Web3Provider> = {};
-
 function getLibrary(provider: any): Web3Provider {
-  if (!cachedLibrary[provider.chainId]) {
-    cachedLibrary[provider.chainId] = new Web3Provider(provider);
-    cachedLibrary[provider.chainId].pollingInterval = 12000;
-  }
-  return cachedLibrary[provider.chainId];
+  return new Web3Provider(provider);
 }
 
 const Home = (): JSX.Element => {

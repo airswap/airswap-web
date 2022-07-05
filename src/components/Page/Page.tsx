@@ -7,6 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
+import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useDebounce from "../../hooks/useDebounce";
@@ -34,6 +35,7 @@ function getInformationModalFromRoute(
 const Page: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  useHistoricalTransactions();
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowSize();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();

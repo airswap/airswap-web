@@ -156,9 +156,9 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const completedTransactions = useMemo(() => {
-    return transactions.filter(
-      (transaction) => transaction.status !== "processing"
-    );
+    return transactions
+      .filter((transaction) => transaction.status !== "processing")
+      .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";

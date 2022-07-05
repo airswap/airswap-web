@@ -2431,6 +2431,18 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@react-hookz/deep-equal@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@react-hookz/deep-equal/-/deep-equal-1.0.2.tgz#4e8bdeda027379dcf8b62a42e5f75f0351b11b35"
+  integrity sha512-cM5kPFb6EFH5q52WzRxfRX9+8g5kq78McWOYs6e1seo+nK6NpfLupT5uOCIJp37jU8ayd4Su8ni3HRFTN2C2kg==
+
+"@react-hookz/web@^14.2.2":
+  version "14.2.2"
+  resolved "https://registry.yarnpkg.com/@react-hookz/web/-/web-14.2.2.tgz#eee0085f954e5b62d0a6c5b20d8786c28abfb9ad"
+  integrity sha512-6FeZHKV3FFOYnbSJMkkqXDoMuIX0HEFJlDF4LpHR7RsA3zrH2xzhtF8nSYZ+pG6fDIqYKID9yQuILFmbAWaqCQ==
+  dependencies:
+    "@react-hookz/deep-equal" "^1.0.2"
+
 "@react-theming/flatten@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@react-theming/flatten/-/flatten-0.1.1.tgz#62dc8a11f77b3dc1c6f26937ad4044a4d3e13853"
