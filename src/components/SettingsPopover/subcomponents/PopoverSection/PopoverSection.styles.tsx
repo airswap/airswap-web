@@ -3,10 +3,13 @@ import styled from "styled-components/macro";
 import { StyledTitle } from "../../../Overlay/Overlay.styles";
 
 export const Container = styled.div`
+  padding: 0 1rem;
   color: ${(props) => props.theme.colors.darkSubText};
-  display: grid;
-  grid-template-rows: 1.5rem;
   overflow: hidden;
+
+  & + & {
+    margin-top: 0.5rem;
+  }
 `;
 
 export const TitleContainer = styled.div`

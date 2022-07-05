@@ -16,6 +16,7 @@ import IconDeny from "./IconDeny";
 import IconDiscord from "./IconDiscord";
 import IconEdit from "./IconEdit";
 import IconForbidden from "./IconForbidden";
+import IconGithub from "./IconGithub";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconMedium from "./IconMedium";
@@ -49,6 +50,7 @@ export {
   IconDiscord,
   IconEdit,
   IconForbidden,
+  IconGithub,
   IconLibrary,
   IconLink,
   IconMedium,
