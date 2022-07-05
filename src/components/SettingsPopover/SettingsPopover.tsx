@@ -17,7 +17,9 @@ import {
   ThemeButton,
   LocaleContainer,
   LocaleButton,
+  BottomPopoverSection,
 } from "./SettingsPopover.styles";
+import GithubInfo from "./subcomponents/GithubInfo/GithubInfo";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type SettingsPopoverPropsType = {
@@ -85,6 +87,9 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
           })}
         </LocaleContainer>
       </PopoverSection>
+      <BottomPopoverSection>
+        <GithubInfo />
+      </BottomPopoverSection>
     </Container>
   );
 };

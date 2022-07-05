@@ -1,27 +1,29 @@
 import { FC } from "react";
-import {CommitButton, Container, GithubButton} from "./CommitHash.styles";
+import { useTranslation } from "react-i18next";
+
 import Icon from "../../../Icon/Icon";
+import { CommitButton, Container, GithubButton } from "./GithubInfo.styles";
 
 const githubLink = "https://github.com/airswap/airswap-web";
-const commitHash = process.env.BUILD_VERSION;
+const githubInfo = process.env.BUILD_VERSION;
 const commitDate = process.env.BUILD_DATE;
-const commitReadableHash = (commitHash || '').substr(0, 6);
-const commitReadableDate = (commitDate || '').substr(0, 10);
-const commitLink = `${githubLink}/commit/${commitHash}`
+const commitReadableHash = githubInfo ? githubInfo.substr(0, 6) : undefined;
+const commitReadableDate = commitDate ? commitDate.substr(0, 10) : undefined;
+const commitLink = `${githubLink}/commit/${githubInfo}`;
 
-const CommitHash: FC = () => {
+const GithubInfo: FC = () => {
+  const { t } = useTranslation();
+
   return (
     <Container>
-      <GithubButton
-        target="_blank"
-        to={githubLink}
-      >
+      <GithubButton target="_blank" aria-label="github" href={githubLink}>
         <Icon name="github" />
       </GithubButton>
-      {commitHash && (
+      {githubInfo && (
         <CommitButton
           target="_blank"
-          to={commitLink}
+          aria-label={t("wallet.latestGithubCommit")}
+          href={commitLink}
         >
           {commitReadableHash}
         </CommitButton>
@@ -29,7 +31,8 @@ const CommitHash: FC = () => {
       {commitDate && (
         <CommitButton
           target="_blank"
-          to={commitLink}
+          aria-label={t("wallet.latestGithubCommit")}
+          href={commitLink}
         >
           {commitReadableDate}
         </CommitButton>
@@ -38,4 +41,4 @@ const CommitHash: FC = () => {
   );
 };
 
-export default CommitHash;
+export default GithubInfo;

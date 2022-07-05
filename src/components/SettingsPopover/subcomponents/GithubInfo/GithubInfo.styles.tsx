@@ -1,8 +1,8 @@
+import { css } from "styled-components";
 import styled from "styled-components/macro";
-import {css} from "styled-components";
-import {fontMono} from "../../../../style/themes";
-import {InputOrButtonBorderStyleType2} from "../../../../style/mixins";
-import {Link} from "react-router-dom";
+
+import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
+import { fontMono } from "../../../../style/themes";
 
 export const Container = styled.div`
   display: grid;
@@ -12,7 +12,7 @@ export const Container = styled.div`
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyleType2};
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,24 +20,26 @@ const ButtonStyle = css`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   font-family: ${fontMono};
   height: 2.5rem;
+  text-transform: uppercase;
   background: none;
-  
-  & + button {
+
+  & + a {
     margin-left: -1px;
   }
-  
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     z-index: 1;
     background: none;
   }
 `;
 
-export const GithubButton = styled(Link)`
+export const GithubButton = styled.a`
   ${ButtonStyle};
   color: ${(props) => props.theme.colors.white};
 `;
 
-export const CommitButton = styled(Link)`
+export const CommitButton = styled.a`
   ${ButtonStyle};
   font-size: 0.75rem;
   color: ${(props) => props.theme.colors.darkSubText};
