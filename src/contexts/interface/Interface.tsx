@@ -2,8 +2,6 @@ import React, { Dispatch, FC, useEffect, useState } from "react";
 
 import i18n from "i18next";
 
-import { InformationModalType } from "../../components/InformationModals/InformationModals";
-import { getInformationModalFromRoute } from "../../components/Page/helpers";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useDebounce from "../../hooks/useDebounce";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -13,12 +11,8 @@ export interface InterfaceContextContextProps {
   showWalletList: boolean;
   transactionsTabIsOpen: boolean;
 
-  activeInformationModal?: InformationModalType;
   pageHeight?: number;
 
-  setActiveInformationModal: Dispatch<
-    React.SetStateAction<InformationModalType | undefined>
-  >;
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
   setShowWalletList: Dispatch<React.SetStateAction<boolean>>;
   setTransactionsTabIsOpen: Dispatch<React.SetStateAction<boolean>>;
@@ -29,7 +23,6 @@ export const InterfaceContext =
     showWalletList: false,
     showMobileToolbar: false,
     transactionsTabIsOpen: false,
-    setActiveInformationModal: () => {},
     setShowMobileToolbar: () => {},
     setShowWalletList: () => {},
     setTransactionsTabIsOpen: () => {},
@@ -43,9 +36,6 @@ const InterfaceProvider: FC = ({ children }) => {
   const [showWalletList, setShowWalletList] = useState(false);
   const [transactionsTabIsOpen, setTransactionsTabIsOpen] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
-  const [activeInformationModal, setActiveInformationModal] = useState<
-    InformationModalType | undefined
-  >(getInformationModalFromRoute(appRouteParams.route));
 
   useDebounce(
     () => {
@@ -73,9 +63,7 @@ const InterfaceProvider: FC = ({ children }) => {
         showMobileToolbar,
         showWalletList,
         transactionsTabIsOpen,
-        activeInformationModal,
         pageHeight,
-        setActiveInformationModal,
         setShowMobileToolbar,
         setShowWalletList,
         setTransactionsTabIsOpen,

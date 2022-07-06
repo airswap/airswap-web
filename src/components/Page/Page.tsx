@@ -11,16 +11,11 @@ import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
-import { AppRoutes } from "../../routes";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
-import { InformationModalType } from "../InformationModals/InformationModals";
-import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
-import Overlay from "../Overlay/Overlay";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
-import { getInformationModalFromRoute } from "./helpers";
 
 type PageProps = {
   className?: string;
@@ -36,29 +31,18 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const {
     showMobileToolbar,
     transactionsTabIsOpen,
-    activeInformationModal,
     pageHeight,
-    setActiveInformationModal,
     setShowMobileToolbar,
     setShowWalletList,
     setTransactionsTabIsOpen,
   } = useContext(InterfaceContext);
 
   const reset = () => {
-    setActiveInformationModal(undefined);
     setShowMobileToolbar(false);
     dispatch(resetOrders());
   };
 
-  const handleLinkButtonClick = (type: InformationModalType) => {
-    history.push(`/${type}`);
-  };
-
   const handleAirswapButtonClick = () => {
-    history.push(appRouteParams.justifiedBaseUrl);
-  };
-
-  const handleInformationModalCloseButtonClick = () => {
     history.push(appRouteParams.justifiedBaseUrl);
   };
 
@@ -71,10 +55,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   };
 
   useEffect(() => {
-    setActiveInformationModal(
-      getInformationModalFromRoute(appRouteParams.route)
-    );
-
     if (appRouteParams.route === undefined) {
       reset();
     }
@@ -95,7 +75,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         <Toaster open={transactionsTabIsOpen} />
         <Toolbar
           isHiddenOnMobile={!showMobileToolbar}
-          onLinkButtonClick={handleLinkButtonClick}
           onAirswapButtonClick={handleAirswapButtonClick}
           onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
         />
@@ -111,13 +90,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           isConnected={web3ProviderIsActive}
         >
           {children}
-          <Overlay
-            title={t("information.join.title")}
-            onCloseButtonClick={handleInformationModalCloseButtonClick}
-            isHidden={activeInformationModal !== AppRoutes.join}
-          >
-            <JoinModal />
-          </Overlay>
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

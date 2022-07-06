@@ -16,12 +16,12 @@ const Routes: FC = () => {
         key="make"
       />
       <Route
-        path={[`/${AppRoutes.mySwaps}`, `/:lang/${AppRoutes.mySwaps}`]}
+        path={[`/${AppRoutes.myOrders}`, `/:lang/${AppRoutes.myOrders}`]}
         component={MySwapsPage}
         key="my-swaps"
       />
       <Route
-        path={[`/${AppRoutes.swapId}`, `/:lang/${AppRoutes.swapId}`]}
+        path={[`/${AppRoutes.order}`, `/:lang/${AppRoutes.order}`]}
         component={SwapDetailPage}
         key="swap-detail"
       />
