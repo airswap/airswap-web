@@ -26,18 +26,18 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.0.3.tgz#42170e23815a1fae58780ea64e13a6cf66dbd3c5"
-  integrity sha512-xpHeHIEqRJ1uIqLymXFUPTP6UgcKh0AmpVkiYQXiXU5EMUyNe2hOpF/ofyA1rGRiqVwyUbZItei/pnxxy2+rSg==
+"@airswap/libraries@3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.0.4.tgz#95a3362b6cc0eb0388b4f26c5bfe64f59f7582b5"
+  integrity sha512-+9FDrX+7HOC9f3GdCKXXbfvXE0e4pAOlyRiA4F1RLGLRwYi9FErLhRU4s2PwAsoG33HEY3hBcMjdhEXvYuIZAA==
   dependencies:
     "@airswap/constants" "3.0.1"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
     "@airswap/registry" "3.0.1"
     "@airswap/swap" "3.0.1"
     "@airswap/typescript" "3.0.0"
-    "@airswap/utils" "3.0.0"
-    "@airswap/wrapper" "3.0.1"
+    "@airswap/utils" "3.0.1"
+    "@airswap/wrapper" "3.0.2"
     bignumber.js "^9.0.0"
     browser-or-node "^1.3.0"
     ethers "^5.5.4"
@@ -93,10 +93,24 @@
     ethereumjs-util "^6.2.0"
     ethers "^5.5.4"
 
-"@airswap/wrapper@3.0.1":
+"@airswap/utils@3.0.1":
   version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.0.1.tgz#4bfd99d00d34b87ec4c5e4edd3003362f7302393"
-  integrity sha512-vhnEHIWIEDaKc9QkQqfdvC+c1Qfdxv8M7XhF2YjWcQJgqnbA5Pz2hrBSq8TqWAZu0MPwzzWqn2qT+XYrhNg7QA==
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.1.tgz#326d117f98ffd78f2fcb14188a5e24f7967400cb"
+  integrity sha512-BeJ5xlxDdaq32h8x7ZRtTYPS7Pm86zcSOTTGarbpkGYsX4CFwbOCQ8XNtP13b7aHPoELqFhQdu7ZX1xN3NsGSA==
+  dependencies:
+    "@airswap/constants" "3.0.1"
+    "@airswap/typescript" "3.0.0"
+    "@types/ethereumjs-util" "^6.1.0"
+    bignumber.js "^9.0.1"
+    eth-sig-util "^3.0.0"
+    ethereumjs-util "^6.2.0"
+    ethers "^5.5.4"
+    lz-string "^1.4.4"
+
+"@airswap/wrapper@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.0.2.tgz#4d023cabbaefa8266cb5df9eb50b3fd6c0f3fd24"
+  integrity sha512-1PQiu3m1YGGLAx8cuX9vJ9FTA8FNhl8Aw34aYD6zVZVsm5N27k0cn81jH3wsEWRtXFgc2vx+dEL9L3uI6meGYA==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
