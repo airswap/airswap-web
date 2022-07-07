@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import i18n from "i18next";
+
 import { useAppDispatch } from "../../app/hooks";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
@@ -15,6 +17,8 @@ import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import { InformationModalType } from "../InformationModals/InformationModals";
+import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
+import Overlay from "../Overlay/Overlay";
 import SwapWidget from "../SwapWidget/SwapWidget";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
@@ -39,7 +43,6 @@ const Page: FC = (): ReactElement => {
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowSize();
   const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
-
   const appRouteParams = useAppRouteParams();
   const [activeInformationModal, setActiveInformationModal] = useState<
     InformationModalType | undefined
@@ -75,6 +78,10 @@ const Page: FC = (): ReactElement => {
     setShowMobileToolbar(true);
   };
 
+  const handleTrackTransactionClicked = () => {
+    setTransactionsTabOpen(true);
+  };
+
   useDebounce(
     () => {
       setPageHeight(windowHeight);
@@ -82,6 +89,10 @@ const Page: FC = (): ReactElement => {
     100,
     [windowHeight]
   );
+
+  useEffect(() => {
+    i18n.changeLanguage(appRouteParams.lang);
+  }, [appRouteParams.lang]);
 
   useEffect(() => {
     if (showMobileToolbar) {
@@ -126,14 +137,17 @@ const Page: FC = (): ReactElement => {
         >
           <SwapWidget
             showWalletList={showWalletList}
-            activeInformationModal={activeInformationModal}
-            setShowWalletList={setShowWalletList}
-            onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
-            onInformationModalCloseButtonClick={
-              handleInformationModalCloseButtonClick
-            }
             transactionsTabOpen={transactionsTabOpen}
+            setShowWalletList={setShowWalletList}
+            onTrackTransactionClicked={handleTrackTransactionClicked}
           />
+          <Overlay
+            title={t("information.join.title")}
+            onCloseButtonClick={handleInformationModalCloseButtonClick}
+            isHidden={activeInformationModal !== AppRoutes.join}
+          >
+            <JoinModal />
+          </Overlay>
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

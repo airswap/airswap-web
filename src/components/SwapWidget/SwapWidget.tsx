@@ -81,9 +81,7 @@ import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import { ErrorList } from "../ErrorList/ErrorList";
-import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
-import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import { notifyError } from "../Toasts/ToastController";
@@ -110,19 +108,15 @@ const initialBaseAmount = "";
 type SwapWidgetPropsType = {
   showWalletList: boolean;
   transactionsTabOpen: boolean;
-  activeInformationModal?: InformationModalType;
   setShowWalletList: (x: boolean) => void;
   onTrackTransactionClicked: () => void;
-  onInformationModalCloseButtonClick: () => void;
 };
 
 const SwapWidget: FC<SwapWidgetPropsType> = ({
   showWalletList,
-  activeInformationModal,
   setShowWalletList,
   transactionsTabOpen,
   onTrackTransactionClicked,
-  onInformationModalCloseButtonClick,
 }) => {
   // Redux
   const dispatch = useAppDispatch();
@@ -929,14 +923,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         isHidden={!protocolFeeDiscountInfo}
       >
         <ProtocolFeeDiscountModal />
-      </Overlay>
-
-      <Overlay
-        title={t("information.join.title")}
-        onCloseButtonClick={onInformationModalCloseButtonClick}
-        isHidden={activeInformationModal !== AppRoutes.join}
-      >
-        <JoinModal />
       </Overlay>
     </>
   );
