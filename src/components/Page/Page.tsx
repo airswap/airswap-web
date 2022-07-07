@@ -6,12 +6,16 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
+import { WalletProvider } from "../../constants/supportedWalletProviders";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
+import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
+import Overlay from "../Overlay/Overlay";
+import { StyledWalletProviderList } from "../SwapWidget/SwapWidget.styles";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
@@ -24,16 +28,21 @@ type PageProps = {
 const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  useHistoricalTransactions();
   const { t } = useTranslation();
-  const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
+  const { activate, active: web3ProviderIsActive } =
+    useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
   const {
+    setIsConnecting,
     showMobileToolbar,
+    showWalletList,
     transactionsTabIsOpen,
     pageHeight,
     setShowMobileToolbar,
+    setShowWalletList,
   } = useContext(InterfaceContext);
+
+  useHistoricalTransactions();
 
   const reset = () => {
     setShowMobileToolbar(false);
@@ -50,6 +59,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
 
   const handleOpenMobileToolbarButtonClick = () => {
     setShowMobileToolbar(true);
+  };
+
+  const handleProviderSelected = (provider: WalletProvider) => {
+    dispatch(setActiveProvider(provider.name));
+    setIsConnecting(true);
+    activate(provider.getConnector()).finally(() => setIsConnecting(false));
+  };
+
+  const handleCloseWalletProviderList = () => {
+    setShowWalletList(false);
   };
 
   useEffect(() => {
@@ -85,6 +104,17 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           isConnected={web3ProviderIsActive}
         >
           {children}
+
+          <Overlay
+            title={t("wallet.selectWallet")}
+            onCloseButtonClick={handleCloseWalletProviderList}
+            isHidden={!showWalletList}
+          >
+            <StyledWalletProviderList
+              onClose={handleCloseWalletProviderList}
+              onProviderSelected={handleProviderSelected}
+            />
+          </Overlay>
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

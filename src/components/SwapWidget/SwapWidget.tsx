@@ -126,7 +126,7 @@ const SwapWidget: FC = () => {
   // Contexts
   const LastLook = useContext(LastLookContext);
   const {
-    showWalletList,
+    isConnecting,
     transactionsTabIsOpen,
     setShowWalletList,
     setTransactionsTabIsOpen,
@@ -157,7 +157,6 @@ const SwapWidget: FC = () => {
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
 
   // Error states
@@ -173,7 +172,6 @@ const SwapWidget: FC = () => {
     account,
     library,
     active,
-    activate,
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
@@ -656,10 +654,7 @@ const SwapWidget: FC = () => {
     }
   };
 
-  const handleButtonClick = async (
-    action: ButtonActions,
-    onChangeTransactionsTabIsOpen: Function
-  ) => {
+  const handleButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
         setIsWrapping(false);
@@ -687,7 +682,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.connectWallet:
-        onChangeTransactionsTabIsOpen(true);
+        setShowWalletList(true);
         break;
 
       case ButtonActions.switchNetwork:
@@ -755,7 +750,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.trackTransaction:
-        onChangeTransactionsTabIsOpen(true);
+        setTransactionsTabIsOpen(true);
         break;
 
       default:
@@ -845,9 +840,7 @@ const SwapWidget: FC = () => {
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
-              onButtonClicked={(action) =>
-                handleButtonClick(action, setTransactionsTabIsOpen)
-              }
+              onButtonClicked={(action) => handleButtonClick(action)}
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
@@ -881,34 +874,14 @@ const SwapWidget: FC = () => {
         />
       </Overlay>
       <Overlay
-        title={t("wallet.selectWallet")}
-        onCloseButtonClick={() => setShowWalletList(false)}
-        isHidden={!showWalletList}
-      >
-        <StyledWalletProviderList
-          onClose={() => setShowWalletList(false)}
-          onProviderSelected={(provider) => {
-            dispatch(setActiveProvider(provider.name));
-            setIsConnecting(true);
-            activate(provider.getConnector()).finally(() =>
-              setIsConnecting(false)
-            );
-          }}
-        />
-      </Overlay>
-      <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleButtonClick(ButtonActions.restart, setTransactionsTabIsOpen)
-        }
+        onCloseButtonClick={() => handleButtonClick(ButtonActions.restart)}
         isHidden={!validatorErrors.length}
       >
         <ErrorList
           errors={validatorErrors}
-          handleClick={() =>
-            handleButtonClick(ButtonActions.restart, setTransactionsTabIsOpen)
-          }
+          handleClick={() => handleButtonClick(ButtonActions.restart)}
         />
       </Overlay>
       <Overlay
