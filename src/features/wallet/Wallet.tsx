@@ -135,6 +135,7 @@ export const Wallet: FC<WalletPropsType> = ({
       };
     }
   }, [dispatch, library, chainId, account, swapContract, wrapContract]);
+
   useEffect(() => {
     if (chainId && account && library) {
       const swapContract = new Contract(
@@ -225,7 +226,7 @@ export const Wallet: FC<WalletPropsType> = ({
           } as any)
         );
       });
-    } else {
+    } else if (!active) {
       dispatch(setWalletDisconnected());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
