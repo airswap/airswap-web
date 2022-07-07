@@ -33,8 +33,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     transactionsTabIsOpen,
     pageHeight,
     setShowMobileToolbar,
-    setShowWalletList,
-    setTransactionsTabIsOpen,
   } = useContext(InterfaceContext);
 
   const reset = () => {
@@ -79,9 +77,6 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
         />
         <Wallet
-          transactionsTabOpen={transactionsTabIsOpen}
-          setTransactionsTabOpen={setTransactionsTabIsOpen}
-          setShowWalletList={setShowWalletList}
           onAirswapButtonClick={handleAirswapButtonClick}
           onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
         />
