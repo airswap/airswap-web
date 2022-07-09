@@ -2,9 +2,9 @@ import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import MakePage from "../../pages/Make/Make";
-import MySwapsPage from "../../pages/MySwaps/MySwaps";
+import MySwapsPage from "../../pages/MyOrders/MySwaps";
+import OrderDetail from "../../pages/OrderDetail/OrderDetail";
 import SwapPage from "../../pages/Swap/Swap";
-import SwapDetailPage from "../../pages/SwapDetail/SwapDetail";
 import { AppRoutes } from "../../routes";
 
 const Routes: FC = () => {
@@ -22,8 +22,8 @@ const Routes: FC = () => {
       />
       <Route
         path={[`/${AppRoutes.order}`, `/:lang/${AppRoutes.order}`]}
-        component={SwapDetailPage}
-        key="swap-detail"
+        component={OrderDetail}
+        key="order-detail"
       />
       <Route path="/*" component={SwapPage} key="swap" />
     </Switch>
