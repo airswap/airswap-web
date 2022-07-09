@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 
-import MySwapsWidget from "../../components/MySwapsWidget/MySwapsWidget";
+import MyOrdersWidget from "../../components/MyOrdersWidget/MyOrdersWidget";
 import { StyledPage } from "./MySwaps.styles";
 
 const MySwapsPage: FC = () => {
   return (
     <StyledPage>
-      <MySwapsWidget />
+      <MyOrdersWidget />
     </StyledPage>
   );
 };
