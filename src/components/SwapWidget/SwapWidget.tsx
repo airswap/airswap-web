@@ -75,7 +75,6 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -92,7 +91,6 @@ import StyledSwapWidget, {
   ButtonContainer,
   HugeTicks,
   InfoContainer,
-  StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
