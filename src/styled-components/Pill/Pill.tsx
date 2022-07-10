@@ -5,6 +5,7 @@ export const PillStyle = css`
   display: flex;
   flex-direction: row;
   align-items: center;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 0 1rem;
   height: 2rem;
   border-radius: 1rem;
