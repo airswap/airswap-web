@@ -127,7 +127,12 @@
     "settings": "Settings",
     "revertPrice": "Revert price",
     "moreInformation": "More information",
-    "expiresIn": "Expires in"
+    "expiresIn": "Expires in",
+    "expired": "Expired",
+    "minutesShort": "Min",
+    "hoursShort": "H",
+    "daysShort": "D",
+    "weeksShort": "W"
   },
   "toast": {
     "swapComplete": "Swap Complete",
