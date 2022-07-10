@@ -126,7 +126,8 @@
     "editCustomTokens": "Edit Custom Tokens",
     "settings": "Settings",
     "revertPrice": "Revert price",
-    "moreInformation": "More information"
+    "moreInformation": "More information",
+    "expiresIn": "Expires in"
   },
   "toast": {
     "swapComplete": "Swap Complete",
