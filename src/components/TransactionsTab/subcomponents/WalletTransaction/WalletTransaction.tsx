@@ -14,7 +14,7 @@ import {
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
-import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
+import getTimeAgoBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
@@ -59,7 +59,7 @@ const WalletTransaction = ({
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
     //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoBetweenTwoDates(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
@@ -100,7 +100,7 @@ const WalletTransaction = ({
         .toString();
     }
     //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoBetweenTwoDates(new Date(tx.timestamp), t);
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>
