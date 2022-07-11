@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 
+import { addMonths, addYears } from "date-fns";
+
 import getTimeTranslation from "./getTimeTranslation";
 
 const MS_PER_MINUTE = 60000;
@@ -96,7 +98,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 11 months", () => {
-    var xMonthsAgo = new Date(Date.now() - 11 * MS_PER_MONTH);
+    var xMonthsAgo = addMonths(Date.now(), -11);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMonthsAgo, t);
@@ -112,7 +114,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 5 years", () => {
-    var xYearsAgo = new Date(Date.now() - 5 * MS_PER_YEAR);
+    var xYearsAgo = addYears(Date.now(), -5);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xYearsAgo, t);

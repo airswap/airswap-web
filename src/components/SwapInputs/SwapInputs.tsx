@@ -5,10 +5,13 @@ import { TokenInfo } from "@airswap/typescript";
 
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../TokenSelect/TokenSelect";
-import { Container, SwapIconContainer } from "./SwapInputs.styles";
+import {
+  Container,
+  StyledTooltip,
+  SwapIconContainer,
+} from "./SwapInputs.styles";
 import getSwapInputIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
-import Tooltip from "./subcomponents/Tooltip/Tooltip";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -129,7 +132,7 @@ const SwapInputs: FC<{
         showMaxInfoButton &&
         showMaxAmountInfo &&
         maxAmountInfoText &&
-        !readOnly && <Tooltip>{maxAmountInfoText}</Tooltip>}
+        !readOnly && <StyledTooltip>{maxAmountInfoText}</StyledTooltip>}
     </Container>
   );
 };
