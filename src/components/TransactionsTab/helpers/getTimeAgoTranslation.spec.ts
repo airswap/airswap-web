@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 
-import { addMonths, addYears } from "date-fns";
+import { addMonths, addSeconds, addYears } from "date-fns";
 
-import getTimeTranslation from "./getTimeTranslation";
+import getTimeTranslation from "./getTimeAgoTranslation";
 
 const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;
 const MS_PER_DAY = 86400000;
-const MS_PER_WEEK = 604800000;
 const MS_PER_MONTH = 2592000000;
 const MS_PER_YEAR = 31536000000;
 
@@ -73,22 +72,6 @@ describe("Get Time Difference Between Two Dates", () => {
     expect(res).toBe("2 wallet.dayAgo_other");
   });
 
-  it("should return 1 week", () => {
-    const xWeeksAgo = new Date(Date.now() - 1 * MS_PER_WEEK);
-    const { t } = useTranslation();
-
-    const res = getTimeTranslation(xWeeksAgo, t);
-    expect(res).toBe("1 wallet.weekAgo_one");
-  });
-
-  it("should return 3 weeks", () => {
-    const xWeeksAgo = new Date(Date.now() - 3 * MS_PER_WEEK);
-    const { t } = useTranslation();
-
-    const res = getTimeTranslation(xWeeksAgo, t);
-    expect(res).toBe("3 wallet.weekAgo_other");
-  });
-
   it("should return 1 month", () => {
     var xMonthsAgo = new Date(Date.now() - 1 * MS_PER_MONTH);
     const { t } = useTranslation();
@@ -98,7 +81,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 11 months", () => {
-    var xMonthsAgo = addMonths(Date.now(), -11);
+    var xMonthsAgo = addMonths(addSeconds(Date.now(), -1), -11);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMonthsAgo, t);
@@ -114,7 +97,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 5 years", () => {
-    var xYearsAgo = addYears(Date.now(), -5);
+    var xYearsAgo = addYears(addSeconds(Date.now(), -1), -5);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xYearsAgo, t);

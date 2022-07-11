@@ -1,8 +1,13 @@
+import { TFunction } from "react-i18next";
+
 import getTimeBetweenTwoDates, {
   TimeUnit,
 } from "../../../helpers/getTimeBetweenTwoDates";
 
-export default function getTimeAgoBetweenTwoDates(date: Date, t: any): string {
+export default function getTimeAgoTranslation(
+  date: Date,
+  t: TFunction<"translation">
+): string {
   const currentDate = new Date();
 
   const { timeUnit, amount: count } = getTimeBetweenTwoDates(currentDate, date);
@@ -27,12 +32,6 @@ export default function getTimeAgoBetweenTwoDates(date: Date, t: any): string {
     return count > 1
       ? t("wallet.dayAgo_other", { count })
       : t("wallet.dayAgo_one", { count });
-  }
-
-  if (timeUnit === TimeUnit.Week) {
-    return count > 1
-      ? t("wallet.weekAgo_other", { count })
-      : t("wallet.weekAgo_one", { count });
   }
 
   if (timeUnit === TimeUnit.Month) {
