@@ -1,10 +1,14 @@
 import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { compareAsc } from "date-fns";
+import { compareAsc, format } from "date-fns";
 
-import { Pill } from "../../styled-components/Pill/Pill";
-import { Strong } from "./ExpiryIndicator.styles";
+import {
+  Container,
+  Strong,
+  StyledPill,
+  StyledTooltip,
+} from "./ExpiryIndicator.styles";
 import { getExpiryTranslation } from "./helpers";
 
 type ExpiryIndicatorProps = {
@@ -24,10 +28,13 @@ const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry }) => {
   );
 
   return (
-    <Pill>
-      {hasPassed ? t("orders.expired") : t("orders.expiresIn")}
-      {!hasPassed && <Strong>{timeLeft}</Strong>}
-    </Pill>
+    <Container>
+      <StyledPill>
+        {hasPassed ? t("orders.expired") : t("orders.expiresIn")}
+        {!hasPassed && <Strong>{timeLeft}</Strong>}
+      </StyledPill>
+      <StyledTooltip>{format(expiry, "dd-MMM-yyyy pppp")}</StyledTooltip>
+    </Container>
   );
 };
 
