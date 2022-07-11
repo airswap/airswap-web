@@ -1,10 +1,5 @@
-import React from "react";
-
 import { Story, Meta } from "@storybook/react";
 
-import { ThemeProvider } from "styled-components";
-
-import { darkTheme, lightTheme } from "../../style/themes";
 import { Dropdown, DropdownProps, SelectOption } from "./Dropdown";
 
 export default {
@@ -23,10 +18,6 @@ const Template: Story<DropdownProps> = (args) => <Dropdown {...args} />;
 
 export const Time = Template.bind({});
 Time.args = {
-  category: {
-    label: "SELECT TIME:",
-    value: "0",
-  },
   options: [
     { label: "MINUTE", value: "60" },
     { label: "HOUR", value: "50" },

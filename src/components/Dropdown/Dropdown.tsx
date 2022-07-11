@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 
 import Icon from "../Icon/Icon";
-import {
-  Selector,
-  Item,
-  Wrapper,
-  Arrow,
-  AbsoluteWrapper,
-} from "./Dropdown.styles";
+import { Item, Wrapper, AbsoluteWrapper, Current } from "./Dropdown.styles";
 
 export type SelectOption = {
   label: string;
@@ -15,55 +9,69 @@ export type SelectOption = {
 };
 
 export type DropdownProps = {
-  category: SelectOption;
+  value?: SelectOption;
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
+  width?: number;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
-  category,
+  value,
   options,
   onChange,
+  width,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(category);
+  const [showOptions, setShowOptions] = useState<Boolean>(false);
 
   function handleChange(newOption: SelectOption) {
-    setSelectedOption(newOption);
-    onChange(selectedOption);
+    onChange(newOption);
+  }
+
+  function handleShow() {
+    setShowOptions(!showOptions);
   }
 
   return (
     <Wrapper>
-      <AbsoluteWrapper
-        onClick={(event) => {
-          event.currentTarget.classList.toggle("show");
+      <Current
+        optionsShown={showOptions ? true : false}
+        itemWidth={width}
+        onClick={() => {
+          handleShow();
         }}
       >
-        <Selector>
-          <Item
-            className={`${
-              selectedOption === category ? "selected category" : "category"
-            }`}
-          >
-            <a>{selectedOption.label}</a>
-          </Item>
+        <Item>{value ? value.label : options[0].label}</Item>
+        <Icon name={"chevron-down"}></Icon>
+      </Current>
+      {showOptions && (
+        <AbsoluteWrapper
+          itemWidth={width}
+          onClick={() => {
+            handleShow();
+          }}
+        >
           {options.map((option, index) => {
             return (
               <Item
-                className={`${selectedOption === option ? "selected" : ""}`}
+                isSelected={
+                  value
+                    ? value.label === option.label
+                      ? true
+                      : false
+                    : index === 0
+                    ? true
+                    : false
+                }
                 onClick={() => {
-                  handleChange(options[index]);
+                  handleChange(option);
                 }}
               >
-                <a>{option.label}</a>
+                {option.label}
               </Item>
             );
           })}
-        </Selector>
-        <Arrow>
-          <Icon name={"chevron-down"}></Icon>
-        </Arrow>
-      </AbsoluteWrapper>
+        </AbsoluteWrapper>
+      )}
     </Wrapper>
   );
 };

@@ -1,97 +1,97 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
-// theme, fonts, and dimensions are currently hardcoded
-// needs to take in a prop with the relevant dimensions from the parent
+import { InputOrButtonBorderStyle } from "../../style/mixins";
 
-export const Item = styled.div`
-  display: none;
+type StyledDropdownProps = {
+  isSelected?: boolean;
+  optionsShown?: boolean;
+  itemWidth?: number;
+};
+
+export const Item = styled.button<StyledDropdownProps>`
+  ${InputOrButtonBorderStyle}
   position: relative;
-  text-align: center;
-  height: 25px;
-  width: 100px;
-  padding-left: 5px;
-
-  &.selected {
-    display: flex;
-    background-color: black;
-    border: 1px solid grey;
-    border-right: none;
-    align-items: center;
-  }
-`;
-
-export const Arrow = styled.div`
-  position: relative;
-  border: 1px solid grey;
-  border-radius: 0 10px 10px 0;
+  border-right: none;
   border-left: none;
-  height: 25px;
-  padding-left: 5px;
-  padding-right: 5px;
+  border-top: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: left;
+
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.borderGrey};
+  }
+
+  ${({ isSelected }) =>
+    isSelected &&
+    ` display: none;
+`}
+`;
+
+export const Current = styled.button<StyledDropdownProps>`
+  ${InputOrButtonBorderStyle}
   display: flex;
+  justify-content: space-between;
   align-items: center;
-`;
-
-export const Selector = styled.div`
-  display: block;
-  cursor: pointer;
   position: relative;
-  width: fit-content;
-  height: fit-content;
-  border-radius: 5px;
-  z-index: 1;
+  border-radius: 0rem 1rem 1rem 0rem;
+  width: ${({ itemWidth }) => itemWidth || 10}rem;
+  padding: 0.5rem;
 
-  &.show > ${Item} {
-    display: flex;
-    align-items: center;
-    color: blue;
-  }
-`;
-
-export const Wrapper = styled.div`
-  font-size: 0.6rem;
-  font-weight: bold;
-  color: white;
-`;
-
-export const AbsoluteWrapper = styled.div`
-  background-color: black;
-  position: absolute;
-  display: flex;
-  height: 25px;
-
-  & > .show {
-    border: 1px solid grey;
-    border-radius: 0 10px 10px 0;
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderGrey};
+    background-color: ${({ theme }) => theme.colors.borderGrey};
   }
 
-  &.show > ${Selector} {
-    background-color: black;
-    border-radius: 0 0 5px 5px;
-    border: 1px solid grey;
-    overflow: hidden;
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.borderGrey};
   }
 
-  &.show > ${Selector} > ${Item} {
-    display: flex;
-    align-items: center;
-  }
-
-  &.show > ${Selector} > .selected {
+  & > ${Item} {
     border: none;
   }
 
-  &.show > ${Selector} > .category {
-    background: grey;
-    border-bottom: 1px solid grey;
+  ${({ optionsShown }) =>
+    optionsShown &&
+    ` border-radius: 0rem 1rem 0rem 0rem;
+`}
+`;
+
+export const Wrapper = styled.div``;
+
+export const AbsoluteWrapper = styled.button<StyledDropdownProps>`
+  ${InputOrButtonBorderStyle}
+
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  border-radius: 0 0 1rem 1rem;
+  border-top: none;
+  width: ${({ itemWidth }) => itemWidth || 10}rem;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.borderGrey};
   }
 
-  &.show > ${Arrow} > .icon {
-    color: black;
-  }
+  & ${Item} {
+    width: ${({ itemWidth }) => itemWidth || 10}rem;
+    padding: 0.5rem;
 
-  &.show > ${Arrow} {
-    padding-left: 4px;
-    color: black;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: ${({ theme }) => theme.colors.borderGrey};
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 `;
