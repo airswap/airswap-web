@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Icon from "../Icon/Icon";
 import { Item, Wrapper, AbsoluteWrapper, Current } from "./Dropdown.styles";
@@ -9,59 +9,35 @@ export type SelectOption = {
 };
 
 export type DropdownProps = {
-  value?: SelectOption;
+  value: SelectOption;
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
-  width?: number;
+  className?: string;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
   value,
   options,
   onChange,
-  width,
+  className,
 }) => {
-  const [showOptions, setShowOptions] = useState<Boolean>(false);
-
   function handleChange(newOption: SelectOption) {
     onChange(newOption);
   }
 
-  function handleShow() {
-    setShowOptions(!showOptions);
-  }
-
   return (
-    <Wrapper>
-      <Current
-        optionsShown={showOptions ? true : false}
-        itemWidth={width}
-        onClick={() => {
-          handleShow();
-        }}
-      >
-        <Item>{value ? value.label : options[0].label}</Item>
-        <Icon name={"chevron-down"}></Icon>
+    <Wrapper className={className}>
+      <Current>
+        {value.label}
+        <Icon name={"chevron-down"} />
       </Current>
-      {showOptions && (
-        <AbsoluteWrapper
-          itemWidth={width}
-          onClick={() => {
-            handleShow();
-          }}
-        >
-          {options.map((option, index) => {
+      <AbsoluteWrapper>
+        {options
+          .filter((option) => option.value !== value.value)
+          .map((option) => {
             return (
               <Item
-                isSelected={
-                  value
-                    ? value.label === option.label
-                      ? true
-                      : false
-                    : index === 0
-                    ? true
-                    : false
-                }
+                key={option.value}
                 onClick={() => {
                   handleChange(option);
                 }}
@@ -70,8 +46,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               </Item>
             );
           })}
-        </AbsoluteWrapper>
-      )}
+      </AbsoluteWrapper>
     </Wrapper>
   );
 };

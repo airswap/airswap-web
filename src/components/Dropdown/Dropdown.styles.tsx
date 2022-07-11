@@ -1,97 +1,69 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyle } from "../../style/mixins";
 
-type StyledDropdownProps = {
-  isSelected?: boolean;
-  optionsShown?: boolean;
-  itemWidth?: number;
-};
+const ButtonStyle = css`
+  ${InputOrButtonBorderStyle};
 
-export const Item = styled.button<StyledDropdownProps>`
-  ${InputOrButtonBorderStyle}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: relative;
-  border-right: none;
-  border-left: none;
-  border-top: none;
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  text-align: left;
+  overflow: hidden;
+  background: ${({ theme }) => theme.colors.black};
 
   &:hover,
-  &:active,
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.borderGrey};
+  &:active {
+    z-index: 1;
   }
-
-  ${({ isSelected }) =>
-    isSelected &&
-    ` display: none;
-`}
 `;
 
-export const Current = styled.button<StyledDropdownProps>`
-  ${InputOrButtonBorderStyle}
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  border-radius: 0rem 1rem 1rem 0rem;
-  width: ${({ itemWidth }) => itemWidth || 10}rem;
-  padding: 0.5rem;
+export const Item = styled.button`
+  ${ButtonStyle};
 
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.borderGrey};
-    background-color: ${({ theme }) => theme.colors.borderGrey};
+  margin-top: -1px;
+
+  &:first-child {
+    border-top: 0;
   }
 
-  &:active,
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.borderGrey};
+  &:last-child {
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
   }
-
-  & > ${Item} {
-    border: none;
-  }
-
-  ${({ optionsShown }) =>
-    optionsShown &&
-    ` border-radius: 0rem 1rem 0rem 0rem;
-`}
 `;
 
-export const Wrapper = styled.div``;
-
-export const AbsoluteWrapper = styled.button<StyledDropdownProps>`
-  ${InputOrButtonBorderStyle}
-
-  display: flex;
+export const AbsoluteWrapper = styled.div`
+  display: none;
   flex-direction: column;
   position: absolute;
-  border-radius: 0 0 1rem 1rem;
-  border-top: none;
-  width: ${({ itemWidth }) => itemWidth || 10}rem;
-  overflow: hidden;
-  cursor: pointer;
+  z-index: 1;
+  width: 100%;
+  margin-top: 1px;
+`;
 
-  &:hover,
-  &:active,
+export const Current = styled.button`
+  ${InputOrButtonBorderStyle};
+  ${ButtonStyle};
+
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+
   &:focus {
-    border-color: ${({ theme }) => theme.colors.borderGrey};
-  }
+    border-bottom-right-radius: 0;
 
-  & ${Item} {
-    width: ${({ itemWidth }) => itemWidth || 10}rem;
-    padding: 0.5rem;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: ${({ theme }) => theme.colors.borderGrey};
-    }
-
-    &:last-child {
-      border-bottom: none;
+    & + ${AbsoluteWrapper} {
+      display: flex;
     }
   }
+`;
+
+export const Wrapper = styled.div`
+  position: relative;
 `;
