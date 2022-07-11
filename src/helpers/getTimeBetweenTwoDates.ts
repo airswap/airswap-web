@@ -18,7 +18,7 @@ export default function getTimeBetweenTwoDates(
     return { timeUnit: TimeUnit.Minute, amount: 0 };
   }
 
-  const { minutes, hours, days, weeks, months, years } =
+  const { minutes, hours, days, months, years } =
     getDifferenceBetweenDatesInTimeUnits(date1, date2);
 
   if (years) {
@@ -27,10 +27,6 @@ export default function getTimeBetweenTwoDates(
 
   if (months) {
     return { timeUnit: TimeUnit.Month, amount: months };
-  }
-
-  if (weeks) {
-    return { timeUnit: TimeUnit.Week, amount: weeks };
   }
 
   if (days) {

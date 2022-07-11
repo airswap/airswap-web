@@ -1,27 +1,29 @@
-import { addDays, addHours, addMinutes, addWeeks } from "date-fns";
+import { addDays, addHours, addMinutes, addSeconds, addWeeks } from "date-fns";
 
 import getDifferenceBetweenDatesInTimeUnits from "./getDifferenceBetweenDatesInTimeUnits";
 
 describe("getDifferenceBetweenDatesInTimeUnits", () => {
   it("should return the difference in time units between two dates", () => {
+    // Add second to prevent tests failing because of 1ms.
+    const now = addSeconds(new Date(), 1);
     const result1 = getDifferenceBetweenDatesInTimeUnits(
-      addMinutes(new Date(), 1),
+      addMinutes(now, 1),
       new Date()
     );
     const result2 = getDifferenceBetweenDatesInTimeUnits(
-      addHours(new Date(), 2),
+      addHours(now, 2),
       new Date()
     );
     const result3 = getDifferenceBetweenDatesInTimeUnits(
-      addDays(new Date(), 3),
+      addDays(now, 3),
       new Date()
     );
     const result4 = getDifferenceBetweenDatesInTimeUnits(
-      addDays(addWeeks(new Date(), 4), 4),
+      addDays(addWeeks(now, 4), 4),
       new Date()
     );
     const result5 = getDifferenceBetweenDatesInTimeUnits(
-      addDays(addWeeks(new Date(), 4), 7),
+      addDays(addWeeks(now, 4), 7),
       new Date()
     );
 
