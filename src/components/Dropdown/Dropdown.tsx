@@ -38,7 +38,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             return (
               <Item
                 key={option.value}
-                onClick={() => {
+                onMouseDown={() => {
                   handleChange(option);
                 }}
               >
