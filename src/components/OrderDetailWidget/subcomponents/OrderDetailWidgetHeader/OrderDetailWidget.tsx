@@ -16,7 +16,7 @@ const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
       <Title type="h2" as="h1">
         {title}
       </Title>
-      <ExpiryIndicator expiry={new Date("2022-12-11 23:00:00")} />
+      <ExpiryIndicator expiry={new Date("2022-12-11T23:00:00")} />
     </WidgetHeader>
   );
 };
