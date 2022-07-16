@@ -53,14 +53,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
     }
   };
 
-  const handleCurrentClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSelectBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
+    setActiveHoverIndex(
+      options.findIndex((option) => option.value === selectedOption.value)
+    );
+  };
+
+  const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Unlike other browsers, on safari clicking a button won't focus it.
     e.currentTarget.focus();
   };
 
   return (
     <Wrapper className={className}>
-      <Select onClick={handleCurrentClick}>
+      <Select onClick={handleSelectClick} onBlur={handleSelectBlur}>
         <ButtonText>{selectedOption.label}</ButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>

@@ -11,12 +11,15 @@ const ButtonStyle = css`
   align-items: center;
   justify-content: space-between;
   position: relative;
+  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   width: 100%;
   height: var(--dropdown-button-height);
   padding: 0 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
   background: ${({ theme }) => theme.colors.black};
 `;
