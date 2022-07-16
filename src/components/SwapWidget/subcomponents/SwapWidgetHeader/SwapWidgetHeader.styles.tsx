@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
-import { Dropdown } from "../../../Dropdown/Dropdown";
 import Icon from "../../../Icon/Icon";
 
 export const PillStyle = css`
