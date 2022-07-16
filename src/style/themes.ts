@@ -169,6 +169,7 @@ export const darkTheme: DefaultTheme = {
     buttonGlow: "0 0 2rem 0rem #2b71ff",
     buttonGlowFill: "#2b71ffdd",
     tooltipGlow: "0.25rem 0.25rem 0.625rem rgba(0, 0, 0, 0.5)",
+    selectOptionsShadow: "0 0.25rem 1.75rem #000000",
   },
   typography,
 };
@@ -200,6 +201,7 @@ export const lightTheme: DefaultTheme = {
     buttonGlow: "0 0 1rem 0rem #FFFFFF",
     buttonGlowFill: "#FFFFFF",
     tooltipGlow: "0.25rem 0.25rem 0.625rem rgba(255, 255, 255, 0.5)",
+    selectOptionsShadow: "0 0.25rem 1.75rem #000000",
   },
   typography,
 };

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../style/mixins";
+import { InputOrButtonBorderStyle, TextEllipsis } from "../../style/mixins";
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyle};
@@ -10,42 +10,89 @@ const ButtonStyle = css`
   justify-content: space-between;
   position: relative;
   width: 100%;
-  height: 2rem;
+  height: var(--dropdown-button-height);
   padding: 0 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   overflow: hidden;
   background: ${({ theme }) => theme.colors.black};
-
-  &:hover,
-  &:active {
-    z-index: 1;
-  }
 `;
 
-export const Item = styled.button`
+export const ItemBackground = styled.div`
   ${ButtonStyle};
 
+  transition: transform 0.3s ease-out;
+  position: absolute;
+  top: var(--dropdown-options-wrapper-padding);
   margin-top: -1px;
+  width: calc(100% - var(--dropdown-options-wrapper-padding) * 2);
+  pointer-events: none;
+  background: ${({ theme }) => theme.colors.borderGrey};
+`;
 
-  &:first-child {
-    border-top: 0;
+export const Option = styled.button<{ isActive: boolean; index: number }>`
+  ${ButtonStyle};
+
+  position: relative;
+  border-color: transparent;
+  background: none;
+  z-index: 1;
+
+  &:hover,
+  &:focus {
+    z-index: 3;
+  }
+
+  &:hover:not(:focus) {
+    border-color: transparent;
+  }
+
+  &:not(:first-child) {
+    margin-top: -1px;
   }
 
   &:last-child {
     border-bottom-right-radius: 1rem;
     border-bottom-left-radius: 1rem;
   }
+
+  ${({ isActive, index }) =>
+    isActive &&
+    `
+    z-index: 2;
+
+    &:nth-child(${index + 1}) ~ ${ItemBackground} {
+      transform: translateY(calc(${index} * var(--dropdown-button-height) - ${index}px));
+    }
+  `};
 `;
 
-export const AbsoluteWrapper = styled.div`
+export const ButtonText = styled.div`
+  ${TextEllipsis};
+`;
+
+export const SelectOptions = styled.div<{ activeIndex: number }>`
+  transform: translateY(
+    calc(
+      ${(props) => -props.activeIndex} * var(--dropdown-button-height) -
+        ${(props) => -props.activeIndex}px
+    )
+  );
+
   display: none;
   flex-direction: column;
   position: absolute;
-  z-index: 1;
-  width: 100%;
+  width: calc(var(--dropdown-options-wrapper-padding) * 2 + 100%);
+  top: calc(var(--dropdown-options-wrapper-padding) * -1 - 2px);
+  left: calc(var(--dropdown-options-wrapper-padding) * -1 - 1px);
+  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+  border-radius: 4px;
   margin-top: 1px;
+  padding: var(--dropdown-options-wrapper-padding);
+  background: ${({ theme }) => theme.colors.darkGrey};
+  box-shadow: ${({ theme }) => theme.shadows.selectOptionsShadow};
+  z-index: 1;
 `;
 
 export const Current = styled.button`
@@ -54,16 +101,18 @@ export const Current = styled.button`
 
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
+  padding-right: 0.5rem;
 
-  &:focus {
-    border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
 
-    & + ${AbsoluteWrapper} {
-      display: flex;
-    }
+  &:focus + ${SelectOptions} {
+    display: flex;
   }
 `;
 
 export const Wrapper = styled.div`
   position: relative;
+
+  --dropdown-button-height: 2rem;
+  --dropdown-options-wrapper-padding: 0.5rem;
 `;

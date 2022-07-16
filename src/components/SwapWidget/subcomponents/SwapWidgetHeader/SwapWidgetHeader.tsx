@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../constants/configParams";
@@ -10,6 +10,7 @@ import {
   Button,
   NewQuoteText,
   Quote,
+  StyledDropdown,
   StyledIcon,
 } from "./SwapWidgetHeader.styles";
 
@@ -21,6 +22,13 @@ interface SwapWidgetHeaderProps {
   expiry?: string;
 }
 
+const options = [
+  { label: "MINUTE", value: "60" },
+  { label: "HOUR", value: "50" },
+  { label: "DAY", value: "4" },
+  { label: "WEEK", value: "3" },
+];
+
 const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   title,
   isQuote,
@@ -29,6 +37,8 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   expiry,
 }) => {
   const { t } = useTranslation();
+
+  const [activeOption, setActiveOption] = useState(options[3]);
 
   const expiryTime = useMemo(() => {
     return expiry ? parseInt(expiry) - RFQ_EXPIRY_BUFFER_MS / 1000 : undefined;
@@ -39,6 +49,12 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
       <Title type="h2" as="h1">
         {title}
       </Title>
+
+      <StyledDropdown
+        value={activeOption}
+        options={options}
+        onChange={setActiveOption}
+      />
 
       {protocol === "last-look" && isQuote && (
         <Button onClick={onGasFreeTradeButtonClick}>
