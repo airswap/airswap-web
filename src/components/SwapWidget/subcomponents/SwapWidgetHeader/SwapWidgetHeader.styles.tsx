@@ -40,8 +40,3 @@ export const NewQuoteText = styled.span`
 export const StyledIcon = styled(Icon)`
   margin-right: 0.375rem;
 `;
-
-export const StyledDropdown = styled(Dropdown)`
-  width: 6.25rem;
-  z-index: 2;
-`;
