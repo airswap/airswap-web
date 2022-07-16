@@ -51,7 +51,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
       </Title>
 
       <StyledDropdown
-        value={activeOption}
+        selectedOption={activeOption}
         options={options}
         onChange={setActiveOption}
       />

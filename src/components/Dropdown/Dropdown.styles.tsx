@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyle, TextEllipsis } from "../../style/mixins";
+import Icon from "../Icon/Icon";
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyle};
@@ -31,7 +33,7 @@ export const ItemBackground = styled.div`
   background: ${({ theme }) => theme.colors.borderGrey};
 `;
 
-export const Option = styled.button<{ isActive: boolean; index: number }>`
+export const Option = styled.button<{ isActive?: boolean; index?: number }>`
   ${ButtonStyle};
 
   position: relative;
@@ -59,6 +61,7 @@ export const Option = styled.button<{ isActive: boolean; index: number }>`
 
   ${({ isActive, index }) =>
     isActive &&
+    index !== undefined &&
     `
     z-index: 2;
 
@@ -95,19 +98,41 @@ export const SelectOptions = styled.div<{ activeIndex: number }>`
   z-index: 1;
 `;
 
-export const Current = styled.button`
+const SelectStyle = css`
   ${InputOrButtonBorderStyle};
   ${ButtonStyle};
 
   border-top-right-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  padding-right: 0.5rem;
-
   border-bottom-right-radius: 0;
+  padding-right: 0.5rem;
 
   &:focus + ${SelectOptions} {
     display: flex;
   }
+`;
+
+export const Select = styled.button`
+  ${SelectStyle};
+`;
+
+export const NativeSelectWrapper = styled.div`
+  position: relative;
+`;
+
+export const NativeSelectIcon = styled(Icon)`
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5625rem;
+  pointer-events: none;
+  z-index: 2;
+`;
+
+export const NativeSelect = styled.select`
+  ${SelectStyle}
+  ${TextEllipsis};
+
+  appearance: none;
+  padding-right: 2rem;
 `;
 
 export const Wrapper = styled.div`
@@ -115,4 +140,18 @@ export const Wrapper = styled.div`
 
   --dropdown-button-height: 2rem;
   --dropdown-options-wrapper-padding: 0.5rem;
+
+  ${NativeSelectWrapper} {
+    display: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    ${Select} {
+      display: none;
+    }
+
+    ${NativeSelectWrapper} {
+      display: block;
+    }
+  }
 `;
