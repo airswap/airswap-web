@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import Checkbox from "../Checkbox/Checkbox";
 import SwapInputs from "../SwapInputs/SwapInputs";
-import { Container } from "./MakeWidget.styles";
+import { Container, StyledInfoSection } from "./MakeWidget.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
@@ -30,11 +30,13 @@ const MakeWidget: FC = () => {
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
-      <Checkbox
-        label="Publicy list"
-        subLabel="Allow others to publicly find my swap"
-        onChange={console.log}
-      />
+      <StyledInfoSection>
+        <Checkbox
+          label={t("orders.publiclyList")}
+          subLabel={t("orders.publiclyListDescription")}
+          onChange={console.log}
+        />
+      </StyledInfoSection>
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}

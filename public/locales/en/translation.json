@@ -130,7 +130,9 @@
     "editCustomTokens": "Edit Custom Tokens",
     "settings": "Settings",
     "revertPrice": "Revert price",
-    "moreInformation": "More information"
+    "moreInformation": "More information",
+    "publiclyList": "Publicly list",
+    "publiclyListDescription": "Allow others to publicly find my swap"
   },
   "toast": {
     "swapComplete": "Swap Complete",

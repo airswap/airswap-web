@@ -41,6 +41,8 @@ export const Label = styled.div`
   font-weight: 700;
   line-height: 1.5;
   text-transform: uppercase;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const SubLabel = styled.div`
