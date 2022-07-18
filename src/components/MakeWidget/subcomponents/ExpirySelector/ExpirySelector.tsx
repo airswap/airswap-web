@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Dropdown, SelectOption } from "../../../Dropdown/Dropdown";
 import { Wrapper, Title, Input } from "./ExpirySelector.styles";
@@ -27,43 +28,35 @@ const options = [
 const floatRegExp = new RegExp("^([0-9])*$");
 
 export type ExpirySelectorProps = {
-  updateExpiry: (msToExpiry: number) => void;
+  onChange: (expiryDate: number) => void;
 };
 
-export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
-  updateExpiry,
-}) => {
+export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
+  const { t } = useTranslation();
   const [unit, setUnit] = useState(options[0]);
   const [amount, setAmount] = useState("1");
 
   useEffect(() => {
-    updateExpiry((parseInt(amount) || 1) * parseInt(unit.value));
+    const msToExpiry = (parseInt(amount, 0) || 0) * parseInt(unit.value, 0);
+    onChange(new Date().getTime() + msToExpiry);
   }, [unit, amount]);
 
   function handleUnitChange(option: SelectOption) {
     setUnit(option);
   }
 
-  function handleAmountChange(value: string) {
+  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.target;
     if (value === "" || floatRegExp.test(value)) {
-      value = value.replace(/^0+/, "0");
-      setAmount(value);
+      setAmount(value.replace(/^0+/, "0"));
     }
   }
 
   return (
     <Wrapper>
-      <Title>EXPIRES IN</Title>
-      <Input
-        maxLength={3}
-        value={amount}
-        onChange={(e) => handleAmountChange(e.target.value)}
-      ></Input>
-      <Dropdown
-        value={unit}
-        options={options}
-        onChange={handleUnitChange}
-      ></Dropdown>
+      <Title>{t("common.expiresIn")}</Title>
+      <Input maxLength={3} value={amount} onChange={handleAmountChange} />
+      <Dropdown value={unit} options={options} onChange={handleUnitChange} />
     </Wrapper>
   );
 };
