@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Dropdown, SelectOption } from "../../../Dropdown/Dropdown";
 import { Wrapper, Title, Input } from "./ExpirySelector.styles";
+import getExpiryUnitText from "./helpers/getExpiryUnitText";
 
 const MS_PER_MINUTE = 60000;
 
@@ -33,7 +34,15 @@ export type ExpirySelectorProps = {
 
 export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
   const { t } = useTranslation();
-  const [unit, setUnit] = useState(options[0]);
+
+  const translatedOptions = useMemo(() => {
+    return options.map((option) => ({
+      label: getExpiryUnitText(option.label, t),
+      value: option.value,
+    }));
+  }, [options, t]);
+
+  const [unit, setUnit] = useState(translatedOptions[0]);
   const [amount, setAmount] = useState("1");
 
   useEffect(() => {
@@ -56,7 +65,11 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
     <Wrapper>
       <Title>{t("common.expiresIn")}</Title>
       <Input maxLength={3} value={amount} onChange={handleAmountChange} />
-      <Dropdown value={unit} options={options} onChange={handleUnitChange} />
+      <Dropdown
+        value={unit}
+        options={translatedOptions}
+        onChange={handleUnitChange}
+      />
     </Wrapper>
   );
 };

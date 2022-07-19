@@ -49,7 +49,11 @@
     "sign": "Sign",
     "make": "Make",
     "myOrders": "My orders",
-    "makeOrder": "Make order"
+    "makeOrder": "Make order",
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "weeks": "weeks"
   },
   "information": {
     "join.title": "Join AirSwap",
