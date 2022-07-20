@@ -164,7 +164,7 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {open && (
         <Container
           ref={containerRef}

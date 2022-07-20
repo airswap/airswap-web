@@ -34,7 +34,7 @@ type StyledTradeContainerProps = {
   $isConnected?: boolean;
 };
 
-export const StyledTradeContainer = styled.div<StyledTradeContainerProps>`
+export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   position: relative;
   display: flex;
   align-items: center;

@@ -44,7 +44,11 @@
         "reloadPage": "Reload Page",
         "settings": "Settings",
         "closeOverlay": "Close overlay",
-        "about": ""
+        "about": "",
+        "sign": "Sign",
+        "make": "Make",
+        "myOrders": "My orders",
+        "makeOrder": "Make order"
     },
     "information": {
         "join.title": "Join AirSwap",

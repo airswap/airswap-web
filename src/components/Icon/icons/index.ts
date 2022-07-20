@@ -22,6 +22,7 @@ import IconLink from "./IconLink";
 import IconMedium from "./IconMedium";
 import IconMenu from "./IconMenu";
 import IconPending from "./IconPending";
+import IconPlus from "./IconPlus";
 import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
 import IconSwapHorizontal from "./IconSwapHorizontal";
@@ -56,6 +57,7 @@ export {
   IconMedium,
   IconMenu,
   IconPending,
+  IconPlus,
   IconTelegram,
   IconTwitter,
   IconStar,

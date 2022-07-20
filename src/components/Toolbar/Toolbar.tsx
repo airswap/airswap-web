@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
+import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
-import { InformationModalType } from "../InformationModals/InformationModals";
 import {
   StyledAirswapButton,
   StyledSocialButtons,
@@ -15,7 +15,6 @@ import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 import ToolbarMobileTopBar from "./subcomponents/ToolbarMobileTopBar/ToolbarMobileTopBar";
 
 export type ToolbarProps = {
-  onLinkButtonClick?: (type: InformationModalType) => void;
   onAirswapButtonClick?: () => void;
   onMobileCloseButtonClick?: () => void;
   isHiddenOnMobile?: boolean;
@@ -24,7 +23,6 @@ export type ToolbarProps = {
 export const mobileMenuShowHideAnimationDuration = 0.5;
 
 const Toolbar: FC<ToolbarProps> = ({
-  onLinkButtonClick,
   onAirswapButtonClick,
   onMobileCloseButtonClick,
   isHiddenOnMobile,
@@ -69,8 +67,15 @@ const Toolbar: FC<ToolbarProps> = ({
       <ToolbarButtonsContainer ref={scrollContainerRef} $overflow={overflow}>
         <ToolbarButton
           iconName="swap-horizontal"
-          text="OTC"
-          href="https://trader.airswap.io/"
+          iconSize={1.25}
+          text={t("common.swap")}
+          link={AppRoutes.swap}
+        />
+        <ToolbarButton
+          iconName="plus"
+          iconSize={0.875}
+          text={t("common.make")}
+          link={AppRoutes.myOrders}
         />
         <ToolbarButton
           iconName="bars"

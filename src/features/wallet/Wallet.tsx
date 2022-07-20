@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ import {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
   StyledMenuButton,
@@ -64,17 +65,11 @@ import {
 } from "./walletSlice";
 
 type WalletPropsType = {
-  setShowWalletList: (x: boolean) => void;
-  transactionsTabOpen: boolean;
-  setTransactionsTabOpen: (x: boolean) => void;
   onAirswapButtonClick: () => void;
   onMobileMenuButtonClick: () => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
-  setShowWalletList,
-  transactionsTabOpen,
-  setTransactionsTabOpen,
   onAirswapButtonClick,
   onMobileMenuButtonClick,
 }) => {
@@ -90,6 +85,10 @@ export const Wallet: FC<WalletPropsType> = ({
   const transactions = useAppSelector(selectTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const allTokens = useAppSelector(selectAllTokenInfo);
+
+  // Interface context
+  const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
@@ -136,6 +135,7 @@ export const Wallet: FC<WalletPropsType> = ({
       };
     }
   }, [dispatch, library, chainId, account, swapContract, wrapContract]);
+
   useEffect(() => {
     if (chainId && account && library) {
       const swapContract = new Contract(
@@ -226,10 +226,11 @@ export const Wallet: FC<WalletPropsType> = ({
           } as any)
         );
       });
-    } else {
+    } else if (!active) {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library, connector, provider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId, active]);
 
   // Subscribe to changes in balance
 
@@ -305,7 +306,7 @@ export const Wallet: FC<WalletPropsType> = ({
         <StyledSettingsButton
           settingsOpen={settingsOpen}
           setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabOpen}
+          transactionsTabOpen={transactionsTabIsOpen}
         />
         <WalletButton
           address={account}
@@ -313,7 +314,7 @@ export const Wallet: FC<WalletPropsType> = ({
             error && error instanceof UnsupportedChainIdError
           }
           glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
           setShowWalletList={setShowWalletList}
         />
         <StyledAirswapButton
@@ -326,15 +327,15 @@ export const Wallet: FC<WalletPropsType> = ({
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
+        open={transactionsTabIsOpen}
+        setTransactionsTabOpen={setTransactionsTabIsOpen}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setTransactionsTabOpen(false);
+          setTransactionsTabIsOpen(false);
         }}
         transactions={transactions}
         tokens={allTokens}

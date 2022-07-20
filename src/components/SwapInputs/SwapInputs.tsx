@@ -3,47 +3,51 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
-import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import TokenSelect from "../../../TokenSelect/TokenSelect";
-import getSwapInputIcon from "../../helpers/getSwapInputIcon";
-import getTokenMaxInfoText from "../../helpers/getTokenMaxInfoText";
-import Tooltip from "../Tooltip/Tooltip";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
+import TokenSelect from "../TokenSelect/TokenSelect";
 import { Container, SwapIconContainer } from "./SwapInputs.styles";
+import getSwapInputIcon from "./helpers/getSwapInputIcon";
+import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
+import Tooltip from "./subcomponents/Tooltip/Tooltip";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 const SwapInputs: FC<{
-  tradeNotAllowed: boolean;
+  disabled?: boolean;
+  isRequesting?: boolean;
+  readOnly?: boolean;
+  showMaxButton?: boolean;
+  showMaxInfoButton?: boolean;
+  tradeNotAllowed?: boolean;
+
   baseAmount: string;
   baseTokenInfo: TokenInfo | null;
+  maxAmount: string | null;
+  side: "buy" | "sell";
   quoteTokenInfo: TokenInfo | null;
   quoteAmount: string;
-  side: "buy" | "sell";
-  disabled: boolean;
-  readOnly: boolean;
-  isRequesting: boolean;
+
   onMaxButtonClick: () => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
-  showMaxButton: boolean;
-  showMaxInfoButton: boolean;
-  maxAmount: string | null;
 }> = ({
-  tradeNotAllowed,
-  baseAmount,
-  quoteAmount,
-  side,
-  disabled,
-  readOnly,
-  onMaxButtonClick,
-  onChangeTokenClick,
-  isRequesting,
-  baseTokenInfo,
-  quoteTokenInfo,
-  onBaseAmountChange,
+  disabled = false,
+  isRequesting = false,
+  readOnly = false,
   showMaxButton = false,
   showMaxInfoButton = false,
-  maxAmount,
+  tradeNotAllowed = false,
+
+  baseAmount,
+  baseTokenInfo,
+  maxAmount = null,
+  quoteAmount,
+  quoteTokenInfo,
+  side,
+
+  onBaseAmountChange,
+  onMaxButtonClick,
+  onChangeTokenClick,
 }) => {
   const { t } = useTranslation();
   const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
