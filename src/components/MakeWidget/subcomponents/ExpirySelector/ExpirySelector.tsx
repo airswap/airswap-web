@@ -3,28 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Dropdown, SelectOption } from "../../../Dropdown/Dropdown";
 import { Wrapper, Title, Input } from "./ExpirySelector.styles";
-import getExpiryUnitText from "./helpers/getExpiryUnitText";
-
-const MS_PER_MINUTE = 60000;
-
-const options = [
-  {
-    label: "minutes",
-    value: `${MS_PER_MINUTE}`,
-  },
-  {
-    label: "hours",
-    value: `${60 * MS_PER_MINUTE}`,
-  },
-  {
-    label: "days",
-    value: `${24 * 60 * MS_PER_MINUTE}`,
-  },
-  {
-    label: "weeks",
-    value: `${7 * 24 * 60 * MS_PER_MINUTE}`,
-  },
-];
+import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
 
 const floatRegExp = new RegExp("^([0-9])*$");
 
@@ -36,11 +15,8 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
   const { t } = useTranslation();
 
   const translatedOptions = useMemo(() => {
-    return options.map((option) => ({
-      label: getExpiryUnitText(option.label, t),
-      value: option.value,
-    }));
-  }, [options, t]);
+    return getExpirySelectOptions(t);
+  }, [t]);
 
   const [unit, setUnit] = useState(translatedOptions[0]);
   const [amount, setAmount] = useState("1");
@@ -48,7 +24,7 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
   useEffect(() => {
     const msToExpiry = (parseInt(amount, 0) || 0) * parseInt(unit.value, 0);
     onChange(new Date().getTime() + msToExpiry);
-  }, [unit, amount]);
+  }, [unit, amount, onChange]);
 
   function handleUnitChange(option: SelectOption) {
     setUnit(option);
