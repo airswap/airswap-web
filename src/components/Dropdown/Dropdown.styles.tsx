@@ -74,8 +74,17 @@ export const Option = styled.button<{ isActive?: boolean; index?: number }>`
   `};
 `;
 
-export const ButtonText = styled.div`
+export const SelectButtonText = styled.div`
   ${TextEllipsis};
+
+  text-align: left;
+`;
+
+export const DropdownButtonText = styled.div`
+  ${TextEllipsis};
+
+  text-align: left;
+  width: 100%;
 `;
 
 export const SelectOptions = styled.div<{ activeIndex: number }>`

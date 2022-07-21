@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
+import { Dropdown } from "../../../Dropdown/Dropdown";
+import { SelectButtonText } from "../../../Dropdown/Dropdown.styles";
 
 export const SelectorStyle = css`
   ${InputOrButtonBorderStyleType2};
@@ -48,4 +50,16 @@ export const Input = styled.input`
   :focus {
     z-index: 1;
   }
+`;
+
+export const StyledDropdown = styled(Dropdown)`
+  ${SelectButtonText} {
+    max-width: 7rem;
+  }
+`;
+
+export const Sizer = styled.div`
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
 `;

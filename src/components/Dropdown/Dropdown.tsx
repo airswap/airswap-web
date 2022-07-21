@@ -1,16 +1,18 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import Icon from "../Icon/Icon";
+import { Sizer } from "../MakeWidget/subcomponents/ExpirySelector/ExpirySelector.styles";
 import {
   Option,
   Wrapper,
   SelectOptions,
   Select,
   ItemBackground,
-  ButtonText,
+  SelectButtonText,
   NativeSelect,
   NativeSelectWrapper,
   NativeSelectIcon,
+  DropdownButtonText,
 } from "./Dropdown.styles";
 
 export type SelectOption = {
@@ -31,11 +33,16 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onChange,
   className,
 }) => {
-  const activeOptionIndex = useMemo(
-    () => options.findIndex((option) => option.value === selectedOption.value),
-    [options, selectedOption]
-  );
+  const sizerRef = useRef<HTMLDivElement>(null);
 
+  const sizerWidth = useMemo(() => {
+    return sizerRef.current?.clientWidth || 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sizerRef.current]);
+
+  const [activeOptionIndex, setActiveOptionIndex] = useState(
+    options.findIndex((option) => option.value === selectedOption.value)
+  );
   const [activeHoverIndex, setActiveHoverIndex] = useState(activeOptionIndex);
 
   const handleOptionClick = (newSelectedOption: SelectOption) => {
@@ -54,9 +61,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const handleSelectBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
-    setActiveHoverIndex(
-      options.findIndex((option) => option.value === selectedOption.value)
+    const index = options.findIndex(
+      (option) => option.value === selectedOption.value
     );
+    setActiveOptionIndex(index);
+    setActiveHoverIndex(index);
   };
 
   const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,25 +76,25 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <Wrapper className={className}>
       <Select onClick={handleSelectClick} onBlur={handleSelectBlur}>
-        <ButtonText>{selectedOption.label}</ButtonText>
+        <SelectButtonText style={{ width: `${sizerWidth}px` }}>
+          {selectedOption.label}
+        </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
       <SelectOptions activeIndex={activeOptionIndex}>
-        {options.map((option, index) => {
-          return (
-            <Option
-              key={option.value}
-              isActive={activeHoverIndex === index}
-              index={index}
-              onMouseOver={() => setActiveHoverIndex(index)}
-              onPointerDown={() => {
-                handleOptionClick(option);
-              }}
-            >
-              <ButtonText>{option.label}</ButtonText>
-            </Option>
-          );
-        })}
+        {options.map((option, index) => (
+          <Option
+            key={option.value}
+            isActive={activeHoverIndex === index}
+            index={index}
+            onMouseOver={() => setActiveHoverIndex(index)}
+            onPointerDown={() => {
+              handleOptionClick(option);
+            }}
+          >
+            <DropdownButtonText>{option.label}</DropdownButtonText>
+          </Option>
+        ))}
         <ItemBackground />
       </SelectOptions>
       {/*Native Select for mobile*/}
@@ -95,16 +104,19 @@ export const Dropdown: React.FC<DropdownProps> = ({
           value={selectedOption.value}
           onChange={handleNativeSelectChange}
         >
-          {options.map((option, index) => {
-            return (
-              <Option key={option.value} as="option" value={option.value}>
-                {option.label}
-              </Option>
-            );
-          })}
+          {options.map((option, index) => (
+            <Option key={option.value} as="option" value={option.value}>
+              {option.label}
+            </Option>
+          ))}
           ;
         </NativeSelect>
       </NativeSelectWrapper>
+      <Sizer ref={sizerRef}>
+        {options.map((option) => (
+          <SelectButtonText>{option.label}</SelectButtonText>
+        ))}
+      </Sizer>
     </Wrapper>
   );
 };
