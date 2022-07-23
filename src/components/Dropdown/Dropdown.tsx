@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
 import { Sizer } from "../MakeWidget/subcomponents/ExpirySelector/ExpirySelector.styles";
@@ -33,17 +33,23 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onChange,
   className,
 }) => {
-  const sizerRef = useRef<HTMLDivElement>(null);
+  const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
-  const sizerWidth = useMemo(() => {
-    return sizerRef.current?.clientWidth || 0;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sizerRef.current]);
-
+  // activeOptionIndex is used for styling SelectOptions vertical position. This way
+  // the active option in SelectOptions always opens directly on top of the Select.
   const [activeOptionIndex, setActiveOptionIndex] = useState(
     options.findIndex((option) => option.value === selectedOption.value)
   );
+
+  // activeHoverIndex is for setting the hover effect element position. It is animated
+  // so it's a separate div element.
   const [activeHoverIndex, setActiveHoverIndex] = useState(activeOptionIndex);
+
+  const sizerRef = useCallback((node) => {
+    if (node !== null) {
+      setSelectWidth(node.getBoundingClientRect().width);
+    }
+  }, []);
 
   const handleOptionClick = (newSelectedOption: SelectOption) => {
     onChange(newSelectedOption);
@@ -76,7 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <Wrapper className={className}>
       <Select onClick={handleSelectClick} onBlur={handleSelectBlur}>
-        <SelectButtonText style={{ width: `${sizerWidth}px` }}>
+        <SelectButtonText width={selectWidth}>
           {selectedOption.label}
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />

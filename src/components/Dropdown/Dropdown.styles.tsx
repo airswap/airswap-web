@@ -74,9 +74,10 @@ export const Option = styled.button<{ isActive?: boolean; index?: number }>`
   `};
 `;
 
-export const SelectButtonText = styled.div`
+export const SelectButtonText = styled.div<{ width?: number }>`
   ${TextEllipsis};
 
+  width: ${(props) => `${props.width}px` || "auto"};
   text-align: left;
 `;
 
