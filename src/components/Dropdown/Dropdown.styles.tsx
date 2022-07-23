@@ -34,6 +34,10 @@ export const ItemBackground = styled.div`
   width: calc(100% - var(--dropdown-options-wrapper-padding) * 2);
   pointer-events: none;
   background: ${({ theme }) => theme.colors.borderGrey};
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 export const Option = styled.button<{ isActive?: boolean; index?: number }>`
