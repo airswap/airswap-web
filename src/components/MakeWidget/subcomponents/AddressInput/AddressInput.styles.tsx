@@ -13,8 +13,4 @@ export const Input = styled(TextInput)`
     font-size: 1rem;
     font-weight: 400;
   }
-
-  &:focus {
-    outline: 0;
-  }
 `;
