@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import {
   SelectLabel,
   SelectWrapper,
-} from "../../styled-components/Select/Select";
-import { Dropdown, SelectOption } from "../Dropdown/Dropdown";
+} from "../../../../styled-components/Select/Select";
+import { Dropdown, SelectOption } from "../../../Dropdown/Dropdown";
 
 export type OrderTypeSelectorProps = {
   options: SelectOption[];

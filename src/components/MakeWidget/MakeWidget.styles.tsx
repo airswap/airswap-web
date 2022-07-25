@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import InfoSection from "../InfoSection/InfoSection";
-import OrderTypeSelector from "../OrderTypeSelector/OrderTypeSelector";
+import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 
 export const Container = styled.div`
   display: flex;

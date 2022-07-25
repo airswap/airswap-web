@@ -64,12 +64,16 @@ const MakeWidget: FC = () => {
         onChange={setOrderScopeTypeOption}
       />
       <StyledInfoSection>
-        <Checkbox
-          checked={orderType === OrderType.publicListed}
-          label={t("orders.publiclyList")}
-          subLabel={t("orders.publiclyListDescription")}
-          onChange={handleOrderTypeCheckboxChange}
-        />
+        {orderType === OrderType.private ? (
+          "input"
+        ) : (
+          <Checkbox
+            checked={orderType === OrderType.publicListed}
+            label={t("orders.publiclyList")}
+            subLabel={t("orders.publiclyListDescription")}
+            onChange={handleOrderTypeCheckboxChange}
+          />
+        )}
       </StyledInfoSection>
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
