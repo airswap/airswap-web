@@ -134,7 +134,9 @@
     "publiclyList": "Publicly list",
     "publiclyListDescription": "Allow others to publicly find my swap",
     "anyone": "Anyone",
-    "someone": "Someone"
+    "someone": "Someone",
+    "counterPartyAddress": "Counterpary address",
+    "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS"
   },
   "toast": {
     "swapComplete": "Swap Complete",

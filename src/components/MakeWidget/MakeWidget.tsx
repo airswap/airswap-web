@@ -13,6 +13,7 @@ import {
 } from "./MakeWidget.styles";
 import { getOrderTypeSelectOptions } from "./helpers";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
+import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
 const MakeWidget: FC = () => {
@@ -27,6 +28,7 @@ const MakeWidget: FC = () => {
   const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
@@ -65,7 +67,7 @@ const MakeWidget: FC = () => {
       />
       <StyledInfoSection>
         {orderType === OrderType.private ? (
-          "input"
+          <AddressInput value={address} onChange={setAddress} />
         ) : (
           <Checkbox
             checked={orderType === OrderType.publicListed}

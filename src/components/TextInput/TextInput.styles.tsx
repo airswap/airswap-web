@@ -12,7 +12,7 @@ type TextInputStyleProps = {
 
 type StyledInputProps = Pick<
   React.HTMLProps<HTMLInputElement>,
-  "type" | "disabled"
+  "type" | "disabled" | "autoFocus"
 >;
 
 export const StyledFormLabel = styled(FormLabel)``;
