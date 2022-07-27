@@ -47,7 +47,7 @@ const Overlay: FC<OverlayProps> = ({
   const [initialized, setInitialized] = useState(false);
   const animationIsDisabled = !isHidden && !initialized;
 
-  useKeyPress(() => onCloseButtonClick(), ["Escape"]);
+  useKeyPress(onCloseButtonClick, ["Escape"]);
 
   useEffect(() => {
     setInitialized(true);
