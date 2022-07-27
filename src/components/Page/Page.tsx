@@ -13,6 +13,7 @@ import useHistoricalTransactions from "../../features/transactions/useHistorical
 import { Wallet } from "../../features/wallet/Wallet";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import { useKeyPress } from "../../hooks/useKeyPress";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import Overlay from "../Overlay/Overlay";
 import { StyledWalletProviderList } from "../SwapWidget/SwapWidget.styles";
@@ -43,6 +44,8 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   } = useContext(InterfaceContext);
 
   useHistoricalTransactions();
+
+  useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
   const reset = () => {
     setShowMobileToolbar(false);
