@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
@@ -14,6 +14,7 @@ import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
@@ -94,25 +95,11 @@ const TransactionsTab = ({
     () => getEtherscanWalletURL(chainId, address),
     [chainId, address]
   );
-  const handleEscKey = useCallback(
-    (e) => {
-      if (e.keyCode === 27) {
-        setTransactionsTabOpen(false);
-      }
-    },
-    [setTransactionsTabOpen]
-  );
+  useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
   };
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleEscKey, false);
-    return () => {
-      document.removeEventListener("keydown", handleEscKey, false);
-    };
-  }, [handleEscKey]);
 
   useEffect(() => {
     if (!open) {

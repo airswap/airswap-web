@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
   Container,
@@ -45,6 +46,8 @@ const Overlay: FC<OverlayProps> = ({
   const shouldReduceMotion = useReducedMotion();
   const [initialized, setInitialized] = useState(false);
   const animationIsDisabled = !isHidden && !initialized;
+
+  useKeyPress(onCloseButtonClick, ["Escape"]);
 
   useEffect(() => {
     setInitialized(true);
