@@ -13,12 +13,12 @@ export const Button = styled.div`
 `;
 
 export const Text = styled.div`
-  line-height: normal;
+  /* text will not vertically align according to figma spec*/
+  margin-top: -2px;
 `;
 
 export const Wrapper = styled.div`
   ${RateFieldStyle}
-
   display: flex;
   align-items: center;
   gap: 0.375rem;
