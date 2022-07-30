@@ -1,29 +1,43 @@
+import { useState } from "react";
+
+import BigNumber from "bignumber.js";
+
 import Icon from "../../../Icon/Icon";
+import IconButton from "../../../IconButton/IconButton";
 import { Text, Wrapper, RateBox, Button } from "./RateField.styles";
 
 export type RateFieldProps = {
-  TokenPair: string[];
-  Rate: number;
-  onChange: (TokenPair: string[]) => void;
+  Token1: string;
+  Token2: string;
+  Rate: BigNumber;
+  ClassName: string;
 };
 
 export const RateField: React.FC<RateFieldProps> = ({
-  TokenPair,
+  Token1,
+  Token2,
   Rate,
-  onChange,
+  ClassName,
 }) => {
+  const [TokenPair, setTokenPair] = useState([Token1, Token2]);
+  const [RelRate, setRelRate] = useState(Rate.toNumber());
+
   function handleChange() {
-    onChange([TokenPair[1], TokenPair[0]]);
+    setTokenPair([TokenPair[1], TokenPair[0]]);
+    setRelRate(1 / RelRate);
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={ClassName}>
       <Text>{` 1 ${TokenPair[0]} =`}</Text>
-      <RateBox>{Rate.toFixed(1)}</RateBox>
+      <RateBox>{RelRate.toFixed(1)}</RateBox>
       <Text>{TokenPair[1]}</Text>
-      <Button onClick={() => handleChange()}>
-        <Icon name={"swap-horizontal"} iconSize={0.75} className={"icon"} />
-      </Button>
+      <IconButton
+        icon="swap-horizontal"
+        iconSize={0.75}
+        className="icon"
+        onClick={handleChange}
+      />
     </Wrapper>
   );
 };
