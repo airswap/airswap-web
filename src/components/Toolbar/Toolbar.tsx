@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
-import { AppRoutes } from "../../routes";
 import breakPoints from "../../style/breakpoints";
 import {
   StyledAirswapButton,
@@ -65,17 +64,22 @@ const Toolbar: FC<ToolbarProps> = ({
         iconSize={2.5}
       />
       <ToolbarButtonsContainer ref={scrollContainerRef} $overflow={overflow}>
+        {/*<ToolbarButton*/}
+        {/*  iconName="swap-horizontal"*/}
+        {/*  iconSize={1.25}*/}
+        {/*  text={t("common.swap")}*/}
+        {/*  link={AppRoutes.swap}*/}
+        {/*/>*/}
+        {/*<ToolbarButton*/}
+        {/*  iconName="plus"*/}
+        {/*  iconSize={0.875}*/}
+        {/*  text={t("common.make")}*/}
+        {/*  link={AppRoutes.myOrders}*/}
+        {/*/>*/}
         <ToolbarButton
           iconName="swap-horizontal"
-          iconSize={1.25}
-          text={t("common.swap")}
-          link={AppRoutes.swap}
-        />
-        <ToolbarButton
-          iconName="plus"
-          iconSize={0.875}
-          text={t("common.make")}
-          link={AppRoutes.myOrders}
+          text="OTC"
+          href="https://trader.airswap.io/"
         />
         <ToolbarButton
           iconName="bars"
