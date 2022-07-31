@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Dropdown, SelectOption } from "../../../Dropdown/Dropdown";
-import { Wrapper, Title, Input } from "./ExpirySelector.styles";
+import { SelectOption } from "../../../Dropdown/Dropdown";
+import { Wrapper, Title, Input, StyledDropdown } from "./ExpirySelector.styles";
 import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
 
 const floatRegExp = new RegExp("^([0-9])*$");
@@ -41,8 +41,8 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
     <Wrapper>
       <Title>{t("common.expiresIn")}</Title>
       <Input maxLength={3} value={amount} onChange={handleAmountChange} />
-      <Dropdown
-        value={unit}
+      <StyledDropdown
+        selectedOption={unit}
         options={translatedOptions}
         onChange={handleUnitChange}
       />
