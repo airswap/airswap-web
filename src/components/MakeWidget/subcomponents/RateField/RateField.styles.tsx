@@ -8,12 +8,7 @@ export const RateFieldStyle = css`
   font-size: 0.75rem;
 `;
 
-export const Button = styled.div`
-  cursor: pointer;
-`;
-
 export const Text = styled.div`
-  /* text will not vertically align according to figma spec*/
   margin-top: -2px;
 `;
 
@@ -23,6 +18,10 @@ export const Wrapper = styled.div`
   align-items: center;
   gap: 0.375rem;
   font-weight: bold;
+
+  & > .icon {
+    border: none;
+  }
 `;
 
 export const RateBox = styled.div`
