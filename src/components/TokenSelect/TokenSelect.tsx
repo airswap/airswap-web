@@ -19,6 +19,7 @@ import {
   TokenLogoRight,
   MaxButton,
   InputAndMaxButtonWrapper,
+  InfoLabel,
 } from "./TokenSelect.styles";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
@@ -52,6 +53,14 @@ export type TokenSelectProps = {
    */
   onMaxClicked?: MouseEventHandler<HTMLButtonElement>;
   /**
+   * Called when user's mouse enters 'info' label.
+   */
+  onInfoLabelMouseEnter?: () => void;
+  /**
+   * Called when user's mouse leaves 'info' label.
+   */
+  onInfoLabelMouseLeave?: () => void;
+  /**
    * Currently selected amount. Not used if `includeAmountInput` is false.
    */
   amount?: string | null;
@@ -68,6 +77,10 @@ export type TokenSelectProps = {
    */
   showMaxButton?: boolean;
   /**
+   * Show max info button
+   */
+  showMaxInfoButton?: boolean;
+  /**
    * Used for showing quote style
    */
   isQuote?: boolean;
@@ -80,11 +93,14 @@ const TokenSelect: FC<TokenSelectProps> = ({
   selectedToken,
   onChangeTokenClicked,
   onMaxClicked,
+  onInfoLabelMouseEnter,
+  onInfoLabelMouseLeave,
   amount,
   onAmountChange,
   isLoading = false,
   isQuote = false,
   showMaxButton = false,
+  showMaxInfoButton = false,
 }) => {
   const { t } = useTranslation();
 
@@ -124,6 +140,14 @@ const TokenSelect: FC<TokenSelectProps> = ({
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
+          )}
+          {showMaxInfoButton && !showMaxButton && !readOnly && (
+            <InfoLabel
+              onMouseOver={onInfoLabelMouseEnter}
+              onMouseOut={onInfoLabelMouseLeave}
+            >
+              i
+            </InfoLabel>
           )}
           <TokenLogoRight size="medium" tokenInfo={selectedToken} />
         </InputAndMaxButtonWrapper>

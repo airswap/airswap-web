@@ -1,7 +1,7 @@
 import { RootState } from "../../app/store";
 import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 
-describe("orders reducer", () => {
+describe.only("orders reducer", () => {
   const initialState: OrdersState = {
     orders: [],
     errors: [],
@@ -84,6 +84,8 @@ describe("orders reducer", () => {
   });
 
   it("should select orders based on longest expiry if token amounts are equal", () => {
+    jest.useFakeTimers("modern").setSystemTime(new Date(1654763676396));
+
     // @ts-ignore (don't need to populate entire rootstate)
     const state: RootState = {
       orders: {
@@ -93,23 +95,24 @@ describe("orders reducer", () => {
             ...ignoredOrderProps,
             senderAmount: "7",
             signerAmount: "7",
-            expiry: "1",
+            expiry: "1654762976",
           },
           {
             ...ignoredOrderProps,
             senderAmount: "7",
             signerAmount: "7",
-            expiry: "3",
+            expiry: "1654763976",
           },
           {
             ...ignoredOrderProps,
             senderAmount: "7",
             signerAmount: "7",
-            expiry: "2",
+            expiry: "1654764000",
           },
         ],
       },
     };
-    expect(selectBestOrder(state).expiry).toBe("3");
+    expect(selectBestOrder(state).expiry).toBe("1654764000");
+    jest.useRealTimers();
   });
 });

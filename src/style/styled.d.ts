@@ -51,6 +51,8 @@ declare module "styled-components" {
       widgetGlowOff: string;
       buttonGlow: string;
       buttonGlowFill: string;
+      tooltipGlow: string;
+      selectOptionsShadow: string;
     };
     typography: Record<
       Typography,

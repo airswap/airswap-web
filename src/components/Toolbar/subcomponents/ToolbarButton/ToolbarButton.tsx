@@ -2,8 +2,8 @@ import React, { FC } from "react";
 
 import useAppRouteParams from "../../../../hooks/useAppRouteParams";
 import { AppRoutes } from "../../../../routes";
-import Icon from "../../../Icon/Icon";
 import {
+  StyledIcon,
   Text,
   ToolBarAnchorContainer,
   ToolbarButtonContainer,
@@ -13,6 +13,7 @@ import {
 type ToolbarButtonProps = {
   text: string;
   iconName: string;
+  iconSize?: number;
   href?: string;
   link?: AppRoutes;
   onClick?: (
@@ -23,6 +24,7 @@ type ToolbarButtonProps = {
 const ToolbarButton: FC<ToolbarButtonProps> = ({
   text,
   iconName,
+  iconSize = 1.5,
   href,
   link,
   onClick,
@@ -32,7 +34,7 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
   const renderInner = () => {
     return (
       <>
-        <Icon name={iconName} iconSize={1.5} />
+        <StyledIcon name={iconName} iconSize={iconSize} />
         <Text>{text}</Text>
       </>
     );

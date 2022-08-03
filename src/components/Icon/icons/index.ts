@@ -7,6 +7,7 @@ import IconCampaign from "./IconCampaign";
 import IconCheck from "./IconCheck";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
+import IconChevronUpDown from "./IconChevronUpDown";
 import IconClose from "./IconClose";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
@@ -16,11 +17,13 @@ import IconDeny from "./IconDeny";
 import IconDiscord from "./IconDiscord";
 import IconEdit from "./IconEdit";
 import IconForbidden from "./IconForbidden";
+import IconGithub from "./IconGithub";
 import IconLibrary from "./IconLibrary";
 import IconLink from "./IconLink";
 import IconMedium from "./IconMedium";
 import IconMenu from "./IconMenu";
 import IconPending from "./IconPending";
+import IconPlus from "./IconPlus";
 import IconStar from "./IconStar";
 import IconSwap from "./IconSwap";
 import IconSwapHorizontal from "./IconSwapHorizontal";
@@ -40,6 +43,7 @@ export {
   IconCheck,
   IconChevronDown,
   IconChevronRight,
+  IconChevronUpDown,
   IconClose,
   IconCode,
   IconCopy,
@@ -49,11 +53,13 @@ export {
   IconDiscord,
   IconEdit,
   IconForbidden,
+  IconGithub,
   IconLibrary,
   IconLink,
   IconMedium,
   IconMenu,
   IconPending,
+  IconPlus,
   IconTelegram,
   IconTwitter,
   IconStar,

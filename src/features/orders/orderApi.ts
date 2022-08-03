@@ -15,6 +15,8 @@ import {
   utils,
 } from "ethers";
 
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
 const erc20Interface = new ethers.utils.Interface(erc20Abi);
@@ -118,6 +120,23 @@ export async function takeOrder(
 }
 
 export function orderSortingFunction(a: Order, b: Order) {
+  const now = Date.now();
+  const aTimeToExpiry = now - parseInt(a.expiry);
+  const bTimeToExpiry = now - parseInt(b.expiry);
+
+  // If any of the orders come in with an expiry that is less than our required
+  // buffer, put them to the bottom of the list.
+  if (
+    aTimeToExpiry < RFQ_EXPIRY_BUFFER_MS &&
+    bTimeToExpiry >= RFQ_EXPIRY_BUFFER_MS
+  ) {
+    return 1; // prefer B
+  } else if (
+    bTimeToExpiry < RFQ_EXPIRY_BUFFER_MS &&
+    aTimeToExpiry >= RFQ_EXPIRY_BUFFER_MS
+  ) {
+    return -1; // prefer A
+  }
   // If tokens transferred are the same
   if (a.signerAmount === b.signerAmount && a.senderAmount === b.senderAmount) {
     return parseInt(b.expiry) - parseInt(a.expiry);

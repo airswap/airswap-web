@@ -10,6 +10,7 @@ import {
 import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
+import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { setWalletConnected } from "../wallet/walletSlice";
 import {
   fetchAllowancesSwap,
@@ -77,7 +78,7 @@ const getThunk: (
         const state = getState();
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
-          "0x0000000000000000000000000000000000000000",
+          nativeCurrencyAddress,
         ];
         const { chainId, address } = state.wallet;
         dispatch(

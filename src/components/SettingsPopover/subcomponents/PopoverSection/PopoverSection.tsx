@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 import {
   Container,
   TitleContainer,
@@ -6,18 +8,24 @@ import {
 } from "./PopoverSection.styles";
 
 type PopoverSectionType = {
-  title: string;
-  children: React.ReactChild;
+  title?: string;
+  className?: string;
 };
 
-const PopoverSection = ({ title, children }: PopoverSectionType) => {
+const PopoverSection: FC<PopoverSectionType> = ({
+  title,
+  children,
+  className = "",
+}) => {
   return (
-    <Container>
-      <TitleContainer>
-        <Title type="h4">
-          <Line>{title}</Line>
-        </Title>
-      </TitleContainer>
+    <Container className={className}>
+      {title && (
+        <TitleContainer>
+          <Title type="h4">
+            <Line>{title}</Line>
+          </Title>
+        </TitleContainer>
+      )}
       {children}
     </Container>
   );

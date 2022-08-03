@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../constants/configParams";
 import { ProtocolType } from "../../../../features/transactions/transactionsSlice";
+import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
 import Timer from "../../../Timer/Timer";
 import { Title } from "../../../Typography/Typography";
 import {
   Button,
-  Container,
   NewQuoteText,
   Quote,
   StyledIcon,
@@ -35,7 +35,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   }, [expiry]);
 
   return (
-    <Container>
+    <WidgetHeader>
       <Title type="h2" as="h1">
         {title}
       </Title>
@@ -53,7 +53,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
           {expiryTime && <Timer expiryTime={expiryTime} />}
         </Quote>
       )}
-    </Container>
+    </WidgetHeader>
   );
 };
 

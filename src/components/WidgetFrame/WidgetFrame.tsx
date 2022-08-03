@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from "react";
 
-import { Container, StyledTradeContainer } from "./WidgetFrame.styles";
+import { Container, StyledWidgetFrame } from "./WidgetFrame.styles";
 
 type WidgetFrameType = {
   children?: React.ReactNode;
@@ -14,9 +14,9 @@ const WidgetFrame: FC<WidgetFrameType> = ({
   isConnected,
 }): ReactElement => {
   return (
-    <StyledTradeContainer $isOpen={isOpen} $isConnected={isConnected}>
+    <StyledWidgetFrame $isOpen={isOpen} $isConnected={isConnected}>
       <Container>{children}</Container>
-    </StyledTradeContainer>
+    </StyledWidgetFrame>
   );
 };
 

@@ -24,8 +24,7 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 100%;
   max-width: ${sizes.widgetMobileSize};
-  height: 100vh;
-  min-height: 100%;
+  height: 100%;
   padding: 1.5rem 1.5rem 0;
   background-color: ${(props) => props.theme.colors.black};
   border-left: 1px solid ${(props) => props.theme.colors.borderGrey};

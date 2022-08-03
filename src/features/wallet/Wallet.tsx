@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ import {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
   StyledMenuButton,
@@ -39,7 +40,6 @@ import {
   setAllowanceSwap,
   setAllowanceWrapper,
 } from "../balances/balancesSlice";
-import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
 import {
   fetchAllTokens,
   fetchUnkownTokens,
@@ -47,13 +47,10 @@ import {
   selectAllTokenInfo,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
-import handleTransaction from "../transactions/handleTransaction";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectPendingTransactions,
   selectTransactions,
-  setTransactions,
-  TransactionsState,
 } from "../transactions/transactionsSlice";
 import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
@@ -68,17 +65,11 @@ import {
 } from "./walletSlice";
 
 type WalletPropsType = {
-  setShowWalletList: (x: boolean) => void;
-  transactionsTabOpen: boolean;
-  setTransactionsTabOpen: (x: boolean) => void;
   onAirswapButtonClick: () => void;
   onMobileMenuButtonClick: () => void;
 };
 
 export const Wallet: FC<WalletPropsType> = ({
-  setShowWalletList,
-  transactionsTabOpen,
-  setTransactionsTabOpen,
   onAirswapButtonClick,
   onMobileMenuButtonClick,
 }) => {
@@ -94,6 +85,10 @@ export const Wallet: FC<WalletPropsType> = ({
   const transactions = useAppSelector(selectTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const allTokens = useAppSelector(selectAllTokenInfo);
+
+  // Interface context
+  const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
 
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
@@ -140,6 +135,7 @@ export const Wallet: FC<WalletPropsType> = ({
       };
     }
   }, [dispatch, library, chainId, account, swapContract, wrapContract]);
+
   useEffect(() => {
     if (chainId && account && library) {
       const swapContract = new Contract(
@@ -230,10 +226,11 @@ export const Wallet: FC<WalletPropsType> = ({
           } as any)
         );
       });
-    } else {
+    } else if (!active) {
       dispatch(setWalletDisconnected());
     }
-  }, [active, account, chainId, dispatch, library, connector, provider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId, active]);
 
   // Subscribe to changes in balance
 
@@ -297,34 +294,6 @@ export const Wallet: FC<WalletPropsType> = ({
     balances.status,
   ]);
 
-  useEffect(() => {
-    // Create a flag we can set to handle wallet changing between async operations
-    let walletHasChanged = false;
-
-    // get transaction state from local storage and update the transactions
-    if (chainId && account && library) {
-      const transactionsLocalStorage: TransactionsState = JSON.parse(
-        localStorage.getItem(
-          getTransactionsLocalStorageKey(account!, chainId!)
-        )!
-      ) || { all: [] };
-      dispatch(setTransactions(transactionsLocalStorage));
-
-      // check from all responses if one is pending... if pending, call getTransaction
-      // to see if it was a success/failure/pending. update accordingly. if pending: wait()
-      // and poll at a sensible interval.
-      transactionsLocalStorage.all.forEach(async (tx) => {
-        await handleTransaction(tx, walletHasChanged, dispatch, library);
-      });
-    }
-    return () => {
-      // Library & dispatch won't change, so when we tear down it's because
-      // the wallet has changed. The useEffect will run after this and set up
-      // everything for the new wallet.
-      walletHasChanged = true;
-    };
-  }, [chainId, dispatch, library, account]);
-
   return (
     <>
       <TopBar>
@@ -337,7 +306,7 @@ export const Wallet: FC<WalletPropsType> = ({
         <StyledSettingsButton
           settingsOpen={settingsOpen}
           setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabOpen}
+          transactionsTabOpen={transactionsTabIsOpen}
         />
         <WalletButton
           address={account}
@@ -345,7 +314,7 @@ export const Wallet: FC<WalletPropsType> = ({
             error && error instanceof UnsupportedChainIdError
           }
           glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() => setTransactionsTabOpen(true)}
+          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
           setShowWalletList={setShowWalletList}
         />
         <StyledAirswapButton
@@ -358,15 +327,15 @@ export const Wallet: FC<WalletPropsType> = ({
       <TransactionsTab
         address={account!}
         chainId={chainId!}
-        open={transactionsTabOpen}
-        setTransactionsTabOpen={setTransactionsTabOpen}
+        open={transactionsTabIsOpen}
+        setTransactionsTabOpen={setTransactionsTabIsOpen}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();
           if (connector instanceof WalletConnectConnector) {
             connector.close();
           }
-          setTransactionsTabOpen(false);
+          setTransactionsTabIsOpen(false);
         }}
         transactions={transactions}
         tokens={allTokens}

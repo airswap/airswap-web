@@ -1,122 +1,16 @@
-import { Action, Dispatch } from "@reduxjs/toolkit";
+import { Wrapper } from "@airswap/libraries";
+import { Dispatch } from "@reduxjs/toolkit";
 
-import BigNumber from "bignumber.js";
-import { Contract } from "ethers";
+import { Contract, Event as EthersEvent } from "ethers";
 
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import {
-  LastLookTransaction,
-  ProtocolType,
-  SubmittedTransactionWithOrder,
-  SubmittedTransaction,
-  TransactionsState,
-} from "./transactionsSlice";
-
-const handleReceipt = ({
-  nonce,
-  transactionHash,
-  signerWallet,
-  transaction,
-  protocol,
-  chainId,
-  dispatch,
-}: {
-  nonce: string;
-  transactionHash: string;
-  signerWallet: string;
-  transaction: SubmittedTransaction;
-  protocol?: ProtocolType;
-  chainId: number;
-  dispatch: Dispatch<Action>;
-}) => {
-  const tokens = Object.values(store.getState().metadata.tokens.all);
-
-  dispatch(
-    mineTransaction({
-      signerWallet: signerWallet,
-      nonce: nonce,
-      hash: transactionHash,
-      protocol,
-    })
-  );
-
-  notifyTransaction(
-    "Order",
-    //@ts-ignore
-    transaction,
-    tokens,
-    false,
-    chainId
-  );
-};
-
-type SwapHex = {
-  _hex?: BigNumber;
-  _isBigNumber: boolean;
-};
-type SwapEvent = {
-  transactionHash: string;
-  address: string;
-  removed: boolean;
-  eventSignature: string;
-  topics: string[];
-};
-
-export type SwapRow = string | SwapHex | SwapEvent;
-
-function isSwapHex(data: SwapRow): data is SwapHex {
-  return (data as SwapHex)._isBigNumber !== undefined;
-}
-
-function isSwapEvent(data: SwapRow): data is SwapEvent {
-  return (data as SwapEvent).transactionHash !== undefined;
-}
-function isSwapAddress(data: SwapRow): data is string {
-  return typeof data === "string";
-}
-
-export const mapSwapEvent = (
-  data: SwapRow[],
-  chainId: number,
-  account: string,
-  transactions: TransactionsState
-) => {
-  let protocol: ProtocolType | undefined;
-  const nonce = isSwapHex(data[0]) ? data[0].toString() : "UNKNOWN";
-  let signerWallet = isSwapAddress(data[2]) ? data[2] : "";
-  const transactionHash = isSwapEvent(data[9]) ? data[9].transactionHash : "";
-
-  // First search for the transaction in our pending state by hash.
-  // This will match either direct RFQ orders (senderWallet === account) or
-  // RFQ orders going through the wrapper (senderWallet === wrapper).
-  let transaction: SubmittedTransaction | null =
-    transactions.all.find((t: any) => t.hash === transactionHash) || null;
-
-  // If we haven't got a transaction with this hash in our history, then it's
-  // either a last look order (if we're the signer) OR it's someone else's
-  // swap. (Someone else includes "us" in another browser).
-  if (!transaction && signerWallet.toLowerCase() === account.toLowerCase()) {
-    transaction = transactions.all.find(
-      (t: SubmittedTransaction | SubmittedTransactionWithOrder) =>
-        t.nonce === nonce &&
-        (
-          t as SubmittedTransactionWithOrder
-        ).order?.signerWallet.toLowerCase() === signerWallet.toLowerCase()
-    ) as LastLookTransaction;
-  }
-
-  if (transaction) protocol = transaction.protocol;
-
-  return {
-    signerWallet,
-    nonce,
-    transactionHash,
-    protocol,
-    transaction,
-  };
-};
+  getSenderWalletForWrapperSwapLog,
+  SwapEventArgs,
+} from "./transactionUtils";
+import { LastLookTransaction } from "./transactionsSlice";
 
 export default function subscribeToSwapEvents(params: {
   swapContract: Contract;
@@ -126,23 +20,62 @@ export default function subscribeToSwapEvents(params: {
   dispatch: Dispatch;
 }) {
   const { swapContract, account, dispatch, chainId } = params;
-  swapContract.on("Swap", async (...data) => {
+
+  const _account = account.toLowerCase();
+  const wrapperAddress = Wrapper.getAddress(chainId).toLowerCase();
+
+  const onSwap = async (...argsAndEvent: any[]) => {
+    // Listeners are called with all args first, then an event object.
+    const swapEvent: EthersEvent = argsAndEvent[argsAndEvent.length - 1];
+    const args = swapEvent.args as unknown as SwapEventArgs;
+
+    if (
+      args.senderWallet.toLowerCase() !== _account &&
+      args.signerWallet.toLowerCase() !== _account &&
+      (args.senderWallet.toLowerCase() !== wrapperAddress.toLowerCase() ||
+        (await getSenderWalletForWrapperSwapLog(swapEvent)) !== _account)
+    ) {
+      // Ignore events that don't involve us.
+      return;
+    }
+
+    dispatch(
+      mineTransaction({
+        signerWallet: args.signerWallet,
+        nonce: args.nonce.toString(),
+        hash: swapEvent.transactionHash,
+        protocol:
+          args.signerWallet.toLowerCase() === _account
+            ? "last-look"
+            : "request-for-quote",
+      })
+    );
+
     const transactions = store.getState().transactions;
-    const { nonce, signerWallet, transactionHash, protocol, transaction } =
-      mapSwapEvent(data, chainId, account, transactions);
 
-    // If we don't have a 'transaction', we don't already know about this swap
-    // and therefore don't need to update the UI.
-    if (!transaction) return;
-
-    return handleReceipt({
-      nonce,
-      signerWallet,
-      transactionHash,
-      protocol,
-      chainId,
-      transaction,
-      dispatch,
+    const matchingTransaction = transactions.all.find((tx) => {
+      if (tx.protocol === "last-look") {
+        // Last look transactions don't have a nonce, but the
+        const llTransaction = tx as LastLookTransaction;
+        return (
+          llTransaction.order.nonce === args.nonce.toString() &&
+          llTransaction.order.signerWallet.toLowerCase() === _account
+        );
+      } else {
+        // rfq transactions will have a hash
+        return tx.hash === swapEvent.transactionHash;
+      }
     });
-  });
+
+    if (matchingTransaction) {
+      notifyTransaction(
+        "Order",
+        matchingTransaction,
+        Object.values(store.getState().metadata.tokens.all),
+        false,
+        chainId
+      );
+    }
+  };
+  swapContract.on("Swap", onSwap);
 }

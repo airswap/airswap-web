@@ -8,6 +8,7 @@ import {
   InputOrButtonBorderStyleType2,
   ScrollBarStyle,
 } from "../../style/mixins";
+import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type ContainerProps = {
   open: boolean;
@@ -16,18 +17,18 @@ type ContainerProps = {
 export const Container = styled.div<ContainerProps>`
   position: absolute;
   display: grid;
-  grid-template-rows: 5rem;
+  grid-template-rows: 5rem auto 5.125rem;
   width: 16rem;
-  height: 17.25rem;
+  height: 24.125rem;
   top: 5rem;
   right: 3.75rem;
+  padding-top: 0.5rem;
   transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.black};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
   border-radius: 0.5rem;
-  padding: 1rem;
   z-index: 1000;
 
   @media ${breakPoints.tabletPortraitUp} {
@@ -73,8 +74,8 @@ type LocaleContainerType = {
 
 export const LocaleContainer = styled.div<LocaleContainerType>`
   width: 100%;
-  height: 100%;
-  padding: 0.5rem 0 1rem;
+  height: calc(100% - 2rem);
+  padding-top: 0.5rem;
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
   flex-grow: 99;
 
@@ -111,4 +112,9 @@ export const LocaleButton = styled(Link)<ButtonStyleProps>`
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   }
+`;
+
+export const BottomPopoverSection = styled(PopoverSection)`
+  border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
+  padding-top: 1rem;
 `;

@@ -69,18 +69,17 @@ export const InputAndMaxButtonWrapper = styled.div`
   gap: 0.75rem;
 `;
 
-export const MaxButton = styled.button`
+export const MaxButtonStyle = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   bottom: 1px;
-  width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
-  letter-spacing: ${() => (isActiveLanguageLogographic() ? 0 : "0.0625rem")};
   align-self: center;
-  padding: 0.125rem;
   border-radius: 0.125rem;
   font-weight: 600;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.5rem")};
+  font-size: 0.75rem;
   line-height: 1;
-  text-transform: uppercase;
   background-color: ${(props) => props.theme.colors.lightGrey};
   color: ${(props) => props.theme.colors.black};
   opacity: 0.6;
@@ -92,6 +91,26 @@ export const MaxButton = styled.button`
     background-color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
+`;
+
+export const MaxButton = styled.button`
+  ${MaxButtonStyle};
+
+  width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
+  padding: 0.125rem;
+  text-transform: uppercase;
+  letter-spacing: ${() => (isActiveLanguageLogographic() ? 0 : "0.0625rem")};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.5rem")};
+`;
+
+export const InfoLabel = styled.div`
+  ${MaxButtonStyle};
+
+  border-radius: 50%;
+  text-align: center;
+  min-width: 1rem;
+  height: 1rem;
+  cursor: pointer;
 `;
 
 export const AmountInput = styled(FormInput)<{
@@ -197,6 +216,11 @@ export const TokenSelectContainer = styled.div<{
   }
 
   ${MaxButton} {
+    transform: ${(props) =>
+      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+  }
+
+  ${InfoLabel} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
   }

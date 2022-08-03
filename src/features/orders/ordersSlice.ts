@@ -15,7 +15,10 @@ import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
-import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import {
+  RFQ_EXPIRY_BUFFER_MS,
+  RFQ_MINIMUM_REREQUEST_DELAY_MS,
+} from "../../constants/configParams";
 import {
   ErrorType,
   RPCError,
@@ -291,8 +294,17 @@ export const request = createAsyncThunk(
     );
     if (orders.length) {
       const bestOrder = [...orders].sort(orderSortingFunction)[0];
+      const now = Date.now();
       const expiry = parseInt(bestOrder.expiry) * 1000;
-      const timeTilReRequest = expiry - Date.now() - RFQ_EXPIRY_BUFFER_MS;
+      // Due to the sorting in orderSorting function, these orders will be at
+      // the bottom of the list, so if the best one has a very short expiry
+      // so do all the others. Return an empty order array as none are viable.
+      if (expiry - now < RFQ_EXPIRY_BUFFER_MS) return [];
+
+      const timeTilReRequest = Math.max(
+        expiry - now - RFQ_EXPIRY_BUFFER_MS,
+        RFQ_MINIMUM_REREQUEST_DELAY_MS
+      );
       const reRequestTimerId = window.setTimeout(
         () => dispatch(request(params)),
         timeTilReRequest
@@ -476,8 +488,13 @@ export const ordersSlice = createSlice({
         state.status = "requesting";
       })
       .addCase(request.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.orders = action.payload!;
+        // Only update the orders if we were requesting them. This prevents a
+        // very slow request influencing the state if we have since moved away
+        // from it.
+        if (state.status === "requesting") {
+          state.status = "idle";
+          state.orders = action.payload!;
+        }
       })
       .addCase(request.rejected, (state, action) => {
         state.status = "failed";
@@ -488,6 +505,10 @@ export const ordersSlice = createSlice({
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
+        if (state.reRequestTimerId) {
+          clearTimeout(state.reRequestTimerId);
+          state.reRequestTimerId = null;
+        }
       })
       .addCase(take.rejected, (state, action) => {
         state.status = "failed";

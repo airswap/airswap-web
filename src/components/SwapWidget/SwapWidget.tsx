@@ -11,7 +11,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -23,7 +22,11 @@ import {
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
 import type { ErrorType, SwapError } from "../../constants/errors";
-import nativeCurrency from "../../constants/nativeCurrency";
+import nativeCurrency, {
+  nativeCurrencyAddress,
+  nativeCurrencySafeTransactionFee,
+} from "../../constants/nativeCurrency";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
   requestActiveTokenAllowancesSwap,
@@ -72,31 +75,28 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import { setActiveProvider } from "../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import { AppRoutes } from "../../routes";
 import { ErrorList } from "../ErrorList/ErrorList";
-import { InformationModalType } from "../InformationModals/InformationModals";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
-import JoinModal from "../InformationModals/subcomponents/JoinModal/JoinModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
+import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
-import InfoSection from "./InfoSection";
 import StyledSwapWidget, {
   ButtonContainer,
   HugeTicks,
   InfoContainer,
-  StyledWalletProviderList,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
-import SwapInputs from "./subcomponents/SwapInputs/SwapInputs";
+import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 export type TokenSelectModalTypes = "base" | "quote" | null;
@@ -104,23 +104,7 @@ type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 
-type SwapWidgetPropsType = {
-  showWalletList: boolean;
-  transactionsTabOpen: boolean;
-  activeInformationModal?: InformationModalType;
-  setShowWalletList: (x: boolean) => void;
-  onTrackTransactionClicked: () => void;
-  onInformationModalCloseButtonClick: () => void;
-};
-
-const SwapWidget: FC<SwapWidgetPropsType> = ({
-  showWalletList,
-  activeInformationModal,
-  setShowWalletList,
-  transactionsTabOpen,
-  onTrackTransactionClicked,
-  onInformationModalCloseButtonClick,
-}) => {
+const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -139,6 +123,12 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
 
   // Contexts
   const LastLook = useContext(LastLookContext);
+  const {
+    isConnecting,
+    transactionsTabIsOpen,
+    setShowWalletList,
+    setTransactionsTabIsOpen,
+  } = useContext(InterfaceContext);
 
   // Input states
   const appRouteParams = useAppRouteParams();
@@ -165,7 +155,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
 
   // Error states
@@ -181,7 +170,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
     account,
     library,
     active,
-    activate,
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
@@ -221,21 +209,17 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
   );
 
   const maxAmount = useMemo(() => {
-    if (
-      !baseToken ||
-      !balances ||
-      !baseTokenInfo ||
-      !balances.values[baseToken] ||
-      balances.values[baseToken] === "0"
-    ) {
+    if (!baseToken || !balances || !baseTokenInfo) {
       return null;
     }
-
-    return formatUnits(
-      balances.values[baseToken] || "0",
-      baseTokenInfo.decimals
-    );
+    return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
   }, [balances, baseToken, baseTokenInfo]);
+
+  const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
+  const showMaxInfoButton =
+    !!maxAmount &&
+    baseTokenInfo?.address === nativeCurrencyAddress &&
+    !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -764,7 +748,7 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         break;
 
       case ButtonActions.trackTransaction:
-        onTrackTransactionClicked();
+        setTransactionsTabIsOpen(true);
         break;
 
       default:
@@ -808,7 +792,9 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               pairUnavailable ||
               !active
             }
-            showMaxButton={!!maxAmount && baseAmount !== maxAmount}
+            showMaxButton={showMaxButton}
+            showMaxInfoButton={showMaxInfoButton}
+            maxAmount={maxAmount}
           />
         )}
         <InfoContainer>
@@ -852,14 +838,14 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
-              onButtonClicked={handleButtonClick}
+              onButtonClicked={(action) => handleButtonClick(action)}
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
                 ["approving", "taking"].includes(ordersStatus) ||
                 (!!baseToken && hasApprovalPending(baseToken))
               }
-              transactionsTabOpen={transactionsTabOpen}
+              transactionsTabOpen={transactionsTabIsOpen}
             />
           )}
         </ButtonContainer>
@@ -883,23 +869,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
           addActiveToken={handleAddActiveToken}
           removeActiveToken={handleRemoveActiveToken}
           chainId={chainId || 1}
-        />
-      </Overlay>
-
-      <Overlay
-        title={t("wallet.selectWallet")}
-        onCloseButtonClick={() => setShowWalletList(false)}
-        isHidden={!showWalletList}
-      >
-        <StyledWalletProviderList
-          onClose={() => setShowWalletList(false)}
-          onProviderSelected={(provider) => {
-            dispatch(setActiveProvider(provider.name));
-            setIsConnecting(true);
-            activate(provider.getConnector()).finally(() =>
-              setIsConnecting(false)
-            );
-          }}
         />
       </Overlay>
       <Overlay
@@ -928,14 +897,6 @@ const SwapWidget: FC<SwapWidgetPropsType> = ({
         isHidden={!protocolFeeDiscountInfo}
       >
         <ProtocolFeeDiscountModal />
-      </Overlay>
-
-      <Overlay
-        title={t("information.join.title")}
-        onCloseButtonClick={onInformationModalCloseButtonClick}
-        isHidden={activeInformationModal !== AppRoutes.join}
-      >
-        <JoinModal />
       </Overlay>
     </>
   );

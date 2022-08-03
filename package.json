@@ -17,18 +17,19 @@
   "dependencies": {
     "@airswap/balances": "2.0.2",
     "@airswap/constants": "3.0.1",
-    "@airswap/libraries": "3.0.3",
+    "@airswap/libraries": "3.0.4",
     "@airswap/metadata": "3.0.2",
     "@airswap/swap": "3.0.1",
     "@airswap/typescript": "3.0.0",
     "@airswap/utils": "3.0.0",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
+    "@react-hookz/web": "^14.2.2",
     "@reduxjs/toolkit": "~1.5.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "^26.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.16",
     "@types/react-dom": "^17.0.9",
@@ -79,6 +80,7 @@
     "@types/react-helmet": "^6.1.5",
     "@types/react-router-dom": "^5.1.8",
     "autoprefixer": "^9",
+    "craco-plugin-env": "^1.0.4",
     "husky": "^7.0.1",
     "jest-canvas-mock": "^2.3.1",
     "postcss": "^7",
@@ -112,5 +114,8 @@
   "resolutions": {
     "babel-loader": "8.1.0",
     "styled-components": "^5"
+  },
+  "volta": {
+    "node": "16.15.1"
   }
 }

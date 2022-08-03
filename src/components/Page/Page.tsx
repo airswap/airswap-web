@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -6,62 +6,53 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
+import { WalletProvider } from "../../constants/supportedWalletProviders";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { resetOrders } from "../../features/orders/ordersSlice";
+import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import { Wallet } from "../../features/wallet/Wallet";
+import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
-import useDebounce from "../../hooks/useDebounce";
-import useWindowSize from "../../hooks/useWindowSize";
-import { AppRoutes } from "../../routes";
+import { useKeyPress } from "../../hooks/useKeyPress";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
-import { InformationModalType } from "../InformationModals/InformationModals";
-import SwapWidget from "../SwapWidget/SwapWidget";
+import Overlay from "../Overlay/Overlay";
+import { StyledWalletProviderList } from "../SwapWidget/SwapWidget.styles";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
 
-function getInformationModalFromRoute(
-  route: AppRoutes | undefined
-): InformationModalType | undefined {
-  switch (route) {
-    case AppRoutes.join:
-      return AppRoutes.join;
-    default:
-      return undefined;
-  }
-}
+type PageProps = {
+  className?: string;
+};
 
-const Page: FC = (): ReactElement => {
+const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { t } = useTranslation();
-  const { height: windowHeight } = useWindowSize();
-  const { active: web3ProviderIsActive } = useWeb3React<Web3Provider>();
-
+  const { activate, active: web3ProviderIsActive } =
+    useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
-  const [activeInformationModal, setActiveInformationModal] = useState<
-    InformationModalType | undefined
-  >(getInformationModalFromRoute(appRouteParams.route));
-  const [transactionsTabOpen, setTransactionsTabOpen] = useState(false);
-  const [showWalletList, setShowWalletList] = useState(false);
-  const [showMobileToolbar, setShowMobileToolbar] = useState(false);
-  const [pageHeight, setPageHeight] = useState(windowHeight);
+  const {
+    setIsConnecting,
+    showMobileToolbar,
+    showWalletList,
+    transactionsTabIsOpen,
+    pageHeight,
+    setShowMobileToolbar,
+    setShowWalletList,
+  } = useContext(InterfaceContext);
+
+  useHistoricalTransactions();
+
+  useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
   const reset = () => {
-    setActiveInformationModal(undefined);
     setShowMobileToolbar(false);
     dispatch(resetOrders());
   };
 
-  const handleLinkButtonClick = (type: InformationModalType) => {
-    history.push(`/${type}`);
-  };
-
   const handleAirswapButtonClick = () => {
-    history.push(appRouteParams.justifiedBaseUrl);
-  };
-
-  const handleInformationModalCloseButtonClick = () => {
     history.push(appRouteParams.justifiedBaseUrl);
   };
 
@@ -73,65 +64,60 @@ const Page: FC = (): ReactElement => {
     setShowMobileToolbar(true);
   };
 
-  useDebounce(
-    () => {
-      setPageHeight(windowHeight);
-    },
-    100,
-    [windowHeight]
-  );
+  const handleProviderSelected = (provider: WalletProvider) => {
+    dispatch(setActiveProvider(provider.name));
+    setIsConnecting(true);
+    activate(provider.getConnector()).finally(() => setIsConnecting(false));
+  };
+
+  const handleCloseWalletProviderList = () => {
+    setShowWalletList(false);
+  };
 
   useEffect(() => {
-    if (showMobileToolbar) {
-      document.body.classList.add("scroll-locked");
-    } else {
-      document.body.classList.remove("scroll-locked");
-    }
-  }, [showMobileToolbar]);
-
-  useEffect(() => {
-    setActiveInformationModal(
-      getInformationModalFromRoute(appRouteParams.route)
-    );
-
     if (appRouteParams.route === undefined) {
       reset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appRouteParams.route]);
 
+  useEffect(() => {
+    if (showMobileToolbar) {
+      setShowMobileToolbar(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <StyledPage style={{ height: `${pageHeight}px` }}>
+    <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
       <HelmetContainer title={t("app.title")} />
       <InnerContainer>
-        <Toaster open={transactionsTabOpen} />
+        <Toaster open={transactionsTabIsOpen} />
         <Toolbar
           isHiddenOnMobile={!showMobileToolbar}
-          onLinkButtonClick={handleLinkButtonClick}
           onAirswapButtonClick={handleAirswapButtonClick}
           onMobileCloseButtonClick={handleCloseMobileToolbarButtonClick}
         />
         <Wallet
-          transactionsTabOpen={transactionsTabOpen}
-          setTransactionsTabOpen={setTransactionsTabOpen}
-          setShowWalletList={setShowWalletList}
           onAirswapButtonClick={handleAirswapButtonClick}
           onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
         />
         <WidgetFrame
-          isOpen={transactionsTabOpen}
+          isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}
         >
-          <SwapWidget
-            showWalletList={showWalletList}
-            activeInformationModal={activeInformationModal}
-            setShowWalletList={setShowWalletList}
-            onTrackTransactionClicked={() => setTransactionsTabOpen(true)}
-            onInformationModalCloseButtonClick={
-              handleInformationModalCloseButtonClick
-            }
-            transactionsTabOpen={transactionsTabOpen}
-          />
+          {children}
+
+          <Overlay
+            title={t("wallet.selectWallet")}
+            onCloseButtonClick={handleCloseWalletProviderList}
+            isHidden={!showWalletList}
+          >
+            <StyledWalletProviderList
+              onClose={handleCloseWalletProviderList}
+              onProviderSelected={handleProviderSelected}
+            />
+          </Overlay>
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

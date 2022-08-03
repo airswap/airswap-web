@@ -1,20 +1,7 @@
 import styled, { css } from "styled-components/macro";
 
-import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
-
-export const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-  min-height: 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
-
-  @media ${breakPoints.phoneOnly} {
-    margin-bottom: 1rem;
-  }
-`;
 
 export const PillStyle = css`
   display: flex;

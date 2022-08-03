@@ -90,3 +90,9 @@ export const BorderedPill = css`
     height: 2.5rem;
   }
 `;
+
+export const TextEllipsis = css`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

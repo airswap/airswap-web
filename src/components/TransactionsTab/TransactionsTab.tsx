@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
@@ -10,9 +10,11 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
+import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
@@ -93,25 +95,11 @@ const TransactionsTab = ({
     () => getEtherscanWalletURL(chainId, address),
     [chainId, address]
   );
-  const handleEscKey = useCallback(
-    (e) => {
-      if (e.keyCode === 27) {
-        setTransactionsTabOpen(false);
-      }
-    },
-    [setTransactionsTabOpen]
-  );
+  useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
   };
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleEscKey, false);
-    return () => {
-      document.removeEventListener("keydown", handleEscKey, false);
-    };
-  }, [handleEscKey]);
 
   useEffect(() => {
     if (!open) {
@@ -155,16 +143,15 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const completedTransactions = useMemo(() => {
-    return transactions.filter(
-      (transaction) => transaction.status !== "processing"
-    );
+    return transactions
+      .filter((transaction) => transaction.status !== "processing")
+      .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 
-  const balance =
-    balances.values["0x0000000000000000000000000000000000000000"] || "0";
+  const balance = balances.values[nativeCurrencyAddress] || "0";
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {open && (
         <Container
           ref={containerRef}

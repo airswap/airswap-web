@@ -1,9 +1,9 @@
 import styled from "styled-components/macro";
 
-import { BorderlessButtonStyle } from "../../style/mixins";
-import IconButton from "../IconButton/IconButton";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
-import { StyledParagraph } from "../Typography/Typography.styles";
+import { BorderlessButtonStyle } from "../../../../style/mixins";
+import IconButton from "../../../IconButton/IconButton";
+import { InfoHeading, InfoSubHeading } from "../../../Typography/Typography";
+import { StyledParagraph } from "../../../Typography/Typography.styles";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
