@@ -132,7 +132,9 @@
     "revertPrice": "Revert price",
     "moreInformation": "More information",
     "publiclyList": "Publicly list",
-    "publiclyListDescription": "Allow others to publicly find my swap"
+    "publiclyListDescription": "Allow others to publicly find my swap",
+    "anyone": "Anyone",
+    "someone": "Someone"
   },
   "toast": {
     "swapComplete": "Swap Complete",

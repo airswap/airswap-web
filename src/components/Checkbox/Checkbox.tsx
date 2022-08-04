@@ -26,15 +26,25 @@ const Checkbox: FC<CheckboxProps> = ({
   hideLabel,
   label,
   subLabel,
+  onChange,
   className,
 }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.checked);
+  };
+
   return (
     <CheckLabel
       aria-label={hideLabel ? label : undefined}
       isDisabled={disabled}
       className={className}
     >
-      <Input type="checkbox" checked={checked} disabled={disabled} />
+      <Input
+        checked={checked}
+        disabled={disabled}
+        type="checkbox"
+        onChange={handleChange}
+      />
       <CheckContainer>
         <CheckIcon name="check" iconSize={1} />
       </CheckContainer>

@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren } from "react";
 
-import { Container, StyledIcon } from "./InfoSection.styles";
+import { Wrapper, StyledIcon } from "./InfoSection.styles";
 
 interface InfoSectionProps {
   className?: string;
@@ -11,10 +11,10 @@ const InfoSection: FC<PropsWithChildren<InfoSectionProps>> = ({
   className,
 }) => {
   return (
-    <Container className={className}>
+    <Wrapper className={className}>
       {children}
       <StyledIcon name="information-circle-outline" />
-    </Container>
+    </Wrapper>
   );
 };
 
