@@ -96,3 +96,9 @@ export const TextEllipsis = css`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
+export const FlexAlignCenter = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

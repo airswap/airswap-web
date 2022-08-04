@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import Checkbox from "../Checkbox/Checkbox";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container } from "./MakeWidget.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
@@ -28,6 +29,11 @@ const MakeWidget: FC = () => {
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
+      />
+      <Checkbox
+        label="Publicy list"
+        subLabel="Allow others to publicly find my swap"
+        onChange={console.log}
       />
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
