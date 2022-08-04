@@ -172,3 +172,15 @@ export const Wrapper = styled.div`
     }
   }
 `;
+
+export const Sizer = styled.div`
+  ${ButtonStyle};
+
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  width: auto;
+  padding: 0;
+  pointer-events: none;
+  opacity: 0;
+`;
