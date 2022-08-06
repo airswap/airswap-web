@@ -8,12 +8,12 @@ import { SelectOption } from "../Dropdown/Dropdown";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import {
   Container,
+  StyledAddressInput,
   StyledInfoSection,
   StyledOrderTypeSelector,
 } from "./MakeWidget.styles";
 import { getOrderTypeSelectOptions } from "./helpers";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
-import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
 const MakeWidget: FC = () => {
@@ -65,18 +65,18 @@ const MakeWidget: FC = () => {
         selectedOrderTypeOption={orderScopeTypeOption}
         onChange={setOrderScopeTypeOption}
       />
-      <StyledInfoSection>
-        {orderType === OrderType.private ? (
-          <AddressInput value={address} onChange={setAddress} />
-        ) : (
+      {orderType === OrderType.private ? (
+        <StyledAddressInput value={address} onChange={setAddress} />
+      ) : (
+        <StyledInfoSection>
           <Checkbox
             checked={orderType === OrderType.publicListed}
             label={t("orders.publiclyList")}
             subLabel={t("orders.publiclyListDescription")}
             onChange={handleOrderTypeCheckboxChange}
           />
-        )}
-      </StyledInfoSection>
+        </StyledInfoSection>
+      )}
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}

@@ -53,6 +53,24 @@ export const InputOrButtonBorderStyleType2 = css`
   }
 `;
 
+export const InputTextStyle = css`
+  ${InputOrButtonBorderStyleType2};
+
+  line-height: 2.25;
+  padding: 0.25rem 0.625rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: ${(props) => props.theme.colors.white};
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.lightGrey};
+  }
+
+  &:focus {
+    border-color: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 export const BorderlessButtonStyle = css`
   border: 1px solid transparent;
 

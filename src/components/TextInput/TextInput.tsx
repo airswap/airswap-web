@@ -30,13 +30,13 @@ const TextInput: FC<TextInputProps> = ({
     <StyledTextInput
       hasError={hasError}
       hideLabel={hideLabel}
-      aria-label={label}
       disabled={disabled}
       className={className}
     >
       <StyledFormLabel>{label}</StyledFormLabel>
       <StyledInput
         {...inputProps}
+        aria-label={label}
         disabled={disabled}
         ref={inputRef}
         type={type}

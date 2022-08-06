@@ -11,7 +11,7 @@ export const getOrderTypeSelectOptions = (t: TFunction): SelectOption[] => {
     },
     {
       value: OrderScopeType.private,
-      label: t("orders.someone"),
+      label: t("orders.specificWallet"),
     },
   ];
 };

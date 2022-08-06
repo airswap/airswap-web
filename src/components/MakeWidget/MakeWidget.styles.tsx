@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
-import InfoSection from "../InfoSection/InfoSection";
+import AddressInput from "./subcomponents/AddressInput/AddressInput";
+import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 
 export const Container = styled.div`
@@ -15,4 +16,10 @@ export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
 
 export const StyledInfoSection = styled(InfoSection)`
   margin-top: 1rem;
+  height: 3.5rem;
+`;
+
+export const StyledAddressInput = styled(AddressInput)`
+  margin-top: 1rem;
+  height: 3.5rem;
 `;

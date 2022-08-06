@@ -24,7 +24,7 @@ const OrderTypeSelector: FC<OrderTypeSelectorProps> = ({
 
   return (
     <SelectWrapper className={className}>
-      <SelectLabel>{t("common.expiresIn")}</SelectLabel>
+      <SelectLabel>{t("common.for")}</SelectLabel>
       <Dropdown
         value={selectedOrderTypeOption}
         options={options}
