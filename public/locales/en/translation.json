@@ -53,7 +53,11 @@
     "minutes": "minutes",
     "hours": "hours",
     "days": "days",
-    "weeks": "weeks"
+    "weeks": "weeks",
+    "minutesShort": "Min",
+    "hoursShort": "H",
+    "daysShort": "D",
+    "weeksShort": "W"
   },
   "information": {
     "join.title": "Join AirSwap",

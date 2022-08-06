@@ -1,5 +1,7 @@
 import styled from "styled-components/macro";
 
+import Tooltip from "./subcomponents/Tooltip/Tooltip";
+
 export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
   flex-direction: column;
@@ -35,4 +37,10 @@ export const SwapIconContainer = styled.div`
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
   z-index: 1;
+`;
+
+export const StyledTooltip = styled(Tooltip)`
+  position: absolute;
+  bottom: calc(100% + 1rem);
+  right: 0;
 `;

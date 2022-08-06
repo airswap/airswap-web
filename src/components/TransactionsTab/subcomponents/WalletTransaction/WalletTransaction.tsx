@@ -14,8 +14,8 @@ import {
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
-import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
+import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
   Container,
@@ -58,19 +58,16 @@ const WalletTransaction = ({
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
     const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
-    //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <>
-            <SpanTitle>
-              {t("wallet.approve", { symbol: approvalToken?.symbol })}
-            </SpanTitle>
-            <SpanSubtitle>
-              {statusText} · {timeBetween}
-            </SpanSubtitle>
-          </>
+          <SpanTitle>
+            {t("wallet.approve", { symbol: approvalToken?.symbol })}
+          </SpanTitle>
+          <SpanSubtitle>
+            {statusText} · {timeBetween}
+          </SpanSubtitle>
         </TextContainer>
         {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
@@ -100,7 +97,7 @@ const WalletTransaction = ({
         .toString();
     }
     //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>

@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 
-import getTimeBetweenTwoDates from "./getTimeBetweenTwoDates";
+import { addMonths, addSeconds, addYears } from "date-fns";
+
+import getTimeTranslation from "./getTimeAgoTranslation";
 
 const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;
@@ -18,7 +20,7 @@ describe("Get Time Difference Between Two Dates", () => {
   it("should return undefined", () => {
     const futureDate = new Date("03/01/2080");
     const { t } = useTranslation();
-    const res = getTimeBetweenTwoDates(futureDate, t);
+    const res = getTimeTranslation(futureDate, t);
     expect(res).toBe("undefined common.undefined");
   });
 
@@ -26,7 +28,7 @@ describe("Get Time Difference Between Two Dates", () => {
     var xMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xMinutesAgo, t);
+    const res = getTimeTranslation(xMinutesAgo, t);
     expect(res).toBe("5 wallet.minuteAgo_other");
   });
 
@@ -34,7 +36,7 @@ describe("Get Time Difference Between Two Dates", () => {
     var xMinutesAgo = new Date(Date.now() - 59 * MS_PER_MINUTE);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xMinutesAgo, t);
+    const res = getTimeTranslation(xMinutesAgo, t);
     expect(res).toBe("59 wallet.minuteAgo_other");
   });
 
@@ -42,7 +44,7 @@ describe("Get Time Difference Between Two Dates", () => {
     var xHoursAgo = new Date(Date.now() - 1 * MS_PER_HOUR);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xHoursAgo, t);
+    const res = getTimeTranslation(xHoursAgo, t);
     expect(res).toBe("1 wallet.hourAgo_one");
   });
 
@@ -50,7 +52,7 @@ describe("Get Time Difference Between Two Dates", () => {
     var xHoursAgo = new Date(Date.now() - 23 * MS_PER_HOUR);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xHoursAgo, t);
+    const res = getTimeTranslation(xHoursAgo, t);
     expect(res).toBe("23 wallet.hourAgo_other");
   });
 
@@ -58,7 +60,7 @@ describe("Get Time Difference Between Two Dates", () => {
     var xDaysAgo = new Date(Date.now() - 1 * MS_PER_DAY);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xDaysAgo, t);
+    const res = getTimeTranslation(xDaysAgo, t);
     expect(res).toBe("1 wallet.dayAgo_one");
   });
 
@@ -66,23 +68,23 @@ describe("Get Time Difference Between Two Dates", () => {
     var xDaysAgo = new Date(Date.now() - 2 * MS_PER_DAY);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xDaysAgo, t);
+    const res = getTimeTranslation(xDaysAgo, t);
     expect(res).toBe("2 wallet.dayAgo_other");
   });
 
   it("should return 1 month", () => {
-    var xMonthsAgo = new Date(Date.now() - 1 * MS_PER_MONTH);
+    var xMonthsAgo = addMonths(Date.now(), -1);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xMonthsAgo, t);
+    const res = getTimeTranslation(xMonthsAgo, t);
     expect(res).toBe("1 wallet.monthAgo_one");
   });
 
   it("should return 11 months", () => {
-    var xMonthsAgo = new Date(Date.now() - 11 * MS_PER_MONTH);
+    var xMonthsAgo = addMonths(addSeconds(Date.now(), -1), -11);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xMonthsAgo, t);
+    const res = getTimeTranslation(xMonthsAgo, t);
     expect(res).toBe("11 wallet.monthAgo_other");
   });
 
@@ -90,15 +92,15 @@ describe("Get Time Difference Between Two Dates", () => {
     var xYearsAgo = new Date(Date.now() - 1 * MS_PER_YEAR);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xYearsAgo, t);
+    const res = getTimeTranslation(xYearsAgo, t);
     expect(res).toBe("1 wallet.yearAgo_one");
   });
 
   it("should return 5 years", () => {
-    var xYearsAgo = new Date(Date.now() - 5 * MS_PER_YEAR);
+    var xYearsAgo = addYears(addSeconds(Date.now(), -1), -5);
     const { t } = useTranslation();
 
-    const res = getTimeBetweenTwoDates(xYearsAgo, t);
+    const res = getTimeTranslation(xYearsAgo, t);
     expect(res).toBe("5 wallet.yearAgo_other");
   });
 });
