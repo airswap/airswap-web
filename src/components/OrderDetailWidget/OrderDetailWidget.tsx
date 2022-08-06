@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container } from "./OrderDetailWidget.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
-import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidget";
+import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 const OrderDetailWidget: FC = () => {
   const { t } = useTranslation();

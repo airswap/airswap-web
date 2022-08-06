@@ -58,7 +58,8 @@
     "hoursShort": "H",
     "daysShort": "D",
     "weeksShort": "W",
-    "for": "For"
+    "for": "For",
+    "you": "You"
   },
   "information": {
     "join.title": "Join AirSwap",
