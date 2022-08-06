@@ -73,7 +73,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 1 month", () => {
-    var xMonthsAgo = new Date(Date.now() - 1 * MS_PER_MONTH);
+    var xMonthsAgo = addMonths(Date.now(), -1);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMonthsAgo, t);

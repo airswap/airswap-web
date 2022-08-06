@@ -53,7 +53,11 @@
     "minutes": "minutes",
     "hours": "hours",
     "days": "days",
-    "weeks": "weeks"
+    "weeks": "weeks",
+    "minutesShort": "Min",
+    "hoursShort": "H",
+    "daysShort": "D",
+    "weeksShort": "W"
   },
   "information": {
     "join.title": "Join AirSwap",
@@ -126,13 +130,7 @@
     "editCustomTokens": "Edit Custom Tokens",
     "settings": "Settings",
     "revertPrice": "Revert price",
-    "moreInformation": "More information",
-    "expiresIn": "Expires in",
-    "expired": "Expired",
-    "minutesShort": "Min",
-    "hoursShort": "H",
-    "daysShort": "D",
-    "weeksShort": "W"
+    "moreInformation": "More information"
   },
   "toast": {
     "swapComplete": "Swap Complete",

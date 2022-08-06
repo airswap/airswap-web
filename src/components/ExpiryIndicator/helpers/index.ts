@@ -24,10 +24,10 @@ export const getExpiryTranslation = (
   );
 
   const formatDistanceLocale: Record<formatDistanceLocaleKey, string> = {
-    xMinutes: `{{count}} ${t("orders.minutesShort")}`,
-    xHours: `{{count}}${t("orders.hoursShort")}`,
-    xDays: `{{count}}${t("orders.daysShort")}`,
-    xWeeks: `{{count}}${t("orders.weeksShort")}`,
+    xMinutes: `{{count}} ${t("common.minutesShort")}`,
+    xHours: `{{count}}${t("common.hoursShort")}`,
+    xDays: `{{count}}${t("common.daysShort")}`,
+    xWeeks: `{{count}}${t("common.weeksShort")}`,
   };
   const locale: Locale = {
     formatDistance: (token: formatDistanceLocaleKey, count: number): string => {
