@@ -3,7 +3,7 @@ export const customStringToSignificantDecimals: (
   sigDecimals?: number,
   length?: number
 ) => string = (input, sigDecimals = 1, length = 9) => {
-  // Custom: added single decimal to whole numbers
+  // Custom: added single decimal to whole numbers and handle large edge case
   if (input.indexOf(".") === -1 && input.length > length) {
     return `> ${"9".repeat(length)}.9`;
   } else if (input.indexOf(".") === -1) {

@@ -23,7 +23,7 @@ export const RateField: React.FC<RateFieldProps> = ({
   const [currentRate, setCurrentRate] = useState(rate);
 
   const displayRate = useMemo(
-    () => customStringToSignificantDecimals(currentRate.toString(), 1),
+    () => customStringToSignificantDecimals(currentRate.toString(), 1, 7),
     [currentRate]
   );
 
