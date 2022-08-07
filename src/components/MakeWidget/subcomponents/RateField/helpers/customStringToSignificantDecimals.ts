@@ -7,7 +7,7 @@ export const customStringToSignificantDecimals: (
   if (input.indexOf(".") === -1 && input.length > length) {
     return `> ${"9".repeat(length)}.9`;
   } else if (input.indexOf(".") === -1) {
-    return `${input}.0`;
+    return `${input}.${"0".repeat(sigDecimals)}`;
   }
 
   const [beforeDecimalPoint, afterDecimalPoint] = input.split(".");
