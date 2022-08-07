@@ -1,24 +1,33 @@
 export const customStringToSignificantDecimals: (
   input: string,
-  sigDecimals?: number
-) => string = (input, sigDecimals = 6) => {
-  // DIFF w/ main helper: added single decimal to whole numbers
-  if (input.indexOf(".") === -1) {
+  sigDecimals?: number,
+  length?: number
+) => string = (input, sigDecimals = 1, length = 9) => {
+  // Custom: added single decimal to whole numbers
+  if (input.indexOf(".") === -1 && input.length > length) {
+    return `> ${"9".repeat(length)}.9`;
+  } else if (input.indexOf(".") === -1) {
     return `${input}.0`;
   }
 
   const [beforeDecimalPoint, afterDecimalPoint] = input.split(".");
   let trimmedDecimals = "";
+
+  // Custom: handles integers longer than length
+  if (beforeDecimalPoint.length > length) {
+    return `> ${"9".repeat(length)}.9`;
+  }
+
   if (afterDecimalPoint.length <= sigDecimals) {
     trimmedDecimals = afterDecimalPoint;
   } else if (beforeDecimalPoint.match(/[1-9]/)) {
-    // DIFF w/ main helper: trims to sigDecimals, not 4
+    // Custom: trims to sigDecimals, not 4
     trimmedDecimals = afterDecimalPoint.slice(0, sigDecimals);
   } else {
     let sigDecimalsRemaining = sigDecimals;
     let i = 0;
     let inLeadingZeroes = true;
-    // DIFF w/ main helper: afterDecimalPoint.length - 1 cut off string before sigDecimal
+    // Custom: afterDecimalPoint.length - 1 cut off string before sigDecimal
     while (sigDecimalsRemaining > 0 && i < afterDecimalPoint.length) {
       const currentDigit = afterDecimalPoint[i];
       trimmedDecimals += currentDigit;
@@ -27,6 +36,11 @@ export const customStringToSignificantDecimals: (
         sigDecimalsRemaining--;
       }
       i++;
+    }
+
+    // Custom: handles decimals longer than length
+    if (trimmedDecimals.length - sigDecimals >= length) {
+      return `< 0.${"0".repeat(length - 1)}1`;
     }
   }
 
