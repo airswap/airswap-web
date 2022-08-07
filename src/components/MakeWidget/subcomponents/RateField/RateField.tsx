@@ -1,27 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import BigNumber from "bignumber.js";
 
 import IconButton from "../../../IconButton/IconButton";
 import { Text, Wrapper, RateBox } from "./RateField.styles";
-
-function displayRate(rate: number) {
-  if (rate > 1000000) {
-    return ">1M";
-  }
-
-  if (rate < 0.05) {
-    return "<0.1";
-  }
-
-  return rate.toFixed(1);
-}
+import { customStringToSignificantDecimals } from "./helpers/customStringToSignificantDecimals";
 
 export type RateFieldProps = {
   token1: string;
   token2: string;
   rate: BigNumber;
-  className: string;
+  className?: string;
 };
 
 export const RateField: React.FC<RateFieldProps> = ({
@@ -30,19 +19,24 @@ export const RateField: React.FC<RateFieldProps> = ({
   rate,
   className,
 }) => {
-  const [TokenPair, setTokenPair] = useState([token1, token2]);
-  const [CurrentRate, setCurrentRate] = useState(rate.toNumber());
+  const [tokenPair, setTokenPair] = useState([token1, token2]);
+  const [currentRate, setCurrentRate] = useState(rate);
+
+  const displayRate = useMemo(
+    () => customStringToSignificantDecimals(currentRate.toString(), 1),
+    [currentRate]
+  );
 
   function handleClick() {
-    setTokenPair([TokenPair[1], TokenPair[0]]);
-    setCurrentRate(1 / CurrentRate);
+    setTokenPair([tokenPair[1], tokenPair[0]]);
+    setCurrentRate(new BigNumber("1").div(currentRate));
   }
 
   return (
     <Wrapper className={className}>
-      <Text>{` 1 ${TokenPair[0]} =`}</Text>
-      <RateBox>{displayRate(CurrentRate)}</RateBox>
-      <Text>{TokenPair[1]}</Text>
+      <Text>{` 1 ${tokenPair[0]} =`}</Text>
+      <RateBox>{displayRate}</RateBox>
+      <Text>{tokenPair[1]}</Text>
       <IconButton
         icon="swap-horizontal"
         iconSize={0.75}

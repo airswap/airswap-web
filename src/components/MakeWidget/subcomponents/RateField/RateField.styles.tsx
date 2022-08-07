@@ -20,7 +20,15 @@ export const Wrapper = styled.div`
   font-weight: bold;
 
   & > .icon {
-    border: none;
+    border-color: transparent;
+
+    &:hover {
+      border-color: ${({ theme }) => theme.colors.lightGrey};
+    }
+
+    &:active {
+      border-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 
