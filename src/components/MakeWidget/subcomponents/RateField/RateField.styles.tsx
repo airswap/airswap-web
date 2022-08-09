@@ -16,7 +16,8 @@ export const Wrapper = styled.div`
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.75rem;
-  color: white;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   gap: 0.125rem;
 
   & > .icon {
