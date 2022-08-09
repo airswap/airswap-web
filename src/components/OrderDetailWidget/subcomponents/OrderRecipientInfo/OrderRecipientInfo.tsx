@@ -8,7 +8,7 @@ import {
   For,
   StyledCheckIcon,
   StyledCopyIcon,
-  Wrapper,
+  InfoWrapper,
   You,
 } from "./OrderRecipientInfo.styles";
 
@@ -48,7 +48,7 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
   }
 
   return (
-    <Wrapper onClick={handleClick} className={className}>
+    <InfoWrapper onClick={handleClick} className={className}>
       <For>{`${t("common.for")}:`}</For>
       {type === "you" && (
         <>
@@ -57,7 +57,7 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
         </>
       )}
       {type === "anyone" && t("orders.anyone")}
-    </Wrapper>
+    </InfoWrapper>
   );
 };
 

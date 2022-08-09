@@ -1,8 +1,8 @@
 import styled from "styled-components/macro";
 
 import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
-import ExpiryIndicator from "../../../ExpiryIndicator/ExpiryIndicator";
 import OrderRecipientInfo from "../OrderRecipientInfo/OrderRecipientInfo";
+import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
 
 export const InfoContainer = styled.div`
   display: flex;
@@ -22,7 +22,7 @@ export const StyledOrderRecipientInfo = styled(OrderRecipientInfo)`
   margin-bottom: 0.5rem;
 `;
 
-export const StyledExpiryIndicator = styled(ExpiryIndicator)`
+export const StyledOrderStatusInfo = styled(OrderStatusInfo)`
   max-width: 100%;
   margin-left: 0.5rem;
 `;

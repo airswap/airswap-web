@@ -59,7 +59,9 @@
     "daysShort": "D",
     "weeksShort": "W",
     "for": "For",
-    "you": "You"
+    "you": "You",
+    "canceled": "Canceled",
+    "taken": "Taken"
   },
   "information": {
     "join.title": "Join AirSwap",

@@ -7,7 +7,6 @@ import Tooltip from "./subcomponents/Tooltip";
 export const Container = styled.div`
   position: relative;
   width: fit-content;
-  margin-left: 0.375rem;
   height: 2rem;
 `;
 

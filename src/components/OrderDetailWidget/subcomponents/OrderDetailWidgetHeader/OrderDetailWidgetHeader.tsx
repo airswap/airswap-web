@@ -1,10 +1,11 @@
 import React, { FC } from "react";
 
+import { OrderStatus } from "../../../../types/orderStatus";
 import { Title } from "../../../Typography/Typography";
 import {
   InfoContainer,
-  StyledExpiryIndicator,
   StyledOrderRecipientInfo,
+  StyledOrderStatusInfo,
   StyledWidgetHeader,
 } from "./OrderDetailWidgetHeader.styles";
 
@@ -27,7 +28,10 @@ const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
           type="address"
           address="0x000003443344343343443"
         />
-        <StyledExpiryIndicator expiry={new Date("2022-12-11T23:00:00")} />
+        <StyledOrderStatusInfo
+          status={OrderStatus.open}
+          expiry={new Date("2022-12-11T23:00:00")}
+        />
       </InfoContainer>
     </StyledWidgetHeader>
   );

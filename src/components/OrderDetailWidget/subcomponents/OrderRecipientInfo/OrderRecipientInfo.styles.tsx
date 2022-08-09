@@ -35,7 +35,7 @@ export const Button = styled(PillButton)`
   }
 `;
 
-export const Wrapper = styled(Pill)`
+export const InfoWrapper = styled(Pill)`
   color: ${({ theme }) => theme.colors.lightGrey};
 
   ${StyledCheckIcon} {
