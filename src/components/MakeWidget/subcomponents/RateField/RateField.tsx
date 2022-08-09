@@ -10,6 +10,7 @@ export type RateFieldProps = {
   token1: string;
   token2: string;
   rate: BigNumber;
+  active: boolean;
   className?: string;
 };
 
@@ -17,6 +18,7 @@ export const RateField: React.FC<RateFieldProps> = ({
   token1,
   token2,
   rate,
+  active,
   className,
 }) => {
   const [tokenPair, setTokenPair] = useState([token1, token2]);
@@ -33,7 +35,7 @@ export const RateField: React.FC<RateFieldProps> = ({
   }
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={`${className} ${active ? "active" : ""}`}>
       <Text>{` 1 ${tokenPair[0]} =`}</Text>
       <RateBox>{displayRate}</RateBox>
       <Text>{tokenPair[1]}</Text>
