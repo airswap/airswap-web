@@ -136,7 +136,7 @@
     "publiclyListDescription": "Allow others to publicly find my swap",
     "anyone": "Anyone",
     "specificWallet": "Specific Wallet",
-    "counterPartyAddress": "Counterpary address",
+    "counterPartyAddress": "Counterparty address",
     "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS"
   },
   "toast": {
