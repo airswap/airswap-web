@@ -15,7 +15,7 @@ import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 // Dummy data, this data will come from store later.
-const expiry = addDays(new Date(), -1);
+const expiry = addDays(new Date(), 1);
 const orderStatus = OrderStatus.open;
 const orderType = OrderType.private;
 const recipientAddress = nativeCurrencyAddress;

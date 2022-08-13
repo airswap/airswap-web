@@ -25,7 +25,12 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
   }
 
   return (
-    <Button as="a" href={link} className={className}>
+    <Button
+      as="a"
+      href={link}
+      target="_blank"
+      className={className}
+    >
       {status === OrderStatus.canceled && t("common.canceled")}
       {status === OrderStatus.taken && t("common.taken")}
       <StyledIcon iconSize={0.875} name="transaction-link" />
