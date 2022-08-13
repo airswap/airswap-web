@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, RefObject } from "react";
 
 import {
   StyledFormLabel,
@@ -13,6 +13,7 @@ export type TextInputProps = {
   type?: string;
   hasError?: boolean;
   hideLabel?: boolean;
+  inputRef?: RefObject<HTMLInputElement>;
 } & HTMLInputProps;
 
 const TextInput: FC<TextInputProps> = ({
@@ -22,18 +23,24 @@ const TextInput: FC<TextInputProps> = ({
   hasError,
   hideLabel,
   disabled,
+  inputRef,
   ...inputProps
 }): ReactElement => {
   return (
     <StyledTextInput
       hasError={hasError}
       hideLabel={hideLabel}
-      aria-label={label}
       disabled={disabled}
       className={className}
     >
       <StyledFormLabel>{label}</StyledFormLabel>
-      <StyledInput {...inputProps} disabled={disabled} type={type} />
+      <StyledInput
+        {...inputProps}
+        aria-label={label}
+        disabled={disabled}
+        ref={inputRef}
+        type={type}
+      />
     </StyledTextInput>
   );
 };

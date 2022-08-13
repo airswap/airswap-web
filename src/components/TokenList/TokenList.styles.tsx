@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import breakPoints from "../../style/breakpoints";
-import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+import { InputTextStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
@@ -55,22 +55,10 @@ export const SearchInput = styled(TextInput)`
   background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
-    ${InputOrButtonBorderStyleType2};
+    ${InputTextStyle};
+
     border-radius: 2px;
-    line-height: 2.25;
-    padding: 0.25rem 0.625rem;
-    font-size: 1rem;
-    font-weight: 400;
     background: transparent;
-    color: ${(props) => props.theme.colors.white};
-
-    &::placeholder {
-      color: ${(props) => props.theme.colors.lightGrey};
-    }
-
-    &:focus {
-      border-color: ${(props) => props.theme.colors.primary};
-    }
   }
 `;
 

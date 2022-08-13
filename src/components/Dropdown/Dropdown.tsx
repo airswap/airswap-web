@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
-import { Sizer } from "../MakeWidget/subcomponents/ExpirySelector/ExpirySelector.styles";
 import {
   Option,
   Wrapper,
@@ -9,6 +8,7 @@ import {
   Select,
   ItemBackground,
   SelectButtonText,
+  Sizer,
   NativeSelect,
   NativeSelectWrapper,
   NativeSelectIcon,
@@ -27,7 +27,9 @@ export type DropdownProps = {
   className?: string;
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Snavie = "test";
+
+const Dropdown: FC<DropdownProps> = ({
   selectedOption,
   options,
   onChange,
@@ -47,6 +49,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const sizerRef = useCallback((node) => {
     if (node !== null) {
+      console.log(node.getBoundingClientRect());
       setSelectWidth(node.getBoundingClientRect().width);
     }
   }, []);
@@ -78,6 +81,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
     // Unlike other browsers, on safari clicking a button won't focus it.
     e.currentTarget.focus();
   };
+
+  console.log(selectWidth);
 
   return (
     <Wrapper className={className}>
@@ -126,3 +131,5 @@ export const Dropdown: React.FC<DropdownProps> = ({
     </Wrapper>
   );
 };
+
+export default Dropdown;

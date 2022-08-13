@@ -57,7 +57,8 @@
     "minutesShort": "Min",
     "hoursShort": "H",
     "daysShort": "D",
-    "weeksShort": "W"
+    "weeksShort": "W",
+    "for": "For"
   },
   "information": {
     "join.title": "Join AirSwap",
@@ -130,7 +131,13 @@
     "editCustomTokens": "Edit Custom Tokens",
     "settings": "Settings",
     "revertPrice": "Revert price",
-    "moreInformation": "More information"
+    "moreInformation": "More information",
+    "publiclyList": "Publicly list",
+    "publiclyListDescription": "Allow others to publicly find my swap",
+    "anyone": "Anyone",
+    "specificWallet": "Specific Wallet",
+    "counterPartyAddress": "Counterparty address",
+    "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS"
   },
   "toast": {
     "swapComplete": "Swap Complete",

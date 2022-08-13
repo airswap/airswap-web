@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import {
+  SelectLabel,
+  SelectWrapper,
+} from "../../../../styled-components/Select/Select";
 import { SelectOption } from "../../../Dropdown/Dropdown";
-import { Wrapper, Title, Input, StyledDropdown } from "./ExpirySelector.styles";
+import { Input, StyledDropdown } from "./ExpirySelector.styles";
 import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
 
 const floatRegExp = new RegExp("^([0-9])*$");
@@ -38,14 +42,14 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
   }
 
   return (
-    <Wrapper>
-      <Title>{t("common.expiresIn")}</Title>
+    <SelectWrapper>
+      <SelectLabel>{t("common.expiresIn")}</SelectLabel>
       <Input maxLength={3} value={amount} onChange={handleAmountChange} />
       <StyledDropdown
         selectedOption={unit}
         options={translatedOptions}
         onChange={handleUnitChange}
       />
-    </Wrapper>
+    </SelectWrapper>
   );
 };

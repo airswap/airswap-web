@@ -1,13 +1,13 @@
 import React, { FC } from "react";
 
 import MakeWidget from "../../components/MakeWidget/MakeWidget";
-import Page from "../../components/Page/Page";
+import { StyledPage } from "./Make.styles";
 
 const MakePage: FC = () => {
   return (
-    <Page>
+    <StyledPage>
       <MakeWidget />
-    </Page>
+    </StyledPage>
   );
 };
 

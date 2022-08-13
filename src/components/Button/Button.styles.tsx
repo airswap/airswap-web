@@ -1,5 +1,4 @@
-import { css } from "styled-components";
-import styled, { DefaultTheme } from "styled-components/macro";
+import styled, { css, DefaultTheme } from "styled-components/macro";
 
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
 

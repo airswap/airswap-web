@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 
-export const Container = styled.div`
+export const WidgetFrameWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -43,7 +43,7 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   height: 100%;
   min-height: ${sizes.widgetSize};
 
-  ${Container} {
+  ${WidgetFrameWrapper} {
     box-shadow: ${(props) =>
       props.$isConnected
         ? props.theme.shadows.widgetGlow
