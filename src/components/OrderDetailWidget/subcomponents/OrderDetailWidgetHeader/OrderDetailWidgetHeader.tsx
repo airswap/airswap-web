@@ -1,6 +1,8 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import { OrderStatus } from "../../../../types/orderStatus";
+import { OrderType } from "../../../../types/orderTypes";
 import { Title } from "../../../Typography/Typography";
 import {
   InfoContainer,
@@ -10,27 +12,41 @@ import {
 } from "./OrderDetailWidgetHeader.styles";
 
 type OrderDetailWidgetHeaderProps = {
-  title: string;
+  expiry: Date;
+  orderStatus: OrderStatus;
+  orderType: OrderType;
+  recipientAddress?: string;
+  transactionLink?: string;
+  userAddress?: string;
   className?: string;
 };
 
 const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
-  title,
+  expiry,
+  orderStatus,
+  orderType,
+  recipientAddress,
+  transactionLink,
+  userAddress,
   className,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <StyledWidgetHeader className={className}>
       <Title type="h2" as="h1">
-        {title}
+        {t("common.swap")}
       </Title>
       <InfoContainer>
         <StyledOrderRecipientInfo
-          type="address"
-          address="0x000003443344343343443"
+          orderType={orderType}
+          recipientAddress={recipientAddress}
+          userAddress={userAddress}
         />
         <StyledOrderStatusInfo
-          status={OrderStatus.open}
-          expiry={new Date("2022-12-11T23:00:00")}
+          expiry={expiry}
+          status={orderStatus}
+          link={transactionLink}
         />
       </InfoContainer>
     </StyledWidgetHeader>

@@ -1,26 +1,28 @@
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
 import writeAddressToClipboard from "../../../../helpers/writeAddressToClipboard";
+import { OrderType } from "../../../../types/orderTypes";
 import {
   Button,
   For,
+  InfoWrapper,
   StyledCheckIcon,
   StyledCopyIcon,
-  InfoWrapper,
   You,
 } from "./OrderRecipientInfo.styles";
 
 type OrderRecipientInfoProps = {
-  address?: string;
-  type: "you" | "address" | "anyone";
+  orderType: OrderType;
+  recipientAddress?: string;
+  userAddress?: string;
   className?: string;
 };
 
 const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
-  address = nativeCurrencyAddress,
-  type,
+  orderType,
+  recipientAddress,
+  userAddress,
   className,
 }) => {
   const { t } = useTranslation();
@@ -29,16 +31,25 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
     useState(false);
 
   const handleClick = async () => {
-    if (type === "address") {
-      setWriteAddressToClipboardSuccess(await writeAddressToClipboard(address));
+    if (recipientAddress === "address") {
+      setWriteAddressToClipboardSuccess(
+        await writeAddressToClipboard(recipientAddress)
+      );
     }
   };
 
-  if (type === "address") {
+  if (
+    recipientAddress &&
+    recipientAddress !== userAddress &&
+    orderType === OrderType.private
+  ) {
     return (
       <Button onClick={handleClick} className={className}>
         <For>{`${t("common.for")}:`}</For>
-        {`${address.substr(0, 3)}...${address.substr(address.length - 3, 3)}`}
+        {`${recipientAddress.substr(0, 3)}...${recipientAddress.substr(
+          recipientAddress.length - 3,
+          3
+        )}`}
         <StyledCopyIcon
           name={writeAddressToClipboardSuccess ? "check" : "copy"}
           iconSize={0.875}
@@ -50,13 +61,14 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
   return (
     <InfoWrapper onClick={handleClick} className={className}>
       <For>{`${t("common.for")}:`}</For>
-      {type === "you" && (
+      {recipientAddress === userAddress ? (
         <>
           <You>{t("common.you")}</You>
           <StyledCheckIcon name="check" />
         </>
+      ) : (
+        t("orders.anyone")
       )}
-      {type === "anyone" && t("orders.anyone")}
     </InfoWrapper>
   );
 };
