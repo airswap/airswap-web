@@ -41,7 +41,6 @@ export const RateField: React.FC<RateFieldProps> = ({
 
   return (
     <Wrapper
-      as={isButton ? "button" : "div"}
       onClick={isButton ? handleClick : undefined}
       isButton={isButton}
       className={className}

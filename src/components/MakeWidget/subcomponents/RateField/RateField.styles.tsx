@@ -1,15 +1,11 @@
 import styled, { css } from "styled-components/macro";
 
+import { BorderedPill } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
 import IconButton from "../../../IconButton/IconButton";
 
-export const StyledIcon = styled(Icon)`
-  color: ${({ theme }) => theme.colors.lightGrey};
-  margin-left: 0.175rem;
-`;
-
-export const StyledIconButton = styled(IconButton)`
+const ButtonBorder = css`
   :focus {
     border-color: transparent;
   }
@@ -23,6 +19,15 @@ export const StyledIconButton = styled(IconButton)`
   }
 `;
 
+export const StyledIcon = styled(Icon)`
+  color: ${({ theme }) => theme.colors.lightGrey};
+  padding-left: 0.5rem;
+`;
+
+export const StyledIconButton = styled(IconButton)`
+  ${ButtonBorder};
+`;
+
 export const Text = styled.div`
   margin-top: -2px;
 `;
@@ -34,13 +39,28 @@ export const RateBox = styled.div`
 export const Wrapper = styled.div<{ isButton: boolean }>`
   display: flex;
   align-items: center;
-  gap: 0.125rem;
+  width: fit-content;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.75rem;
 
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  ${({ isButton }) =>
+    isButton &&
+    css`
+      ${BorderedPill};
+      ${ButtonBorder};
+
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+      gap: 0.125rem;
+
+      /* fixes pixel differences with bordered pill */
+
+      height: 2.5rem;
+      padding: 0 1rem;
+
+      cursor: pointer;
+    `}
 
   ${({ isButton, theme }) =>
     !isButton &&
