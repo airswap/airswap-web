@@ -1,7 +1,9 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
+import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
 
 import { addDays } from "date-fns";
@@ -9,6 +11,8 @@ import { addDays } from "date-fns";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
+import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
@@ -23,8 +27,11 @@ const transactionLink =
   "https://etherscan.io/tx/0x53ddb90435ab46d96035da71b4ff8a26bb0a682a7f2327aaeb8ff3848406204f";
 
 const OrderDetailWidget: FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { account } = useWeb3React<Web3Provider>();
+
+  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
   const handleBackButtonClick = () => {
     history.goBack();
@@ -52,11 +59,22 @@ const OrderDetailWidget: FC = () => {
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
-      <StyledInfoButtons ownerIsCurrentUser />
+      <StyledInfoButtons
+        ownerIsCurrentUser
+        onFeeButtonClick={toggleShowFeeInfo}
+      />
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}
       />
+
+      <Overlay
+        title="Lorem Ipsem"
+        onCloseButtonClick={() => toggleShowFeeInfo()}
+        isHidden={!showFeeInfo}
+      >
+        <FeeModal />
+      </Overlay>
     </Container>
   );
 };

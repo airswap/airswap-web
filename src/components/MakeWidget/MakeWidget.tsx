@@ -2,9 +2,13 @@ import React, { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { useToggle } from "@react-hookz/web";
+
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
+import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
+import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import {
   Container,
@@ -29,6 +33,7 @@ const MakeWidget: FC = () => {
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
   const [address, setAddress] = useState("");
+  const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
 
   useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
@@ -68,7 +73,7 @@ const MakeWidget: FC = () => {
       {orderType === OrderType.private ? (
         <StyledAddressInput value={address} onChange={setAddress} />
       ) : (
-        <StyledInfoSection>
+        <StyledInfoSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox
             checked={orderType === OrderType.publicListed}
             label={t("orders.publiclyList")}
@@ -81,6 +86,13 @@ const MakeWidget: FC = () => {
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}
       />
+      <Overlay
+        title={t("information.orderTypes.title")}
+        onCloseButtonClick={() => toggleShowOrderTypeInfo()}
+        isHidden={!showOrderTypeInfo}
+      >
+        <OrderTypesModal onCloseButtonClick={toggleShowOrderTypeInfo} />
+      </Overlay>
     </Container>
   );
 };

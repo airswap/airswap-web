@@ -6,11 +6,13 @@ import { Container, StyledLargePillButton } from "./InfoButtons.styles";
 
 type InfoButtonsProps = {
   ownerIsCurrentUser?: boolean;
+  onFeeButtonClick: () => void;
   className?: string;
 };
 
 const InfoButtons: FC<InfoButtonsProps> = ({
   ownerIsCurrentUser,
+  onFeeButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -18,7 +20,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   return (
     <Container className={className}>
       {ownerIsCurrentUser && (
-        <StyledLargePillButton>
+        <StyledLargePillButton onClick={onFeeButtonClick}>
           {`${t("common.fee")} 0.7%`}
           <Icon name="information-circle-outline" />
         </StyledLargePillButton>

@@ -79,7 +79,14 @@
     "join.voter": "Voter",
     "join.developer": "Developer",
     "join.ambassador": "Ambassador",
-    "join.author": "Author"
+    "join.author": "Author",
+    "orderTypes.title": "Make Swaps",
+    "orderTypes.anyoneListed": "Anyone Listed",
+    "orderTypes.anyoneUnlisted": "Anyone Unlisted",
+    "orderTypes.someoneUnlisted": "Someone Unlisted",
+    "orderTypes.paragraph": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.",
+    "orderTypes.paragraph2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.",
+    "orderTypes.paragraph3": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna."
   },
   "orders": {
     "continue": "Continue",

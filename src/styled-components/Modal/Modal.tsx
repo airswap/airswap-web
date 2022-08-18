@@ -25,4 +25,8 @@ export const ModalParagraph = styled(InfoSubHeading)`
 export const ModalSubTitle = styled(Title)`
   margin: 2.5rem 0 0.5rem;
   font-size: 1rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
 `;
