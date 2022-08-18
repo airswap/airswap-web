@@ -6,7 +6,18 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 1rem;
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
+
+  > button {
+    margin-bottom: 1rem;
+  }
 `;
 
 export const StyledLargePillButton = styled(LargePillButton)`

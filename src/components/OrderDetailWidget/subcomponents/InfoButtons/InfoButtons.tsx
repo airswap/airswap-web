@@ -1,8 +1,15 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
+import { BigNumber } from "bignumber.js";
+
 import Icon from "../../../Icon/Icon";
-import { Container, StyledLargePillButton } from "./InfoButtons.styles";
+import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField";
+import {
+  ButtonsWrapper,
+  Container,
+  StyledLargePillButton,
+} from "./InfoButtons.styles";
 
 type InfoButtonsProps = {
   ownerIsCurrentUser?: boolean;
@@ -19,18 +26,26 @@ const InfoButtons: FC<InfoButtonsProps> = ({
 
   return (
     <Container className={className}>
-      {ownerIsCurrentUser && (
-        <StyledLargePillButton onClick={onFeeButtonClick}>
-          {`${t("common.fee")} 0.7%`}
-          <Icon name="information-circle-outline" />
-        </StyledLargePillButton>
-      )}
-      {ownerIsCurrentUser && (
-        <StyledLargePillButton>
-          {t("orders.copyLink")}
-          <Icon name="copy2" />
-        </StyledLargePillButton>
-      )}
+      <ButtonsWrapper>
+        <RateField
+          isButton
+          token1="AST"
+          token2="USDT"
+          rate={new BigNumber("0.01455")}
+        />
+        {ownerIsCurrentUser && (
+          <StyledLargePillButton onClick={onFeeButtonClick}>
+            {`${t("common.fee")} 0.7%`}
+            <Icon name="information-circle-outline" />
+          </StyledLargePillButton>
+        )}
+        {ownerIsCurrentUser && (
+          <StyledLargePillButton>
+            {t("orders.copyLink")}
+            <Icon name="copy2" />
+          </StyledLargePillButton>
+        )}
+      </ButtonsWrapper>
     </Container>
   );
 };

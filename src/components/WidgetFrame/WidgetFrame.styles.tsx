@@ -9,8 +9,9 @@ export const WidgetFrameWrapper = styled.div`
   position: relative;
   border-radius: 0.25rem;
   margin: 0 ${sizes.pageMobilePadding};
-  height: ${sizes.widgetSize};
   width: ${sizes.widgetSize};
+  height: fit-content;
+  min-height: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
   background: ${(props) => props.theme.colors.black};
   box-shadow: ${(props) => props.theme.shadows.widgetGlow};
@@ -23,7 +24,7 @@ export const WidgetFrameWrapper = styled.div`
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    height: ${sizes.widgetMobileSize};
+    min-height: ${sizes.widgetMobileSize};
     margin: 0;
     padding: ${sizes.tradeContainerMobilePadding};
   }

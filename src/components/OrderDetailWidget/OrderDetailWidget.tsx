@@ -69,7 +69,7 @@ const OrderDetailWidget: FC = () => {
       />
 
       <Overlay
-        title={t('common.fee')}
+        title={t("common.fee")}
         onCloseButtonClick={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >

@@ -3,27 +3,22 @@ import { useState, useMemo } from "react";
 import BigNumber from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import {
-  Text,
-  Wrapper,
-  StyledIcon,
-  StyledIconButton,
-  RateBox,
-} from "./RateField.styles";
+import Icon from "../../../Icon/Icon";
+import { Text, Wrapper, StyledIconButton, RateBox } from "./RateField.styles";
 
 export type RateFieldProps = {
+  isButton?: boolean;
   token1: string;
   token2: string;
   rate: BigNumber;
-  isButton: boolean;
   className?: string;
 };
 
 export const RateField: React.FC<RateFieldProps> = ({
+  isButton = false,
   token1,
   token2,
   rate,
-  isButton,
   className,
 }) => {
   const [tokenPair, setTokenPair] = useState([token1, token2]);
@@ -41,6 +36,7 @@ export const RateField: React.FC<RateFieldProps> = ({
 
   return (
     <Wrapper
+      as={isButton ? "button" : "div"}
       onClick={isButton ? handleClick : undefined}
       isButton={isButton}
       className={className}
@@ -49,7 +45,7 @@ export const RateField: React.FC<RateFieldProps> = ({
       <RateBox>{displayRate}</RateBox>
       <Text>{tokenPair[1]}</Text>
       {isButton ? (
-        <StyledIcon name="swap-horizontal" iconSize={0.75} />
+        <Icon name="swap-horizontal" iconSize={0.75} />
       ) : (
         <StyledIconButton
           icon="swap-horizontal"

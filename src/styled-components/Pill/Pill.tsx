@@ -19,16 +19,7 @@ export const PillStyle = css`
     theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 `;
 
-export const Pill = styled.div`
-  ${PillStyle};
-`;
-
-export const PillButton = styled.button`
-  ${PillStyle};
-  ${InputOrButtonBorderStyleType2};
-`;
-
-export const LargePillButton = styled.button`
+export const LargePillButtonStyle = css`
   ${PillStyle};
   ${InputOrButtonBorderStyleType2};
 
@@ -48,4 +39,17 @@ export const LargePillButton = styled.button`
     margin-top: 2px;
     margin-left: 0.5rem;
   }
+`;
+
+export const Pill = styled.div`
+  ${PillStyle};
+`;
+
+export const PillButton = styled.button`
+  ${PillStyle};
+  ${InputOrButtonBorderStyleType2};
+`;
+
+export const LargePillButton = styled.button`
+  ${LargePillButtonStyle};
 `;

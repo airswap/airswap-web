@@ -1,39 +1,17 @@
-import styled, { css } from "styled-components/macro";
+import styled from "styled-components/macro";
 
-import { BorderedPill } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
-import Icon from "../../../Icon/Icon";
+import { LargePillButtonStyle } from "../../../../styled-components/Pill/Pill";
 import IconButton from "../../../IconButton/IconButton";
 
-const ButtonBorder = css`
-  :focus {
-    border-color: transparent;
-  }
+export const StyledIconButton = styled(IconButton)``;
 
-  :hover {
-    border-color: ${({ theme }) => theme.colors.lightGrey};
-  }
-
-  :active {
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-export const StyledIcon = styled(Icon)`
-  color: ${({ theme }) => theme.colors.lightGrey};
-  padding-left: 0.5rem;
-`;
-
-export const StyledIconButton = styled(IconButton)`
-  ${ButtonBorder};
-`;
-
-export const Text = styled.div`
-  margin-top: -2px;
-`;
+export const Text = styled.div``;
 
 export const RateBox = styled.div`
-  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  margin-left: 0.25rem;
 `;
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
@@ -44,38 +22,26 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
   text-transform: uppercase;
   font-size: 0.75rem;
 
-  ${({ isButton }) =>
-    isButton &&
-    css`
-      ${BorderedPill};
-      ${ButtonBorder};
-
-      color: ${({ theme }) =>
-        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-      gap: 0.125rem;
-
-      /* fixes pixel differences with bordered pill */
-
-      height: 2.5rem;
-      padding: 0 1rem;
-
-      cursor: pointer;
-    `}
-
   ${({ isButton, theme }) =>
-    !isButton &&
-    css`
+    isButton
+      ? LargePillButtonStyle
+      : `
       color: ${theme.colors.lightGrey};
       gap: 0.375rem;
+      
+      ${StyledIconButton} {
+        margin-left: -0.25rem;
+      }
 
       ${RateBox} {
         border-radius: 0.125rem;
         border: 1px solid ${theme.colors.borderGrey};
+        margin-left: 0;
+        height: 2rem;
+        padding: 0 0.5rem;
         font-family: ${fontMono};
         font-size: 0.875rem;
         font-weight: 500;
-        padding: 0.25rem 0.5rem;
-        margin-top: 0;
       }
-    `}
+    `};
 `;
