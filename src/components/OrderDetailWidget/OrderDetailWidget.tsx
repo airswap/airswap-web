@@ -10,7 +10,7 @@ import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import SwapInputs from "../SwapInputs/SwapInputs";
-import { Container } from "./OrderDetailWidget.styles";
+import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
@@ -52,6 +52,7 @@ const OrderDetailWidget: FC = () => {
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
+      <StyledInfoButtons ownerIsCurrentUser />
       <ActionButtons
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}

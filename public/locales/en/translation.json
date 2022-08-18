@@ -140,7 +140,8 @@
     "anyone": "Anyone",
     "specificWallet": "Specific Wallet",
     "counterPartyAddress": "Counterparty address",
-    "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS"
+    "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS",
+    "copyLink": "Copy link"
   },
   "toast": {
     "swapComplete": "Swap Complete",
