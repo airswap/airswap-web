@@ -11,12 +11,14 @@ import {
   IconArrowRight,
   IconChevronUpDown,
   IconBars,
+  IconCampaign,
   IconCheck,
   IconChevronDown,
   IconChevronRight,
-  IconCampaign,
+  IconClose,
   IconCode,
   IconCopy,
+  IconCopy2,
   IconContactSupport,
   IconDarkModeSwitch,
   IconDeny,
@@ -39,7 +41,6 @@ import {
   IconVote,
   IconX,
 } from "./icons";
-import IconClose from "./icons/IconClose";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -67,6 +68,7 @@ export const icons: IconSet = {
   close: IconClose,
   code: IconCode,
   copy: IconCopy,
+  copy2: IconCopy2,
   "contact-support": IconContactSupport,
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,

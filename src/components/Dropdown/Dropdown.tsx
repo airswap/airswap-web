@@ -49,7 +49,6 @@ const Dropdown: FC<DropdownProps> = ({
 
   const sizerRef = useCallback((node) => {
     if (node !== null) {
-      console.log(node.getBoundingClientRect());
       setSelectWidth(node.getBoundingClientRect().width);
     }
   }, []);
@@ -81,8 +80,6 @@ const Dropdown: FC<DropdownProps> = ({
     // Unlike other browsers, on safari clicking a button won't focus it.
     e.currentTarget.focus();
   };
-
-  console.log(selectWidth);
 
   return (
     <Wrapper className={className}>
