@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { css } from "styled-components/macro";
 
+import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+
 export const PillStyle = css`
   display: flex;
   flex-direction: row;
@@ -18,4 +20,9 @@ export const PillStyle = css`
 
 export const Pill = styled.div`
   ${PillStyle};
+`;
+
+export const PillButton = styled.button`
+  ${PillStyle};
+  ${InputOrButtonBorderStyleType2};
 `;

@@ -8,17 +8,19 @@ import {
   Strong,
   StyledPill,
   StyledTooltip,
+  Text,
 } from "./ExpiryIndicator.styles";
 import { getExpiryTranslation } from "./helpers";
 
 type ExpiryIndicatorProps = {
   expiry: Date;
+  className?: string;
 };
 
-const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry }) => {
+const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry, className }) => {
   const { t } = useTranslation();
 
-  const hasPassed = useMemo(
+  const hasExpired = useMemo(
     () => compareAsc(new Date(), expiry) === 1,
     [expiry]
   );
@@ -28,10 +30,10 @@ const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry }) => {
   );
 
   return (
-    <Container>
+    <Container className={className}>
       <StyledPill>
-        {hasPassed ? t("common.expired") : t("common.expiresIn")}
-        {!hasPassed && <Strong>{timeLeft}</Strong>}
+        <Text>{hasExpired ? t("common.expired") : t("common.expiresIn")}</Text>
+        {!hasExpired && <Strong>{timeLeft}</Strong>}
       </StyledPill>
       <StyledTooltip>{format(expiry, "dd-MMM-yyyy pppp")}</StyledTooltip>
     </Container>
