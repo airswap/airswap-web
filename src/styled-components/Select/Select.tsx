@@ -1,6 +1,9 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+import {
+  InputOrButtonBorderStyleType2,
+  TextEllipsis,
+} from "../../style/mixins";
 
 export const SelectElementStyle = css`
   ${InputOrButtonBorderStyleType2};
@@ -20,11 +23,11 @@ export const SelectWrapper = styled.div`
 
 export const SelectLabel = styled.div`
   ${SelectElementStyle};
+  ${TextEllipsis};
 
-  display: flex;
-  align-items: center;
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
+  line-height: 2.5;
   padding: 0 0.75rem;
   color: ${({ theme }) => theme.colors.lightGrey};
   text-transform: uppercase;

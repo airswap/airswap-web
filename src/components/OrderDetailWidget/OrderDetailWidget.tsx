@@ -73,7 +73,7 @@ const OrderDetailWidget: FC = () => {
         onCloseButtonClick={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >
-        <FeeModal />
+        <FeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
       </Overlay>
     </Container>
   );

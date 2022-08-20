@@ -9,12 +9,14 @@ export type HTMLInputProps = JSX.IntrinsicElements["input"];
 interface AddressInputProps {
   value: string;
   onChange: (value: string) => void;
+  onInfoButtonClick: () => void;
   className?: string;
 }
 
 const AddressInput: FC<AddressInputProps> = ({
   value,
   onChange,
+  onInfoButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -36,7 +38,10 @@ const AddressInput: FC<AddressInputProps> = ({
         value={value}
         onChange={handleChange}
       />
-      <StyledIconButton icon="information-circle-outline" />
+      <StyledIconButton
+        icon="information-circle-outline"
+        onClick={onInfoButtonClick}
+      />
     </Wrapper>
   );
 };

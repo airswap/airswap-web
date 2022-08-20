@@ -13,9 +13,13 @@ const floatRegExp = new RegExp("^([0-9])*$");
 
 export type ExpirySelectorProps = {
   onChange: (expiryDate: number) => void;
+  className?: string;
 };
 
-export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
+export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
+  onChange,
+  className,
+}) => {
   const { t } = useTranslation();
 
   const translatedOptions = useMemo(() => {
@@ -42,7 +46,7 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({ onChange }) => {
   }
 
   return (
-    <SelectWrapper>
+    <SelectWrapper className={className}>
       <SelectLabel>{t("common.expiresIn")}</SelectLabel>
       <Input maxLength={3} value={amount} onChange={handleAmountChange} />
       <StyledDropdown

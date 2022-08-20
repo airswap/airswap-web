@@ -4,14 +4,18 @@ import { fontMono } from "../../../../style/themes";
 import { LargePillButtonStyle } from "../../../../styled-components/Pill/Pill";
 import IconButton from "../../../IconButton/IconButton";
 
-export const StyledIconButton = styled(IconButton)``;
+export const StyledIconButton = styled(IconButton)`
+  &:hover {
+    color: ${({ theme }) => theme.colors.white};
+  }
+`;
 
 export const Text = styled.div``;
 
 export const RateBox = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 0.25rem;
+  margin: 0 0.25rem;
 `;
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
@@ -36,7 +40,7 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
       ${RateBox} {
         border-radius: 0.125rem;
         border: 1px solid ${theme.colors.borderGrey};
-        margin-left: 0;
+        margin: 0;
         height: 2rem;
         padding: 0 0.5rem;
         font-family: ${fontMono};

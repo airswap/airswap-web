@@ -82,7 +82,11 @@ const MakeWidget: FC = () => {
         />
       </OrderTypeSelectorAndRateFieldWrapper>
       {orderType === OrderType.private ? (
-        <StyledAddressInput value={address} onChange={setAddress} />
+        <StyledAddressInput
+          value={address}
+          onChange={setAddress}
+          onInfoButtonClick={toggleShowOrderTypeInfo}
+        />
       ) : (
         <StyledInfoSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox
@@ -102,7 +106,7 @@ const MakeWidget: FC = () => {
         onCloseButtonClick={() => toggleShowOrderTypeInfo()}
         isHidden={!showOrderTypeInfo}
       >
-        <OrderTypesModal onCloseButtonClick={toggleShowOrderTypeInfo} />
+        <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
       </Overlay>
     </Container>
   );
