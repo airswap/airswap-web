@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Swap: A Peer-to-Peer Protocol for Trading Ethereum Tokens</title>
+    <meta name="description" content="We present a peer-to-peer methodology for trading ERC20 tokens on the Ethereum blockchain.">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="theme-color" content="#2b71ff" />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Swap: A Peer-to-Peer Protocol for Trading Ethereum Tokens" />
+    <meta property="og:image" content="https://www.airswap.io/airswap-ogp.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="We present a peer-to-peer methodology for trading ERC20 tokens on the Ethereum blockchain." />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://www.airswap.io/" />
+
+    <!-- Twitter Metadata -->
+    <meta name="twitter:title" content="Swap: A Peer-to-Peer Protocol for Trading Ethereum Tokens" />
+    <meta name="twitter:image" content="https://www.airswap.io/airswap-ogp.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@AirSwap" />
+    <meta name="twitter:description" content="We present a peer-to-peer methodology for trading ERC20 tokens on the Ethereum blockchain." />
+
+    <!-- Mobile Touch Icons -->
+    <link rel="apple-touch-icon-precomposed" href="/icons/72x72.png" sizes="72x72" />
+    <link rel="apple-touch-icon-precomposed" href="/icons/144x144.png" sizes="144x144" />
+    <link rel="apple-touch-icon-precomposed" href="/icons/57x57.png" sizes="57x57"/>
+    <link rel="apple-touch-icon-precomposed" href="/icons/114x114.png" sizes="114x114"/>
+    <link rel="nokia-touch-icon" href="/icons/57x57.png" />
+    <link rel="apple-touch-icon-precomposed" href="/icons/114x114.png" sizes="1x1" />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://use.typekit.net/wyd3jpl.css" />
+    <link rel="stylesheet" href="/whitepaper/whitepaper.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XSB2E7X42G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XSB2E7X42G');
+    </script>
+</head>
+<body>
+<div>
+    <section>
+        <div class="paper-container">
+            <div class="paper-metadata">
+                <a href="https://www.airswap.io/">AirSwap</a> is an implementation of the Swap Protocol.
+            </div>
+
+            <h1 class="paper-title">
+                Swap: A Peer-to-Peer Protocol for Trading Ethereum Tokens
+            </h1>
+
+            <div class="paper-links">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="/whitepaper/pdfs/swapWhitepaper.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">EN</a>
+                    <a href="/whitepaper/pdfs/swapWhitepaperChinese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">CN</a>
+                    <a href="/whitepaper/pdfs/swapWhitepaperJapanese.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">JP</a>
+                    <a href="/whitepaper/pdfs/swapWhitepaperKorean.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">KR</a>
+                    <a href="/whitepaper/pdfs/swapWhitepaperRussian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">RU</a>
+                    <a href="/whitepaper/pdfs/swapWhitepaperUkrainian.pdf" target="_blank" rel="noreferrer noopener" class="btn btn-outline-primary">UA</a>
+                </div>
+            </div>
+
+            <div class="paper-metadata">
+                <a href="https://medium.com/@ovedm606" target="blank">Michael Oved</a>,
+                <a href="https://medium.com/@dmosites" target="blank">Don Mosites</a><br />
+                Published May 10, 2017
+            </div>
+
+            <h4 class="paper-abstract">
+                Abstract
+            </h4>
+            <p>
+                We present a peer-to-peer methodology for trading ERC20 tokens on the Ethereum blockchain. First, we outline
+                the limitations of blockchain order books and offer a strong alternative in peer-to-peer token trading:
+                off-chain negotiation and on-chain settlement. We then describe a protocol through which parties are able to
+                signal to others their intent to trade tokens. Once connected, counterparties freely communicate prices and
+                transmit orders among themselves. During this process, parties may request prices from an independent third
+                party oracle to verify accuracy. Finally, we present an Ethereum smart contract to fill orders on the Ethereum
+                blockchain.
+            </p>
+
+            <h3 id="table-of-contents">Table of Contents</h3>
+
+            <ul>
+                <li>
+                    <a href="#introduction">Introduction</a>
+                    <ul>
+                        <li><a href="#order-books">Order Books</a></li>
+                        <li><a href="#peer-to-peer-p2p">Peer-to-Peer (P2P)</a></li>
+                        <li><a href="#introducing-swap">Introducing Swap</a></li>
+                    </ul>
+                </li>
+                <li><a href="#peer-protocol">Peer Protocol</a></li>
+                <li><a href="#indexer-protocol">Indexer Protocol</a></li>
+                <li><a href="#oracle-protocol">Oracle Protocol</a></li>
+                <li><a href="#smart-contract">Smart Contract</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+
+            <h2 id="introduction">Introduction</h2>
+            <p>
+                The number of digital assets on Ethereum over the past twelve months has increased aggressively as more and
+                more use cases are implemented as smart contracts. It is our thesis that this trend will continue into the
+                future; as such we believe this growth will augment the demand to swap into and out of assets as users move
+                between use cases or rebalance their tokenized portfolios. Exchanges based on blockchain order books are not
+                without inherent limitations, many of which can be mitigated by the design decisions outlined in this paper.
+                We seek to provide an alternative to blockchain order books by specifying a set of protocols that unlock asset
+                liquidity and free the Ethereum ecosystem to progress without such limitations.
+            </p>
+
+            <h2 id="order-books">Order Books</h2>
+            <p>
+                Order books offer a highly automatable way to match supply and demand of a given tradeable asset.
+                Traditionally, these are centralized and are combined with order execution, which allows orders to be created,
+                executed, and canceled at a central source of truth. In the spirit of decentralization, order books have been
+                redesigned for blockchains. However, deploying an order book on a blockchain presents several constraints.
+            </p>
+
+            <p>
+                Blockchain order books do not scale. Executing code on a blockchain incurs a cost, so an automated
+                order-cancel-order cycle quickly becomes expensive and defeats the strength of an order book as a high
+                performance, automatable matching system. Indeed, if that matching algorithm is running on the blockchain, a
+                party placing orders will incur an execution cost that increases substantially with the size of the order
+                book.
+            </p>
+
+            <p>
+                Blockchain order books are public. Because the transaction to create an order on the blockchain is processed
+                by miners, those miners are privy to an order before it’s posted to the book. This creates an opportunity for
+                front-running that could materially affect the original order. Additionally, because the order is published
+                publicly, the order price is the same for everyone, removing a supplier’s ability to tailor liquidity.
+            </p>
+
+            <p>
+                Blockchain order books are unfair. Physically distributed systems inherently suffer latency between their
+                nodes. As miners are geographically distributed, sophisticated parties may be able to colocate, detect orders,
+                and outperform blockchain latency, effectively acting on order information before other parties. This
+                information asymmetry may very well dishearten less sophisticated parties from taking part in the ecosystem at
+                all.
+            </p>
+
+            <h2 id="peer-to-peer-p2p">Peer-to-peer (P2P)</h2>
+            <p>
+                Alternatively, peer-to-peer trading enables individual parties to trade with each other directly. Most of the
+                transactions we make day to day are peer-to-peer: buying coffee at a cafe, selling shoes on eBay, or buying
+                cat food on Amazon. Because these are private transactions between people or businesses, each party knows and
+                ultimately chooses with whom they transact.
+            </p>
+
+            <p>
+                Peer-to-peer trading scales. Orders are transmitted between individual parties and are “one and done” as
+                opposed to orders on a public exchange with no guarantee to completely fill. This makes cancels on an order
+                book a regular occurrence, whereas peer-to-peer orders are likely filled because they are provided to parties
+                that have already expressed interest. Additionally, peer-to-peer supply and demand matching can be solved
+                through lightweight peer discovery as opposed to expensive algorithmic matchmaking–regardless of whether on or
+                off chain.
+            </p>
+
+            <p>
+                Peer-to-peer trading is private. Once two parties have found and chosen to trade with each other, no third
+                parties are required to negotiate. The communication between these parties remains private for the duration of
+                the negotiation, removing the opportunity for other parties to act on order request behavior. Only when the
+                order is submitted to be filled will it become public knowledge.
+            </p>
+
+            <p>
+                Peer-to-peer trading is fair. Because orders are created and transmitted directly between two parties, no
+                outside participants can have an advantage. As long as they are working with multiple independent parties,
+                participants can get prices that are comparable to or better than what they would achieve on an exchange.
+                Additionally, those pricing orders can do so aggressively without fear of being taken advantage of by
+                automated, low-latency trading strategies.
+            </p>
+
+            <p>
+                The scalability, privacy, and fairness constraints imposed by blockchain order books have necessitated an
+                alternative. Today’s Ethereum ecosystem needs an open peer-to-peer solution for asset exchange.
+            </p>
+
+            <h2 id="introducing-swap">Introducing Swap</h2>
+            <p>
+                Swap is a protocol to facilitate a true peer-to-peer ecosystem for trading tokens on the Ethereum blockchain.
+                The following is an extensible specification that supports efficient counterparty discovery and negotiations.
+                These protocols are intended to become a foundation for the asset trading ecosystem and to accelerate Ethereum
+                ecosystem growth. By publishing this paper and opening for discussion, we seek comments from ecosystem
+                stakeholders with the aim to produce high-quality protocols to enable a wide variety of real-world
+                applications.
+            </p>
+
+            <h2 id="peer-protocol">Peer Protocol</h2>
+            <p>
+                With only a few messages passed between counterparties, trades can be negotiated quickly, fairly, and
+                privately. For the purposes of this document, a Maker is the party that provides an order, and a Taker is the
+                party that fills it. Because each party is a peer, any party can assume the role of Maker or Taker at any
+                time. Tokens in the following specification are ERC20 compliant and any token that implements the standard can
+                be traded using this protocol.
+            </p>
+
+            <p>
+                The core protocol is sequenced in the following diagram. The Maker and Taker perform trade negotiation
+                off-chain. The Contract below is an Ethereum smart contract, which the Taker calls when ready to fill an order
+                on the blockchain.
+            </p>
+
+            <div class="paper-figure">
+                <img alt="Find a counterparty and make a trade" src="/whitepaper/figures/peerProtocol.png" />
+            </div>
+
+            <ol>
+                <li>Taker calls <em>getOrder</em> on the Maker.</li>
+                <li>Maker replies with an order.</li>
+                <li>Taker calls <em>fill([order])</em> on the Contract.</li>
+            </ol>
+
+            <h3 id="order-api">Order API</h3>
+            <p>
+                The following APIs are transport-agnostic remote procedure calls (RPC) used to communicate among peers and
+                services. Examples use token tickers instead of addresses, but the actual calls require addresses of ERC20
+                compliant tokens. The call signatures below are for discussion purposes as further technical details are to be
+                published in a separate document.
+            </p>
+
+            <p>
+                The Order API is off-chain and specifies asynchronous calls made between counterparties during trade
+                negotiation. An implementor may choose to serve a request-provide cycle as a synchronous request-response.
+                Because an order is signed by the Maker, the Taker is able to later submit it to the smart contract to be
+                filled.
+            </p>
+
+            <h4 id="getorder">getOrder</h4>
+            <h5 id="getordermakeramount-makertoken-takertoken-takeraddress">
+                getOrder(makerAmount, makerToken, takerToken, takerAddress)
+            </h5>
+            <p>Called by a Taker on a Maker, requesting an order to trade tokens.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I want to buy 10 GNO using BAT.”
+getOrder(10, ‘GNO’, ‘BAT’, &lt;takerAddress&gt;)
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="provideorder">provideOrder</h4>
+            <h5
+                    id="provideordermakeraddress-makeramount-makertoken-takeraddress-takeramount-takertoken-expiration-nonce-signature"
+            >
+                provideOrder(makerAddress, makerAmount, makerToken, takerAddress, takerAmount, takerToken, expiration, nonce,
+                signature)
+            </h5>
+            <p>Called by a Maker on a Taker, providing a signed order for execution.</p>
+
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I’ll sell you 10 GNO for 5 BAT.”
+provideOrder(&lt;makerAddress&gt;, 10, ‘GNO’, &lt;takerAddress&gt;, 5, ‘BAT’, &lt;expiration&gt;, &lt;nonce&gt;, &lt;signature&gt;)
+</code></pre>
+                </div>
+            </div>
+
+            <h2 id="indexer-protocol">Indexer Protocol</h2>
+            <p>
+                An Indexer is an off-chain service that aggregates and matches peers based on their intent to trade: whether
+                prospective Makers and Takers wish to buy or sell tokens. Indexers are off-chain services that aggregate this
+                “intent to trade” and help match peers based on intent to buy or sell specific tokens. Many prospective Makers
+                can signal intent to trade, and when a Taker asks the Indexer to find suitable counterparties, there may be
+                multiple results. Once the Taker has found a Maker with whom they would like to trade, they proceed to
+                negotiate using the Peer Protocol above. Once agreement is reached between a Maker and Taker, the order is
+                filled on the smart contract.
+            </p>
+
+            <p>
+                The interactions between a Maker, Taker, and Indexer are illustrated in the following diagram. The Maker,
+                Taker, and Indexer all operate away from the blockchain and communicate by any preferred messaging medium.
+            </p>
+
+            <div class="paper-figure">
+                <img alt="Announce and find intent on an Indexer" src="/whitepaper/figures/indexerProtocolA.png" />
+            </div>
+
+            <ol>
+                <li>Maker calls <em>addIntent</em> on the Indexer.</li>
+                <li>Taker calls <em>findIntent</em> on the Indexer.</li>
+                <li>Indexer calls <em>foundIntent([Maker])</em> on the Taker.</li>
+                <li>Taker calls <em>getOrder</em> on the Maker.</li>
+                <li>Maker replies with an order.</li>
+                <li>Taker calls <em>fill([order])</em> on the Contract.</li>
+            </ol>
+
+            <p>
+                The interaction between several Makers, a Taker, and an Indexer is illustrated in the following diagram. Each
+                Maker independently announces their intent. The Taker asks to find Makers with specific intent, and the
+                Indexer returns a list of Ethereum addresses and details.
+            </p>
+
+            <div class="paper-figure">
+                <img alt="Request orders from multiple Makers" src="/whitepaper/figures/indexerProtocolB.png" />
+            </div>
+
+            <ol>
+                <li>Several Makers call <em>addIntent</em> on the Indexer.</li>
+                <li>Taker calls <em>findIntent</em> on the Indexer.</li>
+                <li>Indexer calls <em>foundIntent([Maker])</em> on the Taker.</li>
+            </ol>
+
+            <p>
+                Once a Taker has found suitable Makers, they may use the Order API to request orders from each Maker to weigh
+                them against each other. If the Taker has decided to fill a given order, they will make a fill call on the
+                smart contract.
+            </p>
+
+            <div class="paper-figure">
+                <img alt="Request orders from multiple Makers" src="/whitepaper/figures/indexerProtocolC.png" />
+            </div>
+
+            <ol>
+                <li>Taker calls <em>getOrder</em> on several Makers.</li>
+                <li>Makers reply with orders.</li>
+                <li>Taker selects an order and calls <em>fill([order])</em> on the Contract.</li>
+            </ol>
+
+            <h3 id="indexer-api">Indexer API</h3>
+
+            <p>
+                The Indexer API manages intent to trade, which is signalled between peers. The following calls are made
+                between peers and an Indexer.
+            </p>
+
+            <h4 id="addintent">addIntent</h4>
+            <h5 id="addintentmakertoken-takertokens">addIntent(makerToken, takerTokens)</h5>
+            <p>Add an intent to buy or sell some amount of token.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I want to trade GNO for BAT.”
+addIntent(‘GNO’, [‘BAT’])
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="removeintent">removeIntent</h4>
+            <h5 id="removeintentmakertoken-takertokens">removeIntent(makerToken, takerTokens)</h5>
+            <p>Remove an intent to trade tokens.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I am no longer interested in trading GNO for BAT.”
+removeIntent(‘GNO’, [‘BAT’])
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="getintent">getIntent</h4>
+            <h5 id="getintentmakeraddress">getIntent(makerAddress)</h5>
+            <p>List active intent associated with an address.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “List the tokens that [makerAddress] wants to trade.”
+getIntent(&lt;makerAddress&gt;)
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="findintent">findIntent</h4>
+            <h5 id="findintentmakertoken-takertoken">findIntent(makerToken, takerToken)</h5>
+            <p>Find someone willing to trade specific tokens.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “Find someone trading GNO for BAT.”
+findIntent(‘GNO’, ‘BAT’)
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="foundintent">foundIntent</h4>
+            <h5 id="foundintentmakeraddress-intentlist">foundIntent(makerAddress, intentList)</h5>
+            <p>The Indexer found someone with intent to trade.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “Found someone selling 10 GNO for BAT.”
+foundIntent(&lt;makerAddress&gt;, [{ makerAmount: 10, makerToken: 'GNO', takerTokens: ['BAT'] })
+</code></pre>
+                </div>
+            </div>
+
+            <h2 id="oracle-protocol">Oracle Protocol</h2>
+            <p>
+                An Oracle is an off-chain service that provides pricing information to Makers and Takers. When pricing an
+                order prior to delivering it to a Taker, a Maker may ask the Oracle for what it considers a fair price
+                suggestion. Likewise, having received an order, a Taker may ask the Oracle to check the price on the order to
+                verify that it’s fair. The Oracle provides this pricing information to help both the Maker and the Taker make
+                more educated pricing decisions and to smooth the process of trade negotiation.
+            </p>
+
+            <div class="paper-figure">
+                <img alt="Request orders from multiple Makers" src="/whitepaper/figures/oracleProtocolA.png"  />
+            </div>
+
+            <ol>
+                <li>Taker calls <em>getOrder</em> on the Maker.</li>
+                <li>Maker calls <em>getPrice</em> on the Oracle.</li>
+                <li>Oracle returns a price to the Maker.</li>
+                <li>After analyzing price information, Maker replies with an order.</li>
+                <li>Taker calls <em>fill([order])</em> on the Contract.</li>
+            </ol>
+
+            <p>A very similar interaction happens between Taker and Oracle when the Taker receives an order.</p>
+
+            <div class="paper-figure">
+                <img alt="Request orders from multiple Makers" src="/whitepaper/figures/oracleProtocolB.png" />
+            </div>
+
+            <ol>
+                <li>Taker calls <em>getOrder</em> on the Maker.</li>
+                <li>Maker replies with an order.</li>
+                <li>Taker calls <em>getPrice</em> on the Oracle.</li>
+                <li>Oracle returns a price to the Taker.</li>
+                <li>After analyzing price information, Taker calls <em>fill([order])</em> on the Contract.</li>
+            </ol>
+
+            <h3 id="oracle-api">Oracle API</h3>
+            <p>
+                The Oracle API is used by Makers and Takers to determine order prices. Prices are suggestions and are not
+                executable.
+            </p>
+
+            <h4 id="getprice">getPrice</h4>
+            <h5 id="getpricemakertoken-takertoken">getPrice(makerToken, takerToken)</h5>
+            <p>Called by a Taker or a Maker on an Oracle to get a price.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “What is the current price of GNO for BAT?”
+getPrice(‘GNO’, ‘BAT’)
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="provideprice">providePrice</h4>
+            <h5 id="providepricemakertoken-takertoken-price">providePrice(makerToken, takerToken, price)</h5>
+            <p>Called by an Oracle on a Maker or Taker to give a price.</p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “The current price of GNO for BAT is 0.5.”
+providePrice(‘GNO’, ‘BAT’, 0.5)
+</code></pre>
+                </div>
+            </div>
+
+            <h2 id="smart-contract">Smart Contract</h2>
+            <p>An Ethereum smart contract to fill or cancel orders.</p>
+
+            <h4 id="fill">fill</h4>
+            <h5 id="fillmakeraddress-makeramount-makertoken-takeraddress-takeramount-takertoken-expiration-nonce-v-r-s">
+                fill(makerAddress, makerAmount, makerToken, takerAddress, takerAmount, takerToken, expiration, nonce, v, r, s)
+            </h5>
+
+            <p>
+                An atomic swap of tokens called by a Taker. The contract ensures that the message sender matches taker and
+                ensures that the time indicated in expiration has not passed. To fill orders, peers must have already called
+                approve on the specified tokens to allow the contract to withdraw at least the specified amounts. For token
+                transfers, the contract calls transferFrom on the respective tokens. At the successful completion of this
+                function a Filled event is broadcast to the blockchain. The parameters
+                <code class="highlighter-rouge">v</code>, <code class="highlighter-rouge">r</code>, and
+                <code class="highlighter-rouge">s</code> constitute the maker signature.
+            </p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I want to fill this order of 5 GNO for 10 BAT.”
+fill(&lt;makerAddress&gt;, 5, 'GNO', &lt;takerAddress&gt;, 10, 'BAT', &lt;expiration&gt;, &lt;nonce&gt;, &lt;v&gt;, &lt;r&gt;, &lt;s&gt;)
+</code></pre>
+                </div>
+            </div>
+
+            <h4 id="cancel">cancel</h4>
+            <h5 id="cancelmakeraddress-makeramount-makertoken-takeraddress-takeramount-takertoken-expiration-nonce-v-r-s">
+                cancel(makerAddress, makerAmount, makerToken, takerAddress, takerAmount, takerToken, expiration, nonce, v, r,
+                s)
+            </h5>
+
+            <p>
+                A cancellation of an order that has already been communicated to a Taker but not yet filled. Called by the
+                Maker of the order. Marks the order as already having been filled on the contract so a subsequent attempt to
+                fill the order will fail. At the successful completion of this function a Canceled event is broadcast to the
+                blockchain.
+            </p>
+            <div class="highlighter-rouge">
+                <div class="highlight">
+          <pre class="highlight"><code>Example: “I want to cancel this order of 5 GNO for 10 BAT.”
+cancel(&lt;makerAddress&gt;, 5, 'GNO', &lt;takerAddress&gt;, 10, 'BAT', &lt;expiration&gt;, &lt;nonce&gt;, &lt;v&gt;, &lt;r&gt;, &lt;s&gt;)
+</code></pre>
+                </div>
+            </div>
+
+            <h3 id="ether-orders">Ether Orders</h3>
+            <p>
+                The smart contract supports trading ether (ETH) for tokens. If the order includes a null takerToken address
+                (0x0) the smart contract will check the value of ether that was sent with the function call and transfer that
+                on behalf of the Taker to the Maker.
+            </p>
+
+            <h2 id="summary">Summary</h2>
+            <p>
+                The Swap protocol serves a growing demand for a decentralized asset exchange on the Ethereum network.
+                Blockchain-based order books, while novel and certainly within the ethos of our ecosystem, have limitations
+                that we believe ultimately make it difficult for them to compete with currently available centralized
+                solutions. Swap provides a method that is both decentralized and unaffected by these limitations.
+            </p>
+
+            <p>
+                By implementing the protocol, participants gain access to liquidity in a scalable, private, and fair way,
+                without sacrificing access to great pricing. The protocol and APIs are extensible and we encourage the
+                community to build applications with us. We welcome feedback and look forward to pushing the Ethereum
+                community forward with you.
+            </p>
+
+            <p>
+                For questions, comments, or feedback, please reach us at <a href="mailto:team@airswap.io">team@airswap.io</a>.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        ;(function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r
+            ;(i[r] =
+                i[r] ||
+                function() {
+                    ;(i[r].q = i[r].q || []).push(arguments)
+                }),
+                (i[r].l = 1 * new Date())
+            ;(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0])
+            a.async = 1
+            a.src = g
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga')
+        ga('create', 'UA-98809379-1', 'auto')
+        ga('send', 'pageview', location.pathname)
+    </script>
+</div>
+</body>
+</html>

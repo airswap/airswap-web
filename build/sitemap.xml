@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+>
+    <url>
+        <loc>https://www.airswap.io</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://www.airswap.io/#/en/" />
+        <xhtml:link rel="alternate" hreflang="nb" href="https://www.airswap.io/#/nb/" />
+        <xhtml:link rel="alternate" hreflang="nl" href="https://www.airswap.io/#/nl/" />
+        <xhtml:link rel="alternate" hreflang="pt" href="https://www.airswap.io/#/pt/" />
+        <xhtml:link rel="alternate" hreflang="fr" href="https://www.airswap.io/#/fr/" />
+        <xhtml:link rel="alternate" hreflang="zh-tr" href="https://www.airswap.io/#/zh-tr/" />
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>https://www.airswap.io/whitepaper.htm</loc>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://www.airswap.io/#/join/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://www.airswap.io/#/en/join/" />
+        <xhtml:link rel="alternate" hreflang="nb" href="https://www.airswap.io/#/nb/join/" />
+        <xhtml:link rel="alternate" hreflang="nl" href="https://www.airswap.io/#/nl/join/" />
+        <xhtml:link rel="alternate" hreflang="pt" href="https://www.airswap.io/#/pt/join/" />
+        <xhtml:link rel="alternate" hreflang="fr" href="https://www.airswap.io/#/fr/join/" />
+        <xhtml:link rel="alternate" hreflang="zh-tr" href="https://www.airswap.io/#/zh-tr/join/" />
+        <changefreq>monthly</changefreq>
+    </url>
+</urlset>

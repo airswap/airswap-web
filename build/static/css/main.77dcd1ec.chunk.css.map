@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/components/WalletProviderList/Ud.css"],"names":[],"mappings":"AAAA,QACE,UAAY,CACZ,wBAAkC,CAClC,iBAAkB,CAClB,YACF","file":"main.77dcd1ec.chunk.css","sourcesContent":[".ud-btn {\n  color: white;\n  background-color: rgb(37, 37, 231);\n  border-radius: 6px;\n  padding: 10px;\n}\n"]}
