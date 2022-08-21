@@ -29,8 +29,8 @@ const WalletProviderList = ({
 
   const uauth = new UAuth({
     clientID: "59c7e5a9-a907-4501-a599-7a18453a749d",
-    redirectUri: "https://airswap.io",
-    scope: "openid wallet",
+    redirectUri: "https://airswap1.netlify.app",
+    scope: "openid wallet"
   });
 
   const handleClick = () => setClick(!click);
