@@ -9,7 +9,6 @@
 /coverage
 
 # production
-/build
 /storybook-static
 
 # misc
