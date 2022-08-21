@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import { LargePillButtonStyle } from "../../../../styled-components/Pill/Pill";
 import IconButton from "../../../IconButton/IconButton";
@@ -10,7 +11,9 @@ export const StyledIconButton = styled(IconButton)`
   }
 `;
 
-export const Text = styled.div``;
+export const Text = styled.div`
+  ${TextEllipsis};
+`;
 
 export const RateBox = styled.div`
   display: flex;
