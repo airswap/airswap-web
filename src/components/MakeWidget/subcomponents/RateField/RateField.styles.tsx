@@ -46,6 +46,7 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
         margin: 0;
         height: 2rem;
         padding: 0 0.5rem;
+        line-height: 1;
         font-family: ${fontMono};
         font-size: 0.875rem;
         font-weight: 500;
