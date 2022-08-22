@@ -37,6 +37,7 @@ export const HugeTicks = styled(MdDoneAll)`
 export const StyledSwapWidget = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   height: 100%;
 `;
 

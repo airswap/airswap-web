@@ -5,7 +5,8 @@ import {
   SelectLabel,
   SelectWrapper,
 } from "../../../../styled-components/Select/Select";
-import Dropdown, { SelectOption } from "../../../Dropdown/Dropdown";
+import { SelectOption } from "../../../Dropdown/Dropdown";
+import { StyledDropdown } from "./OrderTypeSelector.styles";
 
 export type OrderTypeSelectorProps = {
   options: SelectOption[];
@@ -25,7 +26,7 @@ const OrderTypeSelector: FC<OrderTypeSelectorProps> = ({
   return (
     <SelectWrapper className={className}>
       <SelectLabel>{t("common.for")}</SelectLabel>
-      <Dropdown
+      <StyledDropdown
         selectedOption={selectedOrderTypeOption}
         options={options}
         onChange={onChange}
