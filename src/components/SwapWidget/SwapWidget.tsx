@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -75,10 +75,10 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
-import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
 import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -192,29 +192,10 @@ const SwapWidget: FC = () => {
     ? null
     : userTokens.tokenTo || defaultQuoteTokenAddress;
 
-  const baseTokenInfo = useMemo(
-    () =>
-      baseToken
-        ? findEthOrTokenByAddress(baseToken, activeTokens, chainId!)
-        : null,
-    [baseToken, activeTokens, chainId]
-  );
+  const baseTokenInfo = useTokenInfo(baseToken);
+  const quoteTokenInfo = useTokenInfo(quoteToken);
 
-  const quoteTokenInfo = useMemo(
-    () =>
-      quoteToken
-        ? findEthOrTokenByAddress(quoteToken, activeTokens, chainId!)
-        : null,
-    [quoteToken, activeTokens, chainId]
-  );
-
-  const maxAmount = useMemo(() => {
-    if (!baseToken || !balances || !baseTokenInfo) {
-      return null;
-    }
-    return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
-  }, [balances, baseToken, baseTokenInfo]);
-
+  const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&

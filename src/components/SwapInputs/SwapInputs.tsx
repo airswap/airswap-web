@@ -17,6 +17,7 @@ const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 const SwapInputs: FC<{
   disabled?: boolean;
+  canSetQuoteAmount?: boolean;
   isRequesting?: boolean;
   readOnly?: boolean;
   showMaxButton?: boolean;
@@ -33,8 +34,10 @@ const SwapInputs: FC<{
   onMaxButtonClick: () => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
+  onQuoteAmountChange?: (newValue: string) => void;
 }> = ({
   disabled = false,
+  canSetQuoteAmount = false,
   isRequesting = false,
   readOnly = false,
   showMaxButton = false,
@@ -49,6 +52,7 @@ const SwapInputs: FC<{
   side,
 
   onBaseAmountChange,
+  onQuoteAmountChange,
   onMaxButtonClick,
   onChangeTokenClick,
 }) => {
@@ -70,14 +74,16 @@ const SwapInputs: FC<{
   );
   const isQuote = !!fromAmount && !!toAmount && readOnly;
 
-  // Note: it will only be possible for the user to change the base amount.
-  const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
+  const handleTokenAmountChange = (
+    e: FormEvent<HTMLInputElement>,
+    callback: Function
+  ) => {
     let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {
       if (value[value.length - 1] === ",")
         value = value.slice(0, value.length - 1) + ".";
       value = value.replace(/^0+/, "0");
-      onBaseAmountChange(value);
+      callback(value);
     }
   };
 
@@ -99,7 +105,7 @@ const SwapInputs: FC<{
       <TokenSelect
         label={t("orders.from")}
         amount={fromAmount}
-        onAmountChange={(e) => handleTokenAmountChange(e)}
+        onAmountChange={(e) => handleTokenAmountChange(e, onBaseAmountChange)}
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
         }}
@@ -118,12 +124,16 @@ const SwapInputs: FC<{
       <TokenSelect
         label={t("orders.to")}
         amount={toAmount}
-        onAmountChange={(e) => handleTokenAmountChange(e)}
+        onAmountChange={(e) =>
+          handleTokenAmountChange(e, onQuoteAmountChange || onBaseAmountChange)
+        }
         onChangeTokenClicked={() => {
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
         readOnly={readOnly}
-        includeAmountInput={!isSell || (!!quoteAmount && !isRequesting)}
+        includeAmountInput={
+          !isSell || canSetQuoteAmount || (!!quoteAmount && !isRequesting)
+        }
         selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={isSell && isRequesting}
         isQuote={isQuote}

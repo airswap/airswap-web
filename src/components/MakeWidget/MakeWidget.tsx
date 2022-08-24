@@ -6,6 +6,12 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
+import {
+  nativeCurrencyAddress,
+  nativeCurrencySafeTransactionFee,
+} from "../../constants/nativeCurrency";
+import useMaxAmount from "../../hooks/useMaxAmount";
+import useTokenInfo from "../../hooks/useTokenInfo";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
@@ -36,8 +42,19 @@ const MakeWidget: FC = () => {
   const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
+  const [makerAmount, setMakerAmount] = useState("");
+  const [takerAmount, setTakerAmount] = useState("");
   const [address, setAddress] = useState("");
   const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
+
+  const makerTokenInfo = useTokenInfo(makerAmount);
+  const takerTokenInfo = useTokenInfo(takerAmount);
+  const maxAmount = useMaxAmount(makerAmount);
+  const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
+  const showMaxInfoButton =
+    !!maxAmount &&
+    makerTokenInfo?.address === nativeCurrencyAddress &&
+    !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
 
   useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
@@ -59,15 +76,19 @@ const MakeWidget: FC = () => {
     <Container>
       <MakeWidgetHeader title={t("common.make")} />
       <SwapInputs
-        baseAmount="0.00"
-        baseTokenInfo={null}
-        maxAmount={null}
+        canSetQuoteAmount
+        showMaxButton={showMaxButton}
+        showMaxInfoButton={showMaxInfoButton}
+        baseAmount={makerAmount}
+        baseTokenInfo={makerTokenInfo}
+        maxAmount={maxAmount}
         side="sell"
-        quoteAmount="0.00"
-        quoteTokenInfo={null}
-        onBaseAmountChange={() => {}}
+        quoteAmount={takerAmount}
+        quoteTokenInfo={takerTokenInfo}
+        onBaseAmountChange={setMakerAmount}
+        onQuoteAmountChange={setTakerAmount}
         onChangeTokenClick={() => {}}
-        onMaxButtonClick={() => {}}
+        onMaxButtonClick={() => setTakerAmount(maxAmount || "0")}
       />
       <OrderTypeSelectorAndRateFieldWrapper>
         <StyledOrderTypeSelector
