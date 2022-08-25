@@ -2,10 +2,22 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
+import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
+import { useWeb3React } from "@web3-react/core";
 
+import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
-import { BalancesState } from "../../features/balances/balancesSlice";
+import {
+  BalancesState,
+  requestActiveTokenAllowancesSwap,
+  requestActiveTokenAllowancesWrapper,
+  requestActiveTokenBalances,
+} from "../../features/balances/balancesSlice";
+import {
+  addActiveToken,
+  removeActiveToken,
+} from "../../features/metadata/metadataSlice";
 import useWindowSize from "../../hooks/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import { InfoHeading } from "../Typography/Typography";
@@ -27,10 +39,6 @@ import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveToken
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
 
 export type TokenListProps = {
-  /**
-   * ID of currently connected chain
-   */
-  chainId: number;
   /**
    * Called when a token has been seleced.
    */
@@ -54,24 +62,26 @@ export type TokenListProps = {
   /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
-  addActiveToken: (val: string) => void;
+  onAfterAddActiveToken?: (val: string) => void;
   /**
    * function to handle removing active tokens (dispatches removeActiveToken).
    */
-  removeActiveToken: (val: string) => void;
+  onAfterRemoveActiveToken?: (val: string) => void;
 };
 
 const TokenList = ({
-  chainId,
   onSelectToken,
   balances,
   allTokens,
   activeTokens = [],
   supportedTokenAddresses,
-  addActiveToken,
-  removeActiveToken,
+  onAfterAddActiveToken,
+  onAfterRemoveActiveToken,
 }: TokenListProps) => {
+  const dispatch = useAppDispatch();
   const { width, height } = useWindowSize();
+  const { chainId, library } = useWeb3React<Web3Provider>();
+
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -138,6 +148,28 @@ const TokenList = ({
     height,
   ]);
 
+  const handleAddActiveToken = (address: string) => {
+    if (library) {
+      dispatch(addActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
+
+      onAfterAddActiveToken && onAfterAddActiveToken(address);
+    }
+  };
+
+  const handleRemoveActiveToken = (address: string) => {
+    if (library) {
+      dispatch(removeActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
+
+      onAfterRemoveActiveToken && onAfterRemoveActiveToken(address);
+    }
+  };
+
   return (
     <Container>
       <ContentContainer>
@@ -163,12 +195,12 @@ const TokenList = ({
 
             {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
               <TokenContainer>
-                {[nativeCurrency[chainId], ...sortedFilteredTokens].map(
+                {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
                   (token) => (
                     <TokenButton
                       showDeleteButton={
                         editMode &&
-                        token.address !== nativeCurrency[chainId].address
+                        token.address !== nativeCurrency[chainId || 1].address
                       }
                       token={token}
                       balance={formatUnits(
@@ -176,7 +208,7 @@ const TokenList = ({
                         token.decimals
                       )}
                       setToken={onSelectToken}
-                      removeActiveToken={removeActiveToken}
+                      removeActiveToken={handleRemoveActiveToken}
                       key={token.address}
                     />
                   )
@@ -188,7 +220,7 @@ const TokenList = ({
                 inactiveTokens={inactiveTokens}
                 supportedTokenAddresses={supportedTokenAddresses}
                 onTokenClick={(tokenAddress) => {
-                  addActiveToken(tokenAddress);
+                  handleAddActiveToken(tokenAddress);
                   setTokenQuery("");
                 }}
               />

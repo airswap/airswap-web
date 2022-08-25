@@ -15,3 +15,32 @@ export const getOrderTypeSelectOptions = (t: TFunction): SelectOption[] => {
     },
   ];
 };
+
+export const getActionButtonTranslation = (
+  t: TFunction,
+  hasInsufficientExpiry: boolean,
+  hasInsufficientMakerTokenBalance: boolean,
+  hasMissingMakerAmount: boolean,
+  hasMissingMakerToken: boolean,
+  hasMissingTakerAmount: boolean,
+  hasMissingTakerToken: boolean,
+  makerTokenSymbol?: string
+): string => {
+  if (hasInsufficientExpiry) {
+    return "Insufficient expiry";
+  }
+
+  if (hasMissingMakerAmount || hasMissingTakerAmount) {
+    return t("orders.enterAmount");
+  }
+
+  if (hasMissingMakerToken || hasMissingTakerToken) {
+    return t("orders.chooseToken");
+  }
+
+  if (hasInsufficientMakerTokenBalance) {
+    return t("orders.insufficentBalance", { symbol: makerTokenSymbol });
+  }
+
+  return t("common.sign");
+};

@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import Button from "../../../Button/Button";
 
@@ -9,10 +9,18 @@ export const Container = styled.div`
   margin-top: auto;
 `;
 
-export const BackButton = styled(Button)`
+const ButtonStyle = css`
   width: calc(50% - 0.5rem);
+  height: auto;
+  min-height: 3rem;
+  white-space: inherit;
+  padding: 0.25rem 1rem;
+`;
+
+export const BackButton = styled(Button)`
+  ${ButtonStyle}
 `;
 
 export const SignButton = styled(Button)`
-  width: calc(50% - 0.5rem);
+  ${ButtonStyle}
 `;

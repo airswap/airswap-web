@@ -122,7 +122,7 @@ const Dropdown: FC<DropdownProps> = ({
       </NativeSelectWrapper>
       <Sizer ref={sizerRef}>
         {options.map((option) => (
-          <SelectButtonText>{option.label}</SelectButtonText>
+          <SelectButtonText key={option.value}>{option.label}</SelectButtonText>
         ))}
       </Sizer>
     </Wrapper>

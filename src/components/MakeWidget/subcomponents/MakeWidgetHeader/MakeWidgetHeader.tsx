@@ -6,15 +6,19 @@ import { StyledExpirySelector } from "./MakeWidgetHeader.styles";
 
 type MakeWidgetHeaderProps = {
   title: string;
+  onExpiryChange: (date: number) => void;
 };
 
-const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({ title }) => {
+const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
+  title,
+  onExpiryChange,
+}) => {
   return (
     <WidgetHeader>
       <Title type="h2" as="h1">
         {title}
       </Title>
-      <StyledExpirySelector onChange={(value) => console.log(value)} />
+      <StyledExpirySelector onChange={onExpiryChange} />
     </WidgetHeader>
   );
 };

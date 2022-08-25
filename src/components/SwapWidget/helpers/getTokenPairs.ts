@@ -1,7 +1,7 @@
-import { TokenSelectModalTypes } from "../SwapWidget";
+import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 
 export default function getTokenPairs(
-  type: TokenSelectModalTypes,
+  type: TokenSelectModalTypes | null,
   value: string,
   quoteToken: string | null,
   baseToken: string | null

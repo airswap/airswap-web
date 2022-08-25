@@ -19,6 +19,7 @@ export const RateBox = styled.div`
   display: flex;
   align-items: center;
   margin: 0 0.25rem;
+  white-space: pre;
 `;
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
