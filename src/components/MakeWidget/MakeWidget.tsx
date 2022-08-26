@@ -121,7 +121,7 @@ const MakeWidget: FC = () => {
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
   const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
-  const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
+  const [showTokenSelectModal, setShowTokenSelectModal] =
     useState<TokenSelectModalTypes>(null);
 
   // useEffect's
@@ -193,11 +193,13 @@ const MakeWidget: FC = () => {
     history.goBack();
   };
 
-  console.log(status);
-
   return (
     <Container>
-      <MakeWidgetHeader title={t("common.make")} onExpiryChange={setExpiry} />
+      <MakeWidgetHeader
+        hideExpirySelector={!!showTokenSelectModal}
+        title={t("common.make")}
+        onExpiryChange={setExpiry}
+      />
       <SwapInputs
         canSetQuoteAmount
         disabled={!active}
@@ -212,7 +214,7 @@ const MakeWidget: FC = () => {
         quoteTokenInfo={takerTokenInfo}
         onBaseAmountChange={setMakerAmount}
         onQuoteAmountChange={setTakerAmount}
-        onChangeTokenClick={setShowTokenSelectModalFor}
+        onChangeTokenClick={setShowTokenSelectModal}
         onMaxButtonClick={() => setTakerAmount(maxAmount || "0")}
       />
       <OrderTypeSelectorAndRateFieldWrapper>
@@ -271,13 +273,13 @@ const MakeWidget: FC = () => {
         onSignButtonClick={handleActionButtonClick}
       />
       <Overlay
-        onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
-        isHidden={!showTokenSelectModalFor}
+        onCloseButtonClick={() => setShowTokenSelectModal(null)}
+        isHidden={!showTokenSelectModal}
       >
         <TokenList
           onSelectToken={(newTokenAddress) => {
-            handleSetToken(showTokenSelectModalFor, newTokenAddress);
-            setShowTokenSelectModalFor(null);
+            handleSetToken(showTokenSelectModal, newTokenAddress);
+            setShowTokenSelectModal(null);
           }}
           balances={balances}
           allTokens={allTokens}

@@ -5,11 +5,13 @@ import { Title } from "../../../Typography/Typography";
 import { StyledExpirySelector } from "./MakeWidgetHeader.styles";
 
 type MakeWidgetHeaderProps = {
+  hideExpirySelector?: boolean;
   title: string;
   onExpiryChange: (date: number) => void;
 };
 
 const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
+  hideExpirySelector = false,
   title,
   onExpiryChange,
 }) => {
@@ -18,7 +20,10 @@ const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
       <Title type="h2" as="h1">
         {title}
       </Title>
-      <StyledExpirySelector onChange={onExpiryChange} />
+      <StyledExpirySelector
+        onChange={onExpiryChange}
+        hideExpirySelector={hideExpirySelector}
+      />
     </WidgetHeader>
   );
 };
