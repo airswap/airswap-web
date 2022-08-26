@@ -1,7 +1,7 @@
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 
 export default function getTokenPairs(
-  type: TokenSelectModalTypes | null,
+  type: TokenSelectModalTypes,
   value: string,
   quoteToken: string | null,
   baseToken: string | null
