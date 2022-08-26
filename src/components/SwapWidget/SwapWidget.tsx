@@ -132,7 +132,6 @@ const SwapWidget: FC = () => {
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
-  console.log(baseAmount);
 
   // Pricing
   const {
