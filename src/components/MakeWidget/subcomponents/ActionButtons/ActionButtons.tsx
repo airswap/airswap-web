@@ -60,7 +60,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     (!walletIsNotConnected || !networkIsUnsupported);
 
   const buttonText = getActionButtonTranslation(
-    t,
     hasInsufficientExpiry,
     hasInsufficientMakerTokenBalance,
     hasMissingMakerAmount,

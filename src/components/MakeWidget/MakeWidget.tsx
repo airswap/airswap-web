@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -21,7 +21,11 @@ import {
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { createOtcOrder } from "../../features/otc/otcActions";
-import { selectOtcStatus } from "../../features/otc/otcSlice";
+import {
+  reset,
+  selectOtcErrors,
+  selectOtcStatus,
+} from "../../features/otc/otcSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
@@ -38,6 +42,7 @@ import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
+import { ErrorList } from "../ErrorList/ErrorList";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
@@ -50,7 +55,7 @@ import {
   StyledOrderTypeSelector,
   StyledRateField,
 } from "./MakeWidget.styles";
-import { getOrderTypeSelectOptions } from "./helpers";
+import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -67,6 +72,7 @@ const MakeWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
   const status = useAppSelector(selectOtcStatus);
+  const errors = useAppSelector(selectOtcErrors);
   const {
     active,
     chainId,
@@ -75,23 +81,19 @@ const MakeWidget: FC = () => {
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  const orderTypeSelectOptions = useMemo(
-    () => getOrderTypeSelectOptions(t),
-    [t]
-  );
+  // Input options
+  const orderTypeSelectOptions = useOrderTypeSelectOptions();
 
+  // User input states
   const [expiry, setExpiry] = useState(new Date().getTime());
   const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
   const [takerAddress, setTakerAddress] = useState("");
-  // const [takerAddress, setTakerAddress] = useState(
-  //   "0x8234B4236bA45003f22E5e2b2aC9296576B085C2"
-  // );
   const [makerAmount, setMakerAmount] = useState("");
   const [takerAmount, setTakerAmount] = useState("");
-  const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
 
+  // States derived from user input
   const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
@@ -116,11 +118,13 @@ const MakeWidget: FC = () => {
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const takerAddressIsValid = useValidAddress(takerAddress);
 
+  // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
-
+  const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes>(null);
 
+  // useEffect's
   useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
       return setOrderType(OrderType.private);
@@ -129,6 +133,7 @@ const MakeWidget: FC = () => {
     return setOrderType(OrderType.publicListed);
   }, [orderScopeTypeOption]);
 
+  // Event handler's
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
     setOrderType(isChecked ? OrderType.publicListed : OrderType.publicUnlisted);
   };
@@ -141,7 +146,7 @@ const MakeWidget: FC = () => {
     dispatch(setUserTokens(newUserTokens));
   };
 
-  const handleSignButtonClick = async (action: ButtonActions) => {
+  const handleActionButtonClick = async (action: ButtonActions) => {
     if (action === ButtonActions.sign) {
       const expiryDate = Date.now() + expiry;
       const result = await dispatch(
@@ -153,7 +158,7 @@ const MakeWidget: FC = () => {
               ? takerAddress
               : nativeCurrencyAddress,
           signerToken: makerTokenInfo?.address!,
-          signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
+          signerAmount: toAtomicString(makerAmount, takerTokenInfo?.decimals!),
           protocolFee: "7",
           senderWallet: account!,
           senderToken: takerTokenInfo?.address!,
@@ -178,11 +183,17 @@ const MakeWidget: FC = () => {
     if (action === ButtonActions.switchNetwork) {
       switchToEthereumChain();
     }
+
+    if (action === ButtonActions.restart) {
+      dispatch(reset());
+    }
   };
 
   const handleBackButtonClick = () => {
     history.goBack();
   };
+
+  console.log(status);
 
   return (
     <Container>
@@ -190,7 +201,7 @@ const MakeWidget: FC = () => {
       <SwapInputs
         canSetQuoteAmount
         disabled={!active}
-        readOnly={status === "signing" || !active}
+        readOnly={status !== "idle" || !active}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
@@ -257,7 +268,7 @@ const MakeWidget: FC = () => {
         makerTokenSymbol={makerTokenInfo?.symbol}
         takerTokenSymbol={takerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}
-        onSignButtonClick={handleSignButtonClick}
+        onSignButtonClick={handleActionButtonClick}
       />
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
@@ -280,6 +291,19 @@ const MakeWidget: FC = () => {
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
+      </Overlay>
+      <Overlay
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
+        onCloseButtonClick={() =>
+          handleActionButtonClick(ButtonActions.restart)
+        }
+        isHidden={!errors.length}
+      >
+        <ErrorList
+          errors={errors}
+          handleClick={() => handleActionButtonClick(ButtonActions.restart)}
+        />
       </Overlay>
     </Container>
   );

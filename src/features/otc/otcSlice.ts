@@ -29,10 +29,13 @@ export const otcSlice = createSlice({
         errors: action.payload,
       };
     },
+    reset: (state): OtcState => {
+      return initialState;
+    },
   },
 });
 
-export const { setStatus, setErrors } = otcSlice.actions;
+export const { setStatus, setErrors, reset } = otcSlice.actions;
 
 export const selectOtcStatus = (state: RootState) => state.otc.status;
 export const selectOtcErrors = (state: RootState) => state.otc.errors;

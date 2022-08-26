@@ -100,6 +100,7 @@ export const handleOrderError = (
     | number
     | SwapError
   )[];
+  console.log(errorCodes);
   const errorTypes = errorCodes
     .map((errorCode) => transformErrorCodeToError(errorCode))
     .filter((errorCode) => !!errorCode) as ErrorType[];

@@ -1,23 +1,6 @@
-import { TFunction } from "i18next";
-
-import { OrderScopeType } from "../../../types/orderTypes";
-import { SelectOption } from "../../Dropdown/Dropdown";
-
-export const getOrderTypeSelectOptions = (t: TFunction): SelectOption[] => {
-  return [
-    {
-      value: OrderScopeType.public,
-      label: t("orders.anyone"),
-    },
-    {
-      value: OrderScopeType.private,
-      label: t("orders.specificWallet"),
-    },
-  ];
-};
+import i18n from "i18next";
 
 export const getActionButtonTranslation = (
-  t: TFunction,
   hasInsufficientExpiry: boolean,
   hasInsufficientMakerTokenBalance: boolean,
   hasMissingMakerAmount: boolean,
@@ -31,36 +14,36 @@ export const getActionButtonTranslation = (
   takerTokenSymbol?: string
 ): string => {
   if (walletIsNotConnected) {
-    return t("wallet.connectWallet");
+    return i18n.t("wallet.connectWallet");
   }
 
   if (networkIsUnsupported) {
-    return t("wallet.unsupportedNetwork");
+    return i18n.t("wallet.unsupportedNetwork");
   }
 
   if (hasInsufficientExpiry) {
-    return t("orders.expiryShouldBeMoreThan0");
+    return i18n.t("orders.expiryShouldBeMoreThan0");
   }
 
   if (hasMissingMakerToken || hasMissingTakerToken) {
-    return t("orders.chooseToken");
+    return i18n.t("orders.chooseToken");
   }
 
   if (hasMissingMakerAmount) {
-    return t("orders.enterTokenAmount", { symbol: makerTokenSymbol });
+    return i18n.t("orders.enterTokenAmount", { symbol: makerTokenSymbol });
   }
 
   if (hasMissingTakerAmount) {
-    return t("orders.enterTokenAmount", { symbol: takerTokenSymbol });
+    return i18n.t("orders.enterTokenAmount", { symbol: takerTokenSymbol });
   }
 
   if (hasInsufficientMakerTokenBalance) {
-    return t("orders.insufficentBalance", { symbol: makerTokenSymbol });
+    return i18n.t("orders.insufficentBalance", { symbol: makerTokenSymbol });
   }
 
   if (takerAddressIsInvalid) {
-    return t("orders.enterValidTakerAddress");
+    return i18n.t("orders.enterValidTakerAddress");
   }
 
-  return t("common.sign");
+  return i18n.t("common.sign");
 };

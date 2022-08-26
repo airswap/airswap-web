@@ -7,7 +7,10 @@ import {
   createSwapSignature,
 } from "@airswap/utils";
 
-import { setStatus } from "./otcSlice";
+import i18n from "i18next";
+
+import { notifyError } from "../../components/Toasts/ToastController";
+import { setErrors, setStatus } from "./otcSlice";
 
 export const createOtcOrder =
   (
@@ -17,7 +20,6 @@ export const createOtcOrder =
     } & UnsignedOrder
   ) =>
   async (dispatch: any): Promise<string | undefined> => {
-    console.log(params);
     dispatch(setStatus("signing"));
 
     try {
@@ -48,12 +50,21 @@ export const createOtcOrder =
         swapContract: swapDeploys[params.chainId],
       };
 
+      dispatch(setStatus("idle"));
+
       return compressFullOrder(fullOrder);
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      dispatch(setStatus("failed"));
+
+      if (e.code !== 4001) {
+        dispatch(setErrors(["invalidInput"]));
+      } else {
+        notifyError({
+          heading: i18n.t("orders.swapFailed"),
+          cta: i18n.t("orders.swapRejectedByUser"),
+        });
+      }
 
       return undefined;
-    } finally {
-      dispatch(setStatus("idle"));
     }
   };
