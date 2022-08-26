@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { useWeb3React } from "@web3-react/core";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
@@ -14,6 +14,7 @@ import nativeCurrency, {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../constants/nativeCurrency";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { selectBalances } from "../../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -26,10 +27,13 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import useValidAddress from "../../hooks/useValidAddress";
+import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import Checkbox from "../Checkbox/Checkbox";
@@ -47,7 +51,9 @@ import {
   StyledRateField,
 } from "./MakeWidget.styles";
 import { getOrderTypeSelectOptions } from "./helpers";
-import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
+import ActionButtons, {
+  ButtonActions,
+} from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
 const MakeWidget: FC = () => {
@@ -60,9 +66,14 @@ const MakeWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
-  const otcStatus = useAppSelector(selectOtcStatus);
-
-  const { active, chainId, account, library } = useWeb3React<Web3Provider>();
+  const status = useAppSelector(selectOtcStatus);
+  const {
+    active,
+    chainId,
+    account,
+    library,
+    error: web3Error,
+  } = useWeb3React<Web3Provider>();
 
   const orderTypeSelectOptions = useMemo(
     () => getOrderTypeSelectOptions(t),
@@ -103,6 +114,9 @@ const MakeWidget: FC = () => {
     !!maxAmount &&
     makerTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
+  const takerAddressIsValid = useValidAddress(takerAddress);
+
+  const { setShowWalletList } = useContext(InterfaceContext);
 
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes>(null);
@@ -127,29 +141,42 @@ const MakeWidget: FC = () => {
     dispatch(setUserTokens(newUserTokens));
   };
 
-  const handleSignButtonClick = async () => {
-    const expiryDate = Date.now() + expiry;
-    const result = await dispatch(
-      createOtcOrder({
-        nonce: expiryDate.toString(),
-        expiry: Math.floor(expiryDate / 1000).toString(),
-        signerWallet:
-          orderType === OrderType.private
-            ? takerAddress
-            : nativeCurrencyAddress,
-        signerToken: makerTokenInfo?.address!,
-        signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
-        protocolFee: "7",
-        senderWallet: account!,
-        senderToken: takerTokenInfo?.address!,
-        senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
-        chainId: chainId!,
-        library: library,
-      })
-    );
+  const handleSignButtonClick = async (action: ButtonActions) => {
+    if (action === ButtonActions.sign) {
+      const expiryDate = Date.now() + expiry;
+      const result = await dispatch(
+        createOtcOrder({
+          nonce: expiryDate.toString(),
+          expiry: Math.floor(expiryDate / 1000).toString(),
+          signerWallet:
+            orderType === OrderType.private
+              ? takerAddress
+              : nativeCurrencyAddress,
+          signerToken: makerTokenInfo?.address!,
+          signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
+          protocolFee: "7",
+          senderWallet: account!,
+          senderToken: takerTokenInfo?.address!,
+          senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
+          chainId: chainId!,
+          library: library,
+        })
+      );
 
-    if (result) {
-      console.log(result);
+      if (result) {
+        history.push({
+          pathname: `/${AppRoutes.order}`,
+          search: `?compressedOrder=${result}`,
+        });
+      }
+    }
+
+    if (action === ButtonActions.connectWallet) {
+      setShowWalletList(true);
+    }
+
+    if (action === ButtonActions.switchNetwork) {
+      switchToEthereumChain();
     }
   };
 
@@ -162,6 +189,8 @@ const MakeWidget: FC = () => {
       <MakeWidgetHeader title={t("common.make")} onExpiryChange={setExpiry} />
       <SwapInputs
         canSetQuoteAmount
+        disabled={!active}
+        readOnly={status === "signing" || !active}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
@@ -217,8 +246,16 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
+        networkIsUnsupported={
+          !!web3Error && web3Error instanceof UnsupportedChainIdError
+        }
+        takerAddressIsInvalid={
+          !takerAddressIsValid && orderType === OrderType.private
+        }
+        userIsSigning={status === "signing"}
         walletIsNotConnected={!active}
         makerTokenSymbol={makerTokenInfo?.symbol}
+        takerTokenSymbol={takerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={handleSignButtonClick}
       />

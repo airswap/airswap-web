@@ -13,8 +13,9 @@ const ButtonStyle = css`
   width: calc(50% - 0.5rem);
   height: auto;
   min-height: 3rem;
+  line-height: 1.375;
+  padding: 0.375rem 1rem;
   white-space: inherit;
-  padding: 0.25rem 1rem;
 `;
 
 export const BackButton = styled(Button)`

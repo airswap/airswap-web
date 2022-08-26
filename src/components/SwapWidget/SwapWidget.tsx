@@ -69,6 +69,7 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
@@ -631,19 +632,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.switchNetwork:
-        try {
-          (window as any).ethereum.request!({
-            method: "wallet_switchEthereumChain",
-            params: [
-              {
-                chainId: "0x1",
-              },
-            ],
-          });
-        } catch (e) {
-          // unable to switch network, but doesn't matter too much as button
-          // looks like a call to action in this case anyway.
-        }
+        switchToEthereumChain();
         break;
 
       case ButtonActions.requestQuotes:

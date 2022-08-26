@@ -24,22 +24,42 @@ export const getActionButtonTranslation = (
   hasMissingMakerToken: boolean,
   hasMissingTakerAmount: boolean,
   hasMissingTakerToken: boolean,
-  makerTokenSymbol?: string
+  networkIsUnsupported: boolean,
+  takerAddressIsInvalid: boolean,
+  walletIsNotConnected: boolean,
+  makerTokenSymbol?: string,
+  takerTokenSymbol?: string
 ): string => {
-  if (hasInsufficientExpiry) {
-    return "Insufficient expiry";
+  if (walletIsNotConnected) {
+    return t("wallet.connectWallet");
   }
 
-  if (hasMissingMakerAmount || hasMissingTakerAmount) {
-    return t("orders.enterAmount");
+  if (networkIsUnsupported) {
+    return t("wallet.unsupportedNetwork");
+  }
+
+  if (hasInsufficientExpiry) {
+    return t("orders.expiryShouldBeMoreThan0");
   }
 
   if (hasMissingMakerToken || hasMissingTakerToken) {
     return t("orders.chooseToken");
   }
 
+  if (hasMissingMakerAmount) {
+    return t("orders.enterTokenAmount", { symbol: makerTokenSymbol });
+  }
+
+  if (hasMissingTakerAmount) {
+    return t("orders.enterTokenAmount", { symbol: takerTokenSymbol });
+  }
+
   if (hasInsufficientMakerTokenBalance) {
     return t("orders.insufficentBalance", { symbol: makerTokenSymbol });
+  }
+
+  if (takerAddressIsInvalid) {
+    return t("orders.enterValidTakerAddress");
   }
 
   return t("common.sign");
