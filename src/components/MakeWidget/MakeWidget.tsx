@@ -81,6 +81,8 @@ const MakeWidget: FC = () => {
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
+  console.log(activeTokens);
+
   // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
 

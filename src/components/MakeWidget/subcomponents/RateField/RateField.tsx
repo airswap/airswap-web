@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 
+import { TokenInfo } from "@airswap/typescript";
+
 import BigNumber from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
@@ -8,8 +10,8 @@ import { Text, Wrapper, StyledIconButton, RateBox } from "./RateField.styles";
 
 export type RateFieldProps = {
   isButton?: boolean;
-  token1: string;
-  token2: string;
+  token1: string | null;
+  token2: string | null;
   rate: BigNumber;
   className?: string;
 };
@@ -45,9 +47,9 @@ export const RateField: React.FC<RateFieldProps> = ({
       isButton={isButton}
       className={className}
     >
-      <Text>{` 1 ${tokenPair[0]} =`}</Text>
+      <Text>{` 1 ${tokenPair[0] ? tokenPair[0] : "??"} =`}</Text>
       <RateBox>{displayRate}</RateBox>
-      <Text>{tokenPair[1]}</Text>
+      <Text>{tokenPair[1] ? tokenPair[1] : "??"}</Text>
       {isButton ? (
         <Icon name="swap-horizontal" iconSize={0.75} />
       ) : (
