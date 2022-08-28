@@ -18,14 +18,14 @@ export const stringToSignificantDecimals: (
     return `> ${"9".repeat(length)}.9`;
   }
 
-  if (afterDecimalPoint.length <= sigDecimals) {
-    trimmedDecimals = afterDecimalPoint;
-  } else if (beforeDecimalPoint.match(/[1-9]/)) {
+  if (beforeDecimalPoint.match(/[1-9]/)) {
     // Custom: trims to sigDecimals, not 4
     trimmedDecimals = afterDecimalPoint.slice(0, sigDecimals);
-    if (trimmedDecimals === "0".repeat(sigDecimals)) {
+    if (/^0*$/.test(trimmedDecimals)) {
       return `${beforeDecimalPoint}`;
     }
+  } else if (afterDecimalPoint.length <= sigDecimals) {
+    trimmedDecimals = afterDecimalPoint;
   } else {
     let sigDecimalsRemaining = sigDecimals;
     let i = 0;
