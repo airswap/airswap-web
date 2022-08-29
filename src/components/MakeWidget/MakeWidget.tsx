@@ -169,10 +169,7 @@ const MakeWidget: FC = () => {
       );
 
       if (result) {
-        history.push({
-          pathname: `/${AppRoutes.order}`,
-          search: `?compressedOrder=${result}`,
-        });
+        history.push({ pathname: `/${AppRoutes.order}/${result}` });
       }
     }
 

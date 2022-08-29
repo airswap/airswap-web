@@ -21,7 +21,7 @@ const Routes: FC = () => {
         key="my-swaps"
       />
       <Route
-        path={[`/${AppRoutes.order}`, `/:lang/${AppRoutes.order}`]}
+        path={[`/${AppRoutes.order}/:compressedOrder`, `/:lang/${AppRoutes.order}/:compressedOrder`]}
         component={OrderDetail}
         key="order-detail"
       />
