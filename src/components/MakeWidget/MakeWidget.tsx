@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { toAtomicString } from "@airswap/utils";
+import { compressFullOrder, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -21,11 +21,7 @@ import {
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { createOtcOrder } from "../../features/otc/otcActions";
-import {
-  reset,
-  selectOtcErrors,
-  selectOtcStatus,
-} from "../../features/otc/otcSlice";
+import { reset, selectOtcReducer } from "../../features/otc/otcSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
@@ -71,8 +67,7 @@ const MakeWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
-  const status = useAppSelector(selectOtcStatus);
-  const errors = useAppSelector(selectOtcErrors);
+  const { status, errors, lastUserOrder } = useAppSelector(selectOtcReducer);
   const {
     active,
     chainId,
@@ -124,7 +119,7 @@ const MakeWidget: FC = () => {
   const [showTokenSelectModal, setShowTokenSelectModal] =
     useState<TokenSelectModalTypes>(null);
 
-  // useEffect's
+  // useEffects
   useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
       return setOrderType(OrderType.private);
@@ -132,6 +127,13 @@ const MakeWidget: FC = () => {
 
     return setOrderType(OrderType.publicListed);
   }, [orderScopeTypeOption]);
+
+  useEffect(() => {
+    if (lastUserOrder) {
+      const compressedOrder = compressFullOrder(lastUserOrder);
+      history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
+    }
+  }, [lastUserOrder, history]);
 
   // Event handler's
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -146,10 +148,10 @@ const MakeWidget: FC = () => {
     dispatch(setUserTokens(newUserTokens));
   };
 
-  const handleActionButtonClick = async (action: ButtonActions) => {
+  const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.sign) {
       const expiryDate = Date.now() + expiry;
-      const result = await dispatch(
+      dispatch(
         createOtcOrder({
           nonce: expiryDate.toString(),
           expiry: Math.floor(expiryDate / 1000).toString(),
@@ -167,10 +169,6 @@ const MakeWidget: FC = () => {
           library: library,
         })
       );
-
-      if (result) {
-        history.push({ pathname: `/${AppRoutes.order}/${result}` });
-      }
     }
 
     if (action === ButtonActions.connectWallet) {

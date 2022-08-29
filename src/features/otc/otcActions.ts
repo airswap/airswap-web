@@ -1,16 +1,13 @@
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
 import { FullOrder, UnsignedOrder } from "@airswap/typescript";
-import {
-  compressFullOrder,
-  createOrder,
-  createSwapSignature,
-} from "@airswap/utils";
+import { createOrder, createSwapSignature } from "@airswap/utils";
 
 import i18n from "i18next";
 
+import { AppDispatch } from "../../app/store";
 import { notifyError } from "../../components/Toasts/ToastController";
-import { setErrors, setStatus } from "./otcSlice";
+import { setErrors, setStatus, setUserOrder } from "./otcSlice";
 
 export const createOtcOrder =
   (
@@ -19,7 +16,7 @@ export const createOtcOrder =
       library: any;
     } & UnsignedOrder
   ) =>
-  async (dispatch: any): Promise<string | undefined> => {
+  async (dispatch: AppDispatch) => {
     dispatch(setStatus("signing"));
 
     try {
@@ -50,9 +47,7 @@ export const createOtcOrder =
         swapContract: swapDeploys[params.chainId],
       };
 
-      dispatch(setStatus("idle"));
-
-      return compressFullOrder(fullOrder);
+      dispatch(setUserOrder(fullOrder));
     } catch (e: any) {
       dispatch(setStatus("failed"));
 
@@ -64,7 +59,5 @@ export const createOtcOrder =
           cta: i18n.t("orders.swapRejectedByUser"),
         });
       }
-
-      return undefined;
     }
   };
