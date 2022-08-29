@@ -11,7 +11,6 @@ import { BigNumber } from "bignumber.js";
 import { ethers } from "ethers";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
-import useDecompressOrderFromURL from "../../hooks/useDecompressOrderFromURL";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { OrderStatus } from "../../types/orderStatus";
@@ -20,6 +19,7 @@ import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
+import useDecompressOrderFromURL from "./hooks/useDecompressOrderFromURL";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
@@ -30,6 +30,8 @@ const OrderDetailWidget: FC = () => {
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const params = new URLSearchParams(history.location.search);
   const order = useDecompressOrderFromURL(params.get("compressedOrder")!);
+
+  // loading spinner animation onLoad to account for lag from these hooks?
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
   const hasInsufficientMakerTokenBalance = useInsufficientBalance(
@@ -37,8 +39,16 @@ const OrderDetailWidget: FC = () => {
     order.senderAmount
   );
 
+  // used in SettingsPopover on language change: url does not persist.
+  // const appRouteParams = useAppRouteParams();
+  // console.log(appRouteParams.urlWithoutLang);
+
   const handleBackButtonClick = () => {
     history.goBack();
+  };
+
+  const handleCopyButtonClick = () => {
+    navigator.clipboard.writeText(window.location.toString());
   };
 
   return (
@@ -52,7 +62,7 @@ const OrderDetailWidget: FC = () => {
             : OrderType.private
         }
         recipientAddress={order.signerWallet}
-        // bad request dummy link
+        // bad request as a dummy link, what is the best way to compute the hash?
         transactionLink={getEtherscanURL(
           Number(order.chainId),
           `${
@@ -73,11 +83,17 @@ const OrderDetailWidget: FC = () => {
       />
       <SwapInputs
         readOnly
-        baseAmount={ethers.utils.formatUnits(order.signerAmount, 6)}
+        baseAmount={ethers.utils.formatUnits(
+          order.signerAmount,
+          senderToken?.decimals!
+        )}
         baseTokenInfo={signerToken}
         maxAmount={null}
         side="buy"
-        quoteAmount={ethers.utils.formatUnits(order.senderAmount, 6)}
+        quoteAmount={ethers.utils.formatUnits(
+          order.senderAmount,
+          senderToken?.decimals!
+        )}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
@@ -87,6 +103,7 @@ const OrderDetailWidget: FC = () => {
         <StyledInfoButtons
           ownerIsCurrentUser
           onFeeButtonClick={toggleShowFeeInfo}
+          onCopyButtonClick={handleCopyButtonClick}
           token1={senderToken?.symbol}
           token2={signerToken?.symbol}
           rate={new BigNumber(order.signerAmount).dividedBy(order.senderAmount)}

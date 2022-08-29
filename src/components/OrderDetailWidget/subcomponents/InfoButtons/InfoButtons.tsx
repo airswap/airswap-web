@@ -16,6 +16,7 @@ import {
 type InfoButtonsProps = {
   ownerIsCurrentUser?: boolean;
   onFeeButtonClick: () => void;
+  onCopyButtonClick: () => void;
   token1: string | null;
   token2: string | null;
   rate: BigNumber;
@@ -25,6 +26,7 @@ type InfoButtonsProps = {
 const InfoButtons: FC<InfoButtonsProps> = ({
   ownerIsCurrentUser,
   onFeeButtonClick,
+  onCopyButtonClick,
   className,
   token1,
   token2,
@@ -43,7 +45,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
           </StyledLargePillButton>
         )}
         {ownerIsCurrentUser && (
-          <StyledLargePillButton>
+          <StyledLargePillButton onClick={onCopyButtonClick}>
             {t("orders.copyLink")}
             <Icon name="copy2" />
           </StyledLargePillButton>

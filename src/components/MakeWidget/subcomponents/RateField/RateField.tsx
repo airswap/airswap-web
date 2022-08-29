@@ -47,9 +47,9 @@ export const RateField: React.FC<RateFieldProps> = ({
       isButton={isButton}
       className={className}
     >
-      <Text>{` 1 ${tokenPair[0] ? tokenPair[0] : "??"} =`}</Text>
+      <Text>{` 1 ${tokenPair[0]} =`}</Text>
       <RateBox>{displayRate}</RateBox>
-      <Text>{tokenPair[1] ? tokenPair[1] : "??"}</Text>
+      <Text>{tokenPair[1]}</Text>
       {isButton ? (
         <Icon name="swap-horizontal" iconSize={0.75} />
       ) : (
