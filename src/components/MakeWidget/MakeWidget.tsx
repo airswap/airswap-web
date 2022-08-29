@@ -21,7 +21,11 @@ import {
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { createOtcOrder } from "../../features/otc/otcActions";
-import { reset, selectOtcReducer } from "../../features/otc/otcSlice";
+import {
+  clearLastUserOrder,
+  reset,
+  selectOtcReducer,
+} from "../../features/otc/otcSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
@@ -132,6 +136,7 @@ const MakeWidget: FC = () => {
     if (lastUserOrder) {
       const compressedOrder = compressFullOrder(lastUserOrder);
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
+      dispatch(clearLastUserOrder());
     }
   }, [lastUserOrder, history]);
 

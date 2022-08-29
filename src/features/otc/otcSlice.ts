@@ -34,6 +34,12 @@ export const otcSlice = createSlice({
         userOrders: [...state.userOrders, action.payload],
       };
     },
+    clearLastUserOrder: (state): OtcState => {
+      return {
+        ...state,
+        lastUserOrder: undefined,
+      };
+    },
     setErrors: (state, action: PayloadAction<ErrorType[]>): OtcState => {
       return {
         ...state,
@@ -46,7 +52,8 @@ export const otcSlice = createSlice({
   },
 });
 
-export const { setStatus, setUserOrder, setErrors, reset } = otcSlice.actions;
+export const { setStatus, setUserOrder, clearLastUserOrder, setErrors, reset } =
+  otcSlice.actions;
 
 export const selectOtcReducer = (state: RootState) => state.otc;
 
