@@ -1,13 +1,17 @@
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
 import { FullOrder, UnsignedOrder } from "@airswap/typescript";
-import { createOrder, createSwapSignature } from "@airswap/utils";
+import {
+  createOrder,
+  createSwapSignature,
+  decompressFullOrder,
+} from "@airswap/utils";
 
 import i18n from "i18next";
 
 import { AppDispatch } from "../../app/store";
 import { notifyError } from "../../components/Toasts/ToastController";
-import { setErrors, setStatus, setUserOrder } from "./otcSlice";
+import { setErrors, setStatus, setTakeOrder, setUserOrder } from "./otcSlice";
 
 export const createOtcOrder =
   (
@@ -60,4 +64,12 @@ export const createOtcOrder =
         });
       }
     }
+  };
+
+export const decompressOtcFullOrder =
+  (compressedOrder: string) => async (dispatch: AppDispatch) => {
+    try {
+      const order = decompressFullOrder(compressedOrder);
+      dispatch(setTakeOrder(order));
+    } catch (e) {}
   };

@@ -138,7 +138,7 @@ const MakeWidget: FC = () => {
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
       dispatch(clearLastUserOrder());
     }
-  }, [lastUserOrder, history]);
+  }, [lastUserOrder, history, dispatch]);
 
   // Event handler's
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {

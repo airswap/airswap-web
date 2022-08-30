@@ -8,6 +8,7 @@ export interface OtcState {
   lastUserOrder?: FullOrder;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
   userOrders: FullOrder[];
+  takeOrder?: FullOrder;
   errors: ErrorType[];
 }
 
@@ -40,6 +41,12 @@ export const otcSlice = createSlice({
         lastUserOrder: undefined,
       };
     },
+    setTakeOrder: (state, action: PayloadAction<FullOrder>): OtcState => {
+      return {
+        ...state,
+        takeOrder: action.payload,
+      };
+    },
     setErrors: (state, action: PayloadAction<ErrorType[]>): OtcState => {
       return {
         ...state,
@@ -52,8 +59,14 @@ export const otcSlice = createSlice({
   },
 });
 
-export const { setStatus, setUserOrder, clearLastUserOrder, setErrors, reset } =
-  otcSlice.actions;
+export const {
+  setStatus,
+  setUserOrder,
+  clearLastUserOrder,
+  setTakeOrder,
+  setErrors,
+  reset,
+} = otcSlice.actions;
 
 export const selectOtcReducer = (state: RootState) => state.otc;
 
