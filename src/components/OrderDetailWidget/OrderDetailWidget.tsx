@@ -1,7 +1,8 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { TokenInfo } from "@airswap/typescript";
 import { getEtherscanURL, hashOrder } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -51,10 +52,8 @@ const OrderDetailWidget: FC = () => {
   }, [order.chainId, txHash]);
 
   const rate = useMemo(() => {
-    return new BigNumber(
-      isMakerOfSwap ? order.signerAmount : order.senderAmount
-    ).dividedBy(isMakerOfSwap ? order.senderAmount : order.signerAmount);
-  }, [isMakerOfSwap]);
+    return new BigNumber(order.senderAmount).dividedBy(order.signerAmount);
+  }, [order]);
 
   const baseAmount = useMemo(() => {
     return tokenInfoLoading
@@ -105,8 +104,8 @@ const OrderDetailWidget: FC = () => {
           ownerIsCurrentUser
           onFeeButtonClick={toggleShowFeeInfo}
           onCopyButtonClick={handleCopyButtonClick}
-          token1={senderToken?.symbol}
-          token2={signerToken?.symbol}
+          token1={signerToken?.symbol!}
+          token2={senderToken?.symbol!}
           rate={rate}
         />
       )}
