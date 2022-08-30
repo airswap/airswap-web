@@ -17,8 +17,8 @@ type InfoButtonsProps = {
   ownerIsCurrentUser?: boolean;
   onFeeButtonClick: () => void;
   onCopyButtonClick: () => void;
-  token1: string | null;
-  token2: string | null;
+  token1: string;
+  token2: string;
   rate: BigNumber;
   className?: string;
 };

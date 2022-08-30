@@ -28,18 +28,15 @@ const OrderDetailWidget: FC = () => {
   const history = useHistory();
   const { account } = useWeb3React<Web3Provider>();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const params = new URLSearchParams(history.location.search);
-
-  // FullOrder returns
-  const order = useDecompressOrderFromURL(params.get("compressedOrder")!);
+  const order = useDecompressOrderFromURL();
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
-
-  // extensions of full order
   const hasInsufficientMakerTokenBalance = useInsufficientBalance(
     senderToken,
     order.senderAmount
   );
+
+  const tokenInfoLoading = !senderToken || !signerToken;
   const isMakerOfSwap = order.senderWallet === account;
   const isIntendedRecipient =
     order.signerWallet === (account || nativeCurrencyAddress);
@@ -84,23 +81,32 @@ const OrderDetailWidget: FC = () => {
       />
       <SwapInputs
         readOnly
-        baseAmount={ethers.utils.formatUnits(
-          order.signerAmount,
-          senderToken?.decimals!
-        )}
+        disabled={tokenInfoLoading}
+        baseAmount={
+          tokenInfoLoading
+            ? "0.0"
+            : ethers.utils.formatUnits(
+                order.signerAmount,
+                senderToken?.decimals!
+              )
+        }
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={isMakerOfSwap ? "sell" : "buy"}
-        quoteAmount={ethers.utils.formatUnits(
-          order.senderAmount,
-          senderToken?.decimals!
-        )}
+        quoteAmount={
+          tokenInfoLoading
+            ? "0.0"
+            : ethers.utils.formatUnits(
+                order.senderAmount,
+                senderToken?.decimals!
+              )
+        }
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
-      {senderToken && signerToken && (
+      {!tokenInfoLoading && (
         <StyledInfoButtons
           ownerIsCurrentUser
           onFeeButtonClick={toggleShowFeeInfo}
