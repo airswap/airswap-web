@@ -33,9 +33,9 @@ const OrderDetailWidget: FC = () => {
   const order = useDecompressOrderFromURL();
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
-  const hasInsufficientMakerTokenBalance = useInsufficientBalance(
-    senderToken,
-    order.senderAmount
+  const hasInsufficientTokenBalance = useInsufficientBalance(
+    signerToken,
+    order.signerAmount
   );
   const orderStatus = OrderStatus.open; // dummy
   const orderType =
@@ -45,11 +45,15 @@ const OrderDetailWidget: FC = () => {
   const tokenInfoLoading = !senderToken || !signerToken;
   const isMakerOfSwap = order.senderWallet === account;
   const isIntendedRecipient =
-    order.signerWallet === (account || nativeCurrencyAddress);
+    order.signerWallet === account ||
+    order.signerWallet === nativeCurrencyAddress;
+  const transactionLink = getEtherscanURL(Number(order.chainId), txHash);
+  const isNotConnected = !account;
+  const swapsDisabled =
+    tokenInfoLoading || (!isMakerOfSwap && !isIntendedRecipient);
 
-  const transactionLink = useMemo(() => {
-    return getEtherscanURL(Number(order.chainId), txHash);
-  }, [order.chainId, txHash]);
+  // sender - maker
+  // signer - taker
 
   const rate = useMemo(() => {
     return new BigNumber(order.senderAmount).dividedBy(order.signerAmount);
@@ -57,14 +61,14 @@ const OrderDetailWidget: FC = () => {
 
   const baseAmount = useMemo(() => {
     return tokenInfoLoading
-      ? "0.0"
-      : ethers.utils.formatUnits(order.signerAmount, senderToken?.decimals!);
+      ? "0.00"
+      : ethers.utils.formatUnits(order.senderAmount, senderToken?.decimals!);
   }, [tokenInfoLoading]);
 
   const quoteAmount = useMemo(() => {
     return tokenInfoLoading
-      ? "0.0"
-      : ethers.utils.formatUnits(order.senderAmount, senderToken?.decimals!);
+      ? "0.00"
+      : ethers.utils.formatUnits(order.signerAmount, senderToken?.decimals!);
   }, [tokenInfoLoading]);
 
   const handleBackButtonClick = () => {
@@ -82,26 +86,25 @@ const OrderDetailWidget: FC = () => {
         orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.signerWallet}
-        // bad request as a dummy link, what is the best way to compute the hash?
         transactionLink={transactionLink}
         userAddress={account || undefined}
       />
       <SwapInputs
         readOnly
-        disabled={tokenInfoLoading || isIntendedRecipient}
+        disabled={swapsDisabled}
         baseAmount={baseAmount}
-        baseTokenInfo={signerToken}
+        baseTokenInfo={senderToken}
         maxAmount={null}
         side={isMakerOfSwap ? "sell" : "buy"}
         quoteAmount={quoteAmount}
-        quoteTokenInfo={senderToken}
+        quoteTokenInfo={signerToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
       {!tokenInfoLoading && (
         <StyledInfoButtons
-          ownerIsCurrentUser
+          ownerIsCurrentUser={!isNotConnected}
           onFeeButtonClick={toggleShowFeeInfo}
           onCopyButtonClick={handleCopyButtonClick}
           token1={signerToken?.symbol!}
@@ -112,7 +115,8 @@ const OrderDetailWidget: FC = () => {
       <ActionButtons
         isMakerOfSwap={isMakerOfSwap}
         isIntendedRecipient={isIntendedRecipient}
-        hasInsufficientBalance={hasInsufficientMakerTokenBalance}
+        hasInsufficientBalance={hasInsufficientTokenBalance}
+        isNotConnected={isNotConnected}
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}
       />

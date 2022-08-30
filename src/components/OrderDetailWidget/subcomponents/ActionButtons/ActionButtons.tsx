@@ -7,6 +7,7 @@ type ActionButtonsProps = {
   hasInsufficientBalance: boolean;
   isMakerOfSwap: boolean;
   isIntendedRecipient: boolean;
+  isNotConnected: boolean;
   onBackButtonClick: () => void;
   onSignButtonClick: () => void;
 };
@@ -15,10 +16,27 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientBalance,
   isMakerOfSwap,
   isIntendedRecipient,
+  isNotConnected,
   onBackButtonClick,
   onSignButtonClick,
 }) => {
   const { t } = useTranslation();
+
+  const signButtonText = () => {
+    if (isNotConnected) {
+      return t("wallet.connectWallet");
+    }
+
+    if (isMakerOfSwap) {
+      return t("common.cancel");
+    }
+
+    if (hasInsufficientBalance) {
+      return t("orders.insufficentBalance");
+    }
+
+    return t("common.sign");
+  };
 
   return (
     <Container>
@@ -30,10 +48,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
           (hasInsufficientBalance || !isIntendedRecipient) && !isMakerOfSwap
         }
       >
-        {(isMakerOfSwap && t("common.cancel")) ||
-          (hasInsufficientBalance
-            ? t("orders.insufficentBalance")
-            : t("common.sign"))}
+        {signButtonText()}
       </SignButton>
     </Container>
   );

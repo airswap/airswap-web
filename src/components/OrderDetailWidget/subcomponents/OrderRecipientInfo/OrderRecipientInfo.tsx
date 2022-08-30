@@ -67,7 +67,10 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
           <StyledCheckIcon name="check" />
         </>
       ) : (
-        t("orders.anyone")
+        <>
+          {t("orders.anyone")}
+          <StyledCheckIcon name="check" />
+        </>
       )}
     </InfoWrapper>
   );
