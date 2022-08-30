@@ -5,12 +5,16 @@ import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
 type ActionButtonsProps = {
   hasInsufficientBalance: boolean;
+  isMakerOfSwap: boolean;
+  isIntendedRecipient: boolean;
   onBackButtonClick: () => void;
   onSignButtonClick: () => void;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientBalance,
+  isMakerOfSwap,
+  isIntendedRecipient,
   onBackButtonClick,
   onSignButtonClick,
 }) => {
@@ -22,11 +26,14 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <SignButton
         intent="primary"
         onClick={onSignButtonClick}
-        disabled={hasInsufficientBalance}
+        disabled={
+          (hasInsufficientBalance || !isIntendedRecipient) && !isMakerOfSwap
+        }
       >
-        {hasInsufficientBalance
-          ? t("orders.insufficentBalance")
-          : t("common.sign")}
+        {(isMakerOfSwap && t("common.cancel")) ||
+          (hasInsufficientBalance
+            ? t("orders.insufficentBalance")
+            : t("common.sign"))}
       </SignButton>
     </Container>
   );

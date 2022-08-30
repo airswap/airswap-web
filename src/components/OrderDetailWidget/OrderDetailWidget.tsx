@@ -29,19 +29,20 @@ const OrderDetailWidget: FC = () => {
   const { account } = useWeb3React<Web3Provider>();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const params = new URLSearchParams(history.location.search);
-  const order = useDecompressOrderFromURL(params.get("compressedOrder")!);
 
-  // loading spinner animation onLoad to account for lag from these hooks?
+  // FullOrder returns
+  const order = useDecompressOrderFromURL(params.get("compressedOrder")!);
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
+
+  // extensions of full order
   const hasInsufficientMakerTokenBalance = useInsufficientBalance(
     senderToken,
     order.senderAmount
   );
-
-  // used in SettingsPopover on language change: url does not persist.
-  // const appRouteParams = useAppRouteParams();
-  // console.log(appRouteParams.urlWithoutLang);
+  const isMakerOfSwap = order.senderWallet === account;
+  const isIntendedRecipient =
+    order.signerWallet === (account || nativeCurrencyAddress);
 
   const handleBackButtonClick = () => {
     history.goBack();
@@ -89,7 +90,7 @@ const OrderDetailWidget: FC = () => {
         )}
         baseTokenInfo={signerToken}
         maxAmount={null}
-        side="buy"
+        side={isMakerOfSwap ? "sell" : "buy"}
         quoteAmount={ethers.utils.formatUnits(
           order.senderAmount,
           senderToken?.decimals!
@@ -110,6 +111,8 @@ const OrderDetailWidget: FC = () => {
         />
       )}
       <ActionButtons
+        isMakerOfSwap={isMakerOfSwap}
+        isIntendedRecipient={isIntendedRecipient}
         hasInsufficientBalance={hasInsufficientMakerTokenBalance}
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}
