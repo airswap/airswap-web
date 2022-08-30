@@ -11,7 +11,12 @@ import i18n from "i18next";
 
 import { AppDispatch } from "../../app/store";
 import { notifyError } from "../../components/Toasts/ToastController";
-import { setErrors, setStatus, setTakeOrder, setUserOrder } from "./otcSlice";
+import {
+  setErrors,
+  setStatus,
+  setTakeOrder,
+  setUserOrder,
+} from "./makeOtcSlice";
 
 export const createOtcOrder =
   (

@@ -5,10 +5,10 @@ import {
   allowancesReducer,
 } from "../features/balances/balancesSlice";
 import gasCostReducer from "../features/gasCost/gasCostSlice";
+import otcReducer from "../features/makeOtc/makeOtcSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
 import ordersReducer from "../features/orders/ordersSlice";
-import otcReducer from "../features/otc/otcSlice";
 import pricingReducer from "../features/pricing/pricingSlice";
 import registryReducer from "../features/registry/registrySlice";
 import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";

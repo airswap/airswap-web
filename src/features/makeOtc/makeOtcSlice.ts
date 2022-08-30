@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ErrorType } from "../../constants/errors";
 
-export interface OtcState {
+export interface MakeOtcState {
   lastUserOrder?: FullOrder;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
   userOrders: FullOrder[];
@@ -12,48 +12,51 @@ export interface OtcState {
   errors: ErrorType[];
 }
 
-const initialState: OtcState = {
+const initialState: MakeOtcState = {
   status: "idle",
   userOrders: [],
   errors: [],
 };
 
-export const otcSlice = createSlice({
-  name: "otc",
+export const makeOtcSlice = createSlice({
+  name: "make-otc",
   initialState,
   reducers: {
-    setStatus: (state, action: PayloadAction<OtcState["status"]>): OtcState => {
+    setStatus: (
+      state,
+      action: PayloadAction<MakeOtcState["status"]>
+    ): MakeOtcState => {
       return {
         ...state,
         status: action.payload,
       };
     },
-    setUserOrder: (state, action: PayloadAction<FullOrder>): OtcState => {
+    setUserOrder: (state, action: PayloadAction<FullOrder>): MakeOtcState => {
       return {
         ...state,
         lastUserOrder: action.payload,
         userOrders: [...state.userOrders, action.payload],
       };
     },
-    clearLastUserOrder: (state): OtcState => {
+    clearLastUserOrder: (state): MakeOtcState => {
       return {
         ...state,
         lastUserOrder: undefined,
       };
     },
-    setTakeOrder: (state, action: PayloadAction<FullOrder>): OtcState => {
+    setTakeOrder: (state, action: PayloadAction<FullOrder>): MakeOtcState => {
       return {
         ...state,
         takeOrder: action.payload,
       };
     },
-    setErrors: (state, action: PayloadAction<ErrorType[]>): OtcState => {
+    setErrors: (state, action: PayloadAction<ErrorType[]>): MakeOtcState => {
       return {
         ...state,
         errors: action.payload,
       };
     },
-    reset: (state): OtcState => {
+    reset: (state): MakeOtcState => {
       return initialState;
     },
   },
@@ -66,8 +69,8 @@ export const {
   setTakeOrder,
   setErrors,
   reset,
-} = otcSlice.actions;
+} = makeOtcSlice.actions;
 
-export const selectOtcReducer = (state: RootState) => state.otc;
+export const selectMakeOtcReducer = (state: RootState) => state.otc;
 
-export default otcSlice.reducer;
+export default makeOtcSlice.reducer;
