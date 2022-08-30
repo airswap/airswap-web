@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -20,6 +20,7 @@ import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import useDecompressOrderFromURL from "./hooks/useDecompressOrderFromURL";
+import { useGetTxHash } from "./hooks/useGetTxHash";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
@@ -35,11 +36,37 @@ const OrderDetailWidget: FC = () => {
     senderToken,
     order.senderAmount
   );
-
+  const orderStatus = OrderStatus.open; // dummy
+  const orderType =
+    order.signerWallet === nativeCurrencyAddress
+      ? OrderType.publicUnlisted
+      : OrderType.private;
   const tokenInfoLoading = !senderToken || !signerToken;
   const isMakerOfSwap = order.senderWallet === account;
   const isIntendedRecipient =
     order.signerWallet === (account || nativeCurrencyAddress);
+
+  const transactionLink = useMemo(() => {
+    return getEtherscanURL(Number(order.chainId), txHash);
+  }, [order.chainId, txHash]);
+
+  const rate = useMemo(() => {
+    return new BigNumber(
+      isMakerOfSwap ? order.signerAmount : order.senderAmount
+    ).dividedBy(isMakerOfSwap ? order.senderAmount : order.signerAmount);
+  }, [isMakerOfSwap]);
+
+  const baseAmount = useMemo(() => {
+    return tokenInfoLoading
+      ? "0.0"
+      : ethers.utils.formatUnits(order.signerAmount, senderToken?.decimals!);
+  }, [tokenInfoLoading]);
+
+  const quoteAmount = useMemo(() => {
+    return tokenInfoLoading
+      ? "0.0"
+      : ethers.utils.formatUnits(order.senderAmount, senderToken?.decimals!);
+  }, [tokenInfoLoading]);
 
   const handleBackButtonClick = () => {
     history.goBack();
@@ -53,54 +80,21 @@ const OrderDetailWidget: FC = () => {
     <Container>
       <OrderDetailWidgetHeader
         expiry={new Date(Number(order.expiry) * 1000)}
-        orderStatus={OrderStatus.open}
-        orderType={
-          order.signerWallet === nativeCurrencyAddress
-            ? OrderType.publicUnlisted
-            : OrderType.private
-        }
+        orderStatus={orderStatus}
+        orderType={orderType}
         recipientAddress={order.signerWallet}
         // bad request as a dummy link, what is the best way to compute the hash?
-        transactionLink={getEtherscanURL(
-          Number(order.chainId),
-          `${
-            hashOrder({
-              nonce: order.nonce,
-              expiry: order.expiry,
-              signerWallet: order.signerWallet,
-              signerToken: order.signerToken,
-              signerAmount: order.signerAmount,
-              senderToken: order.senderToken,
-              senderAmount: order.senderAmount,
-              senderWallet: order.senderWallet,
-              protocolFee: order.protocolFee,
-            })[0]
-          }`
-        )}
+        transactionLink={transactionLink}
         userAddress={account || undefined}
       />
       <SwapInputs
         readOnly
-        disabled={tokenInfoLoading}
-        baseAmount={
-          tokenInfoLoading
-            ? "0.0"
-            : ethers.utils.formatUnits(
-                order.signerAmount,
-                senderToken?.decimals!
-              )
-        }
+        disabled={tokenInfoLoading || isIntendedRecipient}
+        baseAmount={baseAmount}
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={isMakerOfSwap ? "sell" : "buy"}
-        quoteAmount={
-          tokenInfoLoading
-            ? "0.0"
-            : ethers.utils.formatUnits(
-                order.senderAmount,
-                senderToken?.decimals!
-              )
-        }
+        quoteAmount={quoteAmount}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
@@ -113,7 +107,7 @@ const OrderDetailWidget: FC = () => {
           onCopyButtonClick={handleCopyButtonClick}
           token1={senderToken?.symbol}
           token2={signerToken?.symbol}
-          rate={new BigNumber(order.signerAmount).dividedBy(order.senderAmount)}
+          rate={rate}
         />
       )}
       <ActionButtons
@@ -123,7 +117,6 @@ const OrderDetailWidget: FC = () => {
         onBackButtonClick={handleBackButtonClick}
         onSignButtonClick={() => {}}
       />
-
       <Overlay
         title={t("common.fee")}
         onCloseButtonClick={() => toggleShowFeeInfo()}
