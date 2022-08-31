@@ -27,7 +27,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const signButtonText = () => {
+  const actionButtonText = () => {
     if (networkIsUnsupported) {
       return t("wallet.switchNetwork");
     }
@@ -47,7 +47,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     return t("common.sign");
   };
 
-  const handleClick = () => {
+  const handleActionButtonClick = () => {
     if (networkIsUnsupported) {
       return onSignButtonClick(ButtonActions.switchNetwork);
     }
@@ -60,7 +60,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onCancelButtonClick();
     }
 
-    return t("common.sign");
+    return onSignButtonClick(ButtonActions.sign);
   };
 
   return (
@@ -68,12 +68,12 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
       <SignButton
         intent="primary"
-        onClick={handleClick}
+        onClick={handleActionButtonClick}
         disabled={
           (hasInsufficientBalance || !isIntendedRecipient) && !isMakerOfSwap
         }
       >
-        {signButtonText()}
+        {actionButtonText()}
       </SignButton>
     </Container>
   );
