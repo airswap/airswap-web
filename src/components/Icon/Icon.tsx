@@ -40,6 +40,7 @@ import {
   IconTwitter,
   IconVote,
   IconX,
+  IconCloseCircleOutline,
 } from "./icons";
 
 type IconSet = {
@@ -66,6 +67,7 @@ export const icons: IconSet = {
   "chevron-right": IconChevronRight,
   "chevron-up-down": IconChevronUpDown,
   close: IconClose,
+  "close-circle-outline": IconCloseCircleOutline,
   code: IconCode,
   copy: IconCopy,
   copy2: IconCopy2,

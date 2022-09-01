@@ -8,7 +8,6 @@ export interface MakeOtcState {
   lastUserOrder?: FullOrder;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
   userOrders: FullOrder[];
-  takeOrder?: FullOrder;
   errors: ErrorType[];
 }
 
@@ -44,12 +43,6 @@ export const makeOtcSlice = createSlice({
         lastUserOrder: undefined,
       };
     },
-    setTakeOrder: (state, action: PayloadAction<FullOrder>): MakeOtcState => {
-      return {
-        ...state,
-        takeOrder: action.payload,
-      };
-    },
     setErrors: (state, action: PayloadAction<ErrorType[]>): MakeOtcState => {
       return {
         ...state,
@@ -62,15 +55,9 @@ export const makeOtcSlice = createSlice({
   },
 });
 
-export const {
-  setStatus,
-  setUserOrder,
-  clearLastUserOrder,
-  setTakeOrder,
-  setErrors,
-  reset,
-} = makeOtcSlice.actions;
+export const { setStatus, setUserOrder, clearLastUserOrder, setErrors, reset } =
+  makeOtcSlice.actions;
 
-export const selectMakeOtcReducer = (state: RootState) => state.otc;
+export const selectMakeOtcReducer = (state: RootState) => state.makeOtc;
 
 export default makeOtcSlice.reducer;
