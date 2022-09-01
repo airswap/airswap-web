@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { UnsupportedChainIdError } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
+import compareAsc from "date-fns/compareAsc";
 import { ethers } from "ethers";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
@@ -42,6 +43,7 @@ const OrderDetailWidget: FC = () => {
     signerToken,
     order.signerAmount
   );
+
   const orderStatus = OrderStatus.open; // dummy
   const orderType =
     order.signerWallet === nativeCurrencyAddress
@@ -76,8 +78,11 @@ const OrderDetailWidget: FC = () => {
     return stringToSignificantDecimals(formattedAmount);
   }, [tokenInfoLoading]);
 
-  console.log(baseAmount);
+  const parsedExpiry = useMemo(() => {
+    return new Date(Number(order.expiry) * 1000);
+  }, [order]);
 
+  // button handlers
   const handleBackButtonClick = () => {
     history.goBack();
   };
@@ -106,7 +111,7 @@ const OrderDetailWidget: FC = () => {
   return (
     <Container>
       <OrderDetailWidgetHeader
-        expiry={new Date(Number(order.expiry) * 1000)}
+        expiry={parsedExpiry}
         orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.signerWallet}
@@ -137,6 +142,7 @@ const OrderDetailWidget: FC = () => {
         />
       )}
       <ActionButtons
+        isExpired={compareAsc(new Date(), parsedExpiry) === 1}
         isMakerOfSwap={isMakerOfSwap}
         isIntendedRecipient={isIntendedRecipient}
         hasInsufficientBalance={hasInsufficientTokenBalance}

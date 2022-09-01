@@ -5,6 +5,7 @@ import { ButtonActions } from "../../../MakeWidget/subcomponents/ActionButtons/A
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
 type ActionButtonsProps = {
+  isExpired: boolean;
   hasInsufficientBalance: boolean;
   isMakerOfSwap: boolean;
   isIntendedRecipient: boolean;
@@ -16,6 +17,7 @@ type ActionButtonsProps = {
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
+  isExpired,
   hasInsufficientBalance,
   isMakerOfSwap,
   isIntendedRecipient,
@@ -28,6 +30,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
 
   const actionButtonText = () => {
+    if (isExpired) {
+      return t("orders.swapExpired");
+    }
+
     if (networkIsUnsupported) {
       return t("wallet.switchNetwork");
     }
@@ -38,6 +44,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
     if (isMakerOfSwap) {
       return t("common.cancel");
+    }
+
+    if (!isIntendedRecipient) {
+      return t("orders.private");
     }
 
     if (hasInsufficientBalance) {
@@ -70,7 +80,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         intent="primary"
         onClick={handleActionButtonClick}
         disabled={
-          (hasInsufficientBalance || !isIntendedRecipient) && !isMakerOfSwap
+          ((hasInsufficientBalance ||
+            (!isNotConnected && !isIntendedRecipient)) &&
+            !isMakerOfSwap) ||
+          isExpired
         }
       >
         {actionButtonText()}
