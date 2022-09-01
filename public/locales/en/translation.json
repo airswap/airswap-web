@@ -152,7 +152,8 @@
     "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS",
     "copyLink": "Copy link",
     "expiryShouldBeMoreThan0": "Expiry should be more than 0",
-    "enterValidTakerAddress": "Enter valid taker address"
+    "enterValidTakerAddress": "Enter valid taker address",
+    "private": "private"
   },
   "toast": {
     "swapComplete": "Swap Complete",
