@@ -1,7 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
 
-import { TokenInfo } from "@airswap/typescript";
-
 import BigNumber from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
