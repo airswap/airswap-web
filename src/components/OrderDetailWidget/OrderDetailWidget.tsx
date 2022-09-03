@@ -2,6 +2,7 @@ import React, { FC, useMemo, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { FullOrder } from "@airswap/typescript";
 import { getEtherscanURL, hashOrder } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -30,13 +31,18 @@ import { useGetTxHash } from "./hooks/useGetTxHash";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
-const OrderDetailWidget: FC = () => {
+interface OrderDetailWidgetProps {
+  status: "open" | "taken" | "canceled";
+  order: FullOrder;
+}
+
+const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
   const { t } = useTranslation();
   const history = useHistory();
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, account, error: web3Error } = useWeb3React<Web3Provider>();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const order = useDecompressOrderFromURL();
+  const txHash = useGetTxHash(order);
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
   const hasInsufficientTokenBalance = useInsufficientBalance(
@@ -44,7 +50,17 @@ const OrderDetailWidget: FC = () => {
     order.signerAmount
   );
 
-  const orderStatus = OrderStatus.open; // dummy
+  const orderStatus = () => {
+    switch (status) {
+      case "taken":
+        return OrderStatus.taken;
+      case "canceled":
+        return OrderStatus.canceled;
+      case "open":
+        return OrderStatus.open;
+    }
+  };
+
   const orderType =
     order.signerWallet === nativeCurrencyAddress
       ? OrderType.publicUnlisted
@@ -112,7 +128,7 @@ const OrderDetailWidget: FC = () => {
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={orderStatus}
+        orderStatus={orderStatus()}
         orderType={orderType}
         recipientAddress={order.signerWallet}
         transactionLink={transactionLink}
