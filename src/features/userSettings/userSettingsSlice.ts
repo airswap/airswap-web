@@ -32,9 +32,20 @@ const userSettingsSlice = createSlice({
     },
     setUserTokens: (
       state,
-      action: PayloadAction<{ tokenFrom: string; tokenTo: string }>
+      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>
     ) => {
-      state.tokens = action.payload;
+      const tokens = {
+        ...state.tokens,
+        ...(action.payload.tokenFrom && {
+          tokenFrom: action.payload.tokenFrom,
+        }),
+        ...(action.payload.tokenTo && { tokenTo: action.payload.tokenTo }),
+      };
+
+      return {
+        ...state,
+        tokens,
+      };
     },
   },
 });

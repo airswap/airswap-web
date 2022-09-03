@@ -1,10 +1,9 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Registry, Wrapper, Swap } from "@airswap/libraries";
-import { findTokensBySymbol } from "@airswap/metadata";
 import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -29,15 +28,10 @@ import nativeCurrency, {
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
 import {
-  requestActiveTokenAllowancesSwap,
-  requestActiveTokenAllowancesWrapper,
-  requestActiveTokenBalances,
   selectAllowances,
   selectBalances,
 } from "../../features/balances/balancesSlice";
 import {
-  addActiveToken,
-  removeActiveToken,
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
@@ -75,11 +69,15 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
-import getTokenMaxAmount from "../../helpers/getTokenMaxAmount";
+import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useTokenAddress from "../../hooks/useTokenAddress";
+import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
+import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
@@ -99,7 +97,6 @@ import ActionButtons, {
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-export type TokenSelectModalTypes = "base" | "quote" | null;
 type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
@@ -173,12 +170,8 @@ const SwapWidget: FC = () => {
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  const defaultBaseTokenAddress: string | null = allTokens.length
-    ? findTokensBySymbol("USDT", allTokens)[0]?.address
-    : null;
-  const defaultQuoteTokenAddress: string | null = allTokens.length
-    ? nativeCurrency[chainId!]?.address
-    : null;
+  const defaultBaseTokenAddress = useTokenAddress("USDT");
+  const defaultQuoteTokenAddress = nativeCurrency[chainId!]?.address;
 
   // Use default tokens only if neither are specified in the URL or store.
   const baseToken = tokenFrom
@@ -192,29 +185,10 @@ const SwapWidget: FC = () => {
     ? null
     : userTokens.tokenTo || defaultQuoteTokenAddress;
 
-  const baseTokenInfo = useMemo(
-    () =>
-      baseToken
-        ? findEthOrTokenByAddress(baseToken, activeTokens, chainId!)
-        : null,
-    [baseToken, activeTokens, chainId]
-  );
+  const baseTokenInfo = useTokenInfo(baseToken);
+  const quoteTokenInfo = useTokenInfo(quoteToken);
 
-  const quoteTokenInfo = useMemo(
-    () =>
-      quoteToken
-        ? findEthOrTokenByAddress(quoteToken, activeTokens, chainId!)
-        : null,
-    [quoteToken, activeTokens, chainId]
-  );
-
-  const maxAmount = useMemo(() => {
-    if (!baseToken || !balances || !baseTokenInfo) {
-      return null;
-    }
-    return getTokenMaxAmount(baseToken, balances, baseTokenInfo);
-  }, [balances, baseToken, baseTokenInfo]);
-
+  const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
@@ -354,41 +328,14 @@ const SwapWidget: FC = () => {
     });
   };
 
-  let insufficientBalance: boolean = false;
-  if (baseAmount && baseToken && Object.keys(balances.values).length) {
-    if (parseFloat(baseAmount) === 0 || baseAmount === ".") {
-      insufficientBalance = false;
-    } else {
-      const baseDecimals = baseTokenInfo?.decimals;
-      if (baseDecimals) {
-        insufficientBalance = new BigNumber(
-          balances.values[baseToken!] || "0"
-        ).lt(new BigNumber(baseAmount).multipliedBy(10 ** baseDecimals));
-      }
-    }
-  }
-
-  const handleAddActiveToken = (address: string) => {
-    if (library) {
-      dispatch(addActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
-    }
-  };
+  const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
   const handleRemoveActiveToken = (address: string) => {
-    if (library) {
-      if (address === baseToken) {
-        history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
-        setBaseAmount(initialBaseAmount);
-      } else if (address === quoteToken) {
-        history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
-      }
-      dispatch(removeActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
+    if (address === baseToken) {
+      history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
+      setBaseAmount(initialBaseAmount);
+    } else if (address === quoteToken) {
+      history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
 
@@ -684,19 +631,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.switchNetwork:
-        try {
-          (window as any).ethereum.request!({
-            method: "wallet_switchEthereumChain",
-            params: [
-              {
-                chainId: "0x1",
-              },
-            ],
-          });
-        } catch (e) {
-          // unable to switch network, but doesn't matter too much as button
-          // looks like a call to action in this case anyway.
-        }
+        switchToEthereumChain();
         break;
 
       case ButtonActions.requestQuotes:
@@ -866,9 +801,7 @@ const SwapWidget: FC = () => {
           allTokens={allTokens}
           activeTokens={activeTokens}
           supportedTokenAddresses={supportedTokens}
-          addActiveToken={handleAddActiveToken}
-          removeActiveToken={handleRemoveActiveToken}
-          chainId={chainId || 1}
+          onAfterRemoveActiveToken={handleRemoveActiveToken}
         />
       </Overlay>
       <Overlay

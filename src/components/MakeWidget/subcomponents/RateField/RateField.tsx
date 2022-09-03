@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import BigNumber from "bignumber.js";
 
@@ -28,6 +28,10 @@ export const RateField: React.FC<RateFieldProps> = ({
     () => stringToSignificantDecimals(currentRate.toString(), 4, 7),
     [currentRate]
   );
+
+  useEffect(() => {
+    setCurrentRate(rate);
+  }, [rate]);
 
   function handleClick() {
     setTokenPair([tokenPair[1], tokenPair[0]]);

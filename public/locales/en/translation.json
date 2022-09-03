@@ -103,6 +103,7 @@
     "amount": "Amount",
     "chooseToken": "Choose token",
     "enterAmount": "Enter an amount",
+    "enterTokenAmount": "Enter {{symbol}} amount",
     "errorRequesting": "Something went wrong when requesting orders",
     "errorRequestingCta": "Please refresh the page and try again",
     "insufficentBalance": "Insufficient {{symbol}} balance",
@@ -149,7 +150,9 @@
     "specificWallet": "Specific Wallet",
     "counterPartyAddress": "Counterparty address",
     "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS",
-    "copyLink": "Copy link"
+    "copyLink": "Copy link",
+    "expiryShouldBeMoreThan0": "Expiry should be more than 0",
+    "enterValidTakerAddress": "Enter valid taker address"
   },
   "toast": {
     "swapComplete": "Swap Complete",

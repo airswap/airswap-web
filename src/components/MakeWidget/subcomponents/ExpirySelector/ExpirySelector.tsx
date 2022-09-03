@@ -12,7 +12,7 @@ import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
 const floatRegExp = new RegExp("^([0-9])*$");
 
 export type ExpirySelectorProps = {
-  onChange: (expiryDate: number) => void;
+  onChange: (msToExpiry: number) => void;
   className?: string;
 };
 
@@ -31,7 +31,7 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
 
   useEffect(() => {
     const msToExpiry = (parseInt(amount, 0) || 0) * parseInt(unit.value, 0);
-    onChange(new Date().getTime() + msToExpiry);
+    onChange(msToExpiry);
   }, [unit, amount, onChange]);
 
   function handleUnitChange(option: SelectOption) {
