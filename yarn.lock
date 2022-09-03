@@ -102,10 +102,10 @@
     ethers "^5.5.4"
     lz-string "^1.4.4"
 
-"@airswap/utils@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.2.tgz#2ecc96652868f5021fd52b7c78d560d2b314e1b4"
-  integrity sha512-bTVdsstycOjxVDUPAWdxb/xSqnRsJUrNrxeWC/Tu6jQ7wgP+lCR6HbSV74tbx4EJ6NWdQuDapfGo+9BLzOSS0Q==
+"@airswap/utils@3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.4.tgz#56e1065ee3df2c86b9e8fb28e1568e044b3cf8fa"
+  integrity sha512-sp2BHnHlnpDtKmAXm7iSXR3796O+CccEfHhF+44b05LZrWX8RP44GEGxYOXM2VFj23+E4eTvubwowKcYQ2fbDQ==
   dependencies:
     "@airswap/constants" "3.0.1"
     "@airswap/typescript" "3.0.1"

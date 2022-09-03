@@ -126,6 +126,10 @@ const MakeWidget: FC = () => {
 
   // useEffects
   useEffect(() => {
+    dispatch(reset());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
       return setOrderType(OrderType.private);
     }
@@ -190,8 +194,14 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const handleBackButtonClick = () => {
-    history.goBack();
+  const handleBackButtonClick = (action: ButtonActions) => {
+    if (action === ButtonActions.restart) {
+      dispatch(reset());
+    }
+
+    if (action === ButtonActions.goBack) {
+      history.goBack();
+    }
   };
 
   return (
