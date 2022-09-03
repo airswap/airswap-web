@@ -16,7 +16,8 @@ const OrderDetail: FC = () => {
 
   useEffect(() => {
     if (compressedOrder) {
-      dispatch(decompressAndSetActiveOrder(compressedOrder));
+      // Coltrane gets type/overload error without the <any>, not sure why.
+      dispatch<any>(decompressAndSetActiveOrder(compressedOrder));
     }
   }, [dispatch, compressedOrder]);
 
