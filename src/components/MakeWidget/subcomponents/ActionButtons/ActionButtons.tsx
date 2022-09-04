@@ -26,7 +26,7 @@ type ActionButtonsProps = {
   walletIsNotConnected: boolean;
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
-  onBackButtonClick: () => void;
+  onBackButtonClick: (action: ButtonActions) => void;
   onSignButtonClick: (action: ButtonActions) => void;
 };
 
@@ -83,9 +83,19 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
   };
 
+  const handleBackButtonClick = () => {
+    if (userIsSigning) {
+      onBackButtonClick(ButtonActions.restart);
+    } else {
+      onBackButtonClick(ButtonActions.goBack);
+    }
+  };
+
   return (
     <Container>
-      <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <BackButton onClick={handleBackButtonClick}>
+        {t("common.back")}
+      </BackButton>
       <SignButton
         disabled={isDisabled}
         intent="primary"

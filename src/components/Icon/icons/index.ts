@@ -9,6 +9,7 @@ import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
 import IconChevronUpDown from "./IconChevronUpDown";
 import IconClose from "./IconClose";
+import IconCloseCircleOutline from "./IconCloseCircleOutline";
 import IconCode from "./IconCode";
 import IconContactSupport from "./IconContactSupport";
 import IconCopy from "./IconCopy";
@@ -46,6 +47,7 @@ export {
   IconChevronRight,
   IconChevronUpDown,
   IconClose,
+  IconCloseCircleOutline,
   IconCode,
   IconCopy,
   IconCopy2,

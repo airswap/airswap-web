@@ -5,12 +5,13 @@ import {
   allowancesReducer,
 } from "../features/balances/balancesSlice";
 import gasCostReducer from "../features/gasCost/gasCostSlice";
+import makeOtcReducer from "../features/makeOtc/makeOtcSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
 import ordersReducer from "../features/orders/ordersSlice";
-import otcReducer from "../features/otc/otcSlice";
 import pricingReducer from "../features/pricing/pricingSlice";
 import registryReducer from "../features/registry/registrySlice";
+import takeOtcReducer from "../features/takeOtc/takeOtcSlice";
 import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
 import userSettingsReducer from "../features/userSettings/userSettingsSlice";
@@ -29,7 +30,8 @@ export const store = configureStore({
     wallet: walletReducer,
     registry: registryReducer,
     userSettings: userSettingsReducer,
-    otc: otcReducer,
+    makeOtc: makeOtcReducer,
+    takeOtc: takeOtcReducer,
   },
 });
 

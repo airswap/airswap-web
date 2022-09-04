@@ -16,16 +16,16 @@ import nativeCurrency, {
 } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { selectBalances } from "../../features/balances/balancesSlice";
+import { createOtcOrder } from "../../features/makeOtc/makeOtcActions";
+import {
+  clearLastUserOrder,
+  reset,
+  selectMakeOtcReducer,
+} from "../../features/makeOtc/makeOtcSlice";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
-import { createOtcOrder } from "../../features/otc/otcActions";
-import {
-  clearLastUserOrder,
-  reset,
-  selectOtcReducer,
-} from "../../features/otc/otcSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
@@ -71,7 +71,8 @@ const MakeWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
-  const { status, errors, lastUserOrder } = useAppSelector(selectOtcReducer);
+  const { status, errors, lastUserOrder } =
+    useAppSelector(selectMakeOtcReducer);
   const {
     active,
     chainId,
@@ -125,6 +126,10 @@ const MakeWidget: FC = () => {
 
   // useEffects
   useEffect(() => {
+    dispatch(reset());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
       return setOrderType(OrderType.private);
     }
@@ -138,7 +143,7 @@ const MakeWidget: FC = () => {
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
       dispatch(clearLastUserOrder());
     }
-  }, [lastUserOrder, history]);
+  }, [lastUserOrder, history, dispatch]);
 
   // Event handler's
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -189,8 +194,14 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const handleBackButtonClick = () => {
-    history.goBack();
+  const handleBackButtonClick = (action: ButtonActions) => {
+    if (action === ButtonActions.restart) {
+      dispatch(reset());
+    }
+
+    if (action === ButtonActions.goBack) {
+      history.goBack();
+    }
   };
 
   return (

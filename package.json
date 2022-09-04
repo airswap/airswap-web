@@ -21,7 +21,7 @@
     "@airswap/metadata": "3.0.2",
     "@airswap/swap": "3.0.1",
     "@airswap/typescript": "3.0.1",
-    "@airswap/utils": "3.0.2",
+    "@airswap/utils": "3.0.4",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@react-hookz/web": "^14.2.2",
