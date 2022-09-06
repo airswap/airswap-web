@@ -5,31 +5,29 @@ import { ethers } from "ethers";
 
 import { AppError, AppErrorType, transformToAppError } from "../types/appError";
 
-export interface CreateSwapSignatureError {
-  argument: string;
-  value: string;
-  code: "INVALID_ARGUMENT";
-}
-
 const transformUnknownErrorToAppError = (error: any): AppError => {
+  // Error code could be an eth rpc or provider error found here:
+  // node_modules/eth-rpc-errors/dist/error-constants.d.ts
+
   if (error.code === 4001) {
     return transformToAppError(AppErrorType.rejectedByUser, error);
   }
 
+  if (error.code === 4100) {
+    return transformToAppError(AppErrorType.unauthorized, error);
+  }
+
+  // Or there's a different error from eth-sig-util I think. Which looks like this:
+  // argument: string;
+  // value: string;
+  // code: "INVALID_ARGUMENT";
+
   if (error.argument === "address") {
-    return transformToAppError(
-      AppErrorType.invalidAddress,
-      error,
-      error.argument
-    );
+    return transformToAppError(AppErrorType.invalidAddress, error, error.value);
   }
 
   if (error.argument === "value") {
-    return transformToAppError(
-      AppErrorType.invalidValue,
-      error,
-      error.argument
-    );
+    return transformToAppError(AppErrorType.invalidValue, error, error.value);
   }
 
   return transformToAppError(AppErrorType.unknownError, error);
