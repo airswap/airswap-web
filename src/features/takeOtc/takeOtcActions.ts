@@ -1,10 +1,11 @@
 import { decompressFullOrder, isValidFullOrder } from "@airswap/utils";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { AppDispatch } from "../../app/store";
 import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
 
-export const decompressAndSetActiveOrder =
-  (compressedOrder: string) => async (dispatch: AppDispatch) => {
+export const decompressAndSetActiveOrder = createAsyncThunk(
+  "take-otc/decompressAndSetActiveOrder",
+  async (compressedOrder: string, { dispatch }) => {
     dispatch(reset());
 
     try {
@@ -20,4 +21,5 @@ export const decompressAndSetActiveOrder =
       console.error(e);
       dispatch(setStatus("not-found"));
     }
-  };
+  }
+);
