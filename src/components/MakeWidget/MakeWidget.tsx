@@ -71,8 +71,7 @@ const MakeWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
-  const { status, errors, lastUserOrder } =
-    useAppSelector(selectMakeOtcReducer);
+  const { status, error, lastUserOrder } = useAppSelector(selectMakeOtcReducer);
   const {
     active,
     chainId,
@@ -311,10 +310,10 @@ const MakeWidget: FC = () => {
         onCloseButtonClick={() =>
           handleActionButtonClick(ButtonActions.restart)
         }
-        isHidden={!errors.length}
+        isHidden={!error}
       >
         <ErrorList
-          errors={errors}
+          errors={[]}
           handleClick={() => handleActionButtonClick(ButtonActions.restart)}
         />
       </Overlay>
