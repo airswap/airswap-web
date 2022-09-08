@@ -42,8 +42,9 @@ export const createSwapSignature = (
         chainId
       );
       resolve(signature);
-    } catch (e: unknown) {
-      resolve(transformUnknownErrorToAppError(e));
+    } catch (error: unknown) {
+      console.error(error);
+      resolve(transformUnknownErrorToAppError(error));
     }
   });
 };

@@ -11,7 +11,6 @@ export enum AppErrorType {
 
 export type AppError = {
   argument?: string;
-  error: unknown;
   type: AppErrorType;
 };
 
@@ -26,12 +25,10 @@ export const isAppError = (x: any): x is AppError => {
 
 export function transformToAppError(
   type: AppErrorType,
-  error: unknown,
   argument?: string
 ): AppError {
   return {
     argument,
-    error,
     type,
   };
 }

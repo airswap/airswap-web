@@ -22,12 +22,12 @@ export const transformEthSigUtilErrorToAppError = (
   error: EthSigUtilError
 ): AppError => {
   if (error.argument === "address") {
-    return transformToAppError(AppErrorType.invalidAddress, error, error.value);
+    return transformToAppError(AppErrorType.invalidAddress, error.value);
   }
 
   if (error.argument === "value") {
-    return transformToAppError(AppErrorType.invalidValue, error, error.value);
+    return transformToAppError(AppErrorType.invalidValue, error.value);
   }
 
-  return transformToAppError(AppErrorType.unknownError, error);
+  return transformToAppError(AppErrorType.unknownError);
 };
