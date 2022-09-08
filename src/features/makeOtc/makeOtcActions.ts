@@ -5,7 +5,7 @@ import { createOrder } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
-import {AppErrorType, isAppError} from "../../errors/appError";
+import { AppErrorType, isAppError } from "../../errors/appError";
 import { createSwapSignature } from "../../helpers/createSwapSignature";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
