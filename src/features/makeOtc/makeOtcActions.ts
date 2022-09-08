@@ -4,11 +4,9 @@ import { FullOrder, UnsignedOrder } from "@airswap/typescript";
 import { createOrder } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import i18n from "i18next";
-
-import { notifyError } from "../../components/Toasts/ToastController";
+import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
+import { AppErrorType, isAppError } from "../../errors/appError";
 import { createSwapSignature } from "../../helpers/createSwapSignature";
-import { AppErrorType, isAppError } from "../../types/appError";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
 export const createOtcOrder = createAsyncThunk(
@@ -44,10 +42,8 @@ export const createOtcOrder = createAsyncThunk(
 
     if (isAppError(signature)) {
       if (signature.type === AppErrorType.rejectedByUser) {
-        notifyError({
-          heading: i18n.t("orders.swapFailed"),
-          cta: i18n.t("orders.swapRejectedByUser"),
-        });
+        dispatch(setStatus("idle"));
+        notifyRejectedByUserError();
       } else {
         dispatch(setStatus("failed"));
         dispatch(setError(signature));

@@ -1,3 +1,5 @@
+// This helper is used in the swap widget. I'd like to eventually replace this
+// with transformUnknownErrorToAppError.
 import { errorCodes } from "eth-rpc-errors/dist/error-constants";
 
 import {

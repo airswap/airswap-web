@@ -2,7 +2,7 @@ import { FullOrder } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { AppError } from "../../types/appError";
+import { AppError } from "../../errors/appError";
 
 export interface MakeOtcState {
   lastUserOrder?: FullOrder;

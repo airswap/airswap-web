@@ -313,8 +313,10 @@ const MakeWidget: FC = () => {
         isHidden={!error}
       >
         <ErrorList
-          errors={[]}
-          handleClick={() => handleActionButtonClick(ButtonActions.restart)}
+          errors={error ? [error] : []}
+          onBackButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
         />
       </Overlay>
     </Container>

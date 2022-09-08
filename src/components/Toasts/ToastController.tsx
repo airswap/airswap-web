@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 
+import i18n from "i18next";
+
 import {
   SubmittedApproval,
   SubmittedTransaction,
@@ -94,4 +96,11 @@ export const notifyError = (props: { heading: string; cta: string }) => {
       duration: 3000,
     }
   );
+};
+
+export const notifyRejectedByUserError = () => {
+  notifyError({
+    heading: i18n.t("orders.swapFailed"),
+    cta: i18n.t("orders.swapRejectedByUser"),
+  });
 };

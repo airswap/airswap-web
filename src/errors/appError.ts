@@ -1,9 +1,12 @@
 export enum AppErrorType {
+  chainDisconnected = "chain-disconnected",
+  disconnected = "disconnected",
   invalidAddress = "invalid-address",
   invalidValue = "invalid-value",
   rejectedByUser = "rejected-by-user",
   unauthorized = "unauthorized",
   unknownError = "unknown-error",
+  unsupportedMethod = "unsupported-method",
 }
 
 export type AppError = {
