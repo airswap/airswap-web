@@ -2,7 +2,7 @@ import { TokenInfo } from "@airswap/typescript";
 
 import styled from "styled-components/macro";
 
-export type sizes = "small" | "medium" | "large";
+export type sizes = "tiny" | "small" | "medium" | "large";
 
 export type StyledTokenLogoProps = {
   size: sizes;
@@ -10,6 +10,7 @@ export type StyledTokenLogoProps = {
 };
 
 const remSizes: Record<sizes, string> = {
+  tiny: "1.125rem",
   small: "1.5rem",
   medium: "2rem",
   large: "2.5rem",

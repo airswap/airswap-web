@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Web3Provider } from "@ethersproject/providers";
@@ -6,6 +6,7 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { selectAllTokenInfo } from "../../features/metadata/metadataSlice";
 import {
   OrdersSortType,
   selectMyOrdersReducer,
@@ -13,6 +14,7 @@ import {
 } from "../../features/myOrders/myOrdersSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import { Container } from "./MyOrdersWidget.styles";
+import { getSortedOrders } from "./helpers";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -23,14 +25,26 @@ const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { active, error: web3Error } = useWeb3React<Web3Provider>();
+  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
+  const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
   );
-  console.log(userOrders);
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
+
+  const sortedUserOrders = useMemo(() => {
+    return chainId
+      ? getSortedOrders(
+          userOrders,
+          activeSortType,
+          allTokens,
+          chainId,
+          !sortTypeDirection[activeSortType]
+        )
+      : userOrders;
+  }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
 
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
@@ -51,7 +65,7 @@ const MyOrdersWidget: FC = () => {
       <MyOrdersWidgetHeader title={t("common.myOrders")} />
       <MyOrdersList
         activeSortType={activeSortType}
-        orders={userOrders}
+        orders={sortedUserOrders}
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={handleSortButtonClick}
       />

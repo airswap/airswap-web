@@ -2,7 +2,10 @@ import styled from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  display: flex;
+  margin-left: -0.25rem;
+`;
 
 export const Arrow = styled.span`
   width: 0;
@@ -10,10 +13,11 @@ export const Arrow = styled.span`
   border-left: 0.3125rem solid transparent;
   border-right: 0.3125rem solid transparent;
 
-  border-top: 0.3125rem solid ${(props) => props.theme.colors.lightGrey};
+  border-top: 0.3125rem solid ${({ theme }) => theme.colors.lightGrey};
 `;
 
 export const Button = styled.button<{
+  isActive: boolean;
   isDescending: boolean;
   hasText: boolean;
 }>`
@@ -45,5 +49,7 @@ export const Button = styled.button<{
     transform: ${({ isDescending }) =>
       isDescending ? "rotate(180deg)" : "none"};
     margin-left: ${({ hasText }) => (hasText ? "0.25rem" : "0")};
+    border-top-color: ${({ theme, isActive }) =>
+      isActive ? theme.colors.white : theme.colors.lightGrey};
   }
 `;

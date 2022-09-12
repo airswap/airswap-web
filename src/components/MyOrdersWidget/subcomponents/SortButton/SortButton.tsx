@@ -12,6 +12,7 @@ interface SortButtonProps {
 }
 
 const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
+  isActive,
   isDisabled,
   isDescending,
   isSortable,
@@ -23,6 +24,7 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
     <Container className={className}>
       <Button
         as={isDisabled ? "div" : "button"}
+        isActive={!!isActive}
         isDescending={!!isDescending}
         hasText={!!children}
         onClick={onClick}

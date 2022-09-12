@@ -28,10 +28,10 @@ const initialState: MyOrdersState = {
   userOrders: [],
   activeSortType: "active",
   sortTypeDirection: {
-    active: false,
-    senderToken: false,
-    signerToken: false,
-    expiry: false,
+    active: true,
+    senderToken: true,
+    signerToken: true,
+    expiry: true,
   },
 };
 

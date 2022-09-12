@@ -4,11 +4,12 @@ import { FullOrder } from "@airswap/typescript";
 
 import { OrdersSortType } from "../../../../features/myOrders/myOrdersSlice";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
-import { Container } from "./MyOrdersList.styles";
+import Order from "../Order/Order";
+import { Container, OrdersContainer, Shadow } from "./MyOrdersList.styles";
 
 interface MyOrdersListProps {
-  orders: FullOrder[];
   activeSortType: OrdersSortType;
+  orders: FullOrder[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
@@ -16,6 +17,7 @@ interface MyOrdersListProps {
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
   activeSortType,
+  orders,
   sortTypeDirection,
   onSortButtonClick,
   className,
@@ -27,6 +29,12 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={onSortButtonClick}
       />
+      <OrdersContainer>
+        {orders.map((order) => (
+          <Order order={order} />
+        ))}
+      </OrdersContainer>
+      <Shadow />
     </Container>
   );
 };
