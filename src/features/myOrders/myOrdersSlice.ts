@@ -39,6 +39,24 @@ export const myOrdersSlice = createSlice({
   name: "make-otc",
   initialState,
   reducers: {
+    removeUserOrder: (
+      state,
+      action: PayloadAction<FullOrder>
+    ): MyOrdersState => {
+      const userOrders = [...state.userOrders].filter(
+        (order) => order.nonce !== action.payload.nonce
+      );
+      writeUserOrdersToLocalStorage(
+        userOrders,
+        action.payload.senderWallet,
+        action.payload.chainId
+      );
+
+      return {
+        ...state,
+        userOrders,
+      };
+    },
     setActiveSortType: (
       state,
       action: PayloadAction<OrdersSortType>
@@ -81,7 +99,6 @@ export const myOrdersSlice = createSlice({
     });
 
     builder.addCase(setUserOrder, (state, action) => {
-      console.log(action);
       const userOrders = [action.payload, ...state.userOrders];
       const { senderWallet, chainId } = action.payload;
       writeUserOrdersToLocalStorage(userOrders, senderWallet, chainId);
@@ -94,7 +111,8 @@ export const myOrdersSlice = createSlice({
   },
 });
 
-export const { reset, setActiveSortType } = myOrdersSlice.actions;
+export const { removeUserOrder, reset, setActiveSortType } =
+  myOrdersSlice.actions;
 
 export const selectMyOrdersReducer = (state: RootState) => state.myOrders;
 

@@ -31,17 +31,17 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       <SortButton isDisabled>Pair</SortButton>
       <SortButton
         isSortable
-        isActive={activeSortType === "senderToken"}
-        isDescending={sortTypeDirection.senderToken}
-        onClick={() => onSortButtonClick("senderToken")}
+        isActive={activeSortType === "signerToken"}
+        isDescending={sortTypeDirection.signerToken}
+        onClick={() => onSortButtonClick("signerToken")}
       >
         {t("orders.from")}
       </SortButton>
       <SortButton
         isSortable
-        isActive={activeSortType === "signerToken"}
-        isDescending={sortTypeDirection.signerToken}
-        onClick={() => onSortButtonClick("signerToken")}
+        isActive={activeSortType === "senderToken"}
+        isDescending={sortTypeDirection.senderToken}
+        onClick={() => onSortButtonClick("senderToken")}
       >
         {t("orders.to")}
       </SortButton>

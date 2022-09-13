@@ -22,13 +22,21 @@ import {
 
 interface OrderProps {
   order: FullOrder;
+  onDeleteOrderButtonClick: (order: FullOrder) => void;
+  onDeleteOrderButtonMouseEnter: () => void;
+  onDeleteOrderButtonMouseLeave: () => void;
   className?: string;
 }
 
-const Order: FC<PropsWithChildren<OrderProps>> = ({ order, className }) => {
+const Order: FC<PropsWithChildren<OrderProps>> = ({
+  order,
+  onDeleteOrderButtonClick,
+  onDeleteOrderButtonMouseEnter,
+  onDeleteOrderButtonMouseLeave,
+  className,
+}) => {
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
-  console.log(order);
 
   const senderAmount = useMemo(
     () =>
@@ -45,6 +53,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({ order, className }) => {
   const orderString = useMemo(() => compressFullOrder(order), [order]);
   const isExpired = new Date().getTime() > expiry;
 
+  const handleDeleteOrderButtonClick = () => {
+    onDeleteOrderButtonClick(order);
+  };
+
   return (
     <Container isExpired={isExpired} className={className}>
       <ActiveIndicator>
@@ -59,7 +71,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({ order, className }) => {
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
       <ActionButtonContainer>
-        <ActionButton icon="bin" iconSize={0.75} />
+        <ActionButton
+          icon="bin"
+          iconSize={0.75}
+          onClick={handleDeleteOrderButtonClick}
+          onMouseEnter={onDeleteOrderButtonMouseEnter}
+          onMouseLeave={onDeleteOrderButtonMouseLeave}
+        />
       </ActionButtonContainer>
     </Container>
   );

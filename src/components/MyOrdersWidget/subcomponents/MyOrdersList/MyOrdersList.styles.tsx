@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import { ScrollBarStyle } from "../../../../style/mixins";
+import Tooltip from "../../../ExpiryIndicator/subcomponents/Tooltip";
 
 export const Container = styled.div`
   display: flex;
@@ -17,6 +18,7 @@ export const OrdersContainer = styled.div`
   max-height: 17rem;
   padding-right: 0.5rem;
   overflow-y: auto;
+  overflow-x: visible;
 `;
 
 export const Shadow = styled.div`
@@ -31,5 +33,27 @@ export const Shadow = styled.div`
     rgba(0, 0, 0, 0.75) 0%,
     rgba(0, 0, 0, 0) 100%
   );
+  pointer-events: none;
+`;
+
+export const TooltipContainer = styled.div`
+  position: relative;
+`;
+
+export const StyledTooltip = styled(Tooltip)<{
+  activeDeleteButton: number;
+  containerScrollTop: number;
+}>`
+  // display: none;
+  justify-content: flex-start;
+  position: absolute;
+  top: calc(
+    4rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
+      ${({ activeDeleteButton }) => activeDeleteButton}
+  );
+  left: 100%;
+  margin-left: -1rem;
+  width: auto;
+  z-index: 3;
   pointer-events: none;
 `;

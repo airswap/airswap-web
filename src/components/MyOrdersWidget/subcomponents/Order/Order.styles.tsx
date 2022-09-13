@@ -71,7 +71,9 @@ export const Text = styled.div`
   pointer-events: none;
 `;
 
-export const ActionButtonContainer = styled.div``;
+export const ActionButtonContainer = styled.div`
+  position: relative;
+`;
 
 export const ActionButton = styled(IconButton)`
   ${InputOrButtonBorderStyleType2};
@@ -98,7 +100,7 @@ export const StyledNavLink = styled(NavLink)`
   top: -1px;
   left: 0;
   width: 100%;
-  height: calc(100% + 2px);
+  height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.borderGrey};
   opacity: 0;
   z-index: 1;

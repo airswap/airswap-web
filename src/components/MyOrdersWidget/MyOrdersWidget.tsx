@@ -1,6 +1,7 @@
 import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { FullOrder } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
@@ -9,6 +10,7 @@ import { InterfaceContext } from "../../contexts/interface/Interface";
 import { selectAllTokenInfo } from "../../features/metadata/metadataSlice";
 import {
   OrdersSortType,
+  removeUserOrder,
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
@@ -56,6 +58,10 @@ const MyOrdersWidget: FC = () => {
     }
   };
 
+  const handleDeleteOrderButtonClick = (order: FullOrder) => {
+    dispatch(removeUserOrder(order));
+  };
+
   const handleSortButtonClick = (type: OrdersSortType) => {
     dispatch(setActiveSortType(type));
   };
@@ -67,6 +73,7 @@ const MyOrdersWidget: FC = () => {
         activeSortType={activeSortType}
         orders={sortedUserOrders}
         sortTypeDirection={sortTypeDirection}
+        onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
         onSortButtonClick={handleSortButtonClick}
       />
       <ActionButtons
