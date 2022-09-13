@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { FullOrder } from "@airswap/typescript";
 
@@ -29,6 +30,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   onSortButtonClick,
   className,
 }) => {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [activeDeleteButton, setActiveDeleteButton] = useState<number>();
@@ -82,7 +84,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
             activeDeleteButton={activeDeleteButton || 0}
             containerScrollTop={containerScrollTop}
           >
-            Remove from list
+            {t("orders.removeFromList")}
           </StyledTooltip>
         )}
       </OrdersContainer>

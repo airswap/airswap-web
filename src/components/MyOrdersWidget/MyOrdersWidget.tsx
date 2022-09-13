@@ -15,11 +15,12 @@ import {
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
-import { Container } from "./MyOrdersWidget.styles";
+import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
+import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import MyOrdersList from "./subcomponents/MyOrdersList/MyOrdersList";
 import MyOrdersWidgetHeader from "./subcomponents/MyOrdersWidgetHeader/MyOrdersWidgetHeader";
 
@@ -68,14 +69,25 @@ const MyOrdersWidget: FC = () => {
 
   return (
     <Container>
-      <MyOrdersWidgetHeader title={t("common.myOrders")} />
-      <MyOrdersList
-        activeSortType={activeSortType}
-        orders={sortedUserOrders}
-        sortTypeDirection={sortTypeDirection}
-        onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-        onSortButtonClick={handleSortButtonClick}
-      />
+      {!!sortedUserOrders.length && (
+        <>
+          <MyOrdersWidgetHeader title={t("common.myOrders")} />
+          <MyOrdersList
+            activeSortType={activeSortType}
+            orders={sortedUserOrders}
+            sortTypeDirection={sortTypeDirection}
+            onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
+            onSortButtonClick={handleSortButtonClick}
+          />
+        </>
+      )}
+
+      <InfoSectionContainer>
+        <InfoSection
+          userHasNoOrders={!sortedUserOrders.length}
+          walletIsNotConnected={!active}
+        />
+      </InfoSectionContainer>
       <ActionButtons
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError

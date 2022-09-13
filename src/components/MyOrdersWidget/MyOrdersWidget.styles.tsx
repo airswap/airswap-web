@@ -20,3 +20,13 @@ export const MyOrdersGrid = css`
     grid-template-columns: 1rem 2.5rem calc(50% - 8rem) calc(50% - 8rem) 6rem 1.5rem;
   }
 `;
+
+export const InfoSectionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 2;
+  margin-bottom: 0.5rem;
+  text-align: center;
+`;

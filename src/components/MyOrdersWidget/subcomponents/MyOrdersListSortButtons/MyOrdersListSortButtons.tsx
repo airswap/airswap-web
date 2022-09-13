@@ -28,7 +28,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
         isDescending={sortTypeDirection.active}
         onClick={() => onSortButtonClick("active")}
       />
-      <SortButton isDisabled>Pair</SortButton>
+      <SortButton isDisabled>{t("common.pair")}</SortButton>
       <SortButton
         isSortable
         isActive={activeSortType === "signerToken"}
@@ -51,7 +51,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
         isDescending={sortTypeDirection.expiry}
         onClick={() => onSortButtonClick("expiry")}
       >
-        Expiry
+        {t("common.expiry")}
       </SortButton>
     </Container>
   );
