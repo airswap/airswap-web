@@ -9,7 +9,7 @@ import {
   transformToAppError,
 } from "../errors/appError";
 import {
-  ethersProjectError,
+  isEthersProjectError,
   transformEthersProjectErrorToAppError,
 } from "../errors/ethersProjectError";
 import { isRpcError, transformRpcErrorToAppError } from "../errors/rpcError";
@@ -19,7 +19,7 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
     return transformRpcErrorToAppError(error);
   }
 
-  if (ethersProjectError(error)) {
+  if (isEthersProjectError(error)) {
     return transformEthersProjectErrorToAppError(error);
   }
 

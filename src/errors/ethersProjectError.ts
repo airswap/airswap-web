@@ -15,7 +15,9 @@ interface EthersProjectError {
   code: "INVALID_ARGUMENT";
 }
 
-export const ethersProjectError = (error: any): error is EthersProjectError => {
+export const isEthersProjectError = (
+  error: any
+): error is EthersProjectError => {
   return (
     typeof error === "object" &&
     error !== null &&
