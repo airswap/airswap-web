@@ -9,9 +9,9 @@ import {
   transformToAppError,
 } from "../errors/appError";
 import {
-  isEthSigUtilError,
-  transformEthSigUtilErrorToAppError,
-} from "../errors/ethSigUtilError";
+  ethersProjectError,
+  transformEthersProjectErrorToAppError,
+} from "../errors/ethersProjectError";
 import { isRpcError, transformRpcErrorToAppError } from "../errors/rpcError";
 
 const transformUnknownErrorToAppError = (error: any): AppError => {
@@ -19,8 +19,8 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
     return transformRpcErrorToAppError(error);
   }
 
-  if (isEthSigUtilError(error)) {
-    return transformEthSigUtilErrorToAppError(error);
+  if (ethersProjectError(error)) {
+    return transformEthersProjectErrorToAppError(error);
   }
 
   return transformToAppError(AppErrorType.unknownError, error);

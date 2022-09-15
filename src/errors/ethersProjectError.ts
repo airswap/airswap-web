@@ -1,14 +1,21 @@
 import { AppError, AppErrorType, transformToAppError } from "./appError";
 
-// Error from eth-sig-util I think. Not totally sure. Might rename this later
+// @ethersproject's logger throws errors like this:
 
-interface EthSigUtilError {
+// throwArgumentError(message: string, name: string, value: any): never {
+//   return this.throwError(message, Logger.errors.INVALID_ARGUMENT, {
+//     argument: name,
+//     value: value
+//   });
+// }
+
+interface EthersProjectError {
   argument: string;
   value: string;
   code: "INVALID_ARGUMENT";
 }
 
-export const isEthSigUtilError = (error: any): error is EthSigUtilError => {
+export const ethersProjectError = (error: any): error is EthersProjectError => {
   return (
     typeof error === "object" &&
     error !== null &&
@@ -18,8 +25,8 @@ export const isEthSigUtilError = (error: any): error is EthSigUtilError => {
   );
 };
 
-export const transformEthSigUtilErrorToAppError = (
-  error: EthSigUtilError
+export const transformEthersProjectErrorToAppError = (
+  error: EthersProjectError
 ): AppError => {
   if (error.argument === "address") {
     return transformToAppError(AppErrorType.invalidAddress, error.value);
