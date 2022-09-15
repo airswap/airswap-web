@@ -12,12 +12,12 @@ const OrderDetail: FC = () => {
   const dispatch = useAppDispatch();
   const { compressedOrder } = useParams<{ compressedOrder: string }>();
 
-  const { status } = useAppSelector(selectTakeOtcReducer);
+  const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   useEffect(() => {
     if (compressedOrder) {
       // Coltrane gets type/overload error without the <any>, not sure why.
-      dispatch<any>(decompressAndSetActiveOrder(compressedOrder));
+      dispatch(decompressAndSetActiveOrder(compressedOrder));
     }
   }, [dispatch, compressedOrder]);
 
@@ -35,7 +35,7 @@ const OrderDetail: FC = () => {
 
   return (
     <Page>
-      <OrderDetailWidget />
+      <OrderDetailWidget status={status} order={activeOrder!} />
     </Page>
   );
 };

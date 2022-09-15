@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { FullOrder } from "@airswap/typescript";
-import { getEtherscanURL, hashOrder } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
@@ -26,13 +25,11 @@ import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionB
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
-import useDecompressOrderFromURL from "./hooks/useDecompressOrderFromURL";
-import { useGetTxHash } from "./hooks/useGetTxHash";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 interface OrderDetailWidgetProps {
-  status: "open" | "taken" | "canceled";
+  status: "idle" | "not-found" | "open" | "taken" | "canceled";
   order: FullOrder;
 }
 
@@ -42,12 +39,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, account, error: web3Error } = useWeb3React<Web3Provider>();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const txHash = useGetTxHash(order);
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
   const hasInsufficientTokenBalance = useInsufficientBalance(
     signerToken,
-    order.signerAmount
+    ethers.utils.formatUnits(order.signerAmount, signerToken?.decimals!)
   );
 
   const orderStatus = () => {
@@ -56,7 +52,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
         return OrderStatus.taken;
       case "canceled":
         return OrderStatus.canceled;
-      case "open":
+      default:
         return OrderStatus.open;
     }
   };
@@ -70,7 +66,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
   const isIntendedRecipient =
     order.signerWallet === account ||
     order.signerWallet === nativeCurrencyAddress;
-  const transactionLink = getEtherscanURL(Number(order.chainId), txHash);
   const swapsDisabled =
     tokenInfoLoading || (!isMakerOfSwap && !isIntendedRecipient);
 
@@ -81,7 +76,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
   const baseAmount = useMemo(() => {
     const formattedAmount = tokenInfoLoading
       ? "0.00"
-      : ethers.utils.formatUnits(order.signerAmount, senderToken?.decimals!);
+      : ethers.utils.formatUnits(order.signerAmount, signerToken?.decimals!);
 
     return stringToSignificantDecimals(formattedAmount);
   }, [tokenInfoLoading]);
@@ -109,7 +104,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
     navigator.clipboard.writeText(window.location.toString());
   };
 
-  const handleSignButtonClick = (action: ButtonActions) => {
+  const handleSignButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.connectWallet:
         setShowWalletList(true);
@@ -131,7 +126,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
         orderStatus={orderStatus()}
         orderType={orderType}
         recipientAddress={order.signerWallet}
-        transactionLink={transactionLink}
         userAddress={account || undefined}
       />
       <SwapInputs
