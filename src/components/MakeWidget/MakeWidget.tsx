@@ -175,7 +175,7 @@ const MakeWidget: FC = () => {
           senderToken: takerTokenInfo?.address!,
           senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
           chainId: chainId!,
-          library: library,
+          library: library!,
         })
       );
     }

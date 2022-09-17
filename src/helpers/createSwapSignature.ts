@@ -1,7 +1,6 @@
 import { Signature, UnsignedOrder } from "@airswap/typescript";
 import { createSwapSignature as airswapCreateSwapSignature } from "@airswap/utils";
-
-import { ethers } from "ethers";
+import { JsonRpcSigner } from "@ethersproject/providers/src.ts/json-rpc-provider";
 
 import {
   AppError,
@@ -28,7 +27,7 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
 
 export const createSwapSignature = (
   unsignedOrder: UnsignedOrder,
-  signer: ethers.VoidSigner | string,
+  signer: JsonRpcSigner,
   swapContract: string,
   chainId: number
 ): Promise<Signature | AppError> => {

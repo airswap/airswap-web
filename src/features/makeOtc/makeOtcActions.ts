@@ -2,7 +2,10 @@
 import * as swapDeploys from "@airswap/swap/deploys.js";
 import { FullOrder, UnsignedOrder } from "@airswap/typescript";
 import { createOrder } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
+import { ethers } from "ethers";
 
 import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
@@ -14,18 +17,33 @@ export const createOtcOrder = createAsyncThunk(
   async (
     params: {
       chainId: number;
-      library: any;
+      library: Web3Provider;
     } & UnsignedOrder,
     { dispatch }
   ) => {
     dispatch(setStatus("signing"));
 
     try {
+      const signerWallet = ethers.utils.isAddress(params.signerWallet)
+        ? params.signerWallet
+        : await params.library.resolveName(params.signerWallet);
+
+      if (!signerWallet) {
+        dispatch(setStatus("failed"));
+        dispatch(
+          setError({
+            type: AppErrorType.invalidAddress,
+            argument: params.signerWallet,
+          })
+        );
+        return;
+      }
+
       const unsignedOrder = createOrder({
         expiry: params.expiry,
         nonce: Date.now().toString(),
         senderWallet: params.senderWallet,
-        signerWallet: params.signerWallet,
+        signerWallet: signerWallet,
         signerToken: params.signerToken,
         senderToken: params.senderToken,
         protocolFee: "7",
@@ -61,7 +79,7 @@ export const createOtcOrder = createAsyncThunk(
 
       dispatch(setUserOrder(fullOrder));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       dispatch(setStatus("failed"));
       dispatch(setError({ type: AppErrorType.unknownError }));
     }
