@@ -20,6 +20,9 @@ export const ErrorTextContainer = styled.div`
 
 export const StyledErrorIcon = styled(Icon)`
   margin-right: 1.125rem;
+
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const StyledSubText = styled(SubText)`

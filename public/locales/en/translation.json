@@ -173,7 +173,7 @@
     "nonce_already_used": "Nonce has been already used or cancelled",
     "unableSwap": "Unable to swap",
     "unpredictable_gas_limit": "The gas limit is unpredictable",
-    "swapFail": "The swap would fail for the following reasons.",
+    "swapFail": "The swap would fail for the following reasons:",
     "invalidAddress": "{{address}} is an invalid address",
     "invalidValue": "{{address}} is an invalid value",
     "unknownError": "Unknown error"
