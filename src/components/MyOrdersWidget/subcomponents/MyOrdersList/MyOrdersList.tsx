@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import { FullOrder } from "@airswap/typescript";
 
 import { OrdersSortType } from "../../../../features/myOrders/myOrdersSlice";
-import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
+import useWindowSize from "../../../../hooks/useWindowSize";
 import Order from "../Order/Order";
 import {
   Container,
   OrdersContainer,
   Shadow,
+  StyledMyOrdersListSortButtons,
   StyledTooltip,
 } from "./MyOrdersList.styles";
 
@@ -32,9 +33,11 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 }) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { width: windowWidth } = useWindowSize();
 
   const [activeDeleteButton, setActiveDeleteButton] = useState<number>();
   const [containerScrollTop, setContainerScrollTop] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
 
   const handleDeleteOrderButtonMouseEnter = (index: number) => {
     setActiveDeleteButton(index);
@@ -60,9 +63,14 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
     );
   }, [containerRef]);
 
+  useEffect(() => {
+    setContainerWidth(containerRef.current?.clientWidth || 0);
+  }, [containerRef, windowWidth]);
+
   return (
     <Container className={className}>
-      <MyOrdersListSortButtons
+      <StyledMyOrdersListSortButtons
+        width={containerWidth}
         activeSortType={activeSortType}
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={onSortButtonClick}
