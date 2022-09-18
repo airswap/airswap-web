@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { ErrorType } from "../../constants/errors";
+import { AppError } from "../../errors/appError";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import {
   Container,
@@ -8,27 +9,40 @@ import {
   LegendDivider,
   StyledScrollContainer,
 } from "./ErrorList.styles";
+import { getAppErrorTranslation } from "./helpers";
 import ErrorListItem from "./subcomponents/ErrorListItem/ErrorListItem";
 
 type ErrorListProps = {
-  errors: ErrorType[];
-  handleClick: () => void;
+  errors: AppError[];
+  onBackButtonClick: () => void;
 };
 
-export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
+export const ErrorList = ({
+  errors = [],
+  onBackButtonClick,
+}: ErrorListProps) => {
   const { t } = useTranslation();
+
+  const errorListItems = useMemo(
+    () => errors.map((error) => getAppErrorTranslation(error)),
+    [errors]
+  );
 
   return (
     <Container>
       <LegendDivider />
       <StyledScrollContainer>
         <StyledErrorList>
-          {errors.map((error) => {
-            return <ErrorListItem key={error} error={error} />;
-          })}
+          {errorListItems.map((error) => (
+            <ErrorListItem
+              key={error.title}
+              title={error.title}
+              text={error.text}
+            />
+          ))}
         </StyledErrorList>
       </StyledScrollContainer>
-      <OverlayActionButton onClick={handleClick}>
+      <OverlayActionButton onClick={onBackButtonClick}>
         {t("common.back")}
       </OverlayActionButton>
     </Container>

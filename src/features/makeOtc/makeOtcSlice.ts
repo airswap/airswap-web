@@ -2,19 +2,18 @@ import { FullOrder } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { ErrorType } from "../../constants/errors";
+import { AppError } from "../../errors/appError";
 
 export interface MakeOtcState {
   lastUserOrder?: FullOrder;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
   userOrders: FullOrder[];
-  errors: ErrorType[];
+  error?: AppError;
 }
 
 const initialState: MakeOtcState = {
   status: "idle",
   userOrders: [],
-  errors: [],
 };
 
 export const makeOtcSlice = createSlice({
@@ -43,10 +42,10 @@ export const makeOtcSlice = createSlice({
         lastUserOrder: undefined,
       };
     },
-    setErrors: (state, action: PayloadAction<ErrorType[]>): MakeOtcState => {
+    setError: (state, action: PayloadAction<AppError>): MakeOtcState => {
       return {
         ...state,
-        errors: action.payload,
+        error: action.payload,
       };
     },
     reset: (state): MakeOtcState => {
@@ -55,7 +54,7 @@ export const makeOtcSlice = createSlice({
   },
 });
 
-export const { setStatus, setUserOrder, clearLastUserOrder, setErrors, reset } =
+export const { setStatus, setUserOrder, clearLastUserOrder, setError, reset } =
   makeOtcSlice.actions;
 
 export const selectMakeOtcReducer = (state: RootState) => state.makeOtc;

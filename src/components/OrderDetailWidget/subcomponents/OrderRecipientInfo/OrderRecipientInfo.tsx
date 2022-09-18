@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import writeAddressToClipboard from "../../../../helpers/writeAddressToClipboard";
+import useEnsAddress from "../../../../hooks/useEnsAddress";
 import { OrderType } from "../../../../types/orderTypes";
 import {
   Button,
@@ -30,24 +31,28 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
   const [writeAddressToClipboardSuccess, setWriteAddressToClipboardSuccess] =
     useState(false);
 
+  const recipientEnsAddress = useEnsAddress(recipientAddress);
+  const readableAddress = recipientEnsAddress || recipientAddress;
+
   const handleClick = async () => {
-    if (recipientAddress === "address") {
+    if (readableAddress) {
       setWriteAddressToClipboardSuccess(
-        await writeAddressToClipboard(recipientAddress)
+        await writeAddressToClipboard(readableAddress)
       );
     }
   };
 
   if (
     recipientAddress &&
+    readableAddress &&
     recipientAddress !== userAddress &&
     orderType === OrderType.private
   ) {
     return (
       <Button onClick={handleClick} className={className}>
         <For>{`${t("common.for")}:`}</For>
-        {`${recipientAddress.substr(0, 3)}...${recipientAddress.substr(
-          recipientAddress.length - 3,
+        {`${readableAddress.substr(0, 3)}...${readableAddress.substr(
+          readableAddress.length - 3,
           3
         )}`}
         <StyledCopyIcon

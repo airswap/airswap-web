@@ -1,31 +1,49 @@
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
 import { FullOrder, UnsignedOrder } from "@airswap/typescript";
-import { createOrder, createSwapSignature } from "@airswap/utils";
+import { createOrder } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import i18n from "i18next";
+import { ethers } from "ethers";
 
-import { notifyError } from "../../components/Toasts/ToastController";
-import { setErrors, setStatus, setUserOrder } from "./makeOtcSlice";
+import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
+import { AppErrorType, isAppError } from "../../errors/appError";
+import { createSwapSignature } from "../../helpers/createSwapSignature";
+import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
 export const createOtcOrder = createAsyncThunk(
   "make-otc/createOtcOrder",
   async (
     params: {
       chainId: number;
-      library: any;
+      library: Web3Provider;
     } & UnsignedOrder,
     { dispatch }
   ) => {
     dispatch(setStatus("signing"));
 
     try {
+      const signerWallet = ethers.utils.isAddress(params.signerWallet)
+        ? params.signerWallet
+        : await params.library.resolveName(params.signerWallet);
+
+      if (!signerWallet) {
+        dispatch(setStatus("failed"));
+        dispatch(
+          setError({
+            type: AppErrorType.invalidAddress,
+            argument: params.signerWallet,
+          })
+        );
+        return;
+      }
+
       const unsignedOrder = createOrder({
         expiry: params.expiry,
         nonce: Date.now().toString(),
         senderWallet: params.senderWallet,
-        signerWallet: params.signerWallet,
+        signerWallet: signerWallet,
         signerToken: params.signerToken,
         senderToken: params.senderToken,
         protocolFee: "7",
@@ -41,6 +59,17 @@ export const createOtcOrder = createAsyncThunk(
         params.chainId
       );
 
+      if (isAppError(signature)) {
+        if (signature.type === AppErrorType.rejectedByUser) {
+          dispatch(setStatus("idle"));
+          notifyRejectedByUserError();
+        } else {
+          dispatch(setStatus("failed"));
+          dispatch(setError(signature));
+        }
+        return;
+      }
+
       const fullOrder: FullOrder = {
         ...unsignedOrder,
         ...signature,
@@ -49,17 +78,10 @@ export const createOtcOrder = createAsyncThunk(
       };
 
       dispatch(setUserOrder(fullOrder));
-    } catch (e: any) {
+    } catch (error) {
+      console.error(error);
       dispatch(setStatus("failed"));
-
-      if (e.code !== 4001) {
-        dispatch(setErrors(["invalidInput"]));
-      } else {
-        notifyError({
-          heading: i18n.t("orders.swapFailed"),
-          cta: i18n.t("orders.swapRejectedByUser"),
-        });
-      }
+      dispatch(setError({ type: AppErrorType.unknownError }));
     }
   }
 );
