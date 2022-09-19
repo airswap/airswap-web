@@ -23,3 +23,5 @@ export const ButtonsWrapper = styled.div`
 export const StyledLargePillButton = styled(LargePillButton)`
   margin: 0 0.5rem;
 `;
+
+export const InfoText = styled.div``;

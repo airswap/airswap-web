@@ -12,8 +12,10 @@ import { BigNumber } from "bignumber.js";
 import compareAsc from "date-fns/compareAsc";
 import { ethers } from "ethers";
 
+import { useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -25,28 +27,40 @@ import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionB
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
+import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 interface OrderDetailWidgetProps {
-  status: "idle" | "not-found" | "open" | "taken" | "canceled";
   order: FullOrder;
 }
 
-const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
+const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const history = useHistory();
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, account, error: web3Error } = useWeb3React<Web3Provider>();
+  const { status } = useAppSelector(selectTakeOtcReducer);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const senderToken = useTokenInfo(order.senderToken);
   const signerToken = useTokenInfo(order.signerToken);
+  const senderAmount = useFormattedTokenAmount(
+    order.senderAmount,
+    senderToken?.decimals
+  );
+  const signerAmount = useFormattedTokenAmount(
+    order.signerAmount,
+    signerToken?.decimals
+  );
+  const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
+    signerAmount!
+  );
   const hasInsufficientTokenBalance = useInsufficientBalance(
     signerToken,
-    ethers.utils.formatUnits(order.signerAmount, signerToken?.decimals!)
+    signerAmount!
   );
 
-  const orderStatus = () => {
+  const getOrderStatus = () => {
     switch (status) {
       case "taken":
         return OrderStatus.taken;
@@ -62,29 +76,20 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
       ? OrderType.publicUnlisted
       : OrderType.private;
   const tokenInfoLoading = !senderToken || !signerToken;
-  const isMakerOfSwap = order.senderWallet === account;
-  const isIntendedRecipient =
+  const userIsMakerOfSwap = order.senderWallet === account;
+  const userIsIntendedRecipient =
     order.signerWallet === account ||
     order.signerWallet === nativeCurrencyAddress;
-  const swapsDisabled =
-    tokenInfoLoading || (!isMakerOfSwap && !isIntendedRecipient);
-
-  const rate = useMemo(() => {
-    return new BigNumber(order.senderAmount).dividedBy(order.signerAmount);
-  }, [order]);
+  const swapsDisabled = tokenInfoLoading || !active;
 
   const baseAmount = useMemo(() => {
-    const formattedAmount = tokenInfoLoading
-      ? "0.00"
-      : ethers.utils.formatUnits(order.signerAmount, signerToken?.decimals!);
+    const formattedAmount = tokenInfoLoading ? "0.00" : signerAmount!;
 
     return stringToSignificantDecimals(formattedAmount);
   }, [tokenInfoLoading]);
 
   const quoteAmount = useMemo(() => {
-    const formattedAmount = tokenInfoLoading
-      ? "0.00"
-      : ethers.utils.formatUnits(order.senderAmount, senderToken?.decimals!);
+    const formattedAmount = tokenInfoLoading ? "0.00" : senderAmount!;
 
     return stringToSignificantDecimals(formattedAmount);
   }, [tokenInfoLoading]);
@@ -95,7 +100,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
 
   // button handlers
   const handleBackButtonClick = () => {
-    history.goBack();
+    if (orderType === OrderType.private) {
+      !userIsIntendedRecipient
+        ? history.push({ pathname: `/make` })
+        : history.push({ pathname: `/` });
+    } else {
+      history.goBack();
+    }
   };
 
   const handleCancelButtonClick = () => {};
@@ -114,7 +125,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
         switchToEthereumChain();
         break;
 
+      case ButtonActions.restart:
+        history.push({ pathname: `/make` });
+        break;
+
       case ButtonActions.sign:
+        break;
+
+      default:
         break;
     }
   };
@@ -123,7 +141,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={orderStatus()}
+        orderStatus={getOrderStatus()}
         orderType={orderType}
         recipientAddress={order.signerWallet}
         userAddress={account || undefined}
@@ -134,7 +152,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
         baseAmount={baseAmount}
         baseTokenInfo={signerToken}
         maxAmount={null}
-        side={isMakerOfSwap ? "sell" : "buy"}
+        side={userIsMakerOfSwap ? "sell" : "buy"}
         quoteAmount={quoteAmount}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
@@ -143,19 +161,22 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ status, order }) => {
       />
       {!tokenInfoLoading && (
         <StyledInfoButtons
-          ownerIsCurrentUser={active}
+          ownerIsCurrentUser={userIsMakerOfSwap}
+          isIntendedRecipient={userIsIntendedRecipient}
+          isExpired={compareAsc(new Date(), parsedExpiry) === 1}
           onFeeButtonClick={toggleShowFeeInfo}
           onCopyButtonClick={handleCopyButtonClick}
           token1={signerToken?.symbol!}
           token2={senderToken?.symbol!}
-          rate={rate}
+          rate={tokenExchangeRate}
         />
       )}
       <ActionButtons
         isExpired={compareAsc(new Date(), parsedExpiry) === 1}
-        isMakerOfSwap={isMakerOfSwap}
-        isIntendedRecipient={isIntendedRecipient}
+        isMakerOfSwap={userIsMakerOfSwap}
+        isIntendedRecipient={userIsIntendedRecipient}
         hasInsufficientBalance={hasInsufficientTokenBalance}
+        orderType={orderType}
         isNotConnected={!active}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError

@@ -1,8 +1,6 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
-
 import { BigNumber } from "bignumber.js";
 
 import Icon from "../../../Icon/Icon";
@@ -10,11 +8,14 @@ import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField
 import {
   ButtonsWrapper,
   Container,
+  InfoText,
   StyledLargePillButton,
 } from "./InfoButtons.styles";
 
 type InfoButtonsProps = {
   ownerIsCurrentUser?: boolean;
+  isIntendedRecipient: boolean;
+  isExpired: boolean;
   onFeeButtonClick: () => void;
   onCopyButtonClick: () => void;
   token1: string;
@@ -25,6 +26,8 @@ type InfoButtonsProps = {
 
 const InfoButtons: FC<InfoButtonsProps> = ({
   ownerIsCurrentUser,
+  isIntendedRecipient,
+  isExpired,
   onFeeButtonClick,
   onCopyButtonClick,
   className,
@@ -49,6 +52,13 @@ const InfoButtons: FC<InfoButtonsProps> = ({
             {t("orders.copyLink")}
             <Icon name="copy2" />
           </StyledLargePillButton>
+        )}
+        {!isIntendedRecipient && !ownerIsCurrentUser && (
+          <InfoText>
+            {isExpired
+              ? t("orders.unintendedInactive")
+              : t("orders.unintendedActive")}
+          </InfoText>
         )}
       </ButtonsWrapper>
     </Container>

@@ -35,7 +35,7 @@ const OrderDetail: FC = () => {
 
   return (
     <Page>
-      <OrderDetailWidget status={status} order={activeOrder!} />
+      <OrderDetailWidget order={activeOrder!} />
     </Page>
   );
 };

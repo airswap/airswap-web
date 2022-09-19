@@ -655,7 +655,7 @@ const SwapWidget: FC = () => {
           quoteTokenInfo!,
           // @ts-ignore
           library!,
-          chainId
+          chainId!
         );
         await requestQuotes();
 
