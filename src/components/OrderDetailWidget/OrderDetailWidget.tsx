@@ -10,11 +10,11 @@ import { UnsupportedChainIdError } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 import compareAsc from "date-fns/compareAsc";
-import { ethers } from "ethers";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
@@ -38,8 +38,15 @@ interface OrderDetailWidgetProps {
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const { setShowWalletList } = useContext(InterfaceContext);
-  const { active, account, error: web3Error } = useWeb3React<Web3Provider>();
+  const {
+    active,
+    account,
+    chainId,
+    library,
+    error: web3Error,
+  } = useWeb3React<Web3Provider>();
   const { status } = useAppSelector(selectTakeOtcReducer);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const senderToken = useTokenInfo(order.senderToken);
@@ -76,10 +83,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       ? OrderType.publicUnlisted
       : OrderType.private;
   const tokenInfoLoading = !senderToken || !signerToken;
-  const userIsMakerOfSwap = order.senderWallet === account;
+  const userIsMakerOfSwap = order.signerWallet === account;
   const userIsIntendedRecipient =
-    order.signerWallet === account ||
-    order.signerWallet === nativeCurrencyAddress;
+    order.senderWallet === account ||
+    order.senderWallet === nativeCurrencyAddress;
   const swapsDisabled = tokenInfoLoading || !active;
 
   const baseAmount = useMemo(() => {
@@ -130,6 +137,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         break;
 
       case ButtonActions.sign:
+        dispatch(
+          takeOtcOrder({
+            order,
+            chainId: chainId!,
+            library: library!,
+          })
+        );
         break;
 
       default:
@@ -143,7 +157,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         expiry={parsedExpiry}
         orderStatus={getOrderStatus()}
         orderType={orderType}
-        recipientAddress={order.signerWallet}
+        recipientAddress={order.senderWallet}
         userAddress={account || undefined}
       />
       <SwapInputs

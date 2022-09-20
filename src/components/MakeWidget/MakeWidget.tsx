@@ -165,14 +165,14 @@ const MakeWidget: FC = () => {
         createOtcOrder({
           nonce: expiryDate.toString(),
           expiry: Math.floor(expiryDate / 1000).toString(),
-          signerWallet:
-            orderType === OrderType.private
-              ? takerAddress
-              : nativeCurrencyAddress,
+          signerWallet: account!,
           signerToken: makerTokenInfo?.address!,
-          signerAmount: toAtomicString(makerAmount, takerTokenInfo?.decimals!),
+          signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
           protocolFee: "7",
-          senderWallet: account!,
+          senderWallet:
+            orderType === OrderType.private
+              ? takerAddress!
+              : nativeCurrencyAddress,
           senderToken: takerTokenInfo?.address!,
           senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
           chainId: chainId!,
