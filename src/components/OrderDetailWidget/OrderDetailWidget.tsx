@@ -20,13 +20,13 @@ import stringToSignificantDecimals from "../../helpers/stringToSignificantDecima
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useTokenInfo from "../../hooks/useTokenInfo";
-import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionButtons";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
+import { getOrderStatus } from "./helpers/index";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
@@ -63,23 +63,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     signerAmount!
   );
   const hasInsufficientTokenBalance = useInsufficientBalance(
-    signerToken,
-    signerAmount!
+    senderToken,
+    senderAmount!
   );
 
-  const getOrderStatus = () => {
-    switch (status) {
-      case "taken":
-        return OrderStatus.taken;
-      case "canceled":
-        return OrderStatus.canceled;
-      default:
-        return OrderStatus.open;
-    }
-  };
-
   const orderType =
-    order.signerWallet === nativeCurrencyAddress
+    order.senderWallet === nativeCurrencyAddress
       ? OrderType.publicUnlisted
       : OrderType.private;
   const tokenInfoLoading = !senderToken || !signerToken;
@@ -122,6 +111,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     navigator.clipboard.writeText(window.location.toString());
   };
 
+  console.log(library);
+
   const handleSignButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.connectWallet:
@@ -137,10 +128,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         break;
 
       case ButtonActions.sign:
-        dispatch(
+        await dispatch(
           takeOtcOrder({
-            order,
             chainId: chainId!,
+            order: order,
             library: library!,
           })
         );
@@ -155,7 +146,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={getOrderStatus()}
+        orderStatus={getOrderStatus(status)}
         orderType={orderType}
         recipientAddress={order.senderWallet}
         userAddress={account || undefined}
