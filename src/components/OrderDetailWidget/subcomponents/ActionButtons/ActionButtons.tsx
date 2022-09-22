@@ -33,16 +33,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
   const buttonDisabled =
-    (hasInsufficientBalance || (!isNotConnected && !isIntendedRecipient)) &&
+    ((hasInsufficientBalance && !isExpired) ||
+      (!isNotConnected && !isIntendedRecipient && !isExpired)) &&
     !isMakerOfSwap;
-
-  const backButtonText = () => {
-    if (isPrivate) {
-      return !isIntendedRecipient ? t("orders.newSwap") : t("common.close");
-    }
-
-    return t("common.back");
-  };
 
   const signButtonText = () => {
     if (networkIsUnsupported) {
@@ -95,7 +88,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   return (
     <Container>
       {!isNotConnected && ((isPrivate && !isExpired) || !isPrivate) && (
-        <BackButton onClick={onBackButtonClick}>{backButtonText()}</BackButton>
+        <BackButton onClick={onBackButtonClick}>
+          {isPrivate && !isIntendedRecipient
+            ? t("orders.newSwap")
+            : t("common.back")}
+        </BackButton>
       )}
       <SignButton
         intent={buttonDisabled ? "neutral" : "primary"}

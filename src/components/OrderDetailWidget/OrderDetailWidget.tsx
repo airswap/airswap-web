@@ -111,8 +111,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     navigator.clipboard.writeText(window.location.toString());
   };
 
-  console.log(library);
-
   const handleSignButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.connectWallet:

@@ -56,8 +56,8 @@ const InfoButtons: FC<InfoButtonsProps> = ({
         {!isIntendedRecipient && !ownerIsCurrentUser && (
           <InfoText>
             {isExpired
-              ? t("orders.unintendedInactive")
-              : t("orders.unintendedActive")}
+              ? t("orders.thisSwapWasNotForTheConnectedWallet")
+              : t("orders.thisSwapIsNotForTheConnectedWallet")}
           </InfoText>
         )}
       </ButtonsWrapper>
