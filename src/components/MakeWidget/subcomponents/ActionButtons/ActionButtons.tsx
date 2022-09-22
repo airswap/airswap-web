@@ -57,7 +57,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasMissingTakerToken ||
       takerAddressIsInvalid ||
       userIsSigning) &&
-    (!walletIsNotConnected || !networkIsUnsupported);
+    !walletIsNotConnected &&
+    !networkIsUnsupported;
 
   const buttonText = getActionButtonTranslation(
     hasInsufficientExpiry,
