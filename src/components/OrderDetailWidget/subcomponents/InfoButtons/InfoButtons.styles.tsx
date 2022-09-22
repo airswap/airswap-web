@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
 
 import { LargePillButton } from "../../../../styled-components/Pill/Pill";
-import { ThemeButton } from "../../../SettingsPopover/SettingsPopover.styles";
 
 export const Container = styled.div`
   display: flex;
