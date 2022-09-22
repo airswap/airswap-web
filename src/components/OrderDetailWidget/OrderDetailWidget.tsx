@@ -82,13 +82,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     const formattedAmount = tokenInfoLoading ? "0.00" : signerAmount!;
 
     return stringToSignificantDecimals(formattedAmount);
-  }, [tokenInfoLoading]);
+  }, [tokenInfoLoading, signerAmount]);
 
   const quoteAmount = useMemo(() => {
     const formattedAmount = tokenInfoLoading ? "0.00" : senderAmount!;
 
     return stringToSignificantDecimals(formattedAmount);
-  }, [tokenInfoLoading]);
+  }, [tokenInfoLoading, senderAmount]);
 
   const parsedExpiry = useMemo(() => {
     return new Date(Number(order.expiry) * 1000);

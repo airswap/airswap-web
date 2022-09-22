@@ -98,7 +98,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         intent={buttonDisabled ? "neutral" : "primary"}
         onClick={handleActionButtonClick}
         disabled={buttonDisabled}
-        fill={isNotConnected || (isPrivate && isExpired)}
+        $fill={isNotConnected || (isPrivate && isExpired)}
       >
         {signButtonText()}
       </SignButton>
