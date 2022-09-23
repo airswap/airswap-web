@@ -16,12 +16,11 @@ const OrderDetail: FC = () => {
 
   useEffect(() => {
     if (compressedOrder) {
-      // Coltrane gets type/overload error without the <any>, not sure why.
       dispatch(decompressAndSetActiveOrder(compressedOrder));
     }
   }, [dispatch, compressedOrder]);
 
-  if (status === "idle") {
+  if (status === "idle" || !activeOrder) {
     return <Page />;
   }
 
@@ -35,7 +34,7 @@ const OrderDetail: FC = () => {
 
   return (
     <Page>
-      <OrderDetailWidget order={activeOrder!} />
+      <OrderDetailWidget order={activeOrder} />
     </Page>
   );
 };

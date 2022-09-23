@@ -64,7 +64,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   }, [containerRef]);
 
   useEffect(() => {
-    setContainerWidth(containerRef.current?.clientWidth || 0);
+    setContainerWidth(containerRef.current?.scrollWidth || 0);
   }, [containerRef, windowWidth]);
 
   return (

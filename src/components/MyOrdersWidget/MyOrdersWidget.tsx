@@ -82,12 +82,15 @@ const MyOrdersWidget: FC = () => {
         </>
       )}
 
-      <InfoSectionContainer>
-        <InfoSection
-          userHasNoOrders={!sortedUserOrders.length}
-          walletIsNotConnected={!active}
-        />
-      </InfoSectionContainer>
+      {!sortedUserOrders.length && (
+        <InfoSectionContainer>
+          <InfoSection
+            userHasNoOrders={!sortedUserOrders.length}
+            walletIsNotConnected={!active}
+          />
+        </InfoSectionContainer>
+      )}
+
       <ActionButtons
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError

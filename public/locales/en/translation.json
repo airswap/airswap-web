@@ -160,7 +160,7 @@
     "unableTake": "Unable to take",
     "cancelSwap": "Cancel swap",
     "thisSwapIsNotForTheConnectedWallet": "This swap is not for the connected wallet",
-    "thisSwapWasNotForTheConnectedWallet": "This swap was not for the connected wallet"
+    "thisSwapWasNotForTheConnectedWallet": "This swap was not for the connected wallet",
     "removeFromList": "Remove from list",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
     "startByCreatingANewOrder": "Start by creating a new swap"
