@@ -13,6 +13,6 @@ export const BackButton = styled(Button)`
   width: calc(50% - 0.5rem);
 `;
 
-export const SignButton = styled(Button)`
-  width: calc(50% - 0.5rem);
+export const SignButton = styled(Button)<{ $fill: boolean }>`
+  ${({ $fill }) => ($fill ? `` : `width: calc(50% - 0.5rem);`)};
 `;

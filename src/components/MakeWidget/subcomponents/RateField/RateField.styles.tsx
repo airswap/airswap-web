@@ -29,7 +29,6 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.75rem;
-
   ${({ isButton, theme }) =>
     isButton
       ? LargePillButtonStyle
@@ -53,4 +52,6 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
         font-weight: 500;
       }
     `};
+
+  margin: ${({ isButton }) => (isButton ? "0 0.5rem" : "0")};
 `;

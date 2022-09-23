@@ -12,7 +12,7 @@ const OrderDetail: FC = () => {
   const dispatch = useAppDispatch();
   const { compressedOrder } = useParams<{ compressedOrder: string }>();
 
-  const { status } = useAppSelector(selectTakeOtcReducer);
+  const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   useEffect(() => {
     if (compressedOrder) {
@@ -35,7 +35,7 @@ const OrderDetail: FC = () => {
 
   return (
     <Page>
-      <OrderDetailWidget />
+      <OrderDetailWidget order={activeOrder!} />
     </Page>
   );
 };

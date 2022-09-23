@@ -62,7 +62,8 @@
     "you": "You",
     "canceled": "Canceled",
     "taken": "Taken",
-    "fee": "Fee"
+    "fee": "Fee",
+    "close": "close"
   },
   "information": {
     "join.title": "Join AirSwap",
@@ -152,7 +153,12 @@
     "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS",
     "copyLink": "Copy link",
     "expiryShouldBeMoreThan0": "Expiry should be more than 0",
-    "enterValidTakerAddress": "Enter valid taker address"
+    "enterValidTakerAddress": "Enter valid taker address",
+    "takeOtc": "Take Swap",
+    "unableTake": "Unable to take",
+    "cancelSwap": "Cancel swap",
+    "thisSwapIsNotForTheConnectedWallet": "This swap is not for the connected wallet",
+    "thisSwapWasNotForTheConnectedWallet": "This swap was not for the connected wallet"
   },
   "toast": {
     "swapComplete": "Swap Complete",
