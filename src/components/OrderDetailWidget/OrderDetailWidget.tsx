@@ -146,6 +146,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={userIsMakerOfSwap ? "sell" : "buy"}
+        tradeNotAllowed={walletChainIdIsDifferentThanOrderChainId}
         quoteAmount={senderAmount || "0.00"}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
