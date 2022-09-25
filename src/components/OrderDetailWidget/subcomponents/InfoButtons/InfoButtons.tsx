@@ -14,10 +14,12 @@ import {
 } from "./InfoButtons.styles";
 
 type InfoButtonsProps = {
+  isDifferentChainId: boolean;
   isExpired: boolean;
-  isMakerOfSwap: boolean;
   isIntendedRecipient: boolean;
+  isMakerOfSwap: boolean;
   isNotConnected: boolean;
+  orderChainId: number;
   token1?: string;
   token2?: string;
   rate: BigNumber;
@@ -27,27 +29,38 @@ type InfoButtonsProps = {
 };
 
 const InfoButtons: FC<InfoButtonsProps> = ({
-  isMakerOfSwap,
-  isIntendedRecipient,
+  isDifferentChainId,
   isExpired,
+  isIntendedRecipient,
+  isMakerOfSwap,
   isNotConnected,
-  onFeeButtonClick,
-  onCopyButtonClick,
-  className,
+  orderChainId,
   token1,
   token2,
   rate,
+  onFeeButtonClick,
+  onCopyButtonClick,
+  className,
 }) => {
   const { t } = useTranslation();
 
   const warningText = useMemo(() => {
     return getFullOrderWarningTranslation(
+      isDifferentChainId,
       isExpired,
-      isMakerOfSwap,
       isIntendedRecipient,
-      isNotConnected
+      isMakerOfSwap,
+      isNotConnected,
+      orderChainId
     );
-  }, [isExpired, isMakerOfSwap, isIntendedRecipient, isNotConnected]);
+  }, [
+    isDifferentChainId,
+    isExpired,
+    isIntendedRecipient,
+    isMakerOfSwap,
+    isNotConnected,
+    orderChainId,
+  ]);
 
   return (
     <Container className={className}>
