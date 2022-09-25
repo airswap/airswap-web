@@ -11,6 +11,6 @@ export default function findEthOrTokenByAddress(
   chainId: number
 ) {
   return tokenAddress === nativeCurrencyAddress
-    ? nativeCurrency[chainId!]
+    ? nativeCurrency[chainId]
     : findTokenByAddress(tokenAddress, activeTokens);
 }

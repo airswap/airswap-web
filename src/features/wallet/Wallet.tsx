@@ -198,7 +198,7 @@ export const Wallet: FC<WalletPropsType> = ({
       saveLastAccount(account, provider);
 
       Promise.all([
-        dispatch(fetchAllTokens()),
+        dispatch(fetchAllTokens(chainId)),
         dispatch(
           fetchSupportedTokens({
             provider: library,
