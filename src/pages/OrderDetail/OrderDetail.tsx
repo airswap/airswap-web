@@ -19,7 +19,6 @@ const OrderDetail: FC = () => {
 
   const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
-  const tokens = useAppSelector(selectAllTokenInfo);
 
   useEffect(() => {
     if (compressedOrder) {
@@ -28,7 +27,7 @@ const OrderDetail: FC = () => {
   }, [dispatch, compressedOrder]);
 
   useEffect(() => {
-    if (activeOrder && !tokens.length && !isFetchingAllTokens) {
+    if (activeOrder && !isFetchingAllTokens) {
       dispatch(fetchAllTokens(parseInt(activeOrder.chainId)));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

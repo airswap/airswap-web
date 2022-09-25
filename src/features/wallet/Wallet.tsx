@@ -45,6 +45,7 @@ import {
   fetchUnkownTokens,
   selectActiveTokens,
   selectAllTokenInfo,
+  selectMetaDataReducer,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
@@ -84,6 +85,7 @@ export const Wallet: FC<WalletPropsType> = ({
   const { providerName } = useAppSelector(selectWallet);
   const transactions = useAppSelector(selectTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
+  const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
   const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Interface context
@@ -196,9 +198,10 @@ export const Wallet: FC<WalletPropsType> = ({
         })
       );
       saveLastAccount(account, provider);
-
       Promise.all([
-        dispatch(fetchAllTokens(chainId)),
+        ...(!isFetchingAllTokens
+          ? [dispatch(fetchAllTokens(chainId) as any)]
+          : []),
         dispatch(
           fetchSupportedTokens({
             provider: library,
