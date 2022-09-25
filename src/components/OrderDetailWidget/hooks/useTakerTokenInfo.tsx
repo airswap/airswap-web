@@ -7,6 +7,9 @@ import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 
+// OTC Taker version of useTokenInfo. Look at chainId of the active FullOrder instead
+// of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
+
 const useTakerTokenInfo = (token: string | null): TokenInfo | null => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
