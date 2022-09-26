@@ -21,6 +21,7 @@ import {
 } from "./metadataApi";
 
 export interface MetadataState {
+  isFetchingAllTokens: boolean;
   tokens: {
     all: {
       [address: string]: TokenInfo;
@@ -30,6 +31,7 @@ export interface MetadataState {
 }
 
 const initialState: MetadataState = {
+  isFetchingAllTokens: false,
   tokens: {
     all: {},
     active: [],
@@ -38,16 +40,14 @@ const initialState: MetadataState = {
 
 export const fetchAllTokens = createAsyncThunk<
   TokenInfo[], // Return type
-  void, // First argument
+  number, // First argument
   {
     // thunkApi
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/fetchTokens", async (_, thunkApi) => {
-  const { wallet } = thunkApi.getState();
-  if (!wallet.connected) return [];
-  return (await fetchTokens(wallet.chainId!)).tokens;
+>("metadata/fetchTokens", async (chainId, thunkApi) => {
+  return (await fetchTokens(chainId)).tokens;
 });
 
 export const fetchUnkownTokens = createAsyncThunk<
@@ -93,11 +93,14 @@ export const metadataSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllTokens.pending, (state) => {
-        // TODO: consider whether we need to put a pending state to prevent dupes
+        return {
+          ...state,
+          isFetchingAllTokens: true,
+        };
       })
       .addCase(fetchAllTokens.fulfilled, (state, action) => {
         const { payload: tokenInfo } = action;
-        state.tokens.all = tokenInfo.reduce(
+        const all = tokenInfo.reduce(
           (allTokens: { [address: string]: TokenInfo }, token) => {
             const { address } = token;
             if (!allTokens[address]) {
@@ -107,10 +110,25 @@ export const metadataSlice = createSlice({
           },
           {}
         );
+
+        const tokens = {
+          ...state.tokens,
+          all,
+        };
+
+        return {
+          ...state,
+          isFetchingAllTokens: false,
+          tokens,
+        };
       })
       .addCase(fetchAllTokens.rejected, (state) => {
         // TODO: handle failure?
         // perhaps rejected state can be for when errors.length === known.length ?
+        return {
+          ...state,
+          isFetchingAllTokens: false,
+        };
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
         if (!state.tokens.active?.length)
@@ -146,5 +164,6 @@ export const selectActiveTokens = createSelector(
     );
   }
 );
+export const selectMetaDataReducer = (state: RootState) => state.metadata;
 
 export default metadataSlice.reducer;

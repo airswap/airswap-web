@@ -33,9 +33,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
   const buttonDisabled =
-    ((hasInsufficientBalance && !isExpired) ||
-      (!isNotConnected && !isIntendedRecipient && !isExpired)) &&
-    !isMakerOfSwap;
+    (hasInsufficientBalance || !isIntendedRecipient) &&
+    !isExpired &&
+    !isMakerOfSwap &&
+    !isNotConnected;
 
   const signButtonText = () => {
     if (networkIsUnsupported) {
