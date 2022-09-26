@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import MyOrdersWidget from "../../components/MyOrdersWidget/MyOrdersWidget";
 import { StyledPage } from "./MyOrders.styles";
 
-const MySwapsPage: FC = () => {
+const MyOrdersPage: FC = () => {
   return (
     <StyledPage>
       <MyOrdersWidget />
@@ -11,4 +11,4 @@ const MySwapsPage: FC = () => {
   );
 };
 
-export default MySwapsPage;
+export default MyOrdersPage;

@@ -28,6 +28,11 @@ export const OrdersContainer = styled.div`
   overflow-x: visible;
 `;
 
+const darkShadow =
+  "linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%)";
+const lightShadow =
+  "linear-gradient(0deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%)";
+
 export const Shadow = styled.div`
   position: absolute;
   bottom: 0;
@@ -35,11 +40,8 @@ export const Shadow = styled.div`
   width: 100%;
   height: 3rem;
   z-index: 2;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.75) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: ${({ theme }) =>
+    theme.name === "dark" ? darkShadow : lightShadow};
   pointer-events: none;
 `;
 

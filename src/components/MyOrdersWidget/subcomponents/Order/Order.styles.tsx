@@ -66,6 +66,8 @@ export const Text = styled.div`
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
   z-index: 2;
   pointer-events: none;
@@ -83,13 +85,15 @@ export const ActionButton = styled(IconButton)`
   border-radius: 50%;
   width: 1.5rem;
   height: 1.5rem;
-  color: ${({ theme }) => theme.colors.lightGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   z-index: 2;
 
   &:hover,
   &:focus,
   &:active {
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   }
 `;
 

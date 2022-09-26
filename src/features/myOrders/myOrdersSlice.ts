@@ -48,7 +48,7 @@ export const myOrdersSlice = createSlice({
       );
       writeUserOrdersToLocalStorage(
         userOrders,
-        action.payload.senderWallet,
+        action.payload.signerWallet,
         action.payload.chainId
       );
 
@@ -100,8 +100,8 @@ export const myOrdersSlice = createSlice({
 
     builder.addCase(setUserOrder, (state, action) => {
       const userOrders = [action.payload, ...state.userOrders];
-      const { senderWallet, chainId } = action.payload;
-      writeUserOrdersToLocalStorage(userOrders, senderWallet, chainId);
+      const { signerWallet, chainId } = action.payload;
+      writeUserOrdersToLocalStorage(userOrders, signerWallet, chainId);
 
       return {
         ...state,

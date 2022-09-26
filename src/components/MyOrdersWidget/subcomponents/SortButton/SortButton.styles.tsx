@@ -32,6 +32,8 @@ export const Button = styled.button<{
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
   &:not(&:focus) {
     border-color: transparent;
