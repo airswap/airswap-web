@@ -2,7 +2,6 @@ import { chainNames } from "@airswap/constants";
 
 import i18n from "i18next";
 
-import nativeCurrency from "../../../constants/nativeCurrency";
 import { OrderStatus } from "../../../types/orderStatus";
 
 export const getOrderStatus = (
