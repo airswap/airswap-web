@@ -1,4 +1,5 @@
 import { Swap } from "@airswap/libraries";
+import { fetchTokens } from "@airswap/metadata";
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys";
 import { FullOrder } from "@airswap/typescript";
@@ -8,6 +9,7 @@ import {
   isValidFullOrder,
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { TokenInfo } from "@uniswap/token-lists";
 
 import { ethers } from "ethers";
 
@@ -15,15 +17,22 @@ import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
-  async (compressedOrder: string, { dispatch }) => {
+  async (
+    params: { compressedOrder: string; tokens: TokenInfo[] },
+    { dispatch }
+  ) => {
     dispatch(reset());
 
     try {
-      const order = decompressFullOrder(compressedOrder);
+      const order = decompressFullOrder(params.compressedOrder);
 
       if (!isValidFullOrder(order)) {
         return dispatch(setStatus("not-found"));
       }
+
+      const data = await fetchTokens(parseInt(order.chainId));
+      console.log(order);
+      console.log(data);
 
       dispatch(setActiveOrder(order));
       dispatch(setStatus("open"));

@@ -136,7 +136,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               onChange={onAmountChange}
               placeholder="0.00"
             />
-            <TokenSelectFocusBorder position="right" />
+            {!readOnly && <TokenSelectFocusBorder position="right" />}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>

@@ -7,13 +7,11 @@ import { AppError } from "../../errors/appError";
 export interface MakeOtcState {
   lastUserOrder?: FullOrder;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
-  userOrders: FullOrder[];
   error?: AppError;
 }
 
 const initialState: MakeOtcState = {
   status: "idle",
-  userOrders: [],
 };
 
 export const makeOtcSlice = createSlice({
@@ -33,7 +31,6 @@ export const makeOtcSlice = createSlice({
       return {
         ...state,
         lastUserOrder: action.payload,
-        userOrders: [...state.userOrders, action.payload],
       };
     },
     clearLastUserOrder: (state): MakeOtcState => {
@@ -48,7 +45,7 @@ export const makeOtcSlice = createSlice({
         error: action.payload,
       };
     },
-    reset: (state): MakeOtcState => {
+    reset: (): MakeOtcState => {
       return initialState;
     },
   },

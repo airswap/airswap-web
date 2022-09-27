@@ -8,6 +8,7 @@ import gasCostReducer from "../features/gasCost/gasCostSlice";
 import makeOtcReducer from "../features/makeOtc/makeOtcSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
+import myOrdersReducer from "../features/myOrders/myOrdersSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import pricingReducer from "../features/pricing/pricingSlice";
 import registryReducer from "../features/registry/registrySlice";
@@ -31,6 +32,7 @@ export const store = configureStore({
     registry: registryReducer,
     userSettings: userSettingsReducer,
     makeOtc: makeOtcReducer,
+    myOrders: myOrdersReducer,
     takeOtc: takeOtcReducer,
   },
 });

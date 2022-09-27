@@ -16,18 +16,17 @@ import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
-import useTokenInfo from "../../hooks/useTokenInfo";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionButtons";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
-import { getOrderStatus } from "./helpers/index";
+import { getOrderStatus } from "./helpers";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
+import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
@@ -49,8 +48,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   } = useWeb3React<Web3Provider>();
   const { status } = useAppSelector(selectTakeOtcReducer);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const senderToken = useTokenInfo(order.senderToken);
-  const signerToken = useTokenInfo(order.signerToken);
+  const senderToken = useTakerTokenInfo(order.senderToken);
+  const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
     senderToken?.decimals
@@ -76,23 +75,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const userIsIntendedRecipient =
     order.senderWallet === account ||
     order.senderWallet === nativeCurrencyAddress;
-  const swapsDisabled = tokenInfoLoading || !active;
-
-  const baseAmount = useMemo(() => {
-    const formattedAmount = tokenInfoLoading ? "0.00" : signerAmount!;
-
-    return stringToSignificantDecimals(formattedAmount);
-  }, [tokenInfoLoading, signerAmount]);
-
-  const quoteAmount = useMemo(() => {
-    const formattedAmount = tokenInfoLoading ? "0.00" : senderAmount!;
-
-    return stringToSignificantDecimals(formattedAmount);
-  }, [tokenInfoLoading, senderAmount]);
-
   const parsedExpiry = useMemo(() => {
-    return new Date(Number(order.expiry) * 1000);
+    return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
+  const orderIsExpired = useMemo(() => {
+    return compareAsc(new Date(), parsedExpiry) === 1;
+  }, [parsedExpiry]);
 
   // button handlers
   const handleBackButtonClick = () => {
@@ -151,12 +139,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <SwapInputs
         readOnly
-        disabled={swapsDisabled}
-        baseAmount={baseAmount}
+        baseAmount={signerAmount || "0.00"}
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={userIsMakerOfSwap ? "sell" : "buy"}
-        quoteAmount={quoteAmount}
+        quoteAmount={senderAmount || "0.00"}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
@@ -164,18 +151,19 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       {!tokenInfoLoading && (
         <StyledInfoButtons
-          ownerIsCurrentUser={userIsMakerOfSwap}
+          isMakerOfSwap={userIsMakerOfSwap}
           isIntendedRecipient={userIsIntendedRecipient}
-          isExpired={compareAsc(new Date(), parsedExpiry) === 1}
+          isExpired={orderIsExpired}
+          isNotConnected={!active}
+          token1={signerToken?.symbol}
+          token2={senderToken?.symbol}
+          rate={tokenExchangeRate}
           onFeeButtonClick={toggleShowFeeInfo}
           onCopyButtonClick={handleCopyButtonClick}
-          token1={signerToken?.symbol!}
-          token2={senderToken?.symbol!}
-          rate={tokenExchangeRate}
         />
       )}
       <ActionButtons
-        isExpired={compareAsc(new Date(), parsedExpiry) === 1}
+        isExpired={orderIsExpired}
         isMakerOfSwap={userIsMakerOfSwap}
         isIntendedRecipient={userIsIntendedRecipient}
         hasInsufficientBalance={hasInsufficientTokenBalance}
