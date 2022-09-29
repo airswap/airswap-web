@@ -1,19 +1,11 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { useToggle } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppDispatch } from "../../app/hooks";
 import { useAppSelector } from "../../app/hooks";
-import { AppError } from "../../errors/appError";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
-import {
-  selectTakeOtcReducer,
-  setStatus,
-} from "../../features/takeOtc/takeOtcSlice";
-import { ErrorList } from "../ErrorList/ErrorList";
+import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import Icon from "../Icon/Icon";
 import { InfoSubHeading, Title } from "../Typography/Typography";
 import {

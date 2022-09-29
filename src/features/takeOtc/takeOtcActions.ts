@@ -1,7 +1,21 @@
-import { decompressFullOrder, isValidFullOrder } from "@airswap/utils";
+import { Swap } from "@airswap/libraries";
+import { fetchTokens } from "@airswap/metadata";
+import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
+// @ts-ignore
+import * as swapDeploys from "@airswap/swap/deploys";
+import { FullOrder } from "@airswap/typescript";
+import {
+  decompressFullOrder,
+  getSignerFromSwapSignature,
+  isValidFullOrder,
+} from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { ethers, utils, Contract } from "ethers";
+
 import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
+
+const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -70,12 +84,18 @@ export const cancelOrder = async (
   chainId: number,
   library: ethers.providers.Web3Provider
 ) => {
-  let contract = new ethers.Contract(
+  const SwapContract = new Contract(
     swapDeploys[chainId],
-    ["function cancel(uint256[] calldata nonces) external"],
+    SwapInterface,
     library.getSigner()
   );
 
-  let tx = await contract.cancel([order.nonce]);
+  let tx = await SwapContract.cancel([order.nonce]);
   console.log(tx);
+
+  // test code to confirm nonce has been used
+  /* 
+  let checktx = await SwapContract.nonceUsed(order.signerWallet, order.nonce);
+  console.log(checktx);
+  */
 };
