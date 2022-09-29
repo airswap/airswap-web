@@ -3,7 +3,8 @@ import { useHistory, useParams } from "react-router-dom";
 
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { removeUserOrder } from "../../features/myOrders/myOrdersSlice";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import Icon from "../Icon/Icon";
@@ -22,6 +23,7 @@ export const CancelWidget = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const { chainId, library } = useWeb3React();
+  const dispatch = useAppDispatch();
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
 
@@ -32,6 +34,7 @@ export const CancelWidget = () => {
   const handleCancelClick = async () => {
     try {
       await cancelOrder(activeOrder!, chainId!, library);
+      dispatch(removeUserOrder(activeOrder!));
       history.push({ pathname: `/order/${params.compressedOrder}` });
     } catch (e) {
       console.log(e);

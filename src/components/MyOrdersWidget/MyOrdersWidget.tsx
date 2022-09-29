@@ -14,6 +14,7 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
+import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
@@ -28,7 +29,12 @@ const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
+  const {
+    active,
+    chainId,
+    library,
+    error: web3Error,
+  } = useWeb3React<Web3Provider>();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
@@ -49,6 +55,14 @@ const MyOrdersWidget: FC = () => {
       : userOrders;
   }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
 
+  const cancelOrderOnChain = async (order: FullOrder) => {
+    try {
+      await cancelOrder(order, chainId!, library!);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -59,7 +73,8 @@ const MyOrdersWidget: FC = () => {
     }
   };
 
-  const handleDeleteOrderButtonClick = (order: FullOrder) => {
+  const handleDeleteOrderButtonClick = async (order: FullOrder) => {
+    await cancelOrderOnChain(order);
     dispatch(removeUserOrder(order));
   };
 
