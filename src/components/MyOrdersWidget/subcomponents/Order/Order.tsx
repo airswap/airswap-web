@@ -70,15 +70,17 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
-      <ActionButtonContainer>
-        <ActionButton
-          icon="bin"
-          iconSize={0.75}
-          onClick={handleDeleteOrderButtonClick}
-          onMouseEnter={onDeleteOrderButtonMouseEnter}
-          onMouseLeave={onDeleteOrderButtonMouseLeave}
-        />
-      </ActionButtonContainer>
+      {!isExpired && (
+        <ActionButtonContainer>
+          <ActionButton
+            icon="bin"
+            iconSize={0.75}
+            onClick={handleDeleteOrderButtonClick}
+            onMouseEnter={onDeleteOrderButtonMouseEnter}
+            onMouseLeave={onDeleteOrderButtonMouseLeave}
+          />
+        </ActionButtonContainer>
+      )}
     </Container>
   );
 };
