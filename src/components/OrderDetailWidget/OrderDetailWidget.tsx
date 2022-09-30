@@ -168,6 +168,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <ActionButtons
         isExpired={orderIsExpired}
+        isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isMakerOfSwap={userIsMakerOfSwap}
         isIntendedRecipient={userIsIntendedRecipient}
         hasInsufficientBalance={hasInsufficientTokenBalance}
