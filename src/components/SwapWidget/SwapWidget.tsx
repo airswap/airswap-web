@@ -466,7 +466,7 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      const errors = (await new Swap(chainId).check(
+      const errors = (await new Swap(chainId, library?.getSigner()).check(
         bestTradeOption!.order!,
         swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account!,
         library?.getSigner()
@@ -514,7 +514,7 @@ const SwapWidget: FC = () => {
         });
       order = lastLookOrder;
 
-      const errors = (await new Swap(chainId).check(
+      const errors = (await new Swap(chainId, library?.getSigner()).check(
         order,
         senderWallet,
         library?.getSigner()
