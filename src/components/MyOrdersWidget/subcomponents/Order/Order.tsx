@@ -22,14 +22,16 @@ import {
 
 interface OrderProps {
   order: FullOrder;
+  index: number;
   onDeleteOrderButtonClick: (order: FullOrder) => void;
-  onDeleteOrderButtonMouseEnter: () => void;
+  onDeleteOrderButtonMouseEnter: (index: number, isExpired: boolean) => void;
   onDeleteOrderButtonMouseLeave: () => void;
   className?: string;
 }
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
+  index,
   onDeleteOrderButtonClick,
   onDeleteOrderButtonMouseEnter,
   onDeleteOrderButtonMouseLeave,
@@ -70,17 +72,16 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
-      {!isExpired && (
-        <ActionButtonContainer>
-          <ActionButton
-            icon="bin"
-            iconSize={0.75}
-            onClick={handleDeleteOrderButtonClick}
-            onMouseEnter={onDeleteOrderButtonMouseEnter}
-            onMouseLeave={onDeleteOrderButtonMouseLeave}
-          />
-        </ActionButtonContainer>
-      )}
+
+      <ActionButtonContainer>
+        <ActionButton
+          icon={`${isExpired ? "bin" : "button-x"}`}
+          iconSize={0.75}
+          onClick={handleDeleteOrderButtonClick}
+          onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
+          onMouseLeave={onDeleteOrderButtonMouseLeave}
+        />
+      </ActionButtonContainer>
     </Container>
   );
 };

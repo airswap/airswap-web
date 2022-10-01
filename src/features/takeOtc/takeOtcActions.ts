@@ -8,12 +8,22 @@ import {
   decompressFullOrder,
   getSignerFromSwapSignature,
   isValidFullOrder,
+  orderPropsToStrings,
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { error } from "console";
 import { ethers, utils, Contract } from "ethers";
 
-import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
+import {
+  notifyRejectedByUserError,
+  notifyError,
+  notifyTransaction,
+  notifyConfirmation,
+} from "../../components/Toasts/ToastController";
+import { isAppError, AppErrorType } from "../../errors/appError";
+import { removeUserOrder } from "../myOrders/myOrdersSlice";
+import { reset, setActiveOrder, setStatus, setErrors } from "./takeOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
@@ -79,23 +89,58 @@ export const takeOtcOrder = createAsyncThunk(
   }
 );
 
-export const cancelOrder = async (
-  order: FullOrder,
-  chainId: number,
-  library: ethers.providers.Web3Provider
-) => {
-  const SwapContract = new Contract(
-    swapDeploys[chainId],
-    SwapInterface,
-    library.getSigner()
-  );
+export const cancelOrder = createAsyncThunk(
+  "take-otc/cancelOrder",
+  async (
+    params: {
+      order: FullOrder;
+      chainId: number;
+      library: ethers.providers.Web3Provider;
+    },
+    { dispatch }
+  ) => {
+    const SwapContract = new Contract(
+      swapDeploys[params.chainId],
+      SwapInterface,
+      params.library.getSigner()
+    );
 
-  let tx = await SwapContract.cancel([order.nonce]);
-  console.log(tx);
+    const _nonceTx = await SwapContract.nonceUsed(
+      params.order.signerWallet,
+      params.order.nonce
+    );
 
-  // test code to confirm nonce has been used
-  /* 
-  let checktx = await SwapContract.nonceUsed(order.signerWallet, order.nonce);
-  console.log(checktx);
-  */
-};
+    if (params.chainId.toString() !== params.order.chainId) {
+      notifyError({
+        heading: "Wrong chain",
+        cta: "Switch to correct chain",
+      });
+      return false;
+    }
+
+    if (_nonceTx) {
+      notifyError({
+        heading: "Unable to cancel",
+        cta: "Order has already been canceled or taken",
+      });
+      return false;
+    }
+
+    await SwapContract.cancel([params.order.nonce]);
+
+    const nonceTx = await SwapContract.nonceUsed(
+      params.order.signerWallet,
+      params.order.nonce
+    );
+
+    if (nonceTx) {
+      setStatus("taken");
+      dispatch(removeUserOrder(params.order));
+
+      notifyConfirmation({
+        heading: "Canceled",
+        cta: "Your order has been succesfully canceled",
+      });
+    }
+  }
+);

@@ -56,10 +56,18 @@ const MyOrdersWidget: FC = () => {
   }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
 
   const cancelOrderOnChain = async (order: FullOrder) => {
-    try {
-      await cancelOrder(order, chainId!, library!);
-    } catch (e) {
-      console.log(e);
+    const expiry = parseInt(order.expiry) * 1000;
+    const isExpired = new Date().getTime() > expiry;
+    if (!isExpired) {
+      try {
+        await dispatch(
+          cancelOrder({ order: order, chainId: chainId!, library: library! })
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      removeUserOrder(order);
     }
   };
 

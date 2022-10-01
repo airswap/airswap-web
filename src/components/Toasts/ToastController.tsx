@@ -12,6 +12,7 @@ import {
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import ConfirmationToast from "./ConfirmationToast";
 import ErrorToast from "./ErrorToast";
 import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
@@ -88,6 +89,21 @@ export const notifyError = (props: { heading: string; cta: string }) => {
   toast(
     (t) => (
       <ErrorToast
+        onClose={() => toast.dismiss(t.id)}
+        heading={props.heading}
+        cta={props.cta}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyConfirmation = (props: { heading: string; cta: string }) => {
+  toast(
+    (t) => (
+      <ConfirmationToast
         onClose={() => toast.dismiss(t.id)}
         heading={props.heading}
         cta={props.cta}

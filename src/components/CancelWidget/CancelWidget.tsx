@@ -33,11 +33,16 @@ export const CancelWidget = () => {
 
   const handleCancelClick = async () => {
     try {
-      await cancelOrder(activeOrder!, chainId!, library);
-      dispatch(removeUserOrder(activeOrder!));
+      await dispatch(
+        cancelOrder({
+          order: activeOrder!,
+          chainId: chainId!,
+          library: library,
+        })
+      );
       history.push({ pathname: `/order/${params.compressedOrder}` });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
