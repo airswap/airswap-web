@@ -18,6 +18,7 @@ import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import { AppRoutes } from "../../routes";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionButtons";
@@ -65,12 +66,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     senderToken,
     senderAmount!
   );
+  const orderChainId = useMemo(() => parseInt(order.chainId), [order]);
+  const walletChainIdIsDifferentThanOrderChainId =
+    !!chainId && orderChainId !== chainId;
 
   const orderType =
     order.senderWallet === nativeCurrencyAddress
       ? OrderType.publicUnlisted
       : OrderType.private;
-  const tokenInfoLoading = !senderToken || !signerToken;
   const userIsMakerOfSwap = order.signerWallet === account;
   const userIsIntendedRecipient =
     order.senderWallet === account ||
@@ -86,7 +89,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const handleBackButtonClick = () => {
     if (orderType === OrderType.private) {
       !userIsIntendedRecipient
-        ? history.push({ pathname: `/make` })
+        ? history.push({ pathname: AppRoutes.make })
         : history.push({ pathname: `/` });
     } else {
       history.goBack();
@@ -110,7 +113,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         break;
 
       case ButtonActions.restart:
-        history.push({ pathname: `/make` });
+        history.push({ pathname: AppRoutes.make });
         break;
 
       case ButtonActions.sign:
@@ -143,27 +146,29 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={userIsMakerOfSwap ? "sell" : "buy"}
+        tradeNotAllowed={walletChainIdIsDifferentThanOrderChainId}
         quoteAmount={senderAmount || "0.00"}
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
         onMaxButtonClick={() => {}}
       />
-      {!tokenInfoLoading && (
-        <StyledInfoButtons
-          isMakerOfSwap={userIsMakerOfSwap}
-          isIntendedRecipient={userIsIntendedRecipient}
-          isExpired={orderIsExpired}
-          isNotConnected={!active}
-          token1={signerToken?.symbol}
-          token2={senderToken?.symbol}
-          rate={tokenExchangeRate}
-          onFeeButtonClick={toggleShowFeeInfo}
-          onCopyButtonClick={handleCopyButtonClick}
-        />
-      )}
+      <StyledInfoButtons
+        isExpired={orderIsExpired}
+        isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
+        isIntendedRecipient={userIsIntendedRecipient}
+        isMakerOfSwap={userIsMakerOfSwap}
+        isNotConnected={!active}
+        orderChainId={orderChainId}
+        token1={signerToken?.symbol}
+        token2={senderToken?.symbol}
+        rate={tokenExchangeRate}
+        onFeeButtonClick={toggleShowFeeInfo}
+        onCopyButtonClick={handleCopyButtonClick}
+      />
       <ActionButtons
         isExpired={orderIsExpired}
+        isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isMakerOfSwap={userIsMakerOfSwap}
         isIntendedRecipient={userIsIntendedRecipient}
         hasInsufficientBalance={hasInsufficientTokenBalance}

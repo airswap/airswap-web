@@ -6,10 +6,11 @@ import { ButtonActions } from "../../../MakeWidget/subcomponents/ActionButtons/A
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
 type ActionButtonsProps = {
-  isExpired: boolean;
   hasInsufficientBalance: boolean;
-  isMakerOfSwap: boolean;
+  isExpired: boolean;
+  isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
+  isMakerOfSwap: boolean;
   orderType: OrderType;
   isNotConnected: boolean;
   networkIsUnsupported: boolean;
@@ -19,10 +20,11 @@ type ActionButtonsProps = {
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
-  isExpired,
   hasInsufficientBalance,
-  isMakerOfSwap,
+  isExpired,
+  isDifferentChainId,
   isIntendedRecipient,
+  isMakerOfSwap,
   orderType,
   isNotConnected,
   networkIsUnsupported,
@@ -33,9 +35,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
   const buttonDisabled =
-    (hasInsufficientBalance || !isIntendedRecipient) &&
-    !isExpired &&
-    !isMakerOfSwap &&
+    (hasInsufficientBalance ||
+      (!isIntendedRecipient && !isMakerOfSwap) ||
+      isDifferentChainId ||
+      isExpired) &&
     !isNotConnected;
 
   const signButtonText = () => {

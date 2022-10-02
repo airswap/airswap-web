@@ -6,7 +6,6 @@ import OrderDetailWidget from "../../components/OrderDetailWidget/OrderDetailWid
 import Page from "../../components/Page/Page";
 import {
   fetchAllTokens,
-  selectAllTokenInfo,
   selectMetaDataReducer,
 } from "../../features/metadata/metadataSlice";
 import { decompressAndSetActiveOrder } from "../../features/takeOtc/takeOtcActions";
@@ -22,7 +21,7 @@ const OrderDetail: FC = () => {
 
   useEffect(() => {
     if (compressedOrder) {
-      dispatch(decompressAndSetActiveOrder({ compressedOrder, tokens: [] }));
+      dispatch(decompressAndSetActiveOrder({ compressedOrder }));
     }
   }, [dispatch, compressedOrder]);
 

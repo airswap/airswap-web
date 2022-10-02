@@ -34,7 +34,15 @@ function getButtonHoverBackground(
   }
 }
 
-function getButtonBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
+function getButtonBorderColor(
+  theme: DefaultTheme,
+  intent?: ButtonIntent,
+  disabled?: boolean
+) {
+  if (disabled) {
+    return theme.colors.darkGrey;
+  }
+
   if (intent === "neutral") {
     return theme.name === "dark"
       ? theme.colors.lightGrey
@@ -79,7 +87,8 @@ export const ButtonStyle = css<StyledButtonProps>`
   border-radius: 2px;
   border-style: "solid";
   border-width: 1px;
-  border-color: ${(props) => getButtonBorderColor(props.theme, props.intent)};
+  border-color: ${(props) =>
+    getButtonBorderColor(props.theme, props.intent, props.disabled)};
   /* Use blue text on a netral light mode button, otherwise white. */
   color: ${(props) =>
     props.intent === "neutral" && props.theme.name === "light"

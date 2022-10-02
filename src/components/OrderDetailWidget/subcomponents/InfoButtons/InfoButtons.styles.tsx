@@ -27,5 +27,7 @@ export const StyledLargePillButton = styled(LargePillButton)`
 export const InfoText = styled.div`
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  width: 100%;
+  text-align: center;
   margin-bottom: 1rem;
 `;
