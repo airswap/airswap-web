@@ -61,16 +61,14 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../features/transactions/transactionActions";
-import {
-  ProtocolType,
-  selectPendingApprovals,
-} from "../../features/transactions/transactionsSlice";
+import { ProtocolType } from "../../features/transactions/transactionsSlice";
 import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
+import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
@@ -81,6 +79,7 @@ import { SwapType } from "../../types/swapType";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
+import { OrderErrorList } from "../OrderErrorList/OrderErrorList";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
@@ -94,7 +93,6 @@ import getTokenPairs from "./helpers/getTokenPairs";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
-import { ErrorList } from "./subcomponents/ErrorList/ErrorList";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
@@ -113,7 +111,6 @@ const SwapWidget: FC = () => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
-  const pendingApprovals = useAppSelector(selectPendingApprovals);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const userTokens = useAppSelector(selectUserTokens);
 
@@ -187,6 +184,7 @@ const SwapWidget: FC = () => {
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
 
+  const hasApprovalPending = useApprovalPending(baseToken);
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
@@ -274,11 +272,6 @@ const SwapWidget: FC = () => {
     swapType === "wrapOrUnwrap"
       ? baseAmount
       : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
-
-  const hasApprovalPending = (tokenId: string | undefined) => {
-    if (tokenId === undefined) return false;
-    return pendingApprovals.some((tx) => tx.tokenAddress === tokenId);
-  };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -777,7 +770,7 @@ const SwapWidget: FC = () => {
                 isConnecting ||
                 isRequestingQuotes ||
                 ["approving", "taking"].includes(ordersStatus) ||
-                (!!baseToken && hasApprovalPending(baseToken))
+                hasApprovalPending
               }
               transactionsTabOpen={transactionsTabIsOpen}
             />
@@ -809,7 +802,7 @@ const SwapWidget: FC = () => {
         onCloseButtonClick={() => handleButtonClick(ButtonActions.restart)}
         isHidden={!validatorErrors.length}
       >
-        <ErrorList
+        <OrderErrorList
           errors={validatorErrors}
           handleClick={() => handleButtonClick(ButtonActions.restart)}
         />

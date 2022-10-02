@@ -1,13 +1,14 @@
+// TODO: I'd like to Phase this out with the new ErrorList component
 import { useTranslation } from "react-i18next";
 
-import type { ErrorType } from "../../../../constants/errors";
-import { OverlayActionButton } from "../../../Overlay/Overlay.styles";
+import type { ErrorType } from "../../constants/errors";
+import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import {
   Container,
   StyledErrorList,
   LegendDivider,
   StyledScrollContainer,
-} from "./ErrorList.styles";
+} from "./OrderErrorList.styles";
 import ErrorListItem from "./subcomponents/ErrorListItem/ErrorListItem";
 
 type ErrorListProps = {
@@ -15,7 +16,10 @@ type ErrorListProps = {
   handleClick: () => void;
 };
 
-export const ErrorList = ({ errors = [], handleClick }: ErrorListProps) => {
+export const OrderErrorList = ({
+  errors = [],
+  handleClick,
+}: ErrorListProps) => {
   const { t } = useTranslation();
 
   return (

@@ -26,8 +26,7 @@ type ActionButtonsProps = {
   isNotConnected: boolean;
   networkIsUnsupported: boolean;
   onBackButtonClick: () => void;
-  onCancelButtonClick: () => void;
-  onSignButtonClick: (action: ButtonActions) => void;
+  onActionButtonClick: (action: ButtonActions) => void;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
@@ -41,9 +40,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   orderType,
   isNotConnected,
   networkIsUnsupported,
-  onCancelButtonClick,
   onBackButtonClick,
-  onSignButtonClick,
+  onActionButtonClick,
 }) => {
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
@@ -88,26 +86,26 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   const handleActionButtonClick = () => {
     if (networkIsUnsupported) {
-      return onSignButtonClick(ButtonActions.switchNetwork);
+      return onActionButtonClick(ButtonActions.switchNetwork);
     }
 
     if (isNotConnected) {
-      return onSignButtonClick(ButtonActions.connectWallet);
+      return onActionButtonClick(ButtonActions.connectWallet);
     }
 
     if (isExpired) {
-      return onSignButtonClick(ButtonActions.restart);
+      return onActionButtonClick(ButtonActions.restart);
     }
 
     if (isMakerOfSwap) {
-      return onSignButtonClick(ButtonActions.cancel);
+      return onActionButtonClick(ButtonActions.cancel);
     }
 
     if (hasInsufficientAllowance) {
-      return onSignButtonClick(ButtonActions.approve);
+      return onActionButtonClick(ButtonActions.approve);
     }
 
-    return onSignButtonClick(ButtonActions.sign);
+    return onActionButtonClick(ButtonActions.sign);
   };
 
   return (
@@ -120,10 +118,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         </BackButton>
       )}
       <SignButton
+        isFilled={isNotConnected || (isPrivate && isExpired)}
         intent={buttonDisabled ? "neutral" : "primary"}
-        onClick={handleActionButtonClick}
         disabled={buttonDisabled}
-        $fill={isNotConnected || (isPrivate && isExpired)}
+        loading={isLoading}
+        onClick={handleActionButtonClick}
       >
         {signButtonText()}
       </SignButton>

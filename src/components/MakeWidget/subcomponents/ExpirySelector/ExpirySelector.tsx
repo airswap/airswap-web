@@ -26,7 +26,7 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
     return getExpirySelectOptions(t);
   }, [t]);
 
-  const [unit, setUnit] = useState(translatedOptions[0]);
+  const [unit, setUnit] = useState(translatedOptions[2]);
   const [amount, setAmount] = useState("1");
 
   useEffect(() => {

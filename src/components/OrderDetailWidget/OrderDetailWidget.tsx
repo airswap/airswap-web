@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -12,24 +12,29 @@ import { BigNumber } from "bignumber.js";
 import compareAsc from "date-fns/compareAsc";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { SwapError } from "../../constants/errors";
+import { ErrorType, SwapError } from "../../constants/errors";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   approve,
+  clear,
+  selectOrdersErrors,
   selectOrdersStatus,
   take,
 } from "../../features/orders/ordersSlice";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useSwapType from "../../hooks/useSwapType";
 import { AppRoutes } from "../../routes";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
+import { OrderErrorList } from "../OrderErrorList/OrderErrorList";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
+import { notifyError } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import { getOrderStatus } from "./helpers";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
@@ -57,6 +62,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
   const { status: otcStatus } = useAppSelector(selectTakeOtcReducer);
   const ordersStatus = useAppSelector(selectOrdersStatus);
+  const ordersErrors = useAppSelector(selectOrdersErrors);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
@@ -71,8 +77,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
+  const hasApprovalPending = useApprovalPending(order.senderToken);
   const swapType = useSwapType(senderToken, signerToken);
-  const hasInsufficientAllowance = useSufficientAllowance(
+  const hasInsufficientAllowance = !useSufficientAllowance(
     senderToken,
     swapType,
     senderAmount
@@ -101,6 +108,22 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     return compareAsc(new Date(), parsedExpiry) === 1;
   }, [parsedExpiry]);
 
+  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
+
+  useEffect(() => {
+    if (ordersErrors.some((error) => error === "userRejectedRequest")) {
+      notifyError({
+        heading: t("orders.swapFailed"),
+        cta: t("orders.swapRejectedByUser"),
+      });
+    }
+
+    setValidatorErrors(
+      ordersErrors.filter((error) => error !== "userRejectedRequest")
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordersErrors]);
+
   // button handlers
   const handleBackButtonClick = () => {
     if (orderType === OrderType.private) {
@@ -111,8 +134,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       history.goBack();
     }
   };
-
-  const handleCancelButtonClick = () => {};
 
   const handleCopyButtonClick = () => {
     navigator.clipboard.writeText(window.location.toString());
@@ -126,8 +147,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     )) as SwapError[];
 
     if (errors.length) {
-      // TODO: Inform user here
-      console.error(errors);
+      setValidatorErrors(errors);
       return;
     }
 
@@ -152,8 +172,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     );
   };
 
-  const handleSignButtonClick = async (action: ButtonActions) => {
-    console.log(action);
+  const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.connectWallet:
         setShowWalletList(true);
@@ -164,6 +183,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         break;
 
       case ButtonActions.restart:
+        setValidatorErrors([]);
+        dispatch(clear());
         history.push({ pathname: AppRoutes.make });
         break;
 
@@ -173,6 +194,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
 
       case ButtonActions.approve:
         approveOrder();
+        break;
+
+      case ButtonActions.cancel:
+        // Cancel here
         break;
 
       default:
@@ -219,7 +244,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         isExpired={orderIsExpired}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
-        isLoading={["approving", "taking"].includes(ordersStatus)}
+        isLoading={["taking"].includes(ordersStatus) || hasApprovalPending}
         isMakerOfSwap={userIsMakerOfSwap}
         hasInsufficientBalance={hasInsufficientTokenBalance}
         hasInsufficientAllowance={hasInsufficientAllowance}
@@ -228,9 +253,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
-        onCancelButtonClick={handleCancelButtonClick}
         onBackButtonClick={handleBackButtonClick}
-        onSignButtonClick={handleSignButtonClick}
+        onActionButtonClick={handleActionButtonClick}
       />
       <Overlay
         title={t("common.fee")}
@@ -238,6 +262,19 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         isHidden={!showFeeInfo}
       >
         <FeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
+      </Overlay>
+      <Overlay
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
+        onCloseButtonClick={() =>
+          handleActionButtonClick(ButtonActions.restart)
+        }
+        isHidden={!validatorErrors.length}
+      >
+        <OrderErrorList
+          errors={validatorErrors}
+          handleClick={() => handleActionButtonClick(ButtonActions.restart)}
+        />
       </Overlay>
     </Container>
   );
