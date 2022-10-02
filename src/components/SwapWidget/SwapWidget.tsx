@@ -77,6 +77,7 @@ import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
+import { SwapType } from "../../types/swapType";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
@@ -96,8 +97,6 @@ import ActionButtons, {
 import { ErrorList } from "./subcomponents/ErrorList/ErrorList";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
-
-type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
 
 const initialBaseAmount = "";
 

@@ -2,14 +2,25 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OrderType } from "../../../../types/orderTypes";
-import { ButtonActions } from "../../../MakeWidget/subcomponents/ActionButtons/ActionButtons";
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
+export enum ButtonActions {
+  connectWallet,
+  switchNetwork,
+  reloadPage,
+  restart,
+  cancel,
+  sign,
+  approve,
+}
+
 type ActionButtonsProps = {
+  hasInsufficientAllowance: boolean;
   hasInsufficientBalance: boolean;
   isExpired: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
+  isLoading: boolean;
   isMakerOfSwap: boolean;
   orderType: OrderType;
   isNotConnected: boolean;
@@ -20,10 +31,12 @@ type ActionButtonsProps = {
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
+  hasInsufficientAllowance,
   hasInsufficientBalance,
   isExpired,
   isDifferentChainId,
   isIntendedRecipient,
+  isLoading,
   isMakerOfSwap,
   orderType,
   isNotConnected,
@@ -66,6 +79,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("orders.insufficentBalance");
     }
 
+    if (hasInsufficientAllowance) {
+      return t("orders.approve");
+    }
+
     return t("orders.takeOtc");
   };
 
@@ -83,7 +100,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
 
     if (isMakerOfSwap) {
-      return onCancelButtonClick();
+      return onSignButtonClick(ButtonActions.cancel);
+    }
+
+    if (hasInsufficientAllowance) {
+      return onSignButtonClick(ButtonActions.approve);
     }
 
     return onSignButtonClick(ButtonActions.sign);
