@@ -161,7 +161,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     );
   };
 
-  const approveOrder = async () => {
+  const approveToken = () => {
     dispatch(
       approve({
         token: senderToken?.address!,
@@ -193,7 +193,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         break;
 
       case ButtonActions.approve:
-        approveOrder();
+        approveToken();
         break;
 
       case ButtonActions.cancel:

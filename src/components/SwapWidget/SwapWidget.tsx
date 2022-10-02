@@ -72,6 +72,7 @@ import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
@@ -256,18 +257,7 @@ const SwapWidget: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ordersErrors]);
 
-  let swapType: SwapType = "swap";
-
-  if (chainId && baseToken && quoteToken) {
-    const eth = nativeCurrency[chainId].address;
-    const weth = wrappedTokenAddresses[chainId];
-    if ([weth, eth].includes(baseToken) && [weth, eth].includes(quoteToken)) {
-      swapType = "wrapOrUnwrap";
-    } else if ([quoteToken, baseToken].includes(eth)) {
-      swapType = "swapWithWrap";
-    }
-  }
-
+  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const quoteAmount =
     swapType === "wrapOrUnwrap"
       ? baseAmount

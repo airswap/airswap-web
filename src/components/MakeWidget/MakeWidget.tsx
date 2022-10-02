@@ -26,14 +26,18 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
+import { approve } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
+import useSufficientAllowance from "../../hooks/useSufficientAllowance";
+import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import useValidAddress from "../../hooks/useValidAddress";
@@ -101,7 +105,14 @@ const MakeWidget: FC = () => {
   const takerTokenInfo = useTokenInfo(
     userTokens.tokenTo || defaultTokenToAddress || null
   );
-  const hasInsufficientMakerTokenBalance = useInsufficientBalance(
+  const swapType = useSwapType(makerTokenInfo, takerTokenInfo);
+  const hasInsufficientAllowance = !useSufficientAllowance(
+    makerTokenInfo,
+    swapType,
+    makerAmount
+  );
+  console.log(hasInsufficientAllowance);
+  const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
     makerAmount
   );
@@ -116,6 +127,7 @@ const MakeWidget: FC = () => {
     makerTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const takerAddressIsValid = useValidAddress(takerAddress);
+  const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -157,27 +169,42 @@ const MakeWidget: FC = () => {
     dispatch(setUserTokens(newUserTokens));
   };
 
+  const createOrder = () => {
+    const expiryDate = Date.now() + expiry;
+    dispatch(
+      createOtcOrder({
+        nonce: expiryDate.toString(),
+        expiry: Math.floor(expiryDate / 1000).toString(),
+        signerWallet: account!,
+        signerToken: makerTokenInfo?.address!,
+        signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
+        protocolFee: "7",
+        senderWallet:
+          orderType === OrderType.private
+            ? takerAddress!
+            : nativeCurrencyAddress,
+        senderToken: takerTokenInfo?.address!,
+        senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
+        chainId: chainId!,
+        library: library!,
+      })
+    );
+  };
+
+  const approveToken = () => {
+    dispatch(
+      approve({
+        token: makerTokenInfo?.address!,
+        library,
+        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
+        chainId: chainId!,
+      })
+    );
+  };
+
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.sign) {
-      const expiryDate = Date.now() + expiry;
-      dispatch(
-        createOtcOrder({
-          nonce: expiryDate.toString(),
-          expiry: Math.floor(expiryDate / 1000).toString(),
-          signerWallet: account!,
-          signerToken: makerTokenInfo?.address!,
-          signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
-          protocolFee: "7",
-          senderWallet:
-            orderType === OrderType.private
-              ? takerAddress!
-              : nativeCurrencyAddress,
-          senderToken: takerTokenInfo?.address!,
-          senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
-          chainId: chainId!,
-          library: library!,
-        })
-      );
+      createOrder();
     }
 
     if (action === ButtonActions.connectWallet) {
@@ -186,6 +213,10 @@ const MakeWidget: FC = () => {
 
     if (action === ButtonActions.switchNetwork) {
       switchToEthereumChain();
+    }
+
+    if (action === ButtonActions.approve) {
+      approveToken();
     }
 
     if (action === ButtonActions.restart) {
@@ -264,11 +295,13 @@ const MakeWidget: FC = () => {
       )}
       <ActionButtons
         hasInsufficientExpiry={expiry === 0}
-        hasInsufficientMakerTokenBalance={hasInsufficientMakerTokenBalance}
+        hasInsufficientAllowance={hasInsufficientAllowance}
+        hasInsufficientBalance={hasInsufficientBalance}
         hasMissingMakerAmount={hasMissingMakerAmount}
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
+        isLoading={hasApprovalPending}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
@@ -280,7 +313,7 @@ const MakeWidget: FC = () => {
         makerTokenSymbol={makerTokenInfo?.symbol}
         takerTokenSymbol={takerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}
-        onSignButtonClick={handleActionButtonClick}
+        onActionButtonClick={handleActionButtonClick}
       />
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModal(null)}

@@ -11,15 +11,18 @@ export enum ButtonActions {
   restart,
   goBack,
   sign,
+  approve,
 }
 
 type ActionButtonsProps = {
+  hasInsufficientAllowance: boolean;
+  hasInsufficientBalance: boolean;
   hasInsufficientExpiry: boolean;
-  hasInsufficientMakerTokenBalance: boolean;
   hasMissingMakerAmount: boolean;
   hasMissingMakerToken: boolean;
   hasMissingTakerAmount: boolean;
   hasMissingTakerToken: boolean;
+  isLoading: boolean;
   networkIsUnsupported: boolean;
   takerAddressIsInvalid: boolean;
   userIsSigning: boolean;
@@ -27,16 +30,18 @@ type ActionButtonsProps = {
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
   onBackButtonClick: (action: ButtonActions) => void;
-  onSignButtonClick: (action: ButtonActions) => void;
+  onActionButtonClick: (action: ButtonActions) => void;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
+  hasInsufficientAllowance,
+  hasInsufficientBalance,
   hasInsufficientExpiry,
-  hasInsufficientMakerTokenBalance,
   hasMissingMakerAmount,
   hasMissingMakerToken,
   hasMissingTakerAmount,
   hasMissingTakerToken,
+  isLoading,
   networkIsUnsupported,
   takerAddressIsInvalid,
   userIsSigning,
@@ -44,13 +49,13 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   makerTokenSymbol,
   takerTokenSymbol,
   onBackButtonClick,
-  onSignButtonClick,
+  onActionButtonClick,
 }) => {
   const { t } = useTranslation();
 
   const isDisabled =
     (hasInsufficientExpiry ||
-      hasInsufficientMakerTokenBalance ||
+      hasInsufficientBalance ||
       hasMissingMakerAmount ||
       hasMissingMakerToken ||
       hasMissingTakerAmount ||
@@ -61,8 +66,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     !networkIsUnsupported;
 
   const buttonText = getActionButtonTranslation(
+    hasInsufficientAllowance,
+    hasInsufficientBalance,
     hasInsufficientExpiry,
-    hasInsufficientMakerTokenBalance,
     hasMissingMakerAmount,
     hasMissingMakerToken,
     hasMissingTakerAmount,
@@ -76,11 +82,13 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   const handleSignButtonClick = () => {
     if (walletIsNotConnected) {
-      onSignButtonClick(ButtonActions.connectWallet);
+      onActionButtonClick(ButtonActions.connectWallet);
     } else if (networkIsUnsupported) {
-      onSignButtonClick(ButtonActions.switchNetwork);
+      onActionButtonClick(ButtonActions.switchNetwork);
+    } else if (hasInsufficientAllowance) {
+      onActionButtonClick(ButtonActions.approve);
     } else {
-      onSignButtonClick(ButtonActions.sign);
+      onActionButtonClick(ButtonActions.sign);
     }
   };
 
@@ -100,6 +108,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <SignButton
         disabled={isDisabled}
         intent="primary"
+        loading={isLoading}
         onClick={handleSignButtonClick}
       >
         {buttonText}

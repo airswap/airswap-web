@@ -1,8 +1,9 @@
 import i18n from "i18next";
 
 export const getActionButtonTranslation = (
+  hasInsufficientAllowance: boolean,
+  hasInsufficientBalance: boolean,
   hasInsufficientExpiry: boolean,
-  hasInsufficientMakerTokenBalance: boolean,
   hasMissingMakerAmount: boolean,
   hasMissingMakerToken: boolean,
   hasMissingTakerAmount: boolean,
@@ -37,8 +38,12 @@ export const getActionButtonTranslation = (
     return i18n.t("orders.enterTokenAmount", { symbol: takerTokenSymbol });
   }
 
-  if (hasInsufficientMakerTokenBalance) {
+  if (hasInsufficientBalance) {
     return i18n.t("orders.insufficentBalance", { symbol: makerTokenSymbol });
+  }
+
+  if (hasInsufficientAllowance) {
+    return i18n.t("orders.approve");
   }
 
   if (takerAddressIsInvalid) {
