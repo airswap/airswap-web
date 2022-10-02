@@ -2,6 +2,7 @@ import React, { FC, useMemo, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { Swap } from "@airswap/libraries";
 import { FullOrder } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -12,9 +13,10 @@ import { BigNumber } from "bignumber.js";
 import compareAsc from "date-fns/compareAsc";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { SwapError } from "../../constants/errors";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
+import { take } from "../../features/orders/ordersSlice";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -32,21 +34,21 @@ import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 interface OrderDetailWidgetProps {
+  account: string;
+  library: Web3Provider;
   order: FullOrder;
 }
 
-const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
+const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
+  account,
+  library,
+  order,
+}) => {
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
   const { setShowWalletList } = useContext(InterfaceContext);
-  const {
-    active,
-    account,
-    chainId,
-    library,
-    error: web3Error,
-  } = useWeb3React<Web3Provider>();
+  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
   const { status } = useAppSelector(selectTakeOtcReducer);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const senderToken = useTakerTokenInfo(order.senderToken);
@@ -102,6 +104,31 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     navigator.clipboard.writeText(window.location.toString());
   };
 
+  const takeOrder = async () => {
+    const errors = (await new Swap(chainId, library.getSigner()).check(
+      order,
+      order.senderWallet,
+      library.getSigner()
+    )) as SwapError[];
+
+    if (errors.length) {
+      // TODO: Inform user here
+      console.error(errors);
+      return;
+    }
+
+    const result = await dispatch(
+      take({
+        order,
+        library: library,
+        contractType: "Swap",
+        onExpired: () => {},
+      })
+    );
+
+    console.log(result);
+  };
+
   const handleSignButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.connectWallet:
@@ -117,13 +144,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         break;
 
       case ButtonActions.sign:
-        await dispatch(
-          takeOtcOrder({
-            chainId: chainId!,
-            order: order,
-            library: library!,
-          })
-        );
+        takeOrder();
         break;
 
       default:

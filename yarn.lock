@@ -72,6 +72,13 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
+"@airswap/swap@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-3.2.0.tgz#86cdf47a064c86d183e691a2864538857f6fafe6"
+  integrity sha512-677Dt0Smd+u8KO9h0KR71Yv6NEhxwYuVaVNfUpziKtDBFpnJ9/92L99uH+WBw0D1vMReUVHEhovdHlQSgeQH2A==
+  dependencies:
+    "@openzeppelin/contracts" "^4.3.1"
+
 "@airswap/typescript@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-3.0.0.tgz#9ecc6ad543ad09de46ff772a5701f486630a3476"

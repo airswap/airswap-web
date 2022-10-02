@@ -19,7 +19,7 @@
     "@airswap/constants": "3.0.1",
     "@airswap/libraries": "3.0.4",
     "@airswap/metadata": "3.0.2",
-    "@airswap/swap": "3.0.1",
+    "@airswap/swap": "3.2.0",
     "@airswap/typescript": "3.0.1",
     "@airswap/utils": "3.0.4",
     "@craco/craco": "^6.2.0",
