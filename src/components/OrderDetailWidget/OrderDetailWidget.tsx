@@ -14,7 +14,10 @@ import compareAsc from "date-fns/compareAsc";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
+import {
+  takeOtcOrder,
+  getTakenState,
+} from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -25,8 +28,8 @@ import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionB
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
-import { getOrderStatus } from "./helpers";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
+import { useOrderStatus } from "./hooks/useOrderStatus";
 import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
@@ -47,8 +50,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     library,
     error: web3Error,
   } = useWeb3React<Web3Provider>();
-  const { status } = useAppSelector(selectTakeOtcReducer);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const orderStatus = useOrderStatus(order, chainId, library);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
@@ -135,7 +138,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={getOrderStatus(status)}
+        orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.senderWallet}
         userAddress={account || undefined}
