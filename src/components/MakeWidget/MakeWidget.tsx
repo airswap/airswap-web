@@ -111,7 +111,6 @@ const MakeWidget: FC = () => {
     swapType,
     makerAmount
   );
-  console.log(hasInsufficientAllowance);
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
     makerAmount
