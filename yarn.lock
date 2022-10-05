@@ -45,10 +45,10 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/metadata@3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.4.tgz#1a90892eb0c4e75fa009ce09413ff3293c5e0033"
-  integrity sha512-tjAswMvn6aFgLYu0sUY2c8jJXijzt0YKyr9VXzv+uAPiruNqVneTpmfZJDs+3Bm2FHyzjUA9/xDpm13LQc37gA==
+"@airswap/metadata@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.5.tgz#dbd2b9403b9fd2e17ffb95844e7761af8aedcd3a"
+  integrity sha512-6FfRPh4cOMkLaGIO6FDu3l8oqbZxfFvx8TAhs8uzUR5TNCP2VlSO1bNX1sE/OWhkcJ2zs1CZhQDWbuE1B6/Bfg==
   dependencies:
     "@airswap/constants" "3.0.1"
     "@airswap/typescript" "3.0.1"

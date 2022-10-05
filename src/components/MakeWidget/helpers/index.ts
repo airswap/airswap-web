@@ -9,6 +9,7 @@ export const getActionButtonTranslation = (
   hasMissingTakerAmount: boolean,
   hasMissingTakerToken: boolean,
   networkIsUnsupported: boolean,
+  shouldDepositNativeToken: boolean,
   takerAddressIsInvalid: boolean,
   walletIsNotConnected: boolean,
   makerTokenSymbol?: string,
@@ -38,6 +39,10 @@ export const getActionButtonTranslation = (
     return i18n.t("orders.enterTokenAmount", { symbol: takerTokenSymbol });
   }
 
+  if (shouldDepositNativeToken) {
+    return `Wrap ${makerTokenSymbol}`;
+  }
+
   if (hasInsufficientBalance) {
     return i18n.t("orders.insufficentBalance", { symbol: makerTokenSymbol });
   }
@@ -52,3 +57,5 @@ export const getActionButtonTranslation = (
 
   return i18n.t("common.sign");
 };
+
+export const userNeedsToDeposit = () => {};

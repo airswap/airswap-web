@@ -1,10 +1,12 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { wrappedTokenAddresses } from "@airswap/constants";
 import { compressFullOrder, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
@@ -22,11 +24,12 @@ import {
   reset,
   selectMakeOtcReducer,
 } from "../../features/makeOtc/makeOtcSlice";
+import { getSavedActiveTokensInfo } from "../../features/metadata/metadataApi";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
-import { approve } from "../../features/orders/ordersSlice";
+import { approve, deposit } from "../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
@@ -34,12 +37,14 @@ import {
 } from "../../features/userSettings/userSettingsSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
+import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import useShouldDepositNativeToken from "../../hooks/useUserShouldDeposit";
 import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
@@ -127,6 +132,8 @@ const MakeWidget: FC = () => {
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const takerAddressIsValid = useValidAddress(takerAddress);
   const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
+  const shouldDepositNativeToken = useShouldDepositNativeToken(makerAmount);
+  const hasDepositPending = useDepositPending();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -146,6 +153,12 @@ const MakeWidget: FC = () => {
 
     return setOrderType(OrderType.publicListed);
   }, [orderScopeTypeOption]);
+
+  useMemo(() => {
+    if (chainId && account) {
+      getSavedActiveTokensInfo(account, chainId);
+    }
+  }, [chainId, account]);
 
   useEffect(() => {
     if (lastUserOrder) {
@@ -191,14 +204,31 @@ const MakeWidget: FC = () => {
   };
 
   const approveToken = () => {
+    const tokenAddress = makerTokenInfo?.address!;
+
     dispatch(
       approve({
-        token: makerTokenInfo?.address!,
+        token:
+          tokenAddress === nativeCurrencyAddress
+            ? wrappedTokenAddresses[chainId!]
+            : tokenAddress,
         library,
-        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
+        contractType: "Swap",
         chainId: chainId!,
       })
     );
+  };
+
+  const depositNativeToken = async () => {
+    const result = await dispatch(
+      deposit({
+        chainId: chainId!,
+        senderAmount: makerAmount,
+        senderTokenDecimals: makerTokenInfo!.decimals,
+        provider: library!,
+      })
+    );
+    await unwrapResult(result);
   };
 
   const handleActionButtonClick = (action: ButtonActions) => {
@@ -220,6 +250,10 @@ const MakeWidget: FC = () => {
 
     if (action === ButtonActions.restart) {
       dispatch(reset());
+    }
+
+    if (action === ButtonActions.deposit) {
+      depositNativeToken();
     }
   };
 
@@ -300,10 +334,11 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        isLoading={hasApprovalPending}
+        isLoading={hasApprovalPending || hasDepositPending}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
+        shouldDepositNativeToken={shouldDepositNativeToken}
         takerAddressIsInvalid={
           !takerAddressIsValid && orderType === OrderType.private
         }

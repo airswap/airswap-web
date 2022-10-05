@@ -12,6 +12,7 @@ export enum ButtonActions {
   goBack,
   sign,
   approve,
+  deposit,
 }
 
 type ActionButtonsProps = {
@@ -24,6 +25,7 @@ type ActionButtonsProps = {
   hasMissingTakerToken: boolean;
   isLoading: boolean;
   networkIsUnsupported: boolean;
+  shouldDepositNativeToken: boolean;
   takerAddressIsInvalid: boolean;
   userIsSigning: boolean;
   walletIsNotConnected: boolean;
@@ -43,6 +45,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasMissingTakerToken,
   isLoading,
   networkIsUnsupported,
+  shouldDepositNativeToken,
   takerAddressIsInvalid,
   userIsSigning,
   walletIsNotConnected,
@@ -63,7 +66,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       takerAddressIsInvalid ||
       userIsSigning) &&
     !walletIsNotConnected &&
-    !networkIsUnsupported;
+    !networkIsUnsupported &&
+    !shouldDepositNativeToken;
 
   const buttonText = getActionButtonTranslation(
     hasInsufficientAllowance,
@@ -74,6 +78,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     hasMissingTakerAmount,
     hasMissingTakerToken,
     networkIsUnsupported,
+    shouldDepositNativeToken,
     takerAddressIsInvalid,
     walletIsNotConnected,
     makerTokenSymbol,
@@ -87,6 +92,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       onActionButtonClick(ButtonActions.switchNetwork);
     } else if (hasInsufficientAllowance) {
       onActionButtonClick(ButtonActions.approve);
+    } else if (shouldDepositNativeToken) {
+      onActionButtonClick(ButtonActions.deposit);
     } else {
       onActionButtonClick(ButtonActions.sign);
     }
