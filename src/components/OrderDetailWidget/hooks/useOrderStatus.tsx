@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 
 import { FullOrder } from "@airswap/typescript";
 
@@ -16,13 +16,9 @@ export const useOrderStatus = (
 
   useMemo(() => {
     if (library && chainId?.toString() === order.chainId) {
-      try {
-        getTakenState(order, library).then((r) =>
-          setIsTaken(r ? OrderStatus.taken : OrderStatus.open)
-        );
-      } catch (e) {
-        console.log(e);
-      }
+      getTakenState(order, library).then((r) =>
+        setIsTaken(r ? OrderStatus.taken : OrderStatus.open)
+      );
     }
   }, [order, chainId, library]);
   return isTaken;

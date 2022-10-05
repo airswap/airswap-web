@@ -11,17 +11,14 @@ import { UnsupportedChainIdError } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 import compareAsc from "date-fns/compareAsc";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import {
-  takeOtcOrder,
-  getTakenState,
-} from "../../features/takeOtc/takeOtcActions";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
+import { takeOtcOrder } from "../../features/takeOtc/takeOtcActions";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import { AppRoutes } from "../../routes";
+import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { ButtonActions } from "../MakeWidget/subcomponents/ActionButtons/ActionButtons";
@@ -116,7 +113,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         break;
 
       case ButtonActions.restart:
-        history.push({ pathname: AppRoutes.make });
+        history.push({ pathname: `/${AppRoutes.make}` });
         break;
 
       case ButtonActions.sign:
@@ -171,6 +168,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <ActionButtons
         isExpired={orderIsExpired}
+        isTaken={orderStatus === OrderStatus.taken}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isMakerOfSwap={userIsMakerOfSwap}
         isIntendedRecipient={userIsIntendedRecipient}

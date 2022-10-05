@@ -8,6 +8,7 @@ import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 type ActionButtonsProps = {
   hasInsufficientBalance: boolean;
   isExpired: boolean;
+  isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
   isMakerOfSwap: boolean;
@@ -22,6 +23,7 @@ type ActionButtonsProps = {
 const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientBalance,
   isExpired,
+  isTaken,
   isDifferentChainId,
   isIntendedRecipient,
   isMakerOfSwap,
@@ -37,9 +39,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const buttonDisabled =
     (hasInsufficientBalance ||
       (!isIntendedRecipient && !isMakerOfSwap) ||
-      isDifferentChainId ||
-      isExpired) &&
-    !isNotConnected;
+      isDifferentChainId) &&
+    !isNotConnected &&
+    !isTaken &&
+    !isExpired;
 
   const signButtonText = () => {
     if (networkIsUnsupported) {
@@ -50,7 +53,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("wallet.connectWallet");
     }
 
-    if (isExpired) {
+    if (isExpired || isTaken) {
       return t("orders.newSwap");
     }
 
@@ -78,7 +81,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onSignButtonClick(ButtonActions.connectWallet);
     }
 
-    if (isExpired) {
+    if (isExpired || isTaken) {
       return onSignButtonClick(ButtonActions.restart);
     }
 
@@ -91,13 +94,14 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   return (
     <Container>
-      {!isNotConnected && ((isPrivate && !isExpired) || !isPrivate) && (
-        <BackButton onClick={onBackButtonClick}>
-          {isPrivate && !isIntendedRecipient
-            ? t("orders.newSwap")
-            : t("common.back")}
-        </BackButton>
-      )}
+      {!isNotConnected &&
+        ((isPrivate && !isExpired) || !isPrivate || isTaken) && (
+          <BackButton onClick={onBackButtonClick}>
+            {isPrivate && !isIntendedRecipient && !isTaken
+              ? t("orders.newSwap")
+              : t("common.back")}
+          </BackButton>
+        )}
       <SignButton
         intent={buttonDisabled ? "neutral" : "primary"}
         onClick={handleActionButtonClick}
