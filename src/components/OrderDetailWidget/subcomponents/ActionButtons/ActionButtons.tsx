@@ -18,6 +18,7 @@ type ActionButtonsProps = {
   hasInsufficientAllowance: boolean;
   hasInsufficientBalance: boolean;
   isExpired: boolean;
+  isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
   isLoading: boolean;
@@ -34,6 +35,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientAllowance,
   hasInsufficientBalance,
   isExpired,
+  isTaken,
   isDifferentChainId,
   isIntendedRecipient,
   isLoading,
@@ -50,9 +52,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const buttonDisabled =
     (hasInsufficientBalance ||
       (!isIntendedRecipient && !isMakerOfSwap) ||
-      isDifferentChainId ||
-      isExpired) &&
-    !isNotConnected;
+      isDifferentChainId) &&
+    !isNotConnected &&
+    !isTaken &&
+    !isExpired;
 
   const signButtonText = () => {
     if (networkIsUnsupported) {
@@ -63,7 +66,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("wallet.connectWallet");
     }
 
-    if (isExpired) {
+    if (isExpired || isTaken) {
       return t("orders.newSwap");
     }
 
@@ -112,13 +115,14 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   return (
     <Container>
-      {!isNotConnected && ((isPrivate && !isExpired) || !isPrivate) && (
-        <BackButton onClick={onBackButtonClick}>
-          {isPrivate && !isIntendedRecipient
-            ? t("orders.newSwap")
-            : t("common.back")}
-        </BackButton>
-      )}
+      {!isNotConnected &&
+        ((isPrivate && !isExpired) || !isPrivate || isTaken) && (
+          <BackButton onClick={onBackButtonClick}>
+            {isPrivate && !isIntendedRecipient && !isTaken
+              ? t("orders.newSwap")
+              : t("common.back")}
+          </BackButton>
+        )}
       <SignButton
         isFilled={isNotConnected || (isPrivate && isExpired)}
         intent={buttonDisabled ? "neutral" : "primary"}

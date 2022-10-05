@@ -29,6 +29,7 @@ import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
+import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { OrderErrorList } from "../OrderErrorList/OrderErrorList";
@@ -36,8 +37,8 @@ import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
-import { getOrderStatus } from "./helpers";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
+import { useOrderStatus } from "./hooks/useOrderStatus";
 import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import ActionButtons, {
   ButtonActions,
@@ -65,6 +66,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const orderStatus = useOrderStatus(order, chainId, library);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
@@ -244,6 +246,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       />
       <ActionButtons
         isExpired={orderIsExpired}
+        isTaken={orderStatus === OrderStatus.taken}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isLoading={
