@@ -4,7 +4,7 @@ import { FullOrder } from "@airswap/typescript";
 
 import { ethers } from "ethers";
 
-import { getTakenState } from "../../../features/takeOtc/takeOtcActions";
+import { getTakenState } from "../../../features/takeOtc/takeOtcHelpers";
 import { OrderStatus } from "../../../types/orderStatus";
 
 export const useOrderStatus = (

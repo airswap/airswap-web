@@ -1,5 +1,4 @@
 import { Swap } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys";
 import { FullOrder } from "@airswap/typescript";
@@ -10,11 +9,9 @@ import {
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ethers, utils, Contract } from "ethers";
+import { ethers } from "ethers";
 
 import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
-
-const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -77,17 +74,3 @@ export const takeOtcOrder = createAsyncThunk(
     console.log(swap);
   }
 );
-
-export const getTakenState = async (
-  order: FullOrder,
-  library: ethers.providers.Web3Provider
-) => {
-  const SwapContract = new Contract(
-    swapDeploys[order.chainId],
-    SwapInterface,
-    library.getSigner()
-  );
-
-  let tx = await SwapContract.nonceUsed(order.signerWallet, order.nonce);
-  return tx;
-};
