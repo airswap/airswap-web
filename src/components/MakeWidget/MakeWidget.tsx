@@ -178,11 +178,11 @@ const MakeWidget: FC = () => {
     let newTokenFrom = type === "base" ? value : userTokens.tokenFrom;
 
     if (newTokenTo === newTokenFrom && type === "quote") {
-        newTokenFrom = userTokens.tokenTo;
+      newTokenFrom = userTokens.tokenTo;
     }
 
     if (newTokenTo === newTokenFrom && type === "base") {
-        newTokenTo = userTokens.tokenFrom;
+      newTokenTo = userTokens.tokenFrom;
     }
 
     dispatch(
