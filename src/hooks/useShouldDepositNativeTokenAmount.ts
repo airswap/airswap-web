@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
+import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -15,8 +16,11 @@ import { selectBalances } from "../features/balances/balancesSlice";
 import { selectActiveTokens } from "../features/metadata/metadataSlice";
 import { selectUserTokens } from "../features/userSettings/userSettingsSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
+import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
 
-const useUserShouldDeposit = (tokenAmount: string): boolean => {
+const useShouldDepositNativeTokenAmount = (
+  tokenAmount: string
+): string | undefined => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const userTokens = useAppSelector(selectUserTokens);
@@ -26,24 +30,24 @@ const useUserShouldDeposit = (tokenAmount: string): boolean => {
 
   return useMemo(() => {
     if (!tokenFrom || !tokenAmount || !chainId) {
-      return false;
+      return undefined;
     }
 
     if (tokenFrom !== nativeCurrencyAddress) {
-      return false;
+      return undefined;
     }
 
     const wrappedTokenAddress = wrappedTokenAddresses[chainId];
 
     if (!wrappedTokenAddress) {
-      return false;
+      return undefined;
     }
 
-    const nativeTokenAmount = balances.values[nativeCurrencyAddress];
-    const wrappedTokenAmount = balances.values[wrappedTokenAddress];
+    const nativeTokenBalance = balances.values[nativeCurrencyAddress];
+    const wrappedTokenBalance = balances.values[wrappedTokenAddress];
 
-    if (!nativeTokenAmount || !wrappedTokenAmount) {
-      return false;
+    if (!nativeTokenBalance || !wrappedTokenBalance) {
+      return undefined;
     }
 
     const nativeTokenInfo = findEthOrTokenByAddress(
@@ -56,29 +60,36 @@ const useUserShouldDeposit = (tokenAmount: string): boolean => {
       activeTokens,
       chainId
     );
-    const nativeTokenBigNumber = new BigNumber(nativeTokenAmount).div(
+
+    const nativeTokenBigNumber = new BigNumber(nativeTokenBalance).div(
       10 ** nativeTokenInfo.decimals
     );
-    const wrappedTokenBigNumber = new BigNumber(wrappedTokenAmount).div(
+    const wrappedTokenBigNumber = new BigNumber(wrappedTokenBalance).div(
       10 ** wrappedTokenInfo.decimals
     );
+    const tokenAmountBigNumber = new BigNumber(
+      toAtomicString(tokenAmount, nativeTokenInfo.decimals)
+    ).div(10 ** nativeTokenInfo.decimals);
+
     const totalBigNumber = nativeTokenBigNumber
       .plus(wrappedTokenBigNumber)
       .minus(nativeCurrencySafeTransactionFee[chainId] || 0);
 
     // If user has the required WETH amount then it's not necessary to wrap: we'll just use the WETH
     if (wrappedTokenBigNumber.isGreaterThanOrEqualTo(tokenAmount)) {
-      return false;
+      return undefined;
     }
 
     // If the ETH and WETH amount is not sufficient then wrapping ETH will not help
     if (totalBigNumber.isLessThan(tokenAmount)) {
-      return false;
+      return undefined;
     }
 
     // Else it means WETH is not enough, but with wrapping extra ETH it will.
-    return true;
+    return stringToSignificantDecimals(
+      tokenAmountBigNumber.minus(wrappedTokenBigNumber).toFormat()
+    );
   }, [activeTokens, balances.values, tokenFrom, tokenAmount, chainId]);
 };
 
-export default useUserShouldDeposit;
+export default useShouldDepositNativeTokenAmount;

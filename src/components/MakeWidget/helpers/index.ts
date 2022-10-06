@@ -48,7 +48,7 @@ export const getActionButtonTranslation = (
   }
 
   if (hasInsufficientAllowance) {
-    return i18n.t("orders.approve");
+    return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
   }
 
   if (takerAddressIsInvalid) {
@@ -57,5 +57,3 @@ export const getActionButtonTranslation = (
 
   return i18n.t("common.sign");
 };
-
-export const userNeedsToDeposit = () => {};

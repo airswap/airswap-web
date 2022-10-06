@@ -25,6 +25,7 @@ type ActionButtonsProps = {
   orderType: OrderType;
   isNotConnected: boolean;
   networkIsUnsupported: boolean;
+  senderTokenSymbol?: string;
   onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
 };
@@ -40,6 +41,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   orderType,
   isNotConnected,
   networkIsUnsupported,
+  senderTokenSymbol,
   onBackButtonClick,
   onActionButtonClick,
 }) => {
@@ -78,7 +80,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
 
     if (hasInsufficientAllowance) {
-      return t("orders.approve");
+      return `${t("orders.approve")} ${senderTokenSymbol || ""}`;
     }
 
     return t("orders.takeOtc");

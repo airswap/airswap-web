@@ -39,6 +39,7 @@ const useSufficientAllowance = (
       chainId
     );
     const tokenAllowance = allowances.swap.values[justifiedToken.address];
+    console.log(allowances);
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the
@@ -46,6 +47,12 @@ const useSufficientAllowance = (
       // unnecessary gas for an approval they may not need.
       return true;
     }
+
+    console.log(
+      new BigNumber(tokenAllowance)
+        .div(10 ** justifiedToken.decimals)
+        .toFormat()
+    );
 
     return new BigNumber(tokenAllowance)
       .div(10 ** justifiedToken.decimals)

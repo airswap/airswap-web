@@ -55,6 +55,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   library,
   order,
 }) => {
+  console.log(order);
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -185,7 +186,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       case ButtonActions.restart:
         setValidatorErrors([]);
         dispatch(clear());
-        history.push({ pathname: AppRoutes.make });
         break;
 
       case ButtonActions.sign:
@@ -253,6 +253,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
+        senderTokenSymbol={senderToken?.symbol}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />

@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { StyledInfoHeading } from "../../../SwapWidget/subcomponents/InfoSection/InfoSection.styles";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import { StyledInfoHeading } from "./InfoSection.styles";
 
 type ActionButtonsProps = {
   userHasNoOrders: boolean;

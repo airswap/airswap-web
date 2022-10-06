@@ -33,6 +33,7 @@ type ActionButtonsProps = {
   takerTokenSymbol?: string;
   onBackButtonClick: (action: ButtonActions) => void;
   onActionButtonClick: (action: ButtonActions) => void;
+  className?: string;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
@@ -53,6 +54,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   takerTokenSymbol,
   onBackButtonClick,
   onActionButtonClick,
+  className,
 }) => {
   const { t } = useTranslation();
 
@@ -108,7 +110,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   };
 
   return (
-    <Container>
+    <Container className={className}>
       <BackButton onClick={handleBackButtonClick}>
         {t("common.back")}
       </BackButton>

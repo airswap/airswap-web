@@ -30,7 +30,6 @@ import {
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { approve, deposit } from "../../features/orders/ordersSlice";
-import { selectAllSupportedTokens } from "../../features/registry/registrySlice";
 import {
   selectUserTokens,
   setUserTokens,
@@ -40,11 +39,11 @@ import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
+import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
-import useShouldDepositNativeToken from "../../hooks/useUserShouldDeposit";
 import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
@@ -59,15 +58,15 @@ import TokenList from "../TokenList/TokenList";
 import {
   Container,
   OrderTypeSelectorAndRateFieldWrapper,
+  StyledActionButtons,
   StyledAddressInput,
   StyledInfoSection,
+  StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
 } from "./MakeWidget.styles";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
-import ActionButtons, {
-  ButtonActions,
-} from "./subcomponents/ActionButtons/ActionButtons";
+import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
 const MakeWidget: FC = () => {
@@ -78,7 +77,6 @@ const MakeWidget: FC = () => {
   const balances = useAppSelector(selectBalances);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
-  const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const userTokens = useAppSelector(selectUserTokens);
   const { status, error, lastUserOrder } = useAppSelector(selectMakeOtcReducer);
   const {
@@ -132,7 +130,9 @@ const MakeWidget: FC = () => {
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const takerAddressIsValid = useValidAddress(takerAddress);
   const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
-  const shouldDepositNativeToken = useShouldDepositNativeToken(makerAmount);
+  const shouldDepositNativeTokenAmount =
+    useShouldDepositNativeToken(makerAmount);
+  const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
 
   // Modal states
@@ -174,28 +174,52 @@ const MakeWidget: FC = () => {
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
-    const newUserTokens = {
-      ...(type === "base" && { tokenFrom: value }),
-      ...(type === "quote" && { tokenTo: value }),
-    };
-    dispatch(setUserTokens(newUserTokens));
+    let newTokenTo = type === "quote" ? value : userTokens.tokenTo;
+    let newTokenFrom = type === "base" ? value : userTokens.tokenFrom;
+
+    if (newTokenTo === newTokenFrom && type === "quote") {
+        newTokenFrom = userTokens.tokenTo;
+    }
+
+    if (newTokenTo === newTokenFrom && type === "base") {
+        newTokenTo = userTokens.tokenFrom;
+    }
+
+    dispatch(
+      setUserTokens({
+        tokenFrom: newTokenFrom,
+        tokenTo: newTokenTo,
+      })
+    );
   };
 
   const createOrder = () => {
     const expiryDate = Date.now() + expiry;
+    const makerTokenAddress = makerTokenInfo?.address!;
+    const takerTokenAddress = takerTokenInfo?.address!;
+
+    const signerToken =
+      makerTokenAddress === nativeCurrencyAddress
+        ? wrappedTokenAddresses[chainId!]
+        : makerTokenAddress;
+    const senderToken =
+      takerTokenAddress === nativeCurrencyAddress
+        ? wrappedTokenAddresses[chainId!]
+        : takerTokenAddress;
+
     dispatch(
       createOtcOrder({
         nonce: expiryDate.toString(),
         expiry: Math.floor(expiryDate / 1000).toString(),
         signerWallet: account!,
-        signerToken: makerTokenInfo?.address!,
+        signerToken,
         signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
         protocolFee: "7",
         senderWallet:
           orderType === OrderType.private
             ? takerAddress!
             : nativeCurrencyAddress,
-        senderToken: takerTokenInfo?.address!,
+        senderToken,
         senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
         chainId: chainId!,
         library: library!,
@@ -317,16 +341,19 @@ const MakeWidget: FC = () => {
           onInfoButtonClick={toggleShowOrderTypeInfo}
         />
       ) : (
-        <StyledInfoSection onInfoButtonClick={toggleShowOrderTypeInfo}>
+        <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox
             checked={orderType === OrderType.publicListed}
             label={t("orders.publiclyList")}
             subLabel={t("orders.publiclyListDescription")}
             onChange={handleOrderTypeCheckboxChange}
           />
-        </StyledInfoSection>
+        </StyledInputSection>
       )}
-      <ActionButtons
+      <StyledInfoSection
+        shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
+      />
+      <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
         hasInsufficientAllowance={hasInsufficientAllowance}
         hasInsufficientBalance={hasInsufficientBalance}
@@ -361,7 +388,7 @@ const MakeWidget: FC = () => {
           balances={balances}
           allTokens={allTokens}
           activeTokens={activeTokens}
-          supportedTokenAddresses={supportedTokens}
+          supportedTokenAddresses={[]}
         />
       </Overlay>
       <Overlay
