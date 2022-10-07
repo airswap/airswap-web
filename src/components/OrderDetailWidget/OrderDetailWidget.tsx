@@ -55,7 +55,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   library,
   order,
 }) => {
-  console.log(order);
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();

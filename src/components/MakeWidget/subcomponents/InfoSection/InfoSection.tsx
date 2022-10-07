@@ -57,7 +57,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
       chainId
     );
 
-    if (!wrappedTokenAddress) {
+    if (!wrappedNativeTokenInfo) {
       return undefined;
     }
 
