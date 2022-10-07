@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Web3Provider } from "@ethersproject/providers";
@@ -35,15 +35,15 @@ const InfoSection: FC<ActionButtonsProps> = ({
   const [wrappedNativeTokenBalance, setWrappedNativeTokenBalance] =
     useState("");
 
-  useMemo(() => {
+  useEffect(() => {
     if (!chainId || !allTokens.length || !balances.values) {
-      return undefined;
+      return;
     }
 
     const wrappedTokenAddress = wrappedTokenAddresses[chainId];
 
     if (!wrappedTokenAddress) {
-      return undefined;
+      return;
     }
 
     const nativeTokenInfo = findEthOrTokenByAddress(
@@ -57,8 +57,8 @@ const InfoSection: FC<ActionButtonsProps> = ({
       chainId
     );
 
-    if (!wrappedNativeTokenInfo) {
-      return undefined;
+    if (!wrappedNativeTokenInfo || !nativeTokenInfo) {
+      return;
     }
 
     const balance = stringToSignificantDecimals(
@@ -70,7 +70,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
     setNativeTokenSymbol(nativeTokenInfo.symbol);
     setWrappedNativeTokenSymbol(wrappedNativeTokenInfo.symbol);
     setWrappedNativeTokenBalance(balance);
-  }, [allTokens, chainId, balances.values]);
+  }, [allTokens, chainId, balances]);
 
   const text = useMemo(() => {
     if (

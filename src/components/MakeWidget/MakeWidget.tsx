@@ -41,7 +41,6 @@ import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
-import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import useValidAddress from "../../hooks/useValidAddress";
@@ -108,10 +107,8 @@ const MakeWidget: FC = () => {
   const takerTokenInfo = useTokenInfo(
     userTokens.tokenTo || defaultTokenToAddress || null
   );
-  const swapType = useSwapType(makerTokenInfo, takerTokenInfo);
   const hasInsufficientAllowance = !useSufficientAllowance(
     makerTokenInfo,
-    swapType,
     makerAmount
   );
   const hasInsufficientBalance = useInsufficientBalance(

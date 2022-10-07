@@ -12,11 +12,9 @@ import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
-import { SwapType } from "../types/swapType";
 
 const useSufficientAllowance = (
   token: TokenInfo | null,
-  swapType: SwapType,
   amount?: string
 ): boolean => {
   const { chainId } = useWeb3React<Web3Provider>();

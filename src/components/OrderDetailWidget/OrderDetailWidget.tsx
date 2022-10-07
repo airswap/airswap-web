@@ -27,7 +27,6 @@ import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
-import useSwapType from "../../hooks/useSwapType";
 import { AppRoutes } from "../../routes";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
@@ -78,10 +77,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     signerAmount!
   );
   const hasApprovalPending = useApprovalPending(order.senderToken);
-  const swapType = useSwapType(senderToken, signerToken);
   const hasInsufficientAllowance = !useSufficientAllowance(
     senderToken,
-    swapType,
     senderAmount
   );
 
@@ -166,7 +163,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       approve({
         token: senderToken?.address!,
         library,
-        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
+        contractType: "Swap",
         chainId: chainId!,
       })
     );
