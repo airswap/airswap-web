@@ -176,9 +176,7 @@ const MakeWidget: FC = () => {
 
     if (newTokenTo === newTokenFrom && type === "quote") {
       newTokenFrom = userTokens.tokenTo;
-    }
-
-    if (newTokenTo === newTokenFrom && type === "base") {
+    } else if (newTokenTo === newTokenFrom && type === "base") {
       newTokenTo = userTokens.tokenFrom;
     }
 
