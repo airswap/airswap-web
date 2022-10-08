@@ -164,7 +164,8 @@
     "thisOrderWasNotForTheConnectedWallet": "This order was not for the connected wallet",
     "removeFromList": "Remove from list",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
-    "startByCreatingANewOrder": "Start by creating a new swap"
+    "startByCreatingANewOrder": "Start by creating a new order",
+    "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order."
   },
   "toast": {
     "swapComplete": "Swap Complete",

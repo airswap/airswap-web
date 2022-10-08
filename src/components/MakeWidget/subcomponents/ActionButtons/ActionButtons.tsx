@@ -11,46 +11,56 @@ export enum ButtonActions {
   restart,
   goBack,
   sign,
+  approve,
+  deposit,
 }
 
 type ActionButtonsProps = {
+  hasInsufficientAllowance: boolean;
+  hasInsufficientBalance: boolean;
   hasInsufficientExpiry: boolean;
-  hasInsufficientMakerTokenBalance: boolean;
   hasMissingMakerAmount: boolean;
   hasMissingMakerToken: boolean;
   hasMissingTakerAmount: boolean;
   hasMissingTakerToken: boolean;
+  isLoading: boolean;
   networkIsUnsupported: boolean;
+  shouldDepositNativeToken: boolean;
   takerAddressIsInvalid: boolean;
   userIsSigning: boolean;
   walletIsNotConnected: boolean;
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
   onBackButtonClick: (action: ButtonActions) => void;
-  onSignButtonClick: (action: ButtonActions) => void;
+  onActionButtonClick: (action: ButtonActions) => void;
+  className?: string;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
+  hasInsufficientAllowance,
+  hasInsufficientBalance,
   hasInsufficientExpiry,
-  hasInsufficientMakerTokenBalance,
   hasMissingMakerAmount,
   hasMissingMakerToken,
   hasMissingTakerAmount,
   hasMissingTakerToken,
+  isLoading,
   networkIsUnsupported,
+  shouldDepositNativeToken,
   takerAddressIsInvalid,
   userIsSigning,
   walletIsNotConnected,
   makerTokenSymbol,
   takerTokenSymbol,
   onBackButtonClick,
-  onSignButtonClick,
+  onActionButtonClick,
+  className,
 }) => {
   const { t } = useTranslation();
 
   const isDisabled =
     (hasInsufficientExpiry ||
-      hasInsufficientMakerTokenBalance ||
+      hasInsufficientBalance ||
       hasMissingMakerAmount ||
       hasMissingMakerToken ||
       hasMissingTakerAmount ||
@@ -58,16 +68,19 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       takerAddressIsInvalid ||
       userIsSigning) &&
     !walletIsNotConnected &&
-    !networkIsUnsupported;
+    !networkIsUnsupported &&
+    !shouldDepositNativeToken;
 
   const buttonText = getActionButtonTranslation(
+    hasInsufficientAllowance,
+    hasInsufficientBalance,
     hasInsufficientExpiry,
-    hasInsufficientMakerTokenBalance,
     hasMissingMakerAmount,
     hasMissingMakerToken,
     hasMissingTakerAmount,
     hasMissingTakerToken,
     networkIsUnsupported,
+    shouldDepositNativeToken,
     takerAddressIsInvalid,
     walletIsNotConnected,
     makerTokenSymbol,
@@ -76,11 +89,15 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   const handleSignButtonClick = () => {
     if (walletIsNotConnected) {
-      onSignButtonClick(ButtonActions.connectWallet);
+      onActionButtonClick(ButtonActions.connectWallet);
     } else if (networkIsUnsupported) {
-      onSignButtonClick(ButtonActions.switchNetwork);
+      onActionButtonClick(ButtonActions.switchNetwork);
+    } else if (hasInsufficientAllowance) {
+      onActionButtonClick(ButtonActions.approve);
+    } else if (shouldDepositNativeToken) {
+      onActionButtonClick(ButtonActions.deposit);
     } else {
-      onSignButtonClick(ButtonActions.sign);
+      onActionButtonClick(ButtonActions.sign);
     }
   };
 
@@ -93,13 +110,14 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   };
 
   return (
-    <Container>
+    <Container className={className}>
       <BackButton onClick={handleBackButtonClick}>
         {t("common.back")}
       </BackButton>
       <SignButton
         disabled={isDisabled}
         intent="primary"
+        loading={isLoading}
         onClick={handleSignButtonClick}
       >
         {buttonText}

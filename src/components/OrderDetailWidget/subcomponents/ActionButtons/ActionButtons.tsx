@@ -2,35 +2,48 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OrderType } from "../../../../types/orderTypes";
-import { ButtonActions } from "../../../MakeWidget/subcomponents/ActionButtons/ActionButtons";
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
+export enum ButtonActions {
+  connectWallet,
+  switchNetwork,
+  reloadPage,
+  restart,
+  cancel,
+  sign,
+  approve,
+}
+
 type ActionButtonsProps = {
+  hasInsufficientAllowance: boolean;
   hasInsufficientBalance: boolean;
   isExpired: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
+  isLoading: boolean;
   isMakerOfSwap: boolean;
   orderType: OrderType;
   isNotConnected: boolean;
   networkIsUnsupported: boolean;
+  senderTokenSymbol?: string;
   onBackButtonClick: () => void;
-  onCancelButtonClick: () => void;
-  onSignButtonClick: (action: ButtonActions) => void;
+  onActionButtonClick: (action: ButtonActions) => void;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
+  hasInsufficientAllowance,
   hasInsufficientBalance,
   isExpired,
   isDifferentChainId,
   isIntendedRecipient,
+  isLoading,
   isMakerOfSwap,
   orderType,
   isNotConnected,
   networkIsUnsupported,
-  onCancelButtonClick,
+  senderTokenSymbol,
   onBackButtonClick,
-  onSignButtonClick,
+  onActionButtonClick,
 }) => {
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
@@ -66,27 +79,35 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("orders.insufficentBalance");
     }
 
+    if (hasInsufficientAllowance) {
+      return `${t("orders.approve")} ${senderTokenSymbol || ""}`;
+    }
+
     return t("orders.takeOtc");
   };
 
   const handleActionButtonClick = () => {
     if (networkIsUnsupported) {
-      return onSignButtonClick(ButtonActions.switchNetwork);
+      return onActionButtonClick(ButtonActions.switchNetwork);
     }
 
     if (isNotConnected) {
-      return onSignButtonClick(ButtonActions.connectWallet);
+      return onActionButtonClick(ButtonActions.connectWallet);
     }
 
     if (isExpired) {
-      return onSignButtonClick(ButtonActions.restart);
+      return onActionButtonClick(ButtonActions.restart);
     }
 
     if (isMakerOfSwap) {
-      return onCancelButtonClick();
+      return onActionButtonClick(ButtonActions.cancel);
     }
 
-    return onSignButtonClick(ButtonActions.sign);
+    if (hasInsufficientAllowance) {
+      return onActionButtonClick(ButtonActions.approve);
+    }
+
+    return onActionButtonClick(ButtonActions.sign);
   };
 
   return (
@@ -99,10 +120,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         </BackButton>
       )}
       <SignButton
+        isFilled={isNotConnected || (isPrivate && isExpired)}
         intent={buttonDisabled ? "neutral" : "primary"}
-        onClick={handleActionButtonClick}
         disabled={buttonDisabled}
-        $fill={isNotConnected || (isPrivate && isExpired)}
+        loading={isLoading}
+        onClick={handleActionButtonClick}
       >
         {signButtonText()}
       </SignButton>

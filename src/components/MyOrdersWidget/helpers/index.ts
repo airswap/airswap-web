@@ -9,7 +9,7 @@ import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 export const getTokenAmountWithDecimals = (
   amount: string,
   decimals: number = 18
-) => {
+): BigNumber => {
   return new BigNumber(amount).div(10 ** decimals);
 };
 

@@ -8,8 +8,8 @@ import {
   swapErrorTranslationMap,
   ErrorType,
   ErrorCodesMap,
-} from "../../../../../../constants/errors";
-import { InfoHeading } from "../../../../../Typography/Typography";
+} from "../../../../constants/errors";
+import { InfoHeading } from "../../../Typography/Typography";
 import {
   ErrorTextContainer,
   Container,
