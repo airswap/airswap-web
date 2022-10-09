@@ -15,7 +15,7 @@ const Cancel: FC = () => {
   const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
   useEffect(() => {
     if (compressedOrder && !activeOrder) {
-      dispatch(decompressAndSetActiveOrder({ compressedOrder, tokens: [] }));
+      dispatch(decompressAndSetActiveOrder({ compressedOrder }));
     }
   }, [dispatch, compressedOrder]);
   if (status === "idle" || !activeOrder) {

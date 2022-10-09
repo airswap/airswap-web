@@ -50,7 +50,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
   const buttonDisabled =
-    (hasInsufficientBalance ||
+    ((hasInsufficientBalance && !isMakerOfSwap) ||
       (!isIntendedRecipient && !isMakerOfSwap) ||
       isDifferentChainId) &&
     !isNotConnected &&
@@ -98,7 +98,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onActionButtonClick(ButtonActions.connectWallet);
     }
 
-    if (isExpired) {
+    if (isExpired || isTaken) {
       return onActionButtonClick(ButtonActions.restart);
     }
 

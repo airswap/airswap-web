@@ -18,11 +18,16 @@ import { ethers, utils, Contract } from "ethers";
 import {
   notifyRejectedByUserError,
   notifyError,
-  notifyTransaction,
   notifyConfirmation,
 } from "../../components/Toasts/ToastController";
-import { isAppError, AppErrorType } from "../../errors/appError";
+import { isRpcError } from "../../errors/rpcError";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
+import {
+  revertTransaction,
+  submitTransaction,
+} from "../transactions/transactionActions";
+import { SubmittedCancellation } from "../transactions/transactionsSlice";
+import { getTakenState } from "./takeOtcHelpers";
 import { reset, setActiveOrder, setStatus, setErrors } from "./takeOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
@@ -102,13 +107,12 @@ export const cancelOrder = createAsyncThunk(
     const SwapContract = new Contract(
       swapDeploys[params.chainId],
       SwapInterface,
+      //@ts-ignore
       params.library.getSigner()
     );
 
-    const _nonceTx = await SwapContract.nonceUsed(
-      params.order.signerWallet,
-      params.order.nonce
-    );
+    // pre-cancel checks
+    const _nonceTx = await getTakenState(params.order, params.library);
 
     if (params.chainId.toString() !== params.order.chainId) {
       notifyError({
@@ -126,21 +130,35 @@ export const cancelOrder = createAsyncThunk(
       return false;
     }
 
-    await SwapContract.cancel([params.order.nonce]);
-
-    const nonceTx = await SwapContract.nonceUsed(
-      params.order.signerWallet,
-      params.order.nonce
+    // cancel initiated
+    const tx = await SwapContract.cancel([params.order.nonce]).catch(
+      (e: unknown) => {
+        isRpcError(e) && e.code === 4001
+          ? notifyRejectedByUserError()
+          : notifyError({ heading: "Something went wrong", cta: "" });
+      }
     );
 
-    if (nonceTx) {
-      setStatus("taken");
-      dispatch(removeUserOrder(params.order));
+    const transaction: SubmittedCancellation = {
+      type: "Cancel",
+      status: "processing",
+      hash: tx.hash,
+      nonce: params.order.nonce,
+      timestamp: Date.now(),
+    };
+    dispatch(submitTransaction(transaction));
 
-      notifyConfirmation({
-        heading: "Canceled",
-        cta: "Your order has been succesfully canceled",
-      });
+    await tx.wait();
+
+    // post-cancel clean up
+    const isCancelled = await getTakenState(params.order, params.library);
+
+    if (isCancelled) {
+      notifyConfirmation({ heading: "Order Cancelled", cta: "" });
+      removeUserOrder(params.order);
+    } else {
+      notifyError({ heading: "Something went wrong", cta: "" });
+      dispatch(revertTransaction(transaction));
     }
   }
 );

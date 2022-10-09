@@ -188,6 +188,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       case ButtonActions.restart:
         setValidatorErrors([]);
         dispatch(clear());
+        history.push({ pathname: AppRoutes.make });
         break;
 
       case ButtonActions.sign:
@@ -199,7 +200,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         break;
 
       case ButtonActions.cancel:
-        // Cancel here
+        history.push({ pathname: `/order/${params.compressedOrder}/cancel` });
         break;
 
       default:
@@ -207,13 +208,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     }
   };
 
-  console.log(getOrderStatus(status));
-
   return (
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={getOrderStatus(otcStatus)}
+        orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.senderWallet}
         userAddress={account || undefined}

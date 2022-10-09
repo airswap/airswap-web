@@ -31,12 +31,13 @@ const useSufficientAllowance = (
       token.address === nativeCurrencyAddress
         ? wrappedTokenAddresses[chainId]
         : token.address;
+
     const justifiedToken = findEthOrTokenByAddress(
       justifiedAddress,
       allTokens,
       chainId
     );
-    const tokenAllowance = allowances.swap.values[justifiedToken.address];
+    const tokenAllowance = allowances.swap.values[justifiedToken?.address!];
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the

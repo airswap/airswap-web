@@ -1,13 +1,22 @@
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { MdHistoryEdu } from "react-icons/md";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useWeb3React } from "@web3-react/core";
 
+import { Interface } from "ethers/lib/utils";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { removeUserOrder } from "../../features/myOrders/myOrdersSlice";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
+import { getTakenState } from "../../features/takeOtc/takeOtcHelpers";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
+import useCancellationPending from "../../hooks/useCancellationPending";
+import { OrderStatus } from "../../types/orderStatus";
 import Icon from "../Icon/Icon";
+import { useOrderStatus } from "../OrderDetailWidget/hooks/useOrderStatus";
+import { notifyConfirmation } from "../Toasts/ToastController";
 import { InfoSubHeading, Title } from "../Typography/Typography";
 import {
   Container,
@@ -26,6 +35,8 @@ export const CancelWidget = () => {
   const dispatch = useAppDispatch();
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
+  const hasCancellationPending = useCancellationPending(activeOrder?.nonce!);
+  const orderStatus = useOrderStatus(activeOrder!, chainId, library);
 
   const handleBackButtonClick = () => {
     history.goBack();
@@ -64,7 +75,12 @@ export const CancelWidget = () => {
         <BackButton onClick={handleBackButtonClick}>
           {t("common.back")}
         </BackButton>
-        <CancelButton intent={"primary"} onClick={handleCancelClick}>
+        <CancelButton
+          intent={"primary"}
+          onClick={handleCancelClick}
+          disabled={orderStatus === OrderStatus.taken}
+          loading={hasCancellationPending}
+        >
           {t("orders.confirmCancel")}
         </CancelButton>
       </ButtonContainer>

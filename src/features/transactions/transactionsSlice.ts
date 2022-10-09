@@ -22,7 +22,12 @@ export interface DepositOrWithdrawOrder {
   senderAmount: string;
 }
 
-export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
+export type TransactionType =
+  | "Approval"
+  | "Order"
+  | "Deposit"
+  | "Withdraw"
+  | "Cancel";
 
 export type StatusType =
   | "processing"
@@ -61,6 +66,8 @@ export interface RfqTransaction
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
 }
+
+export interface SubmittedCancellation extends SubmittedTransaction {}
 
 export interface SubmittedDepositOrder extends SubmittedTransaction {
   order: DepositOrWithdrawOrder;
@@ -254,5 +261,10 @@ export const selectPendingApprovals = (state: RootState) =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"
   ) as SubmittedApproval[];
+
+export const selectPendingCancellations = (state: RootState) =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "processing" && tx.type === "Cancel"
+  ) as SubmittedCancellation[];
 
 export default transactionsSlice.reducer;
