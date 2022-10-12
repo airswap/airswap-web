@@ -27,6 +27,7 @@ import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
+import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
@@ -77,6 +78,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     signerAmount!
   );
   const hasApprovalPending = useApprovalPending(order.senderToken);
+  const hasTakingOrderPending = useTakingOrderPending(order.nonce);
   const hasInsufficientAllowance = !useSufficientAllowance(
     senderToken,
     senderAmount
@@ -240,7 +242,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         isExpired={orderIsExpired}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
-        isLoading={["taking"].includes(ordersStatus) || hasApprovalPending}
+        isLoading={
+          ["taking"].includes(ordersStatus) ||
+          hasApprovalPending ||
+          hasTakingOrderPending
+        }
         isMakerOfSwap={userIsMakerOfSwap}
         hasInsufficientBalance={hasInsufficientTokenBalance}
         hasInsufficientAllowance={hasInsufficientAllowance}

@@ -14,7 +14,7 @@ const useValidAddress = (address: string): boolean => {
     }
 
     // Not validating other chains than ethereum right now. Can be added later.
-    if (chainId >= 5) {
+    if (chainId > 5) {
       return true;
     }
 
