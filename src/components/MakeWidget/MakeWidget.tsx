@@ -161,8 +161,8 @@ const MakeWidget: FC = () => {
   useEffect(() => {
     if (lastUserOrder) {
       const compressedOrder = compressFullOrder(lastUserOrder);
-      history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
       dispatch(clearLastUserOrder());
+      history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
     }
   }, [lastUserOrder, history, dispatch]);
 
