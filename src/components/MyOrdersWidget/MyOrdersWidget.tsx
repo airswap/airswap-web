@@ -1,5 +1,6 @@
 import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 import { FullOrder } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
@@ -7,6 +8,8 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { cancelOrder } from "../../features/cancelOtc/cancelOtcActions";
+import { selectCancelOtcReducer } from "../../features/cancelOtc/cancelOtcSlice";
 import { selectAllTokenInfo } from "../../features/metadata/metadataSlice";
 import {
   OrdersSortType,
@@ -14,8 +17,8 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
-import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import { AppRoutes } from "../../routes";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
 import ActionButtons, {
@@ -35,13 +38,19 @@ const MyOrdersWidget: FC = () => {
     library,
     error: web3Error,
   } = useWeb3React<Web3Provider>();
+  const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
   );
+  const { cancelState } = useAppSelector(selectCancelOtcReducer);
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
+
+  const cancelInProgress = useMemo(() => {
+    return cancelState === "in-progress" ? true : false;
+  }, [cancelState]);
 
   const sortedUserOrders = useMemo(() => {
     return chainId
@@ -59,13 +68,9 @@ const MyOrdersWidget: FC = () => {
     const expiry = parseInt(order.expiry) * 1000;
     const isExpired = new Date().getTime() > expiry;
     if (!isExpired) {
-      try {
-        await dispatch(
-          cancelOrder({ order: order, chainId: chainId!, library: library! })
-        );
-      } catch (e) {
-        console.log(e);
-      }
+      await dispatch(
+        cancelOrder({ order: order, chainId: chainId!, library: library! })
+      );
     } else {
       removeUserOrder(order);
     }
@@ -79,11 +84,13 @@ const MyOrdersWidget: FC = () => {
     if (action === ButtonActions.switchNetwork) {
       switchToEthereumChain();
     }
+    if (action === ButtonActions.newOrder) {
+      history.push({ pathname: AppRoutes.make });
+    }
   };
 
   const handleDeleteOrderButtonClick = async (order: FullOrder) => {
     await cancelOrderOnChain(order);
-    dispatch(removeUserOrder(order));
   };
 
   const handleSortButtonClick = (type: OrdersSortType) => {
@@ -120,6 +127,7 @@ const MyOrdersWidget: FC = () => {
         }
         walletIsNotConnected={!active}
         onActionButtonClick={handleActionButtonClick}
+        loading={cancelInProgress}
       />
     </Container>
   );

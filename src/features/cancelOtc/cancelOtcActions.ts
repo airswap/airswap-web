@@ -19,7 +19,7 @@ import {
   clear,
   SubmittedCancellation,
 } from "../transactions/transactionsSlice";
-import { reset, setCancelInProgress, setErrors } from "./cancelOtcSlice";
+import { reset, setCancelState, setErrors } from "./cancelOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
@@ -40,6 +40,7 @@ export const cancelOrder = createAsyncThunk(
           type: AppErrorType.unauthorized,
         })
       );
+      return;
     }
 
     const nonceUsed = await getTakenState(params.order, params.library);
@@ -50,11 +51,11 @@ export const cancelOrder = createAsyncThunk(
           type: AppErrorType.unsupportedMethod,
         })
       );
-      return false;
+      return;
     }
 
     // cancel initiated
-    dispatch(setCancelInProgress(true));
+    dispatch(setCancelState("in-progress"));
 
     const SwapContract = new Contract(
       swapDeploys[params.chainId],
@@ -72,8 +73,9 @@ export const cancelOrder = createAsyncThunk(
                 type: AppErrorType.unknownError,
               })
             );
-        dispatch(setCancelInProgress(false));
-        return false;
+        dispatch(setCancelState("idle"));
+        dispatch(revertTransaction(transaction));
+        return;
       }
     );
 
@@ -92,20 +94,18 @@ export const cancelOrder = createAsyncThunk(
     const isCancelled = await getTakenState(params.order, params.library);
 
     if (isCancelled) {
-      dispatch(reset());
-      dispatch(clear());
       notifyConfirmation({ heading: "Order Cancelled", cta: "" });
       dispatch(removeUserOrder(params.order));
-      return true;
+      dispatch(setCancelState("success"));
+      dispatch(clear());
     } else {
-      dispatch(reset());
       dispatch(
         setErrors({
           type: AppErrorType.unknownError,
         })
       );
       dispatch(revertTransaction(transaction));
-      return false;
+      setCancelState("idle");
     }
   }
 );

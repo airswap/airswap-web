@@ -37,7 +37,7 @@ export const CancelWidget = () => {
   const { chainId, library } = useWeb3React();
   const dispatch = useAppDispatch();
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
-  const { cancelInProgress, errors } = useAppSelector(selectCancelOtcReducer);
+  const { cancelState, errors } = useAppSelector(selectCancelOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
   const hasCancellationPending = useCancellationPending(activeOrder?.nonce!);
   const orderStatus = useOrderStatus(activeOrder!, chainId, library);
@@ -47,14 +47,15 @@ export const CancelWidget = () => {
   };
 
   const handleCancelClick = async () => {
-    const cancel = await dispatch(
+    await dispatch(
       cancelOrder({
         order: activeOrder!,
         chainId: chainId!,
         library: library,
       })
     );
-    if (cancel) {
+
+    if (cancelState === "success") {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
@@ -87,7 +88,7 @@ export const CancelWidget = () => {
           intent={"primary"}
           onClick={handleCancelClick}
           disabled={orderStatus === OrderStatus.taken}
-          loading={cancelInProgress}
+          loading={cancelState === "in-progress"}
         >
           {t("orders.confirmCancel")}
         </CancelButton>

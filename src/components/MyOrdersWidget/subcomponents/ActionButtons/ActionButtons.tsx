@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from "react";
 
-import { AppRoutes } from "../../../../routes";
-import { Container, SignButton, StyledLink } from "./ActionButtons.styles";
+import { Container, SignButton } from "./ActionButtons.styles";
 import { getActionButtonTranslation } from "./helpers";
 
 export enum ButtonActions {
@@ -15,20 +14,21 @@ export enum ButtonActions {
 type ActionButtonsProps = {
   networkIsUnsupported: boolean;
   walletIsNotConnected: boolean;
+  loading: boolean;
   onActionButtonClick: (action: ButtonActions) => void;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
   networkIsUnsupported,
   walletIsNotConnected,
+  loading,
   onActionButtonClick,
 }) => {
   const buttonText = useMemo(() => {
-    return getActionButtonTranslation(
-      networkIsUnsupported,
-      walletIsNotConnected
-    );
-  }, [networkIsUnsupported, walletIsNotConnected]);
+    return loading
+      ? ""
+      : getActionButtonTranslation(networkIsUnsupported, walletIsNotConnected);
+  }, [networkIsUnsupported, walletIsNotConnected, loading]);
 
   const showNewOrderLink = useMemo(
     () => !networkIsUnsupported && !walletIsNotConnected,
@@ -48,7 +48,14 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   return (
     <Container>
       {showNewOrderLink ? (
-        <StyledLink to={AppRoutes.make}>{buttonText}</StyledLink>
+        <SignButton
+          intent="primary"
+          onClick={handleActionButtonClick}
+          disabled={loading}
+          loading={loading}
+        >
+          {buttonText}
+        </SignButton>
       ) : (
         <SignButton intent="primary" onClick={handleActionButtonClick}>
           {buttonText}

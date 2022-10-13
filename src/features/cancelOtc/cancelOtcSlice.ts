@@ -4,12 +4,12 @@ import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
 
 export interface CancelOtcState {
-  cancelInProgress: boolean;
+  cancelState: "idle" | "in-progress" | "success";
   errors: AppError | null;
 }
 
 const initialState: CancelOtcState = {
-  cancelInProgress: false,
+  cancelState: "idle",
   errors: null,
 };
 
@@ -17,13 +17,13 @@ export const cancelOtcSlice = createSlice({
   name: "cancel-otc",
   initialState,
   reducers: {
-    setCancelInProgress: (
+    setCancelState: (
       state,
-      action: PayloadAction<CancelOtcState["cancelInProgress"]>
+      action: PayloadAction<CancelOtcState["cancelState"]>
     ): CancelOtcState => {
       return {
         ...state,
-        cancelInProgress: action.payload,
+        cancelState: action.payload,
       };
     },
     setErrors: (state, action: PayloadAction<AppError>): CancelOtcState => {
@@ -38,7 +38,7 @@ export const cancelOtcSlice = createSlice({
   },
 });
 
-export const { setCancelInProgress, setErrors, reset } = cancelOtcSlice.actions;
+export const { setCancelState, setErrors, reset } = cancelOtcSlice.actions;
 
 export const selectCancelOtcReducer = (state: RootState) => state.cancelOtc;
 
