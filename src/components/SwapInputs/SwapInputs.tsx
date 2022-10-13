@@ -64,10 +64,13 @@ const SwapInputs: FC<{
     () => (isSell ? baseAmount : stringToSignificantDecimals(quoteAmount)),
     [isSell, baseAmount, quoteAmount]
   );
-  const toAmount = useMemo(
-    () => (isSell ? stringToSignificantDecimals(quoteAmount) : baseAmount),
-    [isSell, baseAmount, quoteAmount]
-  );
+  const toAmount = useMemo(() => {
+    const formattedAmount = canSetQuoteAmount
+      ? quoteAmount
+      : stringToSignificantDecimals(quoteAmount);
+
+    return isSell ? formattedAmount : baseAmount;
+  }, [isSell, canSetQuoteAmount, baseAmount, quoteAmount]);
   const maxAmountInfoText = useMemo(
     () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
     [baseTokenInfo, maxAmount, t]

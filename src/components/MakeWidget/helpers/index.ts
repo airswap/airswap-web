@@ -1,5 +1,7 @@
 import i18n from "i18next";
 
+import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
+
 export const getActionButtonTranslation = (
   hasInsufficientAllowance: boolean,
   hasInsufficientBalance: boolean,
@@ -56,4 +58,25 @@ export const getActionButtonTranslation = (
   }
 
   return i18n.t("common.sign");
+};
+
+export const getNewTokenPair = (
+  type: TokenSelectModalTypes,
+  newToken: string,
+  tokenTo?: string,
+  tokenFrom?: string
+): { tokenFrom?: string; tokenTo?: string } => {
+  let newTokenTo = type === "quote" ? newToken : tokenTo;
+  let newTokenFrom = type === "base" ? newToken : tokenFrom;
+
+  if (newTokenTo === newTokenFrom && type === "quote") {
+    newTokenFrom = tokenTo as string;
+  } else if (newTokenTo === newTokenFrom && type === "base") {
+    newTokenTo = tokenFrom as string;
+  }
+
+  return {
+    tokenFrom: newTokenFrom,
+    tokenTo: newTokenTo,
+  };
 };

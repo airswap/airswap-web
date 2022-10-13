@@ -64,6 +64,7 @@ import {
   StyledOrderTypeSelector,
   StyledRateField,
 } from "./MakeWidget.styles";
+import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
@@ -165,25 +166,23 @@ const MakeWidget: FC = () => {
     }
   }, [lastUserOrder, history, dispatch]);
 
-  // Event handler's
+  // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
     setOrderType(isChecked ? OrderType.publicListed : OrderType.publicUnlisted);
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
-    let newTokenTo = type === "quote" ? value : userTokens.tokenTo;
-    let newTokenFrom = type === "base" ? value : userTokens.tokenFrom;
-
-    if (newTokenTo === newTokenFrom && type === "quote") {
-      newTokenFrom = userTokens.tokenTo;
-    } else if (newTokenTo === newTokenFrom && type === "base") {
-      newTokenTo = userTokens.tokenFrom;
-    }
+    const { tokenFrom, tokenTo } = getNewTokenPair(
+      type,
+      value,
+      userTokens.tokenFrom || defaultTokenFromAddress || undefined,
+      userTokens.tokenTo || defaultTokenToAddress || undefined
+    );
 
     dispatch(
       setUserTokens({
-        tokenFrom: newTokenFrom,
-        tokenTo: newTokenTo,
+        tokenFrom,
+        tokenTo,
       })
     );
   };
