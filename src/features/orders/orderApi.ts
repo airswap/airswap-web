@@ -1,7 +1,7 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Swap, Server, Wrapper } from "@airswap/libraries";
-import { Order } from "@airswap/typescript";
+import { FullOrder, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
@@ -16,6 +16,7 @@ import {
 } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -26,14 +27,15 @@ const WETHInterface = new utils.Interface(JSON.stringify(WETHContract.abi));
 async function swap(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: Order
+  order: Order | FullOrder
 ) {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
-  return await new Swap(chainId, provider).swap(
-    order,
-    // @ts-ignore
-    provider.getSigner()
-  );
+  if ("senderWallet" in order && order.senderWallet === nativeCurrencyAddress) {
+    return await new Swap(chainId, provider).swapAnySender(
+      order,
+      provider.getSigner()
+    );
+  }
+  return await new Swap(chainId, provider).swap(order, provider.getSigner());
 }
 
 async function swapWrapper(
@@ -41,12 +43,7 @@ async function swapWrapper(
   provider: ethers.providers.Web3Provider,
   order: Order
 ) {
-  // @ts-ignore TODO: type compatability issue with AirSwap lib
-  return await new Wrapper(chainId, provider).swap(
-    order,
-    // @ts-ignore
-    provider.getSigner()
-  );
+  return await new Wrapper(chainId, provider).swap(order, provider.getSigner());
 }
 
 export async function requestOrders(
@@ -107,7 +104,7 @@ export async function approveToken(
 }
 
 export async function takeOrder(
-  order: Order,
+  order: Order | FullOrder,
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper"
 ) {

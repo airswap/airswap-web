@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/typescript";
+import { FullOrder, TokenInfo } from "@airswap/typescript";
 
 import i18n from "i18next";
 
@@ -13,6 +13,7 @@ import {
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import ErrorToast from "./ErrorToast";
+import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
@@ -92,6 +93,15 @@ export const notifyError = (props: { heading: string; cta: string }) => {
         cta={props.cta}
       />
     ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyOrderCreated = (order: FullOrder) => {
+  toast(
+    (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
     {
       duration: 3000,
     }

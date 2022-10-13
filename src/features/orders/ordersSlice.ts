@@ -1,6 +1,6 @@
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Server } from "@airswap/libraries";
-import { Levels, Order } from "@airswap/typescript";
+import { FullOrder, Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
@@ -403,7 +403,7 @@ export const take = createAsyncThunk<
   void,
   // Params
   {
-    order: Order;
+    order: Order | FullOrder;
     library: any;
     contractType: "Swap" | "Wrapper";
     onExpired: () => void;

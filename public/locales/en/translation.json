@@ -165,7 +165,8 @@
     "removeFromList": "Remove from list",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
     "startByCreatingANewOrder": "Start by creating a new order",
-    "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order."
+    "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order.",
+    "orderSuccessfullyCreated": "Order successfully created."
   },
   "toast": {
     "swapComplete": "Swap Complete",

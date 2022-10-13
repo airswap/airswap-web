@@ -145,7 +145,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       library.getSigner()
     )) as SwapError[];
 
-    if (errors.length) {
+    // TODO: Skipping when senderWallet is 0x00 for now. Check function needs to be updated first.
+    if (errors.length && order.senderWallet !== nativeCurrencyAddress) {
       setValidatorErrors(errors);
       return;
     }

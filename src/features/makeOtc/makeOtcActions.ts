@@ -7,7 +7,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ethers } from "ethers";
 
-import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
+import {
+  notifyOrderCreated,
+  notifyRejectedByUserError,
+} from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
 import { createSwapSignature } from "../../helpers/createSwapSignature";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
@@ -78,6 +81,7 @@ export const createOtcOrder = createAsyncThunk(
       };
 
       dispatch(setUserOrder(fullOrder));
+      notifyOrderCreated(fullOrder);
     } catch (error) {
       console.error(error);
       dispatch(setStatus("failed"));
