@@ -1,18 +1,12 @@
-import { Swap } from "@airswap/libraries";
-import { fetchTokens } from "@airswap/metadata";
+import { chainNames } from "@airswap/constants";
 import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys";
 import { FullOrder } from "@airswap/typescript";
-import {
-  decompressFullOrder,
-  getSignerFromSwapSignature,
-  isValidFullOrder,
-  orderPropsToStrings,
-} from "@airswap/utils";
+import { decompressFullOrder, isValidFullOrder } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { error } from "console";
+import compareAsc from "date-fns/compareAsc";
 import { ethers, utils, Contract } from "ethers";
 
 import {
@@ -20,7 +14,7 @@ import {
   notifyError,
   notifyConfirmation,
 } from "../../components/Toasts/ToastController";
-import { isRpcError } from "../../errors/rpcError";
+import i18n from "../../i18n/i18n";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import {
   revertTransaction,
@@ -28,7 +22,12 @@ import {
 } from "../transactions/transactionActions";
 import { SubmittedCancellation } from "../transactions/transactionsSlice";
 import { getTakenState } from "./takeOtcHelpers";
-import { reset, setActiveOrder, setStatus, setErrors } from "./takeOtcSlice";
+import {
+  reset,
+  setActiveOrder,
+  setCancelInProgress,
+  setStatus,
+} from "./takeOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
@@ -53,47 +52,6 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
   }
 );
 
-export const takeOtcOrder = createAsyncThunk(
-  "take-otc/takeOtcOrder",
-  async (
-    params: {
-      chainId: number;
-      order: FullOrder;
-      library: ethers.providers.Web3Provider;
-    },
-    { dispatch }
-  ) => {
-    console.log(params);
-
-    const errors = await new Swap(params.chainId).check(
-      params.order,
-      params.order.senderWallet,
-      params.library.getSigner()
-    );
-
-    console.log(errors);
-
-    const signerWallet = getSignerFromSwapSignature(
-      params.order,
-      swapDeploys[params.chainId],
-      params.chainId,
-      params.order.v,
-      params.order.r,
-      params.order.s
-    );
-
-    console.log(signerWallet);
-
-    // @ts-ignore
-    const swap = await new Swap(params.chainId, params.library).swap(
-      params.order,
-      params.library.getSigner()
-    );
-
-    console.log(swap);
-  }
-);
-
 export const cancelOrder = createAsyncThunk(
   "take-otc/cancelOrder",
   async (
@@ -104,6 +62,34 @@ export const cancelOrder = createAsyncThunk(
     },
     { dispatch }
   ) => {
+    // pre-cancel checks
+    if (params.chainId.toString() !== params.order.chainId) {
+      notifyError({
+        heading: i18n.t("toast.cancelFail"),
+        cta: i18n.t("orders.thisOrderIsForAnotherChain", {
+          chainName: chainNames[parseInt(params.order.chainId)],
+        }),
+      });
+      return;
+    }
+
+    const orderIsExpired =
+      compareAsc(new Date(), new Date(parseInt(params.order.expiry) * 1000)) ===
+      1;
+
+    const nonceUsed = await getTakenState(params.order, params.library);
+
+    if (nonceUsed || orderIsExpired) {
+      notifyError({
+        heading: i18n.t("toast.cancelFail"),
+        cta: i18n.t("validatorErrors.nonce_already_used"),
+      });
+      return;
+    }
+
+    // cancel initiated
+    dispatch(setCancelInProgress(true));
+
     const SwapContract = new Contract(
       swapDeploys[params.chainId],
       SwapInterface,
@@ -111,31 +97,17 @@ export const cancelOrder = createAsyncThunk(
       params.library.getSigner()
     );
 
-    // pre-cancel checks
-    const _nonceTx = await getTakenState(params.order, params.library);
-
-    if (params.chainId.toString() !== params.order.chainId) {
-      notifyError({
-        heading: "Wrong chain",
-        cta: "Switch to correct chain",
-      });
-      return false;
-    }
-
-    if (_nonceTx) {
-      notifyError({
-        heading: "Unable to cancel",
-        cta: "Order has already been canceled or taken",
-      });
-      return false;
-    }
-
-    // cancel initiated
     const tx = await SwapContract.cancel([params.order.nonce]).catch(
-      (e: unknown) => {
-        isRpcError(e) && e.code === 4001
+      (e: any) => {
+        e.code === "ACTION_REJECTED"
           ? notifyRejectedByUserError()
-          : notifyError({ heading: "Something went wrong", cta: "" });
+          : notifyError({
+              heading: i18n.t("toast.cancelFail"),
+              cta: i18n.t("validatorErrors.unknownError"),
+            });
+        dispatch(setCancelInProgress(false));
+        dispatch(revertTransaction(transaction));
+        return;
       }
     );
 
@@ -154,11 +126,18 @@ export const cancelOrder = createAsyncThunk(
     const isCancelled = await getTakenState(params.order, params.library);
 
     if (isCancelled) {
-      notifyConfirmation({ heading: "Order Cancelled", cta: "" });
-      removeUserOrder(params.order);
+      notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
+      dispatch(setCancelInProgress(false));
+      dispatch(setStatus("canceled"));
+      dispatch(removeUserOrder(params.order));
     } else {
-      notifyError({ heading: "Something went wrong", cta: "" });
+      notifyError({
+        heading: i18n.t("toast.cancelFail"),
+        cta: i18n.t("validatorErrors.unknownError"),
+      });
+
       dispatch(revertTransaction(transaction));
+      dispatch(setCancelInProgress(false));
     }
   }
 );

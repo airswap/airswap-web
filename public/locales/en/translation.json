@@ -177,7 +177,9 @@
     "approvalComplete": "Approval Complete",
     "approvalFail": "Approval Fail",
     "approve": "Approve {{symbol}}",
-    "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
+    "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+    "cancelComplete": "Cancel Complete",
+    "cancelFail": "Cancel Failed"
   },
   "validatorErrors": {
     "signature_invalid": "Invalid signature",

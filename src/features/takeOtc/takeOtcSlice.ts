@@ -7,11 +7,13 @@ import { ErrorType } from "../../constants/errors";
 export interface TakeOtcState {
   activeOrder?: FullOrder;
   status: "idle" | "not-found" | "open" | "taken" | "canceled";
+  cancelInProgress: boolean;
   errors: ErrorType[];
 }
 
 const initialState: TakeOtcState = {
   status: "idle",
+  cancelInProgress: false,
   errors: [],
 };
 
@@ -34,6 +36,15 @@ export const takeOtcSlice = createSlice({
         status: action.payload,
       };
     },
+    setCancelInProgress: (
+      state,
+      action: PayloadAction<TakeOtcState["cancelInProgress"]>
+    ): TakeOtcState => {
+      return {
+        ...state,
+        cancelInProgress: action.payload,
+      };
+    },
     setErrors: (state, action: PayloadAction<ErrorType[]>): TakeOtcState => {
       return {
         ...state,
@@ -46,8 +57,13 @@ export const takeOtcSlice = createSlice({
   },
 });
 
-export const { setActiveOrder, setStatus, setErrors, reset } =
-  takeOtcSlice.actions;
+export const {
+  setActiveOrder,
+  setStatus,
+  setCancelInProgress,
+  setErrors,
+  reset,
+} = takeOtcSlice.actions;
 
 export const selectTakeOtcReducer = (state: RootState) => state.takeOtc;
 

@@ -8,8 +8,6 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { cancelOrder } from "../../features/cancelOtc/cancelOtcActions";
-import { selectCancelOtcReducer } from "../../features/cancelOtc/cancelOtcSlice";
 import { selectAllTokenInfo } from "../../features/metadata/metadataSlice";
 import {
   OrdersSortType,
@@ -17,6 +15,8 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
+import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
+import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import { AppRoutes } from "../../routes";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
@@ -43,14 +43,10 @@ const MyOrdersWidget: FC = () => {
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
   );
-  const { cancelState } = useAppSelector(selectCancelOtcReducer);
+  const { cancelInProgress } = useAppSelector(selectTakeOtcReducer);
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
-
-  const cancelInProgress = useMemo(() => {
-    return cancelState === "in-progress" ? true : false;
-  }, [cancelState]);
 
   const sortedUserOrders = useMemo(() => {
     return chainId
@@ -72,7 +68,7 @@ const MyOrdersWidget: FC = () => {
         cancelOrder({ order: order, chainId: chainId!, library: library! })
       );
     } else {
-      removeUserOrder(order);
+      dispatch(removeUserOrder(order));
     }
   };
 
@@ -90,7 +86,9 @@ const MyOrdersWidget: FC = () => {
   };
 
   const handleDeleteOrderButtonClick = async (order: FullOrder) => {
-    await cancelOrderOnChain(order);
+    if (!cancelInProgress) {
+      await cancelOrderOnChain(order);
+    }
   };
 
   const handleSortButtonClick = (type: OrdersSortType) => {
