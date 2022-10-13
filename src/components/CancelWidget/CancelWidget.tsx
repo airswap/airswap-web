@@ -1,23 +1,26 @@
-import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { MdHistoryEdu } from "react-icons/md";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useWeb3React } from "@web3-react/core";
 
-import { Interface } from "ethers/lib/utils";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { removeUserOrder } from "../../features/myOrders/myOrdersSlice";
-import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
-import { getTakenState } from "../../features/takeOtc/takeOtcHelpers";
+import { AppErrorType } from "../../errors/appError";
+import { cancelOrder } from "../../features/cancelOtc/cancelOtcActions";
+import { reset } from "../../features/cancelOtc/cancelOtcSlice";
+import {
+  selectCancelOtcReducer,
+  setErrors,
+} from "../../features/cancelOtc/cancelOtcSlice";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../hooks/useCancellationPending";
+import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
+import { ErrorList } from "../ErrorList/ErrorList";
 import Icon from "../Icon/Icon";
 import { useOrderStatus } from "../OrderDetailWidget/hooks/useOrderStatus";
-import { notifyConfirmation } from "../Toasts/ToastController";
-import { InfoSubHeading, Title } from "../Typography/Typography";
+import Overlay from "../Overlay/Overlay";
+import { Title } from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
 import {
   Container,
   StyledInfoHeading,
@@ -34,6 +37,7 @@ export const CancelWidget = () => {
   const { chainId, library } = useWeb3React();
   const dispatch = useAppDispatch();
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
+  const { cancelInProgress, errors } = useAppSelector(selectCancelOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
   const hasCancellationPending = useCancellationPending(activeOrder?.nonce!);
   const orderStatus = useOrderStatus(activeOrder!, chainId, library);
@@ -43,18 +47,22 @@ export const CancelWidget = () => {
   };
 
   const handleCancelClick = async () => {
-    try {
-      await dispatch(
-        cancelOrder({
-          order: activeOrder!,
-          chainId: chainId!,
-          library: library,
-        })
-      );
-      history.push({ pathname: `/order/${params.compressedOrder}` });
-    } catch (e) {
-      console.error(e);
+    const cancel = await dispatch(
+      cancelOrder({
+        order: activeOrder!,
+        chainId: chainId!,
+        library: library,
+      })
+    );
+    if (cancel) {
+      history.push({
+        pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
+      });
     }
+  };
+
+  const handleErrorListClose = () => {
+    dispatch(reset());
   };
 
   return (
@@ -79,11 +87,22 @@ export const CancelWidget = () => {
           intent={"primary"}
           onClick={handleCancelClick}
           disabled={orderStatus === OrderStatus.taken}
-          loading={hasCancellationPending}
+          loading={cancelInProgress}
         >
           {t("orders.confirmCancel")}
         </CancelButton>
       </ButtonContainer>
+      <Overlay
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
+        onCloseButtonClick={handleErrorListClose}
+        isHidden={!errors}
+      >
+        <ErrorList
+          errors={errors ? [errors] : []}
+          onBackButtonClick={handleErrorListClose}
+        />
+      </Overlay>
     </Container>
   );
 };

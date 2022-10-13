@@ -4,6 +4,7 @@ import {
   balancesReducer,
   allowancesReducer,
 } from "../features/balances/balancesSlice";
+import cancelOtcReducer from "../features/cancelOtc/cancelOtcSlice";
 import gasCostReducer from "../features/gasCost/gasCostSlice";
 import makeOtcReducer from "../features/makeOtc/makeOtcSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
@@ -34,6 +35,7 @@ export const store = configureStore({
     makeOtc: makeOtcReducer,
     myOrders: myOrdersReducer,
     takeOtc: takeOtcReducer,
+    cancelOtc: cancelOtcReducer,
   },
 });
 
