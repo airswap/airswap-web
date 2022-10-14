@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { matchPath, useHistory, useParams } from "react-router-dom";
 
 import { Swap } from "@airswap/libraries";
 import { FullOrder } from "@airswap/typescript";
@@ -58,6 +58,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
   const { status: otcStatus } = useAppSelector(selectTakeOtcReducer);
@@ -203,6 +204,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         break;
     }
   };
+
+  console.log(getOrderStatus(status));
 
   return (
     <Container>
