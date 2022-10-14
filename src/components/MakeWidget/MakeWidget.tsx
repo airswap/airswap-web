@@ -175,8 +175,8 @@ const MakeWidget: FC = () => {
     const { tokenFrom, tokenTo } = getNewTokenPair(
       type,
       value,
-      userTokens.tokenFrom || defaultTokenFromAddress || undefined,
-      userTokens.tokenTo || defaultTokenToAddress || undefined
+      userTokens.tokenTo || defaultTokenToAddress || undefined,
+      userTokens.tokenFrom || defaultTokenFromAddress || undefined
     );
 
     dispatch(
