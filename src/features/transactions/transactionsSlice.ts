@@ -262,4 +262,9 @@ export const selectPendingApprovals = (state: RootState) =>
     (tx) => tx.status === "processing" && tx.type === "Approval"
   ) as SubmittedApproval[];
 
+export const selectPendingCancellations = (state: RootState) =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "processing" && tx.type === "Cancel"
+  ) as SubmittedCancellation[];
+
 export default transactionsSlice.reducer;

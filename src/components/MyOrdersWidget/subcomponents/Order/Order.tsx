@@ -5,8 +5,10 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
+import useCancelPending from "../../../../hooks/useCancelPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { getTokenAmountWithDecimals } from "../../helpers";
 import {
   Circle,
@@ -39,6 +41,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 }) => {
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
+  const cancelInProgress = useCancelPending(order.nonce);
 
   const senderAmount = useMemo(
     () =>
@@ -74,13 +77,17 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 
       <ActionButtonContainer>
-        <ActionButton
-          icon={`${isExpired ? "bin" : "button-x"}`}
-          iconSize={0.75}
-          onClick={handleDeleteOrderButtonClick}
-          onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
-          onMouseLeave={onDeleteOrderButtonMouseLeave}
-        />
+        {cancelInProgress ? (
+          <LoadingSpinner />
+        ) : (
+          <ActionButton
+            icon={`${isExpired ? "bin" : "button-x"}`}
+            iconSize={0.75}
+            onClick={handleDeleteOrderButtonClick}
+            onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
+            onMouseLeave={onDeleteOrderButtonMouseLeave}
+          />
+        )}
       </ActionButtonContainer>
     </Container>
   );

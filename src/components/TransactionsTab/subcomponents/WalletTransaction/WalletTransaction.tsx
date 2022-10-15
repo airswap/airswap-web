@@ -58,7 +58,6 @@ const WalletTransaction = ({
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
-    // const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
     const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>

@@ -7,6 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
+import useCancellationPending from "../../hooks/useCancelPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import Icon from "../Icon/Icon";
@@ -28,10 +29,14 @@ export const CancelWidget = () => {
   const history = useHistory();
   const { chainId, library } = useWeb3React();
   const dispatch = useAppDispatch();
-  const { status, activeOrder, cancelInProgress } =
-    useAppSelector(selectTakeOtcReducer);
+  const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
-  const orderStatus = useOrderStatus(activeOrder!, chainId, library);
+  const orderStatus = useOrderStatus();
+  const cancelInProgress = useCancellationPending(activeOrder!.nonce);
+  const wrongChainId = useMemo(() => {
+    return chainId?.toString() !== activeOrder!.chainId;
+  }, [chainId, activeOrder]);
+  const isExpired = new Date().getTime() > parseInt(activeOrder!.expiry) * 1000;
 
   const handleBackButtonClick = () => {
     history.goBack();
@@ -76,7 +81,9 @@ export const CancelWidget = () => {
         <CancelButton
           intent={"primary"}
           onClick={handleCancelClick}
-          disabled={orderStatus === OrderStatus.taken}
+          disabled={
+            orderStatus === OrderStatus.taken || wrongChainId || isExpired
+          }
           loading={cancelInProgress}
         >
           {t("orders.confirmCancel")}

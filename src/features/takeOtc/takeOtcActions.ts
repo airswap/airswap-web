@@ -1,4 +1,3 @@
-import { chainNames } from "@airswap/constants";
 import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys";
@@ -6,7 +5,6 @@ import { FullOrder } from "@airswap/typescript";
 import { decompressFullOrder, isValidFullOrder } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import compareAsc from "date-fns/compareAsc";
 import { ethers, utils, Contract } from "ethers";
 
 import {
@@ -22,12 +20,7 @@ import {
 } from "../transactions/transactionActions";
 import { SubmittedCancellation } from "../transactions/transactionsSlice";
 import { getTakenState } from "./takeOtcHelpers";
-import {
-  reset,
-  setActiveOrder,
-  setCancelInProgress,
-  setStatus,
-} from "./takeOtcSlice";
+import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
@@ -63,23 +56,9 @@ export const cancelOrder = createAsyncThunk(
     { dispatch }
   ) => {
     // pre-cancel checks
-    if (params.chainId.toString() !== params.order.chainId) {
-      notifyError({
-        heading: i18n.t("toast.cancelFail"),
-        cta: i18n.t("orders.thisOrderIsForAnotherChain", {
-          chainName: chainNames[parseInt(params.order.chainId)],
-        }),
-      });
-      return;
-    }
-
-    const orderIsExpired =
-      compareAsc(new Date(), new Date(parseInt(params.order.expiry) * 1000)) ===
-      1;
-
     const nonceUsed = await getTakenState(params.order, params.library);
 
-    if (nonceUsed || orderIsExpired) {
+    if (nonceUsed) {
       notifyError({
         heading: i18n.t("toast.cancelFail"),
         cta: i18n.t("validatorErrors.nonce_already_used"),
@@ -88,7 +67,6 @@ export const cancelOrder = createAsyncThunk(
     }
 
     // cancel initiated
-    dispatch(setCancelInProgress(true));
 
     const SwapContract = new Contract(
       swapDeploys[params.chainId],
@@ -105,7 +83,6 @@ export const cancelOrder = createAsyncThunk(
               heading: i18n.t("toast.cancelFail"),
               cta: i18n.t("validatorErrors.unknownError"),
             });
-        dispatch(setCancelInProgress(false));
         dispatch(revertTransaction(transaction));
         return;
       }
@@ -127,7 +104,6 @@ export const cancelOrder = createAsyncThunk(
 
     if (isCancelled) {
       notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
-      dispatch(setCancelInProgress(false));
       dispatch(setStatus("canceled"));
       dispatch(removeUserOrder(params.order));
     } else {
@@ -137,7 +113,6 @@ export const cancelOrder = createAsyncThunk(
       });
 
       dispatch(revertTransaction(transaction));
-      dispatch(setCancelInProgress(false));
     }
   }
 );

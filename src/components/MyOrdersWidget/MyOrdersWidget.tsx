@@ -43,7 +43,6 @@ const MyOrdersWidget: FC = () => {
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
   );
-  const { cancelInProgress } = useAppSelector(selectTakeOtcReducer);
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -86,9 +85,7 @@ const MyOrdersWidget: FC = () => {
   };
 
   const handleDeleteOrderButtonClick = async (order: FullOrder) => {
-    if (!cancelInProgress) {
-      await cancelOrderOnChain(order);
-    }
+    await cancelOrderOnChain(order);
   };
 
   const handleSortButtonClick = (type: OrdersSortType) => {
@@ -125,7 +122,6 @@ const MyOrdersWidget: FC = () => {
         }
         walletIsNotConnected={!active}
         onActionButtonClick={handleActionButtonClick}
-        loading={cancelInProgress}
       />
     </Container>
   );

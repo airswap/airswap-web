@@ -3,7 +3,7 @@ import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json"
 import * as swapDeploys from "@airswap/swap/deploys";
 import { FullOrder } from "@airswap/typescript";
 
-import { ethers, utils, Contract, providers } from "ethers";
+import { utils, Contract, providers } from "ethers";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 

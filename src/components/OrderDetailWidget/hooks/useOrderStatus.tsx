@@ -1,25 +1,23 @@
 import { useState, useMemo } from "react";
 
-import { FullOrder } from "@airswap/typescript";
+import { useWeb3React } from "@web3-react/core";
 
-import { ethers } from "ethers";
-
+import { useAppSelector } from "../../../app/hooks";
 import { getTakenState } from "../../../features/takeOtc/takeOtcHelpers";
+import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
 import { OrderStatus } from "../../../types/orderStatus";
 
-export const useOrderStatus = (
-  order: FullOrder,
-  chainId: number | undefined,
-  library: ethers.providers.Web3Provider | undefined
-) => {
+export const useOrderStatus = () => {
+  const { activeOrder } = useAppSelector(selectTakeOtcReducer);
+  const { chainId, library } = useWeb3React();
   const [isTaken, setIsTaken] = useState(OrderStatus.open);
 
   useMemo(() => {
-    if (library && chainId?.toString() === order.chainId) {
-      getTakenState(order, library).then((r) =>
+    if (library && chainId?.toString() === activeOrder!.chainId) {
+      getTakenState(activeOrder!, library).then((r) =>
         setIsTaken(r ? OrderStatus.taken : OrderStatus.open)
       );
     }
-  }, [order, chainId, library]);
+  }, [activeOrder, chainId, library]);
   return isTaken;
 };
