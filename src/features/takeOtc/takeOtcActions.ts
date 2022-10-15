@@ -63,6 +63,7 @@ export const cancelOrder = createAsyncThunk(
         heading: i18n.t("toast.cancelFail"),
         cta: i18n.t("validatorErrors.nonce_already_used"),
       });
+      dispatch(removeUserOrder(params.order));
       return;
     }
 
