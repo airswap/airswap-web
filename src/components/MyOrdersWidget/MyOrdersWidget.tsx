@@ -16,7 +16,6 @@ import {
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import { AppRoutes } from "../../routes";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";

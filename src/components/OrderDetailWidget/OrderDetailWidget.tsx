@@ -22,7 +22,6 @@ import {
   selectOrdersStatus,
   take,
 } from "../../features/orders/ordersSlice";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";

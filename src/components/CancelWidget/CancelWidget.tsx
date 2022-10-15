@@ -7,7 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
-import useCancellationPending from "../../hooks/useCancelPending";
+import useCancellationPending from "../../hooks/useCancellationPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import Icon from "../Icon/Icon";

@@ -5,7 +5,7 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
-import useCancelPending from "../../../../hooks/useCancelPending";
+import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
