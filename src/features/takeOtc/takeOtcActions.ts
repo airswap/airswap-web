@@ -20,7 +20,12 @@ import {
 } from "../transactions/transactionActions";
 import { SubmittedCancellation } from "../transactions/transactionsSlice";
 import { getTakenState } from "./takeOtcHelpers";
-import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
+import {
+  reset,
+  setActiveOrder,
+  setIsCancelSuccessFull,
+  setStatus,
+} from "./takeOtcSlice";
 
 const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
@@ -104,16 +109,13 @@ export const cancelOrder = createAsyncThunk(
     const isCancelled = await getTakenState(params.order, params.library);
 
     if (isCancelled) {
+      dispatch(setIsCancelSuccessFull(true));
       notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
-      dispatch(setStatus("canceled"));
-      dispatch(removeUserOrder(params.order));
     } else {
       notifyError({
         heading: i18n.t("toast.cancelFail"),
         cta: i18n.t("validatorErrors.unknownError"),
       });
-
-      dispatch(revertTransaction(transaction));
     }
   }
 );

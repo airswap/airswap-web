@@ -1,12 +1,17 @@
-import { useMemo } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
+import { FullOrder } from "@airswap/typescript";
+import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
+import {
+  selectTakeOtcReducer,
+  setIsCancelSuccessFull,
+} from "../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../hooks/useCancellationPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
@@ -24,36 +29,44 @@ import {
   CancelButton,
 } from "./CancelWidget.styles";
 
-export const CancelWidget = () => {
+interface CancelWidgetProps {
+  library: Web3Provider;
+  order: FullOrder;
+}
+
+export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { chainId, library } = useWeb3React();
+  const { chainId } = useWeb3React();
   const dispatch = useAppDispatch();
-  const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
+  const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
   const params = useParams<{ compressedOrder: string }>();
-  const orderStatus = useOrderStatus();
-  const cancelInProgress = useCancellationPending(activeOrder!.nonce);
+  const orderStatus = useOrderStatus(order);
+  const cancelInProgress = useCancellationPending(order.nonce);
+  const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;
+
   const wrongChainId = useMemo(() => {
-    return chainId?.toString() !== activeOrder!.chainId;
-  }, [chainId, activeOrder]);
-  const isExpired = new Date().getTime() > parseInt(activeOrder!.expiry) * 1000;
+    return chainId?.toString() !== order.chainId;
+  }, [chainId, order]);
 
   const handleBackButtonClick = () => {
     history.goBack();
   };
 
-  useMemo(() => {
-    if (status === "canceled") {
+  useEffect(() => {
+    if (isCancelSuccessFull) {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
+
+      dispatch(setIsCancelSuccessFull(false));
     }
-  }, [history, params, status]);
+  }, [history, params, isCancelSuccessFull, dispatch]);
 
   const handleCancelClick = async () => {
     await dispatch(
       cancelOrder({
-        order: activeOrder!,
+        order,
         chainId: chainId!,
         library: library,
       })

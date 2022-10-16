@@ -64,7 +64,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const orderStatus = useOrderStatus();
+  const orderStatus = useOrderStatus(order);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
@@ -126,13 +126,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
 
   // button handlers
   const handleBackButtonClick = () => {
-    if (orderType === OrderType.private) {
-      !userIsIntendedRecipient
-        ? history.push({ pathname: AppRoutes.make })
-        : history.push({ pathname: `/` });
-    } else {
-      history.goBack();
-    }
+    history.push({ pathname: AppRoutes.myOrders });
   };
 
   const handleCopyButtonClick = () => {

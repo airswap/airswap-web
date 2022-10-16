@@ -18,6 +18,5 @@ export const getTakenState = async (
     library.getSigner()
   );
 
-  let tx = await SwapContract.nonceUsed(order.signerWallet, order.nonce);
-  return tx;
+  return SwapContract.nonceUsed(order.signerWallet, order.nonce);
 };

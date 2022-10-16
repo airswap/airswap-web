@@ -4,7 +4,6 @@ import {
   SubmittedTransaction,
   SubmittedApproval,
   ProtocolType,
-  SubmittedCancellation,
 } from "./transactionsSlice";
 
 const submitTransaction = createAction<

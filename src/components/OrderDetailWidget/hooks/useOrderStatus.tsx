@@ -1,23 +1,28 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 
+import { FullOrder } from "@airswap/typescript";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppSelector } from "../../../app/hooks";
 import { getTakenState } from "../../../features/takeOtc/takeOtcHelpers";
-import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
 import { OrderStatus } from "../../../types/orderStatus";
 
-export const useOrderStatus = () => {
-  const { activeOrder } = useAppSelector(selectTakeOtcReducer);
-  const { chainId, library } = useWeb3React();
-  const [isTaken, setIsTaken] = useState(OrderStatus.open);
+export const useOrderStatus = (order: FullOrder): OrderStatus => {
+  const { library } = useWeb3React();
+  const [isTaken, setIsTaken] = useState(false);
 
-  useMemo(() => {
-    if (library && chainId?.toString() === activeOrder!.chainId) {
-      getTakenState(activeOrder!, library).then((r) =>
-        setIsTaken(r ? OrderStatus.taken : OrderStatus.open)
-      );
+  const asyncGetTakenState = useCallback(async () => {
+    if (order && library) {
+      const response = await getTakenState(order, library);
+
+      setIsTaken(response);
     }
-  }, [activeOrder, chainId, library]);
-  return isTaken;
+  }, [order, library]);
+
+  useEffect(() => {
+    if (order && library) {
+      asyncGetTakenState().catch(console.error);
+    }
+  }, [order, library, asyncGetTakenState]);
+
+  return isTaken ? OrderStatus.taken : OrderStatus.open;
 };
