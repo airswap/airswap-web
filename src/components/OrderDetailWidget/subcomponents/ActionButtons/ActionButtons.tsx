@@ -17,14 +17,15 @@ export enum ButtonActions {
 type ActionButtonsProps = {
   hasInsufficientAllowance: boolean;
   hasInsufficientBalance: boolean;
+  isCanceled: boolean;
   isExpired: boolean;
   isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
   isLoading: boolean;
   isMakerOfSwap: boolean;
-  orderType: OrderType;
   isNotConnected: boolean;
+  orderType: OrderType;
   networkIsUnsupported: boolean;
   senderTokenSymbol?: string;
   onBackButtonClick: () => void;
@@ -34,6 +35,7 @@ type ActionButtonsProps = {
 const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientAllowance,
   hasInsufficientBalance,
+  isCanceled,
   isExpired,
   isTaken,
   isDifferentChainId,
@@ -66,7 +68,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("wallet.connectWallet");
     }
 
-    if (isExpired || isTaken) {
+    if (isExpired || isTaken || isCanceled) {
       return t("orders.newSwap");
     }
 
@@ -98,7 +100,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onActionButtonClick(ButtonActions.connectWallet);
     }
 
-    if (isExpired || isTaken) {
+    if (isExpired || isTaken || isCanceled) {
       return onActionButtonClick(ButtonActions.restart);
     }
 

@@ -15,6 +15,7 @@ import {
 import i18n from "../../i18n/i18n";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import {
+  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionActions";
@@ -42,6 +43,7 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
       }
 
       dispatch(setActiveOrder(order));
+
       dispatch(setStatus("open"));
     } catch (e) {
       console.error(e);
@@ -73,7 +75,6 @@ export const cancelOrder = createAsyncThunk(
     }
 
     // cancel initiated
-
     const SwapContract = new Contract(
       swapDeploys[params.chainId],
       SwapInterface,
@@ -107,6 +108,8 @@ export const cancelOrder = createAsyncThunk(
 
     // post-cancel clean up
     const isCancelled = await getTakenState(params.order, params.library);
+    dispatch(mineTransaction(tx));
+    dispatch(removeUserOrder(params.order));
 
     if (isCancelled) {
       dispatch(setIsCancelSuccessFull(true));

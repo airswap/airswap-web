@@ -13,6 +13,7 @@ import {
   setIsCancelSuccessFull,
 } from "../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../hooks/useCancellationPending";
+import useCancellationSuccess from "../../hooks/useCancellationSuccess";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import Icon from "../Icon/Icon";
@@ -39,10 +40,13 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const history = useHistory();
   const { chainId } = useWeb3React();
   const dispatch = useAppDispatch();
+
   const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
+
   const params = useParams<{ compressedOrder: string }>();
   const orderStatus = useOrderStatus(order);
-  const cancelInProgress = useCancellationPending(order.nonce);
+  const isCancelSuccess = useCancellationSuccess(order.nonce);
+  const isCancelInProgress = useCancellationPending(order.nonce);
   const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;
 
   const wrongChainId = useMemo(() => {
@@ -54,14 +58,14 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   };
 
   useEffect(() => {
-    if (isCancelSuccessFull) {
+    if (isCancelSuccessFull && isCancelSuccess) {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
 
       dispatch(setIsCancelSuccessFull(false));
     }
-  }, [history, params, isCancelSuccessFull, dispatch]);
+  }, [history, params, isCancelSuccessFull, isCancelSuccess, dispatch]);
 
   const handleCancelClick = async () => {
     await dispatch(
@@ -95,9 +99,9 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
           intent={"primary"}
           onClick={handleCancelClick}
           disabled={
-            orderStatus === OrderStatus.taken || wrongChainId || isExpired
+            orderStatus !== OrderStatus.open || wrongChainId || isExpired
           }
-          loading={cancelInProgress}
+          loading={isCancelInProgress}
         >
           {t("orders.confirmCancel")}
         </CancelButton>

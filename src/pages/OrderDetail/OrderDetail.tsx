@@ -24,6 +24,7 @@ const OrderDetail: FC = () => {
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
 
   useEffect(() => {
+    console.log(compressedOrder);
     if (compressedOrder) {
       dispatch(decompressAndSetActiveOrder({ compressedOrder }));
     }

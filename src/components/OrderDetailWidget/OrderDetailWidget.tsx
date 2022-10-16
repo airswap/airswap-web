@@ -63,7 +63,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
-  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+
   const orderStatus = useOrderStatus(order);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
@@ -75,6 +75,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     order.signerAmount,
     signerToken?.decimals
   );
+
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
@@ -108,6 +109,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     return compareAsc(new Date(), parsedExpiry) === 1;
   }, [parsedExpiry]);
 
+  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
 
   useEffect(() => {
@@ -236,7 +238,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         onCopyButtonClick={handleCopyButtonClick}
       />
       <ActionButtons
+        hasInsufficientBalance={hasInsufficientTokenBalance}
+        hasInsufficientAllowance={hasInsufficientAllowance}
         isExpired={orderIsExpired}
+        isCanceled={orderStatus === OrderStatus.canceled}
         isTaken={orderStatus === OrderStatus.taken}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
@@ -246,10 +251,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
           hasTakingOrderPending
         }
         isMakerOfSwap={userIsMakerOfSwap}
-        hasInsufficientBalance={hasInsufficientTokenBalance}
-        hasInsufficientAllowance={hasInsufficientAllowance}
-        orderType={orderType}
         isNotConnected={!active}
+        orderType={orderType}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
