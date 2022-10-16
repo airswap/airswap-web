@@ -45,10 +45,10 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
     isExpired: boolean
   ) => {
     setActiveDeleteButton(index);
-    const _tooltipText = isExpired
+    const tooltipText = isExpired
       ? t("orders.removeFromList")
       : t("orders.cancelSwap");
-    setTooltipText(_tooltipText);
+    setTooltipText(tooltipText);
   };
 
   const handleDeleteOrderButtonMouseLeave = () => {

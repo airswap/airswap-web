@@ -25,6 +25,7 @@ import {
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import useOrderTransactionLink from "../../hooks/useOrderTransactionLink";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
@@ -90,6 +91,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     senderToken,
     senderAmount!
   );
+  const orderTransactionLink = useOrderTransactionLink(order.nonce);
   const orderChainId = useMemo(() => parseInt(order.chainId), [order]);
   const walletChainIdIsDifferentThanOrderChainId =
     !!chainId && orderChainId !== chainId;
@@ -209,6 +211,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.senderWallet}
+        transactionLink={orderTransactionLink}
         userAddress={account || undefined}
       />
       <SwapInputs

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { OrderStatus } from "../../../../types/orderStatus";
 import ExpiryIndicator from "../../../ExpiryIndicator/ExpiryIndicator";
-import { Button, StyledIcon } from "./OrderStatusInfo.styles";
+import { Button, InfoWrapper, StyledIcon } from "./OrderStatusInfo.styles";
 
 type OrderStatusInfoProps = {
   expiry: Date;
@@ -24,11 +24,20 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
     return <ExpiryIndicator expiry={expiry} className={className} />;
   }
 
+  if (!link) {
+    return (
+      <InfoWrapper className={className}>
+        {status === OrderStatus.canceled && t("common.canceled")}
+        {status === OrderStatus.taken && t("common.taken")}
+      </InfoWrapper>
+    );
+  }
+
   return (
     <Button as="a" href={link} target="_blank" className={className}>
       {status === OrderStatus.canceled && t("common.canceled")}
       {status === OrderStatus.taken && t("common.taken")}
-      {link && <StyledIcon iconSize={0.875} name="transaction-link" />}
+      <StyledIcon iconSize={0.875} name="transaction-link" />
     </Button>
   );
 };

@@ -81,8 +81,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <LoadingSpinner />
         ) : (
           <ActionButton
-            icon={`${isExpired ? "bin" : "button-x"}`}
-            iconSize={0.75}
+            icon={isExpired ? "bin" : "button-x"}
+            iconSize={isExpired ? 0.75 : 0.675}
             onClick={handleDeleteOrderButtonClick}
             onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
             onMouseLeave={onDeleteOrderButtonMouseLeave}
