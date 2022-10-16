@@ -1,5 +1,6 @@
 import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 import { FullOrder } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
@@ -14,7 +15,9 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
+import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import { AppRoutes } from "../../routes";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
 import ActionButtons, {
@@ -28,7 +31,13 @@ const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
+  const {
+    active,
+    chainId,
+    library,
+    error: web3Error,
+  } = useWeb3React<Web3Provider>();
+  const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
@@ -49,6 +58,18 @@ const MyOrdersWidget: FC = () => {
       : userOrders;
   }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
 
+  const cancelOrderOnChain = async (order: FullOrder) => {
+    const expiry = parseInt(order.expiry) * 1000;
+    const isExpired = new Date().getTime() > expiry;
+    if (!isExpired) {
+      await dispatch(
+        cancelOrder({ order: order, chainId: chainId!, library: library! })
+      );
+    } else {
+      dispatch(removeUserOrder(order));
+    }
+  };
+
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -57,10 +78,13 @@ const MyOrdersWidget: FC = () => {
     if (action === ButtonActions.switchNetwork) {
       switchToEthereumChain();
     }
+    if (action === ButtonActions.newOrder) {
+      history.push({ pathname: AppRoutes.make });
+    }
   };
 
-  const handleDeleteOrderButtonClick = (order: FullOrder) => {
-    dispatch(removeUserOrder(order));
+  const handleDeleteOrderButtonClick = async (order: FullOrder) => {
+    await cancelOrderOnChain(order);
   };
 
   const handleSortButtonClick = (type: OrdersSortType) => {

@@ -2,21 +2,6 @@ import { chainNames } from "@airswap/constants";
 
 import i18n from "i18next";
 
-import { OrderStatus } from "../../../types/orderStatus";
-
-export const getOrderStatus = (
-  status: "idle" | "not-found" | "open" | "taken" | "canceled"
-) => {
-  switch (status) {
-    case "taken":
-      return OrderStatus.taken;
-    case "canceled":
-      return OrderStatus.canceled;
-    default:
-      return OrderStatus.open;
-  }
-};
-
 export const getFullOrderWarningTranslation = (
   isDifferentChainId: boolean,
   isExpired: boolean,

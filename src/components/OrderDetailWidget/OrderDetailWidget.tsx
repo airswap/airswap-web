@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { Swap } from "@airswap/libraries";
 import { FullOrder } from "@airswap/typescript";
@@ -22,13 +22,14 @@ import {
   selectOrdersStatus,
   take,
 } from "../../features/orders/ordersSlice";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import useOrderTransactionLink from "../../hooks/useOrderTransactionLink";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
+import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import { OrderErrorList } from "../OrderErrorList/OrderErrorList";
@@ -36,8 +37,8 @@ import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
-import { getOrderStatus } from "./helpers";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
+import { useOrderStatus } from "./hooks/useOrderStatus";
 import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import ActionButtons, {
   ButtonActions,
@@ -58,12 +59,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
-  const { status: otcStatus } = useAppSelector(selectTakeOtcReducer);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
-  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+
+  const orderStatus = useOrderStatus(order);
   const senderToken = useTakerTokenInfo(order.senderToken);
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
@@ -74,6 +76,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     order.signerAmount,
     signerToken?.decimals
   );
+
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
@@ -88,6 +91,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     senderToken,
     senderAmount!
   );
+  const orderTransactionLink = useOrderTransactionLink(order.nonce);
   const orderChainId = useMemo(() => parseInt(order.chainId), [order]);
   const walletChainIdIsDifferentThanOrderChainId =
     !!chainId && orderChainId !== chainId;
@@ -107,6 +111,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     return compareAsc(new Date(), parsedExpiry) === 1;
   }, [parsedExpiry]);
 
+  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
 
   useEffect(() => {
@@ -125,13 +130,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
 
   // button handlers
   const handleBackButtonClick = () => {
-    if (orderType === OrderType.private) {
-      !userIsIntendedRecipient
-        ? history.push({ pathname: AppRoutes.make })
-        : history.push({ pathname: `/` });
-    } else {
-      history.goBack();
-    }
+    history.push({ pathname: AppRoutes.myOrders });
   };
 
   const handleCopyButtonClick = () => {
@@ -185,6 +184,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       case ButtonActions.restart:
         setValidatorErrors([]);
         dispatch(clear());
+        history.push({ pathname: AppRoutes.make });
         break;
 
       case ButtonActions.sign:
@@ -196,7 +196,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         break;
 
       case ButtonActions.cancel:
-        // Cancel here
+        history.push({ pathname: `/order/${params.compressedOrder}/cancel` });
         break;
 
       default:
@@ -208,9 +208,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
     <Container>
       <OrderDetailWidgetHeader
         expiry={parsedExpiry}
-        orderStatus={getOrderStatus(otcStatus)}
+        orderStatus={orderStatus}
         orderType={orderType}
         recipientAddress={order.senderWallet}
+        transactionLink={orderTransactionLink}
         userAddress={account || undefined}
       />
       <SwapInputs
@@ -240,7 +241,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
         onCopyButtonClick={handleCopyButtonClick}
       />
       <ActionButtons
+        hasInsufficientBalance={hasInsufficientTokenBalance}
+        hasInsufficientAllowance={hasInsufficientAllowance}
         isExpired={orderIsExpired}
+        isCanceled={orderStatus === OrderStatus.canceled}
+        isTaken={orderStatus === OrderStatus.taken}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isLoading={
@@ -249,10 +254,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
           hasTakingOrderPending
         }
         isMakerOfSwap={userIsMakerOfSwap}
-        hasInsufficientBalance={hasInsufficientTokenBalance}
-        hasInsufficientAllowance={hasInsufficientAllowance}
-        orderType={orderType}
         isNotConnected={!active}
+        orderType={orderType}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }

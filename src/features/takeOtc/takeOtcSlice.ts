@@ -5,12 +5,14 @@ import { RootState } from "../../app/store";
 import { ErrorType } from "../../constants/errors";
 
 export interface TakeOtcState {
+  isCancelSuccessFull: boolean;
   activeOrder?: FullOrder;
   status: "idle" | "not-found" | "open" | "taken" | "canceled";
   errors: ErrorType[];
 }
 
 const initialState: TakeOtcState = {
+  isCancelSuccessFull: false,
   status: "idle",
   errors: [],
 };
@@ -23,6 +25,15 @@ export const takeOtcSlice = createSlice({
       return {
         ...state,
         activeOrder: action.payload,
+      };
+    },
+    setIsCancelSuccessFull: (
+      state,
+      action: PayloadAction<boolean>
+    ): TakeOtcState => {
+      return {
+        ...state,
+        isCancelSuccessFull: action.payload,
       };
     },
     setStatus: (
@@ -46,8 +57,13 @@ export const takeOtcSlice = createSlice({
   },
 });
 
-export const { setActiveOrder, setStatus, setErrors, reset } =
-  takeOtcSlice.actions;
+export const {
+  setActiveOrder,
+  setStatus,
+  setErrors,
+  setIsCancelSuccessFull,
+  reset,
+} = takeOtcSlice.actions;
 
 export const selectTakeOtcReducer = (state: RootState) => state.takeOtc;
 

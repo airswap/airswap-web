@@ -166,6 +166,9 @@
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
     "startByCreatingANewOrder": "Start by creating a new order",
     "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order.",
+    "areYouSureYouWantToCancel": "Are you sure you want to cancel?",
+    "actionCannotBeReversed": "This action cannot be reversed",
+    "confirmCancel": "Confirm cancel",
     "orderSuccessfullyCreated": "Order successfully created."
   },
   "toast": {
@@ -174,7 +177,9 @@
     "approvalComplete": "Approval Complete",
     "approvalFail": "Approval Fail",
     "approve": "Approve {{symbol}}",
-    "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}"
+    "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
+    "cancelComplete": "Cancel Complete",
+    "cancelFail": "Cancel Failed"
   },
   "validatorErrors": {
     "signature_invalid": "Invalid signature",

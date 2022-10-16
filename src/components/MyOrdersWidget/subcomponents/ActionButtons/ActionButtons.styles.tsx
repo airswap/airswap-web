@@ -17,5 +17,5 @@ export const SignButton = styled(Button)`
 `;
 
 export const StyledLink = styled(Link)`
-  ${ButtonStyle};
+  ${ButtonStyle}
 `;

@@ -5,8 +5,10 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
+import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { getTokenAmountWithDecimals } from "../../helpers";
 import {
   Circle,
@@ -22,14 +24,16 @@ import {
 
 interface OrderProps {
   order: FullOrder;
+  index: number;
   onDeleteOrderButtonClick: (order: FullOrder) => void;
-  onDeleteOrderButtonMouseEnter: () => void;
+  onDeleteOrderButtonMouseEnter: (index: number, isExpired: boolean) => void;
   onDeleteOrderButtonMouseLeave: () => void;
   className?: string;
 }
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
+  index,
   onDeleteOrderButtonClick,
   onDeleteOrderButtonMouseEnter,
   onDeleteOrderButtonMouseLeave,
@@ -37,6 +41,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 }) => {
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
+  const cancelInProgress = useCancelPending(order.nonce);
 
   const senderAmount = useMemo(
     () =>
@@ -70,14 +75,19 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
+
       <ActionButtonContainer>
-        <ActionButton
-          icon="bin"
-          iconSize={0.75}
-          onClick={handleDeleteOrderButtonClick}
-          onMouseEnter={onDeleteOrderButtonMouseEnter}
-          onMouseLeave={onDeleteOrderButtonMouseLeave}
-        />
+        {cancelInProgress ? (
+          <LoadingSpinner />
+        ) : (
+          <ActionButton
+            icon={isExpired ? "bin" : "button-x"}
+            iconSize={isExpired ? 0.75 : 0.675}
+            onClick={handleDeleteOrderButtonClick}
+            onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
+            onMouseLeave={onDeleteOrderButtonMouseLeave}
+          />
+        )}
       </ActionButtonContainer>
     </Container>
   );

@@ -9,7 +9,8 @@ export const For = styled.div`
 `;
 
 export const You = styled.div`
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 `;
 
 export const StyledCheckIcon = styled(Icon)`
@@ -36,7 +37,8 @@ export const Button = styled(PillButton)`
 `;
 
 export const InfoWrapper = styled(Pill)`
-  color: ${({ theme }) => theme.colors.lightGrey};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 
   ${StyledCheckIcon} {
     margin-left: 0.25rem;

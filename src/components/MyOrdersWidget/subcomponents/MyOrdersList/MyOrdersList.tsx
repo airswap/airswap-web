@@ -36,11 +36,19 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const { width: windowWidth } = useWindowSize();
 
   const [activeDeleteButton, setActiveDeleteButton] = useState<number>();
+  const [tooltipText, setTooltipText] = useState("");
   const [containerScrollTop, setContainerScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  const handleDeleteOrderButtonMouseEnter = (index: number) => {
+  const handleDeleteOrderButtonMouseEnter = (
+    index: number,
+    isExpired: boolean
+  ) => {
     setActiveDeleteButton(index);
+    const tooltipText = isExpired
+      ? t("orders.removeFromList")
+      : t("orders.cancelSwap");
+    setTooltipText(tooltipText);
   };
 
   const handleDeleteOrderButtonMouseLeave = () => {
@@ -80,10 +88,9 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           <Order
             key={order.nonce}
             order={order}
+            index={index}
             onDeleteOrderButtonClick={onDeleteOrderButtonClick}
-            onDeleteOrderButtonMouseEnter={() =>
-              handleDeleteOrderButtonMouseEnter(index)
-            }
+            onDeleteOrderButtonMouseEnter={handleDeleteOrderButtonMouseEnter}
             onDeleteOrderButtonMouseLeave={handleDeleteOrderButtonMouseLeave}
           />
         ))}
@@ -92,7 +99,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
             activeDeleteButton={activeDeleteButton || 0}
             containerScrollTop={containerScrollTop}
           >
-            {t("orders.removeFromList")}
+            {tooltipText}
           </StyledTooltip>
         )}
       </OrdersContainer>

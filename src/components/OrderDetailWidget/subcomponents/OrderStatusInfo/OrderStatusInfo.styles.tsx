@@ -14,13 +14,16 @@ export const StyledIcon = styled(Icon)`
 export const Button = styled(PillButton)`
   ${StyledIcon} {
     margin-left: 0.375rem;
+    color: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
   }
 
   &:hover {
     color: ${({ theme }) => theme.colors.white};
 
     ${StyledIcon} {
-      color: ${({ theme }) => theme.colors.white};
+      color: ${({ theme }) =>
+        theme.name === "dark" ? theme.colors.white : theme.colors.white};
     }
   }
 `;

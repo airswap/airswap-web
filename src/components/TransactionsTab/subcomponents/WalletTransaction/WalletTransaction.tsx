@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { findTokenByAddress } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 import { formatUnits } from "@ethersproject/units";
 
@@ -10,6 +9,7 @@ import { HTMLMotionProps } from "framer-motion";
 
 import {
   SubmittedApproval,
+  SubmittedCancellation,
   SubmittedTransactionWithOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
@@ -57,14 +57,25 @@ const WalletTransaction = ({
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
-    const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
     const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <SpanTitle>
-            {t("wallet.approve", { symbol: approvalToken?.symbol })}
-          </SpanTitle>
+          <SpanTitle>{t("wallet.approve")}</SpanTitle>
+          <SpanSubtitle>
+            {statusText} · {timeBetween}
+          </SpanSubtitle>
+        </TextContainer>
+        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+      </Container>
+    );
+  } else if (transaction.type === "Cancel") {
+    const tx: SubmittedCancellation = transaction as SubmittedCancellation;
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+    return (
+      <Container transition={transition} animate={animate} initial={initial}>
+        <TextContainer>
+          <SpanTitle>{t("orders.cancelSwap")}</SpanTitle>
           <SpanSubtitle>
             {statusText} · {timeBetween}
           </SpanSubtitle>

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { OrderStatus } from "../../../../types/orderStatus";
 import ExpiryIndicator from "../../../ExpiryIndicator/ExpiryIndicator";
-import { Button, StyledIcon } from "./OrderStatusInfo.styles";
+import { Button, InfoWrapper, StyledIcon } from "./OrderStatusInfo.styles";
 
 type OrderStatusInfoProps = {
   expiry: Date;
@@ -22,6 +22,15 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
 
   if (status === OrderStatus.open) {
     return <ExpiryIndicator expiry={expiry} className={className} />;
+  }
+
+  if (!link) {
+    return (
+      <InfoWrapper className={className}>
+        {status === OrderStatus.canceled && t("common.canceled")}
+        {status === OrderStatus.taken && t("common.taken")}
+      </InfoWrapper>
+    );
   }
 
   return (
