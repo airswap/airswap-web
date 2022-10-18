@@ -11,6 +11,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
@@ -19,7 +20,6 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import Icon from "../Icon/Icon";
-import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   Container,
   WalletHeader,
@@ -102,10 +102,8 @@ const TransactionsTab = ({
     setShowMobileMenu(!showMobileMenu);
   };
 
-  const {
-    transactionComplete,
-    setTransactionComplete,
-  } = useContext(InterfaceContext);
+  const { setTransactionComplete } =
+    useContext(InterfaceContext);
 
   useEffect(() => {
     if (!open) {
@@ -157,13 +155,12 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   useEffect(() => {
-    if(completedTransactions.length>1 && pendingTransactions.length === 0){
+    if (completedTransactions.length > 1 && pendingTransactions.length === 0) {
       setTransactionComplete(true);
-    }
-    else{
+    } else {
       setTransactionComplete(false);
     }
-  }, [completedTransactions,pendingTransactions,setTransactionComplete])
+  }, [completedTransactions, pendingTransactions, setTransactionComplete]);
 
   return (
     <AnimatePresence initial={false}>

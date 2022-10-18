@@ -1,4 +1,4 @@
-import { FC, useState,useContext } from "react";
+import { FC, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -7,6 +7,7 @@ import { Order } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 
+import { InterfaceContext } from "../../../../contexts/interface/Interface";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { InfoSubHeading } from "../../../Typography/Typography";
 import {
@@ -17,8 +18,6 @@ import {
   FeeTextContainer,
   ApprovalText,
 } from "./InfoSection.styles";
-
-import { InterfaceContext } from "../../../../contexts/interface/Interface";
 
 export type InfoSectionProps = {
   isConnected: boolean;
@@ -66,10 +65,8 @@ const InfoSection: FC<InfoSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
-  const {
-    transactionComplete,
-    setTransactionComplete,
-  } = useContext(InterfaceContext);
+  const { transactionComplete } =
+    useContext(InterfaceContext);
   // Wallet not connected.
   if (!isConnected) {
     return (
@@ -134,7 +131,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (orderSubmitted&&!transactionComplete) {
+  if (orderSubmitted && !transactionComplete) {
     return (
       <>
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
@@ -142,10 +139,12 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted&&transactionComplete) {
+  if (orderSubmitted && transactionComplete) {
     return (
       <>
-        <StyledInfoHeading>{t("orders.transactionCompleted")}</StyledInfoHeading>
+        <StyledInfoHeading>
+          {t("orders.transactionCompleted")}
+        </StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
