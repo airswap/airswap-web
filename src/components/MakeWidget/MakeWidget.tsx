@@ -34,6 +34,7 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
@@ -201,20 +202,31 @@ const MakeWidget: FC = () => {
         ? wrappedTokenAddresses[chainId!]
         : takerTokenAddress;
 
+    const formattedMakerAmount = stringToSignificantDecimals(makerAmount, 4);
+    const formattedTakerAmount = stringToSignificantDecimals(takerAmount, 4);
+    setMakerAmount(formattedMakerAmount);
+    setTakerAmount(formattedTakerAmount);
+
     dispatch(
       createOtcOrder({
         nonce: expiryDate.toString(),
         expiry: Math.floor(expiryDate / 1000).toString(),
         signerWallet: account!,
         signerToken,
-        signerAmount: toAtomicString(makerAmount, makerTokenInfo?.decimals!),
+        signerAmount: toAtomicString(
+          formattedMakerAmount,
+          makerTokenInfo?.decimals!
+        ),
         protocolFee: "7",
         senderWallet:
           orderType === OrderType.private
             ? takerAddress!
             : nativeCurrencyAddress,
         senderToken,
-        senderAmount: toAtomicString(takerAmount, takerTokenInfo?.decimals!),
+        senderAmount: toAtomicString(
+          formattedTakerAmount,
+          takerTokenInfo?.decimals!
+        ),
         chainId: chainId!,
         library: library!,
       })
