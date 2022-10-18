@@ -71,12 +71,12 @@ const Toolbar: FC<ToolbarProps> = ({
           text={t("common.swap")}
           link={AppRoutes.swap}
         />
-        <ToolbarButton
-          iconName="plus"
-          iconSize={0.875}
-          text={t("common.make")}
-          link={AppRoutes.myOrders}
-        />
+        {/*<ToolbarButton*/}
+        {/*  iconName="plus"*/}
+        {/*  iconSize={0.875}*/}
+        {/*  text={t("common.make")}*/}
+        {/*  link={AppRoutes.myOrders}*/}
+        {/*/>*/}
         <ToolbarButton
           iconName="bars"
           text={t("common.stats")}
