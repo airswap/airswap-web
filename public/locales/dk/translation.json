@@ -104,6 +104,7 @@
         "swapMessage": "",
         "wrapMessage": "",
         "submitted": "",
+        "transactionCompleted": "", 
         "swapExpired": "",
         "swapExpiredCallToAction": "",
         "swapFailed": "",

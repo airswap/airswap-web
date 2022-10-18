@@ -104,6 +104,7 @@
     "swapMessage": "Tamamlamak için cüzdanınızda onaylayın",
     "wrapMessage": "ETH/WETH takasları için protokol ücreti yok",
     "submitted": "İşlem Gönderildi",
+    "transactionCompleted":"Işlem Tamamlandı",
     "swapExpired": "Takasın süresi doldu",
     "swapExpiredCallToAction": "Lütfen yeniden dene",
     "swapFailed": "İşlem gönderilme hatası",

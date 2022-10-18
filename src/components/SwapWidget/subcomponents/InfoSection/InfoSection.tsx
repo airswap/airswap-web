@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -17,6 +17,7 @@ import {
   FeeTextContainer,
   ApprovalText,
 } from "./InfoSection.styles";
+import { InterfaceContext } from "../../../../contexts/interface/Interface";
 
 export type InfoSectionProps = {
   isConnected: boolean;
@@ -64,6 +65,8 @@ const InfoSection: FC<InfoSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
+  const { transactionComplete } =
+    useContext(InterfaceContext);
   // Wallet not connected.
   if (!isConnected) {
     return (
@@ -127,11 +130,20 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-
-  if (orderSubmitted) {
+  if (orderSubmitted && !transactionComplete) {
     return (
       <>
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+      </>
+    );
+  }
+  if (orderSubmitted && transactionComplete) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.transactionCompleted")}
+        </StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );

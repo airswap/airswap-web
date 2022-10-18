@@ -11,6 +11,7 @@ export interface InterfaceContextContextProps {
   showMobileToolbar: boolean;
   showWalletList: boolean;
   transactionsTabIsOpen: boolean;
+  transactionComplete: boolean;
 
   pageHeight?: number;
 
@@ -18,6 +19,7 @@ export interface InterfaceContextContextProps {
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
   setShowWalletList: Dispatch<React.SetStateAction<boolean>>;
   setTransactionsTabIsOpen: Dispatch<React.SetStateAction<boolean>>;
+  setTransactionComplete: Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const InterfaceContext =
@@ -26,10 +28,12 @@ export const InterfaceContext =
     showWalletList: false,
     showMobileToolbar: false,
     transactionsTabIsOpen: false,
+    transactionComplete: false,
     setIsConnecting: () => {},
     setShowMobileToolbar: () => {},
     setShowWalletList: () => {},
     setTransactionsTabIsOpen: () => {},
+    setTransactionComplete: () => {},
   });
 
 const InterfaceProvider: FC = ({ children }) => {
@@ -40,6 +44,7 @@ const InterfaceProvider: FC = ({ children }) => {
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [transactionsTabIsOpen, setTransactionsTabIsOpen] = useState(false);
+  const [transactionComplete, setTransactionComplete] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
 
   useDebounce(
@@ -70,10 +75,12 @@ const InterfaceProvider: FC = ({ children }) => {
         showWalletList,
         transactionsTabIsOpen,
         pageHeight,
+        transactionComplete,
         setIsConnecting,
         setShowMobileToolbar,
         setShowWalletList,
         setTransactionsTabIsOpen,
+        setTransactionComplete,
       }}
     >
       {children}

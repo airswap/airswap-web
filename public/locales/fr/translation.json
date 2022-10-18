@@ -104,6 +104,7 @@
         "swapMessage": "Acceptez sur votre wallet pour continuer",
         "wrapMessage": "Pas de frais de protocole pour les swaps ETH/WETH",
         "submitted": "Transaction soumise",
+        "transactionCompleted": "Transaction terminée",
         "swapExpired": "Swap expiré",
         "swapExpiredCallToAction": "Veuillez réessayer s'il vous plait",
         "swapFailed": "Erreur lors de l'envoi du swap",

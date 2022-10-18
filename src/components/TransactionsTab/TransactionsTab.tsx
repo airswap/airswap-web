@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState ,useContext} from "react";
 import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
@@ -42,7 +42,7 @@ import {
   BackdropFilter,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-
+import { InterfaceContext } from "../../contexts/interface/Interface";
 type TransactionsTabType = {
   address: string;
   chainId: number;
@@ -101,6 +101,9 @@ const TransactionsTab = ({
     setShowMobileMenu(!showMobileMenu);
   };
 
+  const { setTransactionComplete } =
+    useContext(InterfaceContext);
+
   useEffect(() => {
     if (!open) {
       setShowMobileMenu(false);
@@ -149,6 +152,14 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
+
+  useEffect(() => {
+    if (completedTransactions.length > 1 && pendingTransactions.length === 0) {
+      setTransactionComplete(true);
+    } else {
+      setTransactionComplete(false);
+    }
+  }, [completedTransactions, pendingTransactions, setTransactionComplete]);
 
   return (
     <AnimatePresence initial={false}>
