@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
@@ -19,6 +19,7 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import Icon from "../Icon/Icon";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   Container,
   WalletHeader,
@@ -101,6 +102,11 @@ const TransactionsTab = ({
     setShowMobileMenu(!showMobileMenu);
   };
 
+  const {
+    transactionComplete,
+    setTransactionComplete,
+  } = useContext(InterfaceContext);
+
   useEffect(() => {
     if (!open) {
       setShowMobileMenu(false);
@@ -149,6 +155,15 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
+
+  useEffect(() => {
+    if(completedTransactions.length>1 && pendingTransactions.length === 0){
+      setTransactionComplete(true);
+    }
+    else{
+      setTransactionComplete(false);
+    }
+  }, [completedTransactions,pendingTransactions,setTransactionComplete])
 
   return (
     <AnimatePresence initial={false}>

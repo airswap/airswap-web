@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.1.tgz#cf5f99c99da4612dde2ca373af0f39e9da7e9374"
   integrity sha512-XJ0EhohJGW3g/jvEv2bUYU8aKL0XMDmVoAraqSdETlx1vamFvOd2rTqHT81Ch46wPTF7qDNzHRh6+HjvAmDOPw==
 
-"@airswap/indexers@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/indexers/-/indexers-3.1.2.tgz#c07113d5e0092f86f2a41a0403c4da1ad3a9ce68"
-  integrity sha512-9InR21R9amWMR7dCHNRcg6FNP8WL/95SUL2JKNJ7ETzn2IKpXktxoWZh67tww6egenYALWBCH02IQfMQJEp7Nw==
+"@airswap/indexers@3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@airswap/indexers/-/indexers-3.1.1.tgz#b1f96e4a56af973bad7e10ce949a9074b73619ab"
+  integrity sha512-oL/Izw0pJrgf7nzroIy1SwBNR/D2hvwwtapJmZ3B/urO7uYG8F6ZJDdXghLQCeK/FPkW2hcNTkzQhEc/yRCJCQ==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
@@ -28,19 +28,19 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.1.3.tgz#0bd96a910e40edc7477f652fad28634e23122ceb"
-  integrity sha512-V4QKsokWi1jg04PZBfe5b79RbSFFrYt6hmSOu+ZhnhmylKtyXJEwcKw4fL3opld0NeTQijzCVEF91s4XZo5Csg==
+"@airswap/libraries@3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.1.2.tgz#a2af97e365a400b87076579d2f19cc8e504de2e6"
+  integrity sha512-zQrUzfbM2Xn34il4X2sXCMYQUdLTWpFpFOce0vaAuWqzdSLSVcdHDWopKimVLpuznT2gMQXNi7e4GXVLBITQJg==
   dependencies:
     "@airswap/constants" "3.0.1"
-    "@airswap/indexers" "3.1.2"
+    "@airswap/indexers" "3.1.1"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/registry" "3.1.2"
-    "@airswap/swap" "3.2.3"
+    "@airswap/registry" "3.1.1"
+    "@airswap/swap" "3.2.1"
     "@airswap/typescript" "3.0.1"
     "@airswap/utils" "3.0.4"
-    "@airswap/wrapper" "3.1.3"
+    "@airswap/wrapper" "3.1.1"
     bignumber.js "^9.0.0"
     browser-or-node "^1.3.0"
     ethers "^5.6.9"
@@ -61,10 +61,10 @@
     ethereumjs-abi "^0.6.8"
     ethers "^5.6.9"
 
-"@airswap/registry@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-3.1.2.tgz#c963424c61a47bd1ec6c939a379531f6e9cc7abe"
-  integrity sha512-saicMqmZaOHbvTZZyfndSd6vmWUFHxUSpZ3qO35mDgzzez5Zg6D6rkWixmfery0cV0398NeNGXtyOj5XzD8jnw==
+"@airswap/registry@3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-3.1.1.tgz#25ba0f56f0ff29706f33319b52b369461231ed9f"
+  integrity sha512-mbbKaepVGA0ZD2Jnozoilw3yD4Y8dvTY8ButVf5z0VOBXyRXwkBsJiP2XwqztlyKt8XSHqQkR42aLm/dBsU2gg==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
@@ -72,13 +72,6 @@
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-3.2.1.tgz#c36e6bf971c0ae3979af8ba9caae9175f66e155a"
   integrity sha512-KIDmCLm8+95MQYZRaTTMFKJpkAxh98wSqQ2nFRi7l96QPL0GUn31ZIVpq4XBqKtV0Gv5rN6IiG4XQCN1TUlwqA==
-  dependencies:
-    "@openzeppelin/contracts" "^4.3.1"
-
-"@airswap/swap@3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-3.2.3.tgz#b730abab3aa1eaf50192c065d4e9d6207d91c9fe"
-  integrity sha512-LOAumYt48+e+vVOwYmAHxJngRIrQBLmDdQzSVSMHV8XEloqVKJt9mdiQXj+VK+/OFhDl2sQwE+4J/RfdpJ94bQ==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
@@ -104,12 +97,12 @@
     ethers "^5.6.9"
     lz-string "^1.4.4"
 
-"@airswap/wrapper@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.1.3.tgz#8477ab26e5b6fe0c64fdbab9b53faebd05b3d327"
-  integrity sha512-xDNqFccCXUr0/PRuiwAB40fSNprp9XgfMjThetoQkYzysUVdUnZBR05slYUE/j16SmXI2dJ8lRj+zkwzSzUHeQ==
+"@airswap/wrapper@3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.1.1.tgz#d1203e5a77e562b0ed174f457a7ea84bb012a115"
+  integrity sha512-vUawysrMlStvoV+aRy8R5Z6N87FVqk//6o4+tHk3QmbZ1igvWYdNH6QyckapXVPSAmcrwScWqePBzUgv3OytwQ==
   dependencies:
-    "@airswap/swap" "3.2.3"
+    "@airswap/swap" "3.2.1"
     "@openzeppelin/contracts" "^4.3.1"
 
 "@babel/code-frame@7.10.4":
