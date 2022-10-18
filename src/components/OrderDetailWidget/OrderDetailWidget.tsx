@@ -144,8 +144,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       library.getSigner()
     )) as SwapError[];
 
-    // TODO: Skipping when senderWallet is 0x00 for now. Check function needs to be updated first.
-    if (errors.length && order.senderWallet !== nativeCurrencyAddress) {
+    if (errors.length) {
       setValidatorErrors(errors);
       return;
     }
@@ -184,7 +183,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       case ButtonActions.restart:
         setValidatorErrors([]);
         dispatch(clear());
-        history.push({ pathname: AppRoutes.make });
+        history.push({ pathname: `/${AppRoutes.make}` });
         break;
 
       case ButtonActions.sign:

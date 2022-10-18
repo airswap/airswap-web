@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import {
   Container,
@@ -60,22 +59,12 @@ const SwapInputs: FC<{
   const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
 
   const isSell = side === "sell";
-  const fromAmount = useMemo(
-    () => (isSell ? baseAmount : stringToSignificantDecimals(quoteAmount)),
-    [isSell, baseAmount, quoteAmount]
-  );
-  const toAmount = useMemo(() => {
-    const formattedAmount = canSetQuoteAmount
-      ? quoteAmount
-      : stringToSignificantDecimals(quoteAmount);
 
-    return isSell ? formattedAmount : baseAmount;
-  }, [isSell, canSetQuoteAmount, baseAmount, quoteAmount]);
   const maxAmountInfoText = useMemo(
     () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
     [baseTokenInfo, maxAmount, t]
   );
-  const isQuote = !!fromAmount && !!toAmount && readOnly;
+  const isQuote = !!baseAmount && !!quoteAmount && readOnly;
 
   const handleTokenAmountChange = (
     e: FormEvent<HTMLInputElement>,
@@ -107,7 +96,7 @@ const SwapInputs: FC<{
     <Container $disabled={disabled}>
       <TokenSelect
         label={t("orders.from")}
-        amount={fromAmount}
+        amount={baseAmount}
         onAmountChange={(e) => handleTokenAmountChange(e, onBaseAmountChange)}
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
@@ -126,7 +115,7 @@ const SwapInputs: FC<{
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
         label={t("orders.to")}
-        amount={toAmount}
+        amount={quoteAmount}
         onAmountChange={(e) =>
           handleTokenAmountChange(e, onQuoteAmountChange || onBaseAmountChange)
         }

@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -66,6 +66,7 @@ import {
   setUserTokens,
   selectUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useApprovalPending from "../../hooks/useApprovalPending";
@@ -261,6 +262,10 @@ const SwapWidget: FC = () => {
     swapType === "wrapOrUnwrap"
       ? baseAmount
       : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
+  const formattedQuoteAmount = useMemo(
+    () => stringToSignificantDecimals(quoteAmount),
+    [quoteAmount]
+  );
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -699,7 +704,7 @@ const SwapWidget: FC = () => {
             isRequesting={isRequestingQuotes}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
-            quoteAmount={quoteAmount}
+            quoteAmount={formattedQuoteAmount}
             disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
               !!bestTradeOption ||
