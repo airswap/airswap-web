@@ -14,7 +14,10 @@ import BigNumber from "bignumber.js";
 import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { notifyTransaction } from "../../components/Toasts/ToastController";
+import {
+  notifyRejectedByUserError,
+  notifyTransaction,
+} from "../../components/Toasts/ToastController";
 import {
   RFQ_EXPIRY_BUFFER_MS,
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
@@ -26,6 +29,7 @@ import {
   SwapError,
 } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
+import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
 import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
 import {
@@ -68,11 +72,13 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
+  appErrors: AppError[];
   errors: ErrorType[];
   reRequestTimerId: number | null;
 }
 
 const initialState: OrdersState = {
+  appErrors: [],
   orders: [],
   status: "idle",
   errors: [],
@@ -414,48 +420,54 @@ export const take = createAsyncThunk<
     state: RootState;
   }
 >("orders/take", async (params, { getState, dispatch }) => {
-  let tx: Transaction;
-  try {
-    tx = await takeOrder(params.order, params.library, params.contractType);
-    // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
-    // we should change the order tokens to WETH -> ETH
-    let newOrder =
-      params.contractType === "Swap"
-        ? params.order
-        : refactorOrder(params.order, params.library._network.chainId);
-    if (tx.hash) {
-      const transaction: SubmittedRFQOrder = {
-        type: "Order",
-        order: newOrder,
-        protocol: "request-for-quote",
-        hash: tx.hash,
-        status: "processing",
-        timestamp: Date.now(),
-        nonce: params.order.nonce,
-        expiry: params.order.expiry,
-      };
-      dispatch(
-        submitTransactionWithExpiry({
-          transaction,
-          signerWallet: params.order.signerWallet,
-          onExpired: params.onExpired,
-        })
-      );
-    }
-  } catch (e: any) {
-    if (e?.code === 4001) {
-      // 4001 is metamask user declining transaction sig
+  const tx = await takeOrder(params.order, params.library, params.contractType);
+
+  if (isAppError(tx)) {
+    const appError = tx;
+    if (appError.type === AppErrorType.rejectedByUser) {
+      notifyRejectedByUserError();
       dispatch(
         revertTransaction({
           signerWallet: params.order.signerWallet,
           nonce: params.order.nonce,
-          reason: e.message,
+          reason: appError.type,
         })
       );
+    } else {
+      dispatch(setAppErrors([appError]));
     }
-    handleOrderError(dispatch, e);
-    dispatch(declineTransaction(e.message));
-    throw e;
+
+    if (appError.error && "message" in appError.error) {
+      dispatch(declineTransaction(appError.error.message));
+    }
+
+    throw appError;
+  }
+
+  // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
+  // we should change the order tokens to WETH -> ETH
+  let newOrder =
+    params.contractType === "Swap"
+      ? params.order
+      : refactorOrder(params.order, params.library._network.chainId);
+  if (tx.hash) {
+    const transaction: SubmittedRFQOrder = {
+      type: "Order",
+      order: newOrder,
+      protocol: "request-for-quote",
+      hash: tx.hash,
+      status: "processing",
+      timestamp: Date.now(),
+      nonce: params.order.nonce,
+      expiry: params.order.expiry,
+    };
+    dispatch(
+      submitTransactionWithExpiry({
+        transaction,
+        signerWallet: params.order.signerWallet,
+        onExpired: params.onExpired,
+      })
+    );
   }
 });
 
@@ -466,6 +478,9 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
+    setAppErrors: (state, action: PayloadAction<AppError[]>) => {
+      state.appErrors = action.payload;
+    },
     setErrors: (state, action: PayloadAction<ErrorType[]>) => {
       state.errors = action.payload;
     },
@@ -473,6 +488,7 @@ export const ordersSlice = createSlice({
       state.orders = [];
       state.status = "idle";
       state.errors = [];
+      state.appErrors = [];
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -533,8 +549,13 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear, setErrors, setResetStatus, setReRequestTimerId } =
-  ordersSlice.actions;
+export const {
+  clear,
+  setAppErrors,
+  setErrors,
+  setResetStatus,
+  setReRequestTimerId,
+} = ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
@@ -608,5 +629,6 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
-export const selectOrdersErrors = (state: RootState) => state.orders.errors;
+export const selectOrdersErrors = (state: RootState) => state.orders.appErrors;
+
 export default ordersSlice.reducer;

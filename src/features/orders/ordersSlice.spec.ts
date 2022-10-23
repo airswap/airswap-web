@@ -3,9 +3,10 @@ import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 
 describe.only("orders reducer", () => {
   const initialState: OrdersState = {
+    appErrors: [],
     orders: [],
-    errors: [],
     status: "idle",
+    errors: [],
     reRequestTimerId: null,
   };
   it("should handle initial state", () => {

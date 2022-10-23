@@ -16,7 +16,11 @@ import {
 } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { SwapError } from "../../constants/errors";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { AppError } from "../../errors/appError";
+import { transformSwapErrorToAppError } from "../../errors/swapError";
+import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -107,13 +111,18 @@ export async function takeOrder(
   order: Order | FullOrder,
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper"
-) {
-  const tx =
-    contractType === "Swap"
-      ? await swap(provider.network.chainId, provider, order)
-      : await swapWrapper(provider.network.chainId, provider, order);
-
-  return tx as any as Transaction;
+): Promise<Transaction | AppError> {
+  return new Promise<Transaction | AppError>(async (resolve) => {
+    try {
+      const tx: Transaction =
+        contractType === "Swap"
+          ? await swap(provider.network.chainId, provider, order)
+          : await swapWrapper(provider.network.chainId, provider, order);
+      resolve(tx);
+    } catch (error: any) {
+      resolve(transformUnknownErrorToAppError(error));
+    }
+  });
 }
 
 export function orderSortingFunction(a: Order, b: Order) {
@@ -191,4 +200,23 @@ export async function withdrawETH(
     toAtomicString(senderAmount, senderTokenDecimals)
   );
   return tx as any as Transaction;
+}
+
+export async function check(
+  order: Order,
+  senderWallet: string,
+  chainId: number,
+  signer?: ethers.providers.JsonRpcSigner
+): Promise<AppError[]> {
+  const errors = (await new Swap(chainId, signer).check(
+    order,
+    senderWallet,
+    signer
+  )) as SwapError[];
+
+  if (errors.length) {
+    console.error(errors);
+  }
+
+  return errors.map((error) => transformSwapErrorToAppError(error));
 }

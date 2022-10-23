@@ -9,7 +9,7 @@ import { AppError, AppErrorType, transformToAppError } from "./appError";
 //   });
 // }
 
-interface EthersProjectError {
+export interface EthersProjectError {
   argument: string;
   value: string;
   code: "INVALID_ARGUMENT";
@@ -31,12 +31,12 @@ export const transformEthersProjectErrorToAppError = (
   error: EthersProjectError
 ): AppError => {
   if (error.argument === "address") {
-    return transformToAppError(AppErrorType.invalidAddress, error.value);
+    return transformToAppError(AppErrorType.invalidAddress, error, error.value);
   }
 
   if (error.argument === "value") {
-    return transformToAppError(AppErrorType.invalidValue, error.value);
+    return transformToAppError(AppErrorType.invalidValue, error, error.value);
   }
 
-  return transformToAppError(AppErrorType.unknownError);
+  return transformToAppError(AppErrorType.unknownError, error);
 };

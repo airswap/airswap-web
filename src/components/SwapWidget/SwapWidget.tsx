@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Registry, Wrapper, Swap } from "@airswap/libraries";
+import { Registry, Wrapper } from "@airswap/libraries";
 import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -20,7 +20,6 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../constants/configParams";
-import type { ErrorType, SwapError } from "../../constants/errors";
 import nativeCurrency, {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
@@ -35,6 +34,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
+import { check } from "../../features/orders/orderApi";
 import {
   approve,
   clear,
@@ -46,6 +46,7 @@ import {
   selectBestOrder,
   selectOrdersErrors,
   selectOrdersStatus,
+  setAppErrors,
   take,
   withdraw,
 } from "../../features/orders/ordersSlice";
@@ -78,9 +79,9 @@ import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
+import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
-import { OrderErrorList } from "../OrderErrorList/OrderErrorList";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyError } from "../Toasts/ToastController";
@@ -153,7 +154,6 @@ const SwapWidget: FC = () => {
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [validatorErrors, setValidatorErrors] = useState<ErrorType[]>([]);
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
 
@@ -242,20 +242,6 @@ const SwapWidget: FC = () => {
         allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
-
-  useEffect(() => {
-    if (ordersErrors.some((error) => error === "userRejectedRequest")) {
-      notifyError({
-        heading: t("orders.swapFailed"),
-        cta: t("orders.swapRejectedByUser"),
-      });
-    }
-
-    setValidatorErrors(
-      ordersErrors.filter((error) => error !== "userRejectedRequest")
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ordersErrors]);
 
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const quoteAmount =
@@ -452,13 +438,15 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      const errors = (await new Swap(chainId, library?.getSigner()).check(
+      const errors = await check(
         bestTradeOption!.order!,
         swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account!,
+        chainId || 1,
         library?.getSigner()
-      )) as SwapError[];
+      );
+
       if (errors.length) {
-        setValidatorErrors(errors);
+        dispatch(setAppErrors(errors));
         setIsSwapping(false);
         return;
       }
@@ -477,6 +465,7 @@ const SwapWidget: FC = () => {
           },
         })
       );
+      console.log(result);
       setIsSwapping(false);
       await unwrapResult(result);
       setShowOrderSubmitted(true);
@@ -500,14 +489,15 @@ const SwapWidget: FC = () => {
         });
       order = lastLookOrder;
 
-      const errors = (await new Swap(chainId, library?.getSigner()).check(
+      const errors = await check(
         order,
         senderWallet,
+        chainId || 1,
         library?.getSigner()
-      )) as SwapError[];
+      );
 
       if (errors.length) {
-        setValidatorErrors(errors);
+        dispatch(setAppErrors(errors));
         setIsSwapping(false);
         return;
       }
@@ -585,7 +575,7 @@ const SwapWidget: FC = () => {
     }
   };
 
-  const handleButtonClick = async (action: ButtonActions) => {
+  const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
         setIsWrapping(false);
@@ -599,7 +589,7 @@ const SwapWidget: FC = () => {
 
       case ButtonActions.restart:
         setShowOrderSubmitted(false);
-        setValidatorErrors([]);
+        // setValidatorErrors([]);
         dispatch(clearTradeTerms());
         dispatch(clear());
         unsubscribeFromGasPrice();
@@ -759,7 +749,7 @@ const SwapWidget: FC = () => {
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
               pairUnavailable={pairUnavailable}
-              onButtonClicked={(action) => handleButtonClick(action)}
+              onButtonClicked={(action) => handleActionButtonClick(action)}
               isLoading={
                 isConnecting ||
                 isRequestingQuotes ||
@@ -793,12 +783,16 @@ const SwapWidget: FC = () => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() => handleButtonClick(ButtonActions.restart)}
-        isHidden={!validatorErrors.length}
+        onCloseButtonClick={() =>
+          handleActionButtonClick(ButtonActions.restart)
+        }
+        isHidden={!ordersErrors.length}
       >
-        <OrderErrorList
-          errors={validatorErrors}
-          handleClick={() => handleButtonClick(ButtonActions.restart)}
+        <ErrorList
+          errors={ordersErrors}
+          onBackButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
         />
       </Overlay>
       <Overlay

@@ -2,7 +2,7 @@ import { AppError, AppErrorType, transformToAppError } from "./appError";
 
 // Another error format coming from ethersproject (yay), gets thrown when error rejects a transaction
 
-interface RpcSignRejectedError {
+export interface RpcSignRejectedError {
   reason: string;
   code: "ACTION_REJECTED";
   action: any;
@@ -26,5 +26,5 @@ export const transformRpcSignRejectedErrorToAppError = (
   error: RpcSignRejectedError
 ): AppError => {
   // For now we have only one error for this format. Might add more later.
-  return transformToAppError(AppErrorType.rejectedByUser);
+  return transformToAppError(AppErrorType.rejectedByUser, error);
 };
