@@ -92,7 +92,15 @@ const refactorOrder = (order: Order, chainId: number) => {
 export const handleOrderError = (dispatch: Dispatch, error: any) => {
   const appError = transformUnknownErrorToAppError(error);
 
-  dispatch(setErrors([appError]));
+  if (appError.error && "message" in appError.error) {
+    dispatch(declineTransaction(appError.error.message));
+  }
+
+  if (appError.type === AppErrorType.rejectedByUser) {
+    notifyRejectedByUserError();
+  } else {
+    dispatch(setErrors([appError]));
+  }
 };
 
 export const deposit = createAsyncThunk(
@@ -169,7 +177,6 @@ export const deposit = createAsyncThunk(
       }
     } catch (e: any) {
       handleOrderError(dispatch, e);
-      dispatch(declineTransaction(e.message));
       throw e;
     }
   }
@@ -253,9 +260,7 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      const appError = transformUnknownErrorToAppError(e);
-      dispatch(setErrors([appError]));
-      dispatch(declineTransaction(e.message));
+      handleOrderError(dispatch, e);
       throw e;
     }
   }
@@ -383,7 +388,6 @@ export const approve = createAsyncThunk<
     }
   } catch (e: any) {
     handleOrderError(dispatch, e);
-    dispatch(declineTransaction(e.message));
     throw e;
   }
 });

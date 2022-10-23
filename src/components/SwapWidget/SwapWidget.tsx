@@ -26,6 +26,8 @@ import nativeCurrency, {
 } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { LastLookContext } from "../../contexts/lastLook/LastLook";
+import { AppErrorType } from "../../errors/appError";
+import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import {
   selectAllowances,
   selectBalances,
@@ -39,7 +41,6 @@ import {
   approve,
   clear,
   deposit,
-  handleOrderError,
   request,
   resetOrders,
   selectBestOption,
@@ -84,7 +85,10 @@ import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsMo
 import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
-import { notifyError } from "../Toasts/ToastController";
+import {
+  notifyError,
+  notifyRejectedByUserError,
+} from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
 import StyledSwapWidget, {
   ButtonContainer,
@@ -525,10 +529,10 @@ const SwapWidget: FC = () => {
     } catch (e: any) {
       setIsSwapping(false);
       dispatch(clearTradeTermsQuoteAmount());
-      handleOrderError(dispatch, e);
 
-      if (e?.code === 4001) {
-        // 4001 is metamask user declining transaction sig
+      const appError = transformUnknownErrorToAppError(e);
+      if (appError.type === AppErrorType.rejectedByUser) {
+        notifyRejectedByUserError();
         dispatch(
           revertTransaction({
             signerWallet: order?.signerWallet,
@@ -536,6 +540,8 @@ const SwapWidget: FC = () => {
             reason: e.message,
           })
         );
+      } else {
+        dispatch(setErrors([appError]));
       }
 
       console.error("Error taking order:", e);
