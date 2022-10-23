@@ -12,6 +12,10 @@ import {
   transformEthersProjectErrorToAppError,
 } from "../errors/ethersProjectError";
 import { isRpcError, transformRpcErrorToAppError } from "../errors/rpcError";
+import {
+  isRpcSignRejectedError,
+  transformRpcSignRejectedErrorToAppError,
+} from "../errors/rpcSignRejectedError";
 
 const transformUnknownErrorToAppError = (error: any): AppError => {
   if (isRpcError(error)) {
@@ -20,6 +24,10 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
 
   if (isEthersProjectError(error)) {
     return transformEthersProjectErrorToAppError(error);
+  }
+
+  if (isRpcSignRejectedError(error)) {
+    return transformRpcSignRejectedErrorToAppError(error);
   }
 
   return transformToAppError(AppErrorType.unknownError, error);
