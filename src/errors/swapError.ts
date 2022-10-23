@@ -1,5 +1,6 @@
 import { AppError, AppErrorType, transformToAppError } from "./appError";
 
+// These errors come from the airswap swap contracts.
 export type SwapError =
   | "EXPIRY_PASSED"
   | "SIGNATURE_INVALID"
@@ -11,7 +12,12 @@ export type SwapError =
   | "UNAUTHORIZED"
   | "UNPREDICTABLE_GAS_LIMIT";
 
-const swapErrors: SwapError[] = [
+// Sometimes the code is inside the code of an error
+type ErrorWithSwapErrorCode = {
+  code: SwapError;
+};
+
+export const swapErrors: SwapError[] = [
   "EXPIRY_PASSED",
   "SIGNATURE_INVALID",
   "SIGNER_ALLOWANCE_LOW",
@@ -24,7 +30,7 @@ const swapErrors: SwapError[] = [
 ];
 
 export const isSwapError = (error: any): error is SwapError => {
-  return swapErrors.includes(error);
+  return swapErrors.includes(error || error.code);
 };
 
 export const transformSwapErrorToAppError = (error: SwapError): AppError => {

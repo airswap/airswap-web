@@ -22,16 +22,10 @@ import {
   RFQ_EXPIRY_BUFFER_MS,
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
-import {
-  ErrorType,
-  RPCError,
-  ErrorWithCode,
-  SwapError,
-} from "../../constants/errors";
+import { ErrorType } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
-import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
-import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
+import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import {
   allowancesSwapActions,
   allowancesWrapperActions,
@@ -98,18 +92,10 @@ const refactorOrder = (order: Order, chainId: number) => {
   return newOrder;
 };
 
-export const handleOrderError = (
-  dispatch: Dispatch,
-  error: RPCError | ErrorWithCode
-) => {
-  const errorCodes = getSwapErrorCodesFromError(error) as (
-    | number
-    | SwapError
-  )[];
-  const errorTypes = errorCodes
-    .map((errorCode) => transformErrorCodeToError(errorCode))
-    .filter((errorCode) => !!errorCode) as ErrorType[];
-  dispatch(setErrors(errorTypes));
+export const handleOrderError = (dispatch: Dispatch, error: any) => {
+  const appError = transformUnknownErrorToAppError(error);
+
+  dispatch(setAppErrors([appError]));
 };
 
 export const deposit = createAsyncThunk(
@@ -270,7 +256,8 @@ export const withdraw = createAsyncThunk(
         });
       }
     } catch (e: any) {
-      handleOrderError(dispatch, e);
+      const appError = transformUnknownErrorToAppError(e);
+      dispatch(setAppErrors([appError]));
       dispatch(declineTransaction(e.message));
       throw e;
     }

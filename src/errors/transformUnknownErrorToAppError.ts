@@ -5,9 +5,14 @@ import {
 } from "./ethersProjectError";
 import { isRpcError, transformRpcErrorToAppError } from "./rpcError";
 import {
+  isRpcErrorWithSwapErrorCode,
+  transformRpcErrorWithSwapErrorCodeToAppError,
+} from "./rpcErrorWithSwapErrorCode";
+import {
   isRpcSignRejectedError,
   transformRpcSignRejectedErrorToAppError,
 } from "./rpcSignRejectedError";
+import { isSwapError, transformSwapErrorToAppError } from "./swapError";
 
 const transformUnknownErrorToAppError = (error: any): AppError => {
   if (isRpcError(error)) {
@@ -20,6 +25,14 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
 
   if (isRpcSignRejectedError(error)) {
     return transformRpcSignRejectedErrorToAppError(error);
+  }
+
+  if (isRpcErrorWithSwapErrorCode(error)) {
+    return transformRpcErrorWithSwapErrorCodeToAppError(error);
+  }
+
+  if (isSwapError(error)) {
+    return transformSwapErrorToAppError(error);
   }
 
   return transformToAppError(AppErrorType.unknownError, error);

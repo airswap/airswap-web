@@ -465,7 +465,6 @@ const SwapWidget: FC = () => {
           },
         })
       );
-      console.log(result);
       setIsSwapping(false);
       await unwrapResult(result);
       setShowOrderSubmitted(true);
