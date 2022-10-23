@@ -7,6 +7,8 @@ export enum AppErrorType {
   disconnected = "disconnected",
   expiryPassed = "expiry-passed",
   invalidAddress = "invalid-address",
+  invalidInput = "invalid-input",
+  invalidRequest = "invalid-request",
   invalidValue = "invalid-value",
   nonceAlreadyUsed = "nonce-already-used",
   rejectedByUser = "rejected-by-user",

@@ -22,7 +22,6 @@ import {
   RFQ_EXPIRY_BUFFER_MS,
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
-import { ErrorType } from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
@@ -66,17 +65,15 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
-  appErrors: AppError[];
-  errors: ErrorType[];
   reRequestTimerId: number | null;
+  errors: AppError[];
 }
 
 const initialState: OrdersState = {
-  appErrors: [],
   orders: [],
   status: "idle",
-  errors: [],
   reRequestTimerId: null,
+  errors: [],
 };
 
 const APPROVE_AMOUNT = "90071992547409910000000000";
@@ -95,7 +92,7 @@ const refactorOrder = (order: Order, chainId: number) => {
 export const handleOrderError = (dispatch: Dispatch, error: any) => {
   const appError = transformUnknownErrorToAppError(error);
 
-  dispatch(setAppErrors([appError]));
+  dispatch(setErrors([appError]));
 };
 
 export const deposit = createAsyncThunk(
@@ -257,7 +254,7 @@ export const withdraw = createAsyncThunk(
       }
     } catch (e: any) {
       const appError = transformUnknownErrorToAppError(e);
-      dispatch(setAppErrors([appError]));
+      dispatch(setErrors([appError]));
       dispatch(declineTransaction(e.message));
       throw e;
     }
@@ -421,7 +418,7 @@ export const take = createAsyncThunk<
         })
       );
     } else {
-      dispatch(setAppErrors([appError]));
+      dispatch(setErrors([appError]));
     }
 
     if (appError.error && "message" in appError.error) {
@@ -465,17 +462,13 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
-    setAppErrors: (state, action: PayloadAction<AppError[]>) => {
-      state.appErrors = action.payload;
-    },
-    setErrors: (state, action: PayloadAction<ErrorType[]>) => {
+    setErrors: (state, action: PayloadAction<AppError[]>) => {
       state.errors = action.payload;
     },
     clear: (state) => {
       state.orders = [];
       state.status = "idle";
       state.errors = [];
-      state.appErrors = [];
       if (state.reRequestTimerId) {
         clearTimeout(state.reRequestTimerId);
         state.reRequestTimerId = null;
@@ -536,13 +529,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const {
-  clear,
-  setAppErrors,
-  setErrors,
-  setResetStatus,
-  setReRequestTimerId,
-} = ordersSlice.actions;
+export const { clear, setErrors, setResetStatus, setReRequestTimerId } =
+  ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
@@ -616,6 +604,6 @@ export const selectBestOption = createSelector(
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
-export const selectOrdersErrors = (state: RootState) => state.orders.appErrors;
+export const selectOrdersErrors = (state: RootState) => state.orders.errors;
 
 export default ordersSlice.reducer;

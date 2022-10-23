@@ -46,7 +46,7 @@ import {
   selectBestOrder,
   selectOrdersErrors,
   selectOrdersStatus,
-  setAppErrors,
+  setErrors,
   take,
   withdraw,
 } from "../../features/orders/ordersSlice";
@@ -446,7 +446,7 @@ const SwapWidget: FC = () => {
       );
 
       if (errors.length) {
-        dispatch(setAppErrors(errors));
+        dispatch(setErrors(errors));
         setIsSwapping(false);
         return;
       }
@@ -496,7 +496,7 @@ const SwapWidget: FC = () => {
       );
 
       if (errors.length) {
-        dispatch(setAppErrors(errors));
+        dispatch(setErrors(errors));
         setIsSwapping(false);
         return;
       }

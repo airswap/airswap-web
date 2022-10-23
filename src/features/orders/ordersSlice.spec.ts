@@ -3,7 +3,7 @@ import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 
 describe.only("orders reducer", () => {
   const initialState: OrdersState = {
-    appErrors: [],
+    errors: [],
     orders: [],
     status: "idle",
     errors: [],

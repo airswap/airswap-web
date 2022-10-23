@@ -40,5 +40,15 @@ export const transformRpcErrorToAppError = (error: RpcError): AppError => {
     return transformToAppError(AppErrorType.chainDisconnected, error);
   }
 
+  if (error.code === -32000) {
+    return transformToAppError(AppErrorType.invalidInput, error);
+  }
+
+  if (error.code === -32600) {
+    return transformToAppError(AppErrorType.invalidRequest, error);
+  }
+
+  // Add other errors from eth-rpc-errors if necessary.
+
   return transformToAppError(AppErrorType.unknownError, error);
 };

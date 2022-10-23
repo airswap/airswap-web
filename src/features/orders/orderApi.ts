@@ -16,10 +16,12 @@ import {
 } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { SwapError } from "../../constants/errors";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { AppError } from "../../errors/appError";
-import { transformSwapErrorToAppError } from "../../errors/swapError";
+import {
+  SwapError,
+  transformSwapErrorToAppError,
+} from "../../errors/swapError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;

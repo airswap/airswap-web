@@ -12,11 +12,6 @@ export type SwapError =
   | "UNAUTHORIZED"
   | "UNPREDICTABLE_GAS_LIMIT";
 
-// Sometimes the code is inside the code of an error
-type ErrorWithSwapErrorCode = {
-  code: SwapError;
-};
-
 export const swapErrors: SwapError[] = [
   "EXPIRY_PASSED",
   "SIGNATURE_INVALID",
