@@ -28,10 +28,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.1.3.tgz#0bd96a910e40edc7477f652fad28634e23122ceb"
-  integrity sha512-V4QKsokWi1jg04PZBfe5b79RbSFFrYt6hmSOu+ZhnhmylKtyXJEwcKw4fL3opld0NeTQijzCVEF91s4XZo5Csg==
+"@airswap/libraries@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.2.0.tgz#2d4885c6172731dc0756f60126359190024af338"
+  integrity sha512-CZtVrvJdupL4Vy2C5HhDxseqjSygruPAQaAWSgvri/4fEydGr+VzBkPgN2LBjBn0Q9gLRozUp1Zf6yZItUrQAA==
   dependencies:
     "@airswap/constants" "3.0.1"
     "@airswap/indexers" "3.1.2"
