@@ -49,17 +49,12 @@ import ActionButtons, {
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 interface OrderDetailWidgetProps {
-  account: string;
-  library: Web3Provider;
   order: FullOrder;
 }
 
-const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
-  account,
-  library,
-  order,
-}) => {
+const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
+  const { account, library } = useWeb3React<Web3Provider>();
   const history = useHistory();
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
@@ -132,7 +127,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({
       order,
       order.senderWallet,
       parseInt(order.chainId),
-      library.getSigner()
+      library!.getSigner()
     );
 
     if (errors.length) {
