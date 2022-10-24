@@ -2,13 +2,13 @@ import { FullOrder } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { ErrorType } from "../../constants/errors";
+import { AppError } from "../../errors/appError";
 
 export interface TakeOtcState {
   isCancelSuccessFull: boolean;
   activeOrder?: FullOrder;
   status: "idle" | "not-found" | "open" | "taken" | "canceled";
-  errors: ErrorType[];
+  errors: AppError[];
 }
 
 const initialState: TakeOtcState = {
@@ -45,7 +45,7 @@ export const takeOtcSlice = createSlice({
         status: action.payload,
       };
     },
-    setErrors: (state, action: PayloadAction<ErrorType[]>): TakeOtcState => {
+    setErrors: (state, action: PayloadAction<AppError[]>): TakeOtcState => {
       return {
         ...state,
         errors: action.payload,
@@ -66,5 +66,7 @@ export const {
 } = takeOtcSlice.actions;
 
 export const selectTakeOtcReducer = (state: RootState) => state.takeOtc;
+
+export const selectTakeOtcErrors = (state: RootState) => state.takeOtc.errors;
 
 export default takeOtcSlice.reducer;

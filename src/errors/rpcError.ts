@@ -2,9 +2,9 @@ import { errorCodes } from "eth-rpc-errors";
 
 import { AppError, AppErrorType, transformToAppError } from "./appError";
 
-interface RpcError {
+export interface RpcError {
   code: number;
-  message: string;
+  message: any;
   stack: string;
 }
 
@@ -21,24 +21,34 @@ export const isRpcError = (error: any): error is RpcError => {
 
 export const transformRpcErrorToAppError = (error: RpcError): AppError => {
   if (error.code === 4001) {
-    return transformToAppError(AppErrorType.rejectedByUser);
+    return transformToAppError(AppErrorType.rejectedByUser, error);
   }
 
   if (error.code === 4100) {
-    return transformToAppError(AppErrorType.unauthorized);
+    return transformToAppError(AppErrorType.unauthorized, error);
   }
 
   if (error.code === 4200) {
-    return transformToAppError(AppErrorType.unsupportedMethod);
+    return transformToAppError(AppErrorType.unsupportedMethod, error);
   }
 
   if (error.code === 4900) {
-    return transformToAppError(AppErrorType.disconnected);
+    return transformToAppError(AppErrorType.disconnected, error);
   }
 
   if (error.code === 4901) {
-    return transformToAppError(AppErrorType.chainDisconnected);
+    return transformToAppError(AppErrorType.chainDisconnected, error);
   }
 
-  return transformToAppError(AppErrorType.unknownError);
+  if (error.code === -32000) {
+    return transformToAppError(AppErrorType.invalidInput, error);
+  }
+
+  if (error.code === -32600) {
+    return transformToAppError(AppErrorType.invalidRequest, error);
+  }
+
+  // Add other errors from eth-rpc-errors if necessary.
+
+  return transformToAppError(AppErrorType.unknownError, error);
 };

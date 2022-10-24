@@ -14,20 +14,17 @@ import BigNumber from "bignumber.js";
 import { Transaction, providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { notifyTransaction } from "../../components/Toasts/ToastController";
+import {
+  notifyRejectedByUserError,
+  notifyTransaction,
+} from "../../components/Toasts/ToastController";
 import {
   RFQ_EXPIRY_BUFFER_MS,
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
-import {
-  ErrorType,
-  RPCError,
-  ErrorWithCode,
-  SwapError,
-} from "../../constants/errors";
 import nativeCurrency from "../../constants/nativeCurrency";
-import getSwapErrorCodesFromError from "../../helpers/getErrorCodesFromError";
-import transformErrorCodeToError from "../../helpers/transformErrorCodeToError";
+import { AppError, AppErrorType, isAppError } from "../../errors/appError";
+import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import {
   allowancesSwapActions,
   allowancesWrapperActions,
@@ -68,15 +65,15 @@ import {
 export interface OrdersState {
   orders: Order[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
-  errors: ErrorType[];
   reRequestTimerId: number | null;
+  errors: AppError[];
 }
 
 const initialState: OrdersState = {
   orders: [],
   status: "idle",
-  errors: [],
   reRequestTimerId: null,
+  errors: [],
 };
 
 const APPROVE_AMOUNT = "90071992547409910000000000";
@@ -92,18 +89,18 @@ const refactorOrder = (order: Order, chainId: number) => {
   return newOrder;
 };
 
-export const handleOrderError = (
-  dispatch: Dispatch,
-  error: RPCError | ErrorWithCode
-) => {
-  const errorCodes = getSwapErrorCodesFromError(error) as (
-    | number
-    | SwapError
-  )[];
-  const errorTypes = errorCodes
-    .map((errorCode) => transformErrorCodeToError(errorCode))
-    .filter((errorCode) => !!errorCode) as ErrorType[];
-  dispatch(setErrors(errorTypes));
+export const handleOrderError = (dispatch: Dispatch, error: any) => {
+  const appError = transformUnknownErrorToAppError(error);
+
+  if (appError.error && "message" in appError.error) {
+    dispatch(declineTransaction(appError.error.message));
+  }
+
+  if (appError.type === AppErrorType.rejectedByUser) {
+    notifyRejectedByUserError();
+  } else {
+    dispatch(setErrors([appError]));
+  }
 };
 
 export const deposit = createAsyncThunk(
@@ -180,7 +177,6 @@ export const deposit = createAsyncThunk(
       }
     } catch (e: any) {
       handleOrderError(dispatch, e);
-      dispatch(declineTransaction(e.message));
       throw e;
     }
   }
@@ -265,7 +261,6 @@ export const withdraw = createAsyncThunk(
       }
     } catch (e: any) {
       handleOrderError(dispatch, e);
-      dispatch(declineTransaction(e.message));
       throw e;
     }
   }
@@ -393,7 +388,6 @@ export const approve = createAsyncThunk<
     }
   } catch (e: any) {
     handleOrderError(dispatch, e);
-    dispatch(declineTransaction(e.message));
     throw e;
   }
 });
@@ -414,48 +408,54 @@ export const take = createAsyncThunk<
     state: RootState;
   }
 >("orders/take", async (params, { getState, dispatch }) => {
-  let tx: Transaction;
-  try {
-    tx = await takeOrder(params.order, params.library, params.contractType);
-    // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
-    // we should change the order tokens to WETH -> ETH
-    let newOrder =
-      params.contractType === "Swap"
-        ? params.order
-        : refactorOrder(params.order, params.library._network.chainId);
-    if (tx.hash) {
-      const transaction: SubmittedRFQOrder = {
-        type: "Order",
-        order: newOrder,
-        protocol: "request-for-quote",
-        hash: tx.hash,
-        status: "processing",
-        timestamp: Date.now(),
-        nonce: params.order.nonce,
-        expiry: params.order.expiry,
-      };
-      dispatch(
-        submitTransactionWithExpiry({
-          transaction,
-          signerWallet: params.order.signerWallet,
-          onExpired: params.onExpired,
-        })
-      );
-    }
-  } catch (e: any) {
-    if (e?.code === 4001) {
-      // 4001 is metamask user declining transaction sig
+  const tx = await takeOrder(params.order, params.library, params.contractType);
+
+  if (isAppError(tx)) {
+    const appError = tx;
+    if (appError.type === AppErrorType.rejectedByUser) {
+      notifyRejectedByUserError();
       dispatch(
         revertTransaction({
           signerWallet: params.order.signerWallet,
           nonce: params.order.nonce,
-          reason: e.message,
+          reason: appError.type,
         })
       );
+    } else {
+      dispatch(setErrors([appError]));
     }
-    handleOrderError(dispatch, e);
-    dispatch(declineTransaction(e.message));
-    throw e;
+
+    if (appError.error && "message" in appError.error) {
+      dispatch(declineTransaction(appError.error.message));
+    }
+
+    throw appError;
+  }
+
+  // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
+  // we should change the order tokens to WETH -> ETH
+  let newOrder =
+    params.contractType === "Swap"
+      ? params.order
+      : refactorOrder(params.order, params.library._network.chainId);
+  if (tx.hash) {
+    const transaction: SubmittedRFQOrder = {
+      type: "Order",
+      order: newOrder,
+      protocol: "request-for-quote",
+      hash: tx.hash,
+      status: "processing",
+      timestamp: Date.now(),
+      nonce: params.order.nonce,
+      expiry: params.order.expiry,
+    };
+    dispatch(
+      submitTransactionWithExpiry({
+        transaction,
+        signerWallet: params.order.signerWallet,
+        onExpired: params.onExpired,
+      })
+    );
   }
 });
 
@@ -466,7 +466,7 @@ export const ordersSlice = createSlice({
     setResetStatus: (state) => {
       state.status = "reset";
     },
-    setErrors: (state, action: PayloadAction<ErrorType[]>) => {
+    setErrors: (state, action: PayloadAction<AppError[]>) => {
       state.errors = action.payload;
     },
     clear: (state) => {
@@ -609,4 +609,5 @@ export const selectBestOption = createSelector(
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export const selectOrdersErrors = (state: RootState) => state.orders.errors;
+
 export default ordersSlice.reducer;
