@@ -1,7 +1,5 @@
 import React, { FC } from "react";
 
-import useAppRouteParams from "../../../../hooks/useAppRouteParams";
-import { AppRoutes } from "../../../../routes";
 import {
   StyledIcon,
   Text,
@@ -15,7 +13,7 @@ type ToolbarButtonProps = {
   iconName: string;
   iconSize?: number;
   href?: string;
-  link?: AppRoutes;
+  link?: string;
   onClick?: (
     e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
   ) => void;
@@ -29,8 +27,6 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
   link,
   onClick,
 }) => {
-  const appRouteParams = useAppRouteParams();
-
   const renderInner = () => {
     return (
       <>
@@ -42,10 +38,7 @@ const ToolbarButton: FC<ToolbarButtonProps> = ({
 
   if (link) {
     return (
-      <ToolBarLinkContainer
-        onClick={onClick}
-        to={`${appRouteParams.justifiedBaseUrl}/${link}`}
-      >
+      <ToolBarLinkContainer onClick={onClick} to={link}>
         {renderInner()}
       </ToolBarLinkContainer>
     );

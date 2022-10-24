@@ -11,30 +11,20 @@ import { AppRoutes } from "../../routes";
 const Routes: FC = () => {
   return (
     <Switch>
+      <Route path={`/${AppRoutes.make}`} component={MakePage} key="make" />
       <Route
-        path={[`/${AppRoutes.make}`, `/:lang/${AppRoutes.make}`]}
-        component={MakePage}
-        key="make"
-      />
-      <Route
-        path={[`/${AppRoutes.myOrders}`, `/:lang/${AppRoutes.myOrders}`]}
+        path={`/${AppRoutes.myOrders}`}
         component={MySwapsPage}
         key="my-swaps"
       />
       <Route
         exact
-        path={[
-          `/${AppRoutes.order}/:compressedOrder`,
-          `/:lang/${AppRoutes.order}/:compressedOrder`,
-        ]}
+        path={`/${AppRoutes.order}/:compressedOrder`}
         component={OrderDetail}
         key="order-detail"
       />
       <Route
-        path={[
-          `/${AppRoutes.order}/:compressedOrder/cancel`,
-          `/:lang/${AppRoutes.order}/:compressedOrder/cancel`,
-        ]}
+        path={`/${AppRoutes.order}/:compressedOrder/cancel`}
         component={Cancel}
         key="cancel"
       />
