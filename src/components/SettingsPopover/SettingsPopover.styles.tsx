@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
@@ -86,7 +84,7 @@ export const LocaleContainer = styled.div<LocaleContainerType>`
   }
 `;
 
-export const LocaleButton = styled(Link)<ButtonStyleProps>`
+export const LocaleButton = styled.button<ButtonStyleProps>`
   ${BorderlessButtonStyle};
 
   display: flex;

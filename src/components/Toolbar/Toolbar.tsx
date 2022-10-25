@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
@@ -31,7 +30,6 @@ const Toolbar: FC<ToolbarProps> = ({
   const { t } = useTranslation();
   const { width, height } = useWindowSize();
   const isTabletPortraitUp = useMediaQuery(breakPoints.tabletPortraitUp);
-  const appRouteParams = useAppRouteParams();
   const containerRef = useRef<HTMLDivElement>(null);
   const mobileTopBarRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -71,7 +69,7 @@ const Toolbar: FC<ToolbarProps> = ({
           iconName="swap-horizontal"
           iconSize={1.25}
           text={t("common.swap")}
-          link={`${appRouteParams.justifiedBaseUrl}/${AppRoutes.swap}`}
+          link={`/${AppRoutes.swap}`}
         />
         <ToolbarButton
           iconName="plus"

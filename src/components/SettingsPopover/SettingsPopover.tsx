@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
+import i18n from "i18next";
 import { ThemeType } from "styled-components/macro";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -79,7 +80,7 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
               <LocaleButton
                 key={locale}
                 $isActive={appRouteParams.lang === locale}
-                to={`/${locale}${appRouteParams.urlWithoutLang}`}
+                onClick={() => i18n.changeLanguage(locale)}
               >
                 {LOCALE_LABEL[locale]}
               </LocaleButton>
