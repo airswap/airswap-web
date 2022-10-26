@@ -1,15 +1,19 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
+import i18n from "i18next";
 import { ThemeType } from "styled-components/macro";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { SUPPORTED_LOCALES, LOCALE_LABEL } from "../../constants/locales";
+import {
+  SUPPORTED_LOCALES,
+  LOCALE_LABEL,
+  DEFAULT_LOCALE,
+} from "../../constants/locales";
 import {
   selectTheme,
   setTheme,
 } from "../../features/userSettings/userSettingsSlice";
-import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useWindowSize from "../../hooks/useWindowSize";
 import {
   Container,
@@ -33,12 +37,23 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   const selectedTheme = useAppSelector(selectTheme);
   const [overflow, setOverflow] = useState<boolean>(false);
 
-  const appRouteParams = useAppRouteParams();
+  // selects i18nextLang first, window language, falls back to default locale (en)
+  const [selectedLocale, setSelectedLocale] = useState<string>(
+    localStorage.getItem("i18nextLng")?.substring(0, 2) ||
+      window.navigator.language.substring(0, 2) ||
+      DEFAULT_LOCALE
+  );
+
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const handleThemeButtonClick = (newTheme: ThemeType | "system") => {
     dispatch(setTheme(newTheme));
+  };
+
+  const handleLocaleButtonClick = (locale: string) => {
+    setSelectedLocale(locale);
+    i18n.changeLanguage(locale);
   };
 
   useEffect(() => {
@@ -78,8 +93,8 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
             return (
               <LocaleButton
                 key={locale}
-                $isActive={appRouteParams.lang === locale}
-                to={`/${locale}${appRouteParams.urlWithoutLang}`}
+                $isActive={selectedLocale === locale}
+                onClick={() => handleLocaleButtonClick(locale)}
               >
                 {LOCALE_LABEL[locale]}
               </LocaleButton>

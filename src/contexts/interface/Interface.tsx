@@ -1,8 +1,5 @@
 import React, { Dispatch, FC, useEffect, useState } from "react";
 
-import i18n from "i18next";
-
-import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useDebounce from "../../hooks/useDebounce";
 import useWindowSize from "../../hooks/useWindowSize";
 
@@ -33,7 +30,6 @@ export const InterfaceContext =
   });
 
 const InterfaceProvider: FC = ({ children }) => {
-  const appRouteParams = useAppRouteParams();
   const { height: windowHeight } = useWindowSize();
 
   const [isConnecting, setIsConnecting] = useState(false);
@@ -49,10 +45,6 @@ const InterfaceProvider: FC = ({ children }) => {
     100,
     [windowHeight]
   );
-
-  useEffect(() => {
-    i18n.changeLanguage(appRouteParams.lang);
-  }, [appRouteParams.lang]);
 
   useEffect(() => {
     if (showMobileToolbar) {

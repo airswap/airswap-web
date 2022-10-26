@@ -53,7 +53,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   };
 
   const handleAirswapButtonClick = () => {
-    history.push(appRouteParams.justifiedBaseUrl);
+    history.push("/");
   };
 
   const handleCloseMobileToolbarButtonClick = () => {
