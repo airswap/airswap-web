@@ -115,7 +115,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   // button handlers
   const handleBackButtonClick = () => {
-    history.push({ pathname: AppRoutes.myOrders });
+    history.push({ pathname: `/${AppRoutes.myOrders}` });
   };
 
   const handleCopyButtonClick = () => {
