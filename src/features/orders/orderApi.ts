@@ -222,3 +222,13 @@ export async function check(
 
   return errors.map((error) => transformSwapErrorToAppError(error));
 }
+
+export async function getNonceUsed(
+  order: FullOrder,
+  provider: ethers.providers.Web3Provider
+): Promise<boolean> {
+  return new Swap(parseInt(order.chainId), provider).contract.nonceUsed(
+    order.signerWallet,
+    order.nonce
+  );
+}

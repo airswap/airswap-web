@@ -8,18 +8,20 @@ import { format } from "date-fns";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
+import { OrderStatus } from "../../../../types/orderStatus";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
 import { getTokenAmountWithDecimals } from "../../helpers";
 import {
+  ActionButton,
+  ActionButtonContainer,
+  ActiveIndicator,
   Circle,
   Container,
-  StyledTokenLogo,
-  TokenLogos,
-  Text,
-  ActiveIndicator,
-  ActionButtonContainer,
-  ActionButton,
   StyledNavLink,
+  StyledTokenLogo,
+  Text,
+  TokenLogos,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -57,13 +59,17 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
   const orderString = useMemo(() => compressFullOrder(order), [order]);
   const isExpired = new Date().getTime() > expiry;
+  const orderStatus = useOrderStatus(order);
 
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
   };
 
   return (
-    <Container isExpired={isExpired} className={className}>
+    <Container
+      isUsedOrExpired={isExpired || orderStatus !== OrderStatus.open}
+      className={className}
+    >
       <ActiveIndicator>
         <Circle />
       </ActiveIndicator>
@@ -81,7 +87,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <LoadingSpinner />
         ) : (
           <ActionButton
-            icon={isExpired ? "bin" : "button-x"}
+            icon={
+              isExpired || orderStatus !== OrderStatus.open ? "bin" : "button-x"
+            }
             iconSize={isExpired ? 0.75 : 0.675}
             onClick={handleDeleteOrderButtonClick}
             onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}

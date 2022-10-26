@@ -14,13 +14,13 @@ import {
 } from "../../components/Toasts/ToastController";
 import i18n from "../../i18n/i18n";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
+import { getNonceUsed } from "../orders/orderApi";
 import {
   mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionActions";
 import { SubmittedCancellation } from "../transactions/transactionsSlice";
-import { getTakenState } from "./takeOtcHelpers";
 import {
   reset,
   setActiveOrder,
@@ -63,7 +63,7 @@ export const cancelOrder = createAsyncThunk(
     { dispatch }
   ) => {
     // pre-cancel checks
-    const nonceUsed = await getTakenState(params.order, params.library);
+    const nonceUsed = await getNonceUsed(params.order, params.library);
 
     if (nonceUsed) {
       notifyError({
@@ -107,7 +107,7 @@ export const cancelOrder = createAsyncThunk(
     await tx.wait();
 
     // post-cancel clean up
-    const isCancelled = await getTakenState(params.order, params.library);
+    const isCancelled = await getNonceUsed(params.order, params.library);
     dispatch(mineTransaction(tx));
     dispatch(removeUserOrder(params.order));
 

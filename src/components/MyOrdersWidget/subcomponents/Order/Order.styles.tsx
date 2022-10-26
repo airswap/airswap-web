@@ -15,7 +15,7 @@ export const Circle = styled.div`
   background: ${({ theme }) => theme.colors.green};
 `;
 
-export const Container = styled.div<{ isExpired: boolean }>`
+export const Container = styled.div<{ isUsedOrExpired: boolean }>`
   ${MyOrdersGrid};
 
   position: relative;
@@ -24,8 +24,8 @@ export const Container = styled.div<{ isExpired: boolean }>`
   height: 3rem;
 
   ${Circle} {
-    background: ${({ theme, isExpired }) =>
-      isExpired ? theme.colors.borderGrey : theme.colors.green};
+    background: ${({ theme, isUsedOrExpired }) =>
+      isUsedOrExpired ? theme.colors.borderGrey : theme.colors.green};
   }
 `;
 

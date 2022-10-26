@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FullOrder } from "@airswap/typescript";
 import { useWeb3React } from "@web3-react/core";
 
-import { getTakenState } from "../../../features/takeOtc/takeOtcHelpers";
+import { getNonceUsed } from "../../../features/orders/orderApi";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { OrderStatus } from "../../../types/orderStatus";
 
@@ -16,7 +16,7 @@ export const useOrderStatus = (order: FullOrder): OrderStatus => {
   const asyncGetTakenState = useCallback(
     async (order: FullOrder) => {
       if (library) {
-        const response = await getTakenState(order, library);
+        const response = await getNonceUsed(order, library);
 
         setIsTaken(response);
       }
