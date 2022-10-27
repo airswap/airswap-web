@@ -201,12 +201,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <SwapInputs
         readOnly
-        baseAmount={signerAmount || "0.00"}
+        baseAmount={(userIsMakerOfSwap ? signerAmount : senderAmount) || "0.00"}
         baseTokenInfo={signerToken}
         maxAmount={null}
         side={userIsMakerOfSwap ? "sell" : "buy"}
         tradeNotAllowed={walletChainIdIsDifferentThanOrderChainId}
-        quoteAmount={senderAmount || "0.00"}
+        quoteAmount={
+          (userIsMakerOfSwap ? senderAmount : signerAmount) || "0.00"
+        }
         quoteTokenInfo={senderToken}
         onBaseAmountChange={() => {}}
         onChangeTokenClick={() => {}}
