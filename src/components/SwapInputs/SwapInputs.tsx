@@ -96,7 +96,7 @@ const SwapInputs: FC<{
     <Container $disabled={disabled}>
       <TokenSelect
         label={t("orders.from")}
-        amount={baseAmount}
+        amount={isSell ? baseAmount : quoteAmount}
         onAmountChange={(e) => handleTokenAmountChange(e, onBaseAmountChange)}
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
@@ -115,7 +115,7 @@ const SwapInputs: FC<{
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
         label={t("orders.to")}
-        amount={quoteAmount}
+        amount={isSell ? quoteAmount : baseAmount}
         onAmountChange={(e) =>
           handleTokenAmountChange(e, onQuoteAmountChange || onBaseAmountChange)
         }
