@@ -56,22 +56,6 @@ describe("Get Time Difference Between Two Dates", () => {
     expect(res).toBe("23 wallet.hourAgo_other");
   });
 
-  it("should return 1 day", () => {
-    var xDaysAgo = new Date(Date.now() - 1 * MS_PER_DAY);
-    const { t } = useTranslation();
-
-    const res = getTimeTranslation(xDaysAgo, t);
-    expect(res).toBe("1 wallet.dayAgo_one");
-  });
-
-  it("should return 2 days", () => {
-    var xDaysAgo = new Date(Date.now() - 2 * MS_PER_DAY);
-    const { t } = useTranslation();
-
-    const res = getTimeTranslation(xDaysAgo, t);
-    expect(res).toBe("2 wallet.dayAgo_other");
-  });
-
   it("should return 1 month", () => {
     var xMonthsAgo = addMonths(Date.now(), -1);
     const { t } = useTranslation();
@@ -86,14 +70,6 @@ describe("Get Time Difference Between Two Dates", () => {
 
     const res = getTimeTranslation(xMonthsAgo, t);
     expect(res).toBe("11 wallet.monthAgo_other");
-  });
-
-  it("should return 1 year", () => {
-    var xYearsAgo = new Date(Date.now() - 1 * MS_PER_YEAR);
-    const { t } = useTranslation();
-
-    const res = getTimeTranslation(xYearsAgo, t);
-    expect(res).toBe("1 wallet.yearAgo_one");
   });
 
   it("should return 5 years", () => {

@@ -11,9 +11,10 @@ import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
+import { selectProtocolFee } from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import {
@@ -60,6 +61,7 @@ const LastLookProvider: FC = ({ children }) => {
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
+  const protocolFee = useAppSelector(selectProtocolFee);
 
   const subscribeAllServers = useCallback(
     (servers: Server[], pair: Pair) => {
@@ -146,7 +148,7 @@ const LastLookProvider: FC = ({ children }) => {
         signerWallet: account,
         signerToken: terms.baseToken.address,
         senderToken: terms.quoteToken.address,
-        protocolFee: "7",
+        protocolFee: protocolFee.toString(),
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
@@ -194,7 +196,7 @@ const LastLookProvider: FC = ({ children }) => {
         senderWallet: unsignedOrder.senderWallet,
       };
     },
-    [account, chainId, dispatch, library, t]
+    [account, chainId, dispatch, library, protocolFee, t]
   );
 
   const sendOrderForConsideration = useCallback(

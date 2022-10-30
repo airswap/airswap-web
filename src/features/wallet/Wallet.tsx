@@ -42,6 +42,7 @@ import {
 } from "../balances/balancesSlice";
 import {
   fetchAllTokens,
+  fetchProtocolFee,
   fetchUnkownTokens,
   selectActiveTokens,
   selectAllTokenInfo,
@@ -197,6 +198,7 @@ export const Wallet: FC<WalletPropsType> = ({
           address: account,
         })
       );
+      dispatch(fetchProtocolFee({ chainId, provider: library }));
       saveLastAccount(account, provider);
       Promise.all([
         ...(!isFetchingAllTokens

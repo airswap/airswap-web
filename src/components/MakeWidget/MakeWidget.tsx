@@ -28,6 +28,7 @@ import { getSavedActiveTokensInfo } from "../../features/metadata/metadataApi";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
+  selectProtocolFee,
 } from "../../features/metadata/metadataSlice";
 import { approve, deposit } from "../../features/orders/ordersSlice";
 import {
@@ -79,6 +80,7 @@ const MakeWidget: FC = () => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const userTokens = useAppSelector(selectUserTokens);
+  const protocolFee = useAppSelector(selectProtocolFee);
   const { status, error, lastUserOrder } = useAppSelector(selectMakeOtcReducer);
   const {
     active,
@@ -217,7 +219,7 @@ const MakeWidget: FC = () => {
           formattedMakerAmount,
           makerTokenInfo?.decimals!
         ),
-        protocolFee: "7",
+        protocolFee: protocolFee.toString(),
         senderWallet:
           orderType === OrderType.private
             ? takerAddress!
