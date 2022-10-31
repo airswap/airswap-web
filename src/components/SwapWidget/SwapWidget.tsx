@@ -62,6 +62,7 @@ import {
   revertTransaction,
 } from "../../features/transactions/transactionActions";
 import { ProtocolType } from "../../features/transactions/transactionsSlice";
+import { selectPendingTransactions } from "../../features/transactions/transactionsSlice";
 import {
   setUserTokens,
   selectUserTokens,
@@ -75,7 +76,6 @@ import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber
 import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
-import { selectPendingTransactions } from "../../features/transactions/transactionsSlice";
 import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -145,7 +145,7 @@ const SwapWidget: FC = () => {
     useState<TokenSelectModalTypes | null>(null);
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
-  const [orderNonce,setOrderNonce] = useState<string>("");
+  const [orderNonce, setOrderNonce] = useState<string>("");
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -195,11 +195,11 @@ const SwapWidget: FC = () => {
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
-  useEffect(()=>{
-    if(showOrderSubmitted&&currOrder){
-      setOrderNonce((currOrder!.nonce!));
+  useEffect(() => {
+    if (showOrderSubmitted && currOrder) {
+      setOrderNonce(currOrder!.nonce!);
     }
-  },[showOrderSubmitted,currOrder]);
+  }, [showOrderSubmitted, currOrder]);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -740,7 +740,7 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
-            orderNonce = {orderNonce}
+            orderNonce={orderNonce}
             onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
           />
         </InfoContainer>

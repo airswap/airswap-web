@@ -104,7 +104,6 @@
         "swapMessage": "在您的錢包中確認這筆交易",
         "wrapMessage": "包裏ETH/WETH沒有手續費",
         "submitted": "交易已提交",
-        "transactionCompleted": "交易已完成",
         "swapExpired": "兌換到期了",
         "swapExpiredCallToAction": "請再試一次",
         "swapFailed": "兌換錯誤",

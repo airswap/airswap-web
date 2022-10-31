@@ -104,7 +104,6 @@
         "swapMessage": "Aceite na sua carteira para continuar",
         "wrapMessage": "Sem taxa de protocolo para trocas ETH / WETH",
         "submitted": "Transação enviada",
-        "transactionCompleted": "Transação concluída",
         "swapExpired": "Troca expirada",
         "swapExpiredCallToAction": "Por favor, tente novamente",
         "swapFailed": "Erro ao enviar a troca",

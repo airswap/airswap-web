@@ -101,7 +101,6 @@ const TransactionsTab = ({
     setShowMobileMenu(!showMobileMenu);
   };
 
-
   useEffect(() => {
     if (!open) {
       setShowMobileMenu(false);
@@ -150,7 +149,6 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
-
 
   return (
     <AnimatePresence initial={false}>

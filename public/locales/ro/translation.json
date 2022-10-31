@@ -104,7 +104,6 @@
         "swapMessage": "Acceptă cu protofelul pentru a continua",
         "wrapMessage": "Nici o taxa de protocol pentru conversile ETH/WETH ",
         "submitted": "Tranzacție depusă",
-        "transactionCompleted": "Tranzacție finalizată",
         "swapExpired": "Conversie expirată",
         "swapExpiredCallToAction": "Te rugăm să încerci din nou",
         "swapFailed": "Eroare în depunerea conversiei ",

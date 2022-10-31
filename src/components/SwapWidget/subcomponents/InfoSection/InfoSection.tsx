@@ -35,7 +35,7 @@ export type InfoSectionProps = {
         pricing: Levels;
       }
     | {
-        protocol: "request-for-quote"
+        protocol: "request-for-quote";
         quoteAmount: string;
         order: Order;
       }

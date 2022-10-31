@@ -104,7 +104,6 @@
         "swapMessage": "Aksepter handelen i lommeboken din for å fortsette",
         "wrapMessage": "Vekslinger med ETH/WETH er gebyfrie",
         "submitted": "Sendt!",
-        "transactionCompleted":"Transaksjonen fullført",
         "swapExpired": "Veksling utløpt",
         "swapExpiredCallToAction": "Vennligst prøv igjen",
         "swapFailed": "Veksling feilet",

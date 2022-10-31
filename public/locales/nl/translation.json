@@ -104,7 +104,6 @@
         "swapMessage": "Accepteer op je wallet om verder te gaan",
         "wrapMessage": "Geen protocol kosten voor ETH/WETH swaps",
         "submitted": "Transactie ingediend",
-        "transactionCompleted": "Transactie voltooid",
         "swapExpired": "Swap verlopen",
         "swapExpiredCallToAction": "Probeer het alstublieft opnieuw",
         "swapFailed": "Foutmelding tijdens indienen swap",
