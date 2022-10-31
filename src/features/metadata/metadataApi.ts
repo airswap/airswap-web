@@ -1,5 +1,7 @@
+import { Swap } from "@airswap/libraries";
 import { fetchTokens, scrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
+import { Web3Provider } from "@ethersproject/providers";
 
 import { providers } from "ethers";
 import uniqBy from "lodash.uniqby";
@@ -117,3 +119,14 @@ export const getTransactionsLocalStorageKey: (
   chainId: number
 ) => string = (walletAddress, chainId) =>
   `airswap/transactions/${walletAddress}/${chainId}`;
+
+export const getProtocolFee = async (
+  chainId: number,
+  provider: Web3Provider
+): Promise<number> => {
+  const protocolFee = await new Swap(
+    chainId,
+    provider.getSigner()
+  ).contract.protocolFee();
+  return protocolFee.toNumber();
+};

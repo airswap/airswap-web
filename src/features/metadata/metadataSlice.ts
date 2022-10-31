@@ -1,5 +1,6 @@
 import { fetchTokens } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
+import { Web3Provider } from "@ethersproject/providers";
 import {
   createAsyncThunk,
   createSelector,
@@ -17,11 +18,13 @@ import {
 } from "../wallet/walletSlice";
 import {
   getActiveTokensFromLocalStorage,
+  getProtocolFee,
   getUnknownTokens,
 } from "./metadataApi";
 
 export interface MetadataState {
   isFetchingAllTokens: boolean;
+  protocolFee: number;
   tokens: {
     all: {
       [address: string]: TokenInfo;
@@ -32,6 +35,7 @@ export interface MetadataState {
 
 const initialState: MetadataState = {
   isFetchingAllTokens: false,
+  protocolFee: 7,
   tokens: {
     all: {},
     active: [],
@@ -72,6 +76,21 @@ export const fetchUnkownTokens = createAsyncThunk<
   );
 });
 
+export const fetchProtocolFee = createAsyncThunk<
+  number,
+  {
+    provider: Web3Provider;
+    chainId: number;
+  }
+>("metadata/fetchProtocolFee", async ({ provider, chainId }) => {
+  try {
+    return getProtocolFee(chainId, provider);
+  } catch {
+    console.error("Error getting protocol fee from contract, defaulting to 7.");
+    return 7;
+  }
+});
+
 export const metadataSlice = createSlice({
   name: "metadata",
   initialState,
@@ -90,7 +109,7 @@ export const metadataSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: async (builder) => {
     builder
       .addCase(fetchAllTokens.pending, (state) => {
         return {
@@ -139,6 +158,9 @@ export const metadataSlice = createSlice({
           state.tokens.all[token.address] = token;
         });
       })
+      .addCase(fetchProtocolFee.fulfilled, (state, action) => {
+        state.protocolFee = action.payload;
+      })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId, address } = action.payload;
         state.tokens.active =
@@ -165,5 +187,7 @@ export const selectActiveTokens = createSelector(
   }
 );
 export const selectMetaDataReducer = (state: RootState) => state.metadata;
+export const selectProtocolFee = (state: RootState) =>
+  state.metadata.protocolFee;
 
 export default metadataSlice.reducer;

@@ -14,7 +14,7 @@ export function pricingIsLevels(value: Levels | Formula): value is Levels {
 export const calculateQuoteAmount: (params: {
   baseAmount: string;
   side: "buy" | "sell";
-  protocolFee: string;
+  protocolFee: number;
   pricing: Pricing;
 }) => string = ({ baseAmount, side, protocolFee, pricing }) => {
   // baseAmount always known.
@@ -58,7 +58,7 @@ export const calculateQuoteAmount: (params: {
     const signerAmount = new BigNumber(
       calculateCostFromLevels(senderAmount, levels)
     )
-      .multipliedBy(1.0007)
+      .multipliedBy(1 + protocolFee / 10000)
       // .integerValue(BigNumber.ROUND_FLOOR)
       .toString();
     return signerAmount;
