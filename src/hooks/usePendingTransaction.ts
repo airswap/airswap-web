@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectPendingTransactions } from "../features/transactions/transactionsSlice";
 
-const usePendingTransaction = (nonce: string): boolean => {
+const usePendingTransaction = (nonce: string|undefined): boolean => {
   const pendingTransactions = useAppSelector(selectPendingTransactions);
 
   return useMemo(() => {

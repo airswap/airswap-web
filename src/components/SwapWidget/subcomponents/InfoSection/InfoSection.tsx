@@ -7,8 +7,6 @@ import { Order } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 
-import usePendingTransaction from "../../../../hooks/usePendingTransaction";
-
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { InfoSubHeading } from "../../../Typography/Typography";
 import {
@@ -45,7 +43,7 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  orderNonce: string;
+  isComplete:boolean;
   onFeeButtonClick: () => void;
 };
 
@@ -63,12 +61,11 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
-  orderNonce,
+  isComplete,
   onFeeButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
-  const isPending = usePendingTransaction(orderNonce);
 
   // Wallet not connected.
   if (!isConnected) {
@@ -133,7 +130,7 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted && isPending) {
+  if (orderSubmitted && !isComplete) {
     return (
       <>
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
@@ -141,7 +138,7 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted && !isPending) {
+  if (orderSubmitted && isComplete) {
     return (
       <>
         <StyledInfoHeading>
