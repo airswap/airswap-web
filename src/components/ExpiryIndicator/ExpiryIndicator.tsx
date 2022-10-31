@@ -32,7 +32,9 @@ const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry, className }) => {
   return (
     <Container className={className}>
       <StyledPill>
-        <Text>{hasExpired ? t("common.expired") : t("common.expiresIn")}</Text>
+        <Text hasExpired={hasExpired}>
+          {hasExpired ? t("common.expired") : t("common.expiresIn")}
+        </Text>
         {!hasExpired && <Strong>{timeLeft}</Strong>}
       </StyledPill>
       <StyledTooltip>{format(expiry, "dd-MMM-yyyy pppp")}</StyledTooltip>

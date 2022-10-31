@@ -27,7 +27,7 @@ const ButtonStyle = css`
 export const ItemBackground = styled.div`
   ${ButtonStyle};
 
-  transition: transform 0.3s ease-out;
+  transition: transform 0.2s ease-out;
   position: absolute;
   top: var(--dropdown-options-wrapper-padding);
   margin-top: -1px;
@@ -110,7 +110,8 @@ export const SelectOptions = styled.div<{ activeIndex: number }>`
   border-radius: 4px;
   margin-top: 1px;
   padding: var(--dropdown-options-wrapper-padding);
-  background: ${({ theme }) => theme.colors.darkGrey};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   box-shadow: ${({ theme }) => theme.shadows.selectOptionsShadow};
   z-index: 1;
 `;
