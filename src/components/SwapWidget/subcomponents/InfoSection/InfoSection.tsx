@@ -1,4 +1,4 @@
-import { FC, useState, useContext } from "react";
+import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -6,6 +6,8 @@ import { Levels } from "@airswap/typescript";
 import { Order } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
+
+import usePendingTransaction from "../../../../hooks/usePendingTransaction";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { InfoSubHeading } from "../../../Typography/Typography";
@@ -17,7 +19,6 @@ import {
   FeeTextContainer,
   ApprovalText,
 } from "./InfoSection.styles";
-import { InterfaceContext } from "../../../../contexts/interface/Interface";
 
 export type InfoSectionProps = {
   isConnected: boolean;
@@ -34,7 +35,7 @@ export type InfoSectionProps = {
         pricing: Levels;
       }
     | {
-        protocol: "request-for-quote";
+        protocol: "request-for-quote"
         quoteAmount: string;
         order: Order;
       }
@@ -44,6 +45,7 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  orderNonce: string;
   onFeeButtonClick: () => void;
 };
 
@@ -61,12 +63,13 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
+  orderNonce,
   onFeeButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
-  const { transactionComplete } =
-    useContext(InterfaceContext);
+  const isPending = usePendingTransaction(orderNonce);
+
   // Wallet not connected.
   if (!isConnected) {
     return (
@@ -130,7 +133,7 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted && !transactionComplete) {
+  if (orderSubmitted && isPending) {
     return (
       <>
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
@@ -138,7 +141,7 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted && transactionComplete) {
+  if (orderSubmitted && !isPending) {
     return (
       <>
         <StyledInfoHeading>

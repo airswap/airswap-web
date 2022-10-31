@@ -75,6 +75,7 @@ import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber
 import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import { selectPendingTransactions } from "../../features/transactions/transactionsSlice";
 import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -113,6 +114,7 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const userTokens = useAppSelector(selectUserTokens);
+  const currOrder = useAppSelector(selectPendingTransactions)[0];
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -143,6 +145,7 @@ const SwapWidget: FC = () => {
     useState<TokenSelectModalTypes | null>(null);
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
+  const [orderNonce,setOrderNonce] = useState<string>("");
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -191,6 +194,12 @@ const SwapWidget: FC = () => {
     !!maxAmount &&
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
+
+  useEffect(()=>{
+    if(showOrderSubmitted&&currOrder){
+      setOrderNonce((currOrder!.nonce!));
+    }
+  },[showOrderSubmitted,currOrder]);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -731,6 +740,7 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
+            orderNonce = {orderNonce}
             onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
           />
         </InfoContainer>
