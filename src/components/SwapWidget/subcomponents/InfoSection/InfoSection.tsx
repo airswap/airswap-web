@@ -19,12 +19,14 @@ import {
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
-  isConnected: boolean;
-  isPairUnavailable: boolean;
-  orderSubmitted: boolean;
-  isFetchingOrders: boolean;
   isApproving: boolean;
+  isConnected: boolean;
+  isFetchingOrders: boolean;
+  isPairUnavailable: boolean;
   isSwapping: boolean;
+  isWrapping: boolean;
+  orderSubmitted: boolean;
+  orderCompleted: boolean;
   failedToFetchAllowances: boolean;
   bestTradeOption:
     | {
@@ -38,7 +40,6 @@ export type InfoSectionProps = {
         order: Order;
       }
     | null;
-  isWrapping: boolean;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
@@ -47,15 +48,16 @@ export type InfoSectionProps = {
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
-  isConnected,
-  isPairUnavailable,
-  orderSubmitted,
   isApproving,
+  isConnected,
+  isFetchingOrders,
+  isPairUnavailable,
   isSwapping,
+  isWrapping,
+  orderCompleted,
+  orderSubmitted,
   failedToFetchAllowances,
   bestTradeOption,
-  isWrapping,
-  isFetchingOrders,
   requiresApproval,
   baseTokenInfo,
   baseAmount,
@@ -64,6 +66,7 @@ const InfoSection: FC<InfoSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
+
   // Wallet not connected.
   if (!isConnected) {
     return (
@@ -124,6 +127,17 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.tokenPairUnavailable")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (orderCompleted) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.transactionCompleted")}
+        </StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
   }

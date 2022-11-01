@@ -63,7 +63,10 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../features/transactions/transactionActions";
-import { ProtocolType } from "../../features/transactions/transactionsSlice";
+import {
+  ProtocolType,
+  selectTransactions,
+} from "../../features/transactions/transactionsSlice";
 import {
   setUserTokens,
   selectUserTokens,
@@ -119,6 +122,7 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const userTokens = useAppSelector(selectUserTokens);
+  const lastTransaction = useAppSelector(selectTransactions)[0];
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -716,6 +720,9 @@ const SwapWidget: FC = () => {
         <InfoContainer>
           <InfoSection
             orderSubmitted={showOrderSubmitted}
+            orderCompleted={
+              showOrderSubmitted && lastTransaction?.status === "succeeded"
+            }
             isConnected={active}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
