@@ -10,8 +10,15 @@ export const Container = styled.div`
   height: 2rem;
 `;
 
-export const Text = styled.span`
+export const Text = styled.span<{ hasExpired: boolean }>`
   ${TextEllipsis};
+
+  color: ${({ theme, hasExpired }) =>
+    hasExpired
+      ? theme.name === "dark"
+        ? theme.colors.white
+        : theme.colors.primary
+      : theme.colors.lightGrey};
 `;
 
 export const Strong = styled.strong`
@@ -19,7 +26,8 @@ export const Strong = styled.strong`
 
   display: inline;
   margin-left: 0.375rem;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const StyledTooltip = styled(Tooltip)`
