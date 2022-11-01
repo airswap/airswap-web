@@ -61,8 +61,10 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../features/transactions/transactionActions";
-import { ProtocolType } from "../../features/transactions/transactionsSlice";
-import { selectPendingTransactions } from "../../features/transactions/transactionsSlice";
+import {
+  ProtocolType,
+  selectTransactions,
+} from "../../features/transactions/transactionsSlice";
 import {
   setUserTokens,
   selectUserTokens,
@@ -72,7 +74,6 @@ import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
-import usePendingTransaction from "../../hooks/usePendingTransaction";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenAddress from "../../hooks/useTokenAddress";
@@ -115,7 +116,7 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const userTokens = useAppSelector(selectUserTokens);
-  const pendingTransactions = useAppSelector(selectPendingTransactions);
+  const lastTransaction = useAppSelector(selectTransactions)[0];
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -146,7 +147,6 @@ const SwapWidget: FC = () => {
     useState<TokenSelectModalTypes | null>(null);
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
-  const [lastSubmittedOrderNonce, setLastSubmittedOrderNonce] = useState<string|undefined>();
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -195,14 +195,6 @@ const SwapWidget: FC = () => {
     !!maxAmount &&
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
-
-  const orderPending = usePendingTransaction(lastSubmittedOrderNonce);
-  // const orderPending = useCompletedTransaction(lastSubmittedOrderNonce);
-  useEffect(() => {
-    if (showOrderSubmitted && pendingTransactions[0]?.nonce) {
-      setLastSubmittedOrderNonce(pendingTransactions[0].nonce);
-    }
-  }, [showOrderSubmitted, pendingTransactions]);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -613,7 +605,6 @@ const SwapWidget: FC = () => {
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount(initialBaseAmount);
-        setLastSubmittedOrderNonce(undefined);
         break;
 
       case ButtonActions.reloadPage:
@@ -729,6 +720,9 @@ const SwapWidget: FC = () => {
         <InfoContainer>
           <InfoSection
             orderSubmitted={showOrderSubmitted}
+            orderCompleted={
+              showOrderSubmitted && lastTransaction?.status === "succeeded"
+            }
             isConnected={active}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
@@ -744,7 +738,6 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
-            isComplete = {!orderPending}
             onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
           />
         </InfoContainer>

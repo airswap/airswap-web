@@ -19,12 +19,14 @@ import {
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
-  isConnected: boolean;
-  isPairUnavailable: boolean;
-  orderSubmitted: boolean;
-  isFetchingOrders: boolean;
   isApproving: boolean;
+  isConnected: boolean;
+  isFetchingOrders: boolean;
+  isPairUnavailable: boolean;
   isSwapping: boolean;
+  isWrapping: boolean;
+  orderSubmitted: boolean;
+  orderCompleted: boolean;
   failedToFetchAllowances: boolean;
   bestTradeOption:
     | {
@@ -38,30 +40,28 @@ export type InfoSectionProps = {
         order: Order;
       }
     | null;
-  isWrapping: boolean;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  isComplete:boolean;
   onFeeButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
-  isConnected,
-  isPairUnavailable,
-  orderSubmitted,
   isApproving,
+  isConnected,
+  isFetchingOrders,
+  isPairUnavailable,
   isSwapping,
+  isWrapping,
+  orderCompleted,
+  orderSubmitted,
   failedToFetchAllowances,
   bestTradeOption,
-  isWrapping,
-  isFetchingOrders,
   requiresApproval,
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
-  isComplete,
   onFeeButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -130,20 +130,22 @@ const InfoSection: FC<InfoSectionProps> = ({
       </>
     );
   }
-  if (orderSubmitted && !isComplete) {
-    return (
-      <>
-        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-      </>
-    );
-  }
-  if (orderSubmitted && isComplete) {
+
+  if (orderCompleted) {
     return (
       <>
         <StyledInfoHeading>
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (orderSubmitted) {
+    return (
+      <>
+        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
