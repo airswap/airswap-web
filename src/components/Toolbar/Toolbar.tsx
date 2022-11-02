@@ -1,6 +1,8 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppSelector } from "../../app/hooks";
+import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import { AppRoutes } from "../../routes";
@@ -29,6 +31,7 @@ const Toolbar: FC<ToolbarProps> = ({
 }) => {
   const { t } = useTranslation();
   const { width, height } = useWindowSize();
+  const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const isTabletPortraitUp = useMediaQuery(breakPoints.tabletPortraitUp);
   const containerRef = useRef<HTMLDivElement>(null);
   const mobileTopBarRef = useRef<HTMLDivElement>(null);
@@ -75,7 +78,7 @@ const Toolbar: FC<ToolbarProps> = ({
           iconName="plus"
           iconSize={0.875}
           text={t("common.make")}
-          link={`/${AppRoutes.myOrders}`}
+          link={`/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`}
         />
         <ToolbarButton
           iconName="bars"
