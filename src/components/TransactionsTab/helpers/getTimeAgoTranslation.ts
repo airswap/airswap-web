@@ -12,8 +12,12 @@ export default function getTimeAgoTranslation(
 
   const { timeUnit, amount: count } = getTimeBetweenTwoDates(currentDate, date);
 
-  if (count === 0) {
+  if (count === -1) {
     return t("common.undefined");
+  }
+
+  if (count === 0) {
+    return t("wallet.justNow");
   }
 
   if (timeUnit === TimeUnit.Minute) {

@@ -228,7 +228,8 @@
     "copyAddress": "Copy address",
     "viewOnExplorer": "View on explorer",
     "get": "Get",
-    "latestGithubCommit": "Latest github commit"
+    "latestGithubCommit": "Latest github commit",
+    "justNow": "Just now"
   },
   "app": {
     "title": "AirSwap: Peer-to-peer Token Trading DEX and Open Source Developer DAO",
