@@ -24,6 +24,14 @@ describe("Get Time Difference Between Two Dates", () => {
     expect(res).toBe("undefined common.undefined");
   });
 
+  it("should return now if less than one minute", () => {
+    var xMinutesAgo = new Date(Date.now() - 0.1 * MS_PER_MINUTE);
+    const { t } = useTranslation();
+
+    const res = getTimeTranslation(xMinutesAgo, t);
+    expect(res).toBe("undefined wallet.justNow");
+  });
+
   it("should return 5 mins", () => {
     var xMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
     const { t } = useTranslation();

@@ -15,7 +15,7 @@ export default function getTimeBetweenTwoDates(
 ): { timeUnit: TimeUnit; amount: number } {
   // if date is past the current date;
   if (date1 < date2) {
-    return { timeUnit: TimeUnit.Minute, amount: 0 };
+    return { timeUnit: TimeUnit.Minute, amount: -1 };
   }
 
   const { minutes, hours, days, months, years } =
