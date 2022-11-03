@@ -19,7 +19,9 @@ export default function getProgressBarAnimationProps(
   const totalDuration = endTime.getTime() - justifiedStartTime;
   const durationLeft = Math.max(endTime.getTime() - now.getTime(), 0);
   const progress = Math.max(1 - durationLeft / totalDuration, 0);
-  const durationLeftInSeconds = Math.round(((1 - progress) * totalDuration) / 1000);
+  const durationLeftInSeconds = Math.round(
+    ((1 - progress) * totalDuration) / 1000
+  );
 
   return {
     duration: durationLeftInSeconds,
