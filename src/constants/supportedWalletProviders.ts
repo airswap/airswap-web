@@ -42,7 +42,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
         cachedConnectors.WalletConnect = new WalletConnectConnector({
           rpc: {
             1: process.env.REACT_APP_RPC_URL_1 || "",
-            4: process.env.REACT_APP_RPC_URL_4 || "",
+            5: process.env.REACT_APP_RPC_URL_5 || "",
           },
         });
       }
