@@ -14,13 +14,17 @@ export default function getProgressBarAnimationProps(
   endTime: Date,
   now: Date
 ): ProgressBarAnimationProps {
-  const totalDuration = endTime.getTime() - startTime.getTime();
+  const minStartTime = endTime.getTime() - 300000;
+  const justifiedStartTime = Math.max(minStartTime, startTime.getTime());
+  const totalDuration = endTime.getTime() - justifiedStartTime;
   const durationLeft = Math.max(endTime.getTime() - now.getTime(), 0);
   const progress = Math.max(1 - durationLeft / totalDuration, 0);
-  const durationLeftInSeconds = ((1 - progress) * totalDuration) / 1000;
+  const durationLeftInSeconds = Math.round(
+    ((1 - progress) * totalDuration) / 1000
+  );
 
   return {
     duration: durationLeftInSeconds,
-    initialProgress: progress,
+    initialProgress: Math.round(progress * 100) / 100,
   };
 }
