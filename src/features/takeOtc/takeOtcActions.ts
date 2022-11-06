@@ -109,7 +109,6 @@ export const cancelOrder = createAsyncThunk(
     // post-cancel clean up
     const isCancelled = await getNonceUsed(params.order, params.library);
     dispatch(mineTransaction(tx));
-    dispatch(removeUserOrder(params.order));
 
     if (isCancelled) {
       dispatch(setIsCancelSuccessFull(true));

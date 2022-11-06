@@ -50,19 +50,28 @@ export const TooltipContainer = styled.div`
 `;
 
 export const StyledTooltip = styled(Tooltip)<{
-  activeDeleteButton: number;
+  orderIndex: number;
   containerScrollTop: number;
 }>`
-  // display: none;
   justify-content: flex-start;
   position: absolute;
   top: calc(
     4rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
-      ${({ activeDeleteButton }) => activeDeleteButton}
+      ${({ orderIndex }) => orderIndex}
   );
-  left: 100%;
-  margin-left: -1rem;
   width: auto;
   z-index: 3;
   pointer-events: none;
+`;
+
+export const DeleteButtonTooltip = styled(StyledTooltip)`
+  left: 100%;
+  margin-left: -1rem;
+`;
+
+export const OrderIndicatorTooltip = styled(StyledTooltip)`
+  justify-content: flex-end;
+  margin-left: 0.5rem;
+  left: 0;
+  width: 0;
 `;
