@@ -121,7 +121,7 @@ const SelectStyle = css`
   ${ButtonStyle};
 
   border-top-right-radius: 1rem;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 1rem;
   padding-right: 0.5rem;
 
   &:focus + ${SelectOptions} {
