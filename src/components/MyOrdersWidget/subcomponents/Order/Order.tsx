@@ -1,14 +1,16 @@
 import React, { FC, PropsWithChildren, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { FullOrder } from "@airswap/typescript";
 import { compressFullOrder } from "@airswap/utils";
 
-import { format } from "date-fns";
+import { compareAsc } from "date-fns";
 
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
 import { OrderStatus } from "../../../../types/orderStatus";
+import { getExpiryTranslation } from "../../../ExpiryIndicator/helpers";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
 import { getTokenAmountWithDecimals } from "../../helpers";
@@ -45,9 +47,11 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onStatusIndicatorMouseLeave,
   className,
 }) => {
+  const { t } = useTranslation();
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
   const cancelInProgress = useCancelPending(order.nonce);
+  const orderStatus = useOrderStatus(order);
 
   const senderAmount = useMemo(
     () =>
@@ -60,9 +64,23 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       getTokenAmountWithDecimals(order.signerAmount, signerTokenInfo?.decimals),
     [order, signerTokenInfo]
   );
-  const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
+
+  const expiry = useMemo(
+    () => new Date(parseInt(order.expiry) * 1000),
+    [order]
+  );
+
+  const timeLeft = useMemo(
+    () => getExpiryTranslation(new Date(), expiry, t),
+    [expiry, t]
+  );
+
+  const isExpired = useMemo(
+    () => compareAsc(new Date(), expiry) === 1,
+    [expiry]
+  );
+
   const orderString = useMemo(() => compressFullOrder(order), [order]);
-  const orderStatus = useOrderStatus(order);
 
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
@@ -82,7 +100,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </TokenLogos>
       <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
-      <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
+      <Text>{isExpired ? t("common.expired") : timeLeft}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 
       <ActionButtonContainer>
