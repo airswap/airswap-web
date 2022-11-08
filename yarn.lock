@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.1.tgz#cf5f99c99da4612dde2ca373af0f39e9da7e9374"
   integrity sha512-XJ0EhohJGW3g/jvEv2bUYU8aKL0XMDmVoAraqSdETlx1vamFvOd2rTqHT81Ch46wPTF7qDNzHRh6+HjvAmDOPw==
 
-"@airswap/indexers@3.1.2":
+"@airswap/indexer-registry@3.1.2":
   version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/indexers/-/indexers-3.1.2.tgz#c07113d5e0092f86f2a41a0403c4da1ad3a9ce68"
-  integrity sha512-9InR21R9amWMR7dCHNRcg6FNP8WL/95SUL2JKNJ7ETzn2IKpXktxoWZh67tww6egenYALWBCH02IQfMQJEp7Nw==
+  resolved "https://registry.yarnpkg.com/@airswap/indexer-registry/-/indexer-registry-3.1.2.tgz#233fa604f315f180b7590cfd17798f9bbae0c461"
+  integrity sha512-UAoyM2V5GpTUyXae/B0lhuh9Ejf8f2Jg5+4NKZKs+z1bDdSB15H6TtCvDqYkY0HdpIZxja+gBb77H/KTJCSVhQ==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
@@ -28,15 +28,15 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.2.0.tgz#2d4885c6172731dc0756f60126359190024af338"
-  integrity sha512-CZtVrvJdupL4Vy2C5HhDxseqjSygruPAQaAWSgvri/4fEydGr+VzBkPgN2LBjBn0Q9gLRozUp1Zf6yZItUrQAA==
+"@airswap/libraries@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.3.0.tgz#a95a4afdc6d7e948fca26c90c4b1d779214e0af4"
+  integrity sha512-TlRAVtLyLytUVaAPs+AWGd8c5NkhLcU4ywMMzgmM/SGeVV5ktLQLi5gk3rMwJla6C5BdbS1E6aEiBsL2AeU//w==
   dependencies:
     "@airswap/constants" "3.0.1"
-    "@airswap/indexers" "3.1.2"
+    "@airswap/indexer-registry" "3.1.2"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/registry" "3.1.2"
+    "@airswap/maker-registry" "3.1.2"
     "@airswap/swap" "3.2.3"
     "@airswap/typescript" "3.0.1"
     "@airswap/utils" "3.0.4"
@@ -47,6 +47,13 @@
     jayson "^3.2.0"
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
+
+"@airswap/maker-registry@3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-3.1.2.tgz#ab5925c3359107bbce305a885551266535b3bfe8"
+  integrity sha512-Vaa4V5d74O2DJCFotUcUdXUUUxgNjQ9ud2lPskhONSd45GjNW6l4SGyr8M1A0fxwpv/LWt5wdsv4QJ2d9zx+MA==
+  dependencies:
+    "@openzeppelin/contracts" "^4.3.1"
 
 "@airswap/metadata@3.0.5":
   version "3.0.5"
@@ -60,13 +67,6 @@
     eth-contract-metadata "^1.12.1"
     ethereumjs-abi "^0.6.8"
     ethers "^5.6.9"
-
-"@airswap/registry@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-3.1.2.tgz#c963424c61a47bd1ec6c939a379531f6e9cc7abe"
-  integrity sha512-saicMqmZaOHbvTZZyfndSd6vmWUFHxUSpZ3qO35mDgzzez5Zg6D6rkWixmfery0cV0398NeNGXtyOj5XzD8jnw==
-  dependencies:
-    "@openzeppelin/contracts" "^4.3.1"
 
 "@airswap/swap@3.2.3":
   version "3.2.3"

@@ -1,6 +1,6 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Swap, Server, Wrapper } from "@airswap/libraries";
+import { Swap, Maker, Wrapper } from "@airswap/libraries";
 import { FullOrder, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 
@@ -53,17 +53,17 @@ async function swapWrapper(
 }
 
 export async function requestOrders(
-  servers: Server[],
+  makers: Maker[],
   quoteToken: string,
   baseToken: string,
   baseTokenAmount: string,
   baseTokenDecimals: number,
   senderWallet: string
 ): Promise<Order[]> {
-  if (!servers.length) {
+  if (!makers.length) {
     throw new Error("no counterparties");
   }
-  const rfqOrderPromises = servers.map(async (server) => {
+  const rfqOrderPromises = makers.map(async (server) => {
     const order = await Promise.race([
       server.getSignerSideOrder(
         toAtomicString(baseTokenAmount, baseTokenDecimals),
@@ -71,7 +71,7 @@ export async function requestOrders(
         baseToken,
         senderWallet
       ),
-      // Servers should respond in a timely manner for orders to be considered
+      // Makers should respond in a timely manner for orders to be considered
       new Promise((resolve, reject) =>
         setTimeout(() => {
           reject("ETIMEDOUT");

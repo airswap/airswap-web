@@ -1,5 +1,5 @@
-import * as RegistryContract from "@airswap/registry/build/contracts/Registry.sol/Registry.json";
-import registryDeploys from "@airswap/registry/deploys.js";
+import * as RegistryContract from "@airswap/maker-registry/build/contracts/MakerRegistry.sol/MakerRegistry.json";
+import registryDeploys from "@airswap/maker-registry/deploys.js";
 
 import { providers, utils, Contract, Event } from "ethers";
 
