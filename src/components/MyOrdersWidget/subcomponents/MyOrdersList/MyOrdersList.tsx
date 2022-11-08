@@ -5,13 +5,16 @@ import { FullOrder } from "@airswap/typescript";
 
 import { OrdersSortType } from "../../../../features/myOrders/myOrdersSlice";
 import useWindowSize from "../../../../hooks/useWindowSize";
+import { OrderStatus } from "../../../../types/orderStatus";
+import { getOrderStatusTranslation } from "../../helpers";
 import Order from "../Order/Order";
 import {
   Container,
+  DeleteButtonTooltip,
+  OrderIndicatorTooltip,
   OrdersContainer,
   Shadow,
   StyledMyOrdersListSortButtons,
-  StyledTooltip,
 } from "./MyOrdersList.styles";
 
 interface MyOrdersListProps {
@@ -35,24 +38,41 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: windowWidth } = useWindowSize();
 
-  const [activeDeleteButton, setActiveDeleteButton] = useState<number>();
+  const [activeDeleteButtonTooltipIndex, setActiveDeleteButtonTooltipIndex] =
+    useState<number>();
+  const [
+    activeOrderIndicatorTooltipIndex,
+    setActiveOrderIndicatorTooltipIndex,
+  ] = useState<number>();
   const [tooltipText, setTooltipText] = useState("");
   const [containerScrollTop, setContainerScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
 
   const handleDeleteOrderButtonMouseEnter = (
     index: number,
-    isExpired: boolean
+    orderIsOpen: boolean
   ) => {
-    setActiveDeleteButton(index);
-    const tooltipText = isExpired
-      ? t("orders.removeFromList")
-      : t("orders.cancelSwap");
+    setActiveDeleteButtonTooltipIndex(index);
+    const tooltipText = orderIsOpen
+      ? t("orders.cancelSwap")
+      : t("orders.removeFromList");
     setTooltipText(tooltipText);
   };
 
   const handleDeleteOrderButtonMouseLeave = () => {
-    setActiveDeleteButton(undefined);
+    setActiveDeleteButtonTooltipIndex(undefined);
+  };
+
+  const handleStatusIndicatorMouseEnter = (
+    index: number,
+    status: OrderStatus
+  ) => {
+    setTooltipText(getOrderStatusTranslation(status));
+    setActiveOrderIndicatorTooltipIndex(index);
+  };
+
+  const handleStatusIndicatorMouseLeave = () => {
+    setActiveOrderIndicatorTooltipIndex(undefined);
   };
 
   const handleOnContainerScroll = () => {
@@ -92,15 +112,25 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
             onDeleteOrderButtonClick={onDeleteOrderButtonClick}
             onDeleteOrderButtonMouseEnter={handleDeleteOrderButtonMouseEnter}
             onDeleteOrderButtonMouseLeave={handleDeleteOrderButtonMouseLeave}
+            onStatusIndicatorMouseEnter={handleStatusIndicatorMouseEnter}
+            onStatusIndicatorMouseLeave={handleStatusIndicatorMouseLeave}
           />
         ))}
-        {activeDeleteButton !== undefined && (
-          <StyledTooltip
-            activeDeleteButton={activeDeleteButton || 0}
+        {activeDeleteButtonTooltipIndex !== undefined && (
+          <DeleteButtonTooltip
+            orderIndex={activeDeleteButtonTooltipIndex || 0}
             containerScrollTop={containerScrollTop}
           >
             {tooltipText}
-          </StyledTooltip>
+          </DeleteButtonTooltip>
+        )}
+        {activeOrderIndicatorTooltipIndex !== undefined && (
+          <OrderIndicatorTooltip
+            orderIndex={activeOrderIndicatorTooltipIndex || 0}
+            containerScrollTop={containerScrollTop}
+          >
+            {tooltipText}
+          </OrderIndicatorTooltip>
         )}
       </OrdersContainer>
       <Shadow />

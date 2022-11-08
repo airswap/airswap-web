@@ -20,7 +20,7 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  if (status === OrderStatus.open) {
+  if (status === OrderStatus.open || status === OrderStatus.expired) {
     return <ExpiryIndicator expiry={expiry} className={className} />;
   }
 

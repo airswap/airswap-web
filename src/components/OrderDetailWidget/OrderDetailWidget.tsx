@@ -8,7 +8,6 @@ import { useToggle } from "@react-hookz/web";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import compareAsc from "date-fns/compareAsc";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
@@ -109,9 +108,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
-  const orderIsExpired = useMemo(() => {
-    return compareAsc(new Date(), parsedExpiry) === 1;
-  }, [parsedExpiry]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
@@ -217,7 +213,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onMaxButtonClick={() => {}}
       />
       <StyledInfoButtons
-        isExpired={orderIsExpired}
+        isExpired={orderStatus === OrderStatus.expired}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
@@ -232,7 +228,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       <ActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}
         hasInsufficientAllowance={hasInsufficientAllowance}
-        isExpired={orderIsExpired}
+        isExpired={orderStatus === OrderStatus.expired}
         isCanceled={orderStatus === OrderStatus.canceled}
         isTaken={orderStatus === OrderStatus.taken}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}

@@ -15,9 +15,9 @@ import { getTokenAmountWithDecimals } from "../../helpers";
 import {
   ActionButton,
   ActionButtonContainer,
-  ActiveIndicator,
   Circle,
   Container,
+  StatusIndicator,
   StyledNavLink,
   StyledTokenLogo,
   Text,
@@ -28,8 +28,10 @@ interface OrderProps {
   order: FullOrder;
   index: number;
   onDeleteOrderButtonClick: (order: FullOrder) => void;
-  onDeleteOrderButtonMouseEnter: (index: number, isExpired: boolean) => void;
+  onDeleteOrderButtonMouseEnter: (index: number, orderIsOpen: boolean) => void;
   onDeleteOrderButtonMouseLeave: () => void;
+  onStatusIndicatorMouseEnter: (index: number, status: OrderStatus) => void;
+  onStatusIndicatorMouseLeave: () => void;
   className?: string;
 }
 
@@ -39,6 +41,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onDeleteOrderButtonClick,
   onDeleteOrderButtonMouseEnter,
   onDeleteOrderButtonMouseLeave,
+  onStatusIndicatorMouseEnter,
+  onStatusIndicatorMouseLeave,
   className,
 }) => {
   const senderTokenInfo = useTokenInfo(order.senderToken);
@@ -58,7 +62,6 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   );
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
   const orderString = useMemo(() => compressFullOrder(order), [order]);
-  const isExpired = new Date().getTime() > expiry;
   const orderStatus = useOrderStatus(order);
 
   const handleDeleteOrderButtonClick = () => {
@@ -66,13 +69,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   };
 
   return (
-    <Container
-      isUsedOrExpired={isExpired || orderStatus !== OrderStatus.open}
-      className={className}
-    >
-      <ActiveIndicator>
+    <Container orderStatus={orderStatus} className={className}>
+      <StatusIndicator
+        onMouseEnter={() => onStatusIndicatorMouseEnter(index, orderStatus)}
+        onMouseLeave={onStatusIndicatorMouseLeave}
+      >
         <Circle />
-      </ActiveIndicator>
+      </StatusIndicator>
       <TokenLogos>
         <StyledTokenLogo size="tiny" tokenInfo={signerTokenInfo} />
         <StyledTokenLogo size="tiny" tokenInfo={senderTokenInfo} />
@@ -87,12 +90,15 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <LoadingSpinner />
         ) : (
           <ActionButton
-            icon={
-              isExpired || orderStatus !== OrderStatus.open ? "bin" : "button-x"
-            }
-            iconSize={isExpired ? 0.75 : 0.675}
+            icon={orderStatus !== OrderStatus.open ? "bin" : "button-x"}
+            iconSize={orderStatus === OrderStatus.open ? 0.75 : 0.675}
             onClick={handleDeleteOrderButtonClick}
-            onMouseEnter={() => onDeleteOrderButtonMouseEnter(index, isExpired)}
+            onMouseEnter={() =>
+              onDeleteOrderButtonMouseEnter(
+                index,
+                orderStatus === OrderStatus.open
+              )
+            }
             onMouseLeave={onDeleteOrderButtonMouseLeave}
           />
         )}

@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
 
-import styled from "styled-components/macro";
+import styled, { DefaultTheme } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
+import { OrderStatus } from "../../../../types/orderStatus";
 import IconButton from "../../../IconButton/IconButton";
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
@@ -15,7 +16,22 @@ export const Circle = styled.div`
   background: ${({ theme }) => theme.colors.green};
 `;
 
-export const Container = styled.div<{ isUsedOrExpired: boolean }>`
+const getIndicatorColor = (
+  theme: DefaultTheme,
+  orderStatus: OrderStatus
+): string => {
+  if (orderStatus === OrderStatus.canceled) {
+    return theme.colors.red;
+  }
+
+  if (orderStatus === OrderStatus.open) {
+    return theme.colors.green;
+  }
+
+  return theme.colors.borderGrey;
+};
+
+export const Container = styled.div<{ orderStatus: OrderStatus }>`
   ${MyOrdersGrid};
 
   position: relative;
@@ -24,17 +40,19 @@ export const Container = styled.div<{ isUsedOrExpired: boolean }>`
   height: 3rem;
 
   ${Circle} {
-    background: ${({ theme, isUsedOrExpired }) =>
-      isUsedOrExpired ? theme.colors.borderGrey : theme.colors.green};
+    background: ${({ theme, orderStatus }) =>
+      getIndicatorColor(theme, orderStatus)};
   }
 `;
 
-export const ActiveIndicator = styled.div`
+export const StatusIndicator = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   position: relative;
+  height: 1rem;
+  cursor: pointer;
   z-index: 2;
-  pointer-events: none;
 `;
 
 export const StyledTokenLogo = styled(TokenLogo)`

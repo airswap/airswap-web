@@ -2,9 +2,11 @@ import { FullOrder } from "@airswap/typescript";
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BigNumber } from "bignumber.js";
+import i18n from "i18next";
 
 import { OrdersSortType } from "../../../features/myOrders/myOrdersSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
+import { OrderStatus } from "../../../types/orderStatus";
 
 export const getTokenAmountWithDecimals = (
   amount: string,
@@ -60,4 +62,20 @@ export const getSortedOrders = (
   }
 
   return array;
+};
+
+export const getOrderStatusTranslation = (status: OrderStatus): string => {
+  if (status === OrderStatus.canceled) {
+    return i18n.t("common.canceled");
+  }
+
+  if (status === OrderStatus.taken) {
+    return i18n.t("common.taken");
+  }
+
+  if (status === OrderStatus.expired) {
+    return i18n.t("common.expired");
+  }
+
+  return i18n.t("common.active");
 };

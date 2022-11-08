@@ -65,7 +65,8 @@
     "fee": "Fee",
     "expiry": "Expiry",
     "pair": "Pair",
-    "close": "close"
+    "close": "close",
+    "active": "Active"
   },
   "information": {
     "join.title": "Join AirSwap",
