@@ -348,9 +348,7 @@ const SwapWidget: FC = () => {
           s.supportsProtocol("request-for-quote")
         );
 
-        lastLookMakers = makers.filter((s) =>
-          s.supportsProtocol("last-look")
-        );
+        lastLookMakers = makers.filter((s) => s.supportsProtocol("last-look"));
       } catch (e) {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
