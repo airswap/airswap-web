@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Registry, Wrapper } from "@airswap/libraries";
+import { MakerRegistry, Wrapper } from "@airswap/libraries";
 import { Order, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -208,7 +208,7 @@ const SwapWidget: FC = () => {
     unsubscribeFromGasPrice();
     unsubscribeFromTokenPrice();
     dispatch(clear());
-    LastLook.unsubscribeAllServers();
+    LastLook.unsubscribeAllMakers();
   }, [
     chainId,
     dispatch,
@@ -233,7 +233,7 @@ const SwapWidget: FC = () => {
       setProtocolFeeDiscountInfo(false);
       setShowGasFeeInfo(false);
       setBaseAmount(initialBaseAmount);
-      LastLook.unsubscribeAllServers();
+      LastLook.unsubscribeAllMakers();
     }
   }, [ordersStatus, LastLook, dispatch]);
 
@@ -333,24 +333,22 @@ const SwapWidget: FC = () => {
     const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
     const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
-    let rfqServers, lastLookServers;
+    let rfqMakers, lastLookMakers;
     try {
       try {
-        const servers = await new Registry(
+        const makers = await new MakerRegistry(
           chainId,
           // @ts-ignore provider type mismatch
           library
-        ).getServers(_quoteToken, _baseToken, {
+        ).getMakers(_quoteToken, _baseToken, {
           initializeTimeout: 10 * 1000,
         });
 
-        rfqServers = servers.filter((s) =>
+        rfqMakers = makers.filter((s) =>
           s.supportsProtocol("request-for-quote")
         );
 
-        lastLookServers = servers.filter((s) =>
-          s.supportsProtocol("last-look")
-        );
+        lastLookMakers = makers.filter((s) => s.supportsProtocol("last-look"));
       } catch (e) {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
@@ -359,10 +357,10 @@ const SwapWidget: FC = () => {
       let rfqPromise: Promise<Order[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
-      if (rfqServers.length) {
+      if (rfqMakers.length) {
         let rfqDispatchResult = dispatch(
           request({
-            servers: rfqServers,
+            makers: rfqMakers,
             senderToken: _baseToken,
             senderAmount: baseAmount,
             signerToken: _quoteToken,
@@ -380,11 +378,11 @@ const SwapWidget: FC = () => {
           });
       }
 
-      if (lastLookServers.length) {
+      if (lastLookMakers.length) {
         if (usesWrapper) {
-          lastLookServers.forEach((s) => s.disconnect());
+          lastLookMakers.forEach((s) => s.disconnect());
         } else {
-          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
+          lastLookPromises = LastLook.subscribeAllMakers(lastLookMakers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
@@ -458,7 +456,7 @@ const SwapWidget: FC = () => {
         setIsSwapping(false);
         return;
       }
-      LastLook.unsubscribeAllServers();
+      LastLook.unsubscribeAllMakers();
 
       const result = await dispatch(
         take({
@@ -515,7 +513,7 @@ const SwapWidget: FC = () => {
       setIsSwapping(false);
       if (accepted) {
         setShowOrderSubmitted(true);
-        LastLook.unsubscribeAllServers();
+        LastLook.unsubscribeAllMakers();
       } else {
         notifyError({
           heading: t("orders.swapRejected"),
@@ -593,7 +591,7 @@ const SwapWidget: FC = () => {
         dispatch(clear());
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllServers();
+        LastLook.unsubscribeAllMakers();
         break;
 
       case ButtonActions.restart:
@@ -603,7 +601,7 @@ const SwapWidget: FC = () => {
         dispatch(clear());
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllServers();
+        LastLook.unsubscribeAllMakers();
         setBaseAmount(initialBaseAmount);
         break;
 

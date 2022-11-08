@@ -1,7 +1,7 @@
 import { createContext, FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Server } from "@airswap/libraries";
+import { Maker } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
@@ -28,8 +28,8 @@ type Pair = {
 };
 
 export const LastLookContext = createContext<{
-  subscribeAllServers: (servers: Server[], pair: Pair) => Promise<Pricing>[];
-  unsubscribeAllServers: () => void;
+  subscribeAllMakers: (makers: Maker[], pair: Pair) => Promise<Pricing>[];
+  unsubscribeAllMakers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
     order: Order;
@@ -39,10 +39,10 @@ export const LastLookContext = createContext<{
     terms: TradeTerms;
   }) => Promise<{ order: Order; senderWallet: string }>;
 }>({
-  subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
+  subscribeAllMakers(makers: Maker[], pair: Pair): Promise<Pricing | any>[] {
     return [];
   },
-  unsubscribeAllServers: () => {},
+  unsubscribeAllMakers: () => {},
   sendOrderForConsideration: async () => {
     return false;
   },
@@ -54,7 +54,7 @@ export const LastLookContext = createContext<{
   },
 });
 
-const connectedServers: Record<string, Server> = {};
+const connectedMakers: Record<string, Maker> = {};
 const LastLookProvider: FC = ({ children }) => {
   const { account, library, chainId } = useWeb3React();
 
@@ -63,13 +63,13 @@ const LastLookProvider: FC = ({ children }) => {
   const dispatch = useAppDispatch();
   const protocolFee = useAppSelector(selectProtocolFee);
 
-  const subscribeAllServers = useCallback(
-    (servers: Server[], pair: Pair) => {
-      return servers.map(async (s) => {
+  const subscribeAllMakers = useCallback(
+    (makers: Maker[], pair: Pair) => {
+      return makers.map(async (s) => {
         return new Promise<Pricing>(async (resolve) => {
           let server = s;
-          if (connectedServers[s.locator]) server = connectedServers[s.locator];
-          connectedServers[server.locator] = server;
+          if (connectedMakers[s.locator]) server = connectedMakers[s.locator];
+          connectedMakers[server.locator] = server;
 
           const handlePricing = (pricing: Pricing[]) => {
             const pairPricing = pricing.find(
@@ -108,12 +108,12 @@ const LastLookProvider: FC = ({ children }) => {
     [dispatch]
   );
 
-  const unsubscribeAllServers = useCallback(() => {
-    Object.keys(connectedServers).forEach((locator) => {
-      const server = connectedServers[locator];
+  const unsubscribeAllMakers = useCallback(() => {
+    Object.keys(connectedMakers).forEach((locator) => {
+      const server = connectedMakers[locator];
       server.removeAllListeners();
       server.disconnect();
-      delete connectedServers[locator];
+      delete connectedMakers[locator];
     });
   }, []);
 
@@ -123,7 +123,7 @@ const LastLookProvider: FC = ({ children }) => {
       terms: TradeTerms;
     }): Promise<{ order: Order; senderWallet: string }> => {
       const { locator, terms } = params;
-      const server = connectedServers[locator];
+      const server = connectedMakers[locator];
 
       const isSell = terms.side === "sell";
 
@@ -202,7 +202,7 @@ const LastLookProvider: FC = ({ children }) => {
   const sendOrderForConsideration = useCallback(
     async (params: { locator: string; order: Order }) => {
       const { locator, order } = params;
-      const server = connectedServers[locator];
+      const server = connectedMakers[locator];
       try {
         return server.consider(order);
       } catch (e) {
@@ -215,15 +215,15 @@ const LastLookProvider: FC = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      subscribeAllServers,
-      unsubscribeAllServers,
+      subscribeAllMakers,
+      unsubscribeAllMakers,
       sendOrderForConsideration,
       getSignedOrder,
     }),
     [
       getSignedOrder,
-      subscribeAllServers,
-      unsubscribeAllServers,
+      subscribeAllMakers,
+      unsubscribeAllMakers,
       sendOrderForConsideration,
     ]
   );

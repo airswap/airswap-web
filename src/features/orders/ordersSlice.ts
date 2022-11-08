@@ -1,5 +1,5 @@
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Server } from "@airswap/libraries";
+import { Maker } from "@airswap/libraries";
 import { FullOrder, Levels, Order } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
@@ -270,7 +270,7 @@ export const request = createAsyncThunk(
   "orders/request",
   async (
     params: {
-      servers: Server[];
+      makers: Maker[];
       signerToken: string;
       senderToken: string;
       senderAmount: string;
@@ -280,7 +280,7 @@ export const request = createAsyncThunk(
     { dispatch }
   ) => {
     const orders = await requestOrders(
-      params.servers,
+      params.makers,
       params.signerToken,
       params.senderToken,
       params.senderAmount,
