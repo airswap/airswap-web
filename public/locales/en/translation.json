@@ -164,7 +164,7 @@
     "thisOrderIsForAnotherChain": "This order is for the {{chainName}} chain",
     "thisOrderIsNotForTheConnectedWallet": "This order is not for the connected wallet",
     "thisOrderWasNotForTheConnectedWallet": "This order was not for the connected wallet",
-    "removeFromList": "Remove from list",
+    "dismiss": "Dismiss",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
     "startByCreatingANewOrder": "Start by creating a new order",
     "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order.",
