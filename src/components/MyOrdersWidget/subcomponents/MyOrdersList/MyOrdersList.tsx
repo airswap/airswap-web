@@ -51,7 +51,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const handleDeleteOrderButtonClick = (order: FullOrder) => {
     setActiveDeleteButtonTooltipIndex(undefined);
     onDeleteOrderButtonClick(order);
-  }
+  };
 
   const handleDeleteOrderButtonMouseEnter = (
     index: number,
