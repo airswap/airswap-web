@@ -7,7 +7,7 @@ export const getHumanReadableNumber: (input: string) => string = (input) => {
   let readableNumber = "";
 
   //check if there is anything before decimal point
-  if (beforeDecimalPoint.length < 4 || Number(beforeDecimalPoint) == 0) {
+  if (beforeDecimalPoint.length < 4 || Number(beforeDecimalPoint) === 0) {
     //if there is nothing before decimal point check if anything after decimal point
     //needs to be rounded 2 sig digits
     let sigDigit = afterDecimalPoint[0];
