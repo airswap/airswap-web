@@ -65,20 +65,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [order, signerTokenInfo]
   );
 
-  const expiry = useMemo(
-    () => new Date(parseInt(order.expiry) * 1000),
-    [order]
-  );
-
-  const timeLeft = useMemo(
-    () => getExpiryTranslation(new Date(), expiry, t),
-    [expiry, t]
-  );
-
-  const isExpired = useMemo(
-    () => compareAsc(new Date(), expiry) === 1,
-    [expiry]
-  );
+  const timeLeft = useMemo(() => {
+    const expiry = new Date(parseInt(order.expiry) * 1000);
+    return getExpiryTranslation(new Date(), expiry, t);
+  }, [order, t]);
 
   const orderString = useMemo(() => compressFullOrder(order), [order]);
 
@@ -100,7 +90,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </TokenLogos>
       <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
-      <Text>{isExpired ? t("common.expired") : timeLeft}</Text>
+      <Text>{timeLeft || t("common.expired")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 
       <ActionButtonContainer>
