@@ -5,7 +5,7 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
-import { getAbbreviatedNumber } from "../../../../helpers/getAbbreviatedNumber";
+import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
@@ -52,13 +52,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const senderAmount = useMemo(
     () =>
-      getTokenAmountWithDecimals(order.senderAmount, senderTokenInfo?.decimals),
+      getHumanReadableNumber(getTokenAmountWithDecimals(order.senderAmount, senderTokenInfo?.decimals).toString()),
     [order, senderTokenInfo]
   );
 
   const signerAmount = useMemo(
     () =>
-      getTokenAmountWithDecimals(order.signerAmount, signerTokenInfo?.decimals),
+      getHumanReadableNumber(getTokenAmountWithDecimals(order.signerAmount, signerTokenInfo?.decimals).toString()),
     [order, signerTokenInfo]
   );
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
@@ -81,12 +81,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <StyledTokenLogo size="tiny" tokenInfo={signerTokenInfo} />
         <StyledTokenLogo size="tiny" tokenInfo={senderTokenInfo} />
       </TokenLogos>
-      <Text>{`${getAbbreviatedNumber(signerAmount.toString())} ${
-        signerTokenInfo?.symbol || ""
-      }`}</Text>
-      <Text>{`${getAbbreviatedNumber(senderAmount.toString())} ${
-        senderTokenInfo?.symbol || ""
-      }`}</Text>
+      <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
+      <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 

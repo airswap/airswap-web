@@ -1,6 +1,6 @@
 import stringToSignificantDecimals from "./stringToSignificantDecimals";
 
-export const getAbbreviatedNumber: (
+export const getHumanReadableNumber: (
   input: string,
   numSigDecimals?: number,
   maxDigits?: number
