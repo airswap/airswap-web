@@ -5,6 +5,7 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
+import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
@@ -51,13 +52,23 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const senderAmount = useMemo(
     () =>
-      getTokenAmountWithDecimals(order.senderAmount, senderTokenInfo?.decimals),
+      getHumanReadableNumber(
+        getTokenAmountWithDecimals(
+          order.senderAmount,
+          senderTokenInfo?.decimals
+        ).toString()
+      ),
     [order, senderTokenInfo]
   );
 
   const signerAmount = useMemo(
     () =>
-      getTokenAmountWithDecimals(order.signerAmount, signerTokenInfo?.decimals),
+      getHumanReadableNumber(
+        getTokenAmountWithDecimals(
+          order.signerAmount,
+          signerTokenInfo?.decimals
+        ).toString()
+      ),
     [order, signerTokenInfo]
   );
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
