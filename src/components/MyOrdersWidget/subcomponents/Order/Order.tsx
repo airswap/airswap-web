@@ -52,13 +52,23 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const senderAmount = useMemo(
     () =>
-      getHumanReadableNumber(getTokenAmountWithDecimals(order.senderAmount, senderTokenInfo?.decimals).toString()),
+      getHumanReadableNumber(
+        getTokenAmountWithDecimals(
+          order.senderAmount,
+          senderTokenInfo?.decimals
+        ).toString()
+      ),
     [order, senderTokenInfo]
   );
 
   const signerAmount = useMemo(
     () =>
-      getHumanReadableNumber(getTokenAmountWithDecimals(order.signerAmount, signerTokenInfo?.decimals).toString()),
+      getHumanReadableNumber(
+        getTokenAmountWithDecimals(
+          order.signerAmount,
+          signerTokenInfo?.decimals
+        ).toString()
+      ),
     [order, signerTokenInfo]
   );
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
