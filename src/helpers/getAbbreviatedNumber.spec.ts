@@ -70,4 +70,7 @@ describe("getAbbreviatedNumber", () => {
   it("123.45 should be 123.4", () => {
     expect(getAbbreviatedNumber("123.45")).toBe("123.4");
   });
+  it("1.234 should be 1.23", () => {
+    expect(getAbbreviatedNumber("1.234")).toBe("1.23");
+  });
 });

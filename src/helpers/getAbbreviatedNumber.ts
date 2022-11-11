@@ -68,6 +68,11 @@ export const getAbbreviatedNumber: (
       }
       readableNumber = readableNumber.substring(0, maxDigits);
     }
+    //if there are more than 3 digits after decimal trim
+    if((decIndex !== -1) && readableNumber.length - decIndex> (numSigDecimals+1)){
+      readableNumber = readableNumber.substring(0,readableNumber.length-1);
+    }
+
     //add extra zeroes if needed
     while (numExtraZeros > 0) {
       readableNumber += "0";
