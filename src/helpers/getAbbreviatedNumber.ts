@@ -13,7 +13,7 @@ export const getAbbreviatedNumber: (
   //check if anything before decimal needs to be added
   if (Number(beforeDecimalPoint) === 0) {
     //return decimal with 2 sig digits
-    return stringToSignificantDecimals(input, 2);
+    return stringToSignificantDecimals(input, numSigDecimals);
 
     //there are digits before the decimal
   } else {
