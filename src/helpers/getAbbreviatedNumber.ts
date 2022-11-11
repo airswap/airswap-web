@@ -1,36 +1,19 @@
-export const getHumanReadableNumber: (input: string) => string = (input) => {
+import stringToSignificantDecimals from "./stringToSignificantDecimals";
+export const getAbbreviatedNumber: (
+  input: string,
+  numSigDecimals?: number,
+  maxDigits?: number
+  ) => string = (input,numSigDecimals = 2, maxDigits = 4) => {
+  //auto sets to 2 decimals max, 4 digits
   const [beforeDecimalPoint, afterDecimalPoint] = input.split(".");
-  //sets to 2 sig digits after decimal if nothing before decimal
-  //and (numSigDigits -1) = 1 sig digit after decimal
-  //if there is sig digit in front of decimal
-  const numSigDigits = 2;
-  const maxDigits = 4;
   let readableNumber = "";
   let suffixTracker = 0;
 
   //check if anything before decimal needs to be added
   if (Number(beforeDecimalPoint) === 0) {
-    //if there is nothing before decimal point check if anything after decimal point
-    //needs to be rounded 2 sig digits
-    let sigDigit = afterDecimalPoint[0];
-    let iter = 0;
-    //iterate until first significant digit
-    while (sigDigit == "0") {
-      iter += 1;
-      sigDigit = afterDecimalPoint[iter];
-    }
-    //do nothing if no trimming is needed
-    if (afterDecimalPoint.length - (iter + 1) < numSigDigits) {
-      return input;
-    }
-    //else have to trim
-    else {
-      readableNumber =
-        beforeDecimalPoint +
-        "." +
-        afterDecimalPoint.substring(0, iter + numSigDigits);
-      return readableNumber;
-    }
+    //return decimal with 2 sig digits
+    return stringToSignificantDecimals(input,2);
+
     //there are digits before the decimal
   } else {
     if (beforeDecimalPoint.length >= 10) {
@@ -44,23 +27,26 @@ export const getHumanReadableNumber: (input: string) => string = (input) => {
     if (suffixTracker !== 0) {
       readableNumber = beforeDecimalPoint.substring(
         0,
-        beforeDecimalPoint.length - (suffixTracker - (numSigDigits - 1))
+        beforeDecimalPoint.length - (suffixTracker - (numSigDecimals - 1))
       );
+      //check if after decimal is not 0
       if (
         beforeDecimalPoint[
-          beforeDecimalPoint.length - (suffixTracker - (numSigDigits - 1))
+          beforeDecimalPoint.length - (suffixTracker - (numSigDecimals - 1))
         ] !== "0"
       ) {
+        //if its not 0 we include
         readableNumber += ".";
         readableNumber +=
           beforeDecimalPoint[
-            beforeDecimalPoint.length - (suffixTracker - (numSigDigits - 1))
+            beforeDecimalPoint.length - (suffixTracker - (numSigDecimals - 1))
           ];
         readableNumber +=
           beforeDecimalPoint[
-            beforeDecimalPoint.length - (suffixTracker - numSigDigits)
+            beforeDecimalPoint.length - (suffixTracker - numSigDecimals)
           ];
       }
+      //no suffix is needed
     } else {
       readableNumber = input;
     }
