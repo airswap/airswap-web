@@ -5,6 +5,7 @@ import { compressFullOrder } from "@airswap/utils";
 
 import { format } from "date-fns";
 
+import { getAbbreviatedNumber } from "../../../../helpers/getAbbreviatedNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
@@ -12,7 +13,6 @@ import { OrderStatus } from "../../../../types/orderStatus";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
 import { getTokenAmountWithDecimals } from "../../helpers";
-import { getAbbreviatedNumber } from "../../../../helpers/getAbbreviatedNumber";
 import {
   ActionButton,
   ActionButtonContainer,
@@ -81,8 +81,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <StyledTokenLogo size="tiny" tokenInfo={signerTokenInfo} />
         <StyledTokenLogo size="tiny" tokenInfo={senderTokenInfo} />
       </TokenLogos>
-      <Text>{`${getAbbreviatedNumber(signerAmount.toString())} ${signerTokenInfo?.symbol || ""}`}</Text>
-      <Text>{`${getAbbreviatedNumber(senderAmount.toString())} ${senderTokenInfo?.symbol || ""}`}</Text>
+      <Text>{`${getAbbreviatedNumber(signerAmount.toString())} ${
+        signerTokenInfo?.symbol || ""
+      }`}</Text>
+      <Text>{`${getAbbreviatedNumber(senderAmount.toString())} ${
+        senderTokenInfo?.symbol || ""
+      }`}</Text>
       <Text>{format(expiry, "dd-MM-yyyy kk:mm")}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 

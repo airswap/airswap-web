@@ -1,18 +1,19 @@
 import stringToSignificantDecimals from "./stringToSignificantDecimals";
+
 export const getAbbreviatedNumber: (
   input: string,
   numSigDecimals?: number,
   maxDigits?: number
-  ) => string = (input,numSigDecimals = 2, maxDigits = 4) => {
+) => string = (input, numSigDecimals = 2, maxDigits = 4) => {
   //auto sets to 2 decimals max, 4 digits
-  const [beforeDecimalPoint, afterDecimalPoint] = input.split(".");
+  const beforeDecimalPoint = input.split(".")[0];
   let readableNumber = "";
   let suffixTracker = 0;
 
   //check if anything before decimal needs to be added
   if (Number(beforeDecimalPoint) === 0) {
     //return decimal with 2 sig digits
-    return stringToSignificantDecimals(input,2);
+    return stringToSignificantDecimals(input, 2);
 
     //there are digits before the decimal
   } else {
