@@ -167,7 +167,7 @@
     "dismiss": "Dismiss",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders",
     "startByCreatingANewOrder": "Start by creating a new order",
-    "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order.",
+    "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order (including {{protocolFee}}% fee).",
     "areYouSureYouWantToCancel": "Are you sure you want to cancel?",
     "actionCannotBeReversed": "This action cannot be reversed",
     "confirmCancel": "Confirm cancel",

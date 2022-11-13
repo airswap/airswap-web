@@ -255,7 +255,7 @@ const MakeWidget: FC = () => {
     const result = await dispatch(
       deposit({
         chainId: chainId!,
-        senderAmount: makerAmount,
+        senderAmount: shouldDepositNativeTokenAmount!,
         senderTokenDecimals: makerTokenInfo!.decimals,
         provider: library!,
       })
