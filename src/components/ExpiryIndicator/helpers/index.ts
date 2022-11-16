@@ -1,6 +1,6 @@
 import { TFunction } from "react-i18next";
 
-import { formatDuration } from "date-fns";
+import { formatDuration, compareAsc } from "date-fns";
 
 import getDifferenceBetweenDatesInTimeUnits from "../../../helpers/getDifferenceBetweenDatesInTimeUnits";
 
@@ -18,6 +18,10 @@ export const getExpiryTranslation = (
   now: Date,
   t: TFunction<"translation">
 ): string | undefined => {
+  if (compareAsc(now, expiry) === -1) {
+    return undefined;
+  }
+
   const { minutes, hours, days, weeks } = getDifferenceBetweenDatesInTimeUnits(
     now,
     expiry
