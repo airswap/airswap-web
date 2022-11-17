@@ -13,10 +13,12 @@ import {
   nativeCurrencySafeTransactionFee,
 } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
-import { selectActiveTokens } from "../features/metadata/metadataSlice";
+import {
+  selectActiveTokens,
+  selectProtocolFee,
+} from "../features/metadata/metadataSlice";
 import { selectUserTokens } from "../features/userSettings/userSettingsSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
-import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
 
 const useShouldDepositNativeTokenAmount = (
   tokenAmount: string
@@ -24,6 +26,7 @@ const useShouldDepositNativeTokenAmount = (
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const userTokens = useAppSelector(selectUserTokens);
+  const protocolFee = useAppSelector(selectProtocolFee);
 
   const { chainId } = useWeb3React<Web3Provider>();
   const { tokenFrom } = userTokens;
@@ -86,10 +89,20 @@ const useShouldDepositNativeTokenAmount = (
     }
 
     // Else it means WETH is not enough, but with wrapping extra ETH it will.
-    return stringToSignificantDecimals(
-      tokenAmountBigNumber.minus(wrappedTokenBigNumber).toFormat()
+    const amountToDeposit = tokenAmountBigNumber.minus(wrappedTokenBigNumber);
+    const amountToDepositWithFee = amountToDeposit.plus(
+      tokenAmountBigNumber.multipliedBy(protocolFee / 10000)
     );
-  }, [activeTokens, balances.values, tokenFrom, tokenAmount, chainId]);
+
+    return amountToDepositWithFee.toFormat();
+  }, [
+    activeTokens,
+    balances.values,
+    tokenFrom,
+    tokenAmount,
+    protocolFee,
+    chainId,
+  ]);
 };
 
 export default useShouldDepositNativeTokenAmount;

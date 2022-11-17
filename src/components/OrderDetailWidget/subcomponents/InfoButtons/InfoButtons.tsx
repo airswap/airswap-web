@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { BigNumber } from "bignumber.js";
 
+import { useAppSelector } from "../../../../app/hooks";
+import { selectProtocolFee } from "../../../../features/metadata/metadataSlice";
 import Icon from "../../../Icon/Icon";
 import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField";
 import { getFullOrderWarningTranslation } from "../../helpers";
@@ -43,6 +45,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
+  const protocolFee = useAppSelector(selectProtocolFee);
 
   const warningText = useMemo(() => {
     return getFullOrderWarningTranslation(
@@ -70,7 +73,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
         )}
         {isMakerOfSwap && (
           <StyledLargePillButton onClick={onFeeButtonClick}>
-            {`${t("common.fee")} 0.7%`}
+            {`${t("common.fee")} ${protocolFee / 100}%`}
             <Icon name="information-circle-outline" />
           </StyledLargePillButton>
         )}
