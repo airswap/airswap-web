@@ -20,6 +20,7 @@ import {
   MaxButton,
   InputAndMaxButtonWrapper,
   InfoLabel,
+  SubText,
 } from "./TokenSelect.styles";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
@@ -84,6 +85,7 @@ export type TokenSelectProps = {
    * Used for showing quote style
    */
   isQuote?: boolean;
+  subText?: string;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -91,6 +93,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   includeAmountInput,
   label,
   selectedToken,
+  subText,
   onChangeTokenClicked,
   onMaxClicked,
   onInfoLabelMouseEnter,
@@ -125,6 +128,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <AmountInput
               // @ts-ignore
               inputMode="decimal"
+              hasSubtext={!!subText}
               tabIndex={readOnly ? -1 : 0}
               autoComplete="off"
               pattern="^[0-9]*[.,]?[0-9]*$"
@@ -137,6 +141,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               placeholder="0.00"
             />
             {!readOnly && <TokenSelectFocusBorder position="right" />}
+            {subText && <SubText hasAmount={!!amount}>{subText}</SubText>}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>

@@ -123,7 +123,7 @@ const MakeWidget: FC = () => {
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
   const hasMissingTakerAmount =
     !takerAmount.length || parseFloat(takerAmount) === 0 || takerAmount === ".";
-  const maxAmount = useMaxAmount(makerAmount);
+  const maxAmount = useMaxAmount(makerTokenInfo?.address || null, true);
   const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
@@ -204,8 +204,8 @@ const MakeWidget: FC = () => {
         ? wrappedTokenAddresses[chainId!]
         : takerTokenAddress;
 
-    const formattedMakerAmount = stringToSignificantDecimals(makerAmount, 4);
-    const formattedTakerAmount = stringToSignificantDecimals(takerAmount, 4);
+    const formattedMakerAmount = stringToSignificantDecimals(makerAmount, 6);
+    const formattedTakerAmount = stringToSignificantDecimals(takerAmount, 6);
     setMakerAmount(formattedMakerAmount);
     setTakerAmount(formattedTakerAmount);
 
@@ -314,6 +314,7 @@ const MakeWidget: FC = () => {
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
         baseTokenInfo={makerTokenInfo}
+        baseAmountSubText={`${protocolFee / 100}% ${t("common.fee")}`}
         maxAmount={maxAmount}
         side="sell"
         quoteAmount={takerAmount}
@@ -321,7 +322,7 @@ const MakeWidget: FC = () => {
         onBaseAmountChange={setMakerAmount}
         onQuoteAmountChange={setTakerAmount}
         onChangeTokenClick={setShowTokenSelectModal}
-        onMaxButtonClick={() => setTakerAmount(maxAmount || "0")}
+        onMaxButtonClick={() => setMakerAmount(maxAmount || "0")}
       />
       <OrderTypeSelectorAndRateFieldWrapper>
         <StyledOrderTypeSelector

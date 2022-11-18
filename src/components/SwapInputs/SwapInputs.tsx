@@ -24,6 +24,7 @@ const SwapInputs: FC<{
   tradeNotAllowed?: boolean;
 
   baseAmount: string;
+  baseAmountSubText?: string;
   baseTokenInfo: TokenInfo | null;
   maxAmount: string | null;
   side: "buy" | "sell";
@@ -44,6 +45,7 @@ const SwapInputs: FC<{
   tradeNotAllowed = false,
 
   baseAmount,
+  baseAmountSubText,
   baseTokenInfo,
   maxAmount = null,
   quoteAmount,
@@ -111,6 +113,7 @@ const SwapInputs: FC<{
         isQuote={isQuote}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
+        subText={baseAmountSubText}
       />
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
