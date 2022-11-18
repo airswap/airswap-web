@@ -43,7 +43,7 @@ export const Button = styled.button<{
   &:focus,
   &:active {
     ${Arrow} {
-      border-top-color: ${(props) => props.theme.colors.white};
+      border-top-color: ${(props) => props.theme.colors.primary};
     }
   }
 
@@ -52,6 +52,6 @@ export const Button = styled.button<{
       isDescending ? "rotate(180deg)" : "none"};
     margin-left: ${({ hasText }) => (hasText ? "0.25rem" : "0")};
     border-top-color: ${({ theme, isActive }) =>
-      isActive ? theme.colors.white : theme.colors.lightGrey};
+      isActive ? theme.colors.primary : theme.colors.lightGrey};
   }
 `;
