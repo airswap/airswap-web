@@ -28,7 +28,9 @@ const getTokenMaxAmount = (
   );
 
   if (protocolFeePercentage) {
-    totalAmount = totalAmount.dividedBy(1 + protocolFeePercentage);
+    totalAmount = totalAmount.minus(
+      totalAmount.multipliedBy(protocolFeePercentage)
+    );
   }
 
   if (transactionFee) {
