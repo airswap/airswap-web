@@ -5,12 +5,7 @@ import styled, { css, keyframes } from "styled-components/macro";
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { BorderlessButtonStyle } from "../../style/mixins";
 import TokenLogo from "../TokenLogo/TokenLogo";
-import {
-  SelectItem,
-  FormLabel,
-  FormInput,
-  Metadata,
-} from "../Typography/Typography";
+import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
 
 const fadeOut = keyframes`
   from {
@@ -120,7 +115,7 @@ export const AmountInput = styled(FormInput)<{
   ${quoteTransition};
 
   padding-right: 0;
-  margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
+  margin-top: ${(props) => (props.hasSubtext ? "-0.375rem" : 0)};
   cursor: ${(props) => (props.disabled ? "inherit" : "text")};
   text-align: right;
 
@@ -173,6 +168,16 @@ export const StyledLabel = styled(FormLabel)`
   text-transform: uppercase;
 `;
 
+export const SubText = styled.div<{ hasAmount: boolean }>`
+  ${quoteTransition};
+  line-height: 0.75;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: ${({ hasAmount, theme }) =>
+    hasAmount ? theme.colors.white : theme.colors.lightGrey};
+`;
+
 export const TokenSelectContainer = styled.div<{
   $isLoading: boolean;
   $isQuote: boolean;
@@ -209,17 +214,10 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
-
-  ${AmountInput} {
-    transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
-  }
-
-  ${MaxButton} {
-    transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
-  }
-
+  
+  ${SubText},
+  ${AmountInput},
+  ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
@@ -252,10 +250,6 @@ export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
 }>`
   ${fadeOutWhenInvisible}
-`;
-
-export const AmountSubtext = styled(Metadata)`
-  margin-top: -0.25rem;
 `;
 
 export const PlaceholderContainer = styled.div`

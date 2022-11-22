@@ -5,13 +5,20 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../app/hooks";
 import { selectBalances } from "../features/balances/balancesSlice";
-import { selectActiveTokens } from "../features/metadata/metadataSlice";
+import {
+  selectActiveTokens,
+  selectProtocolFee,
+} from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import getTokenMaxAmount from "../helpers/getTokenMaxAmount";
 
-const useMaxAmount = (token: string | null): string | null => {
+const useMaxAmount = (
+  token: string | null,
+  deductProtocolFee = false
+): string | null => {
   const balances = useAppSelector(selectBalances);
   const activeTokens = useAppSelector(selectActiveTokens);
+  const protocolFee = useAppSelector(selectProtocolFee);
   const { chainId } = useWeb3React<Web3Provider>();
 
   return useMemo(() => {
@@ -20,8 +27,13 @@ const useMaxAmount = (token: string | null): string | null => {
     }
 
     const tokenInfo = findEthOrTokenByAddress(token, activeTokens, chainId);
-    return getTokenMaxAmount(token, balances, tokenInfo);
-  }, [activeTokens, token, balances, chainId]);
+    return getTokenMaxAmount(
+      token,
+      balances,
+      tokenInfo,
+      deductProtocolFee ? protocolFee / 10000 : undefined
+    );
+  }, [activeTokens, token, balances, protocolFee, deductProtocolFee, chainId]);
 };
 
 export default useMaxAmount;

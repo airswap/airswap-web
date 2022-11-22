@@ -4,8 +4,6 @@ import { useTranslation } from "react-i18next";
 import { FullOrder } from "@airswap/typescript";
 import { compressFullOrder } from "@airswap/utils";
 
-import { compareAsc } from "date-fns";
-
 import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
