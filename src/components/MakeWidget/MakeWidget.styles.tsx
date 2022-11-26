@@ -2,6 +2,8 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { SelectLabel } from "../../styled-components/Select/Select";
+import Tooltip from "../SwapInputs/subcomponents/Tooltip/Tooltip";
+import { StyledInput } from "../TextInput/TextInput.styles";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
@@ -60,6 +62,12 @@ export const StyledInputSection = styled(InputSection)`
 export const StyledAddressInput = styled(AddressInput)`
   margin-bottom: 1rem;
   height: 3.5rem;
+  border: ${(props) => !props?.takerAddressIsValid && "1px solid red"};
+
+  ${StyledInput} {
+    border: none;
+    outline: none;
+  }
 `;
 
 export const StyledActionButtons = styled(ActionButtons)``;
@@ -68,4 +76,10 @@ export const StyledInfoSection = styled(InfoSection)`
   & + ${StyledActionButtons} {
     margin-top: 1rem;
   }
+`;
+
+export const StyledTooltip = styled(Tooltip)`
+  position: absolute;
+  top: calc(50% + 3.8rem);
+  left: calc(100% - 0.7rem);
 `;

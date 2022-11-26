@@ -53,10 +53,6 @@ export const getActionButtonTranslation = (
     return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
   }
 
-  if (takerAddressIsInvalid) {
-    return i18n.t("orders.enterValidTakerAddress");
-  }
-
   return i18n.t("common.sign");
 };
 
