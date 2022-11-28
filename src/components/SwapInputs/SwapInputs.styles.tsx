@@ -39,8 +39,19 @@ export const SwapIconContainer = styled.div`
   z-index: 1;
 `;
 
-export const StyledTooltip = styled(Tooltip)`
+export const MaxAmountInfoTooltip = styled(Tooltip)`
   position: absolute;
-  bottom: calc(100% + 1rem);
   right: 0;
+`;
+
+export const BaseAmountErrorTooltip = styled(Tooltip)`
+  position: absolute;
+  right: 0;
+`;
+
+export const QuoteAmountErrorTooltip = styled(Tooltip)`
+  position: absolute;
+  right: 0;
+  top: inherit;
+  bottom: 0;
 `;

@@ -197,7 +197,8 @@
     "swapFail": "The swap would fail for the following reasons:",
     "invalidAddress": "{{address}} is an invalid address",
     "invalidValue": "{{address}} is an invalid value",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "arithmeticUnderflow": "Amount too small"
   },
   "wallet": {
     "connectWallet": "Connect Wallet",

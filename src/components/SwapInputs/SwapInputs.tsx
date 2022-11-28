@@ -3,14 +3,18 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
+import { AppError } from "../../errors/appError";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import {
+  BaseAmountErrorTooltip,
   Container,
-  StyledTooltip,
+  MaxAmountInfoTooltip,
+  QuoteAmountErrorTooltip,
   SwapIconContainer,
 } from "./SwapInputs.styles";
 import getSwapInputIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
+import useErrorTranslation from "./hooks/useErrorTranslation";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -26,10 +30,12 @@ const SwapInputs: FC<{
   baseAmount: string;
   baseAmountSubText?: string;
   baseTokenInfo: TokenInfo | null;
+  baseAmountError?: AppError;
   maxAmount: string | null;
   side: "buy" | "sell";
   quoteTokenInfo: TokenInfo | null;
   quoteAmount: string;
+  quoteAmountError?: AppError;
 
   onMaxButtonClick: () => void;
   onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
@@ -47,9 +53,11 @@ const SwapInputs: FC<{
   baseAmount,
   baseAmountSubText,
   baseTokenInfo,
+  baseAmountError,
   maxAmount = null,
   quoteAmount,
   quoteTokenInfo,
+  quoteAmountError,
   side,
 
   onBaseAmountChange,
@@ -67,6 +75,8 @@ const SwapInputs: FC<{
     [baseTokenInfo, maxAmount, t]
   );
   const isQuote = !!baseAmount && !!quoteAmount && readOnly;
+  const baseAmountErrorText = useErrorTranslation(baseAmountError);
+  const quoteAmountErrorText = useErrorTranslation(quoteAmountError);
 
   const handleTokenAmountChange = (
     e: FormEvent<HTMLInputElement>,
@@ -107,6 +117,7 @@ const SwapInputs: FC<{
         onInfoLabelMouseEnter={handleInfoLabelMouseEnter}
         onInfoLabelMouseLeave={handleInfoLabelMouseLeave}
         readOnly={readOnly}
+        hasError={!!baseAmountError}
         includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
         isLoading={!isSell && isRequesting}
@@ -126,6 +137,7 @@ const SwapInputs: FC<{
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
         readOnly={readOnly}
+        hasError={!!quoteAmountError}
         includeAmountInput={
           !isSell || canSetQuoteAmount || (!!quoteAmount && !isRequesting)
         }
@@ -137,7 +149,19 @@ const SwapInputs: FC<{
         showMaxInfoButton &&
         showMaxAmountInfo &&
         maxAmountInfoText &&
-        !readOnly && <StyledTooltip>{maxAmountInfoText}</StyledTooltip>}
+        !readOnly && (
+          <MaxAmountInfoTooltip>{maxAmountInfoText}</MaxAmountInfoTooltip>
+        )}
+
+      {baseAmountErrorText && (
+        <BaseAmountErrorTooltip>{baseAmountErrorText}</BaseAmountErrorTooltip>
+      )}
+
+      {quoteAmountErrorText && (
+        <QuoteAmountErrorTooltip>
+          {quoteAmountErrorText}
+        </QuoteAmountErrorTooltip>
+      )}
     </Container>
   );
 };

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { compressFullOrder, toAtomicString } from "@airswap/utils";
+import { compressFullOrder } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -35,15 +35,16 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
+import useStringToSignificantDecimals from "../../hooks/useStringToSignificantDecimals";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTokenAddress from "../../hooks/useTokenAddress";
+import useTokenAmountError from "../../hooks/useTokenAmountError";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
@@ -111,6 +112,8 @@ const MakeWidget: FC = () => {
   const takerTokenInfo = useTokenInfo(
     userTokens.tokenTo || defaultTokenToAddress || null
   );
+  const formattedMakerAmount = useStringToSignificantDecimals(makerAmount, 4);
+  const formattedTakerAmount = useStringToSignificantDecimals(takerAmount, 4);
   const hasInsufficientAllowance = !useSufficientAllowance(
     makerTokenInfo,
     makerAmount
@@ -119,10 +122,24 @@ const MakeWidget: FC = () => {
     makerTokenInfo,
     makerAmount
   );
+  const makerAmountError = useTokenAmountError(
+    makerTokenInfo,
+    formattedMakerAmount
+  );
+  const takerAmountError = useTokenAmountError(
+    takerTokenInfo,
+    formattedTakerAmount
+  );
   const hasMissingMakerAmount =
-    !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
+    !makerAmount.length ||
+    parseFloat(makerAmount) === 0 ||
+    makerAmount === "." ||
+    !!makerAmountError;
   const hasMissingTakerAmount =
-    !takerAmount.length || parseFloat(takerAmount) === 0 || takerAmount === ".";
+    !takerAmount.length ||
+    parseFloat(takerAmount) === 0 ||
+    takerAmount === "." ||
+    !!takerAmountError;
   const maxAmount = useMaxAmount(makerTokenInfo?.address || null, true);
   const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
   const showMaxInfoButton =
@@ -204,8 +221,6 @@ const MakeWidget: FC = () => {
         ? wrappedTokenAddresses[chainId!]
         : takerTokenAddress;
 
-    const formattedMakerAmount = stringToSignificantDecimals(makerAmount, 6);
-    const formattedTakerAmount = stringToSignificantDecimals(takerAmount, 6);
     setMakerAmount(formattedMakerAmount);
     setTakerAmount(formattedTakerAmount);
 
@@ -215,20 +230,16 @@ const MakeWidget: FC = () => {
         expiry: Math.floor(expiryDate / 1000).toString(),
         signerWallet: account!,
         signerToken,
-        signerAmount: toAtomicString(
-          formattedMakerAmount,
-          makerTokenInfo?.decimals!
-        ),
+        signerTokenInfo: makerTokenInfo!,
+        signerAmount: formattedMakerAmount,
         protocolFee: protocolFee.toString(),
         senderWallet:
           orderType === OrderType.private
             ? takerAddress!
             : nativeCurrencyAddress,
         senderToken,
-        senderAmount: toAtomicString(
-          formattedTakerAmount,
-          takerTokenInfo?.decimals!
-        ),
+        senderTokenInfo: takerTokenInfo!,
+        senderAmount: formattedTakerAmount,
         chainId: chainId!,
         library: library!,
       })
@@ -314,10 +325,12 @@ const MakeWidget: FC = () => {
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
         baseTokenInfo={makerTokenInfo}
+        baseAmountError={makerAmountError}
         baseAmountSubText={`${protocolFee / 100}% ${t("common.fee")}`}
         maxAmount={maxAmount}
         side="sell"
         quoteAmount={takerAmount}
+        quoteAmountError={takerAmountError}
         quoteTokenInfo={takerTokenInfo}
         onBaseAmountChange={setMakerAmount}
         onQuoteAmountChange={setTakerAmount}
@@ -370,6 +383,7 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
+        hasTokenAmountError={!!(makerAmountError || takerAmountError)}
         isLoading={hasApprovalPending || hasDepositPending}
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError

@@ -4,13 +4,14 @@ import convertHexToRGBA from "../../../../helpers/transformHexToRgba";
 
 type BorderType = {
   position: "left" | "right";
+  hasError: boolean;
 };
 
 const Border = styled.div<BorderType>`
   transition: opacity ease-out 0.3s;
   display: block;
   position: absolute;
-  opacity: 0;
+  opacity: ${({ hasError }) => (hasError ? 1 : 0)};
 `;
 
 export const BorderRight = styled(Border)`
@@ -19,7 +20,8 @@ export const BorderRight = styled(Border)`
   left: ${(props) => (props.position === "left" ? 0 : "auto")};
   width: 1px;
   height: 100%;
-  background: ${(props) => props.theme.colors.primary};
+  background: ${({ theme, hasError }) =>
+    hasError ? theme.colors.red : theme.colors.primary};
 `;
 
 export const BorderHorizontal = styled(Border)`
@@ -27,8 +29,12 @@ export const BorderHorizontal = styled(Border)`
   height: 1px;
   background: linear-gradient(
     ${(props) => (props.position === "left" ? "to left" : "to right")},
-    ${(props) => convertHexToRGBA(props.theme.colors.primary, 0)} 0%,
-    ${(props) => convertHexToRGBA(props.theme.colors.primary, 1)} 100%
+    ${({ theme, hasError }) =>
+        convertHexToRGBA(hasError ? theme.colors.red : theme.colors.primary, 0)}
+      0%,
+    ${({ theme, hasError }) =>
+        convertHexToRGBA(hasError ? theme.colors.red : theme.colors.primary, 1)}
+      100%
   );
 `;
 
