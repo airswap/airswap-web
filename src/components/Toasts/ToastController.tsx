@@ -13,6 +13,7 @@ import {
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import ConfirmationToast from "./ConfirmationToast";
+import CopyToast from "./CopyToast";
 import ErrorToast from "./ErrorToast";
 import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
@@ -120,6 +121,20 @@ export const notifyOrderCreated = (order: FullOrder) => {
     (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
     {
       duration: 3000,
+    }
+  );
+};
+
+export const notifyCopySuccess = () => {
+  toast(
+    (t) => (
+      <CopyToast
+        onClose={() => toast.dismiss(t.id)}
+        heading={i18n.t("toast.copied")}
+      />
+    ),
+    {
+      duration: 1000,
     }
   );
 };

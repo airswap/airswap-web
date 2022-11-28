@@ -39,6 +39,7 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
+import { notifyCopySuccess } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import { useOrderStatus } from "./hooks/useOrderStatus";
@@ -120,6 +121,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const handleCopyButtonClick = () => {
     navigator.clipboard.writeText(window.location.toString());
+    notifyCopySuccess();
   };
 
   const takeOrder = async () => {
