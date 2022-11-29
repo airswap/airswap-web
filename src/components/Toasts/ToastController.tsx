@@ -130,7 +130,7 @@ export const notifyCopySuccess = () => {
     (t) => (
       <CopyToast
         onClose={() => toast.dismiss(t.id)}
-        heading={i18n.t("toast.copied")}
+        heading={i18n.t("toast.copiedToClipboard")}
       />
     ),
     {

@@ -182,7 +182,8 @@
     "transaction": "{{senderAmount}} {{senderToken}} → {{signerAmount}} {{signerToken}}",
     "cancelComplete": "Cancel Complete",
     "cancelFail": "Cancel Failed",
-    "copied": "Copied to Clipboard"
+    "copiedToClipboard": "Copied to Clipboard",
+    "copyFailed": "Copy Failed"
   },
   "validatorErrors": {
     "signature_invalid": "Invalid signature",
