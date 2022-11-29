@@ -10,7 +10,7 @@ interface AddressInputProps {
   value: string;
   onChange: (value: string) => void;
   onInfoButtonClick: () => void;
-  takerAddressIsValid?: boolean;
+  hasError?: boolean;
   className?: string;
 }
 

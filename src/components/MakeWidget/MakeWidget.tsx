@@ -66,6 +66,7 @@ import {
   StyledOrderTypeSelector,
   StyledRateField,
   StyledTooltip,
+  AddressInputContainer,
 } from "./MakeWidget.styles";
 import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
@@ -345,22 +346,21 @@ const MakeWidget: FC = () => {
           )}
       </OrderTypeSelectorAndRateFieldWrapper>
       {orderType === OrderType.private ? (
-        <Container>
+        <AddressInputContainer>
           <StyledAddressInput
             value={takerAddress}
             onChange={setTakerAddress}
-            takerAddressIsValid={takerAddressIsValid}
+            hasError={takerAddressIsValid || takerAddress === ""}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
 
-          {!takerAddressIsValid && (
-            <StyledTooltip>
-              <p>
+          {!takerAddressIsValid ||
+            (takerAddress === "" && (
+              <StyledTooltip>
                 {takerAddress} {t("validatorErrors.invalidAddress")}
-              </p>
-            </StyledTooltip>
-          )}
-        </Container>
+              </StyledTooltip>
+            ))}
+        </AddressInputContainer>
       ) : (
         <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox

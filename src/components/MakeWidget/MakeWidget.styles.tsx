@@ -62,7 +62,8 @@ export const StyledInputSection = styled(InputSection)`
 export const StyledAddressInput = styled(AddressInput)`
   margin-bottom: 1rem;
   height: 3.5rem;
-  border: ${(props) => !props?.takerAddressIsValid && "1px solid red"};
+  border: ${(props) => !props?.hasError && "1px solid red"};
+  width: 100%;
 
   ${StyledInput} {
     border: none;
@@ -81,5 +82,9 @@ export const StyledInfoSection = styled(InfoSection)`
 export const StyledTooltip = styled(Tooltip)`
   position: absolute;
   top: calc(50% + 3.8rem);
-  left: calc(100% - 0.7rem);
+`;
+
+export const AddressInputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
