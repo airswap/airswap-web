@@ -25,6 +25,7 @@ export const LargePillButtonStyle = css`
 
   width: fit-content;
   height: 2.5rem;
+  border-radius: 2.5rem;
 
   &:hover,
   &:focus {

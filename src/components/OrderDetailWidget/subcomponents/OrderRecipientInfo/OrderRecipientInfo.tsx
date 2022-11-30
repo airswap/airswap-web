@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import writeAddressToClipboard from "../../../../helpers/writeAddressToClipboard";
+import writeTextToClipboard from "../../../../helpers/writeTextToClipboard";
 import useEnsAddress from "../../../../hooks/useEnsAddress";
 import { OrderType } from "../../../../types/orderTypes";
 import {
@@ -37,7 +37,7 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
   const handleClick = async () => {
     if (readableAddress) {
       setWriteAddressToClipboardSuccess(
-        await writeAddressToClipboard(readableAddress)
+        await writeTextToClipboard(readableAddress)
       );
     }
   };

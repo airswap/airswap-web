@@ -1,7 +1,11 @@
 import styled from "styled-components/macro";
 
-import { OverlayActionButton } from "../../../Overlay/Overlay.styles";
+import { sizes } from "../../../../style/sizes";
 
-export const StyledCloseButton = styled(OverlayActionButton)`
-  margin-top: 1.5rem;
+export const FeeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding-bottom: ${sizes.tradeContainerPadding};
 `;

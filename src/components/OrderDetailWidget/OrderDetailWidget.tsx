@@ -27,6 +27,7 @@ import {
   setErrors,
 } from "../../features/takeOtc/takeOtcSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import writeTextToClipboard from "../../helpers/writeTextToClipboard";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useOrderTransactionLink from "../../hooks/useOrderTransactionLink";
@@ -39,6 +40,7 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
+import { notifyCopySuccess, notifyError } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import { useOrderStatus } from "./hooks/useOrderStatus";
@@ -118,8 +120,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     });
   };
 
-  const handleCopyButtonClick = () => {
-    navigator.clipboard.writeText(window.location.toString());
+  const handleCopyButtonClick = async () => {
+    const copy = await writeTextToClipboard(window.location.toString());
+    copy
+      ? notifyCopySuccess()
+      : notifyError({ heading: t("toast.copyFailed"), cta: "" });
   };
 
   const takeOrder = async () => {
