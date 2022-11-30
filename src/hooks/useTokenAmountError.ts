@@ -1,21 +1,9 @@
 import { useMemo } from "react";
 
 import { TokenInfo } from "@airswap/typescript";
-import { toAtomicString } from "@airswap/utils";
 
-import {
-  AppError,
-  AppErrorType,
-  transformToAppError,
-} from "../errors/appError";
-import {
-  isEthersProjectError,
-  transformEthersProjectErrorToAppError,
-} from "../errors/ethersProjectError";
-import {
-  isNumericFaultErrorError,
-  transformNumericFaultErrorErrorToAppError,
-} from "../errors/numericFaultError";
+import { AppError, isAppError } from "../errors/appError";
+import toAtomicString from "../helpers/toAtomicString";
 
 const useTokenAmountError = (
   tokenInfo: TokenInfo | null,
@@ -26,20 +14,9 @@ const useTokenAmountError = (
       return undefined;
     }
 
-    try {
-      toAtomicString(amount, tokenInfo.decimals);
-      return undefined;
-    } catch (error: any) {
-      if (isNumericFaultErrorError(error)) {
-        return transformNumericFaultErrorErrorToAppError(error);
-      }
+    const result = toAtomicString(amount, tokenInfo.decimals);
 
-      if (isEthersProjectError(error)) {
-        return transformEthersProjectErrorToAppError(error);
-      }
-
-      return transformToAppError(AppErrorType.unknownError, error);
-    }
+    return isAppError(result) ? result : undefined;
   }, [tokenInfo, amount]);
 };
 

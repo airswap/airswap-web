@@ -3,6 +3,10 @@ import {
   isEthersProjectError,
   transformEthersProjectErrorToAppError,
 } from "./ethersProjectError";
+import {
+  isNumericFaultErrorError,
+  transformNumericFaultErrorErrorToAppError,
+} from "./numericFaultError";
 import { isRpcError, transformRpcErrorToAppError } from "./rpcError";
 import {
   isRpcErrorWithSwapErrorCode,
@@ -21,6 +25,10 @@ const transformUnknownErrorToAppError = (error: any): AppError => {
 
   if (isEthersProjectError(error)) {
     return transformEthersProjectErrorToAppError(error);
+  }
+
+  if (isNumericFaultErrorError(error)) {
+    return transformNumericFaultErrorErrorToAppError(error);
   }
 
   if (isRpcSignRejectedError(error)) {
