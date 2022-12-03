@@ -14,18 +14,21 @@ export const Wrapper = styled.div`
 export const StyledIconButton = styled(IconButton)`
   position: absolute;
   top: 0.825rem;
-  right: 1rem;
+  right: 0.5rem;
 `;
 
 export const Input = styled(TextInput)`
   height: 100%;
+  border: ${(props) => props?.hasError && "1px solid red"};
 
   ${StyledInput} {
     ${InputTextStyle};
 
     padding-right: 3.5rem;
+    padding-left: 1rem;
     height: 100%;
     font-size: 1rem;
     font-weight: 400;
+    border: none;
   }
 `;

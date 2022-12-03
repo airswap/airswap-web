@@ -107,7 +107,7 @@
     "amount": "Amount",
     "chooseToken": "Choose token",
     "enterAmount": "Enter an amount",
-    "enterTokenAmount": "Enter {{symbol}} amount",
+    "enterTokenAmount": "Enter amounts",
     "errorRequesting": "Something went wrong when requesting orders",
     "errorRequestingCta": "Please refresh the page and try again",
     "insufficentBalance": "Insufficient {{symbol}} balance",

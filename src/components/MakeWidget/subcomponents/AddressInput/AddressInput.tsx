@@ -10,6 +10,7 @@ interface AddressInputProps {
   value: string;
   onChange: (value: string) => void;
   onInfoButtonClick: () => void;
+  hasError?: boolean;
   className?: string;
 }
 
@@ -17,6 +18,7 @@ const AddressInput: FC<AddressInputProps> = ({
   value,
   onChange,
   onInfoButtonClick,
+  hasError,
   className,
 }) => {
   const { t } = useTranslation();
@@ -36,6 +38,7 @@ const AddressInput: FC<AddressInputProps> = ({
         maxLength={42}
         placeholder={t("orders.enterCounterPartyAddressOrENS")}
         value={value}
+        hasError={hasError}
         onChange={handleChange}
       />
       <StyledIconButton

@@ -23,7 +23,7 @@ export const Container = styled.div`
 
 export const ContentContainer = styled.div`
   ${TooltipStyle};
-
+  width: 100%;
   pointer-events: none;
 `;
 

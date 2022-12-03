@@ -65,6 +65,8 @@ import {
   StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
+  StyledTooltip,
+  AddressInputContainer,
 } from "./MakeWidget.styles";
 import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
@@ -135,6 +137,7 @@ const MakeWidget: FC = () => {
     useShouldDepositNativeToken(makerAmount);
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
+  const addressHasError = !takerAddressIsValid && takerAddress !== "";
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -344,11 +347,20 @@ const MakeWidget: FC = () => {
           )}
       </OrderTypeSelectorAndRateFieldWrapper>
       {orderType === OrderType.private ? (
-        <StyledAddressInput
-          value={takerAddress}
-          onChange={setTakerAddress}
-          onInfoButtonClick={toggleShowOrderTypeInfo}
-        />
+        <AddressInputContainer>
+          <StyledAddressInput
+            value={takerAddress}
+            onChange={setTakerAddress}
+            hasError={!takerAddressIsValid && takerAddress !== ""}
+            onInfoButtonClick={toggleShowOrderTypeInfo}
+          />
+
+          {!takerAddressIsValid && takerAddress !== "" && (
+            <StyledTooltip>
+              {takerAddress} {t("validatorErrors.invalidAddress")}
+            </StyledTooltip>
+          )}
+        </AddressInputContainer>
       ) : (
         <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox
