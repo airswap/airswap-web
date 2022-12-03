@@ -137,6 +137,7 @@ const MakeWidget: FC = () => {
     useShouldDepositNativeToken(makerAmount);
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
+  const addressHasError = !takerAddressIsValid && takerAddress !== "";
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -350,16 +351,15 @@ const MakeWidget: FC = () => {
           <StyledAddressInput
             value={takerAddress}
             onChange={setTakerAddress}
-            hasError={takerAddressIsValid || takerAddress === ""}
+            hasError={!takerAddressIsValid && takerAddress !== ""}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
 
-          {!takerAddressIsValid ||
-            (takerAddress === "" && (
-              <StyledTooltip>
-                {takerAddress} {t("validatorErrors.invalidAddress")}
-              </StyledTooltip>
-            ))}
+          {!takerAddressIsValid && takerAddress !== "" && (
+            <StyledTooltip>
+              {takerAddress} {t("validatorErrors.invalidAddress")}
+            </StyledTooltip>
+          )}
         </AddressInputContainer>
       ) : (
         <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>

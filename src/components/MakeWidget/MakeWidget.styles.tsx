@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import breakPoints from "../../style/breakpoints";
+import breakPoints, { breakpointSizes } from "../../style/breakpoints";
 import { SelectLabel } from "../../styled-components/Select/Select";
 import Tooltip from "../SwapInputs/subcomponents/Tooltip/Tooltip";
 import { StyledInput } from "../TextInput/TextInput.styles";
@@ -62,7 +62,6 @@ export const StyledInputSection = styled(InputSection)`
 export const StyledAddressInput = styled(AddressInput)`
   margin-bottom: 1rem;
   height: 3.5rem;
-  border: ${(props) => !props?.hasError && "1px solid red"};
   width: 100%;
 
   ${StyledInput} {
@@ -81,10 +80,24 @@ export const StyledInfoSection = styled(InfoSection)`
 
 export const StyledTooltip = styled(Tooltip)`
   position: absolute;
-  top: calc(50% + 3.8rem);
+  bottom: calc(100% + 1rem);
+  right: 0;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    top: -0.6rem;
+  }
 `;
 
 export const AddressInputContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  position: relative;
+  will-change: opacity, transform;
+  transition: opacity 0.3s ease-in-out,
+    transform 0.4s cubic-bezier(0.45, 0.22, 0, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    transform: none;
+  }
 `;
