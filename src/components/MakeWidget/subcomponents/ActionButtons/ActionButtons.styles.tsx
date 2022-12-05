@@ -23,12 +23,8 @@ const ButtonStyle = css`
 
 export const BackButton = styled(Button)`
   ${ButtonStyle}
-
-  padding-top: 0.7rem;
 `;
 
 export const SignButton = styled(Button)`
   ${ButtonStyle}
-
-  padding-top: 0.7rem;
 `;

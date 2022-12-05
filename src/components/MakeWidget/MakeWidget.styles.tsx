@@ -33,7 +33,7 @@ export const StyledRateField = styled(RateField)`
   justify-content: flex-end;
   margin-left: 1rem;
   margin-bottom: 1rem;
-  width: 100%;
+  width: 50%;
 
   @media ${breakPoints.phoneOnly} {
     width: auto;

@@ -123,7 +123,7 @@ export const AmountInput = styled(FormInput)<{
     outline: 0;
   }
 
-  &:focus::placeholder {
+  &::placeholder {
     color: transparent;
   }
 `;
