@@ -85,6 +85,7 @@ export type TokenSelectProps = {
    * Used for showing quote style
    */
   isQuote?: boolean;
+  hasError?: boolean;
   subText?: string;
 };
 
@@ -102,6 +103,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   onAmountChange,
   isLoading = false,
   isQuote = false,
+  hasError = false,
   showMaxButton = false,
   showMaxInfoButton = false,
 }) => {
@@ -140,7 +142,9 @@ const TokenSelect: FC<TokenSelectProps> = ({
               onChange={onAmountChange}
               placeholder="0.00"
             />
-            {!readOnly && <TokenSelectFocusBorder position="right" />}
+            {!readOnly && (
+              <TokenSelectFocusBorder position="right" hasError={hasError} />
+            )}
             {subText && <SubText hasAmount={!!amount}>{subText}</SubText>}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (

@@ -23,6 +23,7 @@ type ActionButtonsProps = {
   hasMissingMakerToken: boolean;
   hasMissingTakerAmount: boolean;
   hasMissingTakerToken: boolean;
+  hasTokenAmountError: boolean;
   isLoading: boolean;
   networkIsUnsupported: boolean;
   shouldDepositNativeToken: boolean;
@@ -44,6 +45,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasMissingMakerToken,
   hasMissingTakerAmount,
   hasMissingTakerToken,
+  hasTokenAmountError,
   isLoading,
   networkIsUnsupported,
   shouldDepositNativeToken,
@@ -66,6 +68,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasMissingTakerAmount ||
       hasMissingTakerToken ||
       takerAddressIsInvalid ||
+      hasTokenAmountError ||
       userIsSigning) &&
     !walletIsNotConnected &&
     !networkIsUnsupported &&

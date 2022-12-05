@@ -76,6 +76,13 @@ export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
     };
   }
 
+  if (error.type === AppErrorType.arithmeticUnderflow) {
+    return {
+      title: AppErrorType.arithmeticUnderflow,
+      text: i18n.t("validatorErrors.arithmeticUnderflow"),
+    };
+  }
+
   return {
     title: AppErrorType.unknownError,
     text: i18n.t("validatorErrors.unknownError"),

@@ -1,8 +1,10 @@
 import { EthersProjectError } from "./ethersProjectError";
+import { NumericFaultError } from "./numericFaultError";
 import { RpcError } from "./rpcError";
 import { RpcSignRejectedError } from "./rpcSignRejectedError";
 
 export enum AppErrorType {
+  arithmeticUnderflow = "arithmetic-underflow",
   chainDisconnected = "chain-disconnected",
   disconnected = "disconnected",
   expiryPassed = "expiry-passed",
@@ -25,7 +27,11 @@ export enum AppErrorType {
 
 export type AppError = {
   argument?: string;
-  error?: RpcError | RpcSignRejectedError | EthersProjectError;
+  error?:
+    | RpcError
+    | RpcSignRejectedError
+    | EthersProjectError
+    | NumericFaultError;
   type: AppErrorType;
 };
 
@@ -40,7 +46,7 @@ export const isAppError = (x: any): x is AppError => {
 
 export function transformToAppError(
   type: AppErrorType,
-  error?: RpcError | RpcSignRejectedError | EthersProjectError,
+  error?: AppError["error"],
   argument?: string
 ): AppError {
   return {

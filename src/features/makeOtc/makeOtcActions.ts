@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap/deploys.js";
-import { FullOrder, UnsignedOrder } from "@airswap/typescript";
-import { createOrder } from "@airswap/utils";
+import { FullOrder, TokenInfo, UnsignedOrder } from "@airswap/typescript";
+import { createOrder, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -21,6 +21,8 @@ export const createOtcOrder = createAsyncThunk(
     params: {
       chainId: number;
       library: Web3Provider;
+      signerTokenInfo: TokenInfo;
+      senderTokenInfo: TokenInfo;
     } & UnsignedOrder,
     { dispatch }
   ) => {
@@ -42,6 +44,15 @@ export const createOtcOrder = createAsyncThunk(
         return;
       }
 
+      const signerAmount = toAtomicString(
+        params.signerAmount,
+        params.signerTokenInfo.decimals
+      );
+      const senderAmount = toAtomicString(
+        params.senderAmount,
+        params.senderTokenInfo.decimals
+      );
+
       const unsignedOrder = createOrder({
         expiry: params.expiry,
         nonce: Date.now().toString(),
@@ -50,8 +61,8 @@ export const createOtcOrder = createAsyncThunk(
         signerToken: params.signerToken,
         senderToken: params.senderToken,
         protocolFee: "7",
-        signerAmount: params.signerAmount,
-        senderAmount: params.senderAmount,
+        signerAmount,
+        senderAmount,
         chainId: params.chainId,
       });
 
