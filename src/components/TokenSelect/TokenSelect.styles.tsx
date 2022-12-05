@@ -122,6 +122,10 @@ export const AmountInput = styled(FormInput)<{
   &:focus {
     outline: 0;
   }
+
+  &:focus::placeholder {
+    color: transparent;
+  }
 `;
 
 export const PlaceHolderBar = styled.div`
