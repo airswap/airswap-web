@@ -157,7 +157,7 @@
     "enterCounterPartyAddressOrENS": "Enter counterparty address or ENS",
     "copyLink": "Copy link",
     "expiryShouldBeMoreThan0": "Expiry should be more than 0",
-    "enterValidTakerAddress": "Enter valid taker address",
+    "enterValidTakerAddress": "Enter address",
     "takeOtc": "Take Swap",
     "unableTake": "Unable to take",
     "cancelSwap": "Cancel swap",
