@@ -34,11 +34,11 @@ export const getActionButtonTranslation = (
   }
 
   if (hasMissingMakerAmount) {
-    return i18n.t("orders.enterTokenAmount");
+    return i18n.t("orders.enterAmounts");
   }
 
   if (hasMissingTakerAmount) {
-    return i18n.t("orders.enterTokenAmount");
+    return i18n.t("orders.enterAmounts");
   }
 
   if (shouldDepositNativeToken) {
