@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { SwapERC20, Wrapper } from "@airswap/libraries";
+import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
 //@ts-ignore
 import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
-import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";

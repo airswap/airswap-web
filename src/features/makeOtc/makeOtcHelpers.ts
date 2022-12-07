@@ -1,5 +1,8 @@
 import { FullOrderERC20 } from "@airswap/typescript";
-import { compressFullOrderERC20, decompressFullOrderERC20 } from "@airswap/utils";
+import {
+  compressFullOrderERC20,
+  decompressFullOrderERC20,
+} from "@airswap/utils";
 
 export const getUserOtcOrdersLocalStorageKey: (
   account: string,

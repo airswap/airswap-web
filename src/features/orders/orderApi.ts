@@ -41,7 +41,10 @@ async function swap(
       provider.getSigner()
     );
   }
-  return await new SwapERC20(chainId, provider).swap(order, provider.getSigner());
+  return await new SwapERC20(chainId, provider).swap(
+    order,
+    provider.getSigner()
+  );
 }
 
 async function swapWrapper(

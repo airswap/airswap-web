@@ -21,7 +21,10 @@ export const takeOtcSlice = createSlice({
   name: "take-otc",
   initialState,
   reducers: {
-    setActiveOrder: (state, action: PayloadAction<FullOrderERC20>): TakeOtcState => {
+    setActiveOrder: (
+      state,
+      action: PayloadAction<FullOrderERC20>
+    ): TakeOtcState => {
       return {
         ...state,
         activeOrder: action.payload,

@@ -1,8 +1,11 @@
 // @ts-ignore
-import * as swapDeploys from "@airswap/swap-erc20/deploys";
 import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
+import * as swapDeploys from "@airswap/swap-erc20/deploys";
 import { FullOrderERC20 } from "@airswap/typescript";
-import { decompressFullOrderERC20, isValidFullOrderERC20 } from "@airswap/utils";
+import {
+  decompressFullOrderERC20,
+  isValidFullOrderERC20,
+} from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ethers, utils, Contract } from "ethers";

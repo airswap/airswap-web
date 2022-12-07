@@ -27,7 +27,10 @@ export const makeOtcSlice = createSlice({
         status: action.payload,
       };
     },
-    setUserOrder: (state, action: PayloadAction<FullOrderERC20>): MakeOtcState => {
+    setUserOrder: (
+      state,
+      action: PayloadAction<FullOrderERC20>
+    ): MakeOtcState => {
       return {
         ...state,
         lastUserOrder: action.payload,
