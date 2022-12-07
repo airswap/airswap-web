@@ -19,6 +19,7 @@ export const StyledIconButton = styled(IconButton)`
 
 export const Input = styled(TextInput)`
   height: 100%;
+  border: ${(props) => props.hasError && "1px solid red"};
 
   ${StyledInput} {
     ${InputTextStyle};

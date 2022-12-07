@@ -8,13 +8,14 @@ const triangleSize = 14;
 export const Container = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 100%;
   max-width: 17rem;
-  height: 4.5rem;
+  height: 0;
 
   @media ${breakPoints.tabletLandscapeUp} {
     align-items: center;
     top: 0;
+    width: 100%;
+    height: 4.5rem;
     right: inherit;
     bottom: inherit;
     left: calc(100% + 1.25rem);
