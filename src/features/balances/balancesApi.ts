@@ -1,6 +1,6 @@
 import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
 import balancesDeploys from "@airswap/balances/deploys.js";
-import { Swap, Wrapper } from "@airswap/libraries";
+import { SwapERC20, Wrapper } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event, providers } from "ethers";
@@ -66,7 +66,7 @@ const fetchBalancesOrAllowances: (
       ? [walletAddress, tokenAddresses]
       : spenderAddressType === "Swap"
       ? // sender, spender, tokens.
-        [walletAddress, Swap.getAddress(chainId), tokenAddresses]
+        [walletAddress, SwapERC20.getAddress(chainId), tokenAddresses]
       : [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());

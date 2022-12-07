@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { FullOrder, TokenInfo } from "@airswap/typescript";
+import { FullOrderERC20, TokenInfo } from "@airswap/typescript";
 
 import i18n from "i18next";
 
@@ -116,7 +116,7 @@ export const notifyConfirmation = (props: { heading: string; cta: string }) => {
   );
 };
 
-export const notifyOrderCreated = (order: FullOrder) => {
+export const notifyOrderCreated = (order: FullOrderERC20) => {
   toast(
     (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
     {

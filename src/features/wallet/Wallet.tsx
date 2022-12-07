@@ -3,10 +3,10 @@ import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Swap, Wrapper } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
+import { SwapERC20, Wrapper } from "@airswap/libraries";
 //@ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
+import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
+import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -257,7 +257,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: Swap.getAddress(),
+        spenderAddress: SwapERC20.getAddress(),
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;

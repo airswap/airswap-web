@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { HiX } from "react-icons/hi";
 import { MdBeenhere } from "react-icons/md";
 
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 
 import { InfoHeading } from "../Typography/Typography";
 import {
@@ -14,7 +14,7 @@ import {
 } from "./Toast.styles";
 
 export type OrderToastProps = {
-  order: FullOrder;
+  order: FullOrderERC20;
   onClose: () => void;
 };
 

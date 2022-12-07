@@ -1,4 +1,4 @@
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
+import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
 import * as WrapperContract from "@airswap/wrapper/build/contracts/Wrapper.sol/Wrapper.json";
 import { Interface } from "@ethersproject/abi";
 import { Web3Provider } from "@ethersproject/providers";

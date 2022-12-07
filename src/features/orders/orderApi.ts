@@ -1,7 +1,7 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { Swap, Maker, Wrapper } from "@airswap/libraries";
-import { FullOrder, Order } from "@airswap/typescript";
+import { SwapERC20, Maker, Wrapper } from "@airswap/libraries";
+import { FullOrderERC20, OrderERC20 } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
@@ -33,21 +33,21 @@ const WETHInterface = new utils.Interface(JSON.stringify(WETHContract.abi));
 async function swap(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: Order | FullOrder
+  order: OrderERC20 | FullOrderERC20
 ) {
   if ("senderWallet" in order && order.senderWallet === nativeCurrencyAddress) {
-    return await new Swap(chainId, provider).swapAnySender(
+    return await new SwapERC20(chainId, provider).swapAnySender(
       order,
       provider.getSigner()
     );
   }
-  return await new Swap(chainId, provider).swap(order, provider.getSigner());
+  return await new SwapERC20(chainId, provider).swap(order, provider.getSigner());
 }
 
 async function swapWrapper(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: Order
+  order: OrderERC20
 ) {
   return await new Wrapper(chainId, provider).swap(order, provider.getSigner());
 }
@@ -59,7 +59,7 @@ export async function requestOrders(
   baseTokenAmount: string,
   baseTokenDecimals: number,
   senderWallet: string
-): Promise<Order[]> {
+): Promise<OrderERC20[]> {
   if (!makers.length) {
     throw new Error("no counterparties");
   }
@@ -78,12 +78,12 @@ export async function requestOrders(
         }, REQUEST_ORDER_TIMEOUT_MS)
       ),
     ]);
-    return order as any as Order;
+    return order as any as OrderERC20;
   });
   const rfqOrders = await Promise.allSettled(rfqOrderPromises);
   return rfqOrders
     .filter((result) => result.status === "fulfilled")
-    .map((result) => (result as PromiseFulfilledResult<Order>).value)
+    .map((result) => (result as PromiseFulfilledResult<OrderERC20>).value)
     .filter((o) => BigNumber.from(o.signerAmount).gt("0"));
 }
 
@@ -94,7 +94,7 @@ export async function approveToken(
 ) {
   const spender =
     contractType === "Swap"
-      ? Swap.getAddress(provider.network.chainId)
+      ? SwapERC20.getAddress(provider.network.chainId)
       : Wrapper.getAddress(provider.network.chainId);
   const erc20Contract = new ethers.Contract(
     baseToken,
@@ -110,7 +110,7 @@ export async function approveToken(
 }
 
 export async function takeOrder(
-  order: Order | FullOrder,
+  order: OrderERC20 | FullOrderERC20,
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper"
 ): Promise<Transaction | AppError> {
@@ -127,7 +127,7 @@ export async function takeOrder(
   });
 }
 
-export function orderSortingFunction(a: Order, b: Order) {
+export function orderSortingFunction(a: OrderERC20, b: OrderERC20) {
   const now = Date.now();
   const aTimeToExpiry = now - parseInt(a.expiry);
   const bTimeToExpiry = now - parseInt(b.expiry);
@@ -205,12 +205,12 @@ export async function withdrawETH(
 }
 
 export async function check(
-  order: Order,
+  order: OrderERC20,
   senderWallet: string,
   chainId: number,
   signer?: ethers.providers.JsonRpcSigner
 ): Promise<AppError[]> {
-  const errors = (await new Swap(chainId, signer).check(
+  const errors = (await new SwapERC20(chainId, signer).check(
     order,
     senderWallet,
     signer
@@ -224,10 +224,10 @@ export async function check(
 }
 
 export async function getNonceUsed(
-  order: FullOrder,
+  order: FullOrderERC20,
   provider: ethers.providers.Web3Provider
 ): Promise<boolean> {
-  return new Swap(parseInt(order.chainId), provider).contract.nonceUsed(
+  return new SwapERC20(parseInt(order.chainId), provider).contract.nonceUsed(
     order.signerWallet,
     order.nonce
   );

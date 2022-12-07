@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { MakerRegistry, Wrapper } from "@airswap/libraries";
-import { Order, Pricing } from "@airswap/typescript";
+import { OrderERC20, Pricing } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -354,7 +354,7 @@ const SwapWidget: FC = () => {
         throw new Error("error requesting orders");
       }
 
-      let rfqPromise: Promise<Order[]> | null = null,
+      let rfqPromise: Promise<OrderERC20[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqMakers.length) {
@@ -389,7 +389,7 @@ const SwapWidget: FC = () => {
         }
       }
 
-      let orderPromises: Promise<Order[] | Pricing>[] = [];
+      let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
       if (rfqPromise) orderPromises.push(rfqPromise);
       if (lastLookPromises) {
         orderPromises = orderPromises.concat(lastLookPromises);
@@ -480,7 +480,7 @@ const SwapWidget: FC = () => {
   };
 
   const swapWithLastLook = async () => {
-    let order: Order | null = null;
+    let order: OrderERC20 | null = null;
 
     try {
       setIsSwapping(true);

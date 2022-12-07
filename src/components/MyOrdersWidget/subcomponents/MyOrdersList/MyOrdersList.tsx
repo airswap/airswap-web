@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 
 import { OrdersSortType } from "../../../../features/myOrders/myOrdersSlice";
 import useWindowSize from "../../../../hooks/useWindowSize";
@@ -19,9 +19,9 @@ import {
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
-  orders: FullOrder[];
+  orders: FullOrderERC20[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
-  onDeleteOrderButtonClick: (order: FullOrder) => void;
+  onDeleteOrderButtonClick: (order: FullOrderERC20) => void;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
 }
@@ -48,7 +48,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const [containerScrollTop, setContainerScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  const handleDeleteOrderButtonClick = (order: FullOrder) => {
+  const handleDeleteOrderButtonClick = (order: FullOrderERC20) => {
     setActiveDeleteButtonTooltipIndex(undefined);
     onDeleteOrderButtonClick(order);
   };

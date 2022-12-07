@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { compressFullOrder } from "@airswap/utils";
+import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -180,7 +180,7 @@ const MakeWidget: FC = () => {
 
   useEffect(() => {
     if (lastUserOrder) {
-      const compressedOrder = compressFullOrder(lastUserOrder);
+      const compressedOrder = compressFullOrderERC20(lastUserOrder);
       dispatch(clearLastUserOrder());
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
     }

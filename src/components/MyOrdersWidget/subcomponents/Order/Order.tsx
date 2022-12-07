@@ -1,8 +1,8 @@
 import React, { FC, PropsWithChildren, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FullOrder } from "@airswap/typescript";
-import { compressFullOrder } from "@airswap/utils";
+import { FullOrderERC20 } from "@airswap/typescript";
+import { compressFullOrderERC20 } from "@airswap/utils";
 
 import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
@@ -26,9 +26,9 @@ import {
 } from "./Order.styles";
 
 interface OrderProps {
-  order: FullOrder;
+  order: FullOrderERC20;
   index: number;
-  onDeleteOrderButtonClick: (order: FullOrder) => void;
+  onDeleteOrderButtonClick: (order: FullOrderERC20) => void;
   onDeleteOrderButtonMouseEnter: (index: number, orderIsOpen: boolean) => void;
   onDeleteOrderButtonMouseLeave: () => void;
   onStatusIndicatorMouseEnter: (index: number, status: OrderStatus) => void;
@@ -79,7 +79,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     return getExpiryTranslation(new Date(), expiry, t);
   }, [order, t]);
 
-  const orderString = useMemo(() => compressFullOrder(order), [order]);
+  const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
 
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);

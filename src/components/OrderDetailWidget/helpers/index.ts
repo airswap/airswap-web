@@ -2,7 +2,7 @@ import { chainNames } from "@airswap/constants";
 
 import i18n from "i18next";
 
-export const getFullOrderWarningTranslation = (
+export const getFullOrderERC20WarningTranslation = (
   isDifferentChainId: boolean,
   isExpired: boolean,
   isIntendedRecipient: boolean,

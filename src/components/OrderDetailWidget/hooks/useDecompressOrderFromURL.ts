@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 
-import { FullOrder } from "@airswap/typescript";
-import { decompressFullOrder } from "@airswap/utils";
+import { FullOrderERC20 } from "@airswap/typescript";
+import { decompressFullOrderERC20 } from "@airswap/utils";
 
-const useDecompressOrderFromURL = (): FullOrder => {
+const useDecompressOrderFromURL = (): FullOrderERC20 => {
   const { compressedOrder } = useParams<{ compressedOrder: string }>();
-  const decompressedOrder = decompressFullOrder(compressedOrder);
+  const decompressedOrder = decompressFullOrderERC20(compressedOrder);
   return decompressedOrder;
 };
 

@@ -2,7 +2,7 @@ import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -51,7 +51,7 @@ import ActionButtons, {
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
 
 interface OrderDetailWidgetProps {
-  order: FullOrder;
+  order: FullOrderERC20;
 }
 
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {

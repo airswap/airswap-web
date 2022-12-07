@@ -1,4 +1,4 @@
-import { Order } from "@airswap/typescript";
+import { OrderERC20 } from "@airswap/typescript";
 import {
   createSlice,
   createSelector,
@@ -49,7 +49,7 @@ export interface SubmittedTransaction {
 }
 
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  order: Order;
+  order: OrderERC20;
 }
 
 export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}

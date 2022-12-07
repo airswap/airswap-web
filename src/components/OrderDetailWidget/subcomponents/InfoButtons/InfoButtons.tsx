@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../../app/hooks";
 import { selectProtocolFee } from "../../../../features/metadata/metadataSlice";
 import Icon from "../../../Icon/Icon";
 import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField";
-import { getFullOrderWarningTranslation } from "../../helpers";
+import { getFullOrderERC20WarningTranslation } from "../../helpers";
 import {
   ButtonsWrapper,
   Container,
@@ -48,7 +48,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   const protocolFee = useAppSelector(selectProtocolFee);
 
   const warningText = useMemo(() => {
-    return getFullOrderWarningTranslation(
+    return getFullOrderERC20WarningTranslation(
       isDifferentChainId,
       isExpired,
       isIntendedRecipient,

@@ -1,8 +1,8 @@
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
 // @ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys";
-import { FullOrder } from "@airswap/typescript";
-import { decompressFullOrder, isValidFullOrder } from "@airswap/utils";
+import * as swapDeploys from "@airswap/swap-erc20/deploys";
+import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
+import { FullOrderERC20 } from "@airswap/typescript";
+import { decompressFullOrderERC20, isValidFullOrderERC20 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ethers, utils, Contract } from "ethers";
@@ -36,9 +36,9 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
     dispatch(reset());
 
     try {
-      const order = decompressFullOrder(params.compressedOrder);
+      const order = decompressFullOrderERC20(params.compressedOrder);
 
-      if (!isValidFullOrder(order)) {
+      if (!isValidFullOrderERC20(order)) {
         return dispatch(setStatus("not-found"));
       }
 
@@ -56,7 +56,7 @@ export const cancelOrder = createAsyncThunk(
   "take-otc/cancelOrder",
   async (
     params: {
-      order: FullOrder;
+      order: FullOrderERC20;
       chainId: number;
       library: ethers.providers.Web3Provider;
     },

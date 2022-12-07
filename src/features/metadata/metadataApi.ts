@@ -1,4 +1,4 @@
-import { Swap } from "@airswap/libraries";
+import { SwapERC20 } from "@airswap/libraries";
 import { fetchTokens, scrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
@@ -124,7 +124,7 @@ export const getProtocolFee = async (
   chainId: number,
   provider: Web3Provider
 ): Promise<number> => {
-  const protocolFee = await new Swap(
+  const protocolFee = await new SwapERC20(
     chainId,
     provider.getSigner()
   ).contract.protocolFee();
