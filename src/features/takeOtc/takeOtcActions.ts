@@ -1,5 +1,6 @@
 // @ts-ignore
 import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
+// @ts-ignore
 import * as swapDeploys from "@airswap/swap-erc20/deploys";
 import { FullOrderERC20 } from "@airswap/typescript";
 import {
