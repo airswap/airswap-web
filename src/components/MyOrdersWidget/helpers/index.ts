@@ -1,4 +1,4 @@
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { TokenInfo } from "@uniswap/token-lists";
 
 import { BigNumber } from "bignumber.js";
@@ -30,7 +30,7 @@ const sortTokensBySymbol = (
 };
 
 export const getSortedOrders = (
-  orders: FullOrder[],
+  orders: FullOrderERC20[],
   sortType: OrdersSortType,
   tokens: TokenInfo[],
   chainId: number,

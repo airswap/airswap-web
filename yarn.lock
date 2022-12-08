@@ -14,6 +14,16 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.1.tgz#cf5f99c99da4612dde2ca373af0f39e9da7e9374"
   integrity sha512-XJ0EhohJGW3g/jvEv2bUYU8aKL0XMDmVoAraqSdETlx1vamFvOd2rTqHT81Ch46wPTF7qDNzHRh6+HjvAmDOPw==
 
+"@airswap/constants@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.2.tgz#2f865f91df5be49208e8869d6bdf49eac7df99c5"
+  integrity sha512-dCJP7tExMzheMCoYrxnScVvPbQDS8l9/UwrcK9IDIspTun/JHtBcDX+5jdQqHH7mduC4sF2AeKmMrqDWj4nMhQ==
+
+"@airswap/constants@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-3.0.3.tgz#771b1943796e3a55b9477903df687b0ca6ad79e2"
+  integrity sha512-lhl9g6ujpcGtmUmhwhvSHNK+wk/FYRMNC9odIBQxz0Z3jkFNu8M3hGFB4hVlIuaqQoKKkIr39/3oDEoaTBQxGA==
+
 "@airswap/indexer-registry@3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@airswap/indexer-registry/-/indexer-registry-3.1.2.tgz#233fa604f315f180b7590cfd17798f9bbae0c461"
@@ -28,19 +38,19 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.3.0.tgz#a95a4afdc6d7e948fca26c90c4b1d779214e0af4"
-  integrity sha512-TlRAVtLyLytUVaAPs+AWGd8c5NkhLcU4ywMMzgmM/SGeVV5ktLQLi5gk3rMwJla6C5BdbS1E6aEiBsL2AeU//w==
+"@airswap/libraries@3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.3.2.tgz#ab4f34e0914b2e08dbcfa40d6e7aa01e3b5e5e7b"
+  integrity sha512-8PumkQVsAzqV7uVQoE0ts8oXrzt8NOE8lOjeF260mOsmeizsa/JFmsDavNCUZx3PxLhMK+khl3uxOhYCNCaQwg==
   dependencies:
-    "@airswap/constants" "3.0.1"
+    "@airswap/constants" "3.0.3"
     "@airswap/indexer-registry" "3.1.2"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/maker-registry" "3.1.2"
-    "@airswap/swap" "3.2.3"
-    "@airswap/typescript" "3.0.1"
-    "@airswap/utils" "3.0.4"
-    "@airswap/wrapper" "3.1.3"
+    "@airswap/maker-registry" "3.1.3"
+    "@airswap/swap-erc20" "3.0.0"
+    "@airswap/typescript" "3.0.2"
+    "@airswap/utils" "3.0.5"
+    "@airswap/wrapper" "3.1.4"
     bignumber.js "^9.0.0"
     browser-or-node "^1.3.0"
     ethers "^5.6.9"
@@ -48,19 +58,19 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/maker-registry@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-3.1.2.tgz#ab5925c3359107bbce305a885551266535b3bfe8"
-  integrity sha512-Vaa4V5d74O2DJCFotUcUdXUUUxgNjQ9ud2lPskhONSd45GjNW6l4SGyr8M1A0fxwpv/LWt5wdsv4QJ2d9zx+MA==
+"@airswap/maker-registry@3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-3.1.3.tgz#dbff6d1c75950accb32e9eaf9cf7515496ca9aaa"
+  integrity sha512-D4ZZLTbE3xxvobXssDIyz2YO2dZ1TfC0rhwWwjTsAbDelrnc2fPTas9r2TvYQY1MYWT1k9Mgh9oN/SeFsMW6oA==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/metadata@3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.5.tgz#dbd2b9403b9fd2e17ffb95844e7761af8aedcd3a"
-  integrity sha512-6FfRPh4cOMkLaGIO6FDu3l8oqbZxfFvx8TAhs8uzUR5TNCP2VlSO1bNX1sE/OWhkcJ2zs1CZhQDWbuE1B6/Bfg==
+"@airswap/metadata@3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.6.tgz#7a01034279e3f79e3d11773988a1131cf1c1b844"
+  integrity sha512-7lrhrEjk0FXHC/qrgYFiArstN64qW4S1fsy1OsGiA76CdjF+6hjwKWPzS7vx186yxHOcW9/47idd1jhSCh2bOw==
   dependencies:
-    "@airswap/constants" "3.0.1"
+    "@airswap/constants" "3.0.2"
     "@airswap/typescript" "3.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.24"
     axios "^0.21.3"
@@ -68,10 +78,10 @@
     ethereumjs-abi "^0.6.8"
     ethers "^5.6.9"
 
-"@airswap/swap@3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-3.2.3.tgz#b730abab3aa1eaf50192c065d4e9d6207d91c9fe"
-  integrity sha512-LOAumYt48+e+vVOwYmAHxJngRIrQBLmDdQzSVSMHV8XEloqVKJt9mdiQXj+VK+/OFhDl2sQwE+4J/RfdpJ94bQ==
+"@airswap/swap-erc20@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@airswap/swap-erc20/-/swap-erc20-3.0.0.tgz#7afc57b5e32dc607d0946972da1908af5d5098c1"
+  integrity sha512-pYtdWeg4ZFxtyMNduw5H3UvFkbhnR/vNmK8xOWovgu020U1xSBenGlSG+Yaq9LXkx1UlS1mDYJtBIChmHROSrg==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
@@ -83,13 +93,21 @@
     "@airswap/constants" "3.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
-"@airswap/utils@3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.4.tgz#56e1065ee3df2c86b9e8fb28e1568e044b3cf8fa"
-  integrity sha512-sp2BHnHlnpDtKmAXm7iSXR3796O+CccEfHhF+44b05LZrWX8RP44GEGxYOXM2VFj23+E4eTvubwowKcYQ2fbDQ==
+"@airswap/typescript@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/typescript/-/typescript-3.0.2.tgz#713c7384be3540aa62b74f8e0ff627f4d508aac3"
+  integrity sha512-oWXo9nrAUmVCTfaVuqGTv5JUzbYdrtnfaJjXJkQQmVj9G4FayBlvhosbSBr03a/UGHH4NXA94qMK56IDDFzdEg==
   dependencies:
-    "@airswap/constants" "3.0.1"
-    "@airswap/typescript" "3.0.1"
+    "@airswap/constants" "3.0.3"
+    "@uniswap/token-lists" "^1.0.0-beta.26"
+
+"@airswap/utils@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.5.tgz#2fe8257778721f2d54ca2d6387ce9ec408094d2a"
+  integrity sha512-oBg2pOUF/bG2A9vurIyAgTZB5Z6h9K+Gqq1rgfpULp7sfrnkdwXROo3UX37VccFOa/GLr2r9bc1es1/va3E9Yw==
+  dependencies:
+    "@airswap/constants" "3.0.3"
+    "@airswap/typescript" "3.0.2"
     "@types/ethereumjs-util" "^6.1.0"
     bignumber.js "^9.0.1"
     eth-sig-util "^3.0.0"
@@ -97,12 +115,12 @@
     ethers "^5.6.9"
     lz-string "^1.4.4"
 
-"@airswap/wrapper@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.1.3.tgz#8477ab26e5b6fe0c64fdbab9b53faebd05b3d327"
-  integrity sha512-xDNqFccCXUr0/PRuiwAB40fSNprp9XgfMjThetoQkYzysUVdUnZBR05slYUE/j16SmXI2dJ8lRj+zkwzSzUHeQ==
+"@airswap/wrapper@3.1.4":
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-3.1.4.tgz#e340831291dc0a4d7609235345aaf7c208482097"
+  integrity sha512-kimFGKz5BQUUvAb76x9/XU8Mm+w1lkuhfhs7JSZOAMEBsRaPEfTsMBKxTPRn00Gl1XKWksSY6/6JZaepzOHhwg==
   dependencies:
-    "@airswap/swap" "3.2.3"
+    "@airswap/swap-erc20" "3.0.0"
     "@openzeppelin/contracts" "^4.3.1"
 
 "@babel/code-frame@7.10.4":

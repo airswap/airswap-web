@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Maker } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
-import { Order, Pricing } from "@airswap/typescript";
-import { createOrder, createSwapSignature } from "@airswap/utils";
+import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
+import { OrderERC20, Pricing } from "@airswap/typescript";
+import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
@@ -32,12 +32,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllMakers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    order: Order;
+    order: OrderERC20;
   }) => Promise<boolean>;
   getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-  }) => Promise<{ order: Order; senderWallet: string }>;
+  }) => Promise<{ order: OrderERC20; senderWallet: string }>;
 }>({
   subscribeAllMakers(makers: Maker[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -49,7 +49,7 @@ export const LastLookContext = createContext<{
   getSignedOrder: async (params: {
     locator: string;
     terms: TradeTerms;
-  }): Promise<Order | any> => {
+  }): Promise<OrderERC20 | any> => {
     return {};
   },
 });
@@ -121,7 +121,7 @@ const LastLookProvider: FC = ({ children }) => {
     async (params: {
       locator: string;
       terms: TradeTerms;
-    }): Promise<{ order: Order; senderWallet: string }> => {
+    }): Promise<{ order: OrderERC20; senderWallet: string }> => {
       const { locator, terms } = params;
       const server = connectedMakers[locator];
 
@@ -141,7 +141,7 @@ const LastLookProvider: FC = ({ children }) => {
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
 
-      const unsignedOrder = createOrder({
+      const unsignedOrder = createOrderERC20({
         expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
         nonce: Date.now().toString(),
         senderWallet: server.getSenderWallet(),
@@ -152,13 +152,13 @@ const LastLookProvider: FC = ({ children }) => {
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
-      const signature = await createSwapSignature(
+      const signature = await createOrderERC20Signature(
         unsignedOrder,
         library.getSigner(),
         swapDeploys[chainId],
         chainId!
       );
-      const order: Order = {
+      const order: OrderERC20 = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,
         senderToken: unsignedOrder.senderToken,
@@ -200,7 +200,7 @@ const LastLookProvider: FC = ({ children }) => {
   );
 
   const sendOrderForConsideration = useCallback(
-    async (params: { locator: string; order: Order }) => {
+    async (params: { locator: string; order: OrderERC20 }) => {
       const { locator, order } = params;
       const server = connectedMakers[locator];
       try {

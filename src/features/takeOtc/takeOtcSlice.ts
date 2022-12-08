@@ -1,4 +1,4 @@
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
@@ -6,7 +6,7 @@ import { AppError } from "../../errors/appError";
 
 export interface TakeOtcState {
   isCancelSuccessFull: boolean;
-  activeOrder?: FullOrder;
+  activeOrder?: FullOrderERC20;
   status: "idle" | "not-found" | "open" | "taken" | "canceled";
   errors: AppError[];
 }
@@ -21,7 +21,10 @@ export const takeOtcSlice = createSlice({
   name: "take-otc",
   initialState,
   reducers: {
-    setActiveOrder: (state, action: PayloadAction<FullOrder>): TakeOtcState => {
+    setActiveOrder: (
+      state,
+      action: PayloadAction<FullOrderERC20>
+    ): TakeOtcState => {
       return {
         ...state,
         activeOrder: action.payload,

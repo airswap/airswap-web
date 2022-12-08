@@ -1,7 +1,11 @@
 // @ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
-import { FullOrder, TokenInfo, UnsignedOrder } from "@airswap/typescript";
-import { createOrder, toAtomicString } from "@airswap/utils";
+import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
+import {
+  FullOrderERC20,
+  TokenInfo,
+  UnsignedOrderERC20,
+} from "@airswap/typescript";
+import { createOrderERC20, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -12,7 +16,7 @@ import {
   notifyRejectedByUserError,
 } from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
-import { createSwapSignature } from "../../helpers/createSwapSignature";
+import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
 export const createOtcOrder = createAsyncThunk(
@@ -23,7 +27,7 @@ export const createOtcOrder = createAsyncThunk(
       library: Web3Provider;
       signerTokenInfo: TokenInfo;
       senderTokenInfo: TokenInfo;
-    } & UnsignedOrder,
+    } & UnsignedOrderERC20,
     { dispatch }
   ) => {
     dispatch(setStatus("signing"));
@@ -53,7 +57,7 @@ export const createOtcOrder = createAsyncThunk(
         params.senderTokenInfo.decimals
       );
 
-      const unsignedOrder = createOrder({
+      const unsignedOrder = createOrderERC20({
         expiry: params.expiry,
         nonce: Date.now().toString(),
         senderWallet: params.senderWallet,
@@ -66,7 +70,7 @@ export const createOtcOrder = createAsyncThunk(
         chainId: params.chainId,
       });
 
-      const signature = await createSwapSignature(
+      const signature = await createOrderERC20Signature(
         unsignedOrder,
         params.library.getSigner(),
         swapDeploys[params.chainId],
@@ -84,7 +88,7 @@ export const createOtcOrder = createAsyncThunk(
         return;
       }
 
-      const fullOrder: FullOrder = {
+      const fullOrder: FullOrderERC20 = {
         ...unsignedOrder,
         ...signature,
         chainId: params.chainId.toString(),

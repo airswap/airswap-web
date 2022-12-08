@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 import { Wrapper } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
+import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
 //@ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
+import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
 import * as WrapperContract from "@airswap/wrapper/build/contracts/Wrapper.sol/Wrapper.json";
 import { Contract } from "@ethersproject/contracts";
 import { useAsync } from "@react-hookz/web/esm";

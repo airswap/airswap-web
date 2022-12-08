@@ -1,5 +1,8 @@
-import { FullOrder } from "@airswap/typescript";
-import { compressFullOrder, decompressFullOrder } from "@airswap/utils";
+import { FullOrderERC20 } from "@airswap/typescript";
+import {
+  compressFullOrderERC20,
+  decompressFullOrderERC20,
+} from "@airswap/utils";
 
 export const getUserOtcOrdersLocalStorageKey: (
   account: string,
@@ -8,21 +11,21 @@ export const getUserOtcOrdersLocalStorageKey: (
   `airswap/userOtcOrders/${account}/${chainId}`;
 
 export const writeUserOrdersToLocalStorage = (
-  orders: FullOrder[],
+  orders: FullOrderERC20[],
   address: string,
   chainId: string | number
 ): void => {
   const key = getUserOtcOrdersLocalStorageKey(address, chainId);
   localStorage.setItem(
     key,
-    JSON.stringify(orders.map((order) => compressFullOrder(order)))
+    JSON.stringify(orders.map((order) => compressFullOrderERC20(order)))
   );
 };
 
 export const getUserOrdersFromLocalStorage = (
   address: string,
   chainId: string | number
-): FullOrder[] => {
+): FullOrderERC20[] => {
   const localStorageUserOrders = localStorage.getItem(
     getUserOtcOrdersLocalStorageKey(address, chainId)
   );
@@ -30,5 +33,5 @@ export const getUserOrdersFromLocalStorage = (
     ? JSON.parse(localStorageUserOrders)
     : [];
 
-  return userOrderStrings.map((order) => decompressFullOrder(order));
+  return userOrderStrings.map((order) => decompressFullOrderERC20(order));
 };

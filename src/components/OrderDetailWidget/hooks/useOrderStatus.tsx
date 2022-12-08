@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { useWeb3React } from "@web3-react/core";
 
 import { getNonceUsed } from "../../../features/orders/orderApi";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { OrderStatus } from "../../../types/orderStatus";
 
-export const useOrderStatus = (order: FullOrder): OrderStatus => {
+export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
   const { library } = useWeb3React();
 
   const [isTaken, setIsTaken] = useState(false);
@@ -16,7 +16,7 @@ export const useOrderStatus = (order: FullOrder): OrderStatus => {
   const isExpired = new Date().getTime() > expiry;
 
   const asyncGetTakenState = useCallback(
-    async (order: FullOrder) => {
+    async (order: FullOrderERC20) => {
       if (library) {
         const response = await getNonceUsed(order, library);
 

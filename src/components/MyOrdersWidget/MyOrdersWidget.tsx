@@ -2,7 +2,7 @@ import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
@@ -58,7 +58,7 @@ const MyOrdersWidget: FC = () => {
       : userOrders;
   }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
 
-  const cancelOrderOnChain = async (order: FullOrder) => {
+  const cancelOrderOnChain = async (order: FullOrderERC20) => {
     const expiry = parseInt(order.expiry) * 1000;
     const isExpired = new Date().getTime() > expiry;
     if (!isExpired) {
@@ -83,7 +83,7 @@ const MyOrdersWidget: FC = () => {
     }
   };
 
-  const handleDeleteOrderButtonClick = async (order: FullOrder) => {
+  const handleDeleteOrderButtonClick = async (order: FullOrderERC20) => {
     await cancelOrderOnChain(order);
   };
 

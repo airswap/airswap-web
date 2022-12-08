@@ -1,4 +1,4 @@
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
@@ -19,7 +19,7 @@ export type OrdersSortType =
   | "expiry";
 
 export interface MyOrdersState {
-  userOrders: FullOrder[];
+  userOrders: FullOrderERC20[];
   activeSortType: OrdersSortType;
   sortTypeDirection: Record<OrdersSortType, boolean>;
 }
@@ -41,7 +41,7 @@ export const myOrdersSlice = createSlice({
   reducers: {
     removeUserOrder: (
       state,
-      action: PayloadAction<FullOrder>
+      action: PayloadAction<FullOrderERC20>
     ): MyOrdersState => {
       const userOrders = [...state.userOrders].filter(
         (order) => order.nonce !== action.payload.nonce

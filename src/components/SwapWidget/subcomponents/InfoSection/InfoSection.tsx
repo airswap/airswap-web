@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 import { Levels } from "@airswap/typescript";
-import { Order } from "@airswap/typescript";
+import { OrderERC20 } from "@airswap/typescript";
 
 import { BigNumber } from "bignumber.js";
 
@@ -37,7 +37,7 @@ export type InfoSectionProps = {
     | {
         protocol: "request-for-quote";
         quoteAmount: string;
-        order: Order;
+        order: OrderERC20;
       }
     | null;
   requiresApproval: boolean;

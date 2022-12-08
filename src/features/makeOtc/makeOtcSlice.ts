@@ -1,11 +1,11 @@
-import { FullOrder } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/typescript";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
 
 export interface MakeOtcState {
-  lastUserOrder?: FullOrder;
+  lastUserOrder?: FullOrderERC20;
   status: "idle" | "signing" | "taking" | "failed" | "reset";
   error?: AppError;
 }
@@ -27,7 +27,10 @@ export const makeOtcSlice = createSlice({
         status: action.payload,
       };
     },
-    setUserOrder: (state, action: PayloadAction<FullOrder>): MakeOtcState => {
+    setUserOrder: (
+      state,
+      action: PayloadAction<FullOrderERC20>
+    ): MakeOtcState => {
       return {
         ...state,
         lastUserOrder: action.payload,

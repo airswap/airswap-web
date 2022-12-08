@@ -1,6 +1,6 @@
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Maker } from "@airswap/libraries";
-import { FullOrder, Levels, Order } from "@airswap/typescript";
+import { FullOrderERC20, Levels, OrderERC20 } from "@airswap/typescript";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
@@ -63,7 +63,7 @@ import {
 } from "./orderApi";
 
 export interface OrdersState {
-  orders: Order[];
+  orders: OrderERC20[];
   status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
   reRequestTimerId: number | null;
   errors: AppError[];
@@ -79,7 +79,7 @@ const initialState: OrdersState = {
 const APPROVE_AMOUNT = "90071992547409910000000000";
 
 // replaces WETH to ETH on Wrapper orders
-const refactorOrder = (order: Order, chainId: number) => {
+const refactorOrder = (order: OrderERC20, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === wrappedTokenAddresses[chainId]) {
     newOrder.senderToken = nativeCurrency[chainId].address;
@@ -397,7 +397,7 @@ export const take = createAsyncThunk<
   void,
   // Params
   {
-    order: Order | FullOrder;
+    order: OrderERC20 | FullOrderERC20;
     library: any;
     contractType: "Swap" | "Wrapper";
     onExpired: () => void;
