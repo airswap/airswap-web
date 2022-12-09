@@ -72,8 +72,6 @@
     "counterParty.specify.paragraph": "If you specify a counterparty wallet address, only that wallet will be able to take the swap. This protects against front-running and ensures only the intended counterparty can take it.",
     "counterParty.specify.title": "Specify",
     "counterParty.title": "Counterparty Wallets",
-    "fee.paragraph": "A fee of 0.07% is assessed on each swap to aid the DAO's development and maintenance by our community of contributors. Thank you for supporting AirSwap by using AirSwap!",
-    "fee.title": "Fee",
     "gasFreeSwaps.paragraph": "You found a gasless swap!",
     "gasFreeSwaps.paragraph2": "Some swaps do not require you to pay gas because the transaction is handled by the maker. You'll still need to sign the swap using your wallet to proceed.",
     "gasFreeSwaps.title": "Gasless swaps",
@@ -85,11 +83,8 @@
     "join.paragraph2": "Check out the following guides to learn more.",
     "join.title": "Join AirSwap",
     "join.voter": "Voter",
-    "protocolFeeDiscount.link": "Etherscan",
-    "protocolFeeDiscount.paragraph": "AirSwap protocol fees are transferred to a fee pool smart contract controlled by the DAO.",
-    "protocolFeeDiscount.paragraph2": "These fees are then distributed to community contributors who actively participate in the governance and development process. You can check the balance of the fee pool anytime on",
-    "protocolFeeDiscount.stakeYourAst": "Stake and Join the DAO",
-    "protocolFeeDiscount.title": "Protocol fees"
+    "protocolFee.paragraph": "Every swap on AirSwap includes a protocol fee transferred to a smart contract controlled by the DAO. These fees are continuously distributed to community contributors who actively participate in the decentralized governance and development of the protocol. By using AirSwap you're supporting AirSwap. Thank you!",
+    "protocolFee.title": "Protocol Fee"
   },
   "marketing": {
     "includesFee": "Includes 0.07% fee",

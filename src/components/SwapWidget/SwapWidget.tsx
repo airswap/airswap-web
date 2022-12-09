@@ -85,7 +85,7 @@ import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
-import ProtocolFeeDiscountModal from "../InformationModals/subcomponents/ProtocolFeeDiscountModal/ProtocolFeeDiscountModal";
+import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import {
@@ -152,7 +152,7 @@ const SwapWidget: FC = () => {
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes | null>(null);
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
-  const [protocolFeeDiscountInfo, setProtocolFeeDiscountInfo] = useState(false);
+  const [protocolFeeInfo, setProtocolFeeInfo] = useState(false);
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -230,7 +230,7 @@ const SwapWidget: FC = () => {
       setIsRequestingQuotes(false);
       setAllowanceFetchFailed(false);
       setPairUnavailable(false);
-      setProtocolFeeDiscountInfo(false);
+      setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
       setBaseAmount(initialBaseAmount);
       LastLook.unsubscribeAllMakers();
@@ -736,7 +736,7 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
-            onFeeButtonClick={() => setProtocolFeeDiscountInfo(true)}
+            onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
         </InfoContainer>
         <ButtonContainer>
@@ -815,11 +815,13 @@ const SwapWidget: FC = () => {
         />
       </Overlay>
       <Overlay
-        title={t("information.protocolFeeDiscount.title")}
-        onCloseButtonClick={() => setProtocolFeeDiscountInfo(false)}
-        isHidden={!protocolFeeDiscountInfo}
+        title={t("information.protocolFee.title")}
+        onCloseButtonClick={() => setProtocolFeeInfo(false)}
+        isHidden={!protocolFeeInfo}
       >
-        <ProtocolFeeDiscountModal />
+        <ProtocolFeeModal
+          onCloseButtonClick={() => setProtocolFeeInfo(false)}
+        />
       </Overlay>
     </>
   );

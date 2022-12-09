@@ -37,7 +37,7 @@ import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import { ErrorList } from "../ErrorList/ErrorList";
-import FeeModal from "../InformationModals/subcomponents/FeeModal/FeeModal";
+import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import { notifyCopySuccess, notifyError } from "../Toasts/ToastController";
@@ -254,11 +254,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onActionButtonClick={handleActionButtonClick}
       />
       <Overlay
-        title={t("information.fee.title")}
+        title={t("information.protocolFee.title")}
         onCloseButtonClick={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >
-        <FeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
+        <ProtocolFeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
       </Overlay>
       <Overlay
         title={t("validatorErrors.unableSwap")}
