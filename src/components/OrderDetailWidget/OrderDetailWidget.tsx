@@ -254,7 +254,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onActionButtonClick={handleActionButtonClick}
       />
       <Overlay
-        title={t("common.fee")}
+        title={t("information.fee.title")}
         onCloseButtonClick={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >

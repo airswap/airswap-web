@@ -14,7 +14,7 @@ const FeeModal: FC<FeeModalProps> = ({ onCloseButtonClick }) => {
 
   return (
     <FeeContainer>
-      <ModalParagraph>Fee Text Here</ModalParagraph>
+      <ModalParagraph>{t("information.fee.paragraph")}</ModalParagraph>
       <OverlayActionButton onClick={onCloseButtonClick}>
         {t("common.back")}
       </OverlayActionButton>

@@ -7,7 +7,7 @@ export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
   if (error.type === AppErrorType.expiryPassed) {
     return {
       title: AppErrorType.expiryPassed,
-      text: i18n.t("validatorErrors.expiry_passed"),
+      text: i18n.t("validatorErrors.expiryPassed"),
     };
   }
 
@@ -30,35 +30,35 @@ export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
   if (error.type === AppErrorType.nonceAlreadyUsed) {
     return {
       title: AppErrorType.nonceAlreadyUsed,
-      text: i18n.t("validatorErrors.nonce_already_used"),
+      text: i18n.t("validatorErrors.nonceAlreadyUsed"),
     };
   }
 
   if (error.type === AppErrorType.senderAllowanceLow) {
     return {
       title: AppErrorType.senderAllowanceLow,
-      text: i18n.t("validatorErrors.sender_allowance_low"),
+      text: i18n.t("validatorErrors.senderAllowanceLow"),
     };
   }
 
   if (error.type === AppErrorType.senderBalanceLow) {
     return {
       title: AppErrorType.senderBalanceLow,
-      text: i18n.t("validatorErrors.sender_balance_low"),
+      text: i18n.t("validatorErrors.senderBalanceLow"),
     };
   }
 
   if (error.type === AppErrorType.signerAllowanceLow) {
     return {
       title: AppErrorType.signerAllowanceLow,
-      text: i18n.t("validatorErrors.signer_allowance_low"),
+      text: i18n.t("validatorErrors.signerAllowanceLow"),
     };
   }
 
   if (error.type === AppErrorType.signerBalanceLow) {
     return {
       title: AppErrorType.signerBalanceLow,
-      text: i18n.t("validatorErrors.signer_balance_low"),
+      text: i18n.t("validatorErrors.signerBalanceLow"),
     };
   }
 
@@ -72,7 +72,7 @@ export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
   if (error.type === AppErrorType.unpredictableGasLimit) {
     return {
       title: AppErrorType.unpredictableGasLimit,
-      text: i18n.t("validatorErrors.unpredictable_gas_limit"),
+      text: i18n.t("validatorErrors.unpredictableGasLimit"),
     };
   }
 
