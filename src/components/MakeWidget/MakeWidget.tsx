@@ -10,6 +10,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
+import { ethers } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import nativeCurrency, {
@@ -104,6 +105,7 @@ const MakeWidget: FC = () => {
   const [takerAddress, setTakerAddress] = useState("");
   const [makerAmount, setMakerAmount] = useState("");
   const [takerAmount, setTakerAmount] = useState("");
+  const [addressInputHasError, setInputError] = useState(false);
 
   // States derived from user input
   const defaultTokenFromAddress = useTokenAddress("USDT");
@@ -154,10 +156,6 @@ const MakeWidget: FC = () => {
     useShouldDepositNativeToken(makerAmount);
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
-  const inputHasError =
-    !takerAddressIsValid &&
-    orderType === OrderType.private &&
-    takerAddress !== "";
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -316,6 +314,18 @@ const MakeWidget: FC = () => {
     }
   };
 
+  const handleTakerAddress = async (value: string) => {
+    setTakerAddress(value);
+
+    if (value.includes(".eth")) {
+      const signerWallet = ethers.utils.isAddress(value)
+        ? takerAddress
+        : await library?.resolveName(value);
+
+      setInputError(!signerWallet);
+    }
+  };
+
   return (
     <Container>
       <MakeWidgetHeader
@@ -365,13 +375,13 @@ const MakeWidget: FC = () => {
       {orderType === OrderType.private ? (
         <TooltipContainer>
           <StyledAddressInput
-            hasError={inputHasError}
+            hasError={addressInputHasError}
             value={takerAddress}
-            onChange={setTakerAddress}
+            onChange={handleTakerAddress}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
 
-          {inputHasError && (
+          {addressInputHasError && (
             <StyledTooltip>
               {t("validatorErrors.invalidAddress", { address: takerAddress })}
             </StyledTooltip>
