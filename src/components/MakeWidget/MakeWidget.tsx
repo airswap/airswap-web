@@ -415,7 +415,7 @@ const MakeWidget: FC = () => {
         />
       </Overlay>
       <Overlay
-        title={t("information.orderTypes.title")}
+        title={t("information.counterParty.title")}
         onCloseButtonClick={() => toggleShowOrderTypeInfo()}
         isHidden={!showOrderTypeInfo}
       >

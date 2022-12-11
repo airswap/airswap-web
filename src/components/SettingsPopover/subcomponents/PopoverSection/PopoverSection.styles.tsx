@@ -18,6 +18,7 @@ export const TitleContainer = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  text-transform: uppercase;
 `;
 
 export const Title = styled(StyledTitle)`

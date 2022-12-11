@@ -71,7 +71,7 @@ export const cancelOrder = createAsyncThunk(
 
     if (nonceUsed) {
       notifyError({
-        heading: i18n.t("toast.cancelFail"),
+        heading: i18n.t("toast.cancelFailed"),
         cta: i18n.t("validatorErrors.nonce_already_used"),
       });
       dispatch(removeUserOrder(params.order));
@@ -91,7 +91,7 @@ export const cancelOrder = createAsyncThunk(
         e.code === "ACTION_REJECTED"
           ? notifyRejectedByUserError()
           : notifyError({
-              heading: i18n.t("toast.cancelFail"),
+              heading: i18n.t("toast.cancelFailed"),
               cta: i18n.t("validatorErrors.unknownError"),
             });
         dispatch(revertTransaction(transaction));
@@ -119,7 +119,7 @@ export const cancelOrder = createAsyncThunk(
       notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
     } else {
       notifyError({
-        heading: i18n.t("toast.cancelFail"),
+        heading: i18n.t("toast.cancelFailed"),
         cta: i18n.t("validatorErrors.unknownError"),
       });
     }

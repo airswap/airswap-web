@@ -18,17 +18,17 @@ const OrderTypesModal: FC<OrderTypesModalProps> = ({ onCloseButtonClick }) => {
   return (
     <ScrollableModalContainer>
       <ModalSubTitle type="h2">
-        {t("information.orderTypes.anyoneListed")}
+        {t("information.counterParty.specify.title")}
       </ModalSubTitle>
-      <ModalParagraph>{t("information.orderTypes.paragraph")}</ModalParagraph>
+      <ModalParagraph>
+        {t("information.counterParty.specify.paragraph")}
+      </ModalParagraph>
       <ModalSubTitle type="h2">
-        {t("information.orderTypes.anyoneUnlisted")}
+        {t("information.counterParty.anyone.title")}
       </ModalSubTitle>
-      <ModalParagraph>{t("information.orderTypes.paragraph2")}</ModalParagraph>
-      <ModalSubTitle type="h2">
-        {t("information.orderTypes.someoneUnlisted")}
-      </ModalSubTitle>
-      <ModalParagraph>{t("information.orderTypes.paragraph3")}</ModalParagraph>
+      <ModalParagraph>
+        {t("information.counterParty.anyone.paragraph")}
+      </ModalParagraph>
       <StyledCloseButton onClick={onCloseButtonClick}>
         {t("common.back")}
       </StyledCloseButton>

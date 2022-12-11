@@ -3,18 +3,20 @@ import { useTranslation } from "react-i18next";
 
 import { ModalParagraph } from "../../../../styled-components/Modal/Modal";
 import { OverlayActionButton } from "../../../Overlay/Overlay.styles";
-import { FeeContainer } from "./FeeModal.styles";
+import { FeeContainer } from "./ProtocolFeeModal.styles";
 
-type FeeModalProps = {
+type ProtocolFeeModalProps = {
   onCloseButtonClick: () => void;
 };
 
-const FeeModal: FC<FeeModalProps> = ({ onCloseButtonClick }) => {
+const ProtocolFeeModal: FC<ProtocolFeeModalProps> = ({
+  onCloseButtonClick,
+}) => {
   const { t } = useTranslation();
 
   return (
     <FeeContainer>
-      <ModalParagraph>Fee Text Here</ModalParagraph>
+      <ModalParagraph>{t("information.protocolFee.paragraph")}</ModalParagraph>
       <OverlayActionButton onClick={onCloseButtonClick}>
         {t("common.back")}
       </OverlayActionButton>
@@ -22,4 +24,4 @@ const FeeModal: FC<FeeModalProps> = ({ onCloseButtonClick }) => {
   );
 };
 
-export default FeeModal;
+export default ProtocolFeeModal;

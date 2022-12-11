@@ -81,7 +81,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
 
     if (hasInsufficientBalance) {
-      return t("orders.insufficentBalance");
+      return t("orders.insufficientBalance");
     }
 
     if (hasInsufficientAllowance) {

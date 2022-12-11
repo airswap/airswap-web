@@ -116,7 +116,7 @@ const ActionButtons: FC<{
     else if (!baseTokenInfo || !quoteTokenInfo)
       mainButtonText = t("orders.chooseToken");
     else if (!hasSufficientBalance)
-      mainButtonText = t("orders.insufficentBalance", {
+      mainButtonText = t("orders.insufficientBalance", {
         symbol: baseTokenInfo.symbol,
       });
   } else {
