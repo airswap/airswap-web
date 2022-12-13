@@ -313,7 +313,7 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const getRate = () => {
+  const getRate = (): String => {
     const currentRate2 = new BigNumber(takerAmount).dividedBy(
       new BigNumber(makerAmount)
     );
@@ -321,6 +321,8 @@ const MakeWidget: FC = () => {
     if (currentRate2) {
       return stringToSignificantDecimals(currentRate2.toString(), 4, 7);
     }
+
+    return "";
   };
 
   return (
@@ -358,28 +360,25 @@ const MakeWidget: FC = () => {
             selectedOrderTypeOption={orderScopeTypeOption}
             onChange={setOrderScopeTypeOption}
           />
+
           {makerTokenInfo &&
             takerTokenInfo &&
             !hasMissingMakerAmount &&
             !hasMissingTakerAmount && (
-              <StyledRateField
-                token1={makerTokenInfo?.symbol || "??"}
-                token2={takerTokenInfo?.symbol || "??"}
-                rate={new BigNumber(takerAmount).dividedBy(
-                  new BigNumber(makerAmount)
-                )}
-              />
+              <>
+                <StyledRateField
+                  token1={makerTokenInfo?.symbol || "??"}
+                  token2={takerTokenInfo?.symbol || "??"}
+                  rate={new BigNumber(takerAmount).dividedBy(
+                    new BigNumber(makerAmount)
+                  )}
+                />
+                <RateFieldTooltip>
+                  {getRate()} {takerTokenInfo?.symbol}
+                </RateFieldTooltip>
+              </>
             )}
         </OrderTypeSelectorAndRateFieldWrapper>
-
-        {makerTokenInfo &&
-          takerTokenInfo &&
-          !hasMissingMakerAmount &&
-          !hasMissingTakerAmount && (
-            <RateFieldTooltip>
-              {getRate()} {takerTokenInfo?.symbol}
-            </RateFieldTooltip>
-          )}
       </RateFieldContainer>
 
       {orderType === OrderType.private ? (

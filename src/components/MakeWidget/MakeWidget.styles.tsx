@@ -16,41 +16,6 @@ export const Container = styled.div`
   flex-grow: 1;
 `;
 
-export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
-  margin-bottom: 1rem;
-  width: calc(50% - 1rem);
-  
-  ${SelectLabel} {
-    flex-shrink: 0;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
-}
-`;
-
-export const StyledRateField = styled(RateField)`
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-  width: 50%;
-
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
-`;
-
-export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-
-  @media ${breakPoints.phoneOnly} {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
 export const StyledInputSection = styled(InputSection)`
   display: none;
   margin-bottom: 1rem;
@@ -71,20 +36,62 @@ export const StyledInfoSection = styled(InfoSection)`
 `;
 
 export const RateFieldTooltip = styled(Tooltip)`
-  position: relative;
-  left: 1rem;
-  top: 1rem;
-  visibility: hidden;
+  display: none;
+  position: absolute;
+  left: calc(50% + 5.2rem);
+  top: 3.5rem;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    left: calc(100% + 1rem);
+    top: 1rem;
+    width: fit-content;
+  }
 `;
 
 export const RateFieldContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
+  justify-content: center;
+`;
 
-  &:hover {
-    ${RateFieldTooltip} {
-      visibility: visible;
-    }
+export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
+  margin-bottom: 1rem;
+  width: calc(50% - 1rem);
+  
+  ${SelectLabel} {
+    flex-shrink: 0;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    width: auto;
+  }
+}
+`;
+
+export const StyledRateField = styled(RateField)`
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  width: 50%;
+
+  @media ${breakPoints.phoneOnly} {
+    width: auto;
+  }
+
+  &:hover + ${RateFieldTooltip} {
+    display: flex;
+  }
+`;
+
+export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  width: calc(100% + 0.3rem);
+
+  @media ${breakPoints.phoneOnly} {
+    flex-direction: column;
+    align-items: center;
   }
 `;

@@ -4,7 +4,7 @@ import { Tooltip } from "../../../styled-components/Tooltip/Tooltip";
 
 export const Container = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   left: 0;
   width: 100%;
   height: 2rem;
