@@ -105,7 +105,6 @@ const MakeWidget: FC = () => {
   const [takerAddress, setTakerAddress] = useState("");
   const [makerAmount, setMakerAmount] = useState("");
   const [takerAmount, setTakerAmount] = useState("");
-  const [addressInputHasError, setInputError] = useState(false);
 
   // States derived from user input
   const defaultTokenFromAddress = useTokenAddress("USDT");
@@ -314,18 +313,6 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const handleTakerAddress = async (value: string) => {
-    setTakerAddress(value);
-
-    if (value.includes(".eth")) {
-      const signerWallet = ethers.utils.isAddress(value)
-        ? takerAddress
-        : await library?.resolveName(value);
-
-      setInputError(!signerWallet);
-    }
-  };
-
   return (
     <Container>
       <MakeWidgetHeader
@@ -375,13 +362,16 @@ const MakeWidget: FC = () => {
       {orderType === OrderType.private ? (
         <TooltipContainer>
           <StyledAddressInput
-            hasError={addressInputHasError}
+            hasError={!!error}
             value={takerAddress}
-            onChange={handleTakerAddress}
+            onChange={(e) => {
+              setTakerAddress(e);
+              handleActionButtonClick(ButtonActions.restart);
+            }}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
 
-          {addressInputHasError && (
+          {error && (
             <StyledTooltip>
               {t("validatorErrors.invalidAddress", { address: takerAddress })}
             </StyledTooltip>
@@ -445,21 +435,6 @@ const MakeWidget: FC = () => {
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
-      </Overlay>
-      <Overlay
-        title={t("validatorErrors.unableSwap")}
-        subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
-        isHidden={!error}
-      >
-        <ErrorList
-          errors={error ? [error] : []}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
       </Overlay>
     </Container>
   );
