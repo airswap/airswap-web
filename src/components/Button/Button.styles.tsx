@@ -115,6 +115,10 @@ export const ButtonStyle = css<StyledButtonProps>`
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
   }
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const StyledButton = styled.button`

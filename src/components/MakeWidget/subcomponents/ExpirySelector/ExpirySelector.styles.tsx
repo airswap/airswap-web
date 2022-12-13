@@ -10,6 +10,10 @@ export const SelectorStyle = css`
   font-size: 0.75rem;
   font-weight: 700;
   margin-right: -1px;
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const Wrapper = styled.div`
