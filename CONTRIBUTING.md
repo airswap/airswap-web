@@ -9,7 +9,7 @@ While we use GitHub for issue tracking and project management, development is ge
 ## Key libraries
 
 - [Craco](https://www.npmjs.com/package/@craco/craco) (Create React App Configuration Override)
-- [Airswap protocols](https://github.com/airswap/airswap-protocols)
+- [AirSwap protocols](https://github.com/airswap/airswap-protocols)
 - [ethers](https://docs.ethers.io/)
 - [Redux](https://redux-toolkit.js.org/)
 - [Styled components](https://www.npmjs.com/package/styled-components)
@@ -22,7 +22,7 @@ When multiple people are working on the same body of code, it is important that 
 $ yarn lint
 ```
 
-For code formatting we use [prettier](https://www.npmjs.com/package/prettier}. This will be run after you commit your code but can also be run manually. 
+For code formatting we use [prettier](https://www.npmjs.com/package/prettier). This will be run after you commit your code but can also be run manually. 
 
 ```
 $ yarn prettier
