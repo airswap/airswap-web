@@ -366,7 +366,7 @@ const MakeWidget: FC = () => {
             value={takerAddress}
             onChange={(e) => {
               setTakerAddress(e);
-              handleActionButtonClick(ButtonActions.restart);
+              dispatch(reset());
             }}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
