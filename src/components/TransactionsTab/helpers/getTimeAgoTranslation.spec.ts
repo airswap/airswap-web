@@ -6,9 +6,6 @@ import getTimeTranslation from "./getTimeAgoTranslation";
 
 const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;
-const MS_PER_DAY = 86400000;
-const MS_PER_MONTH = 2592000000;
-const MS_PER_YEAR = 31536000000;
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({

@@ -6,7 +6,6 @@ describe.only("orders reducer", () => {
     errors: [],
     orders: [],
     status: "idle",
-    errors: [],
     reRequestTimerId: null,
   };
   it("should handle initial state", () => {
