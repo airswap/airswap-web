@@ -38,4 +38,8 @@ export const SelectLabel = styled.div`
     border: 1px solid ${({ theme }) => theme.colors.borderGrey};
     cursor: initial;
   }
+
+  @supports (-moz-appearance: none) {
+    line-height: 2.6875;
+  }
 `;

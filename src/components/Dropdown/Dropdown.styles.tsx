@@ -22,6 +22,10 @@ const ButtonStyle = css`
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
   background: ${({ theme }) => theme.colors.black};
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const ItemBackground = styled.div`

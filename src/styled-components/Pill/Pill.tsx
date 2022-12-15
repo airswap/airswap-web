@@ -17,6 +17,10 @@ export const PillStyle = css`
   text-transform: uppercase;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const LargePillButtonStyle = css`
@@ -39,6 +43,10 @@ export const LargePillButtonStyle = css`
   ${StyledIcon} {
     margin-top: 2px;
     margin-left: 0.5rem;
+
+    @supports (-moz-appearance: none) {
+      margin-top: 0;
+    }
   }
 `;
 
