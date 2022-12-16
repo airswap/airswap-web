@@ -19,20 +19,17 @@ export const StyledIconButton = styled(IconButton)`
 
 export const Input = styled(TextInput)`
   height: 100%;
-  border: ${(props) => props.hasError && "1px solid red"};
 
   ${StyledInput} {
     ${InputTextStyle};
+
+    ${({ hasError, theme }) =>
+      hasError ? `border-color: ${theme.colors.red}` : ""};
 
     padding-right: 3.5rem;
     padding-left: 1rem;
     height: 100%;
     font-size: 1rem;
     font-weight: 400;
-
-    &:focus,
-    &:hover {
-      border: ${(props) => props.hasError && "1px solid red"};
-    }
   }
 `;
