@@ -6,7 +6,6 @@ import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import { OrderStatus } from "../../../../types/orderStatus";
 import IconButton from "../../../IconButton/IconButton";
-import TokenLogo from "../../../TokenLogo/TokenLogo";
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
 
 export const Circle = styled.div`
@@ -55,25 +54,6 @@ export const StatusIndicator = styled.div`
   z-index: 2;
 `;
 
-export const StyledTokenLogo = styled(TokenLogo)`
-  z-index: 2;
-  background-color: ${({ theme }) => theme.colors.black};
-`;
-
-export const TokenLogos = styled.div`
-  display: flex;
-  position: relative;
-  z-index: 2;
-  pointer-events: none;
-
-  ${StyledTokenLogo} {
-    &:nth-child(2) {
-      margin-left: -0.5rem;
-      z-index: 1;
-    }
-  }
-`;
-
 export const Text = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -84,6 +64,7 @@ export const Text = styled.div`
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  word-break: break-word;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;

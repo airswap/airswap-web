@@ -1,8 +1,6 @@
 import { css } from "styled-components";
 import styled from "styled-components/macro";
 
-import breakPoints from "../../style/breakpoints";
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -11,14 +9,10 @@ export const Container = styled.div`
 
 export const MyOrdersGrid = css`
   display: grid;
-  grid-template-columns: 1rem 2.5rem calc(50% - 9.5rem) calc(50% - 9.5rem) 9rem 1.5rem;
+  grid-template-columns: 1rem calc(50% - 5.5rem) calc(50% - 5.5rem) 4.5rem 1.5rem;
   grid-column-gap: 1rem;
   width: 100%;
   padding: 0 1rem;
-
-  @media ${breakPoints.phoneOnly} {
-    grid-template-columns: 1rem 2.5rem calc(50% - 8rem) calc(50% - 8rem) 6rem 1.5rem;
-  }
 `;
 
 export const InfoSectionContainer = styled.div`

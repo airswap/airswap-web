@@ -12,7 +12,10 @@ import { OrderStatus } from "../../../../types/orderStatus";
 import { getExpiryTranslation } from "../../../ExpiryIndicator/helpers";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
-import { getTokenAmountWithDecimals } from "../../helpers";
+import {
+  getOrderStatusTranslation,
+  getTokenAmountWithDecimals,
+} from "../../helpers";
 import {
   ActionButton,
   ActionButtonContainer,
@@ -20,9 +23,7 @@ import {
   Container,
   StatusIndicator,
   StyledNavLink,
-  StyledTokenLogo,
   Text,
-  TokenLogos,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -80,6 +81,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   }, [order, t]);
 
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
+  const orderStatusTranslation = useMemo(
+    () => getOrderStatusTranslation(orderStatus),
+    [orderStatus]
+  );
 
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
@@ -93,13 +98,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       >
         <Circle />
       </StatusIndicator>
-      <TokenLogos>
-        <StyledTokenLogo size="tiny" tokenInfo={signerTokenInfo} />
-        <StyledTokenLogo size="tiny" tokenInfo={senderTokenInfo} />
-      </TokenLogos>
       <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
-      <Text>{timeLeft || t("common.expired")}</Text>
+      <Text>{timeLeft || orderStatusTranslation}</Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 
       <ActionButtonContainer>
