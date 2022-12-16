@@ -6,7 +6,7 @@ import { AppError } from "../../errors/appError";
 
 export interface MakeOtcState {
   lastUserOrder?: FullOrderERC20;
-  status: "idle" | "signing" | "taking" | "failed" | "reset";
+  status: "idle" | "signing" | "failed" | "reset";
   error?: AppError;
 }
 

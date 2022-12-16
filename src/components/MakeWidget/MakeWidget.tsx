@@ -330,7 +330,7 @@ const MakeWidget: FC = () => {
       <SwapInputs
         canSetQuoteAmount
         disabled={!active}
-        readOnly={status !== "idle" || !active}
+        readOnly={status === "signing" || !active}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
@@ -409,8 +409,8 @@ const MakeWidget: FC = () => {
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
         takerAddressIsInvalid={
-          (!takerAddressIsValid && orderType === OrderType.private) ||
-          error?.type === AppErrorType.invalidAddress
+          orderType === OrderType.private &&
+          (!takerAddressIsValid || error?.type === AppErrorType.invalidAddress)
         }
         userIsSigning={status === "signing"}
         walletIsNotConnected={!active}
