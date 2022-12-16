@@ -30,8 +30,6 @@ export const createOtcOrder = createAsyncThunk(
     } & UnsignedOrderERC20,
     { dispatch }
   ) => {
-    dispatch(setStatus("signing"));
-
     try {
       const signerWallet = ethers.utils.isAddress(params.signerWallet)
         ? params.signerWallet
@@ -69,6 +67,8 @@ export const createOtcOrder = createAsyncThunk(
         senderAmount,
         chainId: params.chainId,
       });
+
+      dispatch(setStatus("signing"));
 
       const signature = await createOrderERC20Signature(
         unsignedOrder,
