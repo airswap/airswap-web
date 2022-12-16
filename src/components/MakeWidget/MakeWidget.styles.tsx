@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { SelectLabel } from "../../styled-components/Select/Select";
+import Tooltip from "../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
@@ -68,4 +69,17 @@ export const StyledInfoSection = styled(InfoSection)`
   & + ${StyledActionButtons} {
     margin-top: 1rem;
   }
+`;
+
+export const StyledTooltip = styled(Tooltip)`
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 3.5rem;
+`;
+
+export const TooltipContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
 `;

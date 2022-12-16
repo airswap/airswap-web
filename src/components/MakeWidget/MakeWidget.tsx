@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -17,12 +17,14 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { AppErrorType } from "../../errors/appError";
 import { selectBalances } from "../../features/balances/balancesSlice";
 import { createOtcOrder } from "../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
   reset,
   selectMakeOtcReducer,
+  setError,
 } from "../../features/makeOtc/makeOtcSlice";
 import { getSavedActiveTokensInfo } from "../../features/metadata/metadataApi";
 import {
@@ -52,7 +54,6 @@ import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
-import { ErrorList } from "../ErrorList/ErrorList";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
@@ -66,6 +67,8 @@ import {
   StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
+  StyledTooltip,
+  TooltipContainer,
 } from "./MakeWidget.styles";
 import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
@@ -310,6 +313,13 @@ const MakeWidget: FC = () => {
     }
   };
 
+  const handleAddressInputChange = (value: string) => {
+    setTakerAddress(value);
+    if (error?.type === AppErrorType.invalidAddress) {
+      dispatch(setError(undefined));
+    }
+  };
+
   return (
     <Container>
       <MakeWidgetHeader
@@ -357,11 +367,20 @@ const MakeWidget: FC = () => {
           )}
       </OrderTypeSelectorAndRateFieldWrapper>
       {orderType === OrderType.private ? (
-        <StyledAddressInput
-          value={takerAddress}
-          onChange={setTakerAddress}
-          onInfoButtonClick={toggleShowOrderTypeInfo}
-        />
+        <TooltipContainer>
+          <StyledAddressInput
+            hasError={!!error}
+            value={takerAddress}
+            onChange={handleAddressInputChange}
+            onInfoButtonClick={toggleShowOrderTypeInfo}
+          />
+
+          {error && (
+            <StyledTooltip>
+              {t("validatorErrors.invalidAddress", { address: takerAddress })}
+            </StyledTooltip>
+          )}
+        </TooltipContainer>
       ) : (
         <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
           <Checkbox
@@ -390,7 +409,8 @@ const MakeWidget: FC = () => {
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
         takerAddressIsInvalid={
-          !takerAddressIsValid && orderType === OrderType.private
+          (!takerAddressIsValid && orderType === OrderType.private) ||
+          error?.type === AppErrorType.invalidAddress
         }
         userIsSigning={status === "signing"}
         walletIsNotConnected={!active}
@@ -420,21 +440,6 @@ const MakeWidget: FC = () => {
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
-      </Overlay>
-      <Overlay
-        title={t("validatorErrors.unableSwap")}
-        subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
-        isHidden={!error}
-      >
-        <ErrorList
-          errors={error ? [error] : []}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
       </Overlay>
     </Container>
   );

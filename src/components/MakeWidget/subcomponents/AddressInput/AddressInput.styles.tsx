@@ -23,6 +23,9 @@ export const Input = styled(TextInput)`
   ${StyledInput} {
     ${InputTextStyle};
 
+    ${({ hasError, theme }) =>
+      hasError ? `border-color: ${theme.colors.red}` : ""};
+
     padding-right: 3.5rem;
     padding-left: 1rem;
     height: 100%;
