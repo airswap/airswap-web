@@ -20,7 +20,7 @@ export const RateBox = styled.div`
   align-items: center;
   margin: 0 0.25rem;
 
-  width: 30%;
+  max-width: 40%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

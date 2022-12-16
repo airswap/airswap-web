@@ -88,7 +88,7 @@ export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
-  width: calc(100% + 0.3rem);
+  width: 100%;
 
   @media ${breakPoints.phoneOnly} {
     flex-direction: column;

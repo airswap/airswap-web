@@ -313,7 +313,7 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const getRate = (): String => {
+  const getRate = (): string => {
     const currentRate2 = new BigNumber(takerAmount).dividedBy(
       new BigNumber(makerAmount)
     );
