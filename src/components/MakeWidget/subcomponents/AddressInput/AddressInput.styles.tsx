@@ -29,5 +29,10 @@ export const Input = styled(TextInput)`
     height: 100%;
     font-size: 1rem;
     font-weight: 400;
+
+    &:focus,
+    &:hover {
+      border: ${(props) => props.hasError && "1px solid red"};
+    }
   }
 `;

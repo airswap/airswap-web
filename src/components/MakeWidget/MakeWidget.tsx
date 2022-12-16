@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -10,7 +10,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { ethers } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import nativeCurrency, {
@@ -18,12 +17,14 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { AppErrorType } from "../../errors/appError";
 import { selectBalances } from "../../features/balances/balancesSlice";
 import { createOtcOrder } from "../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
   reset,
   selectMakeOtcReducer,
+  setError,
 } from "../../features/makeOtc/makeOtcSlice";
 import { getSavedActiveTokensInfo } from "../../features/metadata/metadataApi";
 import {
@@ -53,7 +54,6 @@ import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
-import { ErrorList } from "../ErrorList/ErrorList";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
@@ -313,6 +313,13 @@ const MakeWidget: FC = () => {
     }
   };
 
+  const handleAddressInputChange = (value: string) => {
+    setTakerAddress(value);
+    if (error?.type === AppErrorType.invalidAddress) {
+      dispatch(setError(undefined));
+    }
+  };
+
   return (
     <Container>
       <MakeWidgetHeader
@@ -364,10 +371,7 @@ const MakeWidget: FC = () => {
           <StyledAddressInput
             hasError={!!error}
             value={takerAddress}
-            onChange={(e) => {
-              setTakerAddress(e);
-              dispatch(reset());
-            }}
+            onChange={handleAddressInputChange}
             onInfoButtonClick={toggleShowOrderTypeInfo}
           />
 
@@ -405,7 +409,8 @@ const MakeWidget: FC = () => {
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
         takerAddressIsInvalid={
-          !takerAddressIsValid && orderType === OrderType.private
+          (!takerAddressIsValid && orderType === OrderType.private) ||
+          error?.type === AppErrorType.invalidAddress
         }
         userIsSigning={status === "signing"}
         walletIsNotConnected={!active}

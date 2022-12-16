@@ -74,7 +74,8 @@ export const StyledInfoSection = styled(InfoSection)`
 export const StyledTooltip = styled(Tooltip)`
   position: absolute;
   right: 0;
-  top: -0.7rem;
+  top: 0;
+  height: 3.5rem;
 `;
 
 export const TooltipContainer = styled.div`

@@ -39,7 +39,10 @@ export const makeOtcSlice = createSlice({
         lastUserOrder: undefined,
       };
     },
-    setError: (state, action: PayloadAction<AppError>): MakeOtcState => {
+    setError: (
+      state,
+      action: PayloadAction<AppError | undefined>
+    ): MakeOtcState => {
       return {
         ...state,
         error: action.payload,
