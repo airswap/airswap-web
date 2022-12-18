@@ -76,8 +76,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const timeLeft = useMemo(() => {
     const expiry = new Date(parseInt(order.expiry) * 1000);
-    return getExpiryTranslation(new Date(), expiry, t);
-  }, [order, t]);
+    return getExpiryTranslation(new Date(), expiry);
+  }, [order]);
 
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
 
