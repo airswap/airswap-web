@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { compareAsc, format } from "date-fns";
@@ -20,14 +20,22 @@ type ExpiryIndicatorProps = {
 const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry, className }) => {
   const { t } = useTranslation();
 
+  const [timeLeft, setTimeLeft] = useState(
+    getExpiryTranslation(new Date(), expiry)
+  );
+
   const hasExpired = useMemo(
     () => compareAsc(new Date(), expiry) === 1,
-    [expiry]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [expiry, timeLeft]
   );
-  const timeLeft = useMemo(
-    () => getExpiryTranslation(new Date(), expiry, t),
-    [expiry, t]
-  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(getExpiryTranslation(new Date(), expiry));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [expiry]);
 
   return (
     <Container className={className}>

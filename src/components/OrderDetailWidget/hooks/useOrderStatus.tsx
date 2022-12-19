@@ -12,8 +12,8 @@ export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
 
   const [isTaken, setIsTaken] = useState(false);
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
+  const [isExpired, setIsExpired] = useState(new Date().getTime() > expiry);
   const isCanceled = useCancellationSuccess(order.nonce);
-  const isExpired = new Date().getTime() > expiry;
 
   const asyncGetTakenState = useCallback(
     async (order: FullOrderERC20) => {
@@ -25,6 +25,13 @@ export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
     },
     [library]
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsExpired(new Date().getTime() > expiry);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [expiry]);
 
   useEffect(() => {
     if (library) {

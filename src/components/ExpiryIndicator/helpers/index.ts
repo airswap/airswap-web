@@ -1,6 +1,5 @@
-import { TFunction } from "react-i18next";
-
 import { formatDuration, compareAsc } from "date-fns";
+import i18 from "i18next";
 
 import getDifferenceBetweenDatesInTimeUnits from "../../../helpers/getDifferenceBetweenDatesInTimeUnits";
 
@@ -15,8 +14,7 @@ type formatDistanceLocaleKey = "xMinutes" | "xHours" | "xDays" | "xWeeks";
 
 export const getExpiryTranslation = (
   expiry: Date,
-  now: Date,
-  t: TFunction<"translation">
+  now: Date
 ): string | undefined => {
   if (compareAsc(now, expiry) === -1) {
     return undefined;
@@ -28,10 +26,10 @@ export const getExpiryTranslation = (
   );
 
   const formatDistanceLocale: Record<formatDistanceLocaleKey, string> = {
-    xMinutes: `{{count}} ${t("common.minutesShort")}`,
-    xHours: `{{count}}${t("common.hoursShort")}`,
-    xDays: `{{count}}${t("common.daysShort")}`,
-    xWeeks: `{{count}}${t("common.weeksShort")}`,
+    xMinutes: `{{count}} ${i18.t("common.minutesShort")}`,
+    xHours: `{{count}}${i18.t("common.hoursShort")}`,
+    xDays: `{{count}}${i18.t("common.daysShort")}`,
+    xWeeks: `{{count}}${i18.t("common.weeksShort")}`,
   };
   const locale: Locale = {
     formatDistance: (token: formatDistanceLocaleKey, count: number): string => {
