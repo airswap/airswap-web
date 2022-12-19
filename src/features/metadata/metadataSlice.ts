@@ -18,19 +18,24 @@ import {
 } from "../wallet/walletSlice";
 import {
   getActiveTokensFromLocalStorage,
+  getAllTokensFromLocalStorage,
+  getCustomTokensFromLocalStorage,
   getProtocolFee,
   getUnknownTokens,
 } from "./metadataApi";
 
+interface MetadataTokens {
+  all: {
+    [address: string]: TokenInfo;
+  };
+  active: string[];
+  custom: string[];
+}
+
 export interface MetadataState {
   isFetchingAllTokens: boolean;
   protocolFee: number;
-  tokens: {
-    all: {
-      [address: string]: TokenInfo;
-    };
-    active: string[];
-  };
+  tokens: MetadataTokens;
 }
 
 const initialState: MetadataState = {
@@ -39,6 +44,7 @@ const initialState: MetadataState = {
   tokens: {
     all: {},
     active: [],
+    custom: [],
   },
 };
 
@@ -101,12 +107,24 @@ export const metadataSlice = createSlice({
         state.tokens.active.push(lowerCasedToken);
       }
     },
-    removeActiveToken: (state, action: PayloadAction<string>) => {
-      if (state.tokens.active.includes(action.payload)) {
-        state.tokens.active = state.tokens.active.filter(
-          (tokenAddress) => tokenAddress !== action.payload
-        );
+    addCustomToken: (state, action: PayloadAction<string>) => {
+      const lowerCasedToken = action.payload.trim().toLowerCase();
+      if (!state.tokens.custom.includes(lowerCasedToken)) {
+        state.tokens.custom.push(lowerCasedToken);
       }
+    },
+    addTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
+      state.tokens.all[action.payload.address] = action.payload;
+    },
+    removeActiveToken: (state, action: PayloadAction<string>) => {
+      state.tokens.active = state.tokens.active.filter(
+        (tokenAddress) => tokenAddress !== action.payload
+      );
+    },
+    removeCustomToken: (state, action: PayloadAction<string>) => {
+      state.tokens.custom = state.tokens.active.filter(
+        (tokenAddress) => tokenAddress !== action.payload
+      );
     },
   },
   extraReducers: async (builder) => {
@@ -132,7 +150,10 @@ export const metadataSlice = createSlice({
 
         const tokens = {
           ...state.tokens,
-          all,
+          all: {
+            ...state.tokens.all,
+            ...all,
+          },
         };
 
         return {
@@ -165,6 +186,9 @@ export const metadataSlice = createSlice({
         const { chainId, address } = action.payload;
         state.tokens.active =
           getActiveTokensFromLocalStorage(address, chainId) || [];
+        state.tokens.custom =
+          getCustomTokensFromLocalStorage(address, chainId) || [];
+        state.tokens.all = getAllTokensFromLocalStorage(chainId);
       })
       .addCase(setWalletDisconnected, (state) => {
         state.tokens.active = [];
@@ -172,17 +196,34 @@ export const metadataSlice = createSlice({
   },
 });
 
-export const { addActiveToken, removeActiveToken } = metadataSlice.actions;
+export const {
+  addActiveToken,
+  addCustomToken,
+  addTokenInfo,
+  removeActiveToken,
+  removeCustomToken,
+} = metadataSlice.actions;
 
 const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
-export const selectAllTokenInfo = (state: RootState) =>
-  Object.values(state.metadata.tokens.all);
+const selectCustomTokenAddresses = (state: RootState) =>
+  state.metadata.tokens.custom;
+export const selectAllTokenInfo = (state: RootState) => [
+  ...Object.values(state.metadata.tokens.all),
+];
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
     return Object.values(allTokenInfo).filter((tokenInfo) =>
       activeTokenAddresses.includes(tokenInfo.address)
+    );
+  }
+);
+export const selectCustomTokens = createSelector(
+  [selectCustomTokenAddresses, selectAllTokenInfo],
+  (customTokenAddresses, allTokenInfo) => {
+    return Object.values(allTokenInfo).filter((tokenInfo) =>
+      customTokenAddresses.includes(tokenInfo.address)
     );
   }
 );

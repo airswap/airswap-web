@@ -24,6 +24,10 @@ const sortTokensBySymbol = (
   const token1 = findEthOrTokenByAddress(a, tokens, chainId);
   const token2 = findEthOrTokenByAddress(b, tokens, chainId);
 
+  if (!token1! || !token2) {
+    return 0;
+  }
+
   return token1.symbol.toLocaleLowerCase() < token2.symbol.toLocaleLowerCase()
     ? -1
     : 1;

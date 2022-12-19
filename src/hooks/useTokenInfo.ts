@@ -5,11 +5,11 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../app/hooks";
-import { selectActiveTokens } from "../features/metadata/metadataSlice";
+import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 
 const useTokenInfo = (token: string | null): TokenInfo | null => {
-  const activeTokens = useAppSelector(selectActiveTokens);
+  const activeTokens = useAppSelector(selectAllTokenInfo);
   const { chainId } = useWeb3React<Web3Provider>();
 
   return useMemo(() => {

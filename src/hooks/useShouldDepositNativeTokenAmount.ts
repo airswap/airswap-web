@@ -64,6 +64,10 @@ const useShouldDepositNativeTokenAmount = (
       chainId
     );
 
+    if (!nativeTokenInfo || !wrappedTokenInfo) {
+      return undefined;
+    }
+
     const nativeTokenBigNumber = new BigNumber(nativeTokenBalance).div(
       10 ** nativeTokenInfo.decimals
     );

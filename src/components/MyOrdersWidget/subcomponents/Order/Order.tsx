@@ -1,5 +1,4 @@
 import React, { FC, PropsWithChildren, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import { FullOrderERC20 } from "@airswap/typescript";
 import { compressFullOrderERC20 } from "@airswap/utils";
@@ -47,7 +46,6 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onStatusIndicatorMouseLeave,
   className,
 }) => {
-  const { t } = useTranslation();
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
   const cancelInProgress = useCancelPending(order.nonce);

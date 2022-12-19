@@ -16,7 +16,13 @@ export const getActiveTokensLocalStorageKey: (
 ) => string = (account, chainId) =>
   `airswap/activeTokens/${account}/${chainId}`;
 
-export const getCachedMetadataLocalStorageKey = (chainId: number): string =>
+export const getCustomTokensLocalStorageKey: (
+  account: string,
+  chainId: number
+) => string = (account, chainId) =>
+  `airswap/customTokens/${account}/${chainId}`;
+
+export const getAllTokensLocalStorageKey = (chainId: number): string =>
   `airswap/metadataCache/${chainId}`;
 
 export const getAllTokens = async (chainId: number) => {
@@ -35,7 +41,7 @@ export const getUnknownTokens = async (
   allTokens: TokenInfo[],
   provider: providers.Provider
 ): Promise<TokenInfo[]> => {
-  const storageKey = getCachedMetadataLocalStorageKey(chainId);
+  const storageKey = getAllTokensLocalStorageKey(chainId);
   // Get a list of all token addresses from token lists
   const uniqueTokenListAddresses = uniqBy(allTokens, (t) => t.address).map(
     (t) => t.address
@@ -46,12 +52,19 @@ export const getUnknownTokens = async (
   const localStorageData = localStorage.getItem(storageKey);
   if (localStorageData) {
     try {
-      localStorageTokens = (JSON.parse(localStorageData) as TokenInfo[]).filter(
-        // This filter ensures we don't continue to store tokens that become
-        // unsupported or contained in token lists.
-        (t) =>
-          !uniqueTokenListAddresses.includes(t.address) &&
-          supportedTokenAddresses.includes(t.address)
+      const localStorageTokensObject = JSON.parse(localStorageData) as {
+        [address: string]: TokenInfo;
+      };
+
+      localStorageTokens = Object.values(localStorageTokensObject).filter(
+        (t) => {
+          // This filter ensures we don't continue to store tokens that become
+          // unsupported or contained in token lists.
+          return (
+            !uniqueTokenListAddresses.includes(t.address) &&
+            supportedTokenAddresses.includes(t.address)
+          );
+        }
       );
     } catch (e) {
       localStorage.removeItem(storageKey);
@@ -85,6 +98,7 @@ export const getUnknownTokens = async (
   }
 
   localStorageTokens = localStorageTokens.concat(scrapedTokens);
+
   localStorage.setItem(storageKey, JSON.stringify(localStorageTokens));
 
   return localStorageTokens;
@@ -100,6 +114,25 @@ export const getActiveTokensFromLocalStorage = (
     .split(",")
     .filter((address) => address.length);
   return (savedTokens.length && savedTokens) || [];
+};
+
+export const getCustomTokensFromLocalStorage = (
+  account: string,
+  chainId: number
+) => {
+  const savedTokens = (
+    localStorage.getItem(getCustomTokensLocalStorageKey(account, chainId)) || ""
+  )
+    .split(",")
+    .filter((address) => address.length);
+  return (savedTokens.length && savedTokens) || [];
+};
+
+export const getAllTokensFromLocalStorage = (chainId: number) => {
+  const localStorageItem = localStorage.getItem(
+    getAllTokensLocalStorageKey(chainId)
+  );
+  return localStorageItem ? JSON.parse(localStorageItem) : {};
 };
 
 export const getSavedActiveTokensInfo = async (

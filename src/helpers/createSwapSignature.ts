@@ -1,5 +1,5 @@
 import { Signature, UnsignedOrderERC20 } from "@airswap/typescript";
-import { createOrderERC20Signature as airswapCreateSwapSignature } from "@airswap/utils";
+import { createOrderERC20Signature as airSwapCreateSwapSignature } from "@airswap/utils";
 import { JsonRpcSigner } from "@ethersproject/providers/src.ts/json-rpc-provider";
 
 import { AppError } from "../errors/appError";
@@ -13,7 +13,7 @@ export const createOrderERC20Signature = (
 ): Promise<Signature | AppError> => {
   return new Promise<Signature | AppError>(async (resolve) => {
     try {
-      const signature = await airswapCreateSwapSignature(
+      const signature = await airSwapCreateSwapSignature(
         unsignedOrder,
         // @ts-ignore
         signer,
