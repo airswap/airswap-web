@@ -15,6 +15,7 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../features/myOrders/myOrdersSlice";
+import { getNonceUsed } from "../../features/orders/orderApi";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import { AppRoutes } from "../../routes";
@@ -61,7 +62,9 @@ const MyOrdersWidget: FC = () => {
   const cancelOrderOnChain = async (order: FullOrderERC20) => {
     const expiry = parseInt(order.expiry) * 1000;
     const isExpired = new Date().getTime() > expiry;
-    if (!isExpired) {
+    const nonceUsed = await getNonceUsed(order, library!);
+
+    if (!isExpired && !nonceUsed) {
       await dispatch(
         cancelOrder({ order: order, chainId: chainId!, library: library! })
       );
