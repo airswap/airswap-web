@@ -37,6 +37,7 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
@@ -69,6 +70,8 @@ import {
   StyledRateField,
   StyledTooltip,
   TooltipContainer,
+  RateFieldContainer,
+  RateFieldTooltip,
 } from "./MakeWidget.styles";
 import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
@@ -313,6 +316,18 @@ const MakeWidget: FC = () => {
     }
   };
 
+  const getRate = (): string => {
+    const currentRate2 = new BigNumber(takerAmount).dividedBy(
+      new BigNumber(makerAmount)
+    );
+
+    if (currentRate2) {
+      return stringToSignificantDecimals(currentRate2.toString(), 4, 7);
+    }
+
+    return "";
+  };
+
   const handleAddressInputChange = (value: string) => {
     setTakerAddress(value);
     if (error?.type === AppErrorType.invalidAddress) {
@@ -347,25 +362,34 @@ const MakeWidget: FC = () => {
         onChangeTokenClick={setShowTokenSelectModal}
         onMaxButtonClick={() => setMakerAmount(maxAmount || "0")}
       />
-      <OrderTypeSelectorAndRateFieldWrapper>
-        <StyledOrderTypeSelector
-          options={orderTypeSelectOptions}
-          selectedOrderTypeOption={orderScopeTypeOption}
-          onChange={setOrderScopeTypeOption}
-        />
-        {makerTokenInfo &&
-          takerTokenInfo &&
-          !hasMissingMakerAmount &&
-          !hasMissingTakerAmount && (
-            <StyledRateField
-              token1={makerTokenInfo?.symbol || "??"}
-              token2={takerTokenInfo?.symbol || "??"}
-              rate={new BigNumber(takerAmount).dividedBy(
-                new BigNumber(makerAmount)
-              )}
-            />
-          )}
-      </OrderTypeSelectorAndRateFieldWrapper>
+      <RateFieldContainer>
+        <OrderTypeSelectorAndRateFieldWrapper>
+          <StyledOrderTypeSelector
+            options={orderTypeSelectOptions}
+            selectedOrderTypeOption={orderScopeTypeOption}
+            onChange={setOrderScopeTypeOption}
+          />
+          {makerTokenInfo &&
+            takerTokenInfo &&
+            !hasMissingMakerAmount &&
+            !hasMissingTakerAmount && (
+              <>
+                <StyledRateField
+                  token1={makerTokenInfo?.symbol || "??"}
+                  token2={takerTokenInfo?.symbol || "??"}
+                  rate={new BigNumber(takerAmount).dividedBy(
+                    new BigNumber(makerAmount)
+                  )}
+                />
+
+                <RateFieldTooltip>
+                  {getRate()} {takerTokenInfo?.symbol}
+                </RateFieldTooltip>
+              </>
+            )}
+        </OrderTypeSelectorAndRateFieldWrapper>
+      </RateFieldContainer>
+
       {orderType === OrderType.private ? (
         <TooltipContainer>
           <StyledAddressInput

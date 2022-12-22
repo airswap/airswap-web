@@ -44,6 +44,7 @@ export const StyledRateField = styled(RateField)`
 export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 1rem;
 
   @media ${breakPoints.phoneOnly} {
@@ -82,4 +83,28 @@ export const TooltipContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+`;
+
+export const RateFieldTooltip = styled(Tooltip)`
+  position: absolute;
+  visibility: hidden;
+  left: calc(100% - 8.3rem);
+  top: -4rem;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    left: calc(100% + 1.5rem);
+    top: -0.2rem;
+  }
+`;
+
+export const RateFieldContainer = styled.div`
+  display: flex
+  flex-direction: row;
+  position: relative;
+
+  &:hover {
+    ${RateFieldTooltip} {
+      visibility: visible;
+    }
+  }
 `;

@@ -9,7 +9,6 @@ export const Container = styled.div`
   display: flex;
   align-items: flex-end;
   max-width: 17rem;
-  width: 100%;
   height: 4.5rem;
 
   @media ${breakPoints.tabletLandscapeUp} {

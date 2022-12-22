@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import { TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import { LargePillButtonStyle } from "../../../../styled-components/Pill/Pill";
+import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import IconButton from "../../../IconButton/IconButton";
 
 export const StyledIconButton = styled(IconButton)`
@@ -19,7 +20,10 @@ export const RateBox = styled.div`
   display: flex;
   align-items: center;
   margin: 0 0.25rem;
-  white-space: pre;
+  max-width: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
