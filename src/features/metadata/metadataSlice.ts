@@ -219,11 +219,13 @@ export const selectActiveTokens = createSelector(
     );
   }
 );
-export const selectCustomTokens = createSelector(
-  [selectCustomTokenAddresses, selectAllTokenInfo],
-  (customTokenAddresses, allTokenInfo) => {
-    return Object.values(allTokenInfo).filter((tokenInfo) =>
-      customTokenAddresses.includes(tokenInfo.address)
+export const selectActiveTokensWithoutCustomTokens = createSelector(
+  [selectActiveTokenAddresses, selectCustomTokenAddresses, selectAllTokenInfo],
+  (activeTokenAddresses, customTokenAddresses, allTokenInfo) => {
+    return Object.values(allTokenInfo).filter(
+      (tokenInfo) =>
+        activeTokenAddresses.includes(tokenInfo.address) &&
+        !customTokenAddresses.includes(tokenInfo.address)
     );
   }
 );

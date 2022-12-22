@@ -33,7 +33,7 @@ import {
   selectBalances,
 } from "../../features/balances/balancesSlice";
 import {
-  selectActiveTokens,
+  selectActiveTokensWithoutCustomTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { check } from "../../features/orders/orderApi";
@@ -117,7 +117,7 @@ const SwapWidget: FC = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
-  const activeTokens = useAppSelector(selectActiveTokens);
+  const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
