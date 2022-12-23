@@ -27,7 +27,7 @@ interface AllTokensCache {
 
 const compareAndWriteTokensToLocalStorage = (
   tokensCache: TokensCache,
-  metadata: MetadataState,
+  tokens: string[],
   address: string,
   chainId: number,
   localStorageKey: string
@@ -36,13 +36,10 @@ const compareAndWriteTokensToLocalStorage = (
     tokensCache[address] = {};
   }
   const cachedActiveTokensForActiveWallet = tokensCache[address][chainId];
-  if (
-    metadata.tokens.active.length &&
-    cachedActiveTokensForActiveWallet !== metadata.tokens.active
-  ) {
+  if (tokens.length && cachedActiveTokensForActiveWallet !== tokens) {
     // active tokens have changed, persist to local storage.
-    tokensCache[address][chainId] = metadata.tokens.active;
-    localStorage.setItem(localStorageKey, metadata.tokens.active.join(","));
+    tokensCache[address][chainId] = tokens;
+    localStorage.setItem(localStorageKey, tokens.join(","));
   }
 };
 
@@ -133,7 +130,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     // Active tokens
     compareAndWriteTokensToLocalStorage(
       activeTokensCache,
-      metadata,
+      metadata.tokens.active,
       wallet.address,
       wallet.chainId,
       getActiveTokensLocalStorageKey(wallet.address, wallet.chainId)
@@ -142,7 +139,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     // Custom tokens
     compareAndWriteTokensToLocalStorage(
       customTokensCache,
-      metadata,
+      metadata.tokens.custom,
       wallet.address,
       wallet.chainId,
       getCustomTokensLocalStorageKey(wallet.address, wallet.chainId)

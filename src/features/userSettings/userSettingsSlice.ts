@@ -4,12 +4,14 @@ import { ThemeType } from "styled-components/macro";
 
 import { RootState } from "../../app/store";
 
+export interface UserTokenPair {
+  tokenFrom?: string;
+  tokenTo?: string;
+}
+
 export interface UserSettingsState {
   theme: ThemeType | "system";
-  tokens: {
-    tokenFrom?: string;
-    tokenTo?: string;
-  };
+  tokens: UserTokenPair;
 }
 
 export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";

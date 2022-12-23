@@ -35,6 +35,7 @@ import {
 import {
   selectActiveTokensWithoutCustomTokens,
   selectAllTokenInfo,
+  selectCustomTokenAddresses,
 } from "../../features/metadata/metadataSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -98,7 +99,9 @@ import StyledSwapWidget, {
   HugeTicks,
   InfoContainer,
 } from "./SwapWidget.styles";
+import getTokenOrFallback from "./helpers/getTokenOrFallback";
 import getTokenPairs from "./helpers/getTokenPairs";
+import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -118,6 +121,7 @@ const SwapWidget: FC = () => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
+  const customTokens = useAppSelector(selectCustomTokenAddresses);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
@@ -175,20 +179,8 @@ const SwapWidget: FC = () => {
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  const defaultBaseTokenAddress = useTokenAddress("USDT");
-  const defaultQuoteTokenAddress = nativeCurrency[chainId!]?.address;
-
-  // Use default tokens only if neither are specified in the URL or store.
-  const baseToken = tokenFrom
-    ? tokenFrom
-    : tokenTo
-    ? null
-    : userTokens.tokenFrom || defaultBaseTokenAddress;
-  const quoteToken = tokenTo
-    ? tokenTo
-    : tokenFrom
-    ? null
-    : userTokens.tokenTo || defaultQuoteTokenAddress;
+  const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
+  const quoteToken = useTokenOrFallback(tokenFrom, tokenTo);
 
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);

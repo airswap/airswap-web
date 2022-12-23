@@ -206,7 +206,7 @@ export const {
 
 const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
-const selectCustomTokenAddresses = (state: RootState) =>
+export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;
 export const selectAllTokenInfo = (state: RootState) => [
   ...Object.values(state.metadata.tokens.all),
