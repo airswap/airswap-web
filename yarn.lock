@@ -53,13 +53,6 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/maker-registry@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-3.1.3.tgz#dbff6d1c75950accb32e9eaf9cf7515496ca9aaa"
-  integrity sha512-D4ZZLTbE3xxvobXssDIyz2YO2dZ1TfC0rhwWwjTsAbDelrnc2fPTas9r2TvYQY1MYWT1k9Mgh9oN/SeFsMW6oA==
-  dependencies:
-    "@openzeppelin/contracts" "^4.3.1"
-
 "@airswap/maker-registry@3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-3.1.4.tgz#690938acec4c97840512704051cbcc2d027a376a"
@@ -67,10 +60,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@airswap/metadata@3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.7.tgz#24f9cf4b468105148551084cd6ca71f135984ffd"
-  integrity sha512-16zcOYaZw4me/faS5TJnxJQGiVqKYRLHfUXvZgazYPBUdDykzmUj0tdalpVVlU0dOkpUjdeRkhILeK8i5Db4Yw==
+"@airswap/metadata@3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-3.0.8.tgz#c522ab651405d956da627195ba7279727b51b483"
+  integrity sha512-WH1dc+W5FxH59OtNWQHoBiNNo8+0TObCc0R1WPIv+SwyHw+5EgZlNGneMZPk5tVYOt7zmXXBAjTSMm0GgyyC5A==
   dependencies:
     "@airswap/constants" "3.0.4"
     "@airswap/typescript" "3.0.2"

@@ -124,10 +124,10 @@ const TokenList = ({
       return [scrapedToken];
     }
 
-    // else only take the top 10 tokens
+    // else only take the top 100 tokens
     return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
       0,
-      10
+      100
     );
   }, [sortedInactiveTokens, tokenQuery, scrapedToken]);
 

@@ -1,9 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { Web3Provider } from "@ethersproject/providers";
 import { TokenInfo } from "@uniswap/token-lists";
+import { useWeb3React } from "@web3-react/core";
 
-import { useAppSelector } from "../../../app/hooks";
-import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import {
+  addTokenInfo,
+  selectAllTokenInfo,
+} from "../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 import scrapeToken from "../../../helpers/scrapeToken";
@@ -12,39 +17,49 @@ import scrapeToken from "../../../helpers/scrapeToken";
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
 const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
+  const dispatch = useAppDispatch();
+  const { library } = useWeb3React<Web3Provider>();
+
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<TokenInfo>();
+  const [scrapedToken, setScrapedToken] = useState<TokenInfo>();
   const [hasCalledScrapeToken, setHasCalledScrapeToken] = useState(false);
 
-  const chainId = useMemo(
-    () => (activeOrder ? parseInt(activeOrder.chainId) : undefined),
-    [activeOrder]
-  );
+  useEffect(() => {
+    if (scrapedToken) {
+      dispatch(addTokenInfo(scrapedToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrapedToken]);
 
   useEffect(() => {
-    if (!chainId || !address) {
+    if (!activeOrder || !address) {
       return;
     }
 
+    const chainId = parseInt(activeOrder.chainId);
+
     const callScrapeToken = async () => {
       setHasCalledScrapeToken(true);
-      const result = await scrapeToken(address, undefined, chainId);
-      setToken(result);
+
+      // TODO: Fix this when library is undefined
+      const result = await scrapeToken(address, library || null, chainId);
+      setScrapedToken(result);
     };
 
-    const newToken = findEthOrTokenByAddress(address, allTokens, chainId);
+    const tokenFromStore = findEthOrTokenByAddress(address, allTokens, chainId);
 
-    if (newToken) {
-      setToken(newToken);
-    } else if (!hasCalledScrapeToken) {
+    if (tokenFromStore) {
+      setToken(tokenFromStore);
+    } else if (!tokenFromStore && !hasCalledScrapeToken && library) {
       callScrapeToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allTokens, address, chainId]);
+  }, [allTokens, address, activeOrder]);
 
-  return token || null;
+  return token || scrapedToken || null;
 };
 
 export default useTakerTokenInfo;

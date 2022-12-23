@@ -11,23 +11,45 @@ import {
   getCustomTokensLocalStorageKey,
   getTransactionsLocalStorageKey,
 } from "./metadataApi";
+import { MetadataState } from "./metadataSlice";
+
+interface TokensCache {
+  [address: string]: {
+    [chainId: number]: string[];
+  };
+}
+
+interface AllTokensCache {
+  [chainId: number]: {
+    [address: string]: TokenInfo;
+  };
+}
+
+const compareAndWriteTokensToLocalStorage = (
+  tokensCache: TokensCache,
+  metadata: MetadataState,
+  address: string,
+  chainId: number,
+  localStorageKey: string
+) => {
+  if (!tokensCache[address]) {
+    tokensCache[address] = {};
+  }
+  const cachedActiveTokensForActiveWallet = tokensCache[address][chainId];
+  if (
+    metadata.tokens.active.length &&
+    cachedActiveTokensForActiveWallet !== metadata.tokens.active
+  ) {
+    // active tokens have changed, persist to local storage.
+    tokensCache[address][chainId] = metadata.tokens.active;
+    localStorage.setItem(localStorageKey, metadata.tokens.active.join(","));
+  }
+};
 
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
-  const activeTokensCache: {
-    [address: string]: {
-      [chainId: number]: string[];
-    };
-  } = {};
-  const customTokensCache: {
-    [address: string]: {
-      [chainId: number]: string[];
-    };
-  } = {};
-  const allTokensCache: {
-    [chainId: number]: {
-      [address: string]: TokenInfo;
-    };
-  } = {};
+  const activeTokensCache: TokensCache = {};
+  const customTokensCache: TokensCache = {};
+  const allTokensCache: AllTokensCache = {};
   const transactionCache: {
     [address: string]: {
       [chainId: number]: SubmittedTransaction[];
@@ -85,7 +107,6 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     }
 
     // All tokens
-
     if (!allTokensCache[wallet.chainId!]) {
       allTokensCache[wallet.chainId!] = {};
     }
@@ -105,44 +126,26 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       );
     }
 
-    // Active tokens
+    if (!wallet.address || !wallet.chainId) {
+      return;
+    }
 
-    if (!activeTokensCache[wallet.address!]) {
-      activeTokensCache[wallet.address!] = {};
-    }
-    const cachedActiveTokensForActiveWallet =
-      activeTokensCache[wallet.address!][wallet.chainId!];
-    if (
-      metadata.tokens.active.length &&
-      cachedActiveTokensForActiveWallet !== metadata.tokens.active
-    ) {
-      // active tokens have changed, persist to local storage.
-      activeTokensCache[wallet.address!][wallet.chainId!] =
-        metadata.tokens.active;
-      localStorage.setItem(
-        getActiveTokensLocalStorageKey(wallet.address!, wallet.chainId!),
-        metadata.tokens.active.join(",")
-      );
-    }
+    // Active tokens
+    compareAndWriteTokensToLocalStorage(
+      activeTokensCache,
+      metadata,
+      wallet.address,
+      wallet.chainId,
+      getActiveTokensLocalStorageKey(wallet.address, wallet.chainId)
+    );
 
     // Custom tokens
-
-    if (!customTokensCache[wallet.address!]) {
-      customTokensCache[wallet.address!] = {};
-    }
-    const cachedCustomTokensForActiveWallet =
-      customTokensCache[wallet.address!][wallet.chainId!];
-    if (
-      metadata.tokens.custom.length &&
-      cachedCustomTokensForActiveWallet !== metadata.tokens.custom
-    ) {
-      // custom tokens have changed, persist to local storage.
-      customTokensCache[wallet.address!][wallet.chainId!] =
-        metadata.tokens.custom;
-      localStorage.setItem(
-        getCustomTokensLocalStorageKey(wallet.address!, wallet.chainId!),
-        metadata.tokens.custom.join(",")
-      );
-    }
+    compareAndWriteTokensToLocalStorage(
+      customTokensCache,
+      metadata,
+      wallet.address,
+      wallet.chainId,
+      getCustomTokensLocalStorageKey(wallet.address, wallet.chainId)
+    );
   });
 };

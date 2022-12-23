@@ -5,7 +5,7 @@ import * as ethers from "ethers";
 
 const scrapeToken = (
   address: string,
-  provider?: ethers.providers.BaseProvider | string,
+  provider: ethers.providers.BaseProvider | string | null,
   chainId?: number
 ): Promise<TokenInfo | undefined> => {
   return new Promise<TokenInfo | undefined>(async (resolve) => {

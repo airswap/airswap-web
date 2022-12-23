@@ -8,7 +8,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { providers } from "ethers";
+import * as ethers from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registrySlice";
@@ -64,7 +64,7 @@ export const fetchUnkownTokens = createAsyncThunk<
   TokenInfo[], // Return type
   {
     // First argument
-    provider: providers.Provider;
+    provider: ethers.providers.BaseProvider;
   },
   {
     // thunkApi
