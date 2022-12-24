@@ -37,7 +37,6 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
@@ -75,6 +74,7 @@ import {
 } from "./MakeWidget.styles";
 import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
+import useTokensRate from "./hooks/useTokensRate";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
 
@@ -110,6 +110,8 @@ const MakeWidget: FC = () => {
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
+  const tokensRate = useTokensRate(takerAmount, makerAmount);
+  const isTooltipShown = tokensRate.length > 6;
   const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
@@ -316,18 +318,6 @@ const MakeWidget: FC = () => {
     }
   };
 
-  const getRate = (): string => {
-    const currentRate2 = new BigNumber(takerAmount).dividedBy(
-      new BigNumber(makerAmount)
-    );
-
-    if (currentRate2) {
-      return stringToSignificantDecimals(currentRate2.toString(), 4, 7);
-    }
-
-    return "";
-  };
-
   const handleAddressInputChange = (value: string) => {
     setTakerAddress(value);
     if (error?.type === AppErrorType.invalidAddress) {
@@ -335,6 +325,7 @@ const MakeWidget: FC = () => {
     }
   };
 
+  console.log(makerTokenInfo, takerTokenInfo);
   return (
     <Container>
       <MakeWidgetHeader
@@ -382,9 +373,11 @@ const MakeWidget: FC = () => {
                   )}
                 />
 
-                <RateFieldTooltip>
-                  {getRate()} {takerTokenInfo?.symbol}
-                </RateFieldTooltip>
+                {isTooltipShown && (
+                  <RateFieldTooltip>
+                    {tokensRate} {takerTokenInfo?.symbol}
+                  </RateFieldTooltip>
+                )}
               </>
             )}
         </OrderTypeSelectorAndRateFieldWrapper>

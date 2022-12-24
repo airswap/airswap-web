@@ -94,6 +94,7 @@ export const RateFieldTooltip = styled(Tooltip)`
   @media ${breakPoints.tabletLandscapeUp} {
     left: calc(100% + 1.5rem);
     top: -0.2rem;
+    width: 100%;
   }
 `;
 
