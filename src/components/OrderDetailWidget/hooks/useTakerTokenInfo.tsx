@@ -5,27 +5,37 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { UnknownToken } from "../../../entities/UnknownToken/UnknownToken";
+import { getAllTokensFromLocalStorage } from "../../../features/metadata/metadataApi";
 import {
   addTokenInfo,
   selectAllTokenInfo,
 } from "../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
+import { selectWallet } from "../../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
 import scrapeToken from "../../../helpers/scrapeToken";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
-const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
+const useTakerTokenInfo = (
+  address: string | null
+): TokenInfo | UnknownToken | null => {
   const dispatch = useAppDispatch();
   const { library } = useWeb3React<Web3Provider>();
 
+  const { connected } = useAppSelector(selectWallet);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<TokenInfo>();
   const [scrapedToken, setScrapedToken] = useState<TokenInfo>();
-  const [hasCalledScrapeToken, setHasCalledScrapeToken] = useState(false);
+  const [unknownToken, setUnknownToken] = useState<UnknownToken>();
+  const [isCallScrapeTokenLoading, setIsCallScrapeTokenLoading] =
+    useState(false);
+  const [isCallScrapeTokenSuccess, setIsCallScrapeTokenSuccess] =
+    useState(false);
 
   useEffect(() => {
     if (scrapedToken) {
@@ -35,31 +45,55 @@ const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
   }, [scrapedToken]);
 
   useEffect(() => {
-    if (!activeOrder || !address) {
+    if (!activeOrder || !address || !allTokens.length) {
       return;
     }
 
     const chainId = parseInt(activeOrder.chainId);
 
-    const callScrapeToken = async () => {
-      setHasCalledScrapeToken(true);
+    // If wallet is not connected the metadata tokens can't be filled yet because it gets chainId from
+    // the wallet. But in this case we have the chainId from the order already. So we can get tokens from
+    // localStorage directly so we don't have to wait for the wallet getting connected.
 
-      // TODO: Fix this when library is undefined
-      const result = await scrapeToken(address, library || null, chainId);
-      setScrapedToken(result);
+    const tokensObject = getAllTokensFromLocalStorage(chainId);
+
+    const tokens = [
+      ...allTokens,
+      ...(!connected ? Object.values(tokensObject) : []),
+    ];
+
+    const callScrapeToken = async (library: Web3Provider) => {
+      setIsCallScrapeTokenLoading(true);
+
+      const result = await scrapeToken(address, library);
+      if (result) {
+        setScrapedToken(result);
+      } else {
+        setUnknownToken({ address, chainId });
+      }
+
+      setIsCallScrapeTokenSuccess(true);
+      setIsCallScrapeTokenLoading(false);
     };
 
-    const tokenFromStore = findEthOrTokenByAddress(address, allTokens, chainId);
+    const tokenFromStore = findEthOrTokenByAddress(address, tokens, chainId);
 
     if (tokenFromStore) {
       setToken(tokenFromStore);
-    } else if (!tokenFromStore && !hasCalledScrapeToken && library) {
-      callScrapeToken();
+    } else if (
+      !tokenFromStore &&
+      !isCallScrapeTokenLoading &&
+      !isCallScrapeTokenSuccess &&
+      library
+    ) {
+      callScrapeToken(library);
+    } else if (!library && !isCallScrapeTokenLoading) {
+      setUnknownToken({ address, chainId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allTokens, address, activeOrder]);
+  }, [allTokens, address, activeOrder, connected]);
 
-  return token || scrapedToken || null;
+  return token || scrapedToken || unknownToken || null;
 };
 
 export default useTakerTokenInfo;

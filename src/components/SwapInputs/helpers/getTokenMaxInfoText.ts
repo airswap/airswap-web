@@ -6,13 +6,15 @@ import {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
+import { isTokenInfo } from "../../../entities/TokenInfo/TokenInfoHelpers";
+import { UnknownToken } from "../../../entities/UnknownToken/UnknownToken";
 
 export default function getTokenMaxInfoText(
-  tokenInfo: TokenInfo | null,
+  tokenInfo: TokenInfo | UnknownToken | null,
   maxAmount: string | null,
   t: TFunction<"translation">
 ): string | null {
-  if (!maxAmount || !tokenInfo) {
+  if (!maxAmount || !tokenInfo || !isTokenInfo(tokenInfo)) {
     return null;
   }
 

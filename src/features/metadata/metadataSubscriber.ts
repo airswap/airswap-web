@@ -11,7 +11,6 @@ import {
   getCustomTokensLocalStorageKey,
   getTransactionsLocalStorageKey,
 } from "./metadataApi";
-import { MetadataState } from "./metadataSlice";
 
 interface TokensCache {
   [address: string]: {

@@ -9,12 +9,14 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
 import { nativeCurrencyAddress } from "../constants/nativeCurrency";
+import { isTokenInfo } from "../entities/TokenInfo/TokenInfoHelpers";
+import { UnknownToken } from "../entities/UnknownToken/UnknownToken";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 
 const useSufficientAllowance = (
-  token: TokenInfo | null,
+  token: TokenInfo | UnknownToken | null,
   amount?: string
 ): boolean => {
   const { chainId } = useWeb3React<Web3Provider>();
@@ -22,7 +24,7 @@ const useSufficientAllowance = (
   const allowances = useAppSelector(selectAllowances);
 
   return useMemo(() => {
-    if (!token || !amount || !chainId) {
+    if (!token || !amount || !chainId || !isTokenInfo(token)) {
       return false;
     }
 

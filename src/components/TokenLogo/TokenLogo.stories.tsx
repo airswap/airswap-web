@@ -33,13 +33,13 @@ const airSwapTokenInfo: TokenInfo = {
 const Template: Story<{}> = (args) => (
   <Grid>
     <Subtitle>small</Subtitle>
-    <TokenLogo tokenInfo={airSwapTokenInfo} size="small" />
+    <TokenLogo logoURI={airSwapTokenInfo.logoURI} size="small" />
     <Subtitle>medium</Subtitle>
-    <TokenLogo tokenInfo={airSwapTokenInfo} size="medium" />
+    <TokenLogo logoURI={airSwapTokenInfo.logoURI} size="medium" />
     <Subtitle>large</Subtitle>
-    <TokenLogo tokenInfo={airSwapTokenInfo} size="large" />
+    <TokenLogo logoURI={airSwapTokenInfo.logoURI} size="large" />
     <Subtitle>Empty (medium)</Subtitle>
-    <TokenLogo tokenInfo={null} size="medium" />
+    <TokenLogo size="medium" />
   </Grid>
 );
 

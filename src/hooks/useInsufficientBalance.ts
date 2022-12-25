@@ -5,16 +5,18 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
+import { isTokenInfo } from "../entities/TokenInfo/TokenInfoHelpers";
+import { UnknownToken } from "../entities/UnknownToken/UnknownToken";
 import { selectBalances } from "../features/balances/balancesSlice";
 
 const useInsufficientBalance = (
-  tokenInfo: TokenInfo | null,
+  tokenInfo: TokenInfo | UnknownToken | null,
   amount: string
 ): boolean => {
   const balances = useAppSelector(selectBalances);
 
   return useMemo(() => {
-    if (!tokenInfo || !amount) {
+    if (!tokenInfo || !amount || !isTokenInfo(tokenInfo)) {
       return false;
     }
 

@@ -6,6 +6,8 @@ import { Web3Provider } from "@ethersproject/providers";
 import * as ethers from "ethers";
 import uniqBy from "lodash.uniqby";
 
+import { MetadataTokens } from "./metadataSlice";
+
 const tokensCache: {
   [chainId: number]: TokenInfo[];
 } = {};
@@ -68,7 +70,7 @@ export const getUnknownTokens = async (
 export const getActiveTokensFromLocalStorage = (
   account: string,
   chainId: number
-) => {
+): MetadataTokens["active"] => {
   const savedTokens = (
     localStorage.getItem(getActiveTokensLocalStorageKey(account, chainId)) || ""
   )
@@ -80,7 +82,7 @@ export const getActiveTokensFromLocalStorage = (
 export const getCustomTokensFromLocalStorage = (
   account: string,
   chainId: number
-) => {
+): MetadataTokens["custom"] => {
   const savedTokens = (
     localStorage.getItem(getCustomTokensLocalStorageKey(account, chainId)) || ""
   )
@@ -89,7 +91,9 @@ export const getCustomTokensFromLocalStorage = (
   return (savedTokens.length && savedTokens) || [];
 };
 
-export const getAllTokensFromLocalStorage = (chainId: number) => {
+export const getAllTokensFromLocalStorage = (
+  chainId: number
+): MetadataTokens["all"] => {
   const localStorageItem = localStorage.getItem(
     getAllTokensLocalStorageKey(chainId)
   );

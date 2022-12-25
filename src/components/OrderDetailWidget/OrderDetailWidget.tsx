@@ -12,6 +12,7 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { isTokenInfo } from "../../entities/TokenInfo/TokenInfoHelpers";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -73,13 +74,18 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
-    senderToken?.decimals
+    isTokenInfo(senderToken) ? senderToken.decimals : undefined
   );
   const signerAmount = useFormattedTokenAmount(
     order.signerAmount,
-    signerToken?.decimals
+    isTokenInfo(signerToken) ? signerToken.decimals : undefined
   );
-
+  const senderTokenSymbol = isTokenInfo(senderToken)
+    ? senderToken.symbol
+    : undefined;
+  const signerTokenSymbol = isTokenInfo(signerToken)
+    ? signerToken.symbol
+    : undefined;
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
@@ -224,8 +230,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
         orderChainId={orderChainId}
-        token1={signerToken?.symbol}
-        token2={senderToken?.symbol}
+        token1={signerTokenSymbol}
+        token2={senderTokenSymbol}
         rate={tokenExchangeRate}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
@@ -249,7 +255,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
-        senderTokenSymbol={senderToken?.symbol}
+        senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />

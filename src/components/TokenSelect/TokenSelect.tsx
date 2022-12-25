@@ -1,8 +1,11 @@
-import { FC, MouseEventHandler, FormEventHandler } from "react";
+import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
+import { isTokenInfo } from "../../entities/TokenInfo/TokenInfoHelpers";
+import { UnknownToken } from "../../entities/UnknownToken/UnknownToken";
+import { isUnknownToken } from "../../entities/UnknownToken/UnknownTokenHelpers";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -22,6 +25,7 @@ import {
   InfoLabel,
   SubText,
 } from "./TokenSelect.styles";
+import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
@@ -43,7 +47,7 @@ export type TokenSelectProps = {
   /**
    * Metadata for currently selected token
    */
-  selectedToken: TokenInfo | null;
+  selectedToken: TokenInfo | UnknownToken | null;
   /**
    * Called when the user has clicked on the token dropdown to change token
    */
@@ -109,16 +113,30 @@ const TokenSelect: FC<TokenSelectProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const tokenText = useMemo(() => {
+    return getTokenText(selectedToken, readOnly);
+  }, [selectedToken, readOnly]);
+  const tokenIsUnknown = useMemo(() => {
+    return isUnknownToken(selectedToken);
+  }, [selectedToken]);
+
   return (
-    <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
+    <TokenSelectContainer
+      $isQuote={isQuote}
+      $isLoading={isLoading}
+      $tokenIsUnknown={tokenIsUnknown}
+    >
       <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-        <TokenLogoLeft size="large" tokenInfo={selectedToken} />
+        <TokenLogoLeft
+          logoURI={
+            isTokenInfo(selectedToken) ? selectedToken.logoURI : undefined
+          }
+          size="large"
+        />
         <StyledSelector>
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
-            <StyledSelectButtonContent>
-              {selectedToken ? selectedToken.symbol : t("common.select")}
-            </StyledSelectButtonContent>
+            <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
             <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelector>
@@ -158,7 +176,12 @@ const TokenSelect: FC<TokenSelectProps> = ({
               i
             </InfoLabel>
           )}
-          <TokenLogoRight size="medium" tokenInfo={selectedToken} />
+          <TokenLogoRight
+            logoURI={
+              isTokenInfo(selectedToken) ? selectedToken.logoURI : undefined
+            }
+            size="medium"
+          />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

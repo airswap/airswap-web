@@ -158,6 +158,7 @@ export const StyledSelectItem = styled(SelectItem)`
   display: flex;
   flex-direction: row;
   align-items: center;
+  text-align: left;
   line-height: 1;
   gap: 0.375rem;
   color: ${(props) =>
@@ -185,6 +186,7 @@ export const SubText = styled.div<{ hasAmount: boolean }>`
 export const TokenSelectContainer = styled.div<{
   $isLoading: boolean;
   $isQuote: boolean;
+  $tokenIsUnknown: boolean;
 }>`
   display: flex;
   flex-direction: row;
@@ -239,6 +241,19 @@ export const TokenSelectContainer = styled.div<{
   ${StyledSelectItem} {
     font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
   }
+  
+  ${(props) =>
+    props.$tokenIsUnknown
+      ? `
+    ${InputAndMaxButtonWrapper} {
+      display: none;
+    }
+    
+    ${ContainingButton} {
+      width: 100%;
+    }
+  `
+      : ""};
 }
 `;
 

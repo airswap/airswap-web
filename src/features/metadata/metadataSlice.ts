@@ -24,7 +24,7 @@ import {
   getUnknownTokens,
 } from "./metadataApi";
 
-interface MetadataTokens {
+export interface MetadataTokens {
   all: {
     [address: string]: TokenInfo;
   };

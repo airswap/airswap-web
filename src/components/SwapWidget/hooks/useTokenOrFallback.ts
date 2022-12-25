@@ -41,6 +41,7 @@ const useTokenOrFallback = (
     isFrom,
     defaultBaseTokenAddress,
     defaultQuoteTokenAddress,
+    customTokens,
   ]);
 };
 

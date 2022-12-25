@@ -1,12 +1,10 @@
-import { TokenInfo } from "@airswap/typescript";
-
 import styled from "styled-components/macro";
 
 export type sizes = "tiny" | "small" | "medium" | "large";
 
 export type StyledTokenLogoProps = {
   size: sizes;
-  tokenInfo: TokenInfo | null;
+  logoURI?: string;
 };
 
 const remSizes: Record<sizes, string> = {
@@ -21,13 +19,13 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   min-width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
-    !!props.tokenInfo?.logoURI ? `url("${props.tokenInfo.logoURI}")` : "none"};
+    !!props.logoURI ? `url("${props.logoURI}")` : "none"};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 50%;
   border-color: ${(props) => props.theme.colors.lightGrey};
-  border-style: ${(props) => (props.tokenInfo?.logoURI ? "none" : "solid")};
+  border-style: ${(props) => (props.logoURI ? "none" : "solid")};
   border-width: 1px;
 `;
 
