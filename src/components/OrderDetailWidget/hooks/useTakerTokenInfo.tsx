@@ -5,7 +5,6 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { UnknownToken } from "../../../entities/UnknownToken/UnknownToken";
 import { getAllTokensFromLocalStorage } from "../../../features/metadata/metadataApi";
 import {
   addTokenInfo,
@@ -19,9 +18,7 @@ import scrapeToken from "../../../helpers/scrapeToken";
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
-const useTakerTokenInfo = (
-  address: string | null
-): TokenInfo | UnknownToken | null => {
+const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
   const dispatch = useAppDispatch();
   const { library } = useWeb3React<Web3Provider>();
 
@@ -31,7 +28,6 @@ const useTakerTokenInfo = (
 
   const [token, setToken] = useState<TokenInfo>();
   const [scrapedToken, setScrapedToken] = useState<TokenInfo>();
-  const [unknownToken, setUnknownToken] = useState<UnknownToken>();
   const [isCallScrapeTokenLoading, setIsCallScrapeTokenLoading] =
     useState(false);
   const [isCallScrapeTokenSuccess, setIsCallScrapeTokenSuccess] =
@@ -62,14 +58,12 @@ const useTakerTokenInfo = (
       ...(!connected ? Object.values(tokensObject) : []),
     ];
 
-    const callScrapeToken = async (library: Web3Provider) => {
+    const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const result = await scrapeToken(address, library);
+      const result = await scrapeToken(address, library || null, chainId);
       if (result) {
         setScrapedToken(result);
-      } else {
-        setUnknownToken({ address, chainId });
       }
 
       setIsCallScrapeTokenSuccess(true);
@@ -83,17 +77,14 @@ const useTakerTokenInfo = (
     } else if (
       !tokenFromStore &&
       !isCallScrapeTokenLoading &&
-      !isCallScrapeTokenSuccess &&
-      library
+      !isCallScrapeTokenSuccess
     ) {
-      callScrapeToken(library);
-    } else if (!library && !isCallScrapeTokenLoading) {
-      setUnknownToken({ address, chainId });
+      callScrapeToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens, address, activeOrder, connected]);
 
-  return token || scrapedToken || unknownToken || null;
+  return token || scrapedToken || null;
 };
 
 export default useTakerTokenInfo;

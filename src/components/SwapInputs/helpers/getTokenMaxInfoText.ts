@@ -6,22 +6,20 @@ import {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
-import { isTokenInfo } from "../../../entities/TokenInfo/TokenInfoHelpers";
-import { UnknownToken } from "../../../entities/UnknownToken/UnknownToken";
 
 export default function getTokenMaxInfoText(
-  tokenInfo: TokenInfo | UnknownToken | null,
+  tokenInfo: TokenInfo | null,
   maxAmount: string | null,
   t: TFunction<"translation">
 ): string | null {
-  if (!maxAmount || !tokenInfo || !isTokenInfo(tokenInfo)) {
+  if (!maxAmount || !tokenInfo) {
     return null;
   }
 
   const transactionFee =
     tokenInfo.address === nativeCurrencyAddress &&
     nativeCurrencySafeTransactionFee[tokenInfo.chainId];
-  const amountAndSymbolText = `${maxAmount} ${tokenInfo.symbol}`;
+  const amountAndSymbolText = `${maxAmount} ${tokenInfo?.symbol}`;
 
   if (transactionFee) {
     return t("orders.nativeCurrencyMaxInfoText", {

@@ -12,7 +12,6 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { isTokenInfo } from "../../entities/TokenInfo/TokenInfoHelpers";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -74,18 +73,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const signerToken = useTakerTokenInfo(order.signerToken);
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
-    isTokenInfo(senderToken) ? senderToken.decimals : undefined
+    senderToken?.decimals
   );
   const signerAmount = useFormattedTokenAmount(
     order.signerAmount,
-    isTokenInfo(signerToken) ? signerToken.decimals : undefined
+    signerToken?.decimals
   );
-  const senderTokenSymbol = isTokenInfo(senderToken)
-    ? senderToken.symbol
-    : undefined;
-  const signerTokenSymbol = isTokenInfo(signerToken)
-    ? signerToken.symbol
-    : undefined;
+  const senderTokenSymbol = senderToken?.symbol;
+  const signerTokenSymbol = signerToken?.symbol;
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );

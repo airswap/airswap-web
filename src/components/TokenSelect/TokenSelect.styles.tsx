@@ -186,7 +186,6 @@ export const SubText = styled.div<{ hasAmount: boolean }>`
 export const TokenSelectContainer = styled.div<{
   $isLoading: boolean;
   $isQuote: boolean;
-  $tokenIsUnknown: boolean;
 }>`
   display: flex;
   flex-direction: row;
@@ -202,7 +201,7 @@ export const TokenSelectContainer = styled.div<{
       ? props.theme.colors.darkGrey
       : props.theme.colors.primaryLight};
   overflow: hidden;
-  
+
   &:first-of-type {
     margin-bottom: 0.5rem;
   }
@@ -220,7 +219,7 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
-  
+
   ${SubText},
   ${AmountInput},
   ${MaxButton},
@@ -241,20 +240,6 @@ export const TokenSelectContainer = styled.div<{
   ${StyledSelectItem} {
     font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
   }
-  
-  ${(props) =>
-    props.$tokenIsUnknown
-      ? `
-    ${InputAndMaxButtonWrapper} {
-      display: none;
-    }
-    
-    ${ContainingButton} {
-      width: 100%;
-    }
-  `
-      : ""};
-}
 `;
 
 const fadeOutWhenInvisible = css<{ $invisible: boolean }>`

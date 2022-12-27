@@ -3,9 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
 
-import { isTokenInfo } from "../../entities/TokenInfo/TokenInfoHelpers";
-import { UnknownToken } from "../../entities/UnknownToken/UnknownToken";
-import { isUnknownToken } from "../../entities/UnknownToken/UnknownTokenHelpers";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -47,7 +44,7 @@ export type TokenSelectProps = {
   /**
    * Metadata for currently selected token
    */
-  selectedToken: TokenInfo | UnknownToken | null;
+  selectedToken: TokenInfo | null;
   /**
    * Called when the user has clicked on the token dropdown to change token
    */
@@ -116,23 +113,11 @@ const TokenSelect: FC<TokenSelectProps> = ({
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
-  const tokenIsUnknown = useMemo(() => {
-    return isUnknownToken(selectedToken);
-  }, [selectedToken]);
 
   return (
-    <TokenSelectContainer
-      $isQuote={isQuote}
-      $isLoading={isLoading}
-      $tokenIsUnknown={tokenIsUnknown}
-    >
+    <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
       <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-        <TokenLogoLeft
-          logoURI={
-            isTokenInfo(selectedToken) ? selectedToken.logoURI : undefined
-          }
-          size="large"
-        />
+        <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
         <StyledSelector>
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
@@ -176,12 +161,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               i
             </InfoLabel>
           )}
-          <TokenLogoRight
-            logoURI={
-              isTokenInfo(selectedToken) ? selectedToken.logoURI : undefined
-            }
-            size="medium"
-          />
+          <TokenLogoRight logoURI={selectedToken?.logoURI} size="medium" />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

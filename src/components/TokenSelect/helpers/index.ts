@@ -2,11 +2,8 @@ import { TokenInfo } from "@airswap/typescript";
 
 import i18n from "i18next";
 
-import { isTokenInfo } from "../../../entities/TokenInfo/TokenInfoHelpers";
-import { UnknownToken } from "../../../entities/UnknownToken/UnknownToken";
-
 export const getTokenText = (
-  token: TokenInfo | UnknownToken | null,
+  token: TokenInfo | null,
   readOnly: boolean
 ): string => {
   if (readOnly && token === null) {
@@ -17,9 +14,5 @@ export const getTokenText = (
     return i18n.t("common.select");
   }
 
-  if (isTokenInfo(token)) {
-    return token.symbol;
-  }
-
-  return "Unknown token · Please Connect";
+  return token.symbol;
 };
