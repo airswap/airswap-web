@@ -15,9 +15,6 @@ export const Text = styled.div`
 `;
 
 export const RateBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 0 0.25rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -25,6 +22,7 @@ export const RateBox = styled.div`
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
   display: flex;
+  padding-left: 10px;
   align-items: center;
   width: fit-content;
   font-weight: bold;
@@ -46,7 +44,7 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
         border: 1px solid ${theme.colors.borderGrey};
         margin: 0;
         height: 2rem;
-        padding: 0 0.5rem;
+        padding: 0.5rem 0.5rem;
         line-height: 1;
         font-family: ${fontMono};
         font-size: 0.875rem;

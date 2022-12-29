@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -110,8 +110,9 @@ const MakeWidget: FC = () => {
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
+  const rateElement = useRef(null);
   const tokensRate = useTokensRate(takerAmount, makerAmount);
-  const isTooltipShown = tokensRate.length > 6;
+  const [isTooltipShown, setTooltipShown] = useState(false);
   const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
@@ -325,7 +326,6 @@ const MakeWidget: FC = () => {
     }
   };
 
-  console.log(makerTokenInfo, takerTokenInfo);
   return (
     <Container>
       <MakeWidgetHeader
@@ -366,6 +366,7 @@ const MakeWidget: FC = () => {
             !hasMissingTakerAmount && (
               <>
                 <StyledRateField
+                  setTooltipShown={setTooltipShown}
                   token1={makerTokenInfo?.symbol || "??"}
                   token2={takerTokenInfo?.symbol || "??"}
                   rate={new BigNumber(takerAmount).dividedBy(

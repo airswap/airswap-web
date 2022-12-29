@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 import BigNumber from "bignumber.js";
 
@@ -12,17 +12,20 @@ export type RateFieldProps = {
   token2: string;
   rate: BigNumber;
   className?: string;
+  setTooltipShown?: any;
 };
 
 export const RateField: React.FC<RateFieldProps> = ({
   isButton = false,
   token1,
   token2,
+  setTooltipShown,
   rate,
   className,
 }) => {
   const [tokenPair, setTokenPair] = useState([token1, token2]);
   const [currentRate, setCurrentRate] = useState(rate);
+  const rateBoxElement = useRef(null);
 
   const displayRate = useMemo(
     () => stringToSignificantDecimals(currentRate.toString(), 4, 7),
@@ -31,6 +34,12 @@ export const RateField: React.FC<RateFieldProps> = ({
 
   useEffect(() => {
     setCurrentRate(rate);
+    setTooltipShown(false);
+
+    if (rateBoxElement.current) {
+      const { offsetWidth, scrollWidth } = rateBoxElement.current;
+      setTooltipShown(offsetWidth <= scrollWidth);
+    }
   }, [rate]);
 
   function handleClick() {
@@ -46,7 +55,7 @@ export const RateField: React.FC<RateFieldProps> = ({
       className={className}
     >
       <Text>{` 1 ${tokenPair[0]} =`}</Text>
-      <RateBox>{displayRate}</RateBox>
+      <RateBox ref={rateBoxElement}>{displayRate}</RateBox>
       <Text>{tokenPair[1]}</Text>
       {isButton ? (
         <Icon name="swap-horizontal" iconSize={0.75} />
