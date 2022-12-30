@@ -107,8 +107,17 @@ const SwapInputs: FC<{
   return (
     <Container $disabled={disabled}>
       <TokenSelect
-        label={t("orders.from")}
+        hasError={!!baseAmountError}
+        isLoading={!isSell && isRequesting}
+        isQuote={isQuote}
+        showMaxButton={showMaxButton}
+        showMaxInfoButton={showMaxInfoButton}
+        readOnly={readOnly}
         amount={isSell ? baseAmount : quoteAmount}
+        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
+        label={t("orders.from")}
+        selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
+        subText={baseAmountSubText}
         onAmountChange={(e) => handleTokenAmountChange(e, onBaseAmountChange)}
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
@@ -116,34 +125,25 @@ const SwapInputs: FC<{
         onMaxClicked={handleMaxButtonClick}
         onInfoLabelMouseEnter={handleInfoLabelMouseEnter}
         onInfoLabelMouseLeave={handleInfoLabelMouseLeave}
-        readOnly={readOnly}
-        hasError={!!baseAmountError}
-        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
-        selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
-        isLoading={!isSell && isRequesting}
-        isQuote={isQuote}
-        showMaxButton={showMaxButton}
-        showMaxInfoButton={showMaxInfoButton}
-        subText={baseAmountSubText}
       />
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
-        label={t("orders.to")}
+        hasError={!!quoteAmountError}
+        isLoading={isSell && isRequesting}
+        isQuote={isQuote}
         amount={isSell ? quoteAmount : baseAmount}
+        includeAmountInput={
+          !isSell || canSetQuoteAmount || (!!quoteAmount && !isRequesting)
+        }
+        readOnly={readOnly}
+        label={t("orders.to")}
+        selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
         onAmountChange={(e) =>
           handleTokenAmountChange(e, onQuoteAmountChange || onBaseAmountChange)
         }
         onChangeTokenClicked={() => {
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
-        readOnly={readOnly}
-        hasError={!!quoteAmountError}
-        includeAmountInput={
-          !isSell || canSetQuoteAmount || (!!quoteAmount && !isRequesting)
-        }
-        selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
-        isLoading={isSell && isRequesting}
-        isQuote={isQuote}
       />
       {!showMaxButton &&
         showMaxInfoButton &&

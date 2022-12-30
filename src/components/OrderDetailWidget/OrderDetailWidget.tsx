@@ -79,7 +79,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     order.signerAmount,
     signerToken?.decimals
   );
-
+  const senderTokenSymbol = senderToken?.symbol;
+  const signerTokenSymbol = signerToken?.symbol;
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
@@ -224,8 +225,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
         orderChainId={orderChainId}
-        token1={signerToken?.symbol}
-        token2={senderToken?.symbol}
+        token1={signerTokenSymbol}
+        token2={senderTokenSymbol}
         rate={tokenExchangeRate}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
@@ -249,7 +250,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         networkIsUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
-        senderTokenSymbol={senderToken?.symbol}
+        senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />

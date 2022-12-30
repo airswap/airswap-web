@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -26,7 +26,6 @@ import {
   selectMakeOtcReducer,
   setError,
 } from "../../features/makeOtc/makeOtcSlice";
-import { getSavedActiveTokensInfo } from "../../features/metadata/metadataApi";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
@@ -174,12 +173,6 @@ const MakeWidget: FC = () => {
 
     return setOrderType(OrderType.publicListed);
   }, [orderScopeTypeOption]);
-
-  useMemo(() => {
-    if (chainId && account) {
-      getSavedActiveTokensInfo(account, chainId);
-    }
-  }, [chainId, account]);
 
   useEffect(() => {
     if (lastUserOrder) {
@@ -424,14 +417,14 @@ const MakeWidget: FC = () => {
         isHidden={!showTokenSelectModal}
       >
         <TokenList
+          activeTokens={activeTokens}
+          allTokens={allTokens}
+          balances={balances}
+          supportedTokenAddresses={[]}
           onSelectToken={(newTokenAddress) => {
             handleSetToken(showTokenSelectModal, newTokenAddress);
             setShowTokenSelectModal(null);
           }}
-          balances={balances}
-          allTokens={allTokens}
-          activeTokens={activeTokens}
-          supportedTokenAddresses={[]}
         />
       </Overlay>
       <Overlay

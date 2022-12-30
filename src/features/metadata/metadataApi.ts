@@ -3,8 +3,10 @@ import { fetchTokens, scrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { providers } from "ethers";
+import * as ethers from "ethers";
 import uniqBy from "lodash.uniqby";
+
+import { MetadataTokens } from "./metadataSlice";
 
 const tokensCache: {
   [chainId: number]: TokenInfo[];
@@ -16,7 +18,13 @@ export const getActiveTokensLocalStorageKey: (
 ) => string = (account, chainId) =>
   `airswap/activeTokens/${account}/${chainId}`;
 
-export const getCachedMetadataLocalStorageKey = (chainId: number): string =>
+export const getCustomTokensLocalStorageKey: (
+  account: string,
+  chainId: number
+) => string = (account, chainId) =>
+  `airswap/customTokens/${account}/${chainId}`;
+
+export const getAllTokensLocalStorageKey = (chainId: number): string =>
   `airswap/metadataCache/${chainId}`;
 
 export const getAllTokens = async (chainId: number) => {
@@ -33,44 +41,16 @@ export const getUnknownTokens = async (
   chainId: number,
   supportedTokenAddresses: string[],
   allTokens: TokenInfo[],
-  provider: providers.Provider
+  provider: ethers.providers.BaseProvider
 ): Promise<TokenInfo[]> => {
-  const storageKey = getCachedMetadataLocalStorageKey(chainId);
-  // Get a list of all token addresses from token lists
-  const uniqueTokenListAddresses = uniqBy(allTokens, (t) => t.address).map(
-    (t) => t.address
-  );
-
-  // Get any tokens we've previously manually looked up from cache
-  let localStorageTokens: TokenInfo[] = [];
-  const localStorageData = localStorage.getItem(storageKey);
-  if (localStorageData) {
-    try {
-      localStorageTokens = (JSON.parse(localStorageData) as TokenInfo[]).filter(
-        // This filter ensures we don't continue to store tokens that become
-        // unsupported or contained in token lists.
-        (t) =>
-          !uniqueTokenListAddresses.includes(t.address) &&
-          supportedTokenAddresses.includes(t.address)
-      );
-    } catch (e) {
-      localStorage.removeItem(storageKey);
-    }
-  }
-
-  const localStorageTokenAddresses = localStorageTokens.map((t) => t.address);
-  const knownTokens = uniqueTokenListAddresses.concat(
-    localStorageTokenAddresses
-  );
-
   // Determine tokens we still don't know about.
+  const allTokenAddresses = allTokens.map((token) => token.address);
   const unknownTokens = supportedTokenAddresses.filter(
-    (supportedTokenAddr) => !knownTokens.includes(supportedTokenAddr)
+    (supportedTokenAddr) => !allTokenAddresses.includes(supportedTokenAddr)
   );
 
   let scrapedTokens: TokenInfo[] = [];
   if (unknownTokens.length) {
-    // @ts-ignore provider type mismatch w/ metadata repo
     const scrapePromises = unknownTokens.map((t) => scrapeToken(t, provider));
     const results = await Promise.allSettled(scrapePromises);
     scrapedTokens = results
@@ -84,22 +64,40 @@ export const getUnknownTokens = async (
       });
   }
 
-  localStorageTokens = localStorageTokens.concat(scrapedTokens);
-  localStorage.setItem(storageKey, JSON.stringify(localStorageTokens));
-
-  return localStorageTokens;
+  return scrapedTokens;
 };
 
 export const getActiveTokensFromLocalStorage = (
   account: string,
   chainId: number
-) => {
+): MetadataTokens["active"] => {
   const savedTokens = (
     localStorage.getItem(getActiveTokensLocalStorageKey(account, chainId)) || ""
   )
     .split(",")
     .filter((address) => address.length);
   return (savedTokens.length && savedTokens) || [];
+};
+
+export const getCustomTokensFromLocalStorage = (
+  account: string,
+  chainId: number
+): MetadataTokens["custom"] => {
+  const savedTokens = (
+    localStorage.getItem(getCustomTokensLocalStorageKey(account, chainId)) || ""
+  )
+    .split(",")
+    .filter((address) => address.length);
+  return (savedTokens.length && savedTokens) || [];
+};
+
+export const getAllTokensFromLocalStorage = (
+  chainId: number
+): MetadataTokens["all"] => {
+  const localStorageItem = localStorage.getItem(
+    getAllTokensLocalStorageKey(chainId)
+  );
+  return localStorageItem ? JSON.parse(localStorageItem) : {};
 };
 
 export const getSavedActiveTokensInfo = async (

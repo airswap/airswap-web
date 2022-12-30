@@ -27,6 +27,11 @@ const useMaxAmount = (
     }
 
     const tokenInfo = findEthOrTokenByAddress(token, activeTokens, chainId);
+
+    if (!tokenInfo) {
+      return null;
+    }
+
     return getTokenMaxAmount(
       token,
       balances,

@@ -16,7 +16,9 @@ import {
 } from "../../features/balances/balancesSlice";
 import {
   addActiveToken,
+  addCustomToken,
   removeActiveToken,
+  removeCustomToken,
 } from "../../features/metadata/metadataSlice";
 import useWindowSize from "../../hooks/useWindowSize";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
@@ -34,6 +36,7 @@ import {
   SizingContainer,
 } from "./TokenList.styles";
 import { filterTokens } from "./filter";
+import useScrapeToken from "./hooks/useScrapeToken";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
@@ -79,17 +82,19 @@ const TokenList = ({
   onAfterRemoveActiveToken,
 }: TokenListProps) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
   const { width, height } = useWindowSize();
-  const { chainId, library } = useWeb3React<Web3Provider>();
+  const { account, chainId, library } = useWeb3React<Web3Provider>();
 
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState(false);
   const [editMode, setEditMode] = useState(false);
-
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const { t } = useTranslation();
+
+  const scrapedToken = useScrapeToken(tokenQuery, allTokens);
 
   // sort tokens based on symbol
   const sortedTokens: TokenInfo[] = useMemo(() => {
@@ -108,20 +113,23 @@ const TokenList = ({
   // sort inactive tokens based on symbol
   const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
     return sortTokenByExactMatch(
-      allTokens.filter((el) => {
-        return !activeTokens.includes(el);
-      }),
+      allTokens.filter((token) => !activeTokens.includes(token)),
       tokenQuery
     );
   }, [allTokens, activeTokens, tokenQuery]);
 
-  // only take the top 10 tokens
   const inactiveTokens: TokenInfo[] = useMemo(() => {
+    // if a scraped token is found, only show that one
+    if (scrapedToken) {
+      return [scrapedToken];
+    }
+
+    // else only take the top 100 tokens
     return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
       0,
       100
     );
-  }, [sortedInactiveTokens, tokenQuery]);
+  }, [sortedInactiveTokens, tokenQuery, scrapedToken]);
 
   useEffect(() => {
     if (
@@ -148,12 +156,17 @@ const TokenList = ({
     height,
   ]);
 
-  const handleAddActiveToken = (address: string) => {
-    if (library) {
-      dispatch(addActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
+  const handleAddToken = async (address: string) => {
+    const isCustomToken = scrapedToken?.address === address;
+
+    if (library && account) {
+      if (isCustomToken) {
+        dispatch(addCustomToken(address));
+      }
+      await dispatch(addActiveToken(address));
+      dispatch(requestActiveTokenBalances({ provider: library }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
 
       onAfterAddActiveToken && onAfterAddActiveToken(address);
     }
@@ -162,9 +175,7 @@ const TokenList = ({
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       dispatch(removeActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library! }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library! }));
+      dispatch(removeCustomToken(address));
 
       onAfterRemoveActiveToken && onAfterRemoveActiveToken(address);
     }
@@ -220,7 +231,7 @@ const TokenList = ({
                 inactiveTokens={inactiveTokens}
                 supportedTokenAddresses={supportedTokenAddresses}
                 onTokenClick={(tokenAddress) => {
-                  handleAddActiveToken(tokenAddress);
+                  handleAddToken(tokenAddress);
                   setTokenQuery("");
                 }}
               />

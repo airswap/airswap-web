@@ -64,7 +64,7 @@ const TokenButton = ({
       disabled={disabled}
       showDeleteButton={showDeleteButton}
     >
-      <TokenLogo tokenInfo={token} size="small" />
+      <TokenLogo logoURI={token.logoURI} size="small" />
 
       <TokenSymbolAndName>
         <Symbol>{token.symbol}</Symbol>

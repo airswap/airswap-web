@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, FormEventHandler } from "react";
+import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/typescript";
@@ -22,6 +22,7 @@ import {
   InfoLabel,
   SubText,
 } from "./TokenSelect.styles";
+import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
@@ -109,16 +110,18 @@ const TokenSelect: FC<TokenSelectProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const tokenText = useMemo(() => {
+    return getTokenText(selectedToken, readOnly);
+  }, [selectedToken, readOnly]);
+
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
       <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-        <TokenLogoLeft size="large" tokenInfo={selectedToken} />
+        <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
         <StyledSelector>
           <StyledLabel>{label}</StyledLabel>
           <StyledSelectItem>
-            <StyledSelectButtonContent>
-              {selectedToken ? selectedToken.symbol : t("common.select")}
-            </StyledSelectButtonContent>
+            <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
             <StyledDownArrow $invisible={readOnly} />
           </StyledSelectItem>
         </StyledSelector>
@@ -158,7 +161,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               i
             </InfoLabel>
           )}
-          <TokenLogoRight size="medium" tokenInfo={selectedToken} />
+          <TokenLogoRight logoURI={selectedToken?.logoURI} size="medium" />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

@@ -19,7 +19,7 @@ export default function getTokenMaxInfoText(
   const transactionFee =
     tokenInfo.address === nativeCurrencyAddress &&
     nativeCurrencySafeTransactionFee[tokenInfo.chainId];
-  const amountAndSymbolText = `${maxAmount} ${tokenInfo.symbol}`;
+  const amountAndSymbolText = `${maxAmount} ${tokenInfo?.symbol}`;
 
   if (transactionFee) {
     return t("orders.nativeCurrencyMaxInfoText", {

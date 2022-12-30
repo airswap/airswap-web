@@ -1,30 +1,90 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
+import { Web3Provider } from "@ethersproject/providers";
 import { TokenInfo } from "@uniswap/token-lists";
+import { useWeb3React } from "@web3-react/core";
 
-import { useAppSelector } from "../../../app/hooks";
-import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { getAllTokensFromLocalStorage } from "../../../features/metadata/metadataApi";
+import {
+  addTokenInfo,
+  selectAllTokenInfo,
+} from "../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
+import { selectWallet } from "../../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
+import scrapeToken from "../../../helpers/scrapeToken";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
-const useTakerTokenInfo = (token: string | null): TokenInfo | null => {
+const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
+  const dispatch = useAppDispatch();
+  const { library } = useWeb3React<Web3Provider>();
+
+  const { connected } = useAppSelector(selectWallet);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
-  const chainId = useMemo(
-    () => (activeOrder ? parseInt(activeOrder.chainId) : undefined),
-    [activeOrder]
-  );
 
-  return useMemo(() => {
-    if (!token || !chainId) {
-      return null;
+  const [token, setToken] = useState<TokenInfo>();
+  const [scrapedToken, setScrapedToken] = useState<TokenInfo>();
+  const [isCallScrapeTokenLoading, setIsCallScrapeTokenLoading] =
+    useState(false);
+  const [isCallScrapeTokenSuccess, setIsCallScrapeTokenSuccess] =
+    useState(false);
+
+  useEffect(() => {
+    if (scrapedToken) {
+      dispatch(addTokenInfo(scrapedToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrapedToken]);
+
+  useEffect(() => {
+    if (!activeOrder || !address || !allTokens.length) {
+      return;
     }
 
-    return findEthOrTokenByAddress(token, allTokens, chainId);
-  }, [allTokens, token, chainId]);
+    const chainId = parseInt(activeOrder.chainId);
+
+    // If wallet is not connected the metadata tokens can't be filled yet because it gets chainId from
+    // the wallet. But in this case we have the chainId from the order already. So we can get tokens from
+    // localStorage directly so we don't have to wait for the wallet getting connected.
+
+    const tokensObject = getAllTokensFromLocalStorage(chainId);
+
+    const tokens = [
+      ...allTokens,
+      ...(!connected ? Object.values(tokensObject) : []),
+    ];
+
+    const callScrapeToken = async () => {
+      setIsCallScrapeTokenLoading(true);
+
+      const result = await scrapeToken(address, library || null, chainId);
+      if (result) {
+        setScrapedToken(result);
+      }
+
+      setIsCallScrapeTokenSuccess(true);
+      setIsCallScrapeTokenLoading(false);
+    };
+
+    const tokenFromStore = findEthOrTokenByAddress(address, tokens, chainId);
+
+    if (tokenFromStore) {
+      setToken(tokenFromStore);
+    } else if (
+      !tokenFromStore &&
+      !isCallScrapeTokenLoading &&
+      !isCallScrapeTokenSuccess
+    ) {
+      callScrapeToken();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTokens, address, activeOrder, connected]);
+
+  return token || scrapedToken || null;
 };
 
 export default useTakerTokenInfo;

@@ -33,7 +33,7 @@ import {
   selectBalances,
 } from "../../features/balances/balancesSlice";
 import {
-  selectActiveTokens,
+  selectActiveTokensWithoutCustomTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { check } from "../../features/orders/orderApi";
@@ -67,10 +67,7 @@ import {
   ProtocolType,
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
-import {
-  setUserTokens,
-  selectUserTokens,
-} from "../../features/userSettings/userSettingsSlice";
+import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -79,7 +76,6 @@ import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../hooks/useSwapType";
-import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
@@ -99,6 +95,7 @@ import StyledSwapWidget, {
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
+import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -117,11 +114,10 @@ const SwapWidget: FC = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
-  const activeTokens = useAppSelector(selectActiveTokens);
+  const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
-  const userTokens = useAppSelector(selectUserTokens);
   const lastTransaction = useAppSelector(selectTransactions)[0];
 
   // Contexts
@@ -175,20 +171,8 @@ const SwapWidget: FC = () => {
     error: web3Error,
   } = useWeb3React<Web3Provider>();
 
-  const defaultBaseTokenAddress = useTokenAddress("USDT");
-  const defaultQuoteTokenAddress = nativeCurrency[chainId!]?.address;
-
-  // Use default tokens only if neither are specified in the URL or store.
-  const baseToken = tokenFrom
-    ? tokenFrom
-    : tokenTo
-    ? null
-    : userTokens.tokenFrom || defaultBaseTokenAddress;
-  const quoteToken = tokenTo
-    ? tokenTo
-    : tokenFrom
-    ? null
-    : userTokens.tokenTo || defaultQuoteTokenAddress;
+  const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
+  const quoteToken = useTokenOrFallback(tokenFrom, tokenTo);
 
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);

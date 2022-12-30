@@ -36,7 +36,7 @@ const TokenImportButton = ({
 
   return (
     <Container>
-      <TokenLogo tokenInfo={token} size="medium" />
+      <TokenLogo logoURI={token.logoURI} size="medium" />
 
       <TextContainer>
         <Symbol>{token.symbol}</Symbol>
