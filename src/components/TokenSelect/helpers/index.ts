@@ -10,7 +10,7 @@ export const getTokenText = (
     return "";
   }
 
-  if (token === null) {
+  if (!token) {
     return i18n.t("common.select");
   }
 
