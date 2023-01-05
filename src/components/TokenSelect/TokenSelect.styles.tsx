@@ -73,7 +73,7 @@ export const MaxButtonStyle = css`
   align-self: center;
   border-radius: 0.125rem;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.81rem;
   line-height: 1;
   background-color: ${(props) => props.theme.colors.lightGrey};
   color: ${(props) => props.theme.colors.black};
