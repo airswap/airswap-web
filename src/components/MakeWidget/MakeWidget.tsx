@@ -351,8 +351,8 @@ const MakeWidget: FC = () => {
           !hasMissingMakerAmount &&
           !hasMissingTakerAmount && (
             <StyledRateField
-              token1={makerTokenInfo?.symbol || "??"}
-              token2={takerTokenInfo?.symbol || "??"}
+              token1={makerTokenInfo.symbol}
+              token2={takerTokenInfo.symbol}
               rate={new BigNumber(takerAmount).dividedBy(
                 new BigNumber(makerAmount)
               )}

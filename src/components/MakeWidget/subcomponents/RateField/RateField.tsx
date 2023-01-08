@@ -21,7 +21,7 @@ export const RateField: React.FC<RateFieldProps> = ({
   rate,
   className,
 }) => {
-  const [tokenPair, setTokenPair] = useState([token1, token2]);
+  const [invertPair, setInvertPair] = useState(false);
   const [currentRate, setCurrentRate] = useState(rate);
 
   const displayRate = useMemo(
@@ -33,8 +33,13 @@ export const RateField: React.FC<RateFieldProps> = ({
     setCurrentRate(rate);
   }, [rate]);
 
+  useEffect(() => {
+    setInvertPair(false);
+  }, [token1, token2, rate]);
+
   function handleClick() {
-    setTokenPair([tokenPair[1], tokenPair[0]]);
+    const newInvertState = !invertPair;
+    setInvertPair(newInvertState);
     setCurrentRate(new BigNumber("1").div(currentRate));
   }
 
@@ -45,9 +50,9 @@ export const RateField: React.FC<RateFieldProps> = ({
       isButton={isButton}
       className={className}
     >
-      <Text>{` 1 ${tokenPair[0]} =`}</Text>
+      <Text>{` 1 ${invertPair ? token2 : token1} =`}</Text>
       <RateBox>{displayRate}</RateBox>
-      <Text>{tokenPair[1]}</Text>
+      <Text>{invertPair ? token1 : token2}</Text>
       {isButton ? (
         <Icon name="swap-horizontal" iconSize={0.75} />
       ) : (
