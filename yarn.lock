@@ -33,10 +33,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.3.4.tgz#e7e7cb64db8de38ea4bbf931117156836d6befc0"
-  integrity sha512-xiuFj9uGPe4K+G3yJkzneK37aH2Nt5b73CAh20Jfz8RYPDZ1CWJ3E3q3blnNZWm472C2NeB1f5mTctdu7off2g==
+"@airswap/libraries@3.3.5":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-3.3.5.tgz#aeddabc99704a6dc37f114c65095ecabce9ebbe4"
+  integrity sha512-yiehHwyeRqRNpm5M4xUV8vMlT5NibNxdMT4yYXS6kvnGEMhSK7gWxXJD4+lWrlIo7TYnlG9AWjK8mJed3Untrw==
   dependencies:
     "@airswap/constants" "3.0.4"
     "@airswap/indexer-registry" "3.1.2"
@@ -44,7 +44,7 @@
     "@airswap/maker-registry" "3.1.4"
     "@airswap/swap-erc20" "3.0.1"
     "@airswap/typescript" "3.0.2"
-    "@airswap/utils" "3.0.5"
+    "@airswap/utils" "3.0.6"
     "@airswap/wrapper" "3.1.5"
     bignumber.js "^9.0.0"
     browser-or-node "^1.3.0"
@@ -88,12 +88,12 @@
     "@airswap/constants" "3.0.3"
     "@uniswap/token-lists" "^1.0.0-beta.26"
 
-"@airswap/utils@3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.5.tgz#2fe8257778721f2d54ca2d6387ce9ec408094d2a"
-  integrity sha512-oBg2pOUF/bG2A9vurIyAgTZB5Z6h9K+Gqq1rgfpULp7sfrnkdwXROo3UX37VccFOa/GLr2r9bc1es1/va3E9Yw==
+"@airswap/utils@3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-3.0.6.tgz#b35344b2757a3999196bb9060ce4a56c9b6a41dd"
+  integrity sha512-KQkYOihzSpPmWtgqlvFeHEjdGT9bZUq8NEAs4bPX6FCDTH/53ld7yX/UFJtl2vMJ9izfi48/6FUYS7YmiJ1ZXA==
   dependencies:
-    "@airswap/constants" "3.0.3"
+    "@airswap/constants" "3.0.4"
     "@airswap/typescript" "3.0.2"
     "@types/ethereumjs-util" "^6.1.0"
     bignumber.js "^9.0.1"
