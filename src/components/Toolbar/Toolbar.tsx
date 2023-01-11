@@ -83,7 +83,7 @@ const Toolbar: FC<ToolbarProps> = ({
         <ToolbarButton
           iconName="bars"
           text={t("common.stats")}
-          href="https://dune.xyz/agrimony/AirSwap-v2"
+          href="https://dune.com/airswap/airswap-v3"
         />
         <ToolbarButton
           iconName="vote"
