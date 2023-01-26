@@ -414,7 +414,7 @@ const MakeWidget: FC = () => {
       />
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModal(null)}
-        isHidden={!showTokenSelectModal}
+        isHidden={!showTokenSelectModal || !active}
       >
         <TokenList
           activeTokens={activeTokens}

@@ -8,6 +8,10 @@ import {
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
 import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
+import {
   declineTransaction,
   expireTransaction,
   mineTransaction,
@@ -237,6 +241,8 @@ export const transactionsSlice = createSlice({
         protocol: action.payload.protocol,
       });
     });
+    builder.addCase(setWalletConnected, () => initialState);
+    builder.addCase(setWalletDisconnected, () => initialState);
   },
 });
 

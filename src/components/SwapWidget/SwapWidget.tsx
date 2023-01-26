@@ -758,7 +758,7 @@ const SwapWidget: FC = () => {
 
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
-        isHidden={!showTokenSelectModalFor}
+        isHidden={!showTokenSelectModalFor || !active}
       >
         <TokenList
           onSelectToken={(newTokenAddress) => {
