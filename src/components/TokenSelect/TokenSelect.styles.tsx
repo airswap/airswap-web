@@ -72,6 +72,7 @@ export const MaxButtonStyle = css`
   bottom: 1px;
   align-self: center;
   border-radius: 0.125rem;
+  font-family: Verdana, sans-serif;
   font-weight: 600;
   font-size: 0.75rem;
   line-height: 1;
