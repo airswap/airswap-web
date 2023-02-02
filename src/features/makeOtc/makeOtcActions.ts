@@ -91,7 +91,7 @@ export const createOtcOrder = createAsyncThunk(
       const fullOrder: FullOrderERC20 = {
         ...unsignedOrder,
         ...signature,
-        chainId: params.chainId.toString(),
+        chainId: params.chainId,
         swapContract: swapDeploys[params.chainId],
       };
 

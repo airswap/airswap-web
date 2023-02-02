@@ -32,7 +32,7 @@ const getPriceOfTokenInWethFromUniswap: (
   chainId: number
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
-  const wethAddress = wrappedTokenAddresses[String(chainId)];
+  const wethAddress = wrappedTokenAddresses[chainId];
   if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
     return new BigNumber(1);
 

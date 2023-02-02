@@ -45,7 +45,7 @@ const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
       return;
     }
 
-    const chainId = parseInt(activeOrder.chainId);
+    const chainId = activeOrder.chainId;
 
     // If wallet is not connected the metadata tokens can't be filled yet because it gets chainId from
     // the wallet. But in this case we have the chainId from the order already. So we can get tokens from
@@ -61,12 +61,15 @@ const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const result = await scrapeToken(address, library || null, chainId);
-      if (result) {
-        setScrapedToken(result);
+      if (library) {
+        const result = await scrapeToken(address, library);
+        if (result) {
+          setScrapedToken(result);
+        }
+        setIsCallScrapeTokenSuccess(true);
+      } else {
+        setIsCallScrapeTokenSuccess(false);
       }
-
-      setIsCallScrapeTokenSuccess(true);
       setIsCallScrapeTokenLoading(false);
     };
 

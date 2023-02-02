@@ -50,7 +50,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;
 
   const wrongChainId = useMemo(() => {
-    return chainId?.toString() !== order.chainId;
+    return chainId !== order.chainId;
   }, [chainId, order]);
 
   const handleBackButtonClick = () => {

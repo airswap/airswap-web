@@ -1,11 +1,11 @@
-import { scrapeToken as airSwapScrapeToken } from "@airswap/metadata";
+import { getTokenFromContract as airSwapScrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@uniswap/token-lists";
 
 import * as ethers from "ethers";
 
 const scrapeToken = (
   address: string,
-  provider: ethers.providers.BaseProvider | string | null,
+  provider: ethers.providers.BaseProvider,
   chainId?: number
 ): Promise<TokenInfo | undefined> => {
   return new Promise<TokenInfo | undefined>(async (resolve) => {
@@ -14,7 +14,7 @@ const scrapeToken = (
     }
 
     try {
-      const tokenInfo = await airSwapScrapeToken(address, provider, chainId);
+      const tokenInfo = await airSwapScrapeToken(provider, address);
       resolve(tokenInfo);
     } catch (e) {
       console.error(e);
