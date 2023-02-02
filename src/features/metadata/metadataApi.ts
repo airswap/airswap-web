@@ -51,7 +51,9 @@ export const getUnknownTokens = async (
 
   let scrapedTokens: TokenInfo[] = [];
   if (unknownTokens.length) {
-    const scrapePromises = unknownTokens.map((t) => getTokenFromContract(provider, t));
+    const scrapePromises = unknownTokens.map((t) =>
+      getTokenFromContract(provider, t)
+    );
     const results = await Promise.allSettled(scrapePromises);
     scrapedTokens = results
       .filter((r) => r.status === "fulfilled")

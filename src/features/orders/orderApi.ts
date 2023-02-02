@@ -52,7 +52,10 @@ async function swapWrapper(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20
 ) {
-  return await new Wrapper(chainId, provider).swapERC20(order, provider.getSigner());
+  return await new Wrapper(chainId, provider).swapERC20(
+    order,
+    provider.getSigner()
+  );
 }
 
 export async function requestOrders(
