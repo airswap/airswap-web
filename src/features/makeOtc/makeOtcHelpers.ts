@@ -6,14 +6,14 @@ import {
 
 export const getUserOtcOrdersLocalStorageKey: (
   account: string,
-  chainId: string | number
+  chainId: number
 ) => string = (account, chainId) =>
   `airswap/userOtcOrders/${account}/${chainId}`;
 
 export const writeUserOrdersToLocalStorage = (
   orders: FullOrderERC20[],
   address: string,
-  chainId: string | number
+  chainId: number
 ): void => {
   const key = getUserOtcOrdersLocalStorageKey(address, chainId);
   localStorage.setItem(
@@ -24,7 +24,7 @@ export const writeUserOrdersToLocalStorage = (
 
 export const getUserOrdersFromLocalStorage = (
   address: string,
-  chainId: string | number
+  chainId: number
 ): FullOrderERC20[] => {
   const localStorageUserOrders = localStorage.getItem(
     getUserOtcOrdersLocalStorageKey(address, chainId)

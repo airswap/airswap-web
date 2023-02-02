@@ -52,7 +52,10 @@ async function swapWrapper(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20
 ) {
-  return await new Wrapper(chainId, provider).swap(order, provider.getSigner());
+  return await new Wrapper(chainId, provider).swapERC20(
+    order,
+    provider.getSigner()
+  );
 }
 
 export async function requestOrders(
@@ -230,7 +233,7 @@ export async function getNonceUsed(
   order: FullOrderERC20,
   provider: ethers.providers.Web3Provider
 ): Promise<boolean> {
-  return new SwapERC20(parseInt(order.chainId), provider).contract.nonceUsed(
+  return new SwapERC20(order.chainId, provider).contract.nonceUsed(
     order.signerWallet,
     order.nonce
   );

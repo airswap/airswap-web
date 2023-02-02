@@ -5,7 +5,7 @@ const switchToEthereumChain = () => {
       method: "wallet_switchEthereumChain",
       params: [
         {
-          chainId: "0x1",
+          chainId: 1,
         },
       ],
     });

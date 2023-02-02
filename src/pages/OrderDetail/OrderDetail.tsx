@@ -27,7 +27,7 @@ const OrderDetail: FC = () => {
 
   useEffect(() => {
     if (activeOrder && !isFetchingAllTokens) {
-      dispatch(fetchAllTokens(parseInt(activeOrder.chainId)));
+      dispatch(fetchAllTokens(activeOrder.chainId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeOrder]);

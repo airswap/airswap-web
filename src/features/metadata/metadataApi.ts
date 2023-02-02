@@ -1,5 +1,5 @@
 import { SwapERC20 } from "@airswap/libraries";
-import { fetchTokens, scrapeToken } from "@airswap/metadata";
+import { getKnownTokens, getTokenFromContract } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 
@@ -30,7 +30,7 @@ export const getAllTokensLocalStorageKey = (chainId: number): string =>
 export const getAllTokens = async (chainId: number) => {
   let tokens;
   if (!tokensCache[chainId]) {
-    tokensCache[chainId] = (await fetchTokens(chainId)).tokens;
+    tokensCache[chainId] = (await getKnownTokens(chainId)).tokens;
     //TODO: handle failure here, need to decide what to do with errors
   }
   tokens = tokensCache[chainId];
@@ -51,7 +51,9 @@ export const getUnknownTokens = async (
 
   let scrapedTokens: TokenInfo[] = [];
   if (unknownTokens.length) {
-    const scrapePromises = unknownTokens.map((t) => scrapeToken(t, provider));
+    const scrapePromises = unknownTokens.map((t) =>
+      getTokenFromContract(provider, t)
+    );
     const results = await Promise.allSettled(scrapePromises);
     scrapedTokens = results
       .filter((r) => r.status === "fulfilled")

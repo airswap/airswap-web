@@ -96,7 +96,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     senderAmount!
   );
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
-  const orderChainId = useMemo(() => parseInt(order.chainId), [order]);
+  const orderChainId = useMemo(() => order.chainId, [order]);
   const walletChainIdIsDifferentThanOrderChainId =
     !!chainId && orderChainId !== chainId;
 
@@ -132,7 +132,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     const errors = await check(
       order,
       order.senderWallet,
-      parseInt(order.chainId),
+      order.chainId,
       library!.getSigner()
     );
 

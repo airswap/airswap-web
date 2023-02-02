@@ -12,14 +12,6 @@ const nativeCurrency: Record<number, TokenInfo> = {
     symbol: "ETH",
     logoURI: "images/ethereum-logo.png",
   },
-  4: {
-    chainId: 4,
-    address: nativeCurrencyAddress,
-    name: "Ether",
-    decimals: 18,
-    symbol: "ETH",
-    logoURI: "images/ethereum-logo.png",
-  },
   5: {
     chainId: 5,
     address: nativeCurrencyAddress,
@@ -27,6 +19,14 @@ const nativeCurrency: Record<number, TokenInfo> = {
     decimals: 18,
     symbol: "ETH",
     logoURI: "images/ethereum-logo.png",
+  },
+  30: {
+    chainId: 30,
+    address: nativeCurrencyAddress,
+    name: "RBTC",
+    decimals: 18,
+    symbol: "RBTC",
+    logoURI: "images/rbtc-logo.png",
   },
   56: {
     chainId: 56,

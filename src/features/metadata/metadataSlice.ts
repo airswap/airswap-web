@@ -1,4 +1,4 @@
-import { fetchTokens } from "@airswap/metadata";
+import { getKnownTokens } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/typescript";
 import { Web3Provider } from "@ethersproject/providers";
 import {
@@ -56,8 +56,8 @@ export const fetchAllTokens = createAsyncThunk<
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/fetchTokens", async (chainId, thunkApi) => {
-  return (await fetchTokens(chainId)).tokens;
+>("metadata/getKnownTokens", async (chainId, thunkApi) => {
+  return (await getKnownTokens(chainId)).tokens;
 });
 
 export const fetchUnkownTokens = createAsyncThunk<
