@@ -245,6 +245,12 @@ const SwapWidget: FC = () => {
     [quoteAmount]
   );
 
+  useEffect(() => {
+    if (!active) {
+      setShowTokenSelectModalFor(null);
+    }
+  }, [active]);
+
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -758,7 +764,7 @@ const SwapWidget: FC = () => {
 
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
-        isHidden={!showTokenSelectModalFor || !active}
+        isHidden={!showTokenSelectModalFor}
       >
         <TokenList
           onSelectToken={(newTokenAddress) => {
