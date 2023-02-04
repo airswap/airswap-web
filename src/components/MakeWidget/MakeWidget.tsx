@@ -182,6 +182,12 @@ const MakeWidget: FC = () => {
     }
   }, [lastUserOrder, history, dispatch]);
 
+  useEffect(() => {
+    if (!active) {
+      setShowTokenSelectModal(null);
+    }
+  }, [active]);
+
   // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
     setOrderType(isChecked ? OrderType.publicListed : OrderType.publicUnlisted);

@@ -190,9 +190,7 @@ export const metadataSlice = createSlice({
           getCustomTokensFromLocalStorage(address, chainId) || [];
         state.tokens.all = getAllTokensFromLocalStorage(chainId);
       })
-      .addCase(setWalletDisconnected, (state) => {
-        state.tokens.active = [];
-      });
+      .addCase(setWalletDisconnected, () => initialState);
   },
 });
 

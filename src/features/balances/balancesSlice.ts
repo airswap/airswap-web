@@ -11,7 +11,10 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
-import { setWalletConnected } from "../wallet/walletSlice";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
 import {
   fetchAllowancesSwap,
   fetchAllowancesWrapper,
@@ -162,9 +165,6 @@ const getSlice = (
     },
     extraReducers: (builder) => {
       builder
-        // Reset to initial state if a new account is connected.
-        .addCase(setWalletConnected, () => initialState)
-
         // Handle requesting balances
         .addCase(asyncThunk.pending, (state) => {
           state.status = "fetching";
@@ -194,7 +194,9 @@ const getSlice = (
         })
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
-        });
+        })
+        .addCase(setWalletConnected, () => initialState)
+        .addCase(setWalletDisconnected, () => initialState);
     },
   });
 };

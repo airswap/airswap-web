@@ -1,6 +1,5 @@
-import { useTranslation } from "react-i18next";
-
 import useAddressOrEnsName from "../../../../hooks/useAddressOrEnsName";
+import { getWalletButtonText } from "../../helpers";
 import {
   ConnectionStatusCircle,
   Button,
@@ -9,33 +8,29 @@ import {
 } from "./WalletAddress.styles";
 
 type WalletAddressPropsType = {
-  address: string | null;
+  isConnected: boolean;
   isUnsupportedNetwork?: boolean;
-  showBlockies?: boolean;
+  address: string | null;
   glow?: boolean;
-  setTransactionsTabOpen: (x: boolean) => void;
   setShowWalletList: (x: boolean) => void;
+  setTransactionsTabOpen: (x: boolean) => void;
 };
 
 const WalletAddress = ({
-  address,
+  isConnected,
   isUnsupportedNetwork = false,
-  setTransactionsTabOpen,
-  setShowWalletList,
+  address,
   glow,
+  setShowWalletList,
+  setTransactionsTabOpen,
 }: WalletAddressPropsType) => {
-  const { t } = useTranslation();
   const addressOrName = useAddressOrEnsName(address);
 
   const renderContent = () => (
     <StyledBorderedButton $glow={glow}>
-      <ConnectionStatusCircle $connected={!!address} />
+      <ConnectionStatusCircle $connected={isConnected} />
       <WalletAddressText>
-        {isUnsupportedNetwork
-          ? t("wallet.unsupportedNetwork")
-          : addressOrName
-          ? addressOrName
-          : t("wallet.notConnected")}
+        {getWalletButtonText(isConnected, isUnsupportedNetwork, addressOrName)}
       </WalletAddressText>
     </StyledBorderedButton>
   );
@@ -43,7 +38,7 @@ const WalletAddress = ({
   return (
     <Button
       onClick={() => {
-        !!address ? setTransactionsTabOpen(true) : setShowWalletList(true);
+        isConnected ? setTransactionsTabOpen(true) : setShowWalletList(true);
       }}
     >
       {renderContent()}

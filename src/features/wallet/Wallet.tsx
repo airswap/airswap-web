@@ -314,10 +314,11 @@ export const Wallet: FC<WalletPropsType> = ({
           transactionsTabOpen={transactionsTabIsOpen}
         />
         <WalletButton
-          address={account}
+          isConnected={active}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
           }
+          address={account}
           glow={!!pendingTransactions.length}
           setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
           setShowWalletList={setShowWalletList}
