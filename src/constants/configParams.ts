@@ -14,6 +14,17 @@ export const RFQ_EXPIRY_BUFFER_MS = 60 * 1000;
 export const RFQ_MINIMUM_REREQUEST_DELAY_MS = 30 * 1000;
 
 /**
+ * This is the period of time within which we must receive a response from an
+ * indexer node in order for us to use it.
+ */
+export const INDEXER_NODE_MAX_HEALTHCHECK_RESPONSE_TIME_MS = 4000;
+/**
+ * This is the period of time within which we must receive a response from an
+ * indexer node in order for us to use it.
+ */
+export const INDEXER_ORDER_RESPONSE_TIME_MS = 4000;
+
+/**
  * Time in seconds of last look order expiry duration
  */
 export const LAST_LOOK_ORDER_EXPIRY_SEC = 2 * 60;
