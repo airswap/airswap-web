@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
-import { WidgetHeader } from "../../../styled-components/WidgetHeader/WidgetHeader";
-import { Title } from "../../Typography/Typography";
+import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
+import { Title } from "../../../Typography/Typography";
 
 type AvailableOrdersWidgetHeaderProps = {
   title: string;

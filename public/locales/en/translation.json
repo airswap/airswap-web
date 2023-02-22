@@ -136,6 +136,7 @@
     "protocolFeeActive": "{{fee}} protocol fee active",
     "publiclyList": "Publicly list",
     "publiclyListDescription": "Allow others to publicly find my swap",
+    "rate": "Rate",
     "receivedQuotes": "Received quotes",
     "removeFromActive": "Remove from active",
     "retryOrCancel": "Try increasing size or another token",
