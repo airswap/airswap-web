@@ -47,6 +47,7 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
         isActive={activeSortType === "rate"}
         isDescending={sortTypeDirection.rate}
         onClick={() => onSortButtonClick("rate")}
+        onRateClick={() => {}}
       >
         {t("orders.rate")}
       </SortButton>

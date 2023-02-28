@@ -17,6 +17,7 @@ interface SortButtonProps {
   isDescending?: boolean;
   isSortable?: boolean;
   onClick?: () => void;
+  onRateClick?: () => void;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
   isDescending,
   isSortable,
   onClick,
+  onRateClick,
   children,
   className,
 }) => {
@@ -46,7 +48,11 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
       <TokenText>
         {tokenText}
         {tokenTextIsRate && (
-          <StyledIconButton icon="swap-horizontal" iconSize={0.75} />
+          <StyledIconButton
+            icon="swap-horizontal"
+            iconSize={0.75}
+            onClick={onRateClick}
+          />
         )}
       </TokenText>
     </Container>

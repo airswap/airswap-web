@@ -8,28 +8,6 @@ import { OrderStatus } from "../../../../types/orderStatus";
 import IconButton from "../../../IconButton/IconButton";
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
 
-export const Circle = styled.div`
-  border-radius: 50%;
-  width: 0.5rem;
-  height: 0.5rem;
-  background: ${({ theme }) => theme.colors.green};
-`;
-
-const getIndicatorColor = (
-  theme: DefaultTheme,
-  orderStatus: OrderStatus
-): string => {
-  if (orderStatus === OrderStatus.canceled) {
-    return theme.colors.red;
-  }
-
-  if (orderStatus === OrderStatus.open) {
-    return theme.colors.green;
-  }
-
-  return theme.colors.borderGrey;
-};
-
 export const Container = styled.div<{ orderStatus: OrderStatus }>`
   ${MyOrdersGrid};
 
@@ -37,21 +15,6 @@ export const Container = styled.div<{ orderStatus: OrderStatus }>`
   border-top: 1px solid ${({ theme }) => theme.colors.borderGrey};
   align-items: center;
   height: 3rem;
-
-  ${Circle} {
-    background: ${({ theme, orderStatus }) =>
-      getIndicatorColor(theme, orderStatus)};
-  }
-`;
-
-export const StatusIndicator = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  height: 1rem;
-  cursor: pointer;
-  z-index: 2;
 `;
 
 export const Text = styled.div`
@@ -70,30 +33,6 @@ export const Text = styled.div`
   overflow: hidden;
   z-index: 2;
   pointer-events: none;
-`;
-
-export const ActionButtonContainer = styled.div`
-  position: relative;
-`;
-
-export const ActionButton = styled(IconButton)`
-  ${InputOrButtonBorderStyleType2};
-
-  position: relative;
-  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  z-index: 2;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  }
 `;
 
 export const StyledNavLink = styled(NavLink)`
