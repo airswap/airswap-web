@@ -24,6 +24,7 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
     <Container className={className}>
       <SortButton
         isSortable
+        tokenText="ETH"
         isActive={activeSortType === "signerToken"}
         isDescending={sortTypeDirection.signerToken}
         onClick={() => onSortButtonClick("signerToken")}
@@ -32,6 +33,7 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
       </SortButton>
       <SortButton
         isSortable
+        tokenText="Prints"
         isActive={activeSortType === "senderToken"}
         isDescending={sortTypeDirection.senderToken}
         onClick={() => onSortButtonClick("senderToken")}
@@ -40,6 +42,8 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
       </SortButton>
       <SortButton
         isSortable
+        tokenTextIsRate
+        tokenText="ETH/PRINTS"
         isActive={activeSortType === "rate"}
         isDescending={sortTypeDirection.rate}
         onClick={() => onSortButtonClick("rate")}

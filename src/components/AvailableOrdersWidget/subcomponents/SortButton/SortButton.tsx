@@ -1,8 +1,17 @@
 import React, { FC, PropsWithChildren } from "react";
 
-import { Arrow, Button, Container } from "./SortButton.styles";
+import IconSwap from "../../../Icon/icons/IconSwapHorizontal";
+import {
+  Arrow,
+  Button,
+  Container,
+  StyledIconButton,
+  TokenText,
+} from "./SortButton.styles";
 
 interface SortButtonProps {
+  tokenText: string;
+  tokenTextIsRate?: boolean;
   isActive?: boolean;
   isDisabled?: boolean;
   isDescending?: boolean;
@@ -12,6 +21,8 @@ interface SortButtonProps {
 }
 
 const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
+  tokenText,
+  tokenTextIsRate,
   isActive,
   isDisabled,
   isDescending,
@@ -32,7 +43,12 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
         {children}
         {isSortable && <Arrow />}
       </Button>
-      "ETH"
+      <TokenText>
+        {tokenText}
+        {tokenTextIsRate && (
+          <StyledIconButton icon="swap-horizontal" iconSize={0.75} />
+        )}
+      </TokenText>
     </Container>
   );
 };

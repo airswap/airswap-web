@@ -1,9 +1,12 @@
 import styled from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
+import IconButton from "../../../IconButton/IconButton";
 
 export const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin-left: -0.25rem;
 `;
 
@@ -32,8 +35,7 @@ export const Button = styled.button<{
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  color: ${({ theme }) => theme.colors.lightGrey};
 
   &:not(&:focus) {
     border-color: transparent;
@@ -53,5 +55,26 @@ export const Button = styled.button<{
     margin-left: ${({ hasText }) => (hasText ? "0.25rem" : "0")};
     border-top-color: ${({ theme, isActive }) =>
       isActive ? theme.colors.primary : theme.colors.lightGrey};
+  }
+`;
+
+export const TokenText = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: -0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  padding: 0 0.3rem;
+`;
+
+export const StyledIconButton = styled(IconButton)`
+  color: ${({ theme }) => theme.colors.lightGrey};
+  padding: 0;
+  border: none;
+  margin-left: 0.25rem;
+  &:hover {
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
