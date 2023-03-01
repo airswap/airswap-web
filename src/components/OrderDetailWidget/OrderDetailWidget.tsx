@@ -128,6 +128,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       : notifyError({ heading: t("toast.copyFailed"), cta: "" });
   };
 
+  const handleViewAllQuotesButtonClick = () => {
+    history.push({
+      pathname: `/${AppRoutes.availableOrders}`,
+    });
+  };
+
   const takeOrder = async () => {
     const errors = await check(
       order,
@@ -230,6 +236,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         rate={tokenExchangeRate}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
+        onViewAllQuotesButtonClick={handleViewAllQuotesButtonClick}
       />
       <ActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}

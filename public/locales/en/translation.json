@@ -169,6 +169,7 @@
     "trackTransaction": "Track this transaction on the top right",
     "transactionCompleted": "Transaction Completed",
     "unableTake": "Unable to take",
+    "viewAllQuotes": "View all quotes",
     "wrapMessage": "No protocol fee for ETH/WETH swaps",
     "youHaveNoOpenOTCOrders": "You have no open OTC orders"
   },
