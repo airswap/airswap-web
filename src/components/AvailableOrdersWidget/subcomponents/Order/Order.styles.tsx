@@ -1,14 +1,12 @@
 import { NavLink } from "react-router-dom";
 
-import styled, { DefaultTheme } from "styled-components/macro";
+import styled from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
-import { OrderStatus } from "../../../../types/orderStatus";
-import IconButton from "../../../IconButton/IconButton";
-import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
+import { MyOrdersGrid } from "../../AvailableOrdersWidget.styles";
 
-export const Container = styled.div<{ orderStatus: OrderStatus }>`
+export const Container = styled.div`
   ${MyOrdersGrid};
 
   position: relative;

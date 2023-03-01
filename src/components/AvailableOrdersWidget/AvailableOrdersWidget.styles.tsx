@@ -9,7 +9,7 @@ export const Container = styled.div`
 
 export const MyOrdersGrid = css`
   display: grid;
-  grid-template-columns: calc(33%) calc(33%) calc(33%);
+  grid-template-columns: repeat(3, calc((100% - 1rem) / 3));
   grid-column-gap: 1rem;
   width: 100%;
   padding: 0 1rem;
