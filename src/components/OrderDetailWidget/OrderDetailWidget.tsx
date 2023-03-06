@@ -134,6 +134,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     });
   };
 
+  console.log(order);
+
   const takeOrder = async () => {
     const errors = await check(
       order,

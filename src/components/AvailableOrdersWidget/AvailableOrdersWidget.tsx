@@ -1,7 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { AppRoutes } from "../../routes";
-import Routes from "../Routes/Routes";
 import ActionButton from "./subcomponents/ActionButton/ActionButton";
 import AvailableOrdersList from "./subcomponents/AvailableOrdersList/AvailableOrdersList";
 import AvailableOrdersWidgetHeader from "./subcomponents/AvailableOrdersWidgetHeader/AvailableOrdersWidgetHeader";
@@ -9,6 +9,7 @@ import AvailableOrdersWidgetHeader from "./subcomponents/AvailableOrdersWidgetHe
 export type AvailableOrdersSortType = "senderToken" | "signerToken" | "rate";
 
 const AvailableOrdersWidget = (): JSX.Element => {
+  const { t } = useTranslation();
   const history = useHistory();
   const handleCreateSwapClick = () => {
     history.push({
@@ -27,7 +28,10 @@ const AvailableOrdersWidget = (): JSX.Element => {
         }}
         onSortButtonClick={() => {}}
       />
-      <ActionButton title={"Create a Swap"} onClick={handleCreateSwapClick} />
+      <ActionButton
+        title={t("orders.createSwap")}
+        onClick={handleCreateSwapClick}
+      />
     </>
   );
 };

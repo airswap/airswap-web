@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import { ScrollBarStyle } from "../../../../style/mixins";
 import Tooltip from "../../../ExpiryIndicator/subcomponents/Tooltip";
-import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
+import AvailableOrdersListSortButtons from "../AvailableOrdersListSortButtons/AvailableOrdersListSortButtons";
 
 export const Container = styled.div`
   display: flex;
@@ -11,7 +11,9 @@ export const Container = styled.div`
   position: relative;
 `;
 
-export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
+export const StyledMyOrdersListSortButtons = styled(
+  AvailableOrdersListSortButtons
+)<{
   width: number;
 }>`
   width: ${({ width }) => (width ? `${width}px` : "100%")};

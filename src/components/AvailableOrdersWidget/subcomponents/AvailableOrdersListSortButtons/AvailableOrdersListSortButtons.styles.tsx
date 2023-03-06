@@ -1,9 +1,9 @@
 import styled from "styled-components/macro";
 
-import { MyOrdersGrid } from "../../AvailableOrdersWidget.styles";
+import { AvailableOrdersGrid } from "../../AvailableOrdersWidget.styles";
 
 export const Container = styled.div`
-  ${MyOrdersGrid};
+  ${AvailableOrdersGrid};
 
   padding-right: 1.5rem;
 `;

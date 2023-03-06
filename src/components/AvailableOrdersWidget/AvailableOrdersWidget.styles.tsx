@@ -7,7 +7,7 @@ export const Container = styled.div`
   flex-grow: 1;
 `;
 
-export const MyOrdersGrid = css`
+export const AvailableOrdersGrid = css`
   display: grid;
   grid-template-columns: repeat(3, calc((100% - 1rem) / 3));
   grid-column-gap: 1rem;

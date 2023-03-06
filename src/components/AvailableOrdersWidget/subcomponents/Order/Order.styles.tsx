@@ -4,10 +4,10 @@ import styled from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
-import { MyOrdersGrid } from "../../AvailableOrdersWidget.styles";
+import { AvailableOrdersGrid } from "../../AvailableOrdersWidget.styles";
 
 export const Container = styled.div`
-  ${MyOrdersGrid};
+  ${AvailableOrdersGrid};
 
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.borderGrey};

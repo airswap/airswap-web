@@ -7,11 +7,7 @@ type ActionButtonProps = {
   onClick: () => void;
 };
 const ActionButton: FC<ActionButtonProps> = ({ title, onClick }) => {
-  return (
-    <CreateSwapButton intent="neutral" onClick={onClick}>
-      {title}
-    </CreateSwapButton>
-  );
+  return <CreateSwapButton onClick={onClick}>{title}</CreateSwapButton>;
 };
 
 export default ActionButton;

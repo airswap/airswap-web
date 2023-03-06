@@ -1,11 +1,9 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { invert } from "lodash";
-
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
 import SortButton from "../SortButton/SortButton";
-import { Container } from "./MyOrdersListSortButtons.styles";
+import { Container } from "./AvailableOrdersListSortButtons.styles";
 
 interface AvailableOrdersListProps {
   activeSortType: AvailableOrdersSortType;

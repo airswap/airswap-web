@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Button from "../../../Button/Button";
-import { ButtonStyle } from "../../../Button/Button.styles";
 
 export const CreateSwapButton = styled(Button)`
-  ${ButtonStyle}
+  ${InputOrButtonBorderStyle}
 `;
