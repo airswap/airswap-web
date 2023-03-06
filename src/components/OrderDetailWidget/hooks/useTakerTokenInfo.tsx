@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
 import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";

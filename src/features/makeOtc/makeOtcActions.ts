@@ -1,10 +1,6 @@
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
-import {
-  FullOrderERC20,
-  TokenInfo,
-  UnsignedOrderERC20,
-} from "@airswap/types";
+import { FullOrderERC20, UnsignedOrderERC20, TokenInfo } from "@airswap/types";
 import { createOrderERC20, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
