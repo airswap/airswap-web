@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { MakerRegistry, Wrapper } from "@airswap/libraries";
-import { OrderERC20, Pricing } from "@airswap/typescript";
+import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";

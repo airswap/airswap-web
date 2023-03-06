@@ -77,5 +77,5 @@ export default function subscribeToSwapEvents(params: {
       );
     }
   };
-  swapContract.on("Swap", onSwap);
+  swapContract.on("SwapERC20", onSwap);
 }

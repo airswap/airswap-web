@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { wrappedTokenAddresses } from "@airswap/constants";
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 

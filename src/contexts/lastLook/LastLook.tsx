@@ -5,7 +5,7 @@ import { Maker } from "@airswap/libraries";
 // TODO: type defs for this.
 // @ts-ignore
 import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
-import { OrderERC20, Pricing } from "@airswap/typescript";
+import { OrderERC20, Pricing } from "@airswap/types";
 import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 

@@ -1,4 +1,4 @@
-import { OrderERC20 } from "@airswap/typescript";
+import { OrderERC20 } from "@airswap/types";
 import {
   createSlice,
   createSelector,
