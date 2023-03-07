@@ -2,23 +2,30 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { AppRoutes } from "../../routes";
+import { Container } from "./AvailableOrdersWidget.styles";
 import ActionButton from "./subcomponents/ActionButton/ActionButton";
 import AvailableOrdersList from "./subcomponents/AvailableOrdersList/AvailableOrdersList";
-import AvailableOrdersWidgetHeader from "./subcomponents/AvailableOrdersWidgetHeader/AvailableOrdersWidgetHeader";
 
 export type AvailableOrdersSortType = "senderToken" | "signerToken" | "rate";
 
-const AvailableOrdersWidget = (): JSX.Element => {
+export type AvailableOrdersWidgetProps = {
+  onOrderLinkClick: () => void;
+};
+
+const AvailableOrdersWidget = ({
+  onOrderLinkClick,
+}: AvailableOrdersWidgetProps): JSX.Element => {
   const { t } = useTranslation();
   const history = useHistory();
+
   const handleCreateSwapClick = () => {
     history.push({
-      pathname: `${AppRoutes.make}`,
+      pathname: `/${AppRoutes.make}`,
     });
   };
+
   return (
-    <>
-      <AvailableOrdersWidgetHeader title={"Available swaps"} />
+    <Container>
       <AvailableOrdersList
         activeSortType="rate"
         sortTypeDirection={{
@@ -27,12 +34,13 @@ const AvailableOrdersWidget = (): JSX.Element => {
           rate: false,
         }}
         onSortButtonClick={() => {}}
+        onOrderLinkClick={onOrderLinkClick}
       />
       <ActionButton
         title={t("orders.createSwap")}
         onClick={handleCreateSwapClick}
       />
-    </>
+    </Container>
   );
 };
 

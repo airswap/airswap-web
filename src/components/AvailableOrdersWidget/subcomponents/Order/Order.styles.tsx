@@ -16,19 +16,17 @@ export const Container = styled.div`
 `;
 
 export const Text = styled.div`
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   position: relative;
+  width: 75%;
   font-family: ${fontMono};
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  word-break: break-word;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  overflow: hidden;
   z-index: 2;
   pointer-events: none;
 `;

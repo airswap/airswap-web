@@ -1,6 +1,5 @@
 import React, { FC, PropsWithChildren } from "react";
 
-import IconSwap from "../../../Icon/icons/IconSwapHorizontal";
 import {
   Arrow,
   Button,

@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo } from "react";
+import React, { FC, useContext, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -36,6 +36,7 @@ import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -113,6 +114,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const [showAvailableSwaps, setShowAvailableSwaps] = useState(false);
 
   // button handlers
   const handleBackButtonClick = () => {
@@ -129,9 +131,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const handleViewAllQuotesButtonClick = () => {
-    history.push({
-      pathname: `/${AppRoutes.availableOrders}`,
-    });
+    setShowAvailableSwaps(true);
   };
 
   console.log(order);
@@ -283,6 +283,19 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onBackButtonClick={() =>
             handleActionButtonClick(ButtonActions.restart)
           }
+        />
+      </Overlay>
+      <Overlay
+        title={t("orders.availableSwaps")}
+        isHidden={!showAvailableSwaps}
+        onCloseButtonClick={() => {
+          setShowAvailableSwaps(false);
+        }}
+      >
+        <AvailableOrdersWidget
+          onOrderLinkClick={() => {
+            setShowAvailableSwaps(false);
+          }}
         />
       </Overlay>
     </Container>

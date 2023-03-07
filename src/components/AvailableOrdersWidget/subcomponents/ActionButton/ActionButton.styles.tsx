@@ -5,4 +5,5 @@ import Button from "../../../Button/Button";
 
 export const CreateSwapButton = styled(Button)`
   ${InputOrButtonBorderStyle}
+  margin-bottom: 2rem;
 `;

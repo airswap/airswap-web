@@ -1,7 +1,6 @@
 export enum AppRoutes {
   make = "make",
   myOrders = "my-orders",
-  availableOrders = "available-orders",
   order = "order",
   swap = "swap",
 }

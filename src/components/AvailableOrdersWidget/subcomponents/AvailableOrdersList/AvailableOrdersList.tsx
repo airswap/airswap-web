@@ -1,9 +1,7 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { FC, useRef, useState } from "react";
 
 import { FullOrderERC20 } from "@airswap/typescript";
 
-import useWindowSize from "../../../../hooks/useWindowSize";
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
 import Order from "../Order/Order";
 import {
@@ -17,6 +15,7 @@ interface MyOrdersListProps {
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
+  onOrderLinkClick: () => void;
   className?: string;
 }
 
@@ -24,38 +23,16 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   activeSortType,
   sortTypeDirection,
   onSortButtonClick,
+  onOrderLinkClick,
   className,
 }) => {
-  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { width: windowWidth } = useWindowSize();
   const [invertRate, setInvertRate] = useState(false);
-  const [containerScrollTop, setContainerScrollTop] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerWidth] = useState(0);
 
   const handleRateButtonClick = () => {
     setInvertRate(!invertRate);
   };
-
-  const handleOnContainerScroll = () => {
-    setContainerScrollTop(containerRef.current?.scrollTop || 0);
-  };
-
-  useEffect(() => {
-    containerRef.current?.addEventListener(
-      "scroll",
-      handleOnContainerScroll.bind(this)
-    );
-
-    return containerRef.current?.removeEventListener(
-      "scroll",
-      handleOnContainerScroll.bind(this)
-    );
-  }, [containerRef]);
-
-  useEffect(() => {
-    setContainerWidth(containerRef.current?.scrollWidth || 0);
-  }, [containerRef, windowWidth]);
 
   const TEST_ORDERS: FullOrderERC20[] = [
     {
@@ -106,7 +83,12 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       />
       <OrdersContainer ref={containerRef}>
         {TEST_ORDERS.map((order, i) => (
-          <Order order={order} index={i} invertRate={invertRate} />
+          <Order
+            order={order}
+            index={i}
+            invertRate={invertRate}
+            onOrderLinkClick={onOrderLinkClick}
+          />
         ))}
       </OrdersContainer>
       <Shadow />

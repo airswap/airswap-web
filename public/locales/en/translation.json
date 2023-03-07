@@ -102,6 +102,7 @@
     "approveMessage": "Approve AirSwap to transfer your tokens.",
     "approvePending": "Prepared to approve {{symbol}}",
     "areYouSureYouWantToCancel": "Are you sure you want to cancel?",
+    "availableSwaps": "Available swaps",
     "bestQuote": "Best quote",
     "cancelSwap": "Cancel swap",
     "createSwap": "Create a swap",

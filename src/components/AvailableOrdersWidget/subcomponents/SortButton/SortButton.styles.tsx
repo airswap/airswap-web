@@ -36,6 +36,7 @@ export const Button = styled.button<{
   font-weight: 600;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.lightGrey};
+  z-index: 1;
 
   &:not(&:focus) {
     border-color: transparent;
@@ -63,7 +64,9 @@ export const TokenText = styled.div`
   align-items: center;
   margin-top: -0.5rem;
   font-weight: 600;
+  width: 100%;
   text-transform: uppercase;
+  text-overflow: ellipsis;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   padding: 0 0.3rem;

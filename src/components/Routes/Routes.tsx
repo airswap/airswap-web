@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import AvailableOrdersPage from "../../pages/AvailableOrders/AvailableOrders";
 import Cancel from "../../pages/Cancel/Cancel";
 import MakePage from "../../pages/Make/Make";
 import MySwapsPage from "../../pages/MyOrders/MyOrders";
@@ -17,11 +16,6 @@ const Routes: FC = () => {
         path={`/${AppRoutes.myOrders}`}
         component={MySwapsPage}
         key="my-swaps"
-      />
-      <Route
-        path={`/${AppRoutes.availableOrders}`}
-        component={AvailableOrdersPage}
-        key="available-orders"
       />
       <Route
         exact

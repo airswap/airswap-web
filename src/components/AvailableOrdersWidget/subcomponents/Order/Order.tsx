@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useMemo } from "react";
+import React, { FC, PropsWithChildren, useMemo, useRef } from "react";
 
 import { FullOrderERC20 } from "@airswap/typescript";
 import { compressFullOrderERC20 } from "@airswap/utils";
@@ -12,6 +12,7 @@ import { Container, StyledNavLink, Text } from "./Order.styles";
 interface OrderProps {
   order: FullOrderERC20;
   index: number;
+  onOrderLinkClick: () => void;
   invertRate?: boolean;
   className?: string;
 }
@@ -19,11 +20,17 @@ interface OrderProps {
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
   index,
+  onOrderLinkClick,
   invertRate,
   className,
 }) => {
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
+
+  const handleMouseOver = () => {
+    console.log("hi");
+  };
 
   const senderAmount = useMemo(
     () =>
@@ -61,8 +68,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     <Container className={className}>
       <Text>{senderAmount}</Text>
       <Text>{signerAmount}</Text>
-      <Text>{invertRate ? 1 / parseFloat(displayRate) : displayRate}</Text>
-      <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
+      <Text ref={tooltipRef} onMouseEnter={handleMouseOver}>
+        {invertRate ? 1 / parseFloat(displayRate) : displayRate}
+      </Text>
+      <StyledNavLink
+        onClick={onOrderLinkClick}
+        to={`/${AppRoutes.order}/${orderString}`}
+      />
     </Container>
   );
 };
