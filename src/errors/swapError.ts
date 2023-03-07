@@ -2,25 +2,25 @@ import { AppError, AppErrorType, transformToAppError } from "./appError";
 
 // These errors come from the airswap swap contracts.
 export type SwapError =
-  | "EXPIRY_PASSED"
-  | "SIGNATURE_INVALID"
-  | "SIGNER_ALLOWANCE_LOW"
-  | "SIGNER_BALANCE_LOW"
-  | "SENDER_ALLOWANCE_LOW"
-  | "SENDER_BALANCE_LOW"
-  | "NONCE_ALREADY_USED"
-  | "UNAUTHORIZED"
+  | "OrderExpired"
+  | "SignatureInvalid"
+  | "SignerAllowanceLow"
+  | "SignerBalanceLow"
+  | "SenderAllowanceLow"
+  | "SenderBalanceLow"
+  | "NonceAlreadyUsed"
+  | "Unauthorized"
   | "UNPREDICTABLE_GAS_LIMIT";
 
 export const swapErrors: SwapError[] = [
-  "EXPIRY_PASSED",
-  "SIGNATURE_INVALID",
-  "SIGNER_ALLOWANCE_LOW",
-  "SIGNER_BALANCE_LOW",
-  "SENDER_ALLOWANCE_LOW",
-  "SENDER_BALANCE_LOW",
-  "NONCE_ALREADY_USED",
-  "UNAUTHORIZED",
+  "OrderExpired",
+  "SignatureInvalid",
+  "SignerAllowanceLow",
+  "SignerBalanceLow",
+  "SenderAllowanceLow",
+  "SenderBalanceLow",
+  "NonceAlreadyUsed",
+  "Unauthorized",
   "UNPREDICTABLE_GAS_LIMIT",
 ];
 
@@ -29,35 +29,35 @@ export const isSwapError = (error: any): error is SwapError => {
 };
 
 export const transformSwapErrorToAppError = (error: SwapError): AppError => {
-  if (error === "EXPIRY_PASSED") {
+  if (error === "OrderExpired") {
     return transformToAppError(AppErrorType.expiryPassed);
   }
 
-  if (error === "NONCE_ALREADY_USED") {
+  if (error === "NonceAlreadyUsed") {
     return transformToAppError(AppErrorType.nonceAlreadyUsed);
   }
 
-  if (error === "SENDER_ALLOWANCE_LOW") {
+  if (error === "SenderAllowanceLow") {
     return transformToAppError(AppErrorType.senderAllowanceLow);
   }
 
-  if (error === "SENDER_BALANCE_LOW") {
+  if (error === "SenderBalanceLow") {
     return transformToAppError(AppErrorType.senderBalanceLow);
   }
 
-  if (error === "SIGNER_ALLOWANCE_LOW") {
+  if (error === "SignerAllowanceLow") {
     return transformToAppError(AppErrorType.signerAllowanceLow);
   }
 
-  if (error === "SIGNER_BALANCE_LOW") {
+  if (error === "SignerBalanceLow") {
     return transformToAppError(AppErrorType.signerBalanceLow);
   }
 
-  if (error === "SIGNATURE_INVALID") {
+  if (error === "SignatureInvalid") {
     return transformToAppError(AppErrorType.signatureInvalid);
   }
 
-  if (error === "UNAUTHORIZED") {
+  if (error === "Unauthorized") {
     return transformToAppError(AppErrorType.unauthorized);
   }
 
