@@ -45,7 +45,7 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
         {isSortable && <Arrow />}
       </Button>
       <TokenText>
-        {tokenText}
+        <span className="ellipsis">{tokenText}</span>
         {tokenTextIsRate && (
           <StyledIconButton
             icon="swap-horizontal"

@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
 
 import { ScrollBarStyle } from "../../../../style/mixins";
-import Tooltip from "../../../ExpiryIndicator/subcomponents/Tooltip";
 import AvailableOrdersListSortButtons from "../AvailableOrdersListSortButtons/AvailableOrdersListSortButtons";
 
 export const Container = styled.div`
@@ -45,35 +44,4 @@ export const Shadow = styled.div`
   background: ${({ theme }) =>
     theme.name === "dark" ? darkShadow : lightShadow};
   pointer-events: none;
-`;
-
-export const TooltipContainer = styled.div`
-  position: relative;
-`;
-
-export const StyledTooltip = styled(Tooltip)<{
-  orderIndex: number;
-  containerScrollTop: number;
-}>`
-  justify-content: flex-start;
-  position: absolute;
-  top: calc(
-    4rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
-      ${({ orderIndex }) => orderIndex}
-  );
-  width: auto;
-  z-index: 3;
-  pointer-events: none;
-`;
-
-export const DeleteButtonTooltip = styled(StyledTooltip)`
-  left: 100%;
-  margin-left: -1rem;
-`;
-
-export const OrderIndicatorTooltip = styled(StyledTooltip)`
-  justify-content: flex-end;
-  margin-left: 0.5rem;
-  left: 0;
-  width: 0;
 `;

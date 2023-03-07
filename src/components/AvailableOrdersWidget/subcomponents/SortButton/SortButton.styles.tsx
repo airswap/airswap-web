@@ -62,21 +62,27 @@ export const Button = styled.button<{
 export const TokenText = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.25rem;
+  width: 110%;
+  justify-content: flex-start;
   margin-top: -0.5rem;
   font-weight: 600;
-  width: 100%;
   text-transform: uppercase;
-  text-overflow: ellipsis;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   padding: 0 0.3rem;
+
+  & .ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `;
 
 export const StyledIconButton = styled(IconButton)`
   color: ${({ theme }) => theme.colors.lightGrey};
   padding: 0;
   border: none;
-  margin-left: 0.25rem;
   &:hover {
     color: ${({ theme }) => theme.colors.white};
   }

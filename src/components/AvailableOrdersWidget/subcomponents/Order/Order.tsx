@@ -28,9 +28,17 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
 
-  const handleMouseOver = () => {
-    console.log("hi");
+  /*const checkOverflow = (textContainer: HTMLDivElement | null): boolean => {
+    if (textContainer) {
+      return textContainer.offsetWidth < textContainer.scrollWidth;
+    }
+    return false;
   };
+
+  const handleMouseOver = () => {
+    const check = checkOverflow(tooltipRef.current);
+    console.log(check);
+  };*/
 
   const senderAmount = useMemo(
     () =>
@@ -61,14 +69,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [senderAmount, signerAmount]
   );
 
-  console.log(order);
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
 
   return (
     <Container className={className}>
       <Text>{senderAmount}</Text>
       <Text>{signerAmount}</Text>
-      <Text ref={tooltipRef} onMouseEnter={handleMouseOver}>
+      <Text ref={tooltipRef} onMouseEnter={() => {}}>
         {invertRate ? 1 / parseFloat(displayRate) : displayRate}
       </Text>
       <StyledNavLink

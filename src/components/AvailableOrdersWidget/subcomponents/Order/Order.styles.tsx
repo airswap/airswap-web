@@ -4,6 +4,7 @@ import styled from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
+import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import { AvailableOrdersGrid } from "../../AvailableOrdersWidget.styles";
 
 export const Container = styled.div`
@@ -48,4 +49,14 @@ export const StyledNavLink = styled(NavLink)`
   &:active {
     opacity: 0.5;
   }
+`;
+
+export const StyledTooltip = styled(Tooltip)<{ position: number }>`
+  justify-content: flex-start;
+  position: absolute;
+  top: 2rem;
+  left: ${({ position }) => `calc(33% * ${position})`};
+  width: auto;
+  z-index: 3;
+  pointer-events: none;
 `;
