@@ -9,9 +9,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import {
-  INDEXER_ORDER_RESPONSE_TIME_MS,
-} from "../../constants/configParams";
+import { INDEXER_ORDER_RESPONSE_TIME_MS } from "../../constants/configParams";
 import { getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
