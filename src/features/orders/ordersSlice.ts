@@ -1,6 +1,6 @@
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { Maker } from "@airswap/libraries";
-import { FullOrderERC20, Levels, OrderERC20 } from "@airswap/typescript";
+import { FullOrderERC20, OrderERC20, Levels } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,

@@ -1,6 +1,6 @@
 import { TFunction } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import {
   nativeCurrencyAddress,

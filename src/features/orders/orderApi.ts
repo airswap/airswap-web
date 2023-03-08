@@ -1,7 +1,7 @@
 import * as WETHContract from "@airswap/balances/build/contracts/WETH9.json";
 import { wrappedTokenAddresses } from "@airswap/constants";
 import { SwapERC20, Maker, Wrapper } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20 } from "@airswap/typescript";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
@@ -52,10 +52,7 @@ async function swapWrapper(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20
 ) {
-  return await new Wrapper(chainId, provider).swapERC20(
-    order,
-    provider.getSigner()
-  );
+  return await new Wrapper(chainId, provider).swap(order, provider.getSigner());
 }
 
 export async function requestOrders(

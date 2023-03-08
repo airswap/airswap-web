@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FullOrderERC20 } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/types";
 import { useWeb3React } from "@web3-react/core";
 
 import { getNonceUsed } from "../../../features/orders/orderApi";

@@ -2,7 +2,7 @@ import React, { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/typescript";
+import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
