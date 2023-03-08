@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 

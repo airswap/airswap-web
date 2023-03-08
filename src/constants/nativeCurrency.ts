@@ -1,4 +1,4 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 export const nativeCurrencyAddress =
   "0x0000000000000000000000000000000000000000";

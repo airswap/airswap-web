@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
+import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
-import { TokenInfo } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../app/hooks";

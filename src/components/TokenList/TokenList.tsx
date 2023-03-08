@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";

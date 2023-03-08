@@ -1,5 +1,4 @@
-import { FullOrderERC20 } from "@airswap/typescript";
-import { TokenInfo } from "@uniswap/token-lists";
+import { FullOrderERC20, TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 import i18n from "i18next";

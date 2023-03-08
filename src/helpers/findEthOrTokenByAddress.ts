@@ -1,5 +1,5 @@
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import nativeCurrency, {
   nativeCurrencyAddress,

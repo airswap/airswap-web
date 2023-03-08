@@ -1,6 +1,6 @@
 import { SwapERC20 } from "@airswap/libraries";
 import { getKnownTokens, getTokenFromContract } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 
 import * as ethers from "ethers";

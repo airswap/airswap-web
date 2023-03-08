@@ -1,4 +1,4 @@
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import { ethers } from "ethers";
 
