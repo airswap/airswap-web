@@ -10,7 +10,6 @@ import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import {
-  INDEXER_NODE_MAX_HEALTHCHECK_RESPONSE_TIME_MS,
   INDEXER_ORDER_RESPONSE_TIME_MS,
 } from "../../constants/configParams";
 import { getIndexerUrls } from "./indexerRegistryApi";
@@ -35,34 +34,7 @@ export const fetchIndexerUrls = createAsyncThunk<
 >("indexer/fetchIndexerUrls", async ({ provider }, { getState }) => {
   const { wallet } = getState();
   // First get a list of indexer nodes from the contract
-  const indexerUrls = await getIndexerUrls(wallet.chainId!, provider);
-
-  // Next build a list of indexers that response within a threshold time
-  const healthyIndexerUrls = [];
-
-  const indexers = indexerUrls.map((url) => new NodeIndexer(url));
-
-  await Promise.race([
-    // This promise resolves when all indexer healthchecks have settled.
-    Promise.allSettled(
-      indexers.map((indexer, i) =>
-        indexer
-          .getHealthCheck()
-          .then(() => healthyIndexerUrls.push(indexerUrls[i]))
-          .catch((e) =>
-            console.log(
-              `[indexerSlice] Healthcheck failed for ${indexerUrls[i]}`,
-              e.message || ""
-            )
-          )
-      )
-    ),
-    // This promise resolves after the maximum wait time
-    new Promise((res) =>
-      setTimeout(res, INDEXER_NODE_MAX_HEALTHCHECK_RESPONSE_TIME_MS)
-    ),
-  ]);
-  return indexerUrls;
+  return await getIndexerUrls(wallet.chainId!, provider);
 });
 
 export const getFilteredOrders = createAsyncThunk<
@@ -83,7 +55,7 @@ export const getFilteredOrders = createAsyncThunk<
   // Get orders from all indexers in parallel
   const orderPromises = indexers.map((indexer, i) =>
     indexer
-      .getOrdersBy(filter)
+      .getOrdersERC20By(filter)
       .then((response) => {
         Object.assign(orders, response.orders);
       })
