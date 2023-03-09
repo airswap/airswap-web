@@ -129,7 +129,7 @@ export const Wallet: FC<WalletPropsType> = ({
       });
       return () => {
         if (swapContract) {
-          swapContract.removeAllListeners("Swap");
+          swapContract.removeAllListeners("SwapERC20");
         }
         if (wrapContract) {
           wrapContract.removeAllListeners("Withdrawal");
