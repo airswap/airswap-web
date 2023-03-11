@@ -3,12 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FullOrderERC20 } from "@airswap/types";
 import { useWeb3React } from "@web3-react/core";
 
+import { useAppSelector } from "../../../app/hooks";
 import { getNonceUsed } from "../../../features/orders/orderApi";
+import { selectPendingTransactions } from "../../../features/transactions/transactionsSlice";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { OrderStatus } from "../../../types/orderStatus";
 
 export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
   const { library } = useWeb3React();
+  const pendingTransactions = useAppSelector(selectPendingTransactions);
 
   const [isTaken, setIsTaken] = useState(false);
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
@@ -37,7 +40,7 @@ export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
     if (library) {
       asyncGetTakenState(order).catch(console.error);
     }
-  }, [order, library, asyncGetTakenState]);
+  }, [order, library, asyncGetTakenState, pendingTransactions.length]);
 
   if (isCanceled) {
     return OrderStatus.canceled;
