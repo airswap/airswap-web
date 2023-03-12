@@ -18,9 +18,8 @@ const useSwapLogs = () => {
       wrapperContract: Contract,
       account: string
     ) => {
-      const signerSwapFilter = swapContract.filters.Swap(
+      const signerSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
-        null, // timestamp,
         account, // signerWallet
         null, // signerToken
         null, // signerAmount,
@@ -30,9 +29,8 @@ const useSwapLogs = () => {
         null // senderAmount
       );
 
-      const senderSwapFilter = swapContract.filters.Swap(
+      const senderSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
-        null, // timestamp,
         null, // signerWallet
         null, // signerToken
         null, // signerAmount,cd
