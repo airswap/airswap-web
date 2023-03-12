@@ -1,7 +1,6 @@
 import {
   IndexedOrderResponse,
   NodeIndexer,
-  OrderResponse,
   RequestFilter,
 } from "@airswap/libraries";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -9,7 +8,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { INDEXER_ORDER_RESPONSE_TIME_MS } from "../../constants/configParams";
 import { getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
@@ -36,43 +34,18 @@ export const fetchIndexerUrls = createAsyncThunk<
 });
 
 export const getFilteredOrders = createAsyncThunk<
-  OrderResponse["orders"],
+  any,
   { filter: RequestFilter },
   {
     dispatch: AppDispatch;
     state: RootState;
   }
 >("indexer/getFilteredOrders", async ({ filter }, { getState }) => {
-  const { indexer: indexerState } = getState();
+  // const { indexer: indexerState } = getState();
 
-  const indexers = indexerState.indexerUrls?.map((url) => new NodeIndexer(url));
-  if (!indexers) throw new Error("No indexers available");
+  const indexer = new NodeIndexer("http://airswap.mitsi.ovh/");
 
-  const orders: Record<string, IndexedOrderResponse> = {};
-
-  // Get orders from all indexers in parallel
-  const orderPromises = indexers.map((indexer, i) =>
-    indexer
-      .getOrdersERC20By(filter)
-      .then((response) => {
-        Object.assign(orders, response.orders);
-      })
-      .catch((e) => {
-        console.log(
-          `[indexerSlice] Order request failed for ${indexerState.indexerUrls?.[i]}`,
-          e.message || ""
-        );
-      })
-  );
-
-  // Implement a timeout so we don't wait indefinitely
-  Promise.race([
-    Promise.allSettled(orderPromises),
-    new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
-  ]);
-
-  //  Return the orders we have.
-  return orders;
+  return (await indexer.getOrdersERC20By(filter)).orders;
 });
 
 export const indexerSlice = createSlice({
@@ -85,13 +58,16 @@ export const indexerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
+      console.log("indexer fulfilled!");
       state.indexerUrls = action.payload;
     });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
+      console.log("orders fulfilled!");
       state.orders = action.payload;
     });
   },
 });
 
 export const { reset } = indexerSlice.actions;
+export const selectIndexerReducer = (state: RootState) => state.indexer;
 export default indexerSlice.reducer;

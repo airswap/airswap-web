@@ -13,6 +13,7 @@ import {
 } from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
+import { sendOrderToIndexers } from "../indexer/indexerHelpers";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
 export const createOtcOrder = createAsyncThunk(
@@ -23,6 +24,7 @@ export const createOtcOrder = createAsyncThunk(
       library: Web3Provider;
       signerTokenInfo: TokenInfo;
       senderTokenInfo: TokenInfo;
+      activeIndexers: string[] | null;
     } & UnsignedOrderERC20,
     { dispatch }
   ) => {
@@ -92,6 +94,9 @@ export const createOtcOrder = createAsyncThunk(
       };
 
       dispatch(setUserOrder(fullOrder));
+      if (params.activeIndexers) {
+        sendOrderToIndexers(fullOrder, params.activeIndexers);
+      }
       notifyOrderCreated(fullOrder);
     } catch (error) {
       console.error(error);

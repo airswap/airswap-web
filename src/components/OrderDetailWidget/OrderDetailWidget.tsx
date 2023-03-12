@@ -134,8 +134,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     setShowAvailableSwaps(true);
   };
 
-  console.log(order);
-
   const takeOrder = async () => {
     const errors = await check(
       order,
@@ -285,19 +283,23 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           }
         />
       </Overlay>
-      <Overlay
-        title={t("orders.availableSwaps")}
-        isHidden={!showAvailableSwaps}
-        onCloseButtonClick={() => {
-          setShowAvailableSwaps(false);
-        }}
-      >
-        <AvailableOrdersWidget
-          onOrderLinkClick={() => {
+      {senderToken && signerToken && (
+        <Overlay
+          title={t("orders.availableSwaps")}
+          isHidden={!showAvailableSwaps}
+          onCloseButtonClick={() => {
             setShowAvailableSwaps(false);
           }}
-        />
-      </Overlay>
+        >
+          <AvailableOrdersWidget
+            senderToken={senderToken?.address}
+            signerToken={signerToken?.address}
+            onOrderLinkClick={() => {
+              setShowAvailableSwaps(false);
+            }}
+          />
+        </Overlay>
+      )}
     </Container>
   );
 };
