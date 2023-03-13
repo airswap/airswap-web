@@ -2,13 +2,15 @@ import {
   IndexedOrderResponse,
   NodeIndexer,
   RequestFilter,
+  SortField,
+  SortOrder,
 } from "@airswap/libraries";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { getIndexerUrls } from "./indexerRegistryApi";
+import { getIndexerOrders, getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
   /** List of indexer urls for servers that have responded successfully to
@@ -41,11 +43,17 @@ export const getFilteredOrders = createAsyncThunk<
     state: RootState;
   }
 >("indexer/getFilteredOrders", async ({ filter }, { getState }) => {
-  // const { indexer: indexerState } = getState();
+  const { indexer: indexerState } = getState();
 
-  const indexer = new NodeIndexer("http://airswap.mitsi.ovh/");
+  const indexers = indexerState.indexerUrls?.map(
+    (indexer) => new NodeIndexer(indexer)
+  );
 
-  return (await indexer.getOrdersERC20By(filter)).orders;
+  return await getIndexerOrders(indexers, {
+    ...filter,
+    sortField: SortField.SIGNER_AMOUNT,
+    sortOrder: SortOrder.DESC,
+  });
 });
 
 export const indexerSlice = createSlice({

@@ -292,8 +292,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           }}
         >
           <AvailableOrdersWidget
-            senderToken={senderToken?.address}
-            signerToken={signerToken?.address}
+            senderToken={senderToken!}
+            signerToken={signerToken!}
+            senderAmount={order.senderAmount}
             onOrderLinkClick={() => {
               setShowAvailableSwaps(false);
             }}

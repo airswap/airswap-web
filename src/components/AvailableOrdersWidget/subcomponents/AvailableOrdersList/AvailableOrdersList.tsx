@@ -3,6 +3,7 @@ import React, { FC, useRef, useState } from "react";
 import { IndexedOrderResponse } from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
 
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
 import Order from "../Order/Order";
 import {
@@ -47,15 +48,15 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         width={containerWidth}
         activeSortType={activeSortType}
         sortTypeDirection={sortTypeDirection}
-        senderTokenSymbol={"ETH"}
-        signerTokenSymbol={"PRINTS"}
+        senderTokenSymbol={senderToken}
+        signerTokenSymbol={signerToken}
         invertRate={invertRate}
         onSortButtonClick={onSortButtonClick}
         onRateButtonClick={handleRateButtonClick}
       />
-      <OrdersContainer ref={containerRef}>
-        {orders &&
-          Object.entries(orders).map(([, order], i) => {
+      {orders && Object.entries(orders).length >= 1 ? (
+        <OrdersContainer ref={containerRef}>
+          {Object.entries(orders).map(([, order], i) => {
             return (
               <Order
                 order={order.order}
@@ -64,7 +65,10 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
               />
             );
           })}
-      </OrdersContainer>
+        </OrdersContainer>
+      ) : (
+        <LoadingSpinner />
+      )}
       <Shadow />
     </Container>
   );
