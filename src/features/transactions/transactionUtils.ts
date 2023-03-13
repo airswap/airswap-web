@@ -15,7 +15,6 @@ const swapInterface = new Interface(SwapContract.abi);
 // Event from interface for reference.
 // event Swap(
 //   uint256 indexed nonce,
-//   uint256 timestamp,
 //   address indexed signerWallet,
 //   address signerToken,
 //   uint256 signerAmount,
