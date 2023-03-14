@@ -10,15 +10,19 @@ import {
   Container,
   OrdersContainer,
   Shadow,
-  StyledMyOrdersListSortButtons,
+  StyledAvailableOrdersListSortButtons,
 } from "./AvailableOrdersList.styles";
 
 interface MyOrdersListProps {
-  orders?: Record<string, IndexedOrderResponse>;
+  orders?: FullOrderERC20[];
+  errorText?: string;
+
   senderToken: string;
   signerToken: string;
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
+  invertRate: boolean;
+  onRateButtonClick: () => void;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
   onOrderLinkClick: () => void;
   className?: string;
@@ -26,8 +30,11 @@ interface MyOrdersListProps {
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
   orders,
+  errorText,
   activeSortType,
   sortTypeDirection,
+  invertRate,
+  onRateButtonClick,
   onSortButtonClick,
   onOrderLinkClick,
   className,
@@ -35,16 +42,11 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   signerToken,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [invertRate, setInvertRate] = useState(false);
   const [containerWidth] = useState(0);
-
-  const handleRateButtonClick = () => {
-    setInvertRate(!invertRate);
-  };
 
   return (
     <Container className={className}>
-      <StyledMyOrdersListSortButtons
+      <StyledAvailableOrdersListSortButtons
         width={containerWidth}
         activeSortType={activeSortType}
         sortTypeDirection={sortTypeDirection}
@@ -52,22 +54,24 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         signerTokenSymbol={signerToken}
         invertRate={invertRate}
         onSortButtonClick={onSortButtonClick}
-        onRateButtonClick={handleRateButtonClick}
+        onRateButtonClick={onRateButtonClick}
       />
-      {orders && Object.entries(orders).length >= 1 ? (
+      {}
+      {orders && orders.length >= 1 ? (
         <OrdersContainer ref={containerRef}>
-          {Object.entries(orders).map(([, order], i) => {
+          {orders.map((order, i) => {
             return (
               <Order
-                order={order.order}
+                order={order}
                 index={i}
+                invertRate={invertRate}
                 onOrderLinkClick={onOrderLinkClick}
               />
             );
           })}
         </OrdersContainer>
       ) : (
-        <LoadingSpinner />
+        errorText ?? <LoadingSpinner />
       )}
       <Shadow />
     </Container>

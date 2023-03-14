@@ -10,7 +10,7 @@ export const Container = styled.div`
   position: relative;
 `;
 
-export const StyledMyOrdersListSortButtons = styled(
+export const StyledAvailableOrdersListSortButtons = styled(
   AvailableOrdersListSortButtons
 )<{
   width: number;

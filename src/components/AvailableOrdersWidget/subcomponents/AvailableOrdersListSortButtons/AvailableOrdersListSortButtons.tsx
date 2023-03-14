@@ -33,18 +33,18 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
       <SortButton
         isSortable
         tokenText={senderTokenSymbol}
-        isActive={activeSortType === "signerToken"}
-        isDescending={sortTypeDirection.signerToken}
-        onClick={() => onSortButtonClick("signerToken")}
+        isActive={activeSortType === "senderAmount"}
+        isDescending={sortTypeDirection.senderAmount}
+        onClick={() => onSortButtonClick("senderAmount")}
       >
         {t("orders.from")}
       </SortButton>
       <SortButton
         isSortable
         tokenText={signerTokenSymbol}
-        isActive={activeSortType === "senderToken"}
-        isDescending={sortTypeDirection.senderToken}
-        onClick={() => onSortButtonClick("senderToken")}
+        isActive={activeSortType === "signerAmount"}
+        isDescending={sortTypeDirection.signerAmount}
+        onClick={() => onSortButtonClick("signerAmount")}
       >
         {t("orders.to")}
       </SortButton>

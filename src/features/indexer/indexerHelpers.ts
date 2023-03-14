@@ -1,5 +1,11 @@
-import { NodeIndexer } from "@airswap/libraries";
+import {
+  IndexedOrderResponse,
+  NodeIndexer,
+  SortOrder,
+} from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
+
+import BigNumber from "bignumber.js";
 
 export const sendOrderToIndexers = (
   order: FullOrderERC20,
@@ -25,4 +31,18 @@ export const sendOrderToIndexers = (
     Promise.allSettled(addOrderPromises),
     new Promise((res) => setTimeout(res, 4000)),
   ]);
+};
+
+export const sortIndexerOrders = (
+  orders: Record<string, IndexedOrderResponse>,
+  sortDirection: "ASC" | "DESC",
+  sortField: "SENDER" | "SIGNER" | "RATE"
+) => {
+  if (sortField === "SENDER") {
+    return Object.entries(orders).sort((a, b) => {
+      return (
+        parseInt(a[1].order.senderAmount) - parseInt(b[1].order.senderAmount)
+      );
+    });
+  }
 };

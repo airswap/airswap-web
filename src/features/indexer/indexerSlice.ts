@@ -5,6 +5,7 @@ import {
   SortField,
   SortOrder,
 } from "@airswap/libraries";
+import { FullOrderERC20 } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
@@ -17,12 +18,12 @@ export interface IndexerState {
    * the healthcheck within the allowed time. Null during initial fetch. */
   indexerUrls: string[] | null;
   /** Map of order hash -> fullorder */
-  orders: Record<string, IndexedOrderResponse>;
+  orders: FullOrderERC20[];
 }
 
 const initialState: IndexerState = {
   indexerUrls: null,
-  orders: {},
+  orders: [],
 };
 
 export const fetchIndexerUrls = createAsyncThunk<
