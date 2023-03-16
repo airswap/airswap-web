@@ -1,8 +1,8 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef, useState, useEffect } from "react";
 
-import { IndexedOrderResponse } from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
 
+import useWindowSize from "../../../../hooks/useWindowSize";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
 import Order from "../Order/Order";
@@ -11,12 +11,13 @@ import {
   OrdersContainer,
   Shadow,
   StyledAvailableOrdersListSortButtons,
+  Error,
+  CutoffTooltip,
 } from "./AvailableOrdersList.styles";
 
 interface MyOrdersListProps {
   orders?: FullOrderERC20[];
-  errorText?: string;
-
+  errorText: string | null;
   senderToken: string;
   signerToken: string;
   activeSortType: AvailableOrdersSortType;
@@ -41,8 +42,51 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   senderToken,
   signerToken,
 }) => {
+  const { width: windowWidth } = useWindowSize();
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth] = useState(0);
+  const [containerScrollTop, setContainerScrollTop] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [tooltipIndex, setTooltipIndex] = useState<number | undefined>();
+  const [tooltipShift, setTooltipShift] = useState<number | undefined>();
+  const [tooltipText, setTooltipText] = useState<string | null>(null);
+
+  const handleMouseEnter = (
+    target: HTMLDivElement,
+    index: number,
+    shift: number
+  ) => {
+    if (target.offsetWidth < target.scrollWidth) {
+      setTooltipIndex(index);
+      setTooltipShift(shift);
+      setTooltipText(target.textContent);
+      setIsTooltipOpen(true);
+    }
+  };
+
+  const handleMouseLeave = () => isTooltipOpen && setIsTooltipOpen(false);
+
+  const handleOnContainerScroll = () => {
+    setContainerScrollTop(containerRef.current?.scrollTop || 0);
+  };
+
+  useEffect(() => {
+    containerRef.current?.addEventListener(
+      "scroll",
+      handleOnContainerScroll.bind(this)
+    );
+
+    return containerRef.current?.removeEventListener(
+      "scroll",
+      handleOnContainerScroll.bind(this)
+    );
+  }, [containerRef]);
+
+  useEffect(() => {
+    setContainerWidth(containerRef.current?.scrollWidth || 0);
+  }, [containerRef, windowWidth]);
 
   return (
     <Container className={className}>
@@ -56,22 +100,35 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         onSortButtonClick={onSortButtonClick}
         onRateButtonClick={onRateButtonClick}
       />
-      {}
       {orders && orders.length >= 1 ? (
         <OrdersContainer ref={containerRef}>
           {orders.map((order, i) => {
             return (
               <Order
+                key={i}
                 order={order}
                 index={i}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
                 invertRate={invertRate}
                 onOrderLinkClick={onOrderLinkClick}
               />
             );
           })}
+          {isTooltipOpen && (
+            <CutoffTooltip
+              containerScrollTop={containerScrollTop}
+              orderIndex={tooltipIndex}
+              shift={tooltipShift}
+            >
+              {tooltipText}
+            </CutoffTooltip>
+          )}
         </OrdersContainer>
+      ) : errorText ? (
+        <Error>{errorText}</Error>
       ) : (
-        errorText ?? <LoadingSpinner />
+        <LoadingSpinner />
       )}
       <Shadow />
     </Container>

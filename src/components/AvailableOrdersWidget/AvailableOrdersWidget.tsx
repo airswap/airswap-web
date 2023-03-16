@@ -2,9 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { MakerRegistry } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/types";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
@@ -15,7 +13,6 @@ import {
   getFilteredOrders,
   selectIndexerReducer,
 } from "../../features/indexer/indexerSlice";
-import { request, selectBestOption } from "../../features/orders/ordersSlice";
 import { AppRoutes } from "../../routes";
 import { Container } from "./AvailableOrdersWidget.styles";
 import { getSortedIndexerOrders } from "./helpers/getSortedIndexerOrders";
@@ -37,13 +34,14 @@ const AvailableOrdersWidget = ({
   senderAmount,
   onOrderLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
-  const { t } = useTranslation();
   const history = useHistory();
-  const { library } = useWeb3React();
-  const { indexerUrls, orders } = useAppSelector(selectIndexerReducer);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+  const { library } = useWeb3React();
+  const { indexerUrls, orders, errorText } =
+    useAppSelector(selectIndexerReducer);
 
-  const [errorText, setErrorText] = useState<string>();
+  const [invertRate, setInvertRate] = useState(false);
   const [sortType, setSortType] =
     useState<AvailableOrdersSortType>("senderAmount");
   const [sortTypeDirection, setSortTypeDirection] = useState({
@@ -51,35 +49,32 @@ const AvailableOrdersWidget = ({
     signerAmount: false,
     rate: false,
   });
-  const [invertRate, setInvertRate] = useState(false);
-
-  const cushion = new BigNumber(senderAmount).dividedBy(4, 18);
-  const minSenderAmount = new BigNumber(senderAmount).minus(cushion).toString();
-  const maxSenderAmount = new BigNumber(senderAmount).plus(cushion).toString();
+  console.log(senderAmount);
+  const minSenderAmount = new BigNumber(senderAmount).times(0.75).toString();
+  const maxSenderAmount = new BigNumber(senderAmount).times(1.25).toString();
+  console.log(minSenderAmount);
 
   useMemo(() => {
-    const fetchIndexers = dispatch(fetchIndexerUrls({ provider: library! }));
-    fetchIndexers.then((res: any) => {
-      !res.payload.length && setErrorText("No indexers");
-    });
+    dispatch(fetchIndexerUrls({ provider: library! }));
   }, [dispatch, library]);
 
   useMemo(() => {
     if (indexerUrls) {
-      const fetchOrders = dispatch(
+      dispatch(
         getFilteredOrders({
           filter: {
             senderTokens: [senderToken.address],
             signerTokens: [signerToken.address],
             page: 1,
-            minSenderAmount: BigInt(minSenderAmount),
-            maxSenderAmount: BigInt(maxSenderAmount),
+            minSenderAmount: !minSenderAmount.includes(".")
+              ? BigInt(minSenderAmount)
+              : undefined,
+            maxSenderAmount: !maxSenderAmount.includes(".")
+              ? BigInt(maxSenderAmount)
+              : undefined,
           },
         })
       );
-      fetchOrders.then((res: any) => {
-        !res.payload.length && setErrorText("No orders");
-      });
     }
   }, [
     dispatch,

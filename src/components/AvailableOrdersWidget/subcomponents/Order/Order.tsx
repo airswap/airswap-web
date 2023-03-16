@@ -1,18 +1,23 @@
-import React, { FC, PropsWithChildren, useMemo, useRef } from "react";
+import React, { FC, PropsWithChildren, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
+
+import BigNumber from "bignumber.js";
 
 import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
 import { getTokenAmountWithDecimals } from "../../../MyOrdersWidget/helpers";
-import { Container, StyledNavLink, Text } from "./Order.styles";
+import { Container, Text } from "./Order.styles";
 
 interface OrderProps {
   order: FullOrderERC20;
   index: number;
   onOrderLinkClick: () => void;
+  onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
+  onMouseLeave: () => void;
   invertRate?: boolean;
   className?: string;
 }
@@ -21,67 +26,68 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
   index,
   onOrderLinkClick,
+  onMouseEnter,
+  onMouseLeave,
   invertRate,
   className,
 }) => {
-  const tooltipRef = useRef<HTMLDivElement>(null);
+  const history = useHistory();
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
 
-  /*const checkOverflow = (textContainer: HTMLDivElement | null): boolean => {
-    if (textContainer) {
-      return textContainer.offsetWidth < textContainer.scrollWidth;
-    }
-    return false;
-  };
-
-  const handleMouseOver = () => {
-    const check = checkOverflow(tooltipRef.current);
-    console.log(check);
-  };*/
-
   const senderAmount = useMemo(
     () =>
-      getHumanReadableNumber(
-        getTokenAmountWithDecimals(
-          order.senderAmount,
-          senderTokenInfo?.decimals
-        ).toString()
-      ),
+      getTokenAmountWithDecimals(
+        order.senderAmount,
+        senderTokenInfo?.decimals
+      ).toString(),
     [order, senderTokenInfo]
   );
 
   const signerAmount = useMemo(
     () =>
-      getHumanReadableNumber(
-        getTokenAmountWithDecimals(
-          order.signerAmount,
-          signerTokenInfo?.decimals
-        ).toString()
-      ),
+      getTokenAmountWithDecimals(
+        order.signerAmount,
+        signerTokenInfo?.decimals
+      ).toString(),
     [order, signerTokenInfo]
   );
   const displayRate = useMemo(
     () =>
-      getHumanReadableNumber(
-        (parseFloat(senderAmount) / parseFloat(signerAmount)).toString()
-      ),
-    [senderAmount, signerAmount]
+      (
+        parseFloat(invertRate ? signerAmount : senderAmount) /
+        parseFloat(invertRate ? senderAmount : signerAmount)
+      ).toString(),
+    [invertRate, senderAmount, signerAmount]
   );
 
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
 
+  const handleClick = () => {
+    history.push(orderString);
+    onOrderLinkClick();
+  };
+
   return (
-    <Container className={className}>
-      <Text>{senderAmount}</Text>
-      <Text>{signerAmount}</Text>
-      <Text ref={tooltipRef} onMouseEnter={() => {}}>
-        {invertRate ? 1 / parseFloat(displayRate) : displayRate}
+    <Container className={className} onClick={handleClick}>
+      <Text
+        onMouseEnter={(e) => onMouseEnter(e.currentTarget, index, 0)}
+        onMouseLeave={onMouseLeave}
+      >
+        {senderAmount}
       </Text>
-      <StyledNavLink
-        onClick={onOrderLinkClick}
-        to={`/${AppRoutes.order}/${orderString}`}
-      />
+      <Text
+        onMouseEnter={(e) => onMouseEnter(e.currentTarget, index, 1)}
+        onMouseLeave={onMouseLeave}
+      >
+        {signerAmount}
+      </Text>
+      <Text
+        onMouseEnter={(e) => onMouseEnter(e.currentTarget, index, 2)}
+        onMouseLeave={onMouseLeave}
+      >
+        {displayRate}
+      </Text>
     </Container>
   );
 };

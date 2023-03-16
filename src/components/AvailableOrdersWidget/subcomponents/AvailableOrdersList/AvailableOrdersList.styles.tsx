@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import { ScrollBarStyle } from "../../../../style/mixins";
+import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import AvailableOrdersListSortButtons from "../AvailableOrdersListSortButtons/AvailableOrdersListSortButtons";
 
 export const Container = styled.div`
@@ -43,5 +44,29 @@ export const Shadow = styled.div`
   z-index: 2;
   background: ${({ theme }) =>
     theme.name === "dark" ? darkShadow : lightShadow};
+  pointer-events: none;
+`;
+
+export const Error = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+`;
+
+export const CutoffTooltip = styled(Tooltip)<{
+  containerScrollTop: number;
+  orderIndex?: number;
+  shift?: number;
+}>`
+  position: absolute;
+  top: calc(
+    5rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
+      ${({ orderIndex }) => orderIndex}
+  );
+  left: ${({ shift }) => `calc(33% * ${shift} + 0.5rem)`};
+  width: auto;
+  z-index: 3;
   pointer-events: none;
 `;

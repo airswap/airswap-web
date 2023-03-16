@@ -1,7 +1,5 @@
 import {
-  IndexedOrderResponse,
   NodeIndexer,
-  OrderResponse,
   RequestFilter,
   SortField,
   SortOrder,
@@ -20,11 +18,13 @@ export interface IndexerState {
   indexerUrls: string[] | null;
   /** Map of order hash -> fullorder */
   orders: FullOrderERC20[];
+  errorText: string | null;
 }
 
 const initialState: IndexerState = {
   indexerUrls: null,
   orders: [],
+  errorText: null,
 };
 
 export const fetchIndexerUrls = createAsyncThunk<
@@ -68,12 +68,22 @@ export const indexerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
-      console.log("indexer fulfilled!");
       state.indexerUrls = action.payload;
+      if (!action.payload.length) {
+        state.errorText = "No indexers";
+      }
+    });
+    builder.addCase(fetchIndexerUrls.rejected, (state) => {
+      state.errorText = "No indexers";
     });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
-      console.log("orders fulfilled!");
       state.orders = action.payload;
+      if (!action.payload.length) {
+        state.errorText = "No orders";
+      }
+    });
+    builder.addCase(getFilteredOrders.rejected, (state) => {
+      state.errorText = "No orders";
     });
   },
 });
