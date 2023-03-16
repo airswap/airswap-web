@@ -1,6 +1,7 @@
 import {
   IndexedOrderResponse,
   NodeIndexer,
+  OrderResponse,
   RequestFilter,
   SortField,
   SortOrder,
@@ -37,7 +38,7 @@ export const fetchIndexerUrls = createAsyncThunk<
 });
 
 export const getFilteredOrders = createAsyncThunk<
-  any,
+  FullOrderERC20[],
   { filter: RequestFilter },
   {
     dispatch: AppDispatch;

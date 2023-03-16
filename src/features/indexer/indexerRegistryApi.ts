@@ -21,26 +21,24 @@ export const getIndexerUrls = async (
 export const getIndexerOrders = async (
   indexers: NodeIndexer[] | undefined,
   filter: RequestFilter
-) => {
-  if (indexers) {
-    let orders: Record<string, IndexedOrderResponse> = {};
+): Promise<FullOrderERC20[]> => {
+  let orders: Record<string, IndexedOrderResponse> = {};
 
-    const orderPromises = indexers?.map(async (indexer, i) => {
-      try {
-        const orderResponse = await indexer.getOrdersERC20By(filter);
-        const ordersToAdd = orderResponse.orders;
-        orders = { ...orders, ...ordersToAdd };
-      } catch (e) {
-        console.log(
-          `[indexerSlice] Order request failed for ${indexers[i]}`,
-          e || ""
-        );
-      }
-    });
+  const orderPromises = indexers?.map(async (indexer, i) => {
+    try {
+      const orderResponse = await indexer.getOrdersERC20By(filter);
+      const ordersToAdd = orderResponse.orders;
+      orders = { ...orders, ...ordersToAdd };
+    } catch (e) {
+      console.log(
+        `[indexerSlice] Order request failed for ${indexers[i]}`,
+        e || ""
+      );
+    }
+  });
 
-    return Promise.race([
-      Promise.allSettled(orderPromises),
-      new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
-    ]).then(() => Object.entries(orders).map(([, order]) => order.order));
-  }
+  return Promise.race([
+    orderPromises && Promise.allSettled(orderPromises),
+    new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
+  ]).then(() => Object.entries(orders).map(([, order]) => order.order));
 };
