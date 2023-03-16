@@ -49,10 +49,8 @@ const AvailableOrdersWidget = ({
     signerAmount: false,
     rate: false,
   });
-  console.log(senderAmount);
   const minSenderAmount = new BigNumber(senderAmount).times(0.75).toString();
   const maxSenderAmount = new BigNumber(senderAmount).times(1.25).toString();
-  console.log(minSenderAmount);
 
   useMemo(() => {
     dispatch(fetchIndexerUrls({ provider: library! }));

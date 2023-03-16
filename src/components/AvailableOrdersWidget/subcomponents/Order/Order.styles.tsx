@@ -1,8 +1,5 @@
-import { NavLink } from "react-router-dom";
-
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import { AvailableOrdersGrid } from "../../AvailableOrdersWidget.styles";
 
@@ -12,9 +9,7 @@ export const Container = styled.div`
   position: relative;
   border: 1px solid
     ${({ theme }) =>
-      theme.name === "dark"
-        ? theme.colors.alwaysBlack
-        : theme.colors.alwaysWhite};
+      theme.name === "dark" ? theme.colors.black : theme.colors.alwaysWhite};
   border-top: 1px solid ${({ theme }) => theme.colors.borderGrey};
   align-items: center;
   height: 3rem;

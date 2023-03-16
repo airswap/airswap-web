@@ -10,6 +10,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
+import i18n from "../../i18n/i18n";
 import { getIndexerOrders, getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
@@ -70,20 +71,20 @@ export const indexerSlice = createSlice({
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
       state.indexerUrls = action.payload;
       if (!action.payload.length) {
-        state.errorText = "No indexers";
+        state.errorText = i18n.t("orders.noIndexersFound");
       }
     });
     builder.addCase(fetchIndexerUrls.rejected, (state) => {
-      state.errorText = "No indexers";
+      state.errorText = i18n.t("orders.noIndexersFound");
     });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
       state.orders = action.payload;
       if (!action.payload.length) {
-        state.errorText = "No orders";
+        state.errorText = i18n.t("orders.noIndexerOrdersFound");
       }
     });
     builder.addCase(getFilteredOrders.rejected, (state) => {
-      state.errorText = "No orders";
+      state.errorText = i18n.t("orders.noIndexerOrdersFound");
     });
   },
 });

@@ -131,6 +131,8 @@
     "nativeCurrencyMaxInfoText": "{{amount}}. This amount is calculated after subtracting a {{fee}} gas fee from your total balance.",
     "newQuoteIn": "New Quote In",
     "newSwap": "New swap",
+    "noIndexersFound": "No indexer nodes found",
+    "noIndexerOrdersFound": "No orders found for this token pair",
     "orderSuccessfullyCreated": "Order successfully created",
     "price": "Price",
     "priceDifference": "Price difference",

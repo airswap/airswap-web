@@ -1,14 +1,10 @@
-import React, { FC, PropsWithChildren, useMemo, useState } from "react";
+import { FC, PropsWithChildren, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
 
-import BigNumber from "bignumber.js";
-
-import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
-import { AppRoutes } from "../../../../routes";
 import { getTokenAmountWithDecimals } from "../../../MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
 
