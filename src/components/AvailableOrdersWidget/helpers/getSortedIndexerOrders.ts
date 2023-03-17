@@ -2,9 +2,11 @@ import { FullOrderERC20 } from "@airswap/types";
 
 import BigNumber from "bignumber.js";
 
+import { AvailableOrdersSortType } from "../AvailableOrdersWidget";
+
 export const getSortedIndexerOrders = (
   orders: FullOrderERC20[],
-  sortType: "senderAmount" | "signerAmount" | "rate",
+  sortType: AvailableOrdersSortType,
   isReverse: boolean
 ) => {
   if (sortType !== "rate") {
