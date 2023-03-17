@@ -94,7 +94,7 @@ export const createOtcOrder = createAsyncThunk(
       };
 
       dispatch(setUserOrder(fullOrder));
-      if (params.activeIndexers) {
+      if (params.activeIndexers && fullOrder.senderWallet === nativeCurrencyAddress) {
         sendOrderToIndexers(fullOrder, params.activeIndexers);
       }
       notifyOrderCreated(fullOrder);
