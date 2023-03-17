@@ -74,9 +74,6 @@ export const indexerSlice = createSlice({
         state.errorText = i18n.t("orders.noIndexersFound");
       }
     });
-    builder.addCase(fetchIndexerUrls.rejected, (state) => {
-      state.errorText = i18n.t("orders.noIndexersFound");
-    });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
       state.orders = action.payload;
       if (!action.payload.length) {
@@ -84,7 +81,9 @@ export const indexerSlice = createSlice({
       }
     });
     builder.addCase(getFilteredOrders.rejected, (state) => {
-      state.errorText = i18n.t("orders.noIndexerOrdersFound");
+      if (!state.orders.length) {
+        state.errorText = i18n.t("orders.noIndexerOrdersFound");
+      }
     });
   },
 });

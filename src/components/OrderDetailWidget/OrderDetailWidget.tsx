@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo, useState } from "react";
+import React, { FC, useContext, useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -12,6 +12,11 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import {
+  fetchIndexerUrls,
+  getFilteredOrders,
+  selectIndexerReducer,
+} from "../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -67,6 +72,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
+  const { indexerUrls, orders: indexerOrders } =
+    useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const orderStatus = useOrderStatus(order);
@@ -167,6 +174,26 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       })
     );
   };
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [dispatch, indexerUrls, library]);
+
+  useEffect(() => {
+    if (indexerUrls) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [senderToken?.address!],
+            signerTokens: [signerToken?.address!],
+            page: 1,
+          },
+        })
+      );
+    }
+  }, [dispatch, indexerUrls, senderToken, signerToken]);
 
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
@@ -283,24 +310,21 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           }
         />
       </Overlay>
-      {senderToken && signerToken && (
-        <Overlay
-          title={t("orders.availableSwaps")}
-          isHidden={!showAvailableSwaps}
-          onCloseButtonClick={() => {
+      <Overlay
+        title={t("orders.availableSwaps")}
+        isHidden={!showAvailableSwaps}
+        onCloseButtonClick={() => {
+          setShowAvailableSwaps(false);
+        }}
+      >
+        <AvailableOrdersWidget
+          senderToken={senderToken!}
+          signerToken={signerToken!}
+          onOrderLinkClick={() => {
             setShowAvailableSwaps(false);
           }}
-        >
-          <AvailableOrdersWidget
-            senderToken={senderToken!}
-            signerToken={signerToken!}
-            senderAmount={order.senderAmount}
-            onOrderLinkClick={() => {
-              setShowAvailableSwaps(false);
-            }}
-          />
-        </Overlay>
-      )}
+        />
+      </Overlay>
     </Container>
   );
 };
