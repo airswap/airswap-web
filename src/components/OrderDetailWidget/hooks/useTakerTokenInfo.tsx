@@ -4,6 +4,8 @@ import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import { getDefaultProvider } from "ethers";
+
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../features/metadata/metadataApi";
 import {
@@ -13,12 +15,15 @@ import {
 import { selectTakeOtcReducer } from "../../../features/takeOtc/takeOtcSlice";
 import { selectWallet } from "../../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../../helpers/findEthOrTokenByAddress";
+import { getRpcUrl } from "../../../helpers/getRpcUrl";
 import scrapeToken from "../../../helpers/scrapeToken";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
-const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
+const useTakerTokenInfo = (
+  address: string | null
+): [TokenInfo | null, boolean] => {
   const dispatch = useAppDispatch();
   const { library } = useWeb3React<Web3Provider>();
 
@@ -61,8 +66,10 @@ const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      if (library) {
-        const result = await scrapeToken(address, library);
+      const lib = library || getDefaultProvider(getRpcUrl(activeOrder.chainId));
+
+      if (lib) {
+        const result = await scrapeToken(address, lib);
         if (result) {
           setScrapedToken(result);
         }
@@ -87,7 +94,7 @@ const useTakerTokenInfo = (address: string | null): TokenInfo | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTokens, address, activeOrder, connected]);
 
-  return token || scrapedToken || null;
+  return [token || scrapedToken || null, isCallScrapeTokenLoading];
 };
 
 export default useTakerTokenInfo;

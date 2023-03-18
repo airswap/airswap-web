@@ -688,7 +688,7 @@ const SwapWidget: FC = () => {
             onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
             side="sell"
             tradeNotAllowed={pairUnavailable}
-            isRequesting={isRequestingQuotes}
+            isRequestingQuoteAmount={isRequestingQuotes}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={formattedQuoteAmount}
