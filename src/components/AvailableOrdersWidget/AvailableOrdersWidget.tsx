@@ -27,7 +27,7 @@ const AvailableOrdersWidget = ({
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
   const { t } = useTranslation();
-  const { orders, errorText } = useAppSelector(selectIndexerReducer);
+  const { orders, helperText } = useAppSelector(selectIndexerReducer);
 
   const [invertRate, setInvertRate] = useState(false);
   const [sortType, setSortType] =
@@ -83,7 +83,7 @@ const AvailableOrdersWidget = ({
     <Container>
       <AvailableOrdersList
         orders={sortedOrders}
-        errorText={errorText}
+        helperText={helperText}
         senderToken={senderToken.symbol}
         signerToken={signerToken.symbol}
         activeSortType={sortType}

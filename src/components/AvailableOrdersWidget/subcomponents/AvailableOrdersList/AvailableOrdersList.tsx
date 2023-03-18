@@ -17,7 +17,7 @@ import {
 
 interface MyOrdersListProps {
   orders?: FullOrderERC20[];
-  errorText: string | null;
+  helperText: string | null;
   senderToken: string;
   signerToken: string;
   activeSortType: AvailableOrdersSortType;
@@ -31,7 +31,7 @@ interface MyOrdersListProps {
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
   orders,
-  errorText,
+  helperText,
   activeSortType,
   sortTypeDirection,
   invertRate,
@@ -125,8 +125,8 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
             </CutoffTooltip>
           )}
         </OrdersContainer>
-      ) : errorText ? (
-        <Error>{errorText}</Error>
+      ) : helperText ? (
+        <Error>{helperText}</Error>
       ) : (
         <LoadingSpinner />
       )}

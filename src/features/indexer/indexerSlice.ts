@@ -19,13 +19,13 @@ export interface IndexerState {
   indexerUrls: string[] | null;
   /** Map of order hash -> fullorder */
   orders: FullOrderERC20[];
-  errorText: string | null;
+  helperText: string | null;
 }
 
 const initialState: IndexerState = {
   indexerUrls: null,
   orders: [],
-  errorText: null,
+  helperText: null,
 };
 
 export const fetchIndexerUrls = createAsyncThunk<
@@ -69,20 +69,25 @@ export const indexerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
+      if (state.indexerUrls?.length && !action.payload.length) {
+        return;
+      }
+
       state.indexerUrls = action.payload;
+
       if (!action.payload.length) {
-        state.errorText = i18n.t("orders.noIndexersFound");
+        state.helperText = i18n.t("orders.noIndexersFound");
       }
     });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
       state.orders = action.payload;
       if (!action.payload.length) {
-        state.errorText = i18n.t("orders.noIndexerOrdersFound");
+        state.helperText = i18n.t("orders.noIndexerOrdersFound");
       }
     });
     builder.addCase(getFilteredOrders.rejected, (state) => {
       if (!state.orders.length) {
-        state.errorText = i18n.t("orders.noIndexerOrdersFound");
+        state.helperText = i18n.t("orders.noIndexerOrdersFound");
       }
     });
   },

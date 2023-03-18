@@ -254,6 +254,7 @@ const MakeWidget: FC = () => {
         chainId: chainId!,
         library: library!,
         activeIndexers: indexerUrls,
+        nativeCurrencyAddress: nativeCurrencyAddress,
       })
     );
   };

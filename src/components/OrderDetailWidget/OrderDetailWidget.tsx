@@ -72,8 +72,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
-  const { indexerUrls, orders: indexerOrders } =
-    useAppSelector(selectIndexerReducer);
+  const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const orderStatus = useOrderStatus(order);
@@ -121,7 +120,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const [showAvailableSwaps, setShowAvailableSwaps] = useState(false);
+  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
 
   // button handlers
   const handleBackButtonClick = () => {
@@ -135,10 +134,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     copy
       ? notifyCopySuccess()
       : notifyError({ heading: t("toast.copyFailed"), cta: "" });
-  };
-
-  const handleViewAllQuotesButtonClick = () => {
-    setShowAvailableSwaps(true);
   };
 
   const takeOrder = async () => {
@@ -263,7 +258,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         rate={tokenExchangeRate}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
-        onViewAllQuotesButtonClick={handleViewAllQuotesButtonClick}
+        onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
       />
       <ActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}
@@ -313,16 +308,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       <Overlay
         title={t("orders.availableSwaps")}
         isHidden={!showAvailableSwaps}
-        onCloseButtonClick={() => {
-          setShowAvailableSwaps(false);
-        }}
+        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
       >
         <AvailableOrdersWidget
           senderToken={senderToken!}
           signerToken={signerToken!}
-          onOrderLinkClick={() => {
-            setShowAvailableSwaps(false);
-          }}
+          onOrderLinkClick={toggleShowAvailableSwaps}
         />
       </Overlay>
     </Container>

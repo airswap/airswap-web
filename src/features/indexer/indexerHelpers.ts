@@ -9,13 +9,13 @@ export const sendOrderToIndexers = (
   if (!indexers) throw new Error("No indexers available");
 
   // Send order to all indexers
-  const addOrderPromises = indexers.map((indexer) =>
+  const addOrderPromises = indexers.map((indexer, i) =>
     indexer
       .addOrderERC20(order)
-      .then(() => console.log(`Order added to ${indexer}`))
+      .then(() => console.log(`Order added to ${indexerArray[i]}`))
       .catch((e) => {
         console.log(
-          `[indexerSlice] Order indexing failed for ${indexer}`,
+          `[indexerSlice] Order indexing failed for ${indexerArray[i]}`,
           e.message || ""
         );
       })

@@ -73,7 +73,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
         {token1 && token2 && rate && (
           <RateField isButton token1={token1} token2={token2} rate={rate} />
         )}
-        {!isMakerOfSwap && (
+        {!isMakerOfSwap && !isNotConnected && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}
             <Icon name="chevron-down" />
