@@ -1,7 +1,5 @@
 import { FullOrderERC20 } from "@airswap/types";
 
-import BigNumber from "bignumber.js";
-
 import { AvailableOrdersSortType } from "../AvailableOrdersWidget";
 
 export const getSortedIndexerOrders = (

@@ -2,8 +2,6 @@ import {
   IndexedOrderResponse,
   NodeIndexer,
   RequestFilter,
-  SortField,
-  SortOrder,
 } from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -12,7 +10,7 @@ import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { INDEXER_ORDER_RESPONSE_TIME_MS } from "../../constants/configParams";
-import { getIndexerOrders, getIndexerUrls } from "./indexerRegistryApi";
+import { getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
   /** List of indexer urls for servers that have responded successfully to
