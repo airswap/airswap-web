@@ -27,7 +27,8 @@ const AvailableOrdersWidget = ({
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
   const { t } = useTranslation();
-  const { orders, helperText } = useAppSelector(selectIndexerReducer);
+  const { orders, isLoading, noIndexersFound } =
+    useAppSelector(selectIndexerReducer);
 
   const [invertRate, setInvertRate] = useState(false);
   const [sortType, setSortType] =
@@ -47,6 +48,22 @@ const AvailableOrdersWidget = ({
       return getSortedIndexerOrders(orders, sortType, isReverse);
     }
   }, [invertRate, orders, sortType, sortTypeDirection]);
+
+  const helperText = useMemo(() => {
+    if (isLoading) {
+      return null;
+    }
+
+    if (noIndexersFound) {
+      return t("orders.noIndexersFound");
+    }
+
+    if (orders.length === 0) {
+      return t("orders.noIndexerOrdersFound");
+    }
+
+    return null;
+  }, [isLoading, noIndexersFound, orders.length, t]);
 
   const handleSortButtonClick = (selectedSortType: AvailableOrdersSortType) => {
     if (selectedSortType === sortType) {
