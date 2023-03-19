@@ -19,6 +19,10 @@ import nativeCurrency, {
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { AppErrorType } from "../../errors/appError";
 import { selectBalances } from "../../features/balances/balancesSlice";
+import {
+  fetchIndexerUrls,
+  selectIndexerReducer,
+} from "../../features/indexer/indexerSlice";
 import { createOtcOrder } from "../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
@@ -84,6 +88,7 @@ const MakeWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const userTokens = useAppSelector(selectUserTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
+  const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const { status, error, lastUserOrder } = useAppSelector(selectMakeOtcReducer);
   const {
     active,
@@ -167,6 +172,10 @@ const MakeWidget: FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchIndexerUrls({ provider: library! }));
+  }, [dispatch, library]);
+
+  useEffect(() => {
     if (orderScopeTypeOption.value === OrderScopeType.private) {
       return setOrderType(OrderType.private);
     }
@@ -244,6 +253,8 @@ const MakeWidget: FC = () => {
         senderAmount: formattedTakerAmount,
         chainId: chainId!,
         library: library!,
+        activeIndexers: indexerUrls,
+        nativeCurrencyAddress: nativeCurrencyAddress,
       })
     );
   };

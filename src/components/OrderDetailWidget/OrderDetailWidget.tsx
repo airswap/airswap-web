@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo } from "react";
+import React, { FC, useContext, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -12,6 +12,11 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import {
+  fetchIndexerUrls,
+  getFilteredOrders,
+  selectIndexerReducer,
+} from "../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -36,6 +41,7 @@ import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -66,6 +72,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
+  const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const orderStatus = useOrderStatus(order);
@@ -113,6 +120,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
 
   // button handlers
   const handleBackButtonClick = () => {
@@ -161,6 +169,26 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       })
     );
   };
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [dispatch, indexerUrls, library]);
+
+  useEffect(() => {
+    if (indexerUrls) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [senderToken?.address!],
+            signerTokens: [signerToken?.address!],
+            page: 1,
+          },
+        })
+      );
+    }
+  }, [dispatch, indexerUrls, senderToken, signerToken]);
 
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
@@ -230,6 +258,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         rate={tokenExchangeRate}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
+        onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
       />
       <ActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}
@@ -274,6 +303,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onBackButtonClick={() =>
             handleActionButtonClick(ButtonActions.restart)
           }
+        />
+      </Overlay>
+      <Overlay
+        title={t("orders.availableSwaps")}
+        isHidden={!showAvailableSwaps}
+        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
+      >
+        <AvailableOrdersWidget
+          senderToken={senderToken!}
+          signerToken={signerToken!}
+          onOrderLinkClick={toggleShowAvailableSwaps}
         />
       </Overlay>
     </Container>

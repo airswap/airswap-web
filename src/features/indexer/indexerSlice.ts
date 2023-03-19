@@ -1,9 +1,9 @@
 import {
   IndexedOrderResponse,
   NodeIndexer,
-  OrderResponse,
   RequestFilter,
 } from "@airswap/libraries";
+import { FullOrderERC20 } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
@@ -16,13 +16,16 @@ export interface IndexerState {
   /** List of indexer urls for servers that have responded successfully to
    * the healthcheck within the allowed time. Null during initial fetch. */
   indexerUrls: string[] | null;
-  /** Map of order hash -> fullorder */
-  orders: Record<string, IndexedOrderResponse>;
+  orders: FullOrderERC20[];
+  isLoading: boolean;
+  noIndexersFound: boolean;
 }
 
 const initialState: IndexerState = {
   indexerUrls: null,
-  orders: {},
+  orders: [],
+  isLoading: false,
+  noIndexersFound: false,
 };
 
 export const fetchIndexerUrls = createAsyncThunk<
@@ -36,7 +39,7 @@ export const fetchIndexerUrls = createAsyncThunk<
 });
 
 export const getFilteredOrders = createAsyncThunk<
-  OrderResponse["orders"],
+  FullOrderERC20[],
   { filter: RequestFilter },
   {
     dispatch: AppDispatch;
@@ -46,33 +49,28 @@ export const getFilteredOrders = createAsyncThunk<
   const { indexer: indexerState } = getState();
 
   const indexers = indexerState.indexerUrls?.map((url) => new NodeIndexer(url));
-  if (!indexers) throw new Error("No indexers available");
 
-  const orders: Record<string, IndexedOrderResponse> = {};
+  let orders: Record<string, IndexedOrderResponse> = {};
 
-  // Get orders from all indexers in parallel
-  const orderPromises = indexers.map((indexer, i) =>
-    indexer
-      .getOrdersERC20By(filter)
-      .then((response) => {
-        Object.assign(orders, response.orders);
-      })
-      .catch((e) => {
-        console.log(
-          `[indexerSlice] Order request failed for ${indexerState.indexerUrls?.[i]}`,
-          e.message || ""
-        );
-      })
-  );
+  const orderPromises = indexers?.map(async (indexer, i) => {
+    try {
+      const orderResponse = await indexer.getOrdersERC20By(filter);
+      const ordersToAdd = orderResponse.orders;
+      orders = { ...orders, ...ordersToAdd };
+    } catch (e) {
+      console.log(
+        `[indexerSlice] Order request failed for ${
+          indexerState.indexerUrls![i] || "an indexer node"
+        }`,
+        e || ""
+      );
+    }
+  });
 
-  // Implement a timeout so we don't wait indefinitely
-  Promise.race([
-    Promise.allSettled(orderPromises),
+  return Promise.race([
+    orderPromises && Promise.allSettled(orderPromises),
     new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
-  ]);
-
-  //  Return the orders we have.
-  return orders;
+  ]).then(() => Object.entries(orders).map(([, order]) => order.order));
 });
 
 export const indexerSlice = createSlice({
@@ -85,13 +83,29 @@ export const indexerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
+      if (state.indexerUrls?.length && !action.payload.length) {
+        return;
+      }
+
       state.indexerUrls = action.payload;
+
+      if (!state.indexerUrls.length) {
+        state.noIndexersFound = true;
+      }
     });
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
       state.orders = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getFilteredOrders.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getFilteredOrders.rejected, (state) => {
+      state.isLoading = false;
     });
   },
 });
 
 export const { reset } = indexerSlice.actions;
+export const selectIndexerReducer = (state: RootState) => state.indexer;
 export default indexerSlice.reducer;
