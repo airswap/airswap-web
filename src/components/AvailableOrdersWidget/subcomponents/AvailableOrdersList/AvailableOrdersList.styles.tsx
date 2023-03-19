@@ -47,7 +47,7 @@ export const Shadow = styled.div`
   pointer-events: none;
 `;
 
-export const Error = styled.div`
+export const HelperText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

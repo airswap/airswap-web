@@ -11,7 +11,7 @@ import {
   OrdersContainer,
   Shadow,
   StyledAvailableOrdersListSortButtons,
-  Error,
+  HelperText,
   CutoffTooltip,
 } from "./AvailableOrdersList.styles";
 
@@ -30,7 +30,7 @@ interface MyOrdersListProps {
 }
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
-  orders,
+  orders = [],
   helperText,
   activeSortType,
   sortTypeDirection,
@@ -100,7 +100,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         onSortButtonClick={onSortButtonClick}
         onRateButtonClick={onRateButtonClick}
       />
-      {orders && orders.length >= 1 ? (
+      {orders?.length ? (
         <OrdersContainer ref={containerRef}>
           {orders.map((order, i) => {
             return (
@@ -126,7 +126,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           )}
         </OrdersContainer>
       ) : helperText ? (
-        <Error>{helperText}</Error>
+        <HelperText>{helperText}</HelperText>
       ) : (
         <LoadingSpinner />
       )}

@@ -24,7 +24,7 @@ export interface IndexerState {
 const initialState: IndexerState = {
   indexerUrls: null,
   orders: [],
-  isLoading: true,
+  isLoading: false,
   noIndexersFound: false,
 };
 
@@ -96,6 +96,9 @@ export const indexerSlice = createSlice({
     builder.addCase(getFilteredOrders.fulfilled, (state, action) => {
       state.orders = action.payload;
       state.isLoading = false;
+    });
+    builder.addCase(getFilteredOrders.pending, (state) => {
+      state.isLoading = true;
     });
     builder.addCase(getFilteredOrders.rejected, (state) => {
       state.isLoading = false;
