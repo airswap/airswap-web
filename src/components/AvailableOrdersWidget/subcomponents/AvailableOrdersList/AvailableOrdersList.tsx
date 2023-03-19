@@ -100,7 +100,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         onSortButtonClick={onSortButtonClick}
         onRateButtonClick={onRateButtonClick}
       />
-      {orders?.length ? (
+      {orders.length ? (
         <OrdersContainer ref={containerRef}>
           {orders.map((order, i) => {
             return (
