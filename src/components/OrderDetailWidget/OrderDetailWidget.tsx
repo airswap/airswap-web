@@ -76,8 +76,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const orderStatus = useOrderStatus(order);
-  const senderToken = useTakerTokenInfo(order.senderToken);
-  const signerToken = useTakerTokenInfo(order.signerToken);
+  const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
+    order.senderToken
+  );
+  const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
+    order.signerToken
+  );
+
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
     senderToken?.decimals
@@ -235,6 +240,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <SwapInputs
         readOnly
+        isRequestingBaseAmount={isSignerTokenLoading}
+        isRequestingBaseToken={isSignerTokenLoading}
+        isRequestingQuoteAmount={isSenderTokenLoading}
+        isRequestingQuoteToken={isSenderTokenLoading}
         baseAmount={signerAmount || "0.00"}
         baseTokenInfo={signerToken}
         maxAmount={null}

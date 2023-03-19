@@ -262,4 +262,9 @@ export const PlaceholderContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 50%;
+
+  &:first-child ${PlaceHolderBar} {
+    transform: scaleX(-100%);
+    height: 0.875rem;
+  }
 `;

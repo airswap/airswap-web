@@ -21,7 +21,10 @@ const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 const SwapInputs: FC<{
   disabled?: boolean;
   canSetQuoteAmount?: boolean;
-  isRequesting?: boolean;
+  isRequestingBaseAmount?: boolean;
+  isRequestingBaseToken?: boolean;
+  isRequestingQuoteAmount?: boolean;
+  isRequestingQuoteToken?: boolean;
   readOnly?: boolean;
   showMaxButton?: boolean;
   showMaxInfoButton?: boolean;
@@ -44,7 +47,10 @@ const SwapInputs: FC<{
 }> = ({
   disabled = false,
   canSetQuoteAmount = false,
-  isRequesting = false,
+  isRequestingBaseAmount = false,
+  isRequestingBaseToken = false,
+  isRequestingQuoteAmount = false,
+  isRequestingQuoteToken = false,
   readOnly = false,
   showMaxButton = false,
   showMaxInfoButton = false,
@@ -108,13 +114,20 @@ const SwapInputs: FC<{
     <Container $disabled={disabled}>
       <TokenSelect
         hasError={!!baseAmountError}
-        isLoading={!isSell && isRequesting}
         isQuote={isQuote}
+        isRequestingAmount={
+          !isSell ? isRequestingQuoteAmount : isRequestingBaseAmount
+        }
+        isRequestingToken={
+          !isSell ? isRequestingQuoteToken : isRequestingBaseToken
+        }
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         readOnly={readOnly}
         amount={isSell ? baseAmount : quoteAmount}
-        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
+        includeAmountInput={
+          isSell || (!!quoteAmount && !isRequestingQuoteAmount)
+        }
         label={t("orders.from")}
         selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
         subText={baseAmountSubText}
@@ -129,11 +142,18 @@ const SwapInputs: FC<{
       <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
       <TokenSelect
         hasError={!!quoteAmountError}
-        isLoading={isSell && isRequesting}
         isQuote={isQuote}
+        isRequestingAmount={
+          isSell ? isRequestingQuoteAmount : isRequestingBaseAmount
+        }
+        isRequestingToken={
+          isSell ? isRequestingQuoteToken : isRequestingBaseToken
+        }
         amount={isSell ? quoteAmount : baseAmount}
         includeAmountInput={
-          !isSell || canSetQuoteAmount || (!!quoteAmount && !isRequesting)
+          !isSell ||
+          canSetQuoteAmount ||
+          (!!quoteAmount && !isRequestingBaseAmount)
         }
         readOnly={readOnly}
         label={t("orders.to")}

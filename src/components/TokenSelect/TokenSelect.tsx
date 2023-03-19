@@ -71,9 +71,13 @@ export type TokenSelectProps = {
    */
   onAmountChange?: FormEventHandler<HTMLInputElement>;
   /**
-   * Used for showing loading state
+   * Used for showing requesting amount state
    */
-  isLoading?: boolean;
+  isRequestingAmount?: boolean;
+  /**
+   * Used for showing requesting token state
+   */
+  isRequestingToken?: boolean;
   /**
    * Show max button
    */
@@ -102,7 +106,8 @@ const TokenSelect: FC<TokenSelectProps> = ({
   onInfoLabelMouseLeave,
   amount,
   onAmountChange,
-  isLoading = false,
+  isRequestingAmount = false,
+  isRequestingToken = false,
   isQuote = false,
   hasError = false,
   showMaxButton = false,
@@ -115,19 +120,26 @@ const TokenSelect: FC<TokenSelectProps> = ({
   }, [selectedToken, readOnly]);
 
   return (
-    <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
-      <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-        <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
-        <StyledSelector>
+    <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>
+      {!isRequestingToken ? (
+        <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
+          <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
+          <StyledSelector>
+            <StyledLabel>{label}</StyledLabel>
+            <StyledSelectItem>
+              <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
+              <StyledDownArrow $invisible={readOnly} />
+            </StyledSelectItem>
+          </StyledSelector>
+        </ContainingButton>
+      ) : (
+        <PlaceholderContainer>
           <StyledLabel>{label}</StyledLabel>
-          <StyledSelectItem>
-            <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
-            <StyledDownArrow $invisible={readOnly} />
-          </StyledSelectItem>
-        </StyledSelector>
-      </ContainingButton>
+          <PlaceHolderBar />
+        </PlaceholderContainer>
+      )}
       <TokenSelectFocusBorder position="left" />
-      {includeAmountInput ? (
+      {includeAmountInput && selectedToken && !isRequestingAmount ? (
         <InputAndMaxButtonWrapper>
           <AmountAndDetailsContainer>
             <AmountInput
