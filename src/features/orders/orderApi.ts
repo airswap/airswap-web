@@ -68,7 +68,7 @@ export async function requestOrders(
   }
   const rfqOrderPromises = makers.map(async (server) => {
     const order = await Promise.race([
-      server.getSignerSideOrder(
+      server.getSignerSideOrderERC20(
         toAtomicString(baseTokenAmount, baseTokenDecimals),
         quoteToken,
         baseToken,
