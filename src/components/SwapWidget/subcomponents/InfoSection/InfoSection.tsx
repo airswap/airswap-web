@@ -6,6 +6,7 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 import { BigNumber } from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
+import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
 import {
   StyledInfoHeading,
@@ -14,6 +15,7 @@ import {
   InfoButton,
   FeeTextContainer,
   ApprovalText,
+  StyledLargePillButton,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -42,6 +44,8 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  showViewAllQuotes: boolean;
+  onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
 };
 
@@ -60,6 +64,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
+  showViewAllQuotes,
+  onViewAllQuotesButtonClick,
   onFeeButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -125,6 +131,12 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.tokenPairUnavailable")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
       </>
     );
   }
@@ -217,6 +229,12 @@ const InfoSection: FC<InfoSectionProps> = ({
           <ApprovalText>
             {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
           </ApprovalText>
+        )}
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
         )}
       </>
     );

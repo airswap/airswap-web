@@ -27,7 +27,6 @@ type InfoButtonsProps = {
   rate: BigNumber;
   onFeeButtonClick: () => void;
   onCopyButtonClick: () => void;
-  onViewAllQuotesButtonClick: () => void;
   className?: string;
 };
 
@@ -43,7 +42,6 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   rate,
   onFeeButtonClick,
   onCopyButtonClick,
-  onViewAllQuotesButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -72,12 +70,6 @@ const InfoButtons: FC<InfoButtonsProps> = ({
       <ButtonsWrapper isColumn={!isMakerOfSwap}>
         {token1 && token2 && rate && (
           <RateField isButton token1={token1} token2={token2} rate={rate} />
-        )}
-        {!isMakerOfSwap && !isNotConnected && (
-          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-            {t("orders.viewAllQuotes")}
-            <Icon name="chevron-down" />
-          </StyledLargePillButton>
         )}
         {isMakerOfSwap && (
           <StyledLargePillButton onClick={onFeeButtonClick}>

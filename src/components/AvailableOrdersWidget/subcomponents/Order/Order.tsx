@@ -60,7 +60,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
 
   const handleClick = () => {
-    history.push(orderString);
+    history.push(`/order/${orderString}`);
     onOrderLinkClick();
   };
 

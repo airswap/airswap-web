@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../../../style/mixins";
+import { LargePillButton } from "../../../../styled-components/Pill/Pill";
 import IconButton from "../../../IconButton/IconButton";
 import { InfoHeading, InfoSubHeading } from "../../../Typography/Typography";
 import { StyledParagraph } from "../../../Typography/Typography.styles";
@@ -52,4 +53,8 @@ export const RevertPriceButton = styled(IconButton)`
   }
 
   ${BorderlessButtonStyle}
+`;
+
+export const StyledLargePillButton = styled(LargePillButton)`
+  margin-top: 1rem;
 `;
