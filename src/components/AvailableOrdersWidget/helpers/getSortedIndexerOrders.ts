@@ -1,9 +1,9 @@
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 
 import { AvailableOrdersSortType } from "../AvailableOrdersWidget";
 
 export const getSortedIndexerOrders = (
-  orders: FullOrderERC20[],
+  orders: Array<FullOrderERC20 | OrderERC20>,
   sortType: AvailableOrdersSortType,
   isReverse: boolean
 ) => {

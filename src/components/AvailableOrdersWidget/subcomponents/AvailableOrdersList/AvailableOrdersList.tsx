@@ -1,6 +1,6 @@
 import React, { FC, useRef, useState, useEffect } from "react";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 
 import useWindowSize from "../../../../hooks/useWindowSize";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
@@ -16,7 +16,7 @@ import {
 } from "./AvailableOrdersList.styles";
 
 interface MyOrdersListProps {
-  orders?: FullOrderERC20[];
+  orders?: Array<FullOrderERC20 | OrderERC20>;
   helperText: string | null;
   senderToken: string;
   signerToken: string;

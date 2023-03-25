@@ -853,6 +853,7 @@ const SwapWidget: FC = () => {
         <AvailableOrdersWidget
           senderToken={baseTokenInfo!}
           signerToken={quoteTokenInfo!}
+          bestSwapOption={bestTradeOption?.order}
           onOrderLinkClick={toggleShowAvailableSwaps}
         />
       </Overlay>
