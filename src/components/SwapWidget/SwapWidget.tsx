@@ -126,7 +126,8 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const lastTransaction = useAppSelector(selectTransactions)[0];
-  const { indexerUrls } = useAppSelector(selectIndexerReducer);
+  const { indexerUrls, orders: indexerOrders } =
+    useAppSelector(selectIndexerReducer);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -756,7 +757,7 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
-            showViewAllQuotes={true}
+            showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
