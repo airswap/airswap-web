@@ -6,6 +6,7 @@ import { wrappedTokenAddresses } from "@airswap/constants";
 import { MakerRegistry, Wrapper } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
+import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
@@ -32,6 +33,11 @@ import {
   selectAllowances,
   selectBalances,
 } from "../../features/balances/balancesSlice";
+import {
+  fetchIndexerUrls,
+  getFilteredOrders,
+  selectIndexerReducer,
+} from "../../features/indexer/indexerSlice";
 import {
   selectActiveTokensWithoutCustomTokens,
   selectAllTokenInfo,
@@ -79,6 +85,7 @@ import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
+import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
@@ -119,6 +126,8 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const lastTransaction = useAppSelector(selectTransactions)[0];
+  const { indexerUrls, orders: indexerOrders } =
+    useAppSelector(selectIndexerReducer);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -147,8 +156,10 @@ const SwapWidget: FC = () => {
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes | null>(null);
+
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeInfo, setProtocolFeeInfo] = useState(false);
+  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -250,6 +261,26 @@ const SwapWidget: FC = () => {
       setShowTokenSelectModalFor(null);
     }
   }, [active]);
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [dispatch, indexerUrls, library]);
+
+  useEffect(() => {
+    if (indexerUrls) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [baseTokenInfo?.address!],
+            signerTokens: [quoteTokenInfo?.address!],
+            page: 1,
+          },
+        })
+      );
+    }
+  }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -726,6 +757,8 @@ const SwapWidget: FC = () => {
             baseAmount={baseAmount}
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
+            showViewAllQuotes={indexerOrders.length > 0}
+            onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
         </InfoContainer>
@@ -811,6 +844,18 @@ const SwapWidget: FC = () => {
       >
         <ProtocolFeeModal
           onCloseButtonClick={() => setProtocolFeeInfo(false)}
+        />
+      </Overlay>
+      <Overlay
+        title={t("orders.availableSwaps")}
+        isHidden={!showAvailableSwaps}
+        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
+      >
+        <AvailableOrdersWidget
+          senderToken={baseTokenInfo!}
+          signerToken={quoteTokenInfo!}
+          bestSwapOption={bestTradeOption?.order}
+          onOrderLinkClick={toggleShowAvailableSwaps}
         />
       </Overlay>
     </>

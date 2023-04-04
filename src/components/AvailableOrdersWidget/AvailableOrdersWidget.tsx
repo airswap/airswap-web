@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { TokenInfo } from "@airswap/types";
+import { OrderERC20, TokenInfo } from "@airswap/types";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
@@ -17,12 +17,14 @@ export type AvailableOrdersSortType = "senderAmount" | "signerAmount" | "rate";
 export type AvailableOrdersWidgetProps = {
   senderToken: TokenInfo;
   signerToken: TokenInfo;
+  bestSwapOption?: OrderERC20;
   onOrderLinkClick: () => void;
 };
 
 const AvailableOrdersWidget = ({
   senderToken,
   signerToken,
+  bestSwapOption,
   onOrderLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
@@ -41,13 +43,14 @@ const AvailableOrdersWidget = ({
 
   const sortedOrders = useMemo(() => {
     if (orders) {
+      const orderToSort = bestSwapOption ? [...orders, bestSwapOption] : orders;
       const isReverse =
         sortType === "rate" && invertRate
           ? sortTypeDirection["rate"]
           : !sortTypeDirection[sortType];
-      return getSortedIndexerOrders(orders, sortType, isReverse);
+      return getSortedIndexerOrders(orderToSort, sortType, isReverse);
     }
-  }, [invertRate, orders, sortType, sortTypeDirection]);
+  }, [bestSwapOption, invertRate, orders, sortType, sortTypeDirection]);
 
   const helperText = useMemo(() => {
     if (isLoading) {
