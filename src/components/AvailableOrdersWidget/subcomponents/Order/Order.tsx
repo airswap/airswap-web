@@ -48,6 +48,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       ).toString(),
     [order, signerTokenInfo]
   );
+
   const displayRate = useMemo(
     () =>
       (
@@ -61,18 +62,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     return orderToCheck.swapContract !== undefined;
   }
 
-  const orderString = useMemo(
-    () =>
-      isFullOrder(order)
-        ? () => {
-            history.push(`/order/${compressFullOrderERC20(order)}`);
-          }
-        : () => {},
-    [history, order]
-  );
-
   const handleClick = () => {
-    orderString();
+    if (isFullOrder(order)) {
+      history.push(`/order/${compressFullOrderERC20(order)}`);
+    }
     onOrderLinkClick();
   };
 

@@ -16,7 +16,7 @@ import {
 } from "./AvailableOrdersList.styles";
 
 interface MyOrdersListProps {
-  orders?: Array<FullOrderERC20 | OrderERC20>;
+  orders?: (FullOrderERC20 | OrderERC20)[];
   helperText: string | null;
   senderToken: string;
   signerToken: string;
