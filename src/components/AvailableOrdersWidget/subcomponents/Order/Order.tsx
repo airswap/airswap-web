@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
 
 import useTokenInfo from "../../../../hooks/useTokenInfo";
@@ -9,7 +9,7 @@ import { getTokenAmountWithDecimals } from "../../../MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
 
 interface OrderProps {
-  order: FullOrderERC20;
+  order: FullOrderERC20 | OrderERC20;
   index: number;
   onOrderLinkClick: () => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
@@ -48,6 +48,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       ).toString(),
     [order, signerTokenInfo]
   );
+
   const displayRate = useMemo(
     () =>
       (
@@ -57,10 +58,14 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [invertRate, senderAmount, signerAmount]
   );
 
-  const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
+  function isFullOrder(orderToCheck: any): orderToCheck is FullOrderERC20 {
+    return orderToCheck.swapContract !== undefined;
+  }
 
   const handleClick = () => {
-    history.push(orderString);
+    if (isFullOrder(order)) {
+      history.push(`/order/${compressFullOrderERC20(order)}`);
+    }
     onOrderLinkClick();
   };
 
