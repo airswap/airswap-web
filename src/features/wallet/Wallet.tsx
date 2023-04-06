@@ -270,7 +270,7 @@ export const Wallet: FC<WalletPropsType> = ({
         },
         onApproval: (tokenAddress, spenderAddress, amount) => {
           const actionCreator =
-            spenderAddress === Wrapper.getAddress().toLowerCase()
+            spenderAddress === Wrapper.getAddress(chainId).toLowerCase()
               ? setAllowanceWrapper
               : setAllowanceSwap;
           dispatch(
