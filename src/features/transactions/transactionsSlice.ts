@@ -40,7 +40,7 @@ export type StatusType =
   | "declined"
   | "expired";
 
-export type ProtocolType = "request-for-quote" | "last-look";
+export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
 
 export interface SubmittedTransaction {
   type: TransactionType;

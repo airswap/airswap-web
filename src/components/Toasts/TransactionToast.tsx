@@ -87,11 +87,11 @@ const TransactionToast = ({
             if (type === "Order" || type === "Deposit" || type === "Withdraw") {
               if (transaction && senderToken && signerToken) {
                 const tx =
-                  transaction.protocol === "last-look"
+                  transaction.protocol === "last-look-erc20"
                     ? (transaction as SubmittedLastLookOrder)
                     : (transaction as SubmittedRFQOrder);
                 let translationKey = "wallet.transaction";
-                if (tx.protocol === "last-look") {
+                if (tx.protocol === "last-look-erc20") {
                   translationKey = "wallet.lastLookTransaction";
                 }
                 // @ts-ignore dynamic translation key

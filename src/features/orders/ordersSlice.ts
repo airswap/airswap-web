@@ -442,7 +442,7 @@ export const take = createAsyncThunk<
     const transaction: SubmittedRFQOrder = {
       type: "Order",
       order: newOrder,
-      protocol: "request-for-quote",
+      protocol: "request-for-quote-erc20",
       hash: tx.hash,
       status: "processing",
       timestamp: Date.now(),
@@ -574,7 +574,7 @@ export const selectBestOption = createSelector(
     if (pricing) {
       lastLookOrder = {
         quoteAmount: pricing!.quoteAmount,
-        protocol: "last-look",
+        protocol: "last-look-erc20",
         pricing: pricing!,
       };
       if (!bestRfqOrder) return lastLookOrder;
@@ -588,7 +588,7 @@ export const selectBestOption = createSelector(
       );
       rfqOrder = {
         quoteAmount: bestRFQQuoteTokens.toString(),
-        protocol: "request-for-quote",
+        protocol: "request-for-quote-erc20",
         order: bestRfqOrder,
       };
       if (!lastLookOrder) return rfqOrder;

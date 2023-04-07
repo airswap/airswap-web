@@ -51,7 +51,7 @@ const useHistoricalTransactions = () => {
         }
 
         const reconcileLogs = async (
-          protocol: "last-look" | "request-for-quote",
+          protocol: "last-look-erc20" | "request-for-quote-erc20",
           logs: Event[],
           isWrapped: boolean = false
         ) => {
@@ -122,9 +122,9 @@ const useHistoricalTransactions = () => {
         };
 
         await Promise.all([
-          reconcileLogs("last-look", lastLookSwapLogs),
-          reconcileLogs("request-for-quote", rfqSwapLogs),
-          reconcileLogs("request-for-quote", wrappedSwapLogs, true),
+          reconcileLogs("last-look-erc20", lastLookSwapLogs),
+          reconcileLogs("request-for-quote-erc20", rfqSwapLogs),
+          reconcileLogs("request-for-quote-erc20", wrappedSwapLogs, true),
         ]);
 
         setLocalStorageTransactions(localTransactionsCopy);

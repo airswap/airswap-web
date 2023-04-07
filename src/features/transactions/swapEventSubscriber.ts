@@ -46,15 +46,15 @@ export default function subscribeToSwapEvents(params: {
         hash: swapEvent.transactionHash,
         protocol:
           args.signerWallet.toLowerCase() === _account
-            ? "last-look"
-            : "request-for-quote",
+            ? "last-look-erc20"
+            : "request-for-quote-erc20",
       })
     );
 
     const transactions = store.getState().transactions;
 
     const matchingTransaction = transactions.all.find((tx) => {
-      if (tx.protocol === "last-look") {
+      if (tx.protocol === "last-look-erc20") {
         // Last look transactions don't have a nonce, but the
         const llTransaction = tx as LastLookTransaction;
         return (
