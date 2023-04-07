@@ -369,7 +369,9 @@ const SwapWidget: FC = () => {
           s.supportsProtocol("request-for-quote-erc20")
         );
 
-        lastLookMakers = makers.filter((s) => s.supportsProtocol("last-look-erc20"));
+        lastLookMakers = makers.filter((s) =>
+          s.supportsProtocol("last-look-erc20")
+        );
       } catch (e) {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
