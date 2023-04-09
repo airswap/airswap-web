@@ -30,12 +30,12 @@ export type InfoSectionProps = {
   failedToFetchAllowances: boolean;
   bestTradeOption:
     | {
-        protocol: "last-look";
+        protocol: "last-look-erc20";
         quoteAmount: string;
         pricing: Levels;
       }
     | {
-        protocol: "request-for-quote";
+        protocol: "request-for-quote-erc20";
         quoteAmount: string;
         order: OrderERC20;
       }

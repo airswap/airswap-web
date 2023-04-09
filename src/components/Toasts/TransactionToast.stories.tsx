@@ -24,7 +24,7 @@ const Template: Story<TransactionToastProps> = (args) => (
 const transactions: SubmittedTransaction[] = [
   {
     type: "Order",
-    protocol: "request-for-quote",
+    protocol: "request-for-quote-erc20",
     order: {
       expiry: "1628840480",
       nonce: "1628840180688",
@@ -45,7 +45,7 @@ const transactions: SubmittedTransaction[] = [
   } as SubmittedTransaction,
   {
     type: "Order",
-    protocol: "request-for-quote",
+    protocol: "request-for-quote-erc20",
     order: {
       expiry: "1628840474",
       nonce: "1628840174080",
@@ -66,7 +66,7 @@ const transactions: SubmittedTransaction[] = [
   } as SubmittedTransaction,
   {
     type: "Order",
-    protocol: "request-for-quote",
+    protocol: "request-for-quote-erc20",
     order: {
       expiry: "1628840464",
       nonce: "1628840164346",

@@ -101,7 +101,7 @@ const WalletTransaction = ({
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
     let signerAmountWithFee: string | null = null;
-    if (tx.protocol === "last-look") {
+    if (tx.protocol === "last-look-erc20") {
       signerAmountWithFee = new BigNumber(tx.order.signerAmount)
         .multipliedBy(1.0007)
         .integerValue(BigNumber.ROUND_FLOOR)
@@ -120,7 +120,7 @@ const WalletTransaction = ({
             <>
               <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
-                  tx.protocol === "last-look"
+                  tx.protocol === "last-look-erc20"
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {

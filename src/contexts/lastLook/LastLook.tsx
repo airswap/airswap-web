@@ -93,14 +93,14 @@ const LastLookProvider: FC = ({ children }) => {
             }
           };
 
-          server.on("pricing", handlePricing.bind(null));
+          server.on("pricing-erc20", handlePricing.bind(null));
           server.on("error", (e) => {
             console.error(
               `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
               e
             );
           });
-          const pricing = await server.subscribe([pair]);
+          const pricing = await server.subscribePricingERC20([pair]);
           handlePricing(pricing);
         });
       });
@@ -174,7 +174,7 @@ const LastLookProvider: FC = ({ children }) => {
         order: order,
         nonce: order.nonce,
         status: "processing",
-        protocol: "last-look",
+        protocol: "last-look-erc20",
         expiry: unsignedOrder.expiry,
         timestamp: Date.now(),
       };
@@ -204,7 +204,7 @@ const LastLookProvider: FC = ({ children }) => {
       const { locator, order } = params;
       const server = connectedMakers[locator];
       try {
-        return server.consider(order);
+        return server.considerOrderERC20(order);
       } catch (e) {
         console.error("Server unable to consider order: ", e);
         throw e;

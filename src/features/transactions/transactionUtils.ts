@@ -91,7 +91,7 @@ const getSwapArgsFromWrappedSwapForLog: (
 /**
  * if pending, call getTransaction to see if it was a success/failure/pending
  * update accordingly. if pending: wait() and poll at a sensible interval.
- * this is only good for request-for-quote orders
+ * this is only good for request-for-quote-erc20 orders
  * @param transactionInState
  * @param walletHasChanged
  * @param dispatch

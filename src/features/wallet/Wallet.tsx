@@ -257,7 +257,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: SwapERC20.getAddress(),
+        spenderAddress: SwapERC20.getAddress(chainId),
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
@@ -270,7 +270,7 @@ export const Wallet: FC<WalletPropsType> = ({
         },
         onApproval: (tokenAddress, spenderAddress, amount) => {
           const actionCreator =
-            spenderAddress === Wrapper.getAddress().toLowerCase()
+            spenderAddress === Wrapper.getAddress(chainId).toLowerCase()
               ? setAllowanceWrapper
               : setAllowanceSwap;
           dispatch(
