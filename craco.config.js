@@ -31,7 +31,7 @@ module.exports = {
       ignoreWarnings: [/Failed to parse source map/],
       resolve: {
         fallback: {
-          async_hooks: false,
+          url: require.resolve("browserify-url"),
           https: require.resolve("https-browserify"),
           http: require.resolve("http-browserify"),
           tls: require.resolve("tls-browserify"),
@@ -39,8 +39,11 @@ module.exports = {
           stream: require.resolve("stream-browserify"),
           crypto: require.resolve("crypto-browserify"),
           zlib: require.resolve("zlib-browserify"),
-          path: require.resolve("path-browserify"),
-          fs: require.resolve("browserify-fs")
+          path: false,
+          fs: false,
+          util: false,
+          async_hooks: false,
+          assert: false
         },
       },
     },
