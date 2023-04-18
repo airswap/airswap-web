@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -20,7 +20,7 @@ const useSwapType = (
     }
 
     const eth = nativeCurrency[chainId].address;
-    const weth = wrappedTokenAddresses[chainId];
+    const weth = WETH.getAddress(chainId);
 
     if (
       [weth, eth].includes(token1.address) &&

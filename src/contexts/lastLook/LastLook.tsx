@@ -1,10 +1,8 @@
 import { createContext, FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Maker } from "@airswap/libraries";
-// TODO: type defs for this.
-// @ts-ignore
-import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
+import { Server, SwapERC20 } from "@airswap/libraries";
+
 import { OrderERC20, Pricing } from "@airswap/types";
 import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -28,8 +26,8 @@ type Pair = {
 };
 
 export const LastLookContext = createContext<{
-  subscribeAllMakers: (makers: Maker[], pair: Pair) => Promise<Pricing>[];
-  unsubscribeAllMakers: () => void;
+  subscribeAllServers: (servers: Server[], pair: Pair) => Promise<Pricing>[];
+  unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
     order: OrderERC20;
@@ -39,10 +37,10 @@ export const LastLookContext = createContext<{
     terms: TradeTerms;
   }) => Promise<{ order: OrderERC20; senderWallet: string }>;
 }>({
-  subscribeAllMakers(makers: Maker[], pair: Pair): Promise<Pricing | any>[] {
+  subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
   },
-  unsubscribeAllMakers: () => {},
+  unsubscribeAllServers: () => {},
   sendOrderForConsideration: async () => {
     return false;
   },
@@ -54,7 +52,7 @@ export const LastLookContext = createContext<{
   },
 });
 
-const connectedMakers: Record<string, Maker> = {};
+const connectedServers: Record<string, Server> = {};
 const LastLookProvider: FC = ({ children }) => {
   const { account, library, chainId } = useWeb3React();
 
@@ -63,13 +61,13 @@ const LastLookProvider: FC = ({ children }) => {
   const dispatch = useAppDispatch();
   const protocolFee = useAppSelector(selectProtocolFee);
 
-  const subscribeAllMakers = useCallback(
-    (makers: Maker[], pair: Pair) => {
-      return makers.map(async (s) => {
+  const subscribeAllServers = useCallback(
+    (servers: Server[], pair: Pair) => {
+      return servers.map(async (s) => {
         return new Promise<Pricing>(async (resolve) => {
           let server = s;
-          if (connectedMakers[s.locator]) server = connectedMakers[s.locator];
-          connectedMakers[server.locator] = server;
+          if (connectedServers[s.locator]) server = connectedServers[s.locator];
+          connectedServers[server.locator] = server;
 
           const handlePricing = (pricing: Pricing[]) => {
             const pairPricing = pricing.find(
@@ -108,12 +106,12 @@ const LastLookProvider: FC = ({ children }) => {
     [dispatch]
   );
 
-  const unsubscribeAllMakers = useCallback(() => {
-    Object.keys(connectedMakers).forEach((locator) => {
-      const server = connectedMakers[locator];
+  const unsubscribeAllServers = useCallback(() => {
+    Object.keys(connectedServers).forEach((locator) => {
+      const server = connectedServers[locator];
       server.removeAllListeners();
       server.disconnect();
-      delete connectedMakers[locator];
+      delete connectedServers[locator];
     });
   }, []);
 
@@ -123,7 +121,7 @@ const LastLookProvider: FC = ({ children }) => {
       terms: TradeTerms;
     }): Promise<{ order: OrderERC20; senderWallet: string }> => {
       const { locator, terms } = params;
-      const server = connectedMakers[locator];
+      const server = connectedServers[locator];
 
       const isSell = terms.side === "sell";
 
@@ -155,7 +153,7 @@ const LastLookProvider: FC = ({ children }) => {
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         library.getSigner(),
-        swapDeploys[chainId],
+        SwapERC20.getAddress(chainId!),
         chainId!
       );
       const order: OrderERC20 = {
@@ -202,7 +200,7 @@ const LastLookProvider: FC = ({ children }) => {
   const sendOrderForConsideration = useCallback(
     async (params: { locator: string; order: OrderERC20 }) => {
       const { locator, order } = params;
-      const server = connectedMakers[locator];
+      const server = connectedServers[locator];
       try {
         return server.considerOrderERC20(order);
       } catch (e) {
@@ -215,15 +213,15 @@ const LastLookProvider: FC = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      subscribeAllMakers,
-      unsubscribeAllMakers,
+      subscribeAllServers,
+      unsubscribeAllServers,
       sendOrderForConsideration,
       getSignedOrder,
     }),
     [
       getSignedOrder,
-      subscribeAllMakers,
-      unsubscribeAllMakers,
+      subscribeAllServers,
+      unsubscribeAllServers,
       sendOrderForConsideration,
     ]
   );

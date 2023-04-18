@@ -3,10 +3,15 @@ import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 export type WalletButtonProps = {
   isConnected: boolean;
   isUnsupportedNetwork?: boolean;
+  tokens?: any[];
+  transactions?: any[];
+  chainId?: number;
   address?: string | null;
   glow?: boolean;
   setShowWalletList: (x: boolean) => void;
   setTransactionsTabOpen: (x: boolean) => void;
+  onConnectWalletClicked?: () => void;
+  onDisconnectWalletClicked?: () => void;
 };
 
 export const WalletButton = ({

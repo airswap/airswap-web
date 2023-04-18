@@ -25,7 +25,7 @@ export const notifyTransaction = (
   error: boolean,
   chainId?: number
 ) => {
-  let token: TokenInfo;
+  let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
   if (
     (type === "Order" || type === "Deposit" || type === "Withdraw") &&

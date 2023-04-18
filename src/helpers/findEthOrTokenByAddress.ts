@@ -9,7 +9,7 @@ export default function findEthOrTokenByAddress(
   tokenAddress: string,
   activeTokens: TokenInfo[],
   chainId: number
-): TokenInfo {
+): TokenInfo | null {
   return tokenAddress === nativeCurrencyAddress
     ? nativeCurrency[chainId]
     : findTokenByAddress(tokenAddress, activeTokens);

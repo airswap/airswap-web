@@ -2,19 +2,15 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
-import { SwapERC20, Wrapper } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
-//@ts-ignore
-import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import { Contract } from "ethers";
 
+import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as Weth9Contract from "../../assets/weth9.abi.json";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
@@ -105,7 +101,7 @@ export const Wallet: FC<WalletPropsType> = ({
 
   useBeforeunload(() => {
     if (swapContract) {
-      swapContract.removeAllListeners("Swap");
+      swapContract.removeAllListeners("SwapERC20");
     }
     if (wrapContract) {
       wrapContract.removeAllListeners("Withdrawal");
@@ -141,20 +137,8 @@ export const Wallet: FC<WalletPropsType> = ({
 
   useEffect(() => {
     if (chainId && account && library) {
-      const swapContract = new Contract(
-        swapDeploys[chainId],
-        SwapContract.abi,
-        //@ts-ignore
-        library
-      );
-      setSwapContract(swapContract);
-      const wrapContract = new Contract(
-        wrappedTokenAddresses[chainId],
-        Weth9Contract.abi,
-        //@ts-ignore
-        library
-      );
-      setWrapContract(wrapContract);
+      setSwapContract(SwapERC20.getContract(library, chainId));
+      setWrapContract(WETH.getContract(library, chainId));
     }
   }, [library, chainId, account]);
 
@@ -270,7 +254,7 @@ export const Wallet: FC<WalletPropsType> = ({
         },
         onApproval: (tokenAddress, spenderAddress, amount) => {
           const actionCreator =
-            spenderAddress === Wrapper.getAddress(chainId).toLowerCase()
+            spenderAddress === Wrapper.getAddress(chainId)
               ? setAllowanceWrapper
               : setAllowanceSwap;
           dispatch(

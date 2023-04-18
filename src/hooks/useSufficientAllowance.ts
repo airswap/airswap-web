@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -29,7 +29,7 @@ const useSufficientAllowance = (
     // ETH can't have allowance because it's not a token. So we default to WETH.
     const justifiedAddress =
       token.address === nativeCurrencyAddress
-        ? wrappedTokenAddresses[chainId]
+        ? WETH.getAddress(chainId)
         : token.address;
 
     const justifiedToken = findEthOrTokenByAddress(
@@ -37,7 +37,12 @@ const useSufficientAllowance = (
       allTokens,
       chainId
     );
-    const tokenAllowance = allowances.swap.values[justifiedToken?.address!];
+
+    if (!justifiedToken) {
+      return false;
+    }
+
+    const tokenAllowance = allowances.swap.values[justifiedToken.address!];
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the

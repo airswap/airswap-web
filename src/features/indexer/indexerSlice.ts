@@ -1,9 +1,5 @@
-import {
-  IndexedOrderResponse,
-  NodeIndexer,
-  RequestFilter,
-} from "@airswap/libraries";
-import { FullOrderERC20 } from "@airswap/types";
+import { Server } from "@airswap/libraries";
+import { IndexedOrder, RequestFilter, FullOrderERC20 } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
@@ -47,30 +43,38 @@ export const getFilteredOrders = createAsyncThunk<
   }
 >("indexer/getFilteredOrders", async ({ filter }, { getState }) => {
   const { indexer: indexerState } = getState();
+  let orders: Record<string, IndexedOrder<FullOrderERC20>> = {};
+  if (indexerState.indexerUrls) {
+    const serverPromises = await Promise.allSettled(
+      indexerState.indexerUrls.map((url) => Server.at(url))
+    );
+    const servers: Server[] = serverPromises
+      .filter(
+        (value): value is PromiseFulfilledResult<Server> =>
+          value.status === "fulfilled"
+      )
+      .map((value) => value.value);
 
-  const indexers = indexerState.indexerUrls?.map((url) => new NodeIndexer(url));
-
-  let orders: Record<string, IndexedOrderResponse> = {};
-
-  const orderPromises = indexers?.map(async (indexer, i) => {
-    try {
-      const orderResponse = await indexer.getOrdersERC20By(filter);
-      const ordersToAdd = orderResponse.orders;
-      orders = { ...orders, ...ordersToAdd };
-    } catch (e) {
-      console.log(
-        `[indexerSlice] Order request failed for ${
-          indexerState.indexerUrls![i] || "an indexer node"
-        }`,
-        e || ""
-      );
-    }
-  });
-
-  return Promise.race([
-    orderPromises && Promise.allSettled(orderPromises),
-    new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
-  ]).then(() => Object.entries(orders).map(([, order]) => order.order));
+    const orderPromises = servers.map(async (indexer, i) => {
+      try {
+        const orderResponse = await indexer.getOrdersERC20By(filter);
+        const ordersToAdd = orderResponse.orders;
+        orders = { ...orders, ...ordersToAdd };
+      } catch (e) {
+        console.log(
+          `[indexerSlice] Order request failed for ${
+            indexerState.indexerUrls![i] || "an indexer node"
+          }`,
+          e || ""
+        );
+      }
+    });
+    await Promise.race([
+      orderPromises && Promise.allSettled(orderPromises),
+      new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
+    ]).then(() => Object.entries(orders).map(([, order]) => order.order));
+  }
+  return [];
 });
 
 export const indexerSlice = createSlice({

@@ -41,15 +41,15 @@ export type TransactionToastProps = {
   /**
    * Token Info of sender token
    */
-  senderToken?: TokenInfo;
+  senderToken?: TokenInfo | null;
   /**
    * Token Info of signer token
    */
-  signerToken?: TokenInfo;
+  signerToken?: TokenInfo | null;
   /**
    * Token Info of approval token
    */
-  approvalToken?: TokenInfo;
+  approvalToken?: TokenInfo | null;
 };
 
 const TransactionToast = ({

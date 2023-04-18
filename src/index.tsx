@@ -6,6 +6,9 @@ import App from "./App";
 import { store } from "./app/store";
 import * as serviceWorker from "./serviceWorker";
 
+import * as buffer from "buffer"
+window.Buffer = buffer.Buffer;
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

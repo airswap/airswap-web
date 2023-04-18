@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -20,7 +20,7 @@ const useApprovalPending = (tokenAddress?: string | null): boolean => {
     // ETH can't have approvals because it's not a token. So we default to WETH.
     const justifiedAddress =
       tokenAddress === nativeCurrencyAddress
-        ? wrappedTokenAddresses[chainId]
+        ? WETH.getAddress(chainId)
         : tokenAddress;
 
     return pendingApprovals.some((tx) => tx.tokenAddress === justifiedAddress);

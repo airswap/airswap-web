@@ -1,18 +1,9 @@
-import * as RegistryContract from "@airswap/maker-registry/build/contracts/MakerRegistry.sol/MakerRegistry.json";
-import registryDeploys from "@airswap/maker-registry/deploys.js";
+import { Registry } from "@airswap/libraries";
 
-import { providers, utils, Contract, Event } from "ethers";
-
-const RegistryInterface = new utils.Interface(
-  JSON.stringify(RegistryContract.abi)
-);
+import { providers, Event } from "ethers";
 
 async function getStakerTokens(chainId: number, provider: providers.Provider) {
-  const registryContract = new Contract(
-    registryDeploys[chainId],
-    RegistryInterface,
-    provider
-  );
+  const registryContract = Registry.getContract(provider, chainId);
 
   const addTokensEventFilter = registryContract.filters.AddTokens();
   const removeTokensEventFilter = registryContract.filters.RemoveTokens();

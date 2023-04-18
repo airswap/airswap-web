@@ -1,7 +1,4 @@
-// @ts-ignore
-import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
-// @ts-ignore
-import * as swapDeploys from "@airswap/swap-erc20/deploys";
+import { SwapERC20 } from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
 import {
   decompressFullOrderERC20,
@@ -9,7 +6,7 @@ import {
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ethers, utils, Contract } from "ethers";
+import { providers } from "ethers";
 
 import {
   notifyRejectedByUserError,
@@ -31,8 +28,6 @@ import {
   setIsCancelSuccessFull,
   setStatus,
 } from "./takeOtcSlice";
-
-const SwapInterface = new utils.Interface(JSON.stringify(SwapContract.abi));
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -62,7 +57,7 @@ export const cancelOrder = createAsyncThunk(
     params: {
       order: FullOrderERC20;
       chainId: number;
-      library: ethers.providers.Web3Provider;
+      library: providers.Web3Provider;
     },
     { dispatch }
   ) => {
@@ -78,16 +73,12 @@ export const cancelOrder = createAsyncThunk(
       return;
     }
 
-    // cancel initiated
-    const SwapContract = new Contract(
-      swapDeploys[params.chainId],
-      SwapInterface,
-      //@ts-ignore
-      params.library.getSigner()
-    );
-
-    const tx = await SwapContract.cancel([params.order.nonce]).catch(
-      (e: any) => {
+    const tx = await SwapERC20.getContract(
+      params.library.getSigner(),
+      params.chainId
+    )
+      .cancel([params.order.nonce])
+      .catch((e: any) => {
         e.code === "ACTION_REJECTED"
           ? notifyRejectedByUserError()
           : notifyError({
@@ -96,8 +87,7 @@ export const cancelOrder = createAsyncThunk(
             });
         dispatch(revertTransaction(transaction));
         return;
-      }
-    );
+      });
 
     const transaction: SubmittedCancellation = {
       type: "Cancel",

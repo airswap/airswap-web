@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -225,11 +225,11 @@ const MakeWidget: FC = () => {
 
     const signerToken =
       makerTokenAddress === nativeCurrencyAddress
-        ? wrappedTokenAddresses[chainId!]
+        ? WETH.getAddress(chainId!)
         : makerTokenAddress;
     const senderToken =
       takerTokenAddress === nativeCurrencyAddress
-        ? wrappedTokenAddresses[chainId!]
+        ? WETH.getAddress(chainId!)
         : takerTokenAddress;
 
     setMakerAmount(formattedMakerAmount);
@@ -266,7 +266,7 @@ const MakeWidget: FC = () => {
       approve({
         token:
           tokenAddress === nativeCurrencyAddress
-            ? wrappedTokenAddresses[chainId!]
+            ? WETH.getAddress(chainId!)
             : tokenAddress,
         library,
         contractType: "Swap",
