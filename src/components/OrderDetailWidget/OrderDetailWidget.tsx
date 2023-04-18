@@ -134,14 +134,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const takeOrder = async () => {
-    let errors: any[] = []
+    let errors: any[] = [];
     if (library) {
-      errors = await check(
-        order,
-        order.senderWallet,
-        order.chainId,
-        library
-      );
+      errors = await check(order, order.senderWallet, order.chainId, library);
     }
 
     if (errors.length) {

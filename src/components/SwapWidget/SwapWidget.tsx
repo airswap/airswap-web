@@ -2,15 +2,15 @@ import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { Protocols } from "@airswap/constants";
+import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
+import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { BigNumber } from "bignumber.js";
 
-import { Protocols } from "@airswap/constants";
-import { Server, Registry, Wrapper, WETH } from '@airswap/libraries';
-import { OrderERC20, Pricing } from "@airswap/types";
+import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -359,16 +359,30 @@ const SwapWidget: FC = () => {
     try {
       try {
         if (library && chainId) {
-          rfqServers = (await Registry.getServers(library, chainId, Protocols.RequestForQuoteERC20, _quoteToken, _baseToken, {
-            initializeTimeout: 10 * 1000,
-          })).filter((s) =>
-            s.supportsProtocol(Protocols.RequestForQuoteERC20)
-          );
-          lastLookServers = (await Registry.getServers(library, chainId, Protocols.LastLookERC20, _quoteToken, _baseToken, {
-            initializeTimeout: 10 * 1000,
-          })).filter((s) =>
-            s.supportsProtocol(Protocols.LastLookERC20)
-          );
+          rfqServers = (
+            await Registry.getServers(
+              library,
+              chainId,
+              Protocols.RequestForQuoteERC20,
+              _quoteToken,
+              _baseToken,
+              {
+                initializeTimeout: 10 * 1000,
+              }
+            )
+          ).filter((s) => s.supportsProtocol(Protocols.RequestForQuoteERC20));
+          lastLookServers = (
+            await Registry.getServers(
+              library,
+              chainId,
+              Protocols.LastLookERC20,
+              _quoteToken,
+              _baseToken,
+              {
+                initializeTimeout: 10 * 1000,
+              }
+            )
+          ).filter((s) => s.supportsProtocol(Protocols.LastLookERC20));
         }
       } catch (e) {
         console.error("Error requesting orders:", e);
@@ -465,8 +479,8 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      let errors: any[] = []
-        if (library) {
+      let errors: any[] = [];
+      if (library) {
         errors = await check(
           bestTradeOption!.order!,
           swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!,
@@ -517,14 +531,9 @@ const SwapWidget: FC = () => {
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
       order = lastLookOrder;
-      let errors: any[] = []
-        if (library) {
-        errors = await check(
-          order,
-          senderWallet,
-          chainId || 1,
-          library
-        );
+      let errors: any[] = [];
+      if (library) {
+        errors = await check(order, senderWallet, chainId || 1, library);
       }
 
       if (errors.length) {
