@@ -8,8 +8,8 @@ import { Container } from "./AvailableOrdersListSortButtons.styles";
 interface AvailableOrdersListProps {
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
-  senderTokenSymbol: string;
-  signerTokenSymbol: string;
+  senderTokenSymbol?: string;
+  signerTokenSymbol?: string;
   invertRate: boolean;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
   onRateButtonClick: () => void;
@@ -32,7 +32,7 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
     <Container className={className}>
       <SortButton
         isSortable
-        tokenText={senderTokenSymbol}
+        tokenText={senderTokenSymbol || ""}
         isActive={activeSortType === "senderAmount"}
         isDescending={sortTypeDirection.senderAmount}
         onClick={() => onSortButtonClick("senderAmount")}
@@ -41,7 +41,7 @@ const AvailableOrdersListSortButtons: FC<AvailableOrdersListProps> = ({
       </SortButton>
       <SortButton
         isSortable
-        tokenText={signerTokenSymbol}
+        tokenText={signerTokenSymbol || ""}
         isActive={activeSortType === "signerAmount"}
         isDescending={sortTypeDirection.signerAmount}
         onClick={() => onSortButtonClick("signerAmount")}

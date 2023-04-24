@@ -15,8 +15,8 @@ import AvailableOrdersList from "./subcomponents/AvailableOrdersList/AvailableOr
 export type AvailableOrdersSortType = "senderAmount" | "signerAmount" | "rate";
 
 export type AvailableOrdersWidgetProps = {
-  senderToken: TokenInfo;
-  signerToken: TokenInfo;
+  senderToken?: TokenInfo;
+  signerToken?: TokenInfo;
   bestSwapOption?: OrderERC20;
   onOrderLinkClick: () => void;
 };
@@ -104,8 +104,8 @@ const AvailableOrdersWidget = ({
       <AvailableOrdersList
         orders={sortedOrders}
         helperText={helperText}
-        senderToken={senderToken.symbol}
-        signerToken={signerToken.symbol}
+        senderToken={senderToken?.symbol}
+        signerToken={signerToken?.symbol}
         activeSortType={sortType}
         sortTypeDirection={sortTypeDirection}
         invertRate={invertRate}

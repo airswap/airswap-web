@@ -860,7 +860,7 @@ const SwapWidget: FC = () => {
       </Overlay>
       <Overlay
         title={t("orders.availableSwaps")}
-        isHidden={!showAvailableSwaps}
+        isHidden={!showAvailableSwaps && appRouteParams.showQuotes !== "true"}
         onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
       >
         <AvailableOrdersWidget

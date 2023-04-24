@@ -12,7 +12,6 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
   approve,
@@ -65,7 +64,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
-  const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const orderStatus = useOrderStatus(order);
@@ -121,9 +119,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   // button handlers
   const handleBackButtonClick = () => {
-    history.push({
-      pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
-    });
+    history.goBack();
   };
 
   const handleCopyButtonClick = async () => {
