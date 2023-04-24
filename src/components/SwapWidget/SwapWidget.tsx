@@ -479,15 +479,13 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      let errors: any[] = [];
-      if (library) {
-        errors = await check(
+      if (!library) return;
+      const errors = await check(
           bestTradeOption!.order!,
           swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!,
           chainId || 1,
           library
         );
-      }
 
       if (errors.length) {
         dispatch(setErrors(errors));

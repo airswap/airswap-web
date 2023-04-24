@@ -56,8 +56,8 @@ export const notifyTransaction = (
             onClose={() => toast.dismiss(t.id)}
             type={type}
             transaction={transaction}
-            senderToken={senderToken}
-            signerToken={signerToken}
+            senderToken={senderToken || undefined}
+            signerToken={signerToken || undefined}
             error={error}
           />
         ),
@@ -75,7 +75,7 @@ export const notifyTransaction = (
           onClose={() => toast.dismiss(t.id)}
           type={type}
           transaction={transaction}
-          approvalToken={token}
+          approvalToken={token || undefined}
           error={error}
         />
       ),
