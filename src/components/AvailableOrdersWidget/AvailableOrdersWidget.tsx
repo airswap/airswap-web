@@ -18,7 +18,7 @@ export type AvailableOrdersWidgetProps = {
   senderToken?: TokenInfo;
   signerToken?: TokenInfo;
   bestSwapOption?: OrderERC20;
-  onOrderLinkClick: () => void;
+  onOrderLinkClick: (showQuotes: boolean) => void;
 };
 
 const AvailableOrdersWidget = ({

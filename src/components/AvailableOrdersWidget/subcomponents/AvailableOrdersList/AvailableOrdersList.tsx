@@ -25,7 +25,7 @@ interface MyOrdersListProps {
   invertRate: boolean;
   onRateButtonClick: () => void;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
-  onOrderLinkClick: () => void;
+  onOrderLinkClick: (showQuotes: boolean) => void;
   className?: string;
 }
 

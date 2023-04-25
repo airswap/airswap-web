@@ -11,7 +11,7 @@ import { Container, Text } from "./Order.styles";
 interface OrderProps {
   order: FullOrderERC20 | OrderERC20;
   index: number;
-  onOrderLinkClick: () => void;
+  onOrderLinkClick: (showQuotes: boolean) => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
   onMouseLeave: () => void;
   invertRate?: boolean;
@@ -65,8 +65,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const handleClick = () => {
     if (isFullOrder(order)) {
       history.push(`/order/${compressFullOrderERC20(order)}`);
+    } else {
+      onOrderLinkClick(false);
     }
-    onOrderLinkClick();
   };
 
   return (

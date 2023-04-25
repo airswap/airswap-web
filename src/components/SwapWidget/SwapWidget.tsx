@@ -159,7 +159,6 @@ const SwapWidget: FC = () => {
 
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeInfo, setProtocolFeeInfo] = useState(false);
-  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -261,6 +260,13 @@ const SwapWidget: FC = () => {
       setShowTokenSelectModalFor(null);
     }
   }, [active]);
+
+  const handleShowAvailableSwaps = (showQuotes: boolean) => {
+    const baseRoute = `/${AppRoutes.swap}`;
+    history.push({
+      pathname: `${baseRoute}/${baseToken}/${quoteToken}/${showQuotes}`,
+    });
+  };
 
   useEffect(() => {
     if (!indexerUrls && library) {
@@ -770,7 +776,7 @@ const SwapWidget: FC = () => {
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
             showViewAllQuotes={indexerOrders.length > 0}
-            onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
+            onViewAllQuotesButtonClick={() => handleShowAvailableSwaps(true)}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
         </InfoContainer>
@@ -860,14 +866,16 @@ const SwapWidget: FC = () => {
       </Overlay>
       <Overlay
         title={t("orders.availableSwaps")}
-        isHidden={!showAvailableSwaps && appRouteParams.showQuotes !== "true"}
-        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
+        isHidden={appRouteParams.showQuotes !== "true"}
+        onCloseButtonClick={() => handleShowAvailableSwaps(false)}
       >
         <AvailableOrdersWidget
           senderToken={baseTokenInfo!}
           signerToken={quoteTokenInfo!}
           bestSwapOption={bestTradeOption?.order}
-          onOrderLinkClick={toggleShowAvailableSwaps}
+          onOrderLinkClick={(showQuotes: boolean) => {
+            handleShowAvailableSwaps(showQuotes);
+          }}
         />
       </Overlay>
     </>
