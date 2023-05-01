@@ -800,10 +800,10 @@ const SwapWidget: FC = () => {
   };
 
   useEffect(() => {
-    if (!!appRouteParams.showQuotes && baseAmount === "") {
-      setBaseAmount(appRouteParams.showQuotes);
+    if (!!appRouteParams.viewAllQuotesAmount && baseAmount === "") {
+      setBaseAmount(appRouteParams.viewAllQuotesAmount);
       prepareForRequest();
-      requestQuotes(appRouteParams.showQuotes);
+      requestQuotes(appRouteParams.viewAllQuotesAmount);
     }
   }, [appRouteParams, baseAmount, prepareForRequest, requestQuotes]);
 
@@ -960,7 +960,7 @@ const SwapWidget: FC = () => {
       </Overlay>
       <Overlay
         title={t("orders.availableSwaps")}
-        isHidden={!appRouteParams.showQuotes}
+        isHidden={!appRouteParams.viewAllQuotesAmount}
         onCloseButtonClick={() => handleShowAvailableSwaps(false)}
       >
         <AvailableOrdersWidget

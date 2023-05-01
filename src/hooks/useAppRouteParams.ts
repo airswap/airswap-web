@@ -14,7 +14,7 @@ export interface AppRouteParams {
   route?: AppRoutes;
   tokenFrom?: string;
   tokenTo?: string;
-  showQuotes?: string;
+  viewAllQuotesAmount?: string;
   tokenFromAlias?: string;
   tokenToAlias?: string;
   /**
@@ -31,9 +31,9 @@ const useAppRouteParams = (): AppRouteParams => {
     route?: AppRoutes.swap;
     tokenFrom?: string;
     tokenTo?: string;
-    showQuotes?: string;
+    viewAllQuotesAmount?: string;
   }>(
-    `/:route/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}/:${SwapRoutes.showQuotes}`
+    `/:route/:${SwapRoutes.tokenFrom}/:${SwapRoutes.tokenTo}/:${SwapRoutes.viewAllQuotesAmount}`
   );
 
   const swapMatchData = useMemo(() => {
@@ -52,7 +52,7 @@ const useAppRouteParams = (): AppRouteParams => {
       return {
         tokenFrom,
         tokenTo,
-        showQuotes: swapMatch.params.showQuotes,
+        viewAllQuotesAmount: swapMatch.params.viewAllQuotesAmount,
         tokenFromAlias: tokenFromAlias,
         tokenToAlias: tokenToAlias,
         route: swapMatch.params.route,

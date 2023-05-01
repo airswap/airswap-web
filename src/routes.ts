@@ -8,11 +8,11 @@ export enum AppRoutes {
 export interface SwapRouteType {
   tokenFrom?: string;
   tokenTo?: string;
-  showQuotes?: string;
+  viewAllQuotesAmount?: string;
 }
 
 export enum SwapRoutes {
   tokenFrom = "tokenFrom",
   tokenTo = "tokenTo",
-  showQuotes = "showQuotes",
+  viewAllQuotesAmount = "viewAllQuotesAmount",
 }
