@@ -22,9 +22,11 @@ type InfoButtonsProps = {
   isMakerOfSwap: boolean;
   isNotConnected: boolean;
   orderChainId: number;
+  showViewAllQuotes: boolean;
   token1?: string;
   token2?: string;
   rate: BigNumber;
+  onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
   onCopyButtonClick: () => void;
   className?: string;
@@ -37,9 +39,11 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   isMakerOfSwap,
   isNotConnected,
   orderChainId,
+  showViewAllQuotes,
   token1,
   token2,
   rate,
+  onViewAllQuotesButtonClick,
   onFeeButtonClick,
   onCopyButtonClick,
   className,
@@ -81,6 +85,12 @@ const InfoButtons: FC<InfoButtonsProps> = ({
           <StyledLargePillButton onClick={onCopyButtonClick}>
             {t("orders.copyLink")}
             <Icon name="copy2" />
+          </StyledLargePillButton>
+        )}
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
           </StyledLargePillButton>
         )}
         {warningText && <InfoText>{warningText}</InfoText>}

@@ -64,7 +64,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleClick = () => {
     if (isFullOrder(order)) {
-      history.push(`/order/${compressFullOrderERC20(order)}`);
+      history.push({
+        pathname: `/order/${compressFullOrderERC20(order)}`,
+        state: { fromSwapFlow: true, swapAmount: 200 },
+      });
     } else {
       onOrderLinkClick(false);
     }

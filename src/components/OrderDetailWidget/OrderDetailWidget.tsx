@@ -1,6 +1,8 @@
 import { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import Location from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -34,7 +36,7 @@ import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
-import { OrderType } from "../../types/orderTypes";
+import { OrderDetailRouterState, OrderType } from "../../types/orderTypes";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -116,6 +118,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+
+  const routerState = history.location.state as OrderDetailRouterState;
+  const shopwViewAllQuotes =
+    routerState?.fromSwapFlow === true && !userIsMakerOfSwap;
 
   // button handlers
   const handleBackButtonClick = () => {
@@ -230,9 +236,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
         orderChainId={orderChainId}
+        showViewAllQuotes={shopwViewAllQuotes}
         token1={signerTokenSymbol}
         token2={senderTokenSymbol}
         rate={tokenExchangeRate}
+        onViewAllQuotesButtonClick={handleBackButtonClick}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
       />
