@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as swapDeploys from "@airswap/swap-erc20/deploys.js";
+import { SwapERC20 } from "@airswap/libraries";
 import { FullOrderERC20, UnsignedOrderERC20, TokenInfo } from "@airswap/types";
 import { createOrderERC20, toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -72,7 +71,7 @@ export const createOtcOrder = createAsyncThunk(
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         params.library.getSigner(),
-        swapDeploys[params.chainId],
+        SwapERC20.getAddress(params.chainId),
         params.chainId
       );
 
@@ -91,7 +90,7 @@ export const createOtcOrder = createAsyncThunk(
         ...unsignedOrder,
         ...signature,
         chainId: params.chainId,
-        swapContract: swapDeploys[params.chainId],
+        swapContract: SwapERC20.getAddress(params.chainId),
       };
 
       dispatch(setUserOrder(fullOrder));

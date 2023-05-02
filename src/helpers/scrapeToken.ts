@@ -1,4 +1,4 @@
-import { getTokenFromContract as airSwapScrapeToken } from "@airswap/metadata";
+import { getTokenInfo as airSwapScrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 
 import * as ethers from "ethers";

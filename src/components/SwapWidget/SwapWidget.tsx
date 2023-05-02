@@ -2,8 +2,8 @@ import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
-import { MakerRegistry, Wrapper } from "@airswap/libraries";
+import { Protocols } from "@airswap/constants";
+import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -203,7 +203,7 @@ const SwapWidget: FC = () => {
     unsubscribeFromGasPrice();
     unsubscribeFromTokenPrice();
     dispatch(clear());
-    LastLook.unsubscribeAllMakers();
+    LastLook.unsubscribeAllServers();
   }, [
     chainId,
     dispatch,
@@ -228,7 +228,7 @@ const SwapWidget: FC = () => {
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
       setBaseAmount(initialBaseAmount);
-      LastLook.unsubscribeAllMakers();
+      LastLook.unsubscribeAllServers();
     }
   }, [ordersStatus, LastLook, dispatch]);
 
@@ -349,29 +349,41 @@ const SwapWidget: FC = () => {
     setIsRequestingQuotes(true);
 
     const usesWrapper = swapType === "swapWithWrap";
-    const weth = wrappedTokenAddresses[chainId!];
+    const weth = WETH.getAddress(chainId!);
     const eth = nativeCurrency[chainId!];
     const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
     const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
-    let rfqMakers, lastLookMakers;
+    let rfqServers: Server[] = [];
+    let lastLookServers: Server[] = [];
     try {
       try {
-        const makers = await new MakerRegistry(
-          chainId,
-          // @ts-ignore provider type mismatch
-          library
-        ).getMakers(_quoteToken, _baseToken, {
-          initializeTimeout: 10 * 1000,
-        });
-
-        rfqMakers = makers.filter((s) =>
-          s.supportsProtocol("request-for-quote-erc20")
-        );
-
-        lastLookMakers = makers.filter((s) =>
-          s.supportsProtocol("last-look-erc20")
-        );
+        if (library && chainId) {
+          rfqServers = (
+            await Registry.getServers(
+              library,
+              chainId,
+              Protocols.RequestForQuoteERC20,
+              _quoteToken,
+              _baseToken,
+              {
+                initializeTimeout: 10 * 1000,
+              }
+            )
+          ).filter((s) => s.supportsProtocol(Protocols.RequestForQuoteERC20));
+          lastLookServers = (
+            await Registry.getServers(
+              library,
+              chainId,
+              Protocols.LastLookERC20,
+              _quoteToken,
+              _baseToken,
+              {
+                initializeTimeout: 10 * 1000,
+              }
+            )
+          ).filter((s) => s.supportsProtocol(Protocols.LastLookERC20));
+        }
       } catch (e) {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
@@ -380,15 +392,15 @@ const SwapWidget: FC = () => {
       let rfqPromise: Promise<OrderERC20[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
 
-      if (rfqMakers.length) {
+      if (rfqServers.length) {
         let rfqDispatchResult = dispatch(
           request({
-            makers: rfqMakers,
+            servers: rfqServers,
             senderToken: _baseToken,
             senderAmount: baseAmount,
             signerToken: _quoteToken,
             senderTokenDecimals: baseTokenInfo!.decimals,
-            senderWallet: usesWrapper ? Wrapper.getAddress(chainId) : account!,
+            senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
           })
         );
         rfqPromise = rfqDispatchResult
@@ -401,11 +413,11 @@ const SwapWidget: FC = () => {
           });
       }
 
-      if (lastLookMakers.length) {
+      if (lastLookServers.length) {
         if (usesWrapper) {
-          lastLookMakers.forEach((s) => s.disconnect());
+          lastLookServers.forEach((s) => s.disconnect());
         } else {
-          lastLookPromises = LastLook.subscribeAllMakers(lastLookMakers, {
+          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
             baseToken: baseToken!,
             quoteToken: quoteToken!,
           });
@@ -467,11 +479,12 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
+      if (!library) return;
       const errors = await check(
         bestTradeOption!.order!,
-        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account!,
+        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!,
         chainId || 1,
-        library?.getSigner()
+        library
       );
 
       if (errors.length) {
@@ -479,7 +492,7 @@ const SwapWidget: FC = () => {
         setIsSwapping(false);
         return;
       }
-      LastLook.unsubscribeAllMakers();
+      LastLook.unsubscribeAllServers();
 
       const result = await dispatch(
         take({
@@ -516,13 +529,10 @@ const SwapWidget: FC = () => {
           terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
         });
       order = lastLookOrder;
-
-      const errors = await check(
-        order,
-        senderWallet,
-        chainId || 1,
-        library?.getSigner()
-      );
+      let errors: any[] = [];
+      if (library) {
+        errors = await check(order, senderWallet, chainId || 1, library);
+      }
 
       if (errors.length) {
         dispatch(setErrors(errors));
@@ -536,7 +546,7 @@ const SwapWidget: FC = () => {
       setIsSwapping(false);
       if (accepted) {
         setShowOrderSubmitted(true);
-        LastLook.unsubscribeAllMakers();
+        LastLook.unsubscribeAllServers();
       } else {
         notifyError({
           heading: t("orders.swapRejected"),
@@ -614,7 +624,7 @@ const SwapWidget: FC = () => {
         dispatch(clear());
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllMakers();
+        LastLook.unsubscribeAllServers();
         break;
 
       case ButtonActions.restart:
@@ -624,7 +634,7 @@ const SwapWidget: FC = () => {
         dispatch(clear());
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllMakers();
+        LastLook.unsubscribeAllServers();
         setBaseAmount(initialBaseAmount);
         break;
 

@@ -1,5 +1,4 @@
-import { wrappedTokenAddresses } from "@airswap/constants";
-import { Maker } from "@airswap/libraries";
+import { Server, WETH } from "@airswap/libraries";
 import { FullOrderERC20, OrderERC20, Levels } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
@@ -81,9 +80,9 @@ const APPROVE_AMOUNT = "90071992547409910000000000";
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: OrderERC20, chainId: number) => {
   let newOrder = { ...order };
-  if (order.senderToken === wrappedTokenAddresses[chainId]) {
+  if (order.senderToken === WETH.getAddress(chainId)) {
     newOrder.senderToken = nativeCurrency[chainId].address;
-  } else if (order.signerToken === wrappedTokenAddresses[chainId]) {
+  } else if (order.signerToken === WETH.getAddress(chainId)) {
     newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
@@ -131,7 +130,7 @@ export const deposit = createAsyncThunk(
         const transaction: SubmittedDepositOrder = {
           type: "Deposit",
           order: {
-            signerToken: wrappedTokenAddresses[params.chainId],
+            signerToken: WETH.getAddress(params.chainId),
             signerAmount: senderAmount,
             senderToken: nativeCurrency[params.chainId].address,
             senderAmount: senderAmount,
@@ -219,7 +218,7 @@ export const withdraw = createAsyncThunk(
               params.senderAmount,
               params.senderTokenDecimals
             ),
-            senderToken: wrappedTokenAddresses[params.chainId],
+            senderToken: WETH.getAddress(params.chainId),
             senderAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals
@@ -270,7 +269,7 @@ export const request = createAsyncThunk(
   "orders/request",
   async (
     params: {
-      makers: Maker[];
+      servers: Server[];
       signerToken: string;
       senderToken: string;
       senderAmount: string;
@@ -280,7 +279,7 @@ export const request = createAsyncThunk(
     { dispatch }
   ) => {
     const orders = await requestOrders(
-      params.makers,
+      params.servers,
       params.signerToken,
       params.senderToken,
       params.senderAmount,

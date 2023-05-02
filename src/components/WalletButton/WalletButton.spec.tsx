@@ -15,6 +15,9 @@ describe("WalletButton", () => {
     render(
       <ThemeProvider theme={darkTheme}>
         <WalletButton
+          isConnected={true}
+          setShowWalletList={() => {}}
+          setTransactionsTabOpen={() => {}}
           onDisconnectWalletClicked={() => {}}
           onConnectWalletClicked={onConnectWalletClicked}
           tokens={[]}

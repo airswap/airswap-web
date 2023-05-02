@@ -1,4 +1,5 @@
-import { ADDRESS_ZERO, wrappedTokenAddresses } from "@airswap/constants";
+import { ADDRESS_ZERO } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
@@ -32,7 +33,7 @@ const getPriceOfTokenInWethFromUniswap: (
   chainId: number
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
-  const wethAddress = wrappedTokenAddresses[chainId];
+  const wethAddress = WETH.getAddress(chainId);
   if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
     return new BigNumber(1);
 

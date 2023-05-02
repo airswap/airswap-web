@@ -1,5 +1,5 @@
-import * as SwapContract from "@airswap/swap-erc20/build/contracts/SwapERC20.sol/SwapERC20.json";
-import * as WrapperContract from "@airswap/wrapper/build/contracts/Wrapper.sol/Wrapper.json";
+import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
+import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
 import { Interface } from "@ethersproject/abi";
 import { Web3Provider } from "@ethersproject/providers";
 import { Action, Dispatch } from "@reduxjs/toolkit";
@@ -9,8 +9,8 @@ import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 import { mineTransaction, revertTransaction } from "./transactionActions";
 import { SubmittedTransaction } from "./transactionsSlice";
 
-const wrapperInterface = new Interface(WrapperContract.abi);
-const swapInterface = new Interface(SwapContract.abi);
+const wrapperInterface = new Interface(Wrapper__factory.abi);
+const swapInterface = new Interface(SwapERC20__factory.abi);
 
 // Event from interface for reference.
 // event Swap(
@@ -74,7 +74,7 @@ const getSwapArgsFromWrappedSwapForLog: (
   for (let i = 0; i < receipt.logs.length; i++) {
     try {
       const parsedLog = swapInterface.parseLog(receipt.logs[i]);
-      if (parsedLog.name === "Swap") {
+      if (parsedLog.name === "SwapERC20") {
         return parsedLog.args as unknown as SwapEventArgs;
       }
     } catch (e) {

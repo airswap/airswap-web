@@ -1,25 +1,31 @@
-import { NodeIndexer } from "@airswap/libraries";
+import { Server } from "@airswap/libraries";
 import { FullOrderERC20 } from "@airswap/types";
 
-export const sendOrderToIndexers = (
+export const sendOrderToIndexers = async (
   order: FullOrderERC20,
   indexerArray: string[]
 ) => {
-  const indexers = indexerArray.map((url) => new NodeIndexer(url));
+  const indexers = indexerArray.map(async (url) => await Server.at(url));
   if (!indexers) throw new Error("No indexers available");
 
-  // Send order to all indexers
-  const addOrderPromises = indexers.map((indexer, i) =>
-    indexer
-      .addOrderERC20(order)
-      .then(() => console.log(`Order added to ${indexerArray[i]}`))
-      .catch((e) => {
-        console.log(
-          `[indexerSlice] Order indexing failed for ${indexerArray[i]}`,
-          e.message || ""
-        );
-      })
-  );
+  const indexerPromises = await Promise.allSettled(indexers);
+  const addOrderPromises = indexerPromises
+    .filter(
+      (value): value is PromiseFulfilledResult<Server> =>
+        value.status === "fulfilled"
+    )
+    .map((value) => {
+      const server = value.value;
+      return server
+        .addOrderERC20(order)
+        .then(() => console.log(`Order added to ${server.locator}`))
+        .catch((e: any) => {
+          console.log(
+            `[indexerSlice] Order indexing failed for ${server.locator}`,
+            e.message || ""
+          );
+        });
+    });
 
   Promise.race([
     Promise.allSettled(addOrderPromises),

@@ -1,5 +1,5 @@
 import { SwapERC20 } from "@airswap/libraries";
-import { getKnownTokens, getTokenFromContract } from "@airswap/metadata";
+import { getKnownTokens, getTokenInfo } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 
@@ -51,9 +51,7 @@ export const getUnknownTokens = async (
 
   let scrapedTokens: TokenInfo[] = [];
   if (unknownTokens.length) {
-    const scrapePromises = unknownTokens.map((t) =>
-      getTokenFromContract(provider, t)
-    );
+    const scrapePromises = unknownTokens.map((t) => getTokenInfo(provider, t));
     const results = await Promise.allSettled(scrapePromises);
     scrapedTokens = results
       .filter((r) => r.status === "fulfilled")
@@ -124,9 +122,7 @@ export const getProtocolFee = async (
   chainId: number,
   provider: Web3Provider
 ): Promise<number> => {
-  const protocolFee = await new SwapERC20(
-    chainId,
-    provider.getSigner()
-  ).contract.protocolFee();
-  return protocolFee.toNumber();
+  return (
+    await SwapERC20.getContract(provider, chainId).protocolFee()
+  ).toNumber();
 };

@@ -1,9 +1,7 @@
-import BalanceChecker from "@airswap/balances/build/contracts/BalanceChecker.json";
-import balancesDeploys from "@airswap/balances/deploys.js";
-import { SwapERC20, Wrapper } from "@airswap/libraries";
+import { SwapERC20, Wrapper, Balances } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
-import { BigNumber, ethers, EventFilter, Event, providers } from "ethers";
+import { BigNumber, ethers, EventFilter, Event } from "ethers";
 import { hexZeroPad, id } from "ethers/lib/utils";
 
 interface SubscribeParams {
@@ -30,22 +28,7 @@ interface WalletParams {
   tokenAddresses: string[];
 }
 
-const balancesInterface = new ethers.utils.Interface(
-  JSON.stringify(BalanceChecker.abi)
-);
-
 const erc20Interface = new ethers.utils.Interface(erc20Abi);
-
-const getContract = (
-  chainId: keyof typeof balancesDeploys,
-  provider: ethers.providers.Web3Provider
-) => {
-  return new ethers.Contract(
-    balancesDeploys[chainId],
-    balancesInterface,
-    provider as providers.Provider
-  );
-};
 
 /**
  * Fetches balances or allowances for a wallet using the airswap utility
@@ -60,7 +43,7 @@ const fetchBalancesOrAllowances: (
   spenderAddressType,
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
-  const contract = getContract(chainId, provider);
+  const contract = Balances.getContract(provider, chainId);
   const args =
     method === "walletBalances"
       ? [walletAddress, tokenAddresses]

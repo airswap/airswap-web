@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -44,7 +44,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
       return;
     }
 
-    const wrappedTokenAddress = wrappedTokenAddresses[chainId];
+    const wrappedTokenAddress = WETH.getAddress(chainId);
 
     if (!wrappedTokenAddress) {
       return;

@@ -25,7 +25,7 @@ export const notifyTransaction = (
   error: boolean,
   chainId?: number
 ) => {
-  let token: TokenInfo;
+  let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
   if (
     (type === "Order" || type === "Deposit" || type === "Withdraw") &&
@@ -56,8 +56,8 @@ export const notifyTransaction = (
             onClose={() => toast.dismiss(t.id)}
             type={type}
             transaction={transaction}
-            senderToken={senderToken}
-            signerToken={signerToken}
+            senderToken={senderToken || undefined}
+            signerToken={signerToken || undefined}
             error={error}
           />
         ),
@@ -75,7 +75,7 @@ export const notifyTransaction = (
           onClose={() => toast.dismiss(t.id)}
           type={type}
           transaction={transaction}
-          approvalToken={token}
+          approvalToken={token || undefined}
           error={error}
         />
       ),
