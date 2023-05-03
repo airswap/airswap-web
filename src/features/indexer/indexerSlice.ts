@@ -51,7 +51,9 @@ export const getFilteredOrders = createAsyncThunk<
   }
 >("indexer/getFilteredOrders", async ({ filter }, { getState }) => {
   const { indexer: indexerState } = getState();
+
   let orders: Record<string, IndexedOrder<FullOrderERC20>> = {};
+
   if (indexerState.indexerUrls) {
     const serverPromises = await Promise.allSettled(
       indexerState.indexerUrls.map((url) => Server.at(url))
@@ -77,7 +79,7 @@ export const getFilteredOrders = createAsyncThunk<
         );
       }
     });
-    await Promise.race([
+    return Promise.race([
       orderPromises && Promise.allSettled(orderPromises),
       new Promise((res) => setTimeout(res, INDEXER_ORDER_RESPONSE_TIME_MS)),
     ]).then(() => Object.entries(orders).map(([, order]) => order.order));
