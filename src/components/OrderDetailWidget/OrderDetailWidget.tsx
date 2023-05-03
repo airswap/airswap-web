@@ -251,7 +251,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
         orderChainId={orderChainId}
-        showViewAllQuotes={userIsFromSwapFlow}
+        showViewAllQuotes={userIsFromSwapFlow && !userIsMakerOfSwap}
         token1={signerTokenSymbol}
         token2={senderTokenSymbol}
         rate={tokenExchangeRate}
