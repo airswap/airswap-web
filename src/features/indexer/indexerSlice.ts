@@ -1,6 +1,12 @@
 import { Server } from "@airswap/libraries";
-import { IndexedOrder, RequestFilter, FullOrderERC20 } from "@airswap/types";
+import {
+  IndexedOrder,
+  RequestFilter,
+  FullOrderERC20,
+  OrderERC20,
+} from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
 
@@ -13,6 +19,7 @@ export interface IndexerState {
    * the healthcheck within the allowed time. Null during initial fetch. */
   indexerUrls: string[] | null;
   orders: FullOrderERC20[];
+  bestSwapOrder: OrderERC20 | null;
   isLoading: boolean;
   noIndexersFound: boolean;
 }
@@ -20,6 +27,7 @@ export interface IndexerState {
 const initialState: IndexerState = {
   indexerUrls: null,
   orders: [],
+  bestSwapOrder: null,
   isLoading: false,
   noIndexersFound: false,
 };
@@ -84,6 +92,9 @@ export const indexerSlice = createSlice({
     reset: () => {
       return { ...initialState };
     },
+    setBestSwapOrder: (state, action: PayloadAction<OrderERC20 | null>) => {
+      state.bestSwapOrder = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
@@ -110,6 +121,6 @@ export const indexerSlice = createSlice({
   },
 });
 
-export const { reset } = indexerSlice.actions;
+export const { reset, setBestSwapOrder } = indexerSlice.actions;
 export const selectIndexerReducer = (state: RootState) => state.indexer;
 export default indexerSlice.reducer;

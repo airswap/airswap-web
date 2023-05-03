@@ -8,8 +8,8 @@ import { Container } from "./AvailableOrdersListSortButtons.styles";
 interface AvailableOrdersListProps {
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
-  senderTokenSymbol?: string;
-  signerTokenSymbol?: string;
+  senderTokenSymbol: string;
+  signerTokenSymbol: string;
   invertRate: boolean;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
   onRateButtonClick: () => void;

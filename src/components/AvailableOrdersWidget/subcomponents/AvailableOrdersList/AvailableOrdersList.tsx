@@ -18,8 +18,8 @@ import {
 interface MyOrdersListProps {
   orders?: (FullOrderERC20 | OrderERC20)[];
   helperText: string | null;
-  senderToken?: string;
-  signerToken?: string;
+  senderToken: string;
+  signerToken: string;
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
   invertRate: boolean;

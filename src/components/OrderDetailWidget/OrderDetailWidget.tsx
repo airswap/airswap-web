@@ -1,8 +1,6 @@
 import { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import Location from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -14,6 +12,7 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
   approve,
@@ -36,7 +35,7 @@ import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTakingOrderPending from "../../hooks/useTakingOrderPending";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
-import { OrderDetailRouterState, OrderType } from "../../types/orderTypes";
+import { OrderType } from "../../types/orderTypes";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -59,7 +58,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const { account, library } = useWeb3React<Web3Provider>();
   const history = useHistory();
+  const location = useLocation<{
+    fromSwapFlow?: boolean;
+    searchAmount?: string;
+  }>();
   const dispatch = useAppDispatch();
+  const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
   const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
@@ -119,13 +123,24 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
-  const routerState = history.location.state as OrderDetailRouterState;
-  const shopwViewAllQuotes =
-    routerState?.fromSwapFlow === true && !userIsMakerOfSwap;
+  const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
+
+  const backToViewAllQuotes = () => {
+    history.push({
+      pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
+      state: { searchAmount: location.state.searchAmount },
+    });
+  };
 
   // button handlers
   const handleBackButtonClick = () => {
-    history.goBack();
+    if (userIsFromSwapFlow) {
+      backToViewAllQuotes();
+      return;
+    }
+    history.push({
+      pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
+    });
   };
 
   const handleCopyButtonClick = async () => {
@@ -236,11 +251,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
         orderChainId={orderChainId}
-        showViewAllQuotes={shopwViewAllQuotes}
+        showViewAllQuotes={userIsFromSwapFlow}
         token1={signerTokenSymbol}
         token2={senderTokenSymbol}
         rate={tokenExchangeRate}
-        onViewAllQuotesButtonClick={handleBackButtonClick}
+        onViewAllQuotesButtonClick={backToViewAllQuotes}
         onFeeButtonClick={toggleShowFeeInfo}
         onCopyButtonClick={handleCopyButtonClick}
       />

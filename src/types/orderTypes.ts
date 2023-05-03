@@ -8,7 +8,3 @@ export enum OrderScopeType {
   public = "public",
   private = "private",
 }
-
-export type OrderDetailRouterState = {
-  fromSwapFlow?: boolean;
-};
