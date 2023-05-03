@@ -939,6 +939,7 @@ const SwapWidget: FC = () => {
             senderToken={baseTokenInfo}
             signerToken={quoteTokenInfo}
             bestSwapOption={bestSwapOrder || undefined}
+            searchAmount={baseAmount}
             onOrderLinkClick={() => toggleShowViewAllQuotes()}
           />
         </Overlay>

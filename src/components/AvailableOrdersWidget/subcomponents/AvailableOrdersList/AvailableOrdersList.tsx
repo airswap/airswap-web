@@ -23,6 +23,7 @@ interface MyOrdersListProps {
   activeSortType: AvailableOrdersSortType;
   sortTypeDirection: Record<AvailableOrdersSortType, boolean>;
   invertRate: boolean;
+  searchAmount?: string;
   onRateButtonClick: () => void;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
   onOrderLinkClick: (showQuotes: boolean) => void;
@@ -35,6 +36,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   activeSortType,
   sortTypeDirection,
   invertRate,
+  searchAmount,
   onRateButtonClick,
   onSortButtonClick,
   onOrderLinkClick,
@@ -111,6 +113,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 invertRate={invertRate}
+                searchAmount={searchAmount}
                 onOrderLinkClick={onOrderLinkClick}
               />
             );

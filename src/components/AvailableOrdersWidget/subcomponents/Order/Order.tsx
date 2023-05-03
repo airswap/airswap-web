@@ -14,6 +14,7 @@ interface OrderProps {
   onOrderLinkClick: (showQuotes: boolean) => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
   onMouseLeave: () => void;
+  searchAmount?: string;
   invertRate?: boolean;
   className?: string;
 }
@@ -24,6 +25,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onOrderLinkClick,
   onMouseEnter,
   onMouseLeave,
+  searchAmount,
   invertRate,
   className,
 }) => {
@@ -66,7 +68,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     if (isFullOrder(order)) {
       history.push({
         pathname: `/order/${compressFullOrderERC20(order)}`,
-        state: { fromSwapFlow: true, searchAmount: "200" },
+        state: { fromSwapFlow: true, searchAmount: searchAmount },
       });
     } else {
       onOrderLinkClick(false);

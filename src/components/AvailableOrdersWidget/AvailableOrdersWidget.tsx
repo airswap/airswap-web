@@ -18,6 +18,7 @@ export type AvailableOrdersWidgetProps = {
   senderToken: TokenInfo;
   signerToken: TokenInfo;
   bestSwapOption?: OrderERC20;
+  searchAmount?: string;
   onOrderLinkClick: (showQuotes: boolean) => void;
 };
 
@@ -25,6 +26,7 @@ const AvailableOrdersWidget = ({
   senderToken,
   signerToken,
   bestSwapOption,
+  searchAmount,
   onOrderLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
@@ -109,6 +111,7 @@ const AvailableOrdersWidget = ({
         activeSortType={sortType}
         sortTypeDirection={sortTypeDirection}
         invertRate={invertRate}
+        searchAmount={searchAmount}
         onRateButtonClick={handleRateButtonClick}
         onSortButtonClick={handleSortButtonClick}
         onOrderLinkClick={onOrderLinkClick}
