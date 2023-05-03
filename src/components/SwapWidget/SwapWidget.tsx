@@ -365,7 +365,7 @@ const SwapWidget: FC = () => {
   };
 
   const requestQuotes = useCallback(
-    async (baseAmountFromURL?: string) => {
+    async (searchAmount?: string) => {
       if (swapType === "wrapOrUnwrap") {
         // This will re-render with a 1:1 price and a take button.
         setIsWrapping(true);
@@ -373,84 +373,42 @@ const SwapWidget: FC = () => {
       }
       setIsRequestingQuotes(true);
 
-    const usesWrapper = swapType === "swapWithWrap";
-    const weth = WETH.getAddress(chainId!);
-    const eth = nativeCurrency[chainId!];
-    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-    const _baseToken = baseToken === eth.address ? weth : baseToken!;
+      const usesWrapper = swapType === "swapWithWrap";
+      const weth = WETH.getAddress(chainId!);
+      const eth = nativeCurrency[chainId!];
+      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+      const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
-    let rfqServers: Server[] = [];
-    let lastLookServers: Server[] = [];
-    try {
+      let rfqServers: Server[] = [];
+      let lastLookServers: Server[] = [];
       try {
-        if (library && chainId) {
-          rfqServers = (
-            await Registry.getServers(
-              library,
-              chainId,
-              Protocols.RequestForQuoteERC20,
-              _quoteToken,
-              _baseToken,
-              {
-                initializeTimeout: 10 * 1000,
-              }
-            )
-          ).filter((s) => s.supportsProtocol(Protocols.RequestForQuoteERC20));
-          lastLookServers = (
-            await Registry.getServers(
-              library,
-              chainId,
-              Protocols.LastLookERC20,
-              _quoteToken,
-              _baseToken,
-              {
-                initializeTimeout: 10 * 1000,
-              }
-            )
-          ).filter((s) => s.supportsProtocol(Protocols.LastLookERC20));
-        }
-      } catch (e) {
-        console.error("Error requesting orders:", e);
-        throw new Error("error requesting orders");
-      }
-
-      let rfqPromise: Promise<OrderERC20[]> | null = null,
-        lastLookPromises: Promise<Pricing>[] | null = null;
-
-      if (rfqServers.length) {
-        let rfqDispatchResult = dispatch(
-          request({
-            servers: rfqServers,
-            senderToken: _baseToken,
-            senderAmount: baseAmount,
-            signerToken: _quoteToken,
-            senderTokenDecimals: baseTokenInfo!.decimals,
-            senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
-          })
-        );
-        rfqPromise = rfqDispatchResult
-          .then((result) => {
-            return unwrapResult(result);
-          })
-          .then((orders) => {
-            if (!orders.length) throw new Error("no valid orders");
-            return orders;
-          });
-
-      if (lastLookServers.length) {
-        if (usesWrapper) {
-          lastLookServers.forEach((s) => s.disconnect());
-        } else {
-          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
-            baseToken: baseToken!,
-            quoteToken: quoteToken!,
-          });
-        }
-      }
-
-          lastLookMakers = makers.filter((s) =>
-            s.supportsProtocol("last-look-erc20")
-          );
+        try {
+          if (library && chainId) {
+            rfqServers = (
+              await Registry.getServers(
+                library,
+                chainId,
+                Protocols.RequestForQuoteERC20,
+                _quoteToken,
+                _baseToken,
+                {
+                  initializeTimeout: 10 * 1000,
+                }
+              )
+            ).filter((s) => s.supportsProtocol(Protocols.RequestForQuoteERC20));
+            lastLookServers = (
+              await Registry.getServers(
+                library,
+                chainId,
+                Protocols.LastLookERC20,
+                _quoteToken,
+                _baseToken,
+                {
+                  initializeTimeout: 10 * 1000,
+                }
+              )
+            ).filter((s) => s.supportsProtocol(Protocols.LastLookERC20));
+          }
         } catch (e) {
           console.error("Error requesting orders:", e);
           throw new Error("error requesting orders");
@@ -459,16 +417,16 @@ const SwapWidget: FC = () => {
         let rfqPromise: Promise<OrderERC20[]> | null = null,
           lastLookPromises: Promise<Pricing>[] | null = null;
 
-        if (rfqMakers.length) {
+        if (rfqServers.length) {
           let rfqDispatchResult = dispatch(
             request({
-              makers: rfqMakers,
+              servers: rfqServers,
               senderToken: _baseToken,
-              senderAmount: baseAmountFromURL || baseAmount,
+              senderAmount: searchAmount || baseAmount,
               signerToken: _quoteToken,
               senderTokenDecimals: baseTokenInfo!.decimals,
               senderWallet: usesWrapper
-                ? Wrapper.getAddress(chainId)
+                ? Wrapper.getAddress(chainId!)
                 : account!,
             })
           );
@@ -482,11 +440,11 @@ const SwapWidget: FC = () => {
             });
         }
 
-        if (lastLookMakers.length) {
+        if (lastLookServers.length) {
           if (usesWrapper) {
-            lastLookMakers.forEach((s) => s.disconnect());
+            lastLookServers.forEach((s) => s.disconnect());
           } else {
-            lastLookPromises = LastLook.subscribeAllMakers(lastLookMakers, {
+            lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
               baseToken: baseToken!,
               quoteToken: quoteToken!,
             });
