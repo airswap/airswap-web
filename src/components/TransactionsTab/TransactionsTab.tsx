@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
-import { getEtherscanWalletURL } from "@airswap/utils";
+import { getAccountUrl } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -92,7 +92,7 @@ const TransactionsTab = ({
       : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
-    () => getEtherscanWalletURL(chainId, address),
+    () => getAccountUrl(chainId, address),
     [chainId, address]
   );
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
