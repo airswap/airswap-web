@@ -1,5 +1,9 @@
 import { Server } from "@airswap/libraries";
-import { IndexedOrder, FullOrderERC20, RequestFilterERC20 } from "@airswap/types";
+import {
+  IndexedOrder,
+  FullOrderERC20,
+  RequestFilterERC20,
+} from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
