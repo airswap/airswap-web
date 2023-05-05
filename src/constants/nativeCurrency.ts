@@ -28,6 +28,14 @@ const nativeCurrency: Record<number, TokenInfo> = {
     symbol: "RBTC",
     logoURI: "images/rbtc-logo.png",
   },
+  31: {
+    chainId: 31,
+    address: nativeCurrencyAddress,
+    name: "tRBTC",
+    decimals: 18,
+    symbol: "tRBTC",
+    logoURI: "images/rbtc-logo.png",
+  },
   56: {
     chainId: 56,
     address: nativeCurrencyAddress,

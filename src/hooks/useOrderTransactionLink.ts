@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { getEtherscanURL } from "@airswap/utils";
+import { getReceiptUrl } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -25,7 +25,7 @@ const useOrderTransactionLink = (nonce: string): string | undefined => {
       return undefined;
     }
 
-    return getEtherscanURL(chainId, succeededTransaction.hash);
+    return getReceiptUrl(chainId, succeededTransaction.hash);
   }, [nonce, transactions, chainId]);
 };
 

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { getEtherscanURL } from "@airswap/utils";
+import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
 import { Link } from "./TransactionLink.style";
@@ -24,7 +24,7 @@ const TransactionLink = ({
       target="_blank"
       rel="noreferrer"
       aria-label={t("wallet.transactionLink")}
-      href={`${getEtherscanURL(chainId, hash)}`}
+      href={`${getReceiptUrl(chainId, hash)}`}
     >
       <Icon iconSize={1} name="transaction-link" />
     </Link>
