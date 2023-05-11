@@ -70,6 +70,7 @@ import {
   StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
+  StyledReviewApprovalInfo,
   StyledTooltip,
   TooltipContainer,
 } from "./MakeWidget.styles";
@@ -158,6 +159,7 @@ const MakeWidget: FC = () => {
   const shouldDepositNativeTokenAmount =
     useShouldDepositNativeToken(makerAmount);
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
+  const [showReviewErc20Approval, setShowReviewErc20Approval] = useState(false);
   const hasDepositPending = useDepositPending();
 
   // Modal states
@@ -196,6 +198,12 @@ const MakeWidget: FC = () => {
       setShowTokenSelectModal(null);
     }
   }, [active]);
+
+  useEffect(() => {
+    if (hasApprovalPending) {
+      setShowReviewErc20Approval(false);
+    }
+  }, [hasApprovalPending]);
 
   // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -301,6 +309,7 @@ const MakeWidget: FC = () => {
     }
 
     if (action === ButtonActions.approve) {
+      setShowReviewErc20Approval(true);
       approveToken();
     }
 
@@ -404,6 +413,12 @@ const MakeWidget: FC = () => {
       <StyledInfoSection
         shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
       />
+      {makerTokenInfo && makerAmount && showReviewErc20Approval && (
+        <StyledReviewApprovalInfo
+          amount={makerAmount}
+          tokenInfo={makerTokenInfo}
+        />
+      )}
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
         hasInsufficientAllowance={hasInsufficientAllowance}

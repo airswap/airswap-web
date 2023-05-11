@@ -149,6 +149,7 @@
     "searchByNameOrAddress": "Search name or paste address",
     "settings": "Settings",
     "shouldDepositNativeTokenAmount": "To trade {{nativeToken}}, you must first wrap it as {{wrappedNativeToken}}. You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}} so you will need to wrap {{shouldGetWrappedNativeTokenAmount}} to complete this order (including {{protocolFee}}% fee).",
+    "shouldApproveErc20TokenAmount": "Approve amount should be at least {{amount}} {{symbol}} + {{protocolFee}}% = {{amountPlusFee}} {{symbol}}.",
     "specificWallet": "Specific Wallet",
     "startByCreatingANewOrder": "Start by creating a new order",
     "submitted": "Transaction Submitted",
