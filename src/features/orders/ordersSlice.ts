@@ -275,6 +275,7 @@ export const request = createAsyncThunk(
       senderAmount: string;
       senderTokenDecimals: number;
       senderWallet: string;
+      proxyingFor?: string;
     },
     { dispatch }
   ) => {
@@ -284,7 +285,8 @@ export const request = createAsyncThunk(
       params.senderToken,
       params.senderAmount,
       params.senderTokenDecimals,
-      params.senderWallet
+      params.senderWallet,
+      params.proxyingFor
     );
     if (orders.length) {
       const bestOrder = [...orders].sort(orderSortingFunction)[0];
