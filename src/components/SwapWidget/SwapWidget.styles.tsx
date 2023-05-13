@@ -1,5 +1,3 @@
-import { MdDoneAll } from "react-icons/md";
-
 import styled from "styled-components/macro";
 
 import WalletProviderList from "../WalletProviderList/WalletProviderList";
@@ -17,6 +15,7 @@ export const InfoContainer = styled.div`
   align-items: center;
   flex-grow: 2;
   margin-bottom: 0.5rem;
+  max-height: 16rem;
   text-align: center;
 `;
 
@@ -25,13 +24,6 @@ export const ButtonContainer = styled.div`
   margin-top: auto;
   justify-self: flex-end;
   gap: 1.25rem;
-`;
-
-export const HugeTicks = styled(MdDoneAll)`
-  font-size: 8rem;
-  margin: 1rem auto -4rem auto;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const StyledSwapWidget = styled.div`

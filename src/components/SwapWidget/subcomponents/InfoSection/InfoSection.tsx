@@ -16,6 +16,7 @@ import {
   FeeTextContainer,
   ApprovalText,
   StyledLargePillButton,
+  DoneAllIcon,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -144,6 +145,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (orderCompleted) {
     return (
       <>
+        <DoneAllIcon />
         <StyledInfoHeading>
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
@@ -155,6 +157,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (orderSubmitted) {
     return (
       <>
+        <DoneAllIcon />
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>

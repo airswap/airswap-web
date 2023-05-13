@@ -1,3 +1,5 @@
+import { MdDoneAll } from "react-icons/md";
+
 import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../../../style/mixins";
@@ -57,4 +59,11 @@ export const RevertPriceButton = styled(IconButton)`
 
 export const StyledLargePillButton = styled(LargePillButton)`
   margin-top: 1rem;
+`;
+
+export const DoneAllIcon = styled(MdDoneAll)`
+  font-size: 8rem;
+  margin: 0 auto 2rem;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;

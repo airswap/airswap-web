@@ -98,7 +98,6 @@ import {
 import TokenList from "../TokenList/TokenList";
 import StyledSwapWidget, {
   ButtonContainer,
-  HugeTicks,
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
@@ -717,11 +716,7 @@ const SwapWidget: FC = () => {
           protocol={bestTradeOption?.protocol as ProtocolType}
           expiry={bestTradeOption?.order?.expiry}
         />
-        {showOrderSubmitted ? (
-          <HugeTicks />
-        ) : isApproving || isSwapping ? (
-          <></>
-        ) : (
+        {!isApproving && !isSwapping && !showOrderSubmitted && (
           <SwapInputs
             baseAmount={baseAmount}
             onBaseAmountChange={setBaseAmount}
