@@ -9,7 +9,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectProtocolFee } from "../../features/metadata/metadataSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import { InfoSubHeading } from "../Typography/Typography";
-import { Container } from "./ReviewApprovalInfo.styles";
+import { Container, Strong } from "./ReviewApprovalInfo.styles";
 
 interface ReviewApprovalProps {
   amount: string;
@@ -36,10 +36,12 @@ const ReviewApprovalInfo: FC<ReviewApprovalProps> = ({
       <InfoSubHeading>
         {t("orders.shouldApproveErc20TokenAmount", {
           amount,
-          amountPlusFee,
           protocolFee: protocolFee / 100,
           symbol: tokenInfo.symbol,
         })}
+        &nbsp;=
+        <Strong>{amountPlusFee}</Strong>
+        {tokenInfo.symbol}.
       </InfoSubHeading>
     </Container>
   );

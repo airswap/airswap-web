@@ -7,3 +7,8 @@ export const Container = styled.div`
   text-align: center;
   color: ${(props) => props.theme.colors.white};
 `;
+
+export const Strong = styled.strong`
+  margin: 0 0.25rem;
+  color: ${(props) => props.theme.colors.white};
+`;
