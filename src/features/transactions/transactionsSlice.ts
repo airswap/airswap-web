@@ -256,6 +256,13 @@ export const selectPendingTransactions = createSelector(
   }
 );
 
+export const selectOrderTransactions = createSelector(
+  selectTransactions,
+  (transactions) => {
+    return transactions.filter((tx) => tx.type === "Order");
+  }
+);
+
 export const selectPendingDeposits = (
   state: RootState
 ): SubmittedDepositOrder[] =>
