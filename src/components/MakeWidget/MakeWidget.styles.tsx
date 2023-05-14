@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { SelectLabel } from "../../styled-components/Select/Select";
+import ReviewApprovalInfo from "../ReviewApprovalInfo/ReviewApprovalInfo";
 import Tooltip from "../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
@@ -69,6 +70,11 @@ export const StyledInfoSection = styled(InfoSection)`
   & + ${StyledActionButtons} {
     margin-top: 1rem;
   }
+`;
+
+export const StyledReviewApprovalInfo = styled(ReviewApprovalInfo)`
+  flex-grow: 1;
+  margin-bottom: 1rem;
 `;
 
 export const StyledTooltip = styled(Tooltip)`
