@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import Button from "../Button/Button";
 import {
   Container,
   ChainButtonContainer,
 } from "../ChainButton/ChainButton.style";
+import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import Icon from "../Icon/Icon";
 
 type ChainButtonButtonType = {
@@ -14,6 +16,11 @@ type ChainButtonButtonType = {
   className?: string;
 };
 
+/**
+ * @remarks this component is for the button which renders a dropdown with a list of networks. The UL of networks is called ChainSelectionPopover
+ * @param param0
+ * @returns
+ */
 const ChainButtonButton = ({
   chainSelectionOpen,
   transactionsTabOpen,
@@ -64,13 +71,20 @@ const ChainButtonButton = ({
         ref={containerRef}
         open={transactionsTabOpen}
       >
-        <ChainButtonContainer
-          aria-label={t("common.settings")}
-          onClick={() => setChainSelectionOpen(!chainSelectionOpen)}
+        <Button
+          onClick={() => {
+            console.log("network button - UNDER CONSTRUCTION");
+          }}
         >
-          <Icon iconSize={1.5} name="settings" />
-        </ChainButtonContainer>
+          {/* {renderContent()} */}
+        </Button>
       </Container>
+      {chainSelectionOpen && (
+        <ChainSelectionPopover
+          open={transactionsTabOpen}
+          popoverRef={popoverRef}
+        />
+      )}
     </>
   );
 };

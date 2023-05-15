@@ -27,7 +27,7 @@ export const ChainButtonContainer = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 
-  width: 3rem;
+  width: 10rem;
   height: 3rem;
   padding: 0;
 
