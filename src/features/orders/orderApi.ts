@@ -53,7 +53,8 @@ export async function requestOrders(
   baseToken: string,
   baseTokenAmount: string,
   baseTokenDecimals: number,
-  senderWallet: string
+  senderWallet: string,
+  proxyingFor?: string
 ): Promise<OrderERC20[]> {
   if (!servers.length) {
     throw new Error("no counterparties");
@@ -64,7 +65,8 @@ export async function requestOrders(
         toAtomicString(baseTokenAmount, baseTokenDecimals),
         quoteToken,
         baseToken,
-        senderWallet
+        senderWallet,
+        proxyingFor
       ),
       // servers should respond in a timely manner for orders to be considered
       new Promise((resolve, reject) =>

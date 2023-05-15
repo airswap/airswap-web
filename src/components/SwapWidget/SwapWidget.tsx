@@ -358,30 +358,21 @@ const SwapWidget: FC = () => {
     try {
       try {
         if (library && chainId) {
-          rfqServers = (
-            await Registry.getServers(
-              library,
-              chainId,
-              Protocols.RequestForQuoteERC20,
-              _quoteToken,
-              _baseToken,
-              {
-                initializeTimeout: 10 * 1000,
-              }
-            )
-          ).filter((s) => s.supportsProtocol(Protocols.RequestForQuoteERC20));
-          lastLookServers = (
-            await Registry.getServers(
-              library,
-              chainId,
-              Protocols.LastLookERC20,
-              _quoteToken,
-              _baseToken,
-              {
-                initializeTimeout: 10 * 1000,
-              }
-            )
-          ).filter((s) => s.supportsProtocol(Protocols.LastLookERC20));
+          const servers = await Registry.getServers(
+            library,
+            chainId,
+            _quoteToken,
+            _baseToken,
+            {
+              initializeTimeout: 10 * 1000,
+            }
+          );
+          rfqServers = servers.filter((s) =>
+            s.supportsProtocol(Protocols.RequestForQuoteERC20)
+          );
+          lastLookServers = servers.filter((s) =>
+            s.supportsProtocol(Protocols.LastLookERC20)
+          );
         }
       } catch (e) {
         console.error("Error requesting orders:", e);
@@ -400,6 +391,7 @@ const SwapWidget: FC = () => {
             signerToken: _quoteToken,
             senderTokenDecimals: baseTokenInfo!.decimals,
             senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
+            proxyingFor: usesWrapper ? account! : undefined,
           })
         );
         rfqPromise = rfqDispatchResult
@@ -486,6 +478,17 @@ const SwapWidget: FC = () => {
         library
       );
 
+      // If swapping with wrapper then ignore sender errors.
+      if (swapType === "swapWithWrap") {
+        for (let i = errors.length - 1; i >= 0; i--) {
+          if (
+            errors[i].type === AppErrorType.senderAllowanceLow ||
+            errors[i].type === AppErrorType.senderBalanceLow
+          ) {
+            errors.splice(i, 1);
+          }
+        }
+      }
       if (errors.length) {
         dispatch(setErrors(errors));
         setIsSwapping(false);
