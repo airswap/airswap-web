@@ -10,6 +10,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import ChainButton from "../../components/ChainButton/ChainButton";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import WalletButton from "../../components/WalletButton/WalletButton";
 import {
@@ -290,6 +291,11 @@ export const Wallet: FC<WalletPropsType> = ({
           ariaLabel={t("common.select")}
           icon="menu"
           iconSize={1.5625}
+        />
+        <ChainButton
+          chainSelectionOpen={settingsOpen}
+          setChainSelectionOpen={setSettingsOpen}
+          transactionsTabOpen={transactionsTabIsOpen}
         />
         <StyledSettingsButton
           settingsOpen={settingsOpen}
