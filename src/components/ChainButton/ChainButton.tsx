@@ -2,12 +2,9 @@ import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "../Button/Button";
-import {
-  Container,
-  ChainButtonContainer,
-} from "../ChainButton/ChainButton.style";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import Icon from "../Icon/Icon";
+import { Container, ChainSelectButton } from "./ChainButton.style";
 
 type ChainButtonButtonType = {
   chainSelectionOpen: boolean;
@@ -27,8 +24,6 @@ const ChainButtonButton = ({
   setChainSelectionOpen,
   className,
 }: ChainButtonButtonType) => {
-  const { t } = useTranslation();
-
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -71,13 +66,15 @@ const ChainButtonButton = ({
         ref={containerRef}
         open={transactionsTabOpen}
       >
-        <Button
+        <ChainSelectButton
           onClick={() => {
             console.log("network button - UNDER CONSTRUCTION");
           }}
         >
+          {/* TODO: add network to Redux store, then render that below */}
+          <span>Ethereum</span>
           {/* {renderContent()} */}
-        </Button>
+        </ChainSelectButton>
       </Container>
       {chainSelectionOpen && (
         <ChainSelectionPopover

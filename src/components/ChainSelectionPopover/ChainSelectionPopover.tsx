@@ -1,9 +1,15 @@
 import { useState, useEffect, useRef, RefObject } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "../../app/hooks";
 import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
 import useWindowSize from "../../hooks/useWindowSize";
-import { Container } from "./ChainSelectionPopover.styles";
+import {
+  Container,
+  NetworksContainer,
+  NetworkButton,
+} from "./ChainSelectionPopover.styles";
+import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type ChainSelectionPopoverPropsType = {
   open: boolean;
@@ -23,13 +29,16 @@ const ChainSelectionPopover = ({
   const [overflow, setOverflow] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const handleNetworkSwitch = (network: string) => {
     // TODO: replace line below with a `setNetwork` from the Redux store
     // dispatch(setNetwork(network));
   };
 
-  const networks = SUPPORTED_NETWORKS.map((network: string) => {
+  const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
+
+  const networks = supportedNetworks.map((network: string) => {
     return (
       <ul key={network}>
         <li>{network}</li>
@@ -49,7 +58,38 @@ const ChainSelectionPopover = ({
 
   return (
     <Container ref={popoverRef} open={open}>
-      {networks}
+      <PopoverSection title={t("common.theme")}>
+        {/* TODO: replicate `LocaleContainer` code for NetworkContainer */}
+        <NetworksContainer ref={scrollContainerRef} $overflow={overflow}>
+          {supportedNetworks.map((network) => {
+            return (
+              <LocaleButton
+                key={locale}
+                $isActive={selectedLocale === locale}
+                onClick={() => handleLocaleButtonClick(locale)}
+              >
+                {LOCALE_LABEL[locale]}
+              </LocaleButton>
+            );
+          })}
+        </NetworksContainer>
+
+        {/*
+        <LocaleContainer ref={scrollContainerRef} $overflow={overflow}>
+          {SUPPORTED_LOCALES.map((locale) => {
+            return (
+              <LocaleButton
+                key={locale}
+                $isActive={selectedLocale === locale}
+                onClick={() => handleLocaleButtonClick(locale)}
+              >
+                {LOCALE_LABEL[locale]}
+              </LocaleButton>
+            );
+          })}
+        </LocaleContainer>
+        */}
+      </PopoverSection>
     </Container>
   );
 };

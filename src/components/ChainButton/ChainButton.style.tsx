@@ -23,13 +23,14 @@ export const Container = styled.div<ContainerProps>`
   }
 `;
 
-export const ChainButtonContainer = styled.button`
+export const ChainSelectButton = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 
   width: 10rem;
   height: 3rem;
   padding: 0;
+  font-weight: bold;
 
   @media ${breakPoints.phoneOnly} {
     ${IconButtonStyle};

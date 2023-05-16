@@ -38,7 +38,11 @@ export const Container = styled.div<ContainerProps>`
   }
 `;
 
-export const ThemeContainer = styled.div`
+type ChainSelectionContainerType = {
+  $overflow: boolean;
+};
+
+export const NetworksContainer = styled.div<ChainSelectionContainerType>`
   margin: 0.5rem 0 0 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -49,43 +53,8 @@ type ButtonStyleProps = {
   $isActive: boolean;
 };
 
-export const ThemeButton = styled.button<ButtonStyleProps>`
-  ${InputOrButtonBorderStyleType2};
-
-  line-height: 1.5;
-  font-size: 0.875rem;
-  font-weight: ${(props) => (props.$isActive ? "600" : "400")};
-  color: ${(props) =>
-    props.$isActive
-      ? props.theme.name === "dark"
-        ? props.theme.colors.white
-        : props.theme.colors.primary
-      : props.theme.colors.darkSubText};
-  background-color: ${(props) =>
-    props.$isActive ? props.theme.colors.borderGrey : "transparent"};
-`;
-
-type LocaleContainerType = {
-  $overflow: boolean;
-};
-
-export const LocaleContainer = styled.div<LocaleContainerType>`
-  width: 100%;
-  height: calc(100% - 2rem);
-  padding-top: 0.5rem;
-  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
-  flex-grow: 99;
-
-  ${ScrollBarStyle}
-
-  &::-webkit-scrollbar {
-    background: ${(props) => props.theme.colors.black};
-  }
-`;
-
-export const LocaleButton = styled.button<ButtonStyleProps>`
+export const NetworkButton = styled.button<ButtonStyleProps>`
   ${BorderlessButtonStyle};
-
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
