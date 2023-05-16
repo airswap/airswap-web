@@ -92,6 +92,7 @@ export const Wallet: FC<WalletPropsType> = ({
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -293,9 +294,9 @@ export const Wallet: FC<WalletPropsType> = ({
           iconSize={1.5625}
         />
         <ChainButton
-          chainSelectionOpen={settingsOpen}
-          setChainSelectionOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabIsOpen}
+          chainSelectionOpen={chainsOpen}
+          setChainSelectionOpen={setChainsOpen}
+          // transactionsTabOpen={transactionsTabIsOpen}
         />
         <StyledSettingsButton
           settingsOpen={settingsOpen}

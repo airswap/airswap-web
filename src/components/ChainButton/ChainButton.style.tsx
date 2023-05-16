@@ -36,9 +36,5 @@ export const ChainSelectButton = styled.button`
     ${IconButtonStyle};
     width: 2rem;
     height: 2rem;
-
-    svg {
-      width: 1.25rem;
-    }
   }
 `;

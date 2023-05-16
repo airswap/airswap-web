@@ -1,11 +1,7 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
-import {
-  BorderlessButtonStyle,
-  InputOrButtonBorderStyleType2,
-  ScrollBarStyle,
-} from "../../style/mixins";
+import { BorderlessButtonStyle } from "../../style/mixins";
 
 type ContainerProps = {
   open: boolean;
@@ -44,8 +40,8 @@ type ChainSelectionContainerType = {
 
 export const NetworksContainer = styled.div<ChainSelectionContainerType>`
   margin: 0.5rem 0 0 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   height: 2.5rem;
 `;
 
@@ -56,7 +52,7 @@ type ButtonStyleProps = {
 export const NetworkButton = styled.button<ButtonStyleProps>`
   ${BorderlessButtonStyle};
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: flex-start;
   width: 100%;
   text-align: left;
@@ -78,4 +74,10 @@ export const NetworkButton = styled.button<ButtonStyleProps>`
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   }
+`;
+
+export const NetworkIcon = styled.img`
+  width: 1rem;
+  height: auto;
+  margin-right: 0.5rem;
 `;

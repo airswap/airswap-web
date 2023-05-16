@@ -1,13 +1,11 @@
-import { useState, useEffect, useRef, RefObject } from "react";
-import { useTranslation } from "react-i18next";
+import { useState, useRef, RefObject } from "react";
 
-import { useAppDispatch } from "../../app/hooks";
 import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
-import useWindowSize from "../../hooks/useWindowSize";
 import {
   Container,
   NetworksContainer,
   NetworkButton,
+  NetworkIcon,
 } from "./ChainSelectionPopover.styles";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
@@ -24,71 +22,37 @@ const ChainSelectionPopover = ({
   open,
   popoverRef,
 }: ChainSelectionPopoverPropsType) => {
-  const { width, height } = useWindowSize();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
-
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  // TODO: get useState value below from Redux
+  const [network, setNetwork] = useState<string>("Ethereum");
 
   const handleNetworkSwitch = (network: string) => {
-    // TODO: replace line below with a `setNetwork` from the Redux store
-    // dispatch(setNetwork(network));
+    setNetwork(network);
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
+  console.log(supportedNetworks);
 
-  const networks = supportedNetworks.map((network: string) => {
+  const networkButtons = supportedNetworks.map((chain: string) => {
     return (
-      <ul key={network}>
-        <li>{network}</li>
-      </ul>
+      <NetworkButton
+        key={chain}
+        $isActive={network === chain}
+        onClick={() => handleNetworkSwitch(chain)}
+      >
+        <NetworkIcon src={SUPPORTED_NETWORKS[chain]} alt={`${chain} icon`} />{" "}
+        {chain}
+      </NetworkButton>
     );
   });
 
-  console.log(networks);
-
-  // TODO: is code below necessary for chainSelection?
-  // useEffect(() => {
-  //   if (popoverRef.current && scrollContainerRef.current) {
-  //     const { offsetTop, scrollHeight } = scrollContainerRef.current;
-  //     setOverflow(scrollHeight + offsetTop > popoverRef.current.offsetHeight);
-  //   }
-  // }, [popoverRef, scrollContainerRef, width, height]);
-
   return (
     <Container ref={popoverRef} open={open}>
-      <PopoverSection title={t("common.theme")}>
-        {/* TODO: replicate `LocaleContainer` code for NetworkContainer */}
+      <PopoverSection title="Networks">
         <NetworksContainer ref={scrollContainerRef} $overflow={overflow}>
-          {supportedNetworks.map((network) => {
-            return (
-              <LocaleButton
-                key={locale}
-                $isActive={selectedLocale === locale}
-                onClick={() => handleLocaleButtonClick(locale)}
-              >
-                {LOCALE_LABEL[locale]}
-              </LocaleButton>
-            );
-          })}
+          {networkButtons}
         </NetworksContainer>
-
-        {/*
-        <LocaleContainer ref={scrollContainerRef} $overflow={overflow}>
-          {SUPPORTED_LOCALES.map((locale) => {
-            return (
-              <LocaleButton
-                key={locale}
-                $isActive={selectedLocale === locale}
-                onClick={() => handleLocaleButtonClick(locale)}
-              >
-                {LOCALE_LABEL[locale]}
-              </LocaleButton>
-            );
-          })}
-        </LocaleContainer>
-        */}
       </PopoverSection>
     </Container>
   );

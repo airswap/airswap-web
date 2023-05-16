@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
 
-import Button from "../Button/Button";
+// import Button from "../Button/Button";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import Icon from "../Icon/Icon";
 import { Container, ChainSelectButton } from "./ChainButton.style";
 
-type ChainButtonButtonType = {
+type ChainButtonType = {
   chainSelectionOpen: boolean;
-  transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
   className?: string;
 };
@@ -18,12 +16,11 @@ type ChainButtonButtonType = {
  * @param param0
  * @returns
  */
-const ChainButtonButton = ({
+const ChainButton = ({
   chainSelectionOpen,
-  transactionsTabOpen,
   setChainSelectionOpen,
   className,
-}: ChainButtonButtonType) => {
+}: ChainButtonType) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -64,11 +61,12 @@ const ChainButtonButton = ({
       <Container
         className={className}
         ref={containerRef}
-        open={transactionsTabOpen}
+        open={chainSelectionOpen}
       >
         <ChainSelectButton
+          aria-label={"common.settings"}
           onClick={() => {
-            console.log("network button - UNDER CONSTRUCTION");
+            setChainSelectionOpen(!chainSelectionOpen);
           }}
         >
           {/* TODO: add network to Redux store, then render that below */}
@@ -78,7 +76,7 @@ const ChainButtonButton = ({
       </Container>
       {chainSelectionOpen && (
         <ChainSelectionPopover
-          open={transactionsTabOpen}
+          open={chainSelectionOpen}
           popoverRef={popoverRef}
         />
       )}
@@ -86,4 +84,4 @@ const ChainButtonButton = ({
   );
 };
 
-export default ChainButtonButton;
+export default ChainButton;

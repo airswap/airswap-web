@@ -5,8 +5,6 @@ import { StyledTitle } from "../../../Overlay/Overlay.styles";
 export const Container = styled.div`
   padding: 0 1rem;
   color: ${(props) => props.theme.colors.darkSubText};
-  overflow: hidden;
-
   & + & {
     margin-top: 0.5rem;
   }
