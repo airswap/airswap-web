@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 
+import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
 // import Button from "../Button/Button";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
-import Icon from "../Icon/Icon";
-import { Container, ChainSelectButton } from "./ChainButton.style";
+import { Container, ChainSelectButton, ChainIcon } from "./ChainButton.style";
 
 type ChainButtonType = {
   chainSelectionOpen: boolean;
@@ -69,9 +69,12 @@ const ChainButton = ({
             setChainSelectionOpen(!chainSelectionOpen);
           }}
         >
-          {/* TODO: add network to Redux store, then render that below */}
+          {/* TODO: add network to Redux store, then render that below. Get icon dynamically from currently selected chain */}
+          <ChainIcon
+            src={SUPPORTED_NETWORKS["Ethereum"].icon}
+            alt={`${"Ethereum"} icon`}
+          />
           <span>Ethereum</span>
-          {/* {renderContent()} */}
         </ChainSelectButton>
       </Container>
       {chainSelectionOpen && (

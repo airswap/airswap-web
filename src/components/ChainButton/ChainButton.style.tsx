@@ -10,7 +10,6 @@ type ContainerProps = {
 
 export const Container = styled.div<ContainerProps>`
   position: relative;
-  transform: ${(props) => (props.open ? "translate(-12.75rem, 0)" : "0")};
   transition: transform 0.3s ease-in-out;
 
   @media (prefers-reduced-motion: reduce) {
@@ -27,14 +26,24 @@ export const ChainSelectButton = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 
+  display: flex;
+  flex-direction: row;
+  align-content: center;
   width: 10rem;
   height: 3rem;
   padding: 0;
   font-weight: bold;
+  margin-right: 0.5rem;
 
   @media ${breakPoints.phoneOnly} {
     ${IconButtonStyle};
     width: 2rem;
     height: 2rem;
   }
+`;
+
+export const ChainIcon = styled.img`
+  width: 1.5rem;
+  height: auto;
+  margin-right: 0.5rem;
 `;

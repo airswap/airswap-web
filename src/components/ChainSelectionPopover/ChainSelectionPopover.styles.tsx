@@ -12,11 +12,11 @@ export const Container = styled.div<ContainerProps>`
   display: grid;
   grid-template-rows: 5rem auto 5.125rem;
   width: 16rem;
-  height: 24.125rem;
+  height: 14rem;
   top: 5rem;
   right: 3.75rem;
   padding-top: 0.5rem;
-  transform: ${(props) => (props.open ? "translate(-11.5rem, 0)" : "0")};
+  transform: ${(props) => (props.open ? "translate(-4rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.black};

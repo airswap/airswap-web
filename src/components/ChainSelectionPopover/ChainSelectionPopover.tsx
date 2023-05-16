@@ -1,5 +1,7 @@
 import { useState, useRef, RefObject } from "react";
 
+import { useAppDispatch } from "../../app/hooks";
+import { store } from "../../app/store";
 import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
 import {
   Container,
@@ -23,25 +25,27 @@ const ChainSelectionPopover = ({
   popoverRef,
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [overflow, setOverflow] = useState<boolean>(false);
-  // TODO: get useState value below from Redux
-  const [network, setNetwork] = useState<string>("Ethereum");
+  const dispatch = useAppDispatch();
+  const chainId = store.getState().wallet.chainId;
+  console.log(chainId);
 
   const handleNetworkSwitch = (network: string) => {
-    setNetwork(network);
+    // dispatch(action: wallet);
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
-  console.log(supportedNetworks);
 
   const networkButtons = supportedNetworks.map((chain: string) => {
     return (
       <NetworkButton
         key={chain}
-        $isActive={network === chain}
+        $isActive={chainId?.toString() === chain ? true : false}
         onClick={() => handleNetworkSwitch(chain)}
       >
-        <NetworkIcon src={SUPPORTED_NETWORKS[chain]} alt={`${chain} icon`} />{" "}
+        <NetworkIcon
+          src={SUPPORTED_NETWORKS[chain].icon}
+          alt={`${chain} icon`}
+        />{" "}
         {chain}
       </NetworkButton>
     );
@@ -50,7 +54,7 @@ const ChainSelectionPopover = ({
   return (
     <Container ref={popoverRef} open={open}>
       <PopoverSection title="Networks">
-        <NetworksContainer ref={scrollContainerRef} $overflow={overflow}>
+        <NetworksContainer ref={scrollContainerRef} $overflow={false}>
           {networkButtons}
         </NetworksContainer>
       </PopoverSection>
