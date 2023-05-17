@@ -20,15 +20,19 @@ import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 type ChainSelectionPopoverPropsType = {
   open: boolean;
   popoverRef: RefObject<HTMLDivElement>;
+  transactionsTabOpen: boolean;
 };
 
 /**
  * @remarks this component renders an unordered list with supported networks. Gets rendered onto ChainButton component
- * @returns container with unordered list of networks
+ * @param open is a boolean value which determins whether or not to display the popover. Its value is the state value `chainsOpen` which originates in Wallet.tsx and gets passed down to ChainButton, when then gets passed into this
+ * @param transactionsTabOpen is a boolean value which indicates whether the right-side drawer that displays transactions is open. This drawer opens when a user clicks on WalletButton. This prop exists in this component so it appropriately shifts to the left when the drawer opens
+ * @returns container with a list of supported EVM networks
  */
 const ChainSelectionPopover = ({
   open,
   popoverRef,
+  transactionsTabOpen,
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -69,7 +73,7 @@ const ChainSelectionPopover = ({
   });
 
   return (
-    <Container ref={popoverRef} open={open}>
+    <Container ref={popoverRef} open={open} shiftLeft={transactionsTabOpen}>
       <PopoverSection title="Networks">
         <NetworksContainer ref={scrollContainerRef} $overflow={false}>
           {networkButtons}

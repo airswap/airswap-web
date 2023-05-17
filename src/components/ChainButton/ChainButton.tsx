@@ -17,6 +17,7 @@ import {
 
 type ChainButtonType = {
   chainSelectionOpen: boolean;
+  transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
   className?: string;
 };
@@ -28,6 +29,7 @@ type ChainButtonType = {
  */
 const ChainButton = ({
   chainSelectionOpen,
+  transactionsTabOpen,
   setChainSelectionOpen,
   className,
 }: ChainButtonType) => {
@@ -36,6 +38,8 @@ const ChainButton = ({
 
   const wallet = useAppSelector(selectWallet);
   const network = NETWORK_CHAINS[wallet.chainId || ""];
+
+  console.log(transactionsTabOpen);
 
   const handleClick = useCallback(
     (e) => {
@@ -75,6 +79,7 @@ const ChainButton = ({
         className={className}
         ref={containerRef}
         open={chainSelectionOpen}
+        shiftLeft={transactionsTabOpen}
       >
         <ChainSelectButton
           aria-label={"common.settings"}
@@ -93,6 +98,7 @@ const ChainButton = ({
         <ChainSelectionPopover
           open={chainSelectionOpen}
           popoverRef={popoverRef}
+          transactionsTabOpen={transactionsTabOpen}
         />
       )}
     </>

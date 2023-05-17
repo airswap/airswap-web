@@ -4,12 +4,28 @@ import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
+/**
+ * @remarks `open` in ContainerProps is a boolean value that controls when the chain selection menu should be displayed or not. It also makes the arrow icon rotate on the ChainButton component
+ */
 type ContainerProps = {
+  open: boolean;
+  shiftLeft: boolean;
+};
+
+/**
+ * @remarks `open` is a boolean value that controls when arrow icon rotates on the ChainButton component
+ */
+type ArrowIconProps = {
   open: boolean;
 };
 
+/**
+ * @remarks `shiftLeft` in ContainerProps takes in transactionsTabOpen as an argument. This bool value originates at the WalletButton component. When WalletButton is clicked, right-side drawer opens up, which makes transactionsTabOpen. When this is open, ChainButton must shiftLeft to the left to prevent UI component overlap
+ */
 export const Container = styled.div<ContainerProps>`
   position: relative;
+  transform: ${({ shiftLeft }) =>
+    shiftLeft ? "translate(-12.75rem, 0)" : "0"};
   transition: transform 0.3s ease-in-out;
 
   @media (prefers-reduced-motion: reduce) {
@@ -26,12 +42,7 @@ export const ChainSelectButton = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
 
-  // display: flex;
-  flex-direction: row;
-  align-content: center;
   width: fit;
-  height: 3rem;
-  padding-x: 0.5rem;
   font-weight: bold;
   margin-right: 0.5rem;
 
@@ -48,7 +59,7 @@ export const ChainIcon = styled.img`
   margin-right: 0.5rem;
 `;
 
-export const ArrowIcon = styled.div<ContainerProps>`
+export const ArrowIcon = styled.div<ArrowIconProps>`
   margin-left: 0.5rem;
   transition: transform 0.3s ease-in-out;
 
