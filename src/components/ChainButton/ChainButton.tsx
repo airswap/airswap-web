@@ -23,9 +23,10 @@ type ChainButtonType = {
 };
 
 /**
- * @remarks this component is for the button which renders a dropdown with a list of networks. The UL of networks is called ChainSelectionPopover
- * @param param0
- * @returns
+ * @param chainSelectionOpen boolean value which controls the display of the arrow
+ * @param transactionsTabOpen is a boolean value which indicates whether the right-side drawer that displays transactions is open. This drawer opens when a user clicks on WalletButton. This prop exists in this component so it appropriately shifts to the left when the drawer opens
+ * @param setChainSelectionOpen useState setter function which controls chainSelectionOpen boolean value
+ * @returns button that when clicked, opens a popover with a list of supported networks
  */
 const ChainButton = ({
   chainSelectionOpen,

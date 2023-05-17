@@ -2,7 +2,10 @@ import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
+import {
+  NETWORK_CHAINS,
+  SUPPORTED_NETWORKS,
+} from "../../constants/supportedNetworks";
 import {
   selectWallet,
   setWalletConnected,
@@ -59,11 +62,14 @@ const ChainSelectionPopover = ({
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
 
+  /**
+   * @remarks the syntax `NETWORK_CHAINS[chainId ? chainId?.toString() : ""] === chain` is used because `chainId` is pulled from the Redux object and the chain name is not stored in Redux. This chainId is taken from NETWORK_CHAINS to get the chain name, then compare it to the text used in `NetworkButton` to see if chain is currently active
+   */
   const networkButtons = supportedNetworks.map((chain: string) => {
     return (
       <NetworkButton
         key={chain}
-        $isActive={chainId?.toString() === chain}
+        $isActive={NETWORK_CHAINS[chainId ? chainId?.toString() : ""] === chain}
         onClick={() => handleNetworkSwitch(chain)}
       >
         <NetworkIcon
