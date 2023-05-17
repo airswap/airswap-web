@@ -1,7 +1,5 @@
 import { useRef, RefObject } from "react";
-
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
@@ -37,8 +35,7 @@ const ChainSelectionPopover = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const walletState = useAppSelector(selectWallet);
-  console.log(useWeb3React<Web3Provider>());
-  // console.log(chainId);
+  const { t } = useTranslation();
 
   const chainId = walletState.chainId;
   const address = walletState.address;
@@ -50,8 +47,14 @@ const ChainSelectionPopover = ({
         chainId: SUPPORTED_NETWORKS[network].chainId,
       })
     );
-    // update network
-    // provider && provider.network = network;
+
+    // update network on injected wallet
+    (window as any).ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [
+        { chainId: `0x${SUPPORTED_NETWORKS[network].chainId.toString(16)}` },
+      ],
+    });
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
@@ -74,7 +77,8 @@ const ChainSelectionPopover = ({
 
   return (
     <Container ref={popoverRef} open={open} shiftLeft={transactionsTabOpen}>
-      <PopoverSection title="Networks">
+      {/* TODO: t('common.networks') is not translating correctly */}
+      <PopoverSection title={t("common.networks")}>
         <NetworksContainer ref={scrollContainerRef} $overflow={false}>
           {networkButtons}
         </NetworksContainer>

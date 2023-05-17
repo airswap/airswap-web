@@ -39,8 +39,6 @@ const ChainButton = ({
   const wallet = useAppSelector(selectWallet);
   const network = NETWORK_CHAINS[wallet.chainId || ""];
 
-  console.log(transactionsTabOpen);
-
   const handleClick = useCallback(
     (e) => {
       if (
