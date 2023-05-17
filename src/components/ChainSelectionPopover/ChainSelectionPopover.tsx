@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  CHAIN_PARAMS,
   NETWORK_CHAINS,
   SUPPORTED_NETWORKS,
 } from "../../constants/supportedNetworks";
@@ -43,7 +44,7 @@ const ChainSelectionPopover = ({
   const chainId = walletState.chainId;
   const address = walletState.address;
 
-  const handleNetworkSwitch = (network: string) => {
+  const handleNetworkSwitch = async (network: string) => {
     dispatch(
       setWalletConnected({
         address: address || "0x",
@@ -51,13 +52,27 @@ const ChainSelectionPopover = ({
       })
     );
 
-    // update network on injected wallet
-    (window as any).ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [
-        { chainId: `0x${SUPPORTED_NETWORKS[network].chainId.toString(16)}` },
-      ],
-    });
+    // update network on injected wallet.
+    try {
+      await (window as any).ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          { chainId: `0x${SUPPORTED_NETWORKS[network].chainId.toString(16)}` },
+        ],
+      });
+    } catch (error: any) {
+      if (error.code === 4902) {
+        // if chain doesn't exist on injected wallet, prompt user to add chain
+        try {
+          await (window as any).ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [CHAIN_PARAMS[network]],
+          });
+        } catch (error: any) {
+          console.log("Failed to add chain", error);
+        }
+      }
+    }
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);

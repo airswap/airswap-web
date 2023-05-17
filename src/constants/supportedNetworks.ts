@@ -1,16 +1,9 @@
-type SupportedNetworks = {
-  [key: string]: {
-    icon: string;
-    chainId: number;
-  };
-};
+import {
+  ChainParams,
+  NetworkChains,
+  SupportedNetworks,
+} from "../types/supportedNetworks";
 
-type NetworkChains = {
-  [key: string]: string;
-};
-/**
- * @remarks dictionary contains supported networks and icons
- */
 export const SUPPORTED_NETWORKS: SupportedNetworks = {
   Ethereum: {
     icon: "images/ethereum-logo.png",
@@ -36,4 +29,40 @@ export const NETWORK_CHAINS: NetworkChains = {
   "56": "BNB Chain",
   "137": "Polygon",
   "5": "Goerli",
+};
+
+export const CHAIN_PARAMS: { [key: string]: ChainParams } = {
+  Avalanche: {
+    chainId: "0xa86a",
+    chainName: "Avalanche",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
+    blockExplorerUrls: ["https://cchain.explorer.avax.network/"],
+  },
+  "BNB Chain": {
+    chainId: "0x38",
+    chainName: "BNB Chain",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+    blockExplorerUrls: ["https://bscscan.com/"],
+  },
+  Polygon: {
+    chainId: "0x89",
+    chainName: "Polygon",
+    nativeCurrency: {
+      name: "MATIC",
+      symbol: "MATIC",
+      decimals: 18,
+    },
+    rpcUrls: ["https://rpc-mainnet.maticvigil.com/"],
+    blockExplorerUrls: ["https://polygonscan.com/"],
+  },
 };
