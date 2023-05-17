@@ -1,8 +1,11 @@
-import { useState, useRef, RefObject } from "react";
+import { useRef, RefObject } from "react";
 
-import { useAppDispatch } from "../../app/hooks";
-import { store } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
+import {
+  selectWallet,
+  setWalletConnected,
+} from "../../features/wallet/walletSlice";
 import {
   Container,
   NetworksContainer,
@@ -26,11 +29,20 @@ const ChainSelectionPopover = ({
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const chainId = store.getState().wallet.chainId;
-  console.log(chainId);
+  const wallet = useAppSelector(selectWallet);
+
+  const chainId = wallet.chainId;
+  const address = wallet.address;
 
   const handleNetworkSwitch = (network: string) => {
-    // dispatch(action: wallet);
+    dispatch(
+      setWalletConnected({
+        address: address || "0x",
+        chainId: chainId ? Number(network[chainId]) : 1,
+      })
+    );
+    console.log(wallet);
+    console.log(chainId, address);
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);

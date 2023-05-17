@@ -29,9 +29,9 @@ export const ChainSelectButton = styled.button`
   display: flex;
   flex-direction: row;
   align-content: center;
-  width: 10rem;
+  width: fit;
   height: 3rem;
-  padding: 0;
+  padding-x: 0.5rem;
   font-weight: bold;
   margin-right: 0.5rem;
 

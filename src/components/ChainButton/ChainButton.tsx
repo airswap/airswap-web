@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { SUPPORTED_NETWORKS } from "../../constants/supportedNetworks";
+import { useAppSelector } from "../../app/hooks";
+import {
+  SUPPORTED_NETWORKS,
+  NETWORK_CHAINS,
+} from "../../constants/supportedNetworks";
+import { selectWallet } from "../../features/wallet/walletSlice";
 // import Button from "../Button/Button";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import { Container, ChainSelectButton, ChainIcon } from "./ChainButton.style";
@@ -23,6 +28,10 @@ const ChainButton = ({
 }: ChainButtonType) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  const wallet = useAppSelector(selectWallet);
+  const network = NETWORK_CHAINS[wallet.chainId || ""];
+  // console.log(network);
 
   const handleClick = useCallback(
     (e) => {
@@ -71,10 +80,10 @@ const ChainButton = ({
         >
           {/* TODO: add network to Redux store, then render that below. Get icon dynamically from currently selected chain */}
           <ChainIcon
-            src={SUPPORTED_NETWORKS["Ethereum"].icon}
+            src={SUPPORTED_NETWORKS[network]?.icon}
             alt={`${"Ethereum"} icon`}
           />
-          <span>Ethereum</span>
+          {network || "Unsupported network"}
         </ChainSelectButton>
       </Container>
       {chainSelectionOpen && (
