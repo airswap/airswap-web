@@ -38,11 +38,9 @@ const ChainSelectionPopover = ({
     dispatch(
       setWalletConnected({
         address: address || "0x",
-        chainId: chainId ? Number(network[chainId]) : 1,
+        chainId: SUPPORTED_NETWORKS[network].chainId,
       })
     );
-    console.log(wallet);
-    console.log(chainId, address);
   };
 
   const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);

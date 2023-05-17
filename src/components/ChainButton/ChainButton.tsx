@@ -31,7 +31,6 @@ const ChainButton = ({
 
   const wallet = useAppSelector(selectWallet);
   const network = NETWORK_CHAINS[wallet.chainId || ""];
-  // console.log(network);
 
   const handleClick = useCallback(
     (e) => {
