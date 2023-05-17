@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { GoChevronDown } from "react-icons/go";
 
 import { useAppSelector } from "../../app/hooks";
 import {
@@ -6,9 +7,13 @@ import {
   NETWORK_CHAINS,
 } from "../../constants/supportedNetworks";
 import { selectWallet } from "../../features/wallet/walletSlice";
-// import Button from "../Button/Button";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
-import { Container, ChainSelectButton, ChainIcon } from "./ChainButton.style";
+import {
+  Container,
+  ChainSelectButton,
+  ChainIcon,
+  ArrowIcon,
+} from "./ChainButton.style";
 
 type ChainButtonType = {
   chainSelectionOpen: boolean;
@@ -77,12 +82,11 @@ const ChainButton = ({
             setChainSelectionOpen(!chainSelectionOpen);
           }}
         >
-          {/* TODO: add network to Redux store, then render that below. Get icon dynamically from currently selected chain */}
-          <ChainIcon
-            src={SUPPORTED_NETWORKS[network]?.icon}
-            alt={`${"Ethereum"} icon`}
-          />
+          <ChainIcon src={SUPPORTED_NETWORKS[network]?.icon} />
           {network || "Unsupported network"}
+          <ArrowIcon open={chainSelectionOpen}>
+            <GoChevronDown />
+          </ArrowIcon>
         </ChainSelectButton>
       </Container>
       {chainSelectionOpen && (

@@ -26,7 +26,7 @@ export const Container = styled.div<ContainerProps>`
 export const SettingsButtonContainer = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
-  
+
   width: 3rem;
   height: 3rem;
   padding: 0;

@@ -296,7 +296,6 @@ export const Wallet: FC<WalletPropsType> = ({
         <ChainButton
           chainSelectionOpen={chainsOpen}
           setChainSelectionOpen={setChainsOpen}
-          // transactionsTabOpen={transactionsTabIsOpen}
         />
         <StyledSettingsButton
           settingsOpen={settingsOpen}
