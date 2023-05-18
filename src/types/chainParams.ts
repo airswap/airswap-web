@@ -1,10 +1,3 @@
-export type SupportedNetworks = {
-  [key: string]: {
-    icon: string;
-    chainId: number;
-  };
-};
-
 export type NetworkChains = {
   [key: string]: string;
 };

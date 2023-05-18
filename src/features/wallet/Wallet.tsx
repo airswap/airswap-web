@@ -294,6 +294,7 @@ export const Wallet: FC<WalletPropsType> = ({
           iconSize={1.5625}
         />
         <ChainButton
+          chainId={chainId}
           chainSelectionOpen={chainsOpen}
           transactionsTabOpen={transactionsTabIsOpen}
           setChainSelectionOpen={setChainsOpen}

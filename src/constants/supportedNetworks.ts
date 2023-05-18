@@ -1,34 +1,18 @@
-import {
-  ChainParams,
-  NetworkChains,
-  SupportedNetworks,
-} from "../types/supportedNetworks";
+// import { ChainIds } from "@airswap/constants";
+import { ChainParams, NetworkChains } from "../types/chainParams";
 
-export const SUPPORTED_NETWORKS: SupportedNetworks = {
-  Ethereum: {
-    icon: "images/ethereum-logo.png",
-    chainId: 1,
-  },
-  Avalanche: {
-    icon: "images/avalanche-logo.png",
-    chainId: 43114,
-  },
-  "BNB Chain": {
-    icon: "images/bnb-logo.png",
-    chainId: 56,
-  },
-  Polygon: {
-    icon: "images/matic-logo.png",
-    chainId: 137,
-  },
-};
+// export const SUPPORTED_NETWORKS: { [x: string]: ChainIds } = {
+//   mainnet: ChainIds.MAINNET,
+//   avalanche: ChainIds.AVALANCHE,
+//   bsc: ChainIds.BSC,
+//   polygon: ChainIds.POLYGON,
+// };
 
 export const NETWORK_CHAINS: NetworkChains = {
   "1": "Ethereum",
   "43114": "Avalanche",
   "56": "BNB Chain",
   "137": "Polygon",
-  "5": "Goerli",
 };
 
 export const CHAIN_PARAMS: { [key: string]: ChainParams } = {

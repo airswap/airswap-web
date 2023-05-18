@@ -2,10 +2,10 @@ import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import nativeCurrency from "../../constants/nativeCurrency";
 import {
   CHAIN_PARAMS,
   NETWORK_CHAINS,
-  SUPPORTED_NETWORKS,
 } from "../../constants/supportedNetworks";
 import {
   selectWallet,
@@ -44,20 +44,19 @@ const ChainSelectionPopover = ({
   const chainId = walletState.chainId;
   const address = walletState.address;
 
-  const handleNetworkSwitch = async (network: string) => {
+  const handleNetworkSwitch = async (chainId: string) => {
     dispatch(
       setWalletConnected({
         address: address || "0x",
-        chainId: SUPPORTED_NETWORKS[network].chainId,
+        chainId: nativeCurrency[+chainId].chainId,
       })
     );
-
     // update network on injected wallet.
     try {
       await (window as any).ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [
-          { chainId: `0x${SUPPORTED_NETWORKS[network].chainId.toString(16)}` },
+          { chainId: `0x${nativeCurrency[+chainId].chainId.toString(16)}` },
         ],
       });
     } catch (error: any) {
@@ -66,7 +65,7 @@ const ChainSelectionPopover = ({
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [CHAIN_PARAMS[network]],
+            params: [CHAIN_PARAMS[chainId]],
           });
         } catch (error: any) {
           console.log("Failed to add chain", error);
@@ -75,23 +74,24 @@ const ChainSelectionPopover = ({
     }
   };
 
-  const supportedNetworks = Object.keys(SUPPORTED_NETWORKS);
+  // supportedNetworks returns an array of numbers as strings
+  const supportedNetworks = Object.keys(NETWORK_CHAINS);
 
   /**
-   * @remarks the syntax `NETWORK_CHAINS[chainId ? chainId?.toString() : ""] === chain` is used because `chainId` is pulled from the Redux object and the chain name is not stored in Redux. This chainId is taken from NETWORK_CHAINS to get the chain name, then compare it to the text used in `NetworkButton` to see if chain is currently active
+   * @remarks argument `chain` refers to chainId number in string format
    */
   const networkButtons = supportedNetworks.map((chain: string) => {
     return (
       <NetworkButton
         key={chain}
-        $isActive={NETWORK_CHAINS[chainId ? chainId?.toString() : ""] === chain}
+        $isActive={chainId?.toString() === chain}
         onClick={() => handleNetworkSwitch(chain)}
       >
         <NetworkIcon
-          src={SUPPORTED_NETWORKS[chain].icon}
+          src={nativeCurrency[Number(chain)].logoURI}
           alt={`${chain} icon`}
-        />{" "}
-        {chain}
+        />
+        {NETWORK_CHAINS[chain]}
       </NetworkButton>
     );
   });

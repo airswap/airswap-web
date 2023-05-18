@@ -13,8 +13,8 @@ type ContainerProps = {
 
 export const Container = styled.div<ContainerProps>`
   position: absolute;
-  display: grid;
-  grid-template-rows: 5rem auto 5.125rem;
+  display: flex;
+  flex-direction: column;
   width: 16rem;
   height: 14rem;
   top: 5rem;
@@ -55,7 +55,6 @@ type ButtonStyleProps = {
 
 export const NetworkButton = styled.button<ButtonStyleProps>`
   ${BorderlessButtonStyle};
-  
   display: flex;
   align-items: center;
   justify-content: flex-start;

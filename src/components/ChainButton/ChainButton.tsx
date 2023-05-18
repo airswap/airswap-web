@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 
-import { useAppSelector } from "../../app/hooks";
-import {
-  SUPPORTED_NETWORKS,
-  NETWORK_CHAINS,
-} from "../../constants/supportedNetworks";
-import { selectWallet } from "../../features/wallet/walletSlice";
+import nativeCurrency from "../../constants/nativeCurrency";
+import { NETWORK_CHAINS } from "../../constants/supportedNetworks";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import {
   Container,
@@ -16,6 +12,7 @@ import {
 } from "./ChainButton.style";
 
 type ChainButtonType = {
+  chainId: number | undefined;
   chainSelectionOpen: boolean;
   transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
@@ -29,6 +26,7 @@ type ChainButtonType = {
  * @returns button that when clicked, opens a popover with a list of supported networks
  */
 const ChainButton = ({
+  chainId,
   chainSelectionOpen,
   transactionsTabOpen,
   setChainSelectionOpen,
@@ -36,9 +34,6 @@ const ChainButton = ({
 }: ChainButtonType) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
-
-  const wallet = useAppSelector(selectWallet);
-  const network = NETWORK_CHAINS[wallet.chainId || ""];
 
   const handleClick = useCallback(
     (e) => {
@@ -86,8 +81,8 @@ const ChainButton = ({
             setChainSelectionOpen(!chainSelectionOpen);
           }}
         >
-          <ChainIcon src={SUPPORTED_NETWORKS[network]?.icon} />
-          {network || "Unsupported network"}
+          <ChainIcon src={nativeCurrency[chainId ? chainId : 1].logoURI} />
+          {NETWORK_CHAINS[chainId ? chainId : 1] || "Unsupported network"}
           <ArrowIcon open={chainSelectionOpen}>
             <GoChevronDown />
           </ArrowIcon>
