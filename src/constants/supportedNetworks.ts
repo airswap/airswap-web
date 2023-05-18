@@ -1,23 +1,21 @@
-// import { ChainIds } from "@airswap/constants";
-import { ChainParams, NetworkChains } from "../types/chainParams";
+import { ChainIds } from "@airswap/constants";
 
-// export const SUPPORTED_NETWORKS: { [x: string]: ChainIds } = {
-//   mainnet: ChainIds.MAINNET,
-//   avalanche: ChainIds.AVALANCHE,
-//   bsc: ChainIds.BSC,
-//   polygon: ChainIds.POLYGON,
-// };
+import { ChainParams } from "../types/chainParams";
 
-export const NETWORK_CHAINS: NetworkChains = {
-  "1": "Ethereum",
-  "43114": "Avalanche",
-  "56": "BNB Chain",
-  "137": "Polygon",
-};
-
-export const CHAIN_PARAMS: { [key: string]: ChainParams } = {
-  Avalanche: {
-    chainId: "0xa86a",
+export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
+  [ChainIds.MAINNET]: {
+    chainId: `0x${ChainIds.MAINNET.toString(16)}`,
+    chainName: "Mainnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: ["https://mainnet.infura.io/v3/your-infura-key"],
+    blockExplorerUrls: ["https://etherscan.io/"],
+  },
+  [ChainIds.AVALANCHE]: {
+    chainId: `0x${ChainIds.AVALANCHE.toString(16)}`,
     chainName: "Avalanche",
     nativeCurrency: {
       name: "AVAX",
@@ -27,8 +25,8 @@ export const CHAIN_PARAMS: { [key: string]: ChainParams } = {
     rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
     blockExplorerUrls: ["https://cchain.explorer.avax.network/"],
   },
-  "BNB Chain": {
-    chainId: "0x38",
+  [ChainIds.BSC]: {
+    chainId: `0x${ChainIds.BSC.toString(16)}`,
     chainName: "BNB Chain",
     nativeCurrency: {
       name: "BNB",
@@ -38,8 +36,8 @@ export const CHAIN_PARAMS: { [key: string]: ChainParams } = {
     rpcUrls: ["https://bsc-dataseed.binance.org/"],
     blockExplorerUrls: ["https://bscscan.com/"],
   },
-  Polygon: {
-    chainId: "0x89",
+  [ChainIds.POLYGON]: {
+    chainId: `0x${ChainIds.POLYGON.toString(16)}`,
     chainName: "Polygon",
     nativeCurrency: {
       name: "MATIC",
@@ -48,5 +46,71 @@ export const CHAIN_PARAMS: { [key: string]: ChainParams } = {
     },
     rpcUrls: ["https://rpc-mainnet.maticvigil.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
+  },
+  [ChainIds.GOERLI]: {
+    chainId: `0x${ChainIds.GOERLI.toString(16)}`,
+    chainName: "Goerli",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: ["https://goerli.infura.io/v3/your-infura-key"],
+    blockExplorerUrls: ["https://goerli.etherscan.io/"],
+  },
+  [ChainIds.RSK]: {
+    chainId: `0x${ChainIds.RSK.toString(16)}`,
+    chainName: "RSK",
+    nativeCurrency: {
+      name: "RBTC",
+      symbol: "RBTC",
+      decimals: 18,
+    },
+    rpcUrls: ["https://public-node.rsk.co"],
+    blockExplorerUrls: ["https://explorer.rsk.co/"],
+  },
+  [ChainIds.RSKTESTNET]: {
+    chainId: `0x${ChainIds.RSKTESTNET.toString(16)}`,
+    chainName: "RSK Testnet",
+    nativeCurrency: {
+      name: "tRBTC",
+      symbol: "tRBTC",
+      decimals: 18,
+    },
+    rpcUrls: ["https://public-node.testnet.rsk.co"],
+    blockExplorerUrls: ["https://explorer.testnet.rsk.co/"],
+  },
+  [ChainIds.BSCTESTNET]: {
+    chainId: `0x${ChainIds.BSCTESTNET.toString(16)}`,
+    chainName: "BSC Testnet",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545"],
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+  },
+  [ChainIds.ARBITRUM]: {
+    chainId: `0x${ChainIds.ARBITRUM.toString(16)}`,
+    chainName: "Arbitrum",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+    blockExplorerUrls: ["https://arbiscan.io/"],
+  },
+  [ChainIds.LINEA]: {
+    chainId: `0x${ChainIds.LINEA.toString(16)}`,
+    chainName: "Linea",
+    nativeCurrency: {
+      name: "LINA",
+      symbol: "LINA",
+      decimals: 18,
+    },
+    rpcUrls: ["https://linea-rpc-url"],
+    blockExplorerUrls: ["https://linea-explorer-url"],
   },
 };

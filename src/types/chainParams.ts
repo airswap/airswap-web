@@ -1,7 +1,3 @@
-export type NetworkChains = {
-  [key: string]: string;
-};
-
 export type ChainParams = {
   chainId: string;
   chainName: string;

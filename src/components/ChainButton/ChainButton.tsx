@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 
 import nativeCurrency from "../../constants/nativeCurrency";
-import { NETWORK_CHAINS } from "../../constants/supportedNetworks";
+import { CHAIN_PARAMS } from "../../constants/supportedNetworks";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import {
   Container,
@@ -84,7 +84,8 @@ const ChainButton = ({
           }}
         >
           <ChainIcon src={nativeCurrency[chainId ? chainId : 1].logoURI} />
-          {NETWORK_CHAINS[chainId ? chainId : 1] || "Unsupported network"}
+          {CHAIN_PARAMS[chainId ? chainId : 1].chainName ||
+            "Unsupported network"}
           <ArrowIcon open={chainSelectionOpen}>
             <GoChevronDown />
           </ArrowIcon>
