@@ -46,6 +46,7 @@ const ChainSelectionPopover = ({
     dispatch(
       setWalletConnected({
         address: account || "0x",
+        // chainId: +CHAIN_PARAMS[Number(chainId)].chainId,
         chainId: nativeCurrency[+chainId].chainId,
       })
     );
@@ -75,6 +76,7 @@ const ChainSelectionPopover = ({
 
   // supportedNetworks returns an array of numbers as strings
   const supportedNetworks = Object.keys(CHAIN_PARAMS);
+  console.log(supportedNetworks);
 
   /**
    * @remarks argument `chain` is a chainId in string format
@@ -98,8 +100,8 @@ const ChainSelectionPopover = ({
             src={nativeCurrency[Number(chain)]?.logoURI}
             alt={`${chain} icon`}
           />
-          {nativeCurrency[Number(chain)]}
-          {/* {NETWORK_CHAINS[chain]} */}
+          {/* {nativeCurrency[Number(chain)]} */}
+          {CHAIN_PARAMS[Number(chain)].chainName}
         </NetworkButton>
       );
     });
