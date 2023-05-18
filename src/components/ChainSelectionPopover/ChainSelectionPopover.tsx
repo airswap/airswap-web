@@ -1,18 +1,13 @@
 import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
-import {
-  useAppDispatch, // useAppSelector
-} from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
   CHAIN_PARAMS,
   NETWORK_CHAINS,
 } from "../../constants/supportedNetworks";
-import {
-  // selectWallet,
-  setWalletConnected,
-} from "../../features/wallet/walletSlice";
+import { setWalletConnected } from "../../features/wallet/walletSlice";
 import {
   Container,
   NetworksContainer,
@@ -31,6 +26,8 @@ type ChainSelectionPopoverPropsType = {
 
 /**
  * @remarks this component renders an unordered list with supported networks. Gets rendered onto ChainButton component
+ * @param chainId originates from useWeb3React in Wallet.tsx, then passed into ChainButton, then here
+ * @param account originates from useWeb3React in Wallet.tsx, then passed into ChainButton, then here
  * @param open is a boolean value which determins whether or not to display the popover. Its value is the state value `chainsOpen` which originates in Wallet.tsx and gets passed down to ChainButton, when then gets passed into this
  * @param transactionsTabOpen is a boolean value which indicates whether the right-side drawer that displays transactions is open. This drawer opens when a user clicks on WalletButton. This prop exists in this component so it appropriately shifts to the left when the drawer opens
  * @returns container with a list of supported EVM networks
@@ -44,10 +41,7 @@ const ChainSelectionPopover = ({
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  // const walletState = useAppSelector(selectWallet);
   const { t } = useTranslation();
-
-  // const address = walletState.address;
 
   const handleNetworkSwitch = async (chainId: string) => {
     dispatch(
@@ -56,7 +50,7 @@ const ChainSelectionPopover = ({
         chainId: nativeCurrency[+chainId].chainId,
       })
     );
-    // update network on injected wallet.
+    // try updatin network on injected wallet.
     try {
       await (window as any).ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -65,8 +59,8 @@ const ChainSelectionPopover = ({
         ],
       });
     } catch (error: any) {
+      // if chain doesn't exist on injected wallet, prompt user to add chain
       if (error.code === 4902) {
-        // if chain doesn't exist on injected wallet, prompt user to add chain
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
@@ -83,7 +77,7 @@ const ChainSelectionPopover = ({
   const supportedNetworks = Object.keys(NETWORK_CHAINS);
 
   /**
-   * @remarks argument `chain` refers to chainId number in string format
+   * @remarks argument `chain` is a chainId in string format
    */
   const networkButtons = supportedNetworks.map((chain: string) => {
     return (
