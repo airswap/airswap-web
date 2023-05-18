@@ -55,6 +55,7 @@ type ButtonStyleProps = {
 
 export const NetworkButton = styled.button<ButtonStyleProps>`
   ${BorderlessButtonStyle};
+  
   display: flex;
   align-items: center;
   justify-content: flex-start;
