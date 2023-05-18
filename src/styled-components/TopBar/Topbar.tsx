@@ -27,8 +27,7 @@ export const TopBar = styled.div`
     padding: 1.5rem;
   }
 
-  @media ${breakPoints.phoneOnly},
-    (max-width: 68rem) and (max-height: 41.5rem) {
+  @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     position: relative;
     margin-bottom: 1.5rem;
     width: calc(100% - 3rem);
