@@ -13,6 +13,7 @@ import {
 
 type ChainButtonType = {
   chainId: number | undefined;
+  account: string | undefined | null;
   chainSelectionOpen: boolean;
   transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
@@ -27,6 +28,7 @@ type ChainButtonType = {
  */
 const ChainButton = ({
   chainId,
+  account,
   chainSelectionOpen,
   transactionsTabOpen,
   setChainSelectionOpen,
@@ -90,6 +92,8 @@ const ChainButton = ({
       </Container>
       {chainSelectionOpen && (
         <ChainSelectionPopover
+          chainId={chainId}
+          account={account}
           open={chainSelectionOpen}
           popoverRef={popoverRef}
           transactionsTabOpen={transactionsTabOpen}

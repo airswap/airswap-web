@@ -295,6 +295,7 @@ export const Wallet: FC<WalletPropsType> = ({
         />
         <ChainButton
           chainId={chainId}
+          account={account}
           chainSelectionOpen={chainsOpen}
           transactionsTabOpen={transactionsTabIsOpen}
           setChainSelectionOpen={setChainsOpen}

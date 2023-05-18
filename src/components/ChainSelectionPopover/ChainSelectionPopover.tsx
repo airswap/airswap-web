@@ -1,14 +1,16 @@
 import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  useAppDispatch, // useAppSelector
+} from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
   CHAIN_PARAMS,
   NETWORK_CHAINS,
 } from "../../constants/supportedNetworks";
 import {
-  selectWallet,
+  // selectWallet,
   setWalletConnected,
 } from "../../features/wallet/walletSlice";
 import {
@@ -20,6 +22,8 @@ import {
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type ChainSelectionPopoverPropsType = {
+  chainId: number | undefined;
+  account: string | undefined | null;
   open: boolean;
   popoverRef: RefObject<HTMLDivElement>;
   transactionsTabOpen: boolean;
@@ -32,22 +36,23 @@ type ChainSelectionPopoverPropsType = {
  * @returns container with a list of supported EVM networks
  */
 const ChainSelectionPopover = ({
+  chainId,
+  account,
   open,
   popoverRef,
   transactionsTabOpen,
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const walletState = useAppSelector(selectWallet);
+  // const walletState = useAppSelector(selectWallet);
   const { t } = useTranslation();
 
-  const chainId = walletState.chainId;
-  const address = walletState.address;
+  // const address = walletState.address;
 
   const handleNetworkSwitch = async (chainId: string) => {
     dispatch(
       setWalletConnected({
-        address: address || "0x",
+        address: account || "0x",
         chainId: nativeCurrency[+chainId].chainId,
       })
     );
