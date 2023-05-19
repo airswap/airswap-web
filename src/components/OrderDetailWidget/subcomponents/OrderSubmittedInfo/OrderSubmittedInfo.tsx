@@ -10,12 +10,12 @@ import {
 } from "./OrderSubmittedInfo.styles";
 
 interface OrderSubmittedInfoProps {
-  transactionStatus: SubmittedTransaction["status"];
+  transaction: SubmittedTransaction;
   className?: string;
 }
 
 const OrderSubmittedInfo: FC<OrderSubmittedInfoProps> = ({
-  transactionStatus,
+  transaction,
   className = "",
 }) => {
   const { t } = useTranslation();
@@ -23,13 +23,13 @@ const OrderSubmittedInfo: FC<OrderSubmittedInfoProps> = ({
   return (
     <Container className={className}>
       <DoneAllIcon />
-      {transactionStatus === "processing" && (
+      {transaction.status === "processing" && (
         <>
           <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
           <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
         </>
       )}
-      {transactionStatus === "succeeded" && (
+      {transaction.status === "succeeded" && (
         <>
           <StyledInfoHeading>
             {t("orders.transactionCompleted")}

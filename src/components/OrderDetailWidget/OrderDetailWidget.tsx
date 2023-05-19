@@ -30,7 +30,6 @@ import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import writeTextToClipboard from "../../helpers/writeTextToClipboard";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
-import useOrderTransaction from "../../hooks/useOrderTransaction";
 import useOrderTransactionLink from "../../hooks/useOrderTransactionLink";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import { AppRoutes } from "../../routes";
@@ -44,6 +43,7 @@ import { notifyCopySuccess, notifyError } from "../Toasts/ToastController";
 import { Container, StyledInfoButtons } from "./OrderDetailWidget.styles";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import { useOrderStatus } from "./hooks/useOrderStatus";
+import useSessionOrderTransaction from "./hooks/useSessionOrderTransaction";
 import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import ActionButtons, {
   ButtonActions,
@@ -91,7 +91,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     signerAmount!
   );
   const hasApprovalPending = useApprovalPending(order.senderToken);
-  const orderTransaction = useOrderTransaction(order.nonce);
+  const orderTransaction = useSessionOrderTransaction(order.nonce);
   const hasInsufficientAllowance = !useSufficientAllowance(
     senderToken,
     senderAmount
@@ -245,7 +245,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
         </>
       ) : (
-        <OrderSubmittedInfo transactionStatus={orderTransaction.status} />
+        <OrderSubmittedInfo transaction={orderTransaction} />
       )}
       <ActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}
