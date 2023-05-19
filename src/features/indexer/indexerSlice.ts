@@ -1,9 +1,5 @@
 import { Server } from "@airswap/libraries";
-import {
-  IndexedOrder,
-  FullOrderERC20,
-  RequestFilterERC20,
-} from "@airswap/types";
+import { IndexedOrder, FullOrderERC20, OrderFilter } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
@@ -40,7 +36,7 @@ export const fetchIndexerUrls = createAsyncThunk<
 
 export const getFilteredOrders = createAsyncThunk<
   FullOrderERC20[],
-  { filter: RequestFilterERC20 },
+  { filter: OrderFilter },
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -61,7 +57,7 @@ export const getFilteredOrders = createAsyncThunk<
 
     const orderPromises = servers.map(async (indexer, i) => {
       try {
-        const orderResponse = await indexer.getOrdersERC20By(filter);
+        const orderResponse = await indexer.getOrdersERC20(filter);
         const ordersToAdd = orderResponse.orders;
         orders = { ...orders, ...ordersToAdd };
       } catch (e) {
