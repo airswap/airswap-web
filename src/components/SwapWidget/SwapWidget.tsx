@@ -274,7 +274,8 @@ const SwapWidget: FC = () => {
           filter: {
             senderTokens: [baseTokenInfo?.address!],
             signerTokens: [quoteTokenInfo?.address!],
-            page: 1,
+            offset: 0,
+            limit: 100
           },
         })
       );
