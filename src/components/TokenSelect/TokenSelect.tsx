@@ -156,6 +156,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               disabled={readOnly}
               onChange={onAmountChange}
               placeholder="0.00"
+              type="number"
             />
             {!readOnly && (
               <TokenSelectFocusBorder position="right" hasError={hasError} />
