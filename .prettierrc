@@ -1,5 +1,5 @@
 {
-  "tabWidth": 4,
+  "tabWidth": 2,
   "useTabs": false,
   "importOrder": ["^react", "^@", "^[a-zA-Z]", "^[./]"],
   "importOrderSeparation": true
