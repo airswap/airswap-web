@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { FullOrderERC20 } from "@airswap/types";
-import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../../../app/hooks";
 import { getNonceUsed } from "../../../features/orders/orderApi";
 import { selectPendingTransactions } from "../../../features/transactions/transactionsSlice";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
+import useDefaultLibrary from "../../../hooks/useDefaultLibrary";
 import { OrderStatus } from "../../../types/orderStatus";
 
 export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
-  const { library } = useWeb3React();
+  const library = useDefaultLibrary(order.chainId);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
 
   const [isTaken, setIsTaken] = useState(false);
