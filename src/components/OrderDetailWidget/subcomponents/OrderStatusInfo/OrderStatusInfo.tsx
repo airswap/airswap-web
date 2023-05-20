@@ -3,9 +3,16 @@ import { useTranslation } from "react-i18next";
 
 import { OrderStatus } from "../../../../types/orderStatus";
 import ExpiryIndicator from "../../../ExpiryIndicator/ExpiryIndicator";
-import { Button, InfoWrapper, StyledIcon } from "./OrderStatusInfo.styles";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+import {
+  Button,
+  InfoWrapper,
+  StyledIcon,
+  StyledLoadingSpinner,
+} from "./OrderStatusInfo.styles";
 
 type OrderStatusInfoProps = {
+  isLoading?: boolean;
   expiry: Date;
   link?: string;
   status: OrderStatus;
@@ -13,12 +20,21 @@ type OrderStatusInfoProps = {
 };
 
 const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
+  isLoading = false,
   expiry,
   link,
   status,
   className,
 }) => {
   const { t } = useTranslation();
+
+  if (isLoading) {
+    return (
+      <InfoWrapper className={className}>
+        <StyledLoadingSpinner />
+      </InfoWrapper>
+    );
+  }
 
   if (status === OrderStatus.open || status === OrderStatus.expired) {
     return <ExpiryIndicator expiry={expiry} className={className} />;

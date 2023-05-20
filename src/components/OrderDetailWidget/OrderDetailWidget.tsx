@@ -69,7 +69,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
-  const orderStatus = useOrderStatus(order);
+  const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
   const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
     order.senderToken
   );
@@ -206,6 +206,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       {!orderTransaction ? (
         <>
           <OrderDetailWidgetHeader
+            isOrderStatusLoading={isOrderStatusLoading}
             expiry={parsedExpiry}
             orderStatus={orderStatus}
             orderType={orderType}

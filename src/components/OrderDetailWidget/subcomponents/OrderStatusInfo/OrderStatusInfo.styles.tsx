@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import { Pill, PillButton } from "../../../../styled-components/Pill/Pill";
 import Icon from "../../../Icon/Icon";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
 export const InfoWrapper = styled(Pill)`
   color: ${({ theme }) => theme.colors.lightGrey};
@@ -26,4 +27,8 @@ export const Button = styled(PillButton)`
         theme.name === "dark" ? theme.colors.white : theme.colors.white};
     }
   }
+`;
+
+export const StyledLoadingSpinner = styled(LoadingSpinner)`
+  width: 2rem;
 `;

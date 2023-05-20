@@ -49,7 +49,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
   const cancelInProgress = useCancelPending(order.nonce);
-  const orderStatus = useOrderStatus(order);
+  const [orderStatus] = useOrderStatus(order);
 
   const senderAmount = useMemo(
     () =>
