@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import { OrderStatus } from "../../../../types/orderStatus";
 import ExpiryIndicator from "../../../ExpiryIndicator/ExpiryIndicator";
-import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import {
   Button,
   InfoWrapper,
