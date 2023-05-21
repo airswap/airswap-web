@@ -10,10 +10,7 @@ import i18n from "i18next";
 import { useAppSelector } from "../../../../app/hooks";
 import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
 import { selectBalances } from "../../../../features/balances/balancesSlice";
-import {
-  selectAllTokenInfo,
-  selectProtocolFee,
-} from "../../../../features/metadata/metadataSlice";
+import { selectAllTokenInfo } from "../../../../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { InfoSubHeading } from "../../../Typography/Typography";
@@ -30,7 +27,6 @@ const InfoSection: FC<ActionButtonsProps> = ({
 }) => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const balances = useAppSelector(selectBalances);
-  const protocolFee = useAppSelector(selectProtocolFee);
 
   const { chainId } = useWeb3React<Web3Provider>();
 
@@ -88,7 +84,6 @@ const InfoSection: FC<ActionButtonsProps> = ({
         wrappedNativeToken: wrappedNativeTokenSymbol,
         ownedWrappedNativeTokenAmount: wrappedNativeTokenBalance,
         shouldGetWrappedNativeTokenAmount: shouldDepositNativeTokenAmount,
-        protocolFee: protocolFee / 100,
       });
     }
   }, [
@@ -96,7 +91,6 @@ const InfoSection: FC<ActionButtonsProps> = ({
     nativeTokenSymbol,
     wrappedNativeTokenSymbol,
     wrappedNativeTokenBalance,
-    protocolFee,
   ]);
 
   if (!text) {

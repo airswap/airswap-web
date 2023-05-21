@@ -19,11 +19,11 @@ export const getFullOrderERC20WarningTranslation = (
   }
 
   if (orderIsNotForConnectedWallet && isExpired) {
-    return i18n.t("orders.thisOrderWasNotForTheConnectedWallet");
+    return i18n.t("orders.thisOrderWasForADifferentTaker");
   }
 
   if (orderIsNotForConnectedWallet && !isExpired) {
-    return i18n.t("orders.thisOrderIsNotForTheConnectedWallet");
+    return i18n.t("orders.thisOrderIsForADifferentTaker");
   }
 
   return undefined;

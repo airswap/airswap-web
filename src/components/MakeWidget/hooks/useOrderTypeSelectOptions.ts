@@ -15,7 +15,7 @@ const useOrderTypeSelectOptions = (): SelectOption[] => {
       },
       {
         value: OrderScopeType.private,
-        label: t("orders.specificWallet"),
+        label: t("orders.specificTaker"),
       },
     ];
   }, [t]);

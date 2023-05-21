@@ -12,5 +12,5 @@ export const getActionButtonTranslation = (
     return i18n.t("wallet.unsupportedNetwork");
   }
 
-  return i18n.t("common.makeOrder");
+  return i18n.t("orders.makeNewOrder");
 };

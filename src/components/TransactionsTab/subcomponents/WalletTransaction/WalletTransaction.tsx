@@ -75,7 +75,7 @@ const WalletTransaction = ({
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <SpanTitle>{t("orders.cancelSwap")}</SpanTitle>
+          <SpanTitle>{t("orders.cancelOrder")}</SpanTitle>
           <SpanSubtitle>
             {statusText} · {timeBetween}
           </SpanSubtitle>
