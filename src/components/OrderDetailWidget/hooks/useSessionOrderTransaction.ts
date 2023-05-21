@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useAppSelector } from "../../../app/hooks";
 import {
@@ -13,21 +13,28 @@ const useSessionOrderTransaction = (
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 
-  const initialTransactions = useMemo(() => {
-    return transactions;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [processingTransactionHash, setProcessingTransactionHash] =
+    useState<string>();
 
-  const newTransactions = transactions.filter(
-    (transaction) =>
-      !initialTransactions.some(
-        (initialTransaction) => initialTransaction.hash === transaction.hash
-      )
-  );
+  useEffect(() => {
+    if (!transactions.length) {
+      return;
+    }
+
+    if (
+      transactions[0].nonce === nonce &&
+      transactions[0].status === "processing"
+    ) {
+      setProcessingTransactionHash(transactions[0].hash);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions]);
 
   return useMemo(() => {
-    return newTransactions.find((transaction) => transaction.nonce === nonce);
-  }, [newTransactions, nonce]);
+    return transactions.find(
+      (transaction) => transaction.hash === processingTransactionHash
+    );
+  }, [processingTransactionHash, transactions]);
 };
 
 export default useSessionOrderTransaction;
