@@ -44,7 +44,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
 
   const params = useParams<{ compressedOrder: string }>();
-  const orderStatus = useOrderStatus(order);
+  const [orderStatus] = useOrderStatus(order);
   const isCancelSuccess = useCancellationSuccess(order.nonce);
   const isCancelInProgress = useCancellationPending(order.nonce);
   const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;

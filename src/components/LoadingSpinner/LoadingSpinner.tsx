@@ -1,30 +1,14 @@
-import { AiOutlineLoading } from "react-icons/ai";
+import { FC } from "react";
 
-import styled, { keyframes } from "styled-components/macro";
+import { LoadingSpinnerContainer, SpinningIcon } from "./LoadingSpinner.styles";
 
-const LoadingSpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
+interface LoadingSpinnerProps {
+  className?: string;
+}
 
-const spin = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const SpinningIcon = styled(AiOutlineLoading)`
-  animation: ${spin} 1s linear infinite;
-`;
-
-const LoadingSpinner = () => {
+const LoadingSpinner: FC<LoadingSpinnerProps> = ({ className }) => {
   return (
-    <LoadingSpinnerContainer>
+    <LoadingSpinnerContainer className={className}>
       <SpinningIcon />
     </LoadingSpinnerContainer>
   );

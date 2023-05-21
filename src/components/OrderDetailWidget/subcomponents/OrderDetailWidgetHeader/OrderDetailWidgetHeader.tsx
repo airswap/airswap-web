@@ -12,6 +12,7 @@ import {
 } from "./OrderDetailWidgetHeader.styles";
 
 type OrderDetailWidgetHeaderProps = {
+  isOrderStatusLoading: boolean;
   expiry: Date;
   orderStatus: OrderStatus;
   orderType: OrderType;
@@ -22,6 +23,7 @@ type OrderDetailWidgetHeaderProps = {
 };
 
 const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
+  isOrderStatusLoading,
   expiry,
   orderStatus,
   orderType,
@@ -44,6 +46,7 @@ const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
           userAddress={userAddress}
         />
         <StyledOrderStatusInfo
+          isLoading={isOrderStatusLoading}
           expiry={expiry}
           status={orderStatus}
           link={transactionLink}

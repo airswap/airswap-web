@@ -1,21 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { FullOrderERC20 } from "@airswap/types";
-import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../../../app/hooks";
 import { getNonceUsed } from "../../../features/orders/orderApi";
 import { selectPendingTransactions } from "../../../features/transactions/transactionsSlice";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
+import useDefaultLibrary from "../../../hooks/useDefaultLibrary";
 import { OrderStatus } from "../../../types/orderStatus";
 
-export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
-  const { library } = useWeb3React();
+export const useOrderStatus = (
+  order: FullOrderERC20
+): [OrderStatus, boolean] => {
+  const library = useDefaultLibrary(order.chainId);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
 
   const [isTaken, setIsTaken] = useState(false);
   const expiry = useMemo(() => parseInt(order.expiry) * 1000, [order]);
   const [isExpired, setIsExpired] = useState(new Date().getTime() > expiry);
+  const [isLoading, setIsLoading] = useState(true);
   const isCanceled = useCancellationSuccess(order.nonce);
 
   const asyncGetTakenState = useCallback(
@@ -24,6 +27,7 @@ export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
         const response = await getNonceUsed(order, library);
 
         setIsTaken(response);
+        setIsLoading(false);
       }
     },
     [library]
@@ -43,12 +47,12 @@ export const useOrderStatus = (order: FullOrderERC20): OrderStatus => {
   }, [order, library, asyncGetTakenState, pendingTransactions.length]);
 
   if (isCanceled) {
-    return OrderStatus.canceled;
+    return [OrderStatus.canceled, isLoading];
   }
 
   if (isTaken) {
-    return OrderStatus.taken;
+    return [OrderStatus.taken, isLoading];
   }
 
-  return isExpired ? OrderStatus.expired : OrderStatus.open;
+  return [isExpired ? OrderStatus.expired : OrderStatus.open, isLoading];
 };
