@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -122,9 +122,16 @@ const MakeWidget: FC = () => {
   );
   const formattedMakerAmount = useStringToSignificantDecimals(makerAmount, 4);
   const formattedTakerAmount = useStringToSignificantDecimals(takerAmount, 4);
+
+  const makerAmountPlusFee = useMemo(() => {
+    return new BigNumber(makerAmount)
+      .multipliedBy(1 + protocolFee / 10000)
+      .toString();
+  }, [makerAmount, protocolFee]);
+
   const hasInsufficientAllowance = !useSufficientAllowance(
     makerTokenInfo,
-    makerAmount
+    makerAmountPlusFee
   );
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
@@ -416,6 +423,7 @@ const MakeWidget: FC = () => {
       {makerTokenInfo && makerAmount && showReviewErc20Approval && (
         <StyledReviewApprovalInfo
           amount={makerAmount}
+          amountPlusFee={makerAmountPlusFee}
           tokenInfo={makerTokenInfo}
         />
       )}
