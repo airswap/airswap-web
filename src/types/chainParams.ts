@@ -1,5 +1,5 @@
 export type ChainParams = {
-  chainId: string;
+  chainId: number;
   chainName: string;
   nativeCurrency: {
     name: string;
