@@ -6,6 +6,6 @@ export type ChainParams = {
     symbol: string;
     decimals: number;
   };
-  rpcUrls: [string];
-  blockExplorerUrls: [string];
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
 };
