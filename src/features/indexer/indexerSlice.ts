@@ -20,6 +20,7 @@ export interface IndexerState {
   indexerUrls: string[] | null;
   orders: FullOrderERC20[];
   bestSwapOrder: OrderERC20 | null;
+  currentSearchAmount: string | null;
   isLoading: boolean;
   noIndexersFound: boolean;
 }
@@ -28,6 +29,7 @@ const initialState: IndexerState = {
   indexerUrls: null,
   orders: [],
   bestSwapOrder: null,
+  currentSearchAmount: null,
   isLoading: false,
   noIndexersFound: false,
 };
@@ -95,6 +97,9 @@ export const indexerSlice = createSlice({
     setBestSwapOrder: (state, action: PayloadAction<OrderERC20 | null>) => {
       state.bestSwapOrder = action.payload;
     },
+    setCurrentSearchAmount: (state, action: PayloadAction<string | null>) => {
+      state.currentSearchAmount = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIndexerUrls.fulfilled, (state, action) => {
@@ -121,6 +126,7 @@ export const indexerSlice = createSlice({
   },
 });
 
-export const { reset, setBestSwapOrder } = indexerSlice.actions;
+export const { reset, setBestSwapOrder, setCurrentSearchAmount } =
+  indexerSlice.actions;
 export const selectIndexerReducer = (state: RootState) => state.indexer;
 export default indexerSlice.reducer;

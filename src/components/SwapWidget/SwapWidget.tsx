@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -45,6 +45,7 @@ import {
   getFilteredOrders,
   selectIndexerReducer,
   setBestSwapOrder,
+  setCurrentSearchAmount,
 } from "../../features/indexer/indexerSlice";
 import {
   selectActiveTokensWithoutCustomTokens,
@@ -122,7 +123,6 @@ const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation<{ searchAmount?: string }>();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -138,6 +138,7 @@ const SwapWidget: FC = () => {
     indexerUrls,
     orders: indexerOrders,
     bestSwapOrder,
+    currentSearchAmount,
   } = useAppSelector(selectIndexerReducer);
 
   // Contexts
@@ -773,11 +774,12 @@ const SwapWidget: FC = () => {
   };
 
   useEffect(() => {
-    if (location.state?.searchAmount && baseAmount === "") {
+    if (currentSearchAmount && baseAmount === "") {
       toggleShowViewAllQuotes(true);
-      setBaseAmount(location.state.searchAmount);
+      setBaseAmount(currentSearchAmount);
       prepareForRequest();
-      requestQuotes(location.state.searchAmount);
+      requestQuotes(currentSearchAmount);
+      dispatch(setCurrentSearchAmount(null));
     }
   }, [
     baseAmount,
@@ -785,6 +787,8 @@ const SwapWidget: FC = () => {
     requestQuotes,
     location,
     toggleShowViewAllQuotes,
+    currentSearchAmount,
+    dispatch,
   ]);
 
   return (

@@ -68,7 +68,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const history = useHistory();
   const location = useLocation<{
     fromSwapFlow?: boolean;
-    searchAmount?: string;
   }>();
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
@@ -144,7 +143,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const backToViewAllQuotes = () => {
     history.push({
       pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
-      state: { searchAmount: location.state.searchAmount },
     });
   };
 

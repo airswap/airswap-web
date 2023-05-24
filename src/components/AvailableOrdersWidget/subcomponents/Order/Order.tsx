@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
 
+import { useAppDispatch } from "../../../../app/hooks";
+import { setCurrentSearchAmount } from "../../../../features/indexer/indexerSlice";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { getTokenAmountWithDecimals } from "../../../MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
@@ -30,6 +32,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   className,
 }) => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
 
@@ -66,9 +69,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleClick = () => {
     if (isFullOrder(order)) {
+      dispatch(setCurrentSearchAmount(searchAmount!));
       history.push({
         pathname: `/order/${compressFullOrderERC20(order)}`,
-        state: { fromSwapFlow: true, searchAmount: searchAmount },
+        state: { fromSwapFlow: true },
       });
     } else {
       onOrderLinkClick(false);
