@@ -1,6 +1,13 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -37,6 +44,7 @@ import {
   fetchIndexerUrls,
   getFilteredOrders,
   selectIndexerReducer,
+  setBestSwapOrder,
 } from "../../features/indexer/indexerSlice";
 import {
   selectActiveTokensWithoutCustomTokens,
@@ -114,6 +122,7 @@ const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const location = useLocation<{ searchAmount?: string }>();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -125,8 +134,11 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const lastTransaction = useAppSelector(selectTransactions)[0];
-  const { indexerUrls, orders: indexerOrders } =
-    useAppSelector(selectIndexerReducer);
+  const {
+    indexerUrls,
+    orders: indexerOrders,
+    bestSwapOrder,
+  } = useAppSelector(selectIndexerReducer);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -158,7 +170,7 @@ const SwapWidget: FC = () => {
 
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeInfo, setProtocolFeeInfo] = useState(false);
-  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
+  const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle();
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -262,6 +274,18 @@ const SwapWidget: FC = () => {
   }, [active]);
 
   useEffect(() => {
+    if (
+      tokenFrom !== bestSwapOrder?.senderToken ||
+      tokenTo !== bestSwapOrder?.signerToken
+    ) {
+      dispatch(setBestSwapOrder(null));
+    }
+    if (bestTradeOption?.order) {
+      dispatch(setBestSwapOrder(bestTradeOption.order));
+    }
+  }, [bestSwapOrder, bestTradeOption, dispatch, tokenFrom, tokenTo]);
+
+  useEffect(() => {
     if (!indexerUrls && library) {
       dispatch(fetchIndexerUrls({ provider: library }));
     }
@@ -346,134 +370,151 @@ const SwapWidget: FC = () => {
     }
   };
 
-  const requestQuotes = async () => {
-    if (swapType === "wrapOrUnwrap") {
-      // This will re-render with a 1:1 price and a take button.
-      setIsWrapping(true);
-      return;
-    }
-    setIsRequestingQuotes(true);
+  const requestQuotes = useCallback(
+    async (searchAmount?: string) => {
+      if (swapType === "wrapOrUnwrap") {
+        // This will re-render with a 1:1 price and a take button.
+        setIsWrapping(true);
+        return;
+      }
+      setIsRequestingQuotes(true);
 
-    const usesWrapper = swapType === "swapWithWrap";
-    const weth = WETH.getAddress(chainId!);
-    const eth = nativeCurrency[chainId!];
-    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-    const _baseToken = baseToken === eth.address ? weth : baseToken!;
+      const usesWrapper = swapType === "swapWithWrap";
+      const weth = WETH.getAddress(chainId!);
+      const eth = nativeCurrency[chainId!];
+      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+      const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
-    let rfqServers: Server[] = [];
-    let lastLookServers: Server[] = [];
-    try {
+      let rfqServers: Server[] = [];
+      let lastLookServers: Server[] = [];
       try {
-        if (library && chainId) {
-          const servers = await Registry.getServers(
-            library,
-            chainId,
-            _quoteToken,
-            _baseToken,
-            {
-              initializeTimeout: 10 * 1000,
-            }
+        try {
+          if (library && chainId) {
+            const servers = await Registry.getServers(
+              library,
+              chainId,
+              _quoteToken,
+              _baseToken,
+              {
+                initializeTimeout: 10 * 1000,
+              }
+            );
+            rfqServers = servers.filter((s) =>
+              s.supportsProtocol(Protocols.RequestForQuoteERC20)
+            );
+            lastLookServers = servers.filter((s) =>
+              s.supportsProtocol(Protocols.LastLookERC20)
+            );
+          }
+        } catch (e) {
+          console.error("Error requesting orders:", e);
+          throw new Error("error requesting orders");
+        }
+
+        let rfqPromise: Promise<OrderERC20[]> | null = null,
+          lastLookPromises: Promise<Pricing>[] | null = null;
+
+        if (rfqServers.length) {
+          let rfqDispatchResult = dispatch(
+            request({
+              servers: rfqServers,
+              senderToken: _baseToken,
+              senderAmount: searchAmount || baseAmount,
+              signerToken: _quoteToken,
+              senderTokenDecimals: baseTokenInfo!.decimals,
+              senderWallet: usesWrapper
+                ? Wrapper.getAddress(chainId!)
+                : account!,
+              proxyingFor: usesWrapper ? account! : undefined,
+            })
           );
-          rfqServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.RequestForQuoteERC20)
-          );
-          lastLookServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.LastLookERC20)
-          );
-        }
-      } catch (e) {
-        console.error("Error requesting orders:", e);
-        throw new Error("error requesting orders");
-      }
-
-      let rfqPromise: Promise<OrderERC20[]> | null = null,
-        lastLookPromises: Promise<Pricing>[] | null = null;
-
-      if (rfqServers.length) {
-        let rfqDispatchResult = dispatch(
-          request({
-            servers: rfqServers,
-            senderToken: _baseToken,
-            senderAmount: baseAmount,
-            signerToken: _quoteToken,
-            senderTokenDecimals: baseTokenInfo!.decimals,
-            senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
-            proxyingFor: usesWrapper ? account! : undefined,
-          })
-        );
-        rfqPromise = rfqDispatchResult
-          .then((result) => {
-            return unwrapResult(result);
-          })
-          .then((orders) => {
-            if (!orders.length) throw new Error("no valid orders");
-            return orders;
-          });
-      }
-
-      if (lastLookServers.length) {
-        if (usesWrapper) {
-          lastLookServers.forEach((s) => s.disconnect());
-        } else {
-          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
-            baseToken: baseToken!,
-            quoteToken: quoteToken!,
-          });
-        }
-      }
-
-      let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
-      if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromises) {
-        orderPromises = orderPromises.concat(lastLookPromises);
-      }
-
-      // This promise times out if _no_ orders are received before the timeout
-      // but resolves if _any_ are.
-      const timeoutOnNoOrdersPromise = Promise.race<any>([
-        Promise.any(orderPromises),
-        new Promise((_, reject) =>
-          setTimeout(() => {
-            reject("no valid orders");
-          }, RECEIVE_QUOTE_TIMEOUT_MS)
-        ),
-      ]);
-
-      // This promise resolves either when all orders are received or X seconds
-      // after the first order is received.
-      const waitExtraForAllOrdersPromise = Promise.race<any>([
-        Promise.allSettled(orderPromises),
-        Promise.any(orderPromises).then(
-          () =>
-            new Promise((resolve) =>
-              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
-            )
-        ),
-      ]);
-
-      await Promise.all([
-        waitExtraForAllOrdersPromise,
-        timeoutOnNoOrdersPromise,
-      ]);
-    } catch (e: any) {
-      switch (e.message) {
-        case "error requesting orders": {
-          notifyError({
-            heading: t("orders.errorRequesting"),
-            cta: t("orders.errorRequestingCta"),
-          });
-          break;
+          rfqPromise = rfqDispatchResult
+            .then((result) => {
+              return unwrapResult(result);
+            })
+            .then((orders) => {
+              if (!orders.length) throw new Error("no valid orders");
+              return orders;
+            });
         }
 
-        default: {
-          console.error(e);
-          setPairUnavailable(true);
+        if (lastLookServers.length) {
+          if (usesWrapper) {
+            lastLookServers.forEach((s) => s.disconnect());
+          } else {
+            lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
+              baseToken: baseToken!,
+              quoteToken: quoteToken!,
+            });
+          }
         }
+
+        let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
+        if (rfqPromise) orderPromises.push(rfqPromise);
+        if (lastLookPromises) {
+          orderPromises = orderPromises.concat(lastLookPromises);
+        }
+
+        // This promise times out if _no_ orders are received before the timeout
+        // but resolves if _any_ are.
+        const timeoutOnNoOrdersPromise = Promise.race<any>([
+          Promise.any(orderPromises),
+          new Promise((_, reject) =>
+            setTimeout(() => {
+              reject("no valid orders");
+            }, RECEIVE_QUOTE_TIMEOUT_MS)
+          ),
+        ]);
+
+        // This promise resolves either when all orders are received or X seconds
+        // after the first order is received.
+        const waitExtraForAllOrdersPromise = Promise.race<any>([
+          Promise.allSettled(orderPromises),
+          Promise.any(orderPromises).then(
+            () =>
+              new Promise((resolve) =>
+                setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
+              )
+          ),
+        ]);
+
+        await Promise.all([
+          waitExtraForAllOrdersPromise,
+          timeoutOnNoOrdersPromise,
+        ]);
+      } catch (e: any) {
+        switch (e.message) {
+          case "error requesting orders": {
+            notifyError({
+              heading: t("orders.errorRequesting"),
+              cta: t("orders.errorRequestingCta"),
+            });
+            break;
+          }
+
+          default: {
+            console.error(e);
+            setPairUnavailable(true);
+          }
+        }
+      } finally {
+        setIsRequestingQuotes(false);
       }
-    } finally {
-      setIsRequestingQuotes(false);
-    }
-  };
+    },
+    [
+      LastLook,
+      account,
+      baseAmount,
+      baseToken,
+      baseTokenInfo,
+      chainId,
+      dispatch,
+      library,
+      quoteToken,
+      swapType,
+      t,
+    ]
+  );
 
   const swapWithRequestForQuote = async () => {
     try {
@@ -592,6 +633,42 @@ const SwapWidget: FC = () => {
     }
   };
 
+  const prepareForRequest = useCallback(() => {
+    dispatch(
+      setTradeTerms({
+        baseToken: {
+          address: baseToken!,
+          decimals: baseTokenInfo!.decimals,
+        },
+        baseAmount: baseAmount,
+        quoteToken: {
+          address: quoteToken!,
+          decimals: quoteTokenInfo!.decimals,
+        },
+        quoteAmount: null,
+        side: "sell",
+      })
+    );
+    subscribeToGasPrice();
+    subscribeToTokenPrice(
+      quoteTokenInfo!,
+      // @ts-ignore
+      library!,
+      chainId!
+    );
+  }, [
+    baseAmount,
+    baseToken,
+    baseTokenInfo,
+    chainId,
+    dispatch,
+    library,
+    quoteToken,
+    quoteTokenInfo,
+    subscribeToGasPrice,
+    subscribeToTokenPrice,
+  ]);
+
   const takeBestOption = async () => {
     if (bestTradeOption!.protocol === "request-for-quote-erc20") {
       await swapWithRequestForQuote();
@@ -660,28 +737,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.requestQuotes:
-        dispatch(
-          setTradeTerms({
-            baseToken: {
-              address: baseToken!,
-              decimals: baseTokenInfo!.decimals,
-            },
-            baseAmount: baseAmount,
-            quoteToken: {
-              address: quoteToken!,
-              decimals: quoteTokenInfo!.decimals,
-            },
-            quoteAmount: null,
-            side: "sell",
-          })
-        );
-        subscribeToGasPrice();
-        subscribeToTokenPrice(
-          quoteTokenInfo!,
-          // @ts-ignore
-          library!,
-          chainId!
-        );
+        prepareForRequest();
         await requestQuotes();
 
         break;
@@ -715,6 +771,21 @@ const SwapWidget: FC = () => {
       // Do nothing.
     }
   };
+
+  useEffect(() => {
+    if (location.state?.searchAmount && baseAmount === "") {
+      toggleShowViewAllQuotes(true);
+      setBaseAmount(location.state.searchAmount);
+      prepareForRequest();
+      requestQuotes(location.state.searchAmount);
+    }
+  }, [
+    baseAmount,
+    prepareForRequest,
+    requestQuotes,
+    location,
+    toggleShowViewAllQuotes,
+  ]);
 
   return (
     <>
@@ -776,7 +847,7 @@ const SwapWidget: FC = () => {
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
             showViewAllQuotes={indexerOrders.length > 0}
-            onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
+            onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
         </InfoContainer>
@@ -864,18 +935,21 @@ const SwapWidget: FC = () => {
           onCloseButtonClick={() => setProtocolFeeInfo(false)}
         />
       </Overlay>
-      <Overlay
-        title={t("orders.availableOrders")}
-        isHidden={!showAvailableSwaps}
-        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
-      >
-        <AvailableOrdersWidget
-          senderToken={baseTokenInfo!}
-          signerToken={quoteTokenInfo!}
-          bestSwapOption={bestTradeOption?.order}
-          onOrderLinkClick={toggleShowAvailableSwaps}
-        />
-      </Overlay>
+      {baseTokenInfo && quoteTokenInfo && (
+        <Overlay
+          title={t("orders.availableSwaps")}
+          isHidden={!showViewAllQuotes}
+          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+        >
+          <AvailableOrdersWidget
+            senderToken={baseTokenInfo}
+            signerToken={quoteTokenInfo}
+            bestSwapOption={bestSwapOrder || undefined}
+            searchAmount={baseAmount}
+            onOrderLinkClick={() => toggleShowViewAllQuotes()}
+          />
+        </Overlay>
+      )}
     </>
   );
 };

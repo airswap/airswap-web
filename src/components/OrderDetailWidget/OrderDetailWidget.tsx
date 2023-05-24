@@ -1,6 +1,6 @@
 import { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -66,6 +66,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const { account, library } = useWeb3React<Web3Provider>();
   const history = useHistory();
+  const location = useLocation<{
+    fromSwapFlow?: boolean;
+    searchAmount?: string;
+  }>();
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -134,8 +138,22 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
+  // swap flow handlers
+  const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
+
+  const backToViewAllQuotes = () => {
+    history.push({
+      pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
+      state: { searchAmount: location.state.searchAmount },
+    });
+  };
+
   // button handlers
   const handleBackButtonClick = () => {
+    if (userIsFromSwapFlow) {
+      backToViewAllQuotes();
+      return;
+    }
     history.push({
       pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
     });
@@ -260,9 +278,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
           <StyledInfoButtons
             isMakerOfSwap={userIsMakerOfSwap}
+            showViewAllQuotes={userIsFromSwapFlow && !userIsMakerOfSwap}
             token1={signerTokenSymbol}
             token2={senderTokenSymbol}
             rate={tokenExchangeRate}
+            onViewAllQuotesButtonClick={backToViewAllQuotes}
             onFeeButtonClick={toggleShowFeeInfo}
             onCopyButtonClick={handleCopyButtonClick}
           />
