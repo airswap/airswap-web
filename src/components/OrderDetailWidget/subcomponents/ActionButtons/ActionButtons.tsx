@@ -71,11 +71,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
 
     if (isExpired || isTaken || isCanceled) {
-      return t("orders.newSwap");
+      return t("orders.makeNewOrder");
     }
 
     if (isMakerOfSwap) {
-      return t("orders.cancelSwap");
+      return t("orders.cancelOrder");
     }
 
     if (!isIntendedRecipient) {
@@ -83,7 +83,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     }
 
     if (isOrderSubmitted) {
-      return t("orders.newSwap");
+      return t("orders.makeNewOrder");
     }
 
     if (hasInsufficientBalance) {
@@ -128,7 +128,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         ((isPrivate && !isExpired) || !isPrivate || isTaken) && (
           <BackButton onClick={onBackButtonClick}>
             {isPrivate && !isIntendedRecipient && !isTaken
-              ? t("orders.newSwap")
+              ? t("orders.makeNewOrder")
               : t("common.back")}
           </BackButton>
         )}

@@ -81,7 +81,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
     <Container>
       <Header>
         <Title type="h2" as="h1">
-          {t("orders.cancelSwap")}
+          {t("orders.cancelOrder")}
         </Title>
       </Header>
       <InfoContainer>

@@ -114,7 +114,7 @@ const AvailableOrdersWidget = ({
         onOrderLinkClick={onOrderLinkClick}
       />
       <ActionButton
-        title={t("orders.createSwap")}
+        title={t("orders.makeNewOrder")}
         onClick={handleCreateSwapClick}
       />
     </Container>

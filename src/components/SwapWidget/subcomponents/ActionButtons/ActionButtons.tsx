@@ -21,7 +21,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.connectWallet]: "wallet.connectWallet",
   [ButtonActions.switchNetwork]: "wallet.switchNetwork",
   [ButtonActions.reloadPage]: "common.reloadPage",
-  [ButtonActions.restart]: "orders.newSwap",
+  [ButtonActions.restart]: "orders.makeNewSwap",
   [ButtonActions.goBack]: "common.back",
   [ButtonActions.approve]: "orders.approve",
   [ButtonActions.requestQuotes]: "orders.continue",

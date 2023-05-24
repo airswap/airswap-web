@@ -59,7 +59,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   ) => {
     setActiveDeleteButtonTooltipIndex(index);
     const tooltipText = orderIsOpen
-      ? t("orders.cancelSwap")
+      ? t("orders.cancelOrder")
       : t("orders.dismiss");
     setTooltipText(tooltipText);
   };
