@@ -785,7 +785,6 @@ const SwapWidget: FC = () => {
     baseAmount,
     prepareForRequest,
     requestQuotes,
-    location,
     toggleShowViewAllQuotes,
     currentSearchAmount,
     dispatch,
@@ -944,6 +943,7 @@ const SwapWidget: FC = () => {
           title={t("orders.availableSwaps")}
           isHidden={!showViewAllQuotes}
           onCloseButtonClick={() => toggleShowViewAllQuotes()}
+          animate={!currentSearchAmount}
         >
           <AvailableOrdersWidget
             senderToken={baseTokenInfo}
