@@ -174,14 +174,14 @@ export const StyledLabel = styled(FormLabel)`
   text-transform: uppercase;
 `;
 
-export const SubText = styled.div<{ hasAmount: boolean }>`
+export const SubText = styled.div`
   ${quoteTransition};
+
   line-height: 0.75;
   font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
-  color: ${({ hasAmount, theme }) =>
-    hasAmount ? theme.colors.white : theme.colors.lightGrey};
+  color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
 export const TokenSelectContainer = styled.div<{

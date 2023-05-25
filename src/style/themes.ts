@@ -192,7 +192,7 @@ export const lightTheme: DefaultTheme = {
     red: "#FF0000",
     orange: "#E7765A",
     green: "#60FF66",
-    placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF00 93.3%)",
+    placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF 93.3%)",
     darkSubText: "#9EA3AC",
   },
   shadows: {
@@ -201,7 +201,7 @@ export const lightTheme: DefaultTheme = {
     buttonGlow: "0 0 1rem 0rem #FFFFFF",
     buttonGlowFill: "#FFFFFF",
     tooltipGlow: "0.25rem 0.25rem 0.625rem rgba(255, 255, 255, 0.5)",
-    selectOptionsShadow: "0 0.25rem 1.75rem #000000",
+    selectOptionsShadow: "0 0.25rem 1.75rem #E7ECF3",
   },
   typography,
 };

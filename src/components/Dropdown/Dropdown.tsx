@@ -27,8 +27,6 @@ export type DropdownProps = {
   className?: string;
 };
 
-export const Snavie = "test";
-
 const Dropdown: FC<DropdownProps> = ({
   selectedOption,
   options,

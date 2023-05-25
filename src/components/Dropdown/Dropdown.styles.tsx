@@ -31,7 +31,7 @@ const ButtonStyle = css`
 export const ItemBackground = styled.div`
   ${ButtonStyle};
 
-  transition: transform 0.2s ease-out;
+  transition: transform 0.2s cubic-bezier(0, 0.76, 0.44, 1.01);
   position: absolute;
   top: var(--dropdown-options-wrapper-padding);
   margin-top: -1px;

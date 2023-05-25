@@ -15,6 +15,7 @@ export const StyledIconButton = styled(IconButton)`
   position: absolute;
   top: 0.825rem;
   right: 0.5rem;
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 export const Input = styled(TextInput)`

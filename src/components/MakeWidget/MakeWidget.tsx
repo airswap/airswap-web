@@ -51,7 +51,6 @@ import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenAmountError from "../../hooks/useTokenAmountError";
 import useTokenInfo from "../../hooks/useTokenInfo";
-import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
@@ -161,7 +160,6 @@ const MakeWidget: FC = () => {
     !!maxAmount &&
     makerTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
-  const takerAddressIsValid = useValidAddress(takerAddress);
   const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
   const shouldDepositNativeTokenAmount =
     useShouldDepositNativeToken(makerAmount);
@@ -441,10 +439,6 @@ const MakeWidget: FC = () => {
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
-        takerAddressIsInvalid={
-          orderType === OrderType.private &&
-          (!takerAddressIsValid || error?.type === AppErrorType.invalidAddress)
-        }
         userIsSigning={status === "signing"}
         walletIsNotConnected={!active}
         makerTokenSymbol={makerTokenInfo?.symbol}
