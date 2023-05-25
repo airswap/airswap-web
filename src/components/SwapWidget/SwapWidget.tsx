@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -84,6 +84,7 @@ import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
+import { ServerUrlData } from "../../types/serverUrlData";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
@@ -142,6 +143,8 @@ const SwapWidget: FC = () => {
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+  // checks if server URL is present in URL query string
+  const [serverUrlData, setServerUrlData] = useState<ServerUrlData | null>();
 
   // Pricing
   const {
@@ -165,6 +168,12 @@ const SwapWidget: FC = () => {
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
+
+  // Check if URL query string contains server URL
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const queryUrl = query.get("serverURL");
+  // console.log(queryUrl);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
@@ -195,56 +204,6 @@ const SwapWidget: FC = () => {
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
-  useEffect(() => {
-    setAllowanceFetchFailed(false);
-    setBaseAmount(initialBaseAmount);
-    dispatch(clearTradeTerms());
-    unsubscribeFromGasPrice();
-    unsubscribeFromTokenPrice();
-    dispatch(clear());
-    LastLook.unsubscribeAllServers();
-  }, [
-    chainId,
-    dispatch,
-    LastLook,
-    unsubscribeFromGasPrice,
-    unsubscribeFromTokenPrice,
-  ]);
-
-  useEffect(() => {
-    setTokenFrom(appRouteParams.tokenFrom);
-    setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams]);
-
-  useEffect(() => {
-    if (ordersStatus === "reset") {
-      setIsApproving(false);
-      setIsSwapping(false);
-      setIsWrapping(false);
-      setIsRequestingQuotes(false);
-      setAllowanceFetchFailed(false);
-      setPairUnavailable(false);
-      setProtocolFeeInfo(false);
-      setShowGasFeeInfo(false);
-      setBaseAmount(initialBaseAmount);
-      LastLook.unsubscribeAllServers();
-    }
-  }, [ordersStatus, LastLook, dispatch]);
-
-  // Reset when the chainId changes.
-  useEffect(() => {
-    if (chainId) {
-      dispatch(resetOrders());
-    }
-  }, [chainId, dispatch]);
-
-  useEffect(() => {
-    setAllowanceFetchFailed(
-      allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
-    );
-  }, [allowances.swap.status, allowances.wrapper.status]);
-
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const quoteAmount =
     swapType === "wrapOrUnwrap"
@@ -255,32 +214,23 @@ const SwapWidget: FC = () => {
     [quoteAmount]
   );
 
-  useEffect(() => {
-    if (!active) {
-      setShowTokenSelectModalFor(null);
-    }
-  }, [active]);
-
-  useEffect(() => {
-    if (!indexerUrls && library) {
-      dispatch(fetchIndexerUrls({ provider: library }));
-    }
-  }, [dispatch, indexerUrls, library]);
-
-  useEffect(() => {
-    if (indexerUrls) {
-      dispatch(
-        getFilteredOrders({
-          filter: {
-            senderTokens: [baseTokenInfo?.address!],
-            signerTokens: [quoteTokenInfo?.address!],
-            offset: 0,
-            limit: 100,
-          },
-        })
-      );
-    }
-  }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
+  const parseQueryUrl = (queryUrl: string) => {
+    fetch(queryUrl)
+      .then((response) => response.json())
+      .then((data: ServerUrlData) => {
+        // console.log(data.wallet);
+        // console.log(data.chainId); // Logs the chain ID
+        data.pricing.forEach((pricing) => {
+          // console.log(pricing.baseToken);
+          // console.log(pricing.quoteToken);
+          // console.log(pricing.minimum);
+          // console.log(pricing.bid);
+          // console.log(pricing.ask);
+        });
+        setServerUrlData(data);
+        // console.log(serverUrlData);
+      });
+  };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -358,7 +308,11 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && chainId) {
+        // check if server URL exists in URL query string
+        if (library && serverUrlData) {
+          console.log("server URL detected in query string");
+        } else if (library && chainId) {
+          // rfqServers
           const servers = await Registry.getServers(
             library,
             chainId,
@@ -368,12 +322,15 @@ const SwapWidget: FC = () => {
               initializeTimeout: 10 * 1000,
             }
           );
+
           rfqServers = servers.filter((s) =>
             s.supportsProtocol(Protocols.RequestForQuoteERC20)
           );
           lastLookServers = servers.filter((s) =>
             s.supportsProtocol(Protocols.LastLookERC20)
           );
+          console.log(rfqServers, "rfqServers");
+          console.log(serverUrlData);
         }
       } catch (e) {
         console.error("Error requesting orders:", e);
@@ -709,6 +666,88 @@ const SwapWidget: FC = () => {
       // Do nothing.
     }
   };
+
+  useEffect(() => {
+    setAllowanceFetchFailed(false);
+    setBaseAmount(initialBaseAmount);
+    dispatch(clearTradeTerms());
+    unsubscribeFromGasPrice();
+    unsubscribeFromTokenPrice();
+    dispatch(clear());
+    LastLook.unsubscribeAllServers();
+  }, [
+    chainId,
+    dispatch,
+    LastLook,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  ]);
+
+  useEffect(() => {
+    if (ordersStatus === "reset") {
+      setIsApproving(false);
+      setIsSwapping(false);
+      setIsWrapping(false);
+      setIsRequestingQuotes(false);
+      setAllowanceFetchFailed(false);
+      setPairUnavailable(false);
+      setProtocolFeeInfo(false);
+      setShowGasFeeInfo(false);
+      setBaseAmount(initialBaseAmount);
+      LastLook.unsubscribeAllServers();
+    }
+  }, [ordersStatus, LastLook, dispatch]);
+
+  // Reset when the chainId changes.
+  useEffect(() => {
+    if (chainId) {
+      dispatch(resetOrders());
+    }
+  }, [chainId, dispatch]);
+
+  useEffect(() => {
+    setAllowanceFetchFailed(
+      allowances.swap.status === "failed" ||
+        allowances.wrapper.status === "failed"
+    );
+  }, [allowances.swap.status, allowances.wrapper.status]);
+
+  useEffect(() => {
+    if (!active) {
+      setShowTokenSelectModalFor(null);
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [dispatch, indexerUrls, library]);
+
+  useEffect(() => {
+    if (indexerUrls) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [baseTokenInfo?.address!],
+            signerTokens: [quoteTokenInfo?.address!],
+            offset: 0,
+            limit: 100,
+          },
+        })
+      );
+    }
+  }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
+
+  // check if serverURL query param exists
+  useEffect(() => {
+    if (queryUrl) {
+      parseQueryUrl(queryUrl);
+      // console.log(serverUrlData);
+    }
+    setTokenFrom(appRouteParams.tokenFrom);
+    setTokenTo(appRouteParams.tokenTo);
+  }, [appRouteParams, queryUrl, serverUrlData]);
 
   return (
     <>
