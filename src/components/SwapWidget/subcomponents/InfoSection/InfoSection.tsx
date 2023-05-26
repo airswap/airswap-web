@@ -22,6 +22,7 @@ import {
 export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
+  isSelectedServer: boolean;
   isFetchingOrders: boolean;
   isPairUnavailable: boolean;
   isSwapping: boolean;
@@ -53,6 +54,7 @@ export type InfoSectionProps = {
 const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
+  isSelectedServer,
   isFetchingOrders,
   isPairUnavailable,
   isSwapping,
@@ -112,6 +114,16 @@ const InfoSection: FC<InfoSectionProps> = ({
         <InfoSubHeading>
           {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
+      </>
+    );
+  }
+
+  // logic below renders 'Querying the selected server...' into <InfoSection>
+  if (isSelectedServer && !bestTradeOption) {
+    return (
+      <>
+        <StyledInfoHeading>{t("orders.selectedServer")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
       </>
     );
   }
@@ -205,42 +217,40 @@ const InfoSection: FC<InfoSectionProps> = ({
       price = new BigNumber(1).dividedBy(price);
     }
 
-    return (
+    <>
       <>
-        <>
-          <StyledInfoHeading>
-            1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
-            {stringToSignificantDecimals(price.toString())}{" "}
-            {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-            <RevertPriceButton
-              icon="swap"
-              ariaLabel={t("orders.revertPrice")}
-              iconSize={1}
-              onClick={() => setInvertPrice((p) => !p)}
-            />
-          </StyledInfoHeading>
-          <FeeTextContainer>
-            <FeeText>{t("marketing.includesFee")}</FeeText>
-            <InfoButton
-              onClick={onFeeButtonClick}
-              ariaLabel={t("orders.moreInformation")}
-              icon="information-circle-outline"
-            />
-          </FeeTextContainer>
-        </>
-        {requiresApproval && (
-          <ApprovalText>
-            {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
-          </ApprovalText>
-        )}
-        {showViewAllQuotes && (
-          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-            {t("orders.viewAllQuotes")}
-            <Icon name="chevron-down" />
-          </StyledLargePillButton>
-        )}
+        <StyledInfoHeading>
+          1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
+          {stringToSignificantDecimals(price.toString())}{" "}
+          {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
+          <RevertPriceButton
+            icon="swap"
+            ariaLabel={t("orders.revertPrice")}
+            iconSize={1}
+            onClick={() => setInvertPrice((p) => !p)}
+          />
+        </StyledInfoHeading>
+        <FeeTextContainer>
+          <FeeText>{t("marketing.includesFee")}</FeeText>
+          <InfoButton
+            onClick={onFeeButtonClick}
+            ariaLabel={t("orders.moreInformation")}
+            icon="information-circle-outline"
+          />
+        </FeeTextContainer>
       </>
-    );
+      {requiresApproval && (
+        <ApprovalText>
+          {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
+        </ApprovalText>
+      )}
+      {showViewAllQuotes && (
+        <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+          {t("orders.viewAllQuotes")}
+          <Icon name="chevron-down" />
+        </StyledLargePillButton>
+      )}
+    </>;
   }
 
   // No order & not fetching, but wallet connected.

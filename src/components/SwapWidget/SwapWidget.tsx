@@ -84,7 +84,6 @@ import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
-import { ServerUrlData } from "../../types/serverUrlData";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
@@ -129,6 +128,8 @@ const SwapWidget: FC = () => {
   const { indexerUrls, orders: indexerOrders } =
     useAppSelector(selectIndexerReducer);
 
+  console.log("bestTradeOption", bestTradeOption);
+
   // Contexts
   const LastLook = useContext(LastLookContext);
   const {
@@ -144,7 +145,8 @@ const SwapWidget: FC = () => {
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
   // checks if server URL is present in URL query string
-  const [serverUrlData, setServerUrlData] = useState<ServerUrlData | null>();
+  const [serverUrl, setServerUrl] = useState<string | null>();
+  // const [serverUrlData, setServerUrlData] = useState<ServerUrlData | null>();
 
   // Pricing
   const {
@@ -168,6 +170,9 @@ const SwapWidget: FC = () => {
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
+  // if `bestTradeOption` is true, `isQueryingSelectedServer` will get toggled to false. This is so InfoSection.tsx renders the correct text & data
+  const [isQueryingSelectedServer, setIsQueryingSelectedServer] =
+    useState(false);
 
   // Check if URL query string contains server URL
   const location = useLocation();
@@ -213,24 +218,6 @@ const SwapWidget: FC = () => {
     () => stringToSignificantDecimals(quoteAmount),
     [quoteAmount]
   );
-
-  const parseQueryUrl = (queryUrl: string) => {
-    fetch(queryUrl)
-      .then((response) => response.json())
-      .then((data: ServerUrlData) => {
-        // console.log(data.wallet);
-        // console.log(data.chainId); // Logs the chain ID
-        data.pricing.forEach((pricing) => {
-          // console.log(pricing.baseToken);
-          // console.log(pricing.quoteToken);
-          // console.log(pricing.minimum);
-          // console.log(pricing.bid);
-          // console.log(pricing.ask);
-        });
-        setServerUrlData(data);
-        // console.log(serverUrlData);
-      });
-  };
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -309,8 +296,14 @@ const SwapWidget: FC = () => {
     try {
       try {
         // check if server URL exists in URL query string
-        if (library && serverUrlData) {
-          console.log("server URL detected in query string");
+        if (library && serverUrl) {
+          const serverFromQueryString = await Server.at(serverUrl, {
+            chainId,
+            // swapContract: '',
+            initializeTimeout: 10 * 1000,
+          });
+          rfqServers.push(serverFromQueryString);
+          // console.log("serverFromQueryString", serverFromQueryString);
         } else if (library && chainId) {
           // rfqServers
           const servers = await Registry.getServers(
@@ -329,13 +322,13 @@ const SwapWidget: FC = () => {
           lastLookServers = servers.filter((s) =>
             s.supportsProtocol(Protocols.LastLookERC20)
           );
-          console.log(rfqServers, "rfqServers");
-          console.log(serverUrlData);
         }
       } catch (e) {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
       }
+
+      console.log(rfqServers);
 
       let rfqPromise: Promise<OrderERC20[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
@@ -742,12 +735,23 @@ const SwapWidget: FC = () => {
   // check if serverURL query param exists
   useEffect(() => {
     if (queryUrl) {
-      parseQueryUrl(queryUrl);
-      // console.log(serverUrlData);
+      setIsQueryingSelectedServer(true);
+      setServerUrl(queryUrl);
+    } else {
+      setIsQueryingSelectedServer(false);
+      setServerUrl(null);
     }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams, queryUrl, serverUrlData]);
+  }, [appRouteParams, queryUrl]);
+
+  // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
+  useEffect(() => {
+    if (bestTradeOption) {
+      setIsQueryingSelectedServer(false);
+    }
+    console.log("isQueryingSelectedServer", isQueryingSelectedServer);
+  }, [bestTradeOption, isQueryingSelectedServer]);
 
   return (
     <>
@@ -793,6 +797,13 @@ const SwapWidget: FC = () => {
               showOrderSubmitted && lastTransaction?.status === "succeeded"
             }
             isConnected={active}
+            // if `!pairUnavailable`, the <StyledInfoHeading> message will revert back to normal
+            isSelectedServer={
+              isQueryingSelectedServer &&
+              !pairUnavailable &&
+              !isWrapping &&
+              !showOrderSubmitted
+            }
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
