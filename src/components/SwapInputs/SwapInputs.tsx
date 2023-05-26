@@ -10,9 +10,9 @@ import {
   Container,
   MaxAmountInfoTooltip,
   QuoteAmountErrorTooltip,
-  SwapIconContainer,
+  SwitchTokensButton,
 } from "./SwapInputs.styles";
-import getSwapInputIcon from "./helpers/getSwapInputIcon";
+import getSwitchTokensButtonIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
 import useErrorTranslation from "./hooks/useErrorTranslation";
 
@@ -40,10 +40,11 @@ const SwapInputs: FC<{
   quoteAmount: string;
   quoteAmountError?: AppError;
 
-  onMaxButtonClick: () => void;
-  onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
+  onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
+  onMaxButtonClick: () => void;
   onQuoteAmountChange?: (newValue: string) => void;
+  onSwitchTokensButtonClick?: () => void;
 }> = ({
   disabled = false,
   canSetQuoteAmount = false,
@@ -67,9 +68,10 @@ const SwapInputs: FC<{
   side,
 
   onBaseAmountChange,
-  onQuoteAmountChange,
-  onMaxButtonClick,
   onChangeTokenClick,
+  onMaxButtonClick,
+  onQuoteAmountChange,
+  onSwitchTokensButtonClick,
 }) => {
   const { t } = useTranslation();
   const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
@@ -139,7 +141,12 @@ const SwapInputs: FC<{
         onInfoLabelMouseEnter={handleInfoLabelMouseEnter}
         onInfoLabelMouseLeave={handleInfoLabelMouseLeave}
       />
-      <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
+      <SwitchTokensButton
+        disabled={tradeNotAllowed || readOnly}
+        onClick={onSwitchTokensButtonClick}
+      >
+        {getSwitchTokensButtonIcon(tradeNotAllowed)}
+      </SwitchTokensButton>
       <TokenSelect
         hasError={!!quoteAmountError}
         isQuote={isQuote}
