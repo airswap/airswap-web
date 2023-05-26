@@ -160,7 +160,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
             {!readOnly && (
               <TokenSelectFocusBorder position="right" hasError={hasError} />
             )}
-            {subText && <SubText hasAmount={!!amount}>{subText}</SubText>}
+            {subText && <SubText>{subText}</SubText>}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>

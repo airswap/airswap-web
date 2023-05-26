@@ -12,7 +12,6 @@ export const getActionButtonTranslation = (
   hasMissingTakerToken: boolean,
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
-  takerAddressIsInvalid: boolean,
   walletIsNotConnected: boolean,
   makerTokenSymbol?: string,
   takerTokenSymbol?: string
@@ -51,10 +50,6 @@ export const getActionButtonTranslation = (
 
   if (hasInsufficientAllowance) {
     return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
-  }
-
-  if (takerAddressIsInvalid) {
-    return i18n.t("orders.enterValidTakerAddress");
   }
 
   return i18n.t("common.sign");

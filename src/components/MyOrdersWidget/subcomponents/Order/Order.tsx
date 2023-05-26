@@ -98,7 +98,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </StatusIndicator>
       <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
-      <Text>{timeLeft || orderStatusTranslation}</Text>
+      <Text>
+        {orderStatus === OrderStatus.open ? timeLeft : orderStatusTranslation}
+      </Text>
       <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
 
       <ActionButtonContainer>
@@ -107,7 +109,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         ) : (
           <ActionButton
             icon={orderStatus !== OrderStatus.open ? "bin" : "button-x"}
-            iconSize={orderStatus === OrderStatus.open ? 0.75 : 0.675}
+            iconSize={orderStatus === OrderStatus.open ? 0.5625 : 0.675}
             onClick={handleDeleteOrderButtonClick}
             onMouseEnter={() =>
               onDeleteOrderButtonMouseEnter(

@@ -80,8 +80,12 @@ export const StyledReviewApprovalInfo = styled(ReviewApprovalInfo)`
 export const StyledTooltip = styled(Tooltip)`
   position: absolute;
   right: 0;
-  top: 0;
-  height: 3.5rem;
+  top: -5.125rem;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    top: 0;
+    height: 3.5rem;
+  }
 `;
 
 export const TooltipContainer = styled.div`

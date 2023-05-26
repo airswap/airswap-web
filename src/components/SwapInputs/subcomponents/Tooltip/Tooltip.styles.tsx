@@ -9,7 +9,6 @@ export const Container = styled.div`
   display: flex;
   align-items: flex-end;
   max-width: 17rem;
-  width: 100%;
   height: 4.5rem;
 
   @media ${breakPoints.tabletLandscapeUp} {
@@ -18,6 +17,8 @@ export const Container = styled.div`
     right: inherit;
     bottom: inherit;
     left: calc(100% + 1.25rem);
+    width: 100%;
+    height: auto;
   }
 `;
 

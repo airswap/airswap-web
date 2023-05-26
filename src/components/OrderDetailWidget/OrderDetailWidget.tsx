@@ -216,6 +216,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
           <SwapInputs
             readOnly
+            disabled={orderStatus === OrderStatus.canceled}
             isRequestingBaseAmount={isSignerTokenLoading}
             isRequestingBaseToken={isSignerTokenLoading}
             isRequestingQuoteAmount={isSenderTokenLoading}
