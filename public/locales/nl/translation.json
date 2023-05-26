@@ -96,6 +96,7 @@
         "revertPrice": "Prijs terugzetten",
         "scanningPeers": "Het netwerk scannen",
         "searchByNameOrAddress": "Zoek op naam of plak adress",
+        "selectedServer": "",
         "settings": "Instellingen",
         "submitted": "Transactie ingediend",
         "swapExpired": "Swap verlopen",
