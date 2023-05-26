@@ -128,8 +128,6 @@ const SwapWidget: FC = () => {
   const { indexerUrls, orders: indexerOrders } =
     useAppSelector(selectIndexerReducer);
 
-  console.log("bestTradeOption", bestTradeOption);
-
   // Contexts
   const LastLook = useContext(LastLookContext);
   const {
@@ -178,7 +176,6 @@ const SwapWidget: FC = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const queryUrl = query.get("serverURL");
-  // console.log(queryUrl);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
@@ -303,7 +300,6 @@ const SwapWidget: FC = () => {
             initializeTimeout: 10 * 1000,
           });
           rfqServers.push(serverFromQueryString);
-          // console.log("serverFromQueryString", serverFromQueryString);
         } else if (library && chainId) {
           // rfqServers
           const servers = await Registry.getServers(
@@ -327,8 +323,6 @@ const SwapWidget: FC = () => {
         console.error("Error requesting orders:", e);
         throw new Error("error requesting orders");
       }
-
-      console.log(rfqServers);
 
       let rfqPromise: Promise<OrderERC20[]> | null = null,
         lastLookPromises: Promise<Pricing>[] | null = null;
@@ -750,7 +744,6 @@ const SwapWidget: FC = () => {
     if (bestTradeOption) {
       setIsQueryingSelectedServer(false);
     }
-    console.log("isQueryingSelectedServer", isQueryingSelectedServer);
   }, [bestTradeOption, isQueryingSelectedServer]);
 
   return (
