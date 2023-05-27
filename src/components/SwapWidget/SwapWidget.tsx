@@ -715,6 +715,7 @@ const SwapWidget: FC = () => {
         setPairUnavailable(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        dispatch(setCurrentSearchAmount(null));
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
@@ -725,6 +726,7 @@ const SwapWidget: FC = () => {
         // setValidatorErrors([]);
         dispatch(clearTradeTerms());
         dispatch(clear());
+        dispatch(setCurrentSearchAmount(null));
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
