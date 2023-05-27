@@ -36,13 +36,16 @@ const useShouldDepositNativeTokenAmount = (
       return undefined;
     }
 
-    if (tokenFrom !== nativeCurrencyAddress) {
-      return undefined;
-    }
-
     const wrappedTokenAddress = WETH.getAddress(chainId);
 
     if (!wrappedTokenAddress) {
+      return undefined;
+    }
+
+    if (
+      tokenFrom !== nativeCurrencyAddress &&
+      tokenFrom !== wrappedTokenAddress
+    ) {
       return undefined;
     }
 
