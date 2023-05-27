@@ -118,7 +118,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  // logic below renders 'Querying the selected server...' into <InfoSection>
   if (isSelectedServer && !bestTradeOption) {
     return (
       <>
