@@ -144,7 +144,6 @@ const SwapWidget: FC = () => {
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
   // checks if server URL is present in URL query string
   const [serverUrl, setServerUrl] = useState<string | null>();
-  // const [serverUrlData, setServerUrlData] = useState<ServerUrlData | null>();
 
   // Pricing
   const {
@@ -172,17 +171,17 @@ const SwapWidget: FC = () => {
   const [isQueryingSelectedServer, setIsQueryingSelectedServer] =
     useState(false);
 
-  // Check if URL query string contains server URL
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const queryUrl = query.get("serverURL");
-
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
 
   const { t } = useTranslation();
+
+  // Check if URL query string contains server URL
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const queryUrl = query.get("serverURL");
 
   const {
     chainId,
@@ -292,16 +291,13 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        // check if server URL exists in URL query string
         if (library && serverUrl) {
           const serverFromQueryString = await Server.at(serverUrl, {
             chainId,
-            // swapContract: '',
             initializeTimeout: 10 * 1000,
           });
           rfqServers.push(serverFromQueryString);
         } else if (library && chainId) {
-          // rfqServers
           const servers = await Registry.getServers(
             library,
             chainId,
