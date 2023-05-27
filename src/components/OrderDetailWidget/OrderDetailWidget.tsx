@@ -1,4 +1,5 @@
 import { FC, useContext, useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
@@ -13,6 +14,11 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
+import {
+  getFilteredOrders,
+  fetchIndexerUrls,
+} from "../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -39,6 +45,7 @@ import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -77,6 +84,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
+  const { indexerUrls, orders, bestSwapOrder } =
+    useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
@@ -136,6 +145,28 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle(false);
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [dispatch, indexerUrls, library]);
+
+  useEffect(() => {
+    if (indexerUrls) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [senderToken?.address!],
+            signerTokens: [signerToken?.address!],
+            offset: 0,
+            limit: 100,
+          },
+        })
+      );
+    }
+  }, [dispatch, indexerUrls, senderToken?.address, signerToken?.address]);
 
   // swap flow handlers
   const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
@@ -143,6 +174,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const backToViewAllQuotes = () => {
     history.push({
       pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
+      state: { fromSwapFlow: true },
     });
   };
 
@@ -280,7 +312,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
             token1={signerTokenSymbol}
             token2={senderTokenSymbol}
             rate={tokenExchangeRate}
-            onViewAllQuotesButtonClick={backToViewAllQuotes}
+            onViewAllQuotesButtonClick={toggleShowViewAllQuotes}
             onFeeButtonClick={toggleShowFeeInfo}
             onCopyButtonClick={handleCopyButtonClick}
           />
@@ -342,6 +374,18 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onBackButtonClick={() =>
             handleActionButtonClick(ButtonActions.restart)
           }
+        />
+      </Overlay>
+      <Overlay
+        title={t("orders.availableSwaps")}
+        isHidden={!showViewAllQuotes}
+        onCloseButtonClick={() => toggleShowViewAllQuotes()}
+      >
+        <AvailableOrdersWidget
+          senderToken={senderToken!}
+          signerToken={signerToken!}
+          bestSwapOption={bestSwapOrder || undefined}
+          onSwapLinkClick={backToViewAllQuotes}
         />
       </Overlay>
     </Container>

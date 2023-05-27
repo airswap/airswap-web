@@ -19,7 +19,7 @@ export type AvailableOrdersWidgetProps = {
   signerToken: TokenInfo;
   bestSwapOption?: OrderERC20;
   searchAmount?: string;
-  onOrderLinkClick: (showQuotes: boolean) => void;
+  onSwapLinkClick: () => void;
 };
 
 const AvailableOrdersWidget = ({
@@ -27,7 +27,7 @@ const AvailableOrdersWidget = ({
   signerToken,
   bestSwapOption,
   searchAmount,
-  onOrderLinkClick,
+  onSwapLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
   const { t } = useTranslation();
@@ -114,7 +114,7 @@ const AvailableOrdersWidget = ({
         searchAmount={searchAmount}
         onRateButtonClick={handleRateButtonClick}
         onSortButtonClick={handleSortButtonClick}
-        onOrderLinkClick={onOrderLinkClick}
+        onSwapLinkClick={onSwapLinkClick}
       />
       <ActionButton
         title={t("orders.makeNewOrder")}

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -123,6 +123,7 @@ const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const location = useLocation<{ fromSwapFlow?: boolean }>();
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -369,6 +370,11 @@ const SwapWidget: FC = () => {
     } else if (address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
+  };
+
+  const onBaseAmountChange = (newValue: string) => {
+    setBaseAmount(newValue);
+    dispatch(setCurrentSearchAmount(null));
   };
 
   const requestQuotes = useCallback(
@@ -762,6 +768,7 @@ const SwapWidget: FC = () => {
         } else if (swapType === "wrapOrUnwrap") {
           await doWrap();
         }
+        dispatch(setCurrentSearchAmount(null));
         break;
 
       case ButtonActions.trackTransaction:
@@ -775,11 +782,9 @@ const SwapWidget: FC = () => {
 
   useEffect(() => {
     if (currentSearchAmount && baseAmount === "") {
-      toggleShowViewAllQuotes(true);
       setBaseAmount(currentSearchAmount);
       prepareForRequest();
       requestQuotes(currentSearchAmount);
-      dispatch(setCurrentSearchAmount(null));
     }
   }, [
     baseAmount,
@@ -787,8 +792,13 @@ const SwapWidget: FC = () => {
     requestQuotes,
     toggleShowViewAllQuotes,
     currentSearchAmount,
-    dispatch,
   ]);
+
+  useEffect(() => {
+    if (!location.state?.fromSwapFlow) {
+      dispatch(setCurrentSearchAmount(null));
+    }
+  }, [dispatch, location]);
 
   return (
     <>
@@ -803,6 +813,7 @@ const SwapWidget: FC = () => {
         {!isApproving && !isSwapping && !showOrderSubmitted && (
           <SwapInputs
             baseAmount={baseAmount}
+            onBaseAmountChange={onBaseAmountChange}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             side="sell"
@@ -886,7 +897,6 @@ const SwapWidget: FC = () => {
           )}
         </ButtonContainer>
       </StyledSwapWidget>
-
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
         isHidden={!showTokenSelectModalFor}
@@ -943,14 +953,13 @@ const SwapWidget: FC = () => {
           title={t("orders.availableSwaps")}
           isHidden={!showViewAllQuotes}
           onCloseButtonClick={() => toggleShowViewAllQuotes()}
-          animate={!currentSearchAmount}
         >
           <AvailableOrdersWidget
             senderToken={baseTokenInfo}
             signerToken={quoteTokenInfo}
             bestSwapOption={bestSwapOrder || undefined}
             searchAmount={baseAmount}
-            onOrderLinkClick={() => toggleShowViewAllQuotes()}
+            onSwapLinkClick={() => toggleShowViewAllQuotes()}
           />
         </Overlay>
       )}

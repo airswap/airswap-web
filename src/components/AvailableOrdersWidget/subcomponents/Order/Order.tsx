@@ -13,7 +13,7 @@ import { Container, Text } from "./Order.styles";
 interface OrderProps {
   order: FullOrderERC20 | OrderERC20;
   index: number;
-  onOrderLinkClick: (showQuotes: boolean) => void;
+  onSwapLinkClick: () => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
   onMouseLeave: () => void;
   searchAmount?: string;
@@ -24,7 +24,7 @@ interface OrderProps {
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
   index,
-  onOrderLinkClick,
+  onSwapLinkClick,
   onMouseEnter,
   onMouseLeave,
   searchAmount,
@@ -69,13 +69,15 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleClick = () => {
     if (isFullOrder(order)) {
-      dispatch(setCurrentSearchAmount(searchAmount!));
+      if (searchAmount) {
+        dispatch(setCurrentSearchAmount(searchAmount));
+      }
       history.push({
         pathname: `/order/${compressFullOrderERC20(order)}`,
         state: { fromSwapFlow: true },
       });
     } else {
-      onOrderLinkClick(false);
+      onSwapLinkClick();
     }
   };
 
