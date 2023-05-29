@@ -17,22 +17,20 @@ import {
   selectActiveTokens,
   selectProtocolFee,
 } from "../features/metadata/metadataSlice";
-import { selectUserTokens } from "../features/userSettings/userSettingsSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 
 const useShouldDepositNativeTokenAmount = (
-  tokenAmount: string
+  token?: string,
+  tokenAmount?: string
 ): string | undefined => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
-  const userTokens = useAppSelector(selectUserTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
 
   const { chainId } = useWeb3React<Web3Provider>();
-  const { tokenFrom } = userTokens;
 
   return useMemo(() => {
-    if (!tokenFrom || !tokenAmount || !chainId) {
+    if (!token || !tokenAmount || !chainId) {
       return undefined;
     }
 
@@ -42,10 +40,7 @@ const useShouldDepositNativeTokenAmount = (
       return undefined;
     }
 
-    if (
-      tokenFrom !== nativeCurrencyAddress &&
-      tokenFrom !== wrappedTokenAddress
-    ) {
+    if (token !== nativeCurrencyAddress && token !== wrappedTokenAddress) {
       return undefined;
     }
 
@@ -102,14 +97,7 @@ const useShouldDepositNativeTokenAmount = (
     );
 
     return amountToDepositWithFee.toFormat();
-  }, [
-    activeTokens,
-    balances.values,
-    tokenFrom,
-    tokenAmount,
-    protocolFee,
-    chainId,
-  ]);
+  }, [activeTokens, balances.values, token, tokenAmount, protocolFee, chainId]);
 };
 
 export default useShouldDepositNativeTokenAmount;

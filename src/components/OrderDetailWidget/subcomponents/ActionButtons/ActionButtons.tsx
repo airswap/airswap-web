@@ -12,6 +12,7 @@ export enum ButtonActions {
   cancel,
   sign,
   approve,
+  deposit,
 }
 
 type ActionButtonsProps = {
@@ -24,13 +25,15 @@ type ActionButtonsProps = {
   isIntendedRecipient: boolean;
   isLoading: boolean;
   isMakerOfSwap: boolean;
+  isNetworkUnsupported: boolean;
   isNotConnected: boolean;
   isOrderSubmitted: boolean;
+  shouldDepositNativeToken: boolean;
   orderType: OrderType;
-  networkIsUnsupported: boolean;
   senderTokenSymbol?: string;
   onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
+  className?: string;
 };
 
 const ActionButtons: FC<ActionButtonsProps> = ({
@@ -44,25 +47,28 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isLoading,
   isMakerOfSwap,
   isNotConnected,
+  isNetworkUnsupported,
   isOrderSubmitted,
-  networkIsUnsupported,
+  shouldDepositNativeToken,
   orderType,
   senderTokenSymbol,
   onBackButtonClick,
   onActionButtonClick,
+  className,
 }) => {
   const { t } = useTranslation();
   const isPrivate = orderType === OrderType.private;
-  const buttonDisabled =
+  const isButtonDisabled =
     ((hasInsufficientBalance && !isMakerOfSwap) ||
       (!isIntendedRecipient && !isMakerOfSwap) ||
       isDifferentChainId) &&
     !isNotConnected &&
     !isTaken &&
-    !isExpired;
+    !isExpired &&
+    !shouldDepositNativeToken;
 
   const signButtonText = () => {
-    if (networkIsUnsupported) {
+    if (isNetworkUnsupported) {
       return t("wallet.switchNetwork");
     }
 
@@ -86,6 +92,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("orders.makeNewOrder");
     }
 
+    if (shouldDepositNativeToken) {
+      return `Wrap ${senderTokenSymbol}`;
+    }
+
     if (hasInsufficientBalance) {
       return t("orders.insufficientBalance");
     }
@@ -98,7 +108,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   };
 
   const handleActionButtonClick = () => {
-    if (networkIsUnsupported) {
+    if (isNetworkUnsupported) {
       return onActionButtonClick(ButtonActions.switchNetwork);
     }
 
@@ -114,6 +124,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onActionButtonClick(ButtonActions.cancel);
     }
 
+    if (shouldDepositNativeToken) {
+      return onActionButtonClick(ButtonActions.deposit);
+    }
+
     if (hasInsufficientAllowance) {
       return onActionButtonClick(ButtonActions.approve);
     }
@@ -122,7 +136,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   };
 
   return (
-    <Container>
+    <Container className={className}>
       {!isNotConnected &&
         !isOrderSubmitted &&
         ((isPrivate && !isExpired) || !isPrivate || isTaken) && (
@@ -136,8 +150,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         isFilled={
           isNotConnected || isOrderSubmitted || (isPrivate && isExpired)
         }
-        intent={buttonDisabled ? "neutral" : "primary"}
-        disabled={buttonDisabled}
+        intent={isButtonDisabled ? "neutral" : "primary"}
+        disabled={isButtonDisabled}
         loading={isLoading}
         onClick={handleActionButtonClick}
       >

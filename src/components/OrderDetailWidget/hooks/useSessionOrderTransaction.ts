@@ -17,7 +17,7 @@ const useSessionOrderTransaction = (
     useState<string>();
 
   useEffect(() => {
-    if (!transactions.length) {
+    if (!transactions.length || processingTransactionHash) {
       return;
     }
 

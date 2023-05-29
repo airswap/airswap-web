@@ -148,7 +148,7 @@
     "searchByNameOrAddress": "Search name or paste address",
     "settings": "Settings",
     "shouldApproveErc20TokenAmount": "Spending cap must be at least {{amount}} {{symbol}} + {{protocolFee}}%",
-    "shouldDepositNativeTokenAmount": "You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}}. You'll need to wrap at least {{shouldGetWrappedNativeTokenAmount}} {{nativeToken}} more to make this order.",
+    "shouldDepositNativeTokenAmount": "You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}}. You will need to wrap at least",
     "specificTaker": "Specific Taker",
     "startByCreatingANewOrder": "Start by creating a new order",
     "submitted": "Transaction Submitted",

@@ -161,8 +161,10 @@ const MakeWidget: FC = () => {
     makerTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
-  const shouldDepositNativeTokenAmount =
-    useShouldDepositNativeToken(makerAmount);
+  const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
+    makerTokenInfo?.address,
+    makerAmount
+  );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const [showReviewErc20Approval, setShowReviewErc20Approval] = useState(false);
   const hasDepositPending = useDepositPending();
@@ -435,7 +437,7 @@ const MakeWidget: FC = () => {
         hasMissingTakerToken={!takerTokenInfo}
         hasTokenAmountError={!!(makerAmountError || takerAmountError)}
         isLoading={hasApprovalPending || hasDepositPending}
-        networkIsUnsupported={
+        isNetworkUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
