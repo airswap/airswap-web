@@ -73,7 +73,11 @@ import {
   ProtocolType,
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
-import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
+import {
+  setUserTokens,
+  selectServerURL,
+  setServerURL,
+} from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -128,6 +132,7 @@ const SwapWidget: FC = () => {
   const lastTransaction = useAppSelector(selectTransactions)[0];
   const { indexerUrls, orders: indexerOrders } =
     useAppSelector(selectIndexerReducer);
+  const serverURL = useAppSelector(selectServerURL);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -143,11 +148,8 @@ const SwapWidget: FC = () => {
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
   // checks if server URL is present in URL query string
-  const [serverUrl, setServerUrl] = useState<string | null>();
 
   const appRouteParams = useAppRouteParams();
-  const queryString = appRouteParams.queryString;
-  console.log(queryString);
 
   // Pricing
   const {
@@ -184,7 +186,9 @@ const SwapWidget: FC = () => {
 
   // Check if URL query string contains server URL
   const location = useLocation();
-  const serverURL = useSearchParams(location);
+  useSearchParams(location);
+
+  console.log(serverURL);
 
   const {
     chainId,
@@ -257,11 +261,12 @@ const SwapWidget: FC = () => {
 
     if (tokenFrom && tokenTo) {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
+      dispatch(setServerURL(serverURL));
     }
     history.push({
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
-      }/${queryString && "?serverURL=" + queryString}`,
+      }/${serverURL && "?serverURL=" + serverURL}`,
     });
   };
 
@@ -270,16 +275,12 @@ const SwapWidget: FC = () => {
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
       history.push({
-        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}/${
-          queryString && "?serverURL=" + queryString
-        }`,
+        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
       });
       setBaseAmount(initialBaseAmount);
     } else if (address === quoteToken) {
       history.push({
-        pathname: `/${AppRoutes.swap}/${baseToken || "-"}/${
-          queryString && "?serverURL=" + queryString
-        }/-`,
+        pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-`,
       });
     }
   };
@@ -302,8 +303,8 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && serverUrl) {
-          const serverFromQueryString = await Server.at(serverUrl, {
+        if (library && serverURL) {
+          const serverFromQueryString = await Server.at(serverURL, {
             chainId,
             initializeTimeout: 10 * 1000,
           });
@@ -737,14 +738,12 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     if (serverURL) {
       setIsQueryingSelectedServer(true);
-      setServerUrl(serverURL);
     } else {
       setIsQueryingSelectedServer(false);
-      setServerUrl(null);
     }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams, serverURL]);
+  }, [appRouteParams, serverURL, location]);
 
   // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
   useEffect(() => {
