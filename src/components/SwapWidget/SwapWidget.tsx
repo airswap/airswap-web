@@ -101,6 +101,7 @@ import StyledSwapWidget, {
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
+import useSearchParams from "./hooks/useSearchParams";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
@@ -180,8 +181,8 @@ const SwapWidget: FC = () => {
 
   // Check if URL query string contains server URL
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const queryUrl = query.get("serverURL");
+  const serverURL = useSearchParams(location);
+  console.log(serverURL);
 
   const {
     chainId,
@@ -724,16 +725,16 @@ const SwapWidget: FC = () => {
 
   // check if serverURL query param exists
   useEffect(() => {
-    if (queryUrl) {
+    if (serverURL) {
       setIsQueryingSelectedServer(true);
-      setServerUrl(queryUrl);
+      setServerUrl(serverURL);
     } else {
       setIsQueryingSelectedServer(false);
       setServerUrl(null);
     }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams, queryUrl]);
+  }, [appRouteParams, serverURL]);
 
   // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
   useEffect(() => {
