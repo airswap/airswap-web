@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useLocation } from "react-router";
 import { useRouteMatch } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
@@ -9,6 +10,7 @@ import {
   transformAddressAliasToAddress,
 } from "../constants/addressAliases";
 import { AppRoutes, SwapRoutes } from "../routes";
+import useSearchParams from "./useSearchParams";
 
 export interface AppRouteParams {
   route?: AppRoutes;
@@ -20,11 +22,14 @@ export interface AppRouteParams {
    * Url from useRouteMatch
    */
   url: string;
+  queryString?: string | null;
 }
 
 const useAppRouteParams = (): AppRouteParams => {
   const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
   const { chainId } = useWeb3React<Web3Provider>();
+  const location = useLocation();
+  const queryString = useSearchParams(location);
 
   const swapMatch = useRouteMatch<{
     route?: AppRoutes.swap;
@@ -53,9 +58,10 @@ const useAppRouteParams = (): AppRouteParams => {
         route: swapMatch.params.route,
         url: swapMatch.url,
         justifiedBaseUrl: "",
+        queryString,
       };
     }
-  }, [swapMatch, chainId]);
+  }, [swapMatch, chainId, queryString]);
 
   const routeMatchData = useMemo(() => {
     if (routeMatch) {
@@ -67,6 +73,7 @@ const useAppRouteParams = (): AppRouteParams => {
   }, [routeMatch]);
 
   if (swapMatchData) {
+    console.log("swapMatchData", swapMatchData);
     return swapMatchData;
   }
 

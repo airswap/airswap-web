@@ -81,6 +81,7 @@ import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useSearchParams from "../../hooks/useSearchParams";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
@@ -101,7 +102,6 @@ import StyledSwapWidget, {
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
-import useSearchParams from "./hooks/useSearchParams";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
@@ -139,12 +139,15 @@ const SwapWidget: FC = () => {
   } = useContext(InterfaceContext);
 
   // Input states
-  const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
   // checks if server URL is present in URL query string
   const [serverUrl, setServerUrl] = useState<string | null>();
+
+  const appRouteParams = useAppRouteParams();
+  const queryString = appRouteParams.queryString;
+  console.log(queryString);
 
   // Pricing
   const {
@@ -182,7 +185,6 @@ const SwapWidget: FC = () => {
   // Check if URL query string contains server URL
   const location = useLocation();
   const serverURL = useSearchParams(location);
-  console.log(serverURL);
 
   const {
     chainId,
@@ -259,7 +261,7 @@ const SwapWidget: FC = () => {
     history.push({
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
-      }`,
+      }/${queryString && "?serverURL=" + queryString}`,
     });
   };
 
@@ -267,10 +269,18 @@ const SwapWidget: FC = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
-      history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
+      history.push({
+        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}/${
+          queryString && "?serverURL=" + queryString
+        }`,
+      });
       setBaseAmount(initialBaseAmount);
     } else if (address === quoteToken) {
-      history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
+      history.push({
+        pathname: `/${AppRoutes.swap}/${baseToken || "-"}/${
+          queryString && "?serverURL=" + queryString
+        }/-`,
+      });
     }
   };
 
