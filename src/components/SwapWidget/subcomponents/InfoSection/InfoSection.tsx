@@ -22,7 +22,7 @@ import {
 export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
-  isSelectedServer: boolean;
+  hasSelectedCustomServer: boolean;
   isFetchingOrders: boolean;
   isPairUnavailable: boolean;
   isSwapping: boolean;
@@ -54,7 +54,7 @@ export type InfoSectionProps = {
 const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
-  isSelectedServer,
+  hasSelectedCustomServer,
   isFetchingOrders,
   isPairUnavailable,
   isSwapping,
@@ -118,7 +118,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (isSelectedServer && !bestTradeOption) {
+  if (hasSelectedCustomServer && !bestTradeOption) {
     return (
       <>
         <StyledInfoHeading>{t("orders.selectedServer")}</StyledInfoHeading>
