@@ -174,8 +174,8 @@ const SwapWidget: FC = () => {
   const [isWrapping, setIsWrapping] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
   // if `bestTradeOption` is true, `isQueryingSelectedServer` will get toggled to false. This is so InfoSection.tsx renders the correct text & data
-  const [isQueryingSelectedServer, setIsQueryingSelectedServer] =
-    useState(false);
+  // const [isQueryingSelectedServer, setIsQueryingSelectedServer] =
+  useState(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
@@ -744,21 +744,24 @@ const SwapWidget: FC = () => {
 
   // check if serverURL query param exists
   useEffect(() => {
-    if (serverURL) {
-      setIsQueryingSelectedServer(true);
-    } else {
-      setIsQueryingSelectedServer(false);
-    }
+    // if (serverURL) {
+    //   setIsQueryingSelectedServer(true);
+    // } else {
+    //   setIsQueryingSelectedServer(false);
+    // }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams, serverURL]);
+  }, [
+    appRouteParams,
+    // serverURL
+  ]);
 
   // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
-  useEffect(() => {
-    if (bestTradeOption) {
-      setIsQueryingSelectedServer(false);
-    }
-  }, [bestTradeOption, isQueryingSelectedServer]);
+  // useEffect(() => {
+  //   if (bestTradeOption) {
+  //     setIsQueryingSelectedServer(false);
+  //   }
+  // }, [bestTradeOption, isQueryingSelectedServer]);
 
   return (
     <>
@@ -806,10 +809,11 @@ const SwapWidget: FC = () => {
             isConnected={active}
             // if `!pairUnavailable`, the <StyledInfoHeading> message will revert back to normal
             hasSelectedCustomServer={
-              isQueryingSelectedServer &&
-              !pairUnavailable &&
-              !isWrapping &&
-              !showOrderSubmitted
+              !!serverURL
+              // &&
+              // !pairUnavailable &&
+              // !isWrapping &&
+              // !showOrderSubmitted
             }
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
