@@ -188,8 +188,6 @@ const SwapWidget: FC = () => {
   const location = useLocation();
   useSearchParams(location);
 
-  console.log(serverURL);
-
   const {
     chainId,
     account,
@@ -247,13 +245,18 @@ const SwapWidget: FC = () => {
       .gte(baseAmount);
   };
 
-  const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+  const handleSetToken = (
+    type: TokenSelectModalTypes,
+    value: string,
+    serverURL: string | null
+  ) => {
     const baseRoute = `/${AppRoutes.swap}`;
     const tokenPairs = getTokenPairs(type, value, quoteToken, baseToken);
     const tokenFrom = transformAddressAliasToAddress(tokenPairs.tokenFrom!);
     const tokenTo = transformAddressAliasToAddress(tokenPairs.tokenTo!);
     const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
     const tokenToAlias = transformAddressToAddressAlias(tokenTo);
+    const queryString = `?serverURL=${serverURL}`;
 
     if (type === "base") {
       setBaseAmount("");
@@ -263,24 +266,29 @@ const SwapWidget: FC = () => {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
       dispatch(setServerURL(serverURL));
     }
+
     history.push({
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
-      }/${serverURL && "?serverURL=" + serverURL}`,
+      }/`,
+      search: `${serverURL && queryString}`,
     });
   };
 
   const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
   const handleRemoveActiveToken = (address: string) => {
+    const queryString = `?serverURL=${serverURL}`;
     if (address === baseToken) {
       history.push({
         pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
+        search: `${serverURL && queryString}`,
       });
       setBaseAmount(initialBaseAmount);
     } else if (address === quoteToken) {
       history.push({
         pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-`,
+        search: `${serverURL && queryString}`,
       });
     }
   };
@@ -743,7 +751,7 @@ const SwapWidget: FC = () => {
     }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [appRouteParams, serverURL, location]);
+  }, [appRouteParams, serverURL]);
 
   // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
   useEffect(() => {
@@ -862,7 +870,7 @@ const SwapWidget: FC = () => {
         <TokenList
           onSelectToken={(newTokenAddress) => {
             // e.g. handleSetToken("base", "0x123")
-            handleSetToken(showTokenSelectModalFor, newTokenAddress);
+            handleSetToken(showTokenSelectModalFor, newTokenAddress, serverURL);
             // Close the modal
             setShowTokenSelectModalFor(null);
           }}
