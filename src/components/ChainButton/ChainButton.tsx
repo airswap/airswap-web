@@ -9,6 +9,7 @@ import {
   ChainSelectButton,
   ChainIcon,
   ArrowIcon,
+  ChainNameText,
 } from "./ChainButton.style";
 
 type ChainButtonType = {
@@ -84,8 +85,10 @@ const ChainButton = ({
           }}
         >
           <ChainIcon src={nativeCurrency[chainId ? chainId : 1].logoURI} />
-          {CHAIN_PARAMS[chainId ? chainId : 1].chainName ||
-            "Unsupported network"}
+          <ChainNameText>
+            {CHAIN_PARAMS[chainId ? chainId : 1].chainName ||
+              "Unsupported network"}
+          </ChainNameText>
           <ArrowIcon open={chainSelectionOpen}>
             <GoChevronDown />
           </ArrowIcon>

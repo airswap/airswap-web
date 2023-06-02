@@ -22,7 +22,6 @@ export const TopBar = styled.div`
   z-index: 1;
 
   @media ${breakPoints.tabletPortraitUp} {
-    flex-direction: row;
     width: auto;
     padding: 1.5rem;
   }
@@ -60,6 +59,7 @@ export const StyledMenuButton = styled(IconButton)`
   width: 3rem;
   height: 3rem;
   padding: 0;
+  border: none;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: none;
@@ -68,8 +68,8 @@ export const StyledMenuButton = styled(IconButton)`
   @media ${breakPoints.phoneOnly} {
     ${IconButtonStyle};
     margin-left: 0;
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
 
     svg {
       width: 1.3125rem;
@@ -79,9 +79,15 @@ export const StyledMenuButton = styled(IconButton)`
 
 export const StyledSettingsButton = styled(SettingsButton)`
   margin-left: 0.5rem;
-  margin-right: 0;
+  margin-right: 0.5rem;
+  }
+`;
 
-  @media ${breakPoints.tabletPortraitUp} {
-    margin-right: 1rem;
+// used to reverse the order of SettingsButton and WalletButton on different screen sizes
+export const StyledOrderOfButtons = styled.div`
+  display: flex;
+  align-items: center;
+  @media ${breakPoints.tabletPortraitUpMax} {
+    flex-direction: row-reverse;
   }
 `;

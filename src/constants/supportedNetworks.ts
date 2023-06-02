@@ -4,8 +4,8 @@ import { ChainParams } from "../types/chainParams";
 
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   [ChainIds.MAINNET]: {
-    chainId: `0x${ChainIds.MAINNET.toString(16)}`,
-    chainName: "Mainnet",
+    chainId: +`0x${ChainIds.MAINNET.toString(16)}`,
+    chainName: "Ethereum",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
@@ -15,7 +15,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://etherscan.io/"],
   },
   [ChainIds.AVALANCHE]: {
-    chainId: `0x${ChainIds.AVALANCHE.toString(16)}`,
+    chainId: +`0x${ChainIds.AVALANCHE.toString(16)}`,
     chainName: "Avalanche",
     nativeCurrency: {
       name: "AVAX",
@@ -26,7 +26,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://cchain.explorer.avax.network/"],
   },
   [ChainIds.BSC]: {
-    chainId: `0x${ChainIds.BSC.toString(16)}`,
+    chainId: +`0x${ChainIds.BSC.toString(16)}`,
     chainName: "BNB Chain",
     nativeCurrency: {
       name: "BNB",
@@ -37,7 +37,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://bscscan.com/"],
   },
   [ChainIds.POLYGON]: {
-    chainId: `0x${ChainIds.POLYGON.toString(16)}`,
+    chainId: +`0x${ChainIds.POLYGON.toString(16)}`,
     chainName: "Polygon",
     nativeCurrency: {
       name: "MATIC",
@@ -48,7 +48,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://polygonscan.com/"],
   },
   [ChainIds.GOERLI]: {
-    chainId: `0x${ChainIds.GOERLI.toString(16)}`,
+    chainId: +`0x${ChainIds.GOERLI.toString(16)}`,
     chainName: "Goerli",
     nativeCurrency: {
       name: "ETH",
@@ -59,7 +59,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
   [ChainIds.RSK]: {
-    chainId: `0x${ChainIds.RSK.toString(16)}`,
+    chainId: +`0x${ChainIds.RSK.toString(16)}`,
     chainName: "RSK",
     nativeCurrency: {
       name: "RBTC",
@@ -70,7 +70,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://explorer.rsk.co/"],
   },
   [ChainIds.RSKTESTNET]: {
-    chainId: `0x${ChainIds.RSKTESTNET.toString(16)}`,
+    chainId: +`0x${ChainIds.RSKTESTNET.toString(16)}`,
     chainName: "RSK Testnet",
     nativeCurrency: {
       name: "tRBTC",
@@ -81,7 +81,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://explorer.testnet.rsk.co/"],
   },
   [ChainIds.BSCTESTNET]: {
-    chainId: `0x${ChainIds.BSCTESTNET.toString(16)}`,
+    chainId: +`0x${ChainIds.BSCTESTNET.toString(16)}`,
     chainName: "BSC Testnet",
     nativeCurrency: {
       name: "BNB",
@@ -92,7 +92,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
   [ChainIds.ARBITRUM]: {
-    chainId: `0x${ChainIds.ARBITRUM.toString(16)}`,
+    chainId: +`0x${ChainIds.ARBITRUM.toString(16)}`,
     chainName: "Arbitrum",
     nativeCurrency: {
       name: "ETH",
@@ -103,7 +103,7 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     blockExplorerUrls: ["https://arbiscan.io/"],
   },
   [ChainIds.LINEA]: {
-    chainId: `0x${ChainIds.LINEA.toString(16)}`,
+    chainId: +`0x${ChainIds.LINEA.toString(16)}`,
     chainName: "Linea",
     nativeCurrency: {
       name: "LINA",

@@ -22,6 +22,7 @@ import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
   StyledMenuButton,
+  StyledOrderOfButtons,
   StyledSettingsButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
@@ -293,27 +294,30 @@ export const Wallet: FC<WalletPropsType> = ({
           icon="menu"
           iconSize={1.5625}
         />
+
+        <StyledOrderOfButtons>
+          <StyledSettingsButton
+            settingsOpen={settingsOpen}
+            setSettingsOpen={setSettingsOpen}
+            transactionsTabOpen={transactionsTabIsOpen}
+          />
+          <WalletButton
+            isConnected={active}
+            isUnsupportedNetwork={
+              error && error instanceof UnsupportedChainIdError
+            }
+            address={account}
+            glow={!!pendingTransactions.length}
+            setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
+            setShowWalletList={setShowWalletList}
+          />
+        </StyledOrderOfButtons>
         <ChainButton
           chainId={chainId}
           account={account}
           chainSelectionOpen={chainsOpen}
           transactionsTabOpen={transactionsTabIsOpen}
           setChainSelectionOpen={setChainsOpen}
-        />
-        <StyledSettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabIsOpen}
-        />
-        <WalletButton
-          isConnected={active}
-          isUnsupportedNetwork={
-            error && error instanceof UnsupportedChainIdError
-          }
-          address={account}
-          glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
-          setShowWalletList={setShowWalletList}
         />
         <StyledAirswapButton
           onClick={onAirswapButtonClick}

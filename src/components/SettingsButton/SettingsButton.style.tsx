@@ -31,10 +31,14 @@ export const SettingsButtonContainer = styled.button`
   height: 3rem;
   padding: 0;
 
+  @media ${breakPoints.tabletPortraitUpMax} {
+    border: none;
+  }
+
   @media ${breakPoints.phoneOnly} {
     ${IconButtonStyle};
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
 
     svg {
       width: 1.25rem;

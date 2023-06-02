@@ -17,8 +17,7 @@ export const IconButtonStyle = css<StyledIconButtonProps>`
   padding: 0.5rem;
   font-weight: 600;
   box-sizing: border-box;
-  border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: full;
 
   ${StyledIcon} {
     svg {
