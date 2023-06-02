@@ -157,12 +157,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [indexerUrls, library]);
 
   useEffect(() => {
-    if (indexerUrls) {
+    if (indexerUrls && senderToken?.address && signerToken?.address) {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [senderToken?.address!],
-            signerTokens: [signerToken?.address!],
+            senderTokens: [senderToken.address],
+            signerTokens: [signerToken.address],
             offset: 0,
             limit: 100,
           },
