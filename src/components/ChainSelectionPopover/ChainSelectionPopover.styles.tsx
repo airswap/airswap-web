@@ -29,12 +29,16 @@ export const Container = styled.div<ContainerProps>`
   z-index: 1000;
 
   @media ${breakPoints.tabletPortraitUp} {
-    right: 13.75rem;
+    right: 12rem;
+  }
+
+  @media ${breakPoints.tabletPortraitUpMax} {
+    right: 10rem;
   }
 
   @media ${breakPoints.phoneOnly} {
     top: 4rem;
-    right: 0;
+    right: 4rem;
   }
 `;
 

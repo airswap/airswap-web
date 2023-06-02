@@ -9,7 +9,7 @@ import { AirswapButton } from "../AirswapButton/AirswapButton";
 
 export const TopBar = styled.div`
   display: flex;
-  justify-content: flex-end;
+
   align-items: center;
   flex-direction: row-reverse;
   position: absolute;
