@@ -14,6 +14,7 @@ interface OrderProps {
   order: FullOrderERC20 | OrderERC20;
   index: number;
   onSwapLinkClick: () => void;
+  onFullOrderLinkClick?: () => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
   onMouseLeave: () => void;
   searchAmount?: string;
@@ -25,6 +26,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
   index,
   onSwapLinkClick,
+  onFullOrderLinkClick,
   onMouseEnter,
   onMouseLeave,
   searchAmount,
@@ -76,6 +78,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         pathname: `/order/${compressFullOrderERC20(order)}`,
         state: { fromSwapFlow: true },
       });
+      onFullOrderLinkClick?.();
     } else {
       onSwapLinkClick();
     }

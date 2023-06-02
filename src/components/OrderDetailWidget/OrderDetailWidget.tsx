@@ -144,6 +144,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
 
+  const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
+
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle(false);
 
@@ -151,7 +153,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     if (!indexerUrls && library) {
       dispatch(fetchIndexerUrls({ provider: library }));
     }
-  }, [dispatch, indexerUrls, library]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexerUrls, library]);
 
   useEffect(() => {
     if (indexerUrls) {
@@ -166,22 +169,20 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         })
       );
     }
-  }, [dispatch, indexerUrls, senderToken?.address, signerToken?.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexerUrls, senderToken?.address, signerToken?.address]);
 
-  // swap flow handlers
-  const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
-
-  const backToViewAllQuotes = () => {
+  // button handlers
+  const backToSwapPage = () => {
     history.push({
       pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
       state: { fromSwapFlow: true },
     });
   };
 
-  // button handlers
   const handleBackButtonClick = () => {
     if (userIsFromSwapFlow) {
-      backToViewAllQuotes();
+      backToSwapPage();
       return;
     }
     history.push({
@@ -377,7 +378,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         />
       </Overlay>
       <Overlay
-        title={t("orders.availableSwaps")}
+        title={t("orders.availableOrders")}
         isHidden={!showViewAllQuotes}
         onCloseButtonClick={() => toggleShowViewAllQuotes()}
       >
@@ -385,7 +386,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           senderToken={senderToken!}
           signerToken={signerToken!}
           bestSwapOption={bestSwapOrder || undefined}
-          onSwapLinkClick={backToViewAllQuotes}
+          onSwapLinkClick={backToSwapPage}
+          onFullOrderLinkClick={toggleShowViewAllQuotes}
         />
       </Overlay>
     </Container>

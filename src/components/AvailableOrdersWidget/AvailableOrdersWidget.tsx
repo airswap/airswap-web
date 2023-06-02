@@ -20,6 +20,7 @@ export type AvailableOrdersWidgetProps = {
   bestSwapOption?: OrderERC20;
   searchAmount?: string;
   onSwapLinkClick: () => void;
+  onFullOrderLinkClick?: () => void;
 };
 
 const AvailableOrdersWidget = ({
@@ -28,6 +29,7 @@ const AvailableOrdersWidget = ({
   bestSwapOption,
   searchAmount,
   onSwapLinkClick,
+  onFullOrderLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
   const { t } = useTranslation();
@@ -115,6 +117,7 @@ const AvailableOrdersWidget = ({
         onRateButtonClick={handleRateButtonClick}
         onSortButtonClick={handleSortButtonClick}
         onSwapLinkClick={onSwapLinkClick}
+        onFullOrderLinkClick={onFullOrderLinkClick}
       />
       <ActionButton
         title={t("orders.makeNewOrder")}

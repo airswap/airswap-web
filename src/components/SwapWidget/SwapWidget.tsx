@@ -783,7 +783,11 @@ const SwapWidget: FC = () => {
   };
 
   useEffect(() => {
-    if (currentSearchAmount && baseAmount === "") {
+    if (
+      currentSearchAmount &&
+      baseAmount === "" &&
+      location.state?.fromSwapFlow
+    ) {
       setBaseAmount(currentSearchAmount);
       prepareForRequest();
       requestQuotes(currentSearchAmount);
@@ -794,6 +798,7 @@ const SwapWidget: FC = () => {
     requestQuotes,
     toggleShowViewAllQuotes,
     currentSearchAmount,
+    location.state?.fromSwapFlow,
   ]);
 
   useEffect(() => {
@@ -952,7 +957,7 @@ const SwapWidget: FC = () => {
       </Overlay>
       {baseTokenInfo && quoteTokenInfo && (
         <Overlay
-          title={t("orders.availableSwaps")}
+          title={t("orders.availableOrders")}
           isHidden={!showViewAllQuotes}
           onCloseButtonClick={() => toggleShowViewAllQuotes()}
         >

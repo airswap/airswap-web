@@ -31,7 +31,7 @@ export type OverlayProps = {
    * Hide or show the component
    */
   isHidden?: boolean;
-  animate?: boolean;
+  shouldAnimate?: boolean;
 };
 
 export const overlayShowHideAnimationDuration = 0.3;
@@ -41,13 +41,13 @@ const Overlay: FC<OverlayProps> = ({
   title = "",
   isHidden = true,
   subTitle = "",
-  animate = true,
+  shouldAnimate = true,
   children,
 }) => {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
   const [initialized, setInitialized] = useState(false);
-  const animationIsDisabled = !animate || (!isHidden && !initialized);
+  const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
 
   useKeyPress(onCloseButtonClick, ["Escape"]);
 
