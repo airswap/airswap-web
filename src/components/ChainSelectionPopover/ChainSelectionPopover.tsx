@@ -68,7 +68,7 @@ const ChainSelectionPopover = ({
             params: [CHAIN_PARAMS[+chainId]],
           });
         } catch (error: any) {
-          console.log("Failed to add chain", error);
+          console.error("Failed to add chain", error);
         }
       }
     }
