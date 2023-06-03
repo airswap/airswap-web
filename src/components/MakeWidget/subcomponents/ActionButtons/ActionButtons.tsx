@@ -25,7 +25,7 @@ type ActionButtonsProps = {
   hasMissingTakerToken: boolean;
   hasTokenAmountError: boolean;
   isLoading: boolean;
-  networkIsUnsupported: boolean;
+  isNetworkUnsupported: boolean;
   shouldDepositNativeToken: boolean;
   userIsSigning: boolean;
   walletIsNotConnected: boolean;
@@ -46,7 +46,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasMissingTakerToken,
   hasTokenAmountError,
   isLoading,
-  networkIsUnsupported,
+  isNetworkUnsupported,
   shouldDepositNativeToken,
   userIsSigning,
   walletIsNotConnected,
@@ -68,7 +68,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasTokenAmountError ||
       userIsSigning) &&
     !walletIsNotConnected &&
-    !networkIsUnsupported &&
+    !isNetworkUnsupported &&
     !shouldDepositNativeToken;
 
   const buttonText = getActionButtonTranslation(
@@ -79,7 +79,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     hasMissingMakerToken,
     hasMissingTakerAmount,
     hasMissingTakerToken,
-    networkIsUnsupported,
+    isNetworkUnsupported,
     shouldDepositNativeToken,
     walletIsNotConnected,
     makerTokenSymbol,
@@ -89,7 +89,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const handleSignButtonClick = () => {
     if (walletIsNotConnected) {
       onActionButtonClick(ButtonActions.connectWallet);
-    } else if (networkIsUnsupported) {
+    } else if (isNetworkUnsupported) {
       onActionButtonClick(ButtonActions.switchNetwork);
     } else if (hasInsufficientAllowance) {
       onActionButtonClick(ButtonActions.approve);

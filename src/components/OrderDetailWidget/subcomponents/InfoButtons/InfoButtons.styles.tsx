@@ -9,11 +9,8 @@ export const Container = styled.div`
   padding-top: 1rem;
 `;
 
-export const ButtonsWrapper = styled.div<{
-  isColumn?: boolean;
-}>`
+export const ButtonsWrapper = styled.div`
   display: flex;
-  flex-direction: ${({ isColumn }) => (isColumn ? "column" : "row")};
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;

@@ -67,6 +67,8 @@ export const StyledAddressInput = styled(AddressInput)`
 export const StyledActionButtons = styled(ActionButtons)``;
 
 export const StyledInfoSection = styled(InfoSection)`
+  flex-grow: 1;
+
   & + ${StyledActionButtons} {
     margin-top: 1rem;
   }
