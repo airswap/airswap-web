@@ -81,14 +81,7 @@ const ChainSelectionPopover = ({
    * @remarks argument `chain` is a chainId in string format
    */
   const networkButtons = supportedNetworks
-    .filter(
-      (id) =>
-        +id === ChainIds.MAINNET ||
-        +id === ChainIds.AVALANCHE ||
-        +id === ChainIds.BSC ||
-        +id === ChainIds.POLYGON
-    )
-    .map((chain: string) => {
+SUPPORTED_NETWORKS.map(chain => {
       return (
         <NetworkButton
           key={chain}
