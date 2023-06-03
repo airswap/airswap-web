@@ -42,7 +42,7 @@ const ChainSelectionPopover = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const handleNetworkSwitch = async (chainId: string) => {
+  const handleNetworkSwitch = async (newChainId: number) => {
     dispatch(
       setWalletConnected({
         address: account || "0x",
