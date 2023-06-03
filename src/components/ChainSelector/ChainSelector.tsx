@@ -10,9 +10,9 @@ import {
   ChainIcon,
   ArrowIcon,
   ChainNameText,
-} from "./ChainButton.style";
+} from "./ChainSelector.style";
 
-type ChainButtonType = {
+type ChainSelectorType = {
   chainId: number | undefined;
   account: string | undefined | null;
   chainSelectionOpen: boolean;
@@ -27,14 +27,14 @@ type ChainButtonType = {
  * @param setChainSelectionOpen useState setter function which controls chainSelectionOpen boolean value
  * @returns button that when clicked, opens a popover with a list of supported networks
  */
-const ChainButton = ({
+const ChainSelector = ({
   chainId,
   account,
   chainSelectionOpen,
   transactionsTabOpen,
   setChainSelectionOpen,
   className,
-}: ChainButtonType) => {
+}: ChainSelectorType) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -100,4 +100,4 @@ const ChainButton = ({
   );
 };
 
-export default ChainButton;
+export default ChainSelector;
