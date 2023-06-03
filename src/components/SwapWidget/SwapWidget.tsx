@@ -329,6 +329,12 @@ const SwapWidget: FC = () => {
     });
   };
 
+  const handleSwitchTokensButtonClick = () => {
+    if (quoteToken) {
+      handleSetToken("base", quoteToken);
+    }
+  };
+
   const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
   const handleRemoveActiveToken = (address: string) => {
@@ -723,11 +729,8 @@ const SwapWidget: FC = () => {
         {!isApproving && !isSwapping && !showOrderSubmitted && (
           <SwapInputs
             baseAmount={baseAmount}
-            onBaseAmountChange={setBaseAmount}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
-            onChangeTokenClick={setShowTokenSelectModalFor}
-            onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
             side="sell"
             tradeNotAllowed={pairUnavailable}
             isRequestingQuoteAmount={isRequestingQuotes}
@@ -745,6 +748,10 @@ const SwapWidget: FC = () => {
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
             maxAmount={maxAmount}
+            onBaseAmountChange={setBaseAmount}
+            onChangeTokenClick={setShowTokenSelectModalFor}
+            onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
+            onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
           />
         )}
         <InfoContainer>

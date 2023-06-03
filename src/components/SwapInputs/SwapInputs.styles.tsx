@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { InputOrButtonBorderStyle } from "../../style/mixins";
 import Tooltip from "./subcomponents/Tooltip/Tooltip";
 
 export const Container = styled.div<{ $disabled: boolean }>`
@@ -19,7 +20,9 @@ export const Container = styled.div<{ $disabled: boolean }>`
   }
 `;
 
-export const SwapIconContainer = styled.div`
+export const SwitchTokensButton = styled.button`
+  ${InputOrButtonBorderStyle}
+
   position: absolute;
   right: calc(50% - 0.75rem);
   top: calc(50% - 0.75rem);
@@ -28,7 +31,6 @@ export const SwapIconContainer = styled.div`
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
@@ -37,6 +39,10 @@ export const SwapIconContainer = styled.div`
   background-color: ${(props) => props.theme.colors.black};
   font-size: 1.25rem;
   z-index: 1;
+
+  &:disabled {
+    pointer-events: none;
+  }
 `;
 
 export const MaxAmountInfoTooltip = styled(Tooltip)`

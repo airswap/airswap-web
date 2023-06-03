@@ -231,6 +231,12 @@ const MakeWidget: FC = () => {
     );
   };
 
+  const handleSwitchTokensButtonClick = () => {
+    handleSetToken("base", userTokens.tokenTo || defaultTokenToAddress);
+    setMakerAmount(takerAmount);
+    setTakerAmount(makerAmount);
+  };
+
   const createOrder = () => {
     const expiryDate = Date.now() + expiry;
     const makerTokenAddress = makerTokenInfo?.address!;
@@ -367,9 +373,10 @@ const MakeWidget: FC = () => {
         quoteAmountError={takerAmountError}
         quoteTokenInfo={takerTokenInfo}
         onBaseAmountChange={setMakerAmount}
-        onQuoteAmountChange={setTakerAmount}
         onChangeTokenClick={setShowTokenSelectModal}
         onMaxButtonClick={() => setMakerAmount(maxAmount || "0")}
+        onQuoteAmountChange={setTakerAmount}
+        onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
       />
       <OrderTypeSelectorAndRateFieldWrapper>
         <StyledOrderTypeSelector
