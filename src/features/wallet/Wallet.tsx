@@ -22,10 +22,10 @@ import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
   StyledMenuButton,
-  StyledOrderOfButtons,
   StyledSettingsButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
+import { StyledOrderOfButtons } from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,

@@ -2,6 +2,8 @@ import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ChainIds } from "@airswap/constants";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
@@ -42,29 +44,42 @@ const ChainSelectionPopover = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const handleNetworkSwitch = async (newChainId: number) => {
+  const handleNetworkSwitch = async (chainId: number) => {
     dispatch(
       setWalletConnected({
         address: account || "0x",
-        // chainId: +CHAIN_PARAMS[Number(chainId)].chainId,
         chainId: nativeCurrency[+chainId].chainId,
       })
     );
-    // try updatin network on injected wallet.
     try {
       await (window as any).ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [
-          { chainId: `0x${nativeCurrency[+chainId].chainId.toString(16)}` },
+          {
+            chainId: `0x${nativeCurrency[chainId].chainId.toString(16)}`,
+          },
         ],
       });
     } catch (error: any) {
-      // if chain doesn't exist on injected wallet, prompt user to add chain
       if (error.code === 4902) {
+        const chain = CHAIN_PARAMS[chainId];
+
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [CHAIN_PARAMS[+chainId]],
+            params: [
+              {
+                chainId: +`0x${chain.chainId}`,
+                chainName: chain.chainName,
+                nativeCurrency: {
+                  name: chain.nativeCurrency.name,
+                  symbol: chain.nativeCurrency.symbol,
+                  decimals: chain.nativeCurrency.decimals,
+                },
+                rpcUrls: [chain.rpcUrls],
+                blockExplorerUrls: [chain.blockExplorerUrls],
+              },
+            ],
           });
         } catch (error: any) {
           console.error("Failed to add chain", error);
@@ -73,33 +88,29 @@ const ChainSelectionPopover = ({
     }
   };
 
-  // supportedNetworks returns an array of numbers as strings
   const supportedNetworks = Object.keys(CHAIN_PARAMS);
 
-  /**
-   * @remarks argument `chain` is a chainId in string format
-   */
-  const networkButtons = supportedNetworks
-SUPPORTED_NETWORKS.map(chain => {
-      return (
-        <NetworkButton
-          key={chain}
-          $isActive={chainId?.toString() === chain}
-          onClick={() => handleNetworkSwitch(chain)}
-        >
-          <NetworkIcon
-            src={nativeCurrency[Number(chain)]?.logoURI}
-            alt={`${chain} icon`}
-          />
-          {/* {nativeCurrency[Number(chain)]} */}
-          {CHAIN_PARAMS[Number(chain)].chainName}
-        </NetworkButton>
-      );
-    });
+  const networkButtons = supportedNetworks.map((chain) => {
+    return (
+      <NetworkButton
+        key={chain}
+        $isActive={chainId?.toString() === chain}
+        onClick={() => handleNetworkSwitch(+chain)}
+      >
+        <NetworkIcon src={nativeCurrency[Number(chain)]?.logoURI} />
+        {CHAIN_PARAMS[Number(chain)].chainName}
+      </NetworkButton>
+    );
+  });
 
   return (
-    <Container ref={popoverRef} open={open} shiftLeft={transactionsTabOpen}>
-      {/* TODO: t('common.networks') is not translating correctly */}
+    <Container
+      ref={popoverRef}
+      open={open}
+      shiftLeft={transactionsTabOpen}
+      connected={!!account}
+    >
+      {/* @ts-ignore */}
       <PopoverSection title={t("common.networks")}>
         <NetworksContainer ref={scrollContainerRef} $overflow={false}>
           {networkButtons}

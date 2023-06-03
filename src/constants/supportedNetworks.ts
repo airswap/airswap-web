@@ -5,6 +5,7 @@ import { ChainParams } from "../types/chainParams";
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   [ChainIds.MAINNET]: {
     chainId: +`0x${ChainIds.MAINNET.toString(16)}`,
+
     chainName: "Ethereum",
     nativeCurrency: {
       name: "ETH",
@@ -91,26 +92,26 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545"],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
-  [ChainIds.ARBITRUM]: {
-    chainId: +`0x${ChainIds.ARBITRUM.toString(16)}`,
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ["https://arb1.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://arbiscan.io/"],
-  },
-  [ChainIds.LINEA]: {
-    chainId: +`0x${ChainIds.LINEA.toString(16)}`,
-    chainName: "Linea",
-    nativeCurrency: {
-      name: "LINA",
-      symbol: "LINA",
-      decimals: 18,
-    },
-    rpcUrls: ["https://linea-rpc-url"],
-    blockExplorerUrls: ["https://linea-explorer-url"],
-  },
+  // [ChainIds.ARBITRUM]: {
+  //   chainId: +`0x${ChainIds.ARBITRUM.toString(16)}`,
+  //   chainName: "Arbitrum",
+  //   nativeCurrency: {
+  //     name: "ETH",
+  //     symbol: "ETH",
+  //     decimals: 18,
+  //   },
+  //   rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+  //   blockExplorerUrls: ["https://arbiscan.io/"],
+  // },
+  // [ChainIds.LINEA]: {
+  //   chainId: +`0x${ChainIds.LINEA.toString(16)}`,
+  //   chainName: "Linea",
+  //   nativeCurrency: {
+  //     name: "LINA",
+  //     symbol: "LINA",
+  //     decimals: 18,
+  //   },
+  //   rpcUrls: ["https://linea-rpc-url"],
+  //   blockExplorerUrls: ["https://linea-explorer-url"],
+  // },
 };

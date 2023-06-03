@@ -9,17 +9,19 @@ import { BorderlessButtonStyle } from "../../style/mixins";
 type ContainerProps = {
   open: boolean;
   shiftLeft: boolean;
+  connected: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
+  display: ${({ connected }) => (connected ? "flex" : "none")};
   position: absolute;
-  display: flex;
   flex-direction: column;
   width: 16rem;
-  height: auto;
+  min-height: 100%;
   top: 5rem;
   right: 3.75rem;
   padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   transform: ${(props) => (props.shiftLeft ? "translate(-16.75rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
@@ -50,7 +52,6 @@ export const NetworksContainer = styled.div<ChainSelectionContainerType>`
   margin: 0.5rem 0 0 0;
   display: flex;
   flex-direction: column;
-  height: 2.5rem;
 `;
 
 type ButtonStyleProps = {

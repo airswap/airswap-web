@@ -80,8 +80,7 @@ const ChainButton = ({
         >
           <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
           <ChainNameText>
-            {CHAIN_PARAMS[chainId || 1].chainName ||
-              "Unsupported network"}
+            {CHAIN_PARAMS[chainId || 1].chainName || "Unsupported network"}
           </ChainNameText>
           <ArrowIcon open={chainSelectionOpen}>
             <GoChevronDown />
@@ -90,8 +89,8 @@ const ChainButton = ({
       </Container>
       {chainSelectionOpen && (
         <ChainSelectionPopover
-          chainId={chainId}
-          account={account}
+          chainId={chainId || 1}
+          account={account || ""}
           open={chainSelectionOpen}
           popoverRef={popoverRef}
           transactionsTabOpen={transactionsTabOpen}
