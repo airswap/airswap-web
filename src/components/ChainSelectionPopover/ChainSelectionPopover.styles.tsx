@@ -16,7 +16,7 @@ export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
   width: 16rem;
-  height: 14rem;
+  height: auto;
   top: 5rem;
   right: 3.75rem;
   padding-top: 0.5rem;
