@@ -1,6 +1,9 @@
 import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+
 import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
@@ -42,6 +45,7 @@ const ChainSelectionPopover = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { active } = useWeb3React<Web3Provider>();
 
   const handleNetworkSwitch = async (chainId: number) => {
     dispatch(
@@ -97,7 +101,7 @@ const ChainSelectionPopover = ({
       ref={popoverRef}
       open={open}
       shiftLeft={transactionsTabOpen}
-      connected={!!account}
+      connected={active}
     >
       {/* @ts-ignore */}
       <PopoverSection title={t("common.networks")}>
