@@ -61,7 +61,6 @@ const ChainSelectionPopover = ({
     } catch (error: any) {
       // if chain doesn't exist on injected wallet, prompt user to add chain
       if (error.code === 4902) {
-        console.log(CHAIN_PARAMS[+chainId]);
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
