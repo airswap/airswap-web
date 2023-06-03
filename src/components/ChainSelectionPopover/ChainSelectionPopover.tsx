@@ -61,12 +61,16 @@ const ChainSelectionPopover = ({
       });
     } catch (error: any) {
       if (error.code === 4902) {
-        const chain = CHAIN_PARAMS[chainId];
-
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [{ chainId: SUPPORTED_NETWORKS[chainId] }],
+            params: [
+              {
+                chainId: `0x${CHAIN_PARAMS[chainId].chainId.toString(16)}`,
+                rpcUrls: CHAIN_PARAMS[chainId].rpcUrls,
+                chainName: CHAIN_PARAMS[chainId].chainName,
+              },
+            ],
           });
         } catch (error: any) {
           console.error("Failed to add chain", error);
