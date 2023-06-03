@@ -1,13 +1,12 @@
 import { useRef, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ChainIds } from "@airswap/constants";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
-import { CHAIN_PARAMS } from "../../constants/supportedNetworks";
+import {
+  CHAIN_PARAMS,
+  SUPPORTED_NETWORKS,
+} from "../../constants/supportedNetworks";
 import { setWalletConnected } from "../../features/wallet/walletSlice";
 import {
   Container,
@@ -67,19 +66,7 @@ const ChainSelectionPopover = ({
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: +`0x${chain.chainId}`,
-                chainName: chain.chainName,
-                nativeCurrency: {
-                  name: chain.nativeCurrency.name,
-                  symbol: chain.nativeCurrency.symbol,
-                  decimals: chain.nativeCurrency.decimals,
-                },
-                rpcUrls: [chain.rpcUrls],
-                blockExplorerUrls: [chain.blockExplorerUrls],
-              },
-            ],
+            params: [{ chainId: SUPPORTED_NETWORKS[chainId] }],
           });
         } catch (error: any) {
           console.error("Failed to add chain", error);
@@ -88,17 +75,15 @@ const ChainSelectionPopover = ({
     }
   };
 
-  const supportedNetworks = Object.keys(CHAIN_PARAMS);
-
-  const networkButtons = supportedNetworks.map((chain) => {
+  const networkButtons = SUPPORTED_NETWORKS.map((chain) => {
     return (
       <NetworkButton
         key={chain}
-        $isActive={chainId?.toString() === chain}
+        $isActive={chainId === chain}
         onClick={() => handleNetworkSwitch(+chain)}
       >
-        <NetworkIcon src={nativeCurrency[Number(chain)]?.logoURI} />
-        {CHAIN_PARAMS[Number(chain)].chainName}
+        <NetworkIcon src={nativeCurrency[chain]?.logoURI} />
+        {CHAIN_PARAMS[chain].chainName}
       </NetworkButton>
     );
   });

@@ -2,10 +2,17 @@ import { ChainIds } from "@airswap/constants";
 
 import { ChainParams } from "../types/chainParams";
 
+export const SUPPORTED_NETWORKS: ChainIds[] = [
+  ChainIds.MAINNET,
+  ChainIds.AVALANCHE,
+  ChainIds.BSC,
+  ChainIds.POLYGON,
+  ChainIds.GOERLI,
+];
+
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   [ChainIds.MAINNET]: {
     chainId: +`0x${ChainIds.MAINNET.toString(16)}`,
-
     chainName: "Ethereum",
     nativeCurrency: {
       name: "ETH",
