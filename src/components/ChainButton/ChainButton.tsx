@@ -80,7 +80,7 @@ const ChainButton = ({
         >
           <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
           <ChainNameText>
-            {CHAIN_PARAMS[chainId ? chainId : 1].chainName ||
+            {CHAIN_PARAMS[chainId || 1].chainName ||
               "Unsupported network"}
           </ChainNameText>
           <ArrowIcon open={chainSelectionOpen}>
