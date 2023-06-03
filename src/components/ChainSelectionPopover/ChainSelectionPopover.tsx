@@ -75,7 +75,6 @@ const ChainSelectionPopover = ({
 
   // supportedNetworks returns an array of numbers as strings
   const supportedNetworks = Object.keys(CHAIN_PARAMS);
-  console.log(supportedNetworks);
 
   /**
    * @remarks argument `chain` is a chainId in string format
