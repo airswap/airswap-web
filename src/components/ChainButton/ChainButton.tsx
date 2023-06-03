@@ -78,7 +78,7 @@ const ChainButton = ({
             setChainSelectionOpen(!chainSelectionOpen);
           }}
         >
-          <ChainIcon src={nativeCurrency[chainId ? chainId : 1].logoURI} />
+          <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
           <ChainNameText>
             {CHAIN_PARAMS[chainId ? chainId : 1].chainName ||
               "Unsupported network"}
