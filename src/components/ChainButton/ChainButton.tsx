@@ -38,27 +38,21 @@ const ChainButton = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  const handleClick = useCallback(
-    (e) => {
-      if (
-        (containerRef.current && containerRef.current.contains(e.target)) ||
-        (popoverRef.current && popoverRef.current.contains(e.target))
-      ) {
-        return;
-      }
-      setChainSelectionOpen(false);
-    },
-    [setChainSelectionOpen]
-  );
+  const handleClick = useCallback((e) => {
+    if (
+      (containerRef.current && containerRef.current.contains(e.target)) ||
+      (popoverRef.current && popoverRef.current.contains(e.target))
+    ) {
+      return;
+    }
+    setChainSelectionOpen(false);
+  }, []);
 
-  const handleEscKey = useCallback(
-    (e) => {
-      if (e.keyCode === 27) {
-        setChainSelectionOpen(false);
-      }
-    },
-    [setChainSelectionOpen]
-  );
+  const handleEscKey = useCallback((e) => {
+    if (e.keyCode === 27) {
+      setChainSelectionOpen(false);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClick);
@@ -68,7 +62,7 @@ const ChainButton = ({
       document.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleEscKey, false);
     };
-  }, [handleClick, handleEscKey]);
+  }, []);
 
   return (
     <>
