@@ -16,8 +16,8 @@ import {
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type ChainSelectionPopoverPropsType = {
-  chainId: number | undefined;
-  account: string | undefined | null;
+  chainId: number;
+  account: string;
   open: boolean;
   popoverRef: RefObject<HTMLDivElement>;
   transactionsTabOpen: boolean;
