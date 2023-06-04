@@ -1,7 +1,12 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
-import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
+import {
+  BorderedPill,
+  BorderlessButtonStyle,
+  InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
+} from "../../style/mixins";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
@@ -24,24 +29,21 @@ export const Container = styled.div<ContainerProps>`
 `;
 
 export const SettingsButtonContainer = styled.button`
-  ${BorderedPill}
-  ${InputOrButtonBorderStyle}
+  ${BorderlessButtonStyle};
+  ${IconButtonStyle};
 
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
+  width: 2rem;
+  height: 2rem;
 
-  @media ${breakPoints.tabletPortraitUpMax} {
-    border: none;
+  svg {
+    width: 1.375rem;
   }
 
-  @media ${breakPoints.phoneOnly} {
-    ${IconButtonStyle};
+  @media ${breakPoints.tabletPortraitUp} {
+    ${BorderedPill};
+    ${InputOrButtonBorderStyle};
+
     width: 2.5rem;
     height: 2.5rem;
-
-    svg {
-      width: 1.25rem;
-    }
   }
 `;

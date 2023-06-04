@@ -10,9 +10,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import ChainSelector from "../../components/ChainSelector/ChainSelector";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
-import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
@@ -21,11 +19,12 @@ import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
+  StyledChainSelector,
   StyledMenuButton,
   StyledSettingsButton,
+  StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
-import { StyledOrderOfButtons } from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -288,42 +287,39 @@ export const Wallet: FC<WalletPropsType> = ({
   return (
     <>
       <TopBar>
-        <StyledMenuButton
-          onClick={onMobileMenuButtonClick}
-          ariaLabel={t("common.select")}
-          icon="menu"
-          iconSize={1.5625}
+        <StyledAirswapButton
+          onClick={onAirswapButtonClick}
+          ariaLabel={t("common.AirSwap")}
+          icon="airswap"
+          iconSize={2}
         />
-
-        <StyledOrderOfButtons>
-          <StyledSettingsButton
-            settingsOpen={settingsOpen}
-            setSettingsOpen={setSettingsOpen}
-            transactionsTabOpen={transactionsTabIsOpen}
-          />
-          <WalletButton
-            isConnected={active}
-            isUnsupportedNetwork={
-              error && error instanceof UnsupportedChainIdError
-            }
-            address={account}
-            glow={!!pendingTransactions.length}
-            setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
-            setShowWalletList={setShowWalletList}
-          />
-        </StyledOrderOfButtons>
-        <ChainSelector
+        <StyledChainSelector
           chainId={chainId}
           account={account}
           chainSelectionOpen={chainsOpen}
           transactionsTabOpen={transactionsTabIsOpen}
           setChainSelectionOpen={setChainsOpen}
         />
-        <StyledAirswapButton
-          onClick={onAirswapButtonClick}
-          ariaLabel={t("common.AirSwap")}
-          icon="airswap"
-          iconSize={2}
+        <StyledWalletButton
+          isConnected={active}
+          isUnsupportedNetwork={
+            error && error instanceof UnsupportedChainIdError
+          }
+          address={account}
+          glow={!!pendingTransactions.length}
+          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
+          setShowWalletList={setShowWalletList}
+        />
+        <StyledSettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={setSettingsOpen}
+          transactionsTabOpen={transactionsTabIsOpen}
+        />
+        <StyledMenuButton
+          onClick={onMobileMenuButtonClick}
+          ariaLabel={t("common.select")}
+          icon="menu"
+          iconSize={1.5625}
         />
       </TopBar>
       <TransactionsTab

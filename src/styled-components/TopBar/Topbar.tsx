@@ -1,8 +1,10 @@
 import styled from "styled-components/macro";
 
+import ChainSelector from "../../components/ChainSelector/ChainSelector";
 import IconButton from "../../components/IconButton/IconButton";
 import { IconButtonStyle } from "../../components/IconButton/IconButton.styles";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
+import WalletButton from "../../components/WalletButton/WalletButton";
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import { AirswapButton } from "../AirswapButton/AirswapButton";
@@ -10,7 +12,7 @@ import { AirswapButton } from "../AirswapButton/AirswapButton";
 export const TopBar = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: row-reverse;
+  justify-content: flex-end;
   position: absolute;
   box-sizing: content-box;
   top: 0;
@@ -54,7 +56,6 @@ export const StyledMenuButton = styled(IconButton)`
   ${BorderedPill};
   ${InputOrButtonBorderStyle};
 
-  margin-left: 0.5rem;
   width: 3rem;
   height: 3rem;
   padding: 0;
@@ -77,16 +78,25 @@ export const StyledMenuButton = styled(IconButton)`
 `;
 
 export const StyledSettingsButton = styled(SettingsButton)`
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  @media ${breakPoints.tabletPortraitUp} {
+    order: 2;
+    margin-right: 0.5rem;
   }
 `;
 
-// used to reverse the order of SettingsButton and WalletButton on different screen sizes
-export const StyledOrderOfButtons = styled.div`
-  display: flex;
-  align-items: center;
-  @media ${breakPoints.tabletPortraitUpMax} {
-    flex-direction: row-reverse;
+export const StyledWalletButton = styled(WalletButton)`
+  margin-right: 0.5rem;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    order: 3;
+    margin-right: 0;
+  }
+`;
+
+export const StyledChainSelector = styled(ChainSelector)`
+  margin-right: 0.5rem;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    order: 1;
   }
 `;

@@ -47,11 +47,11 @@ const SettingsButton = ({
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleEscKey, false);
+    document.addEventListener("keydown", handleEscKey);
 
     return () => {
       document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleEscKey, false);
+      document.removeEventListener("keydown", handleEscKey);
     };
   }, [handleClick, handleEscKey]);
 

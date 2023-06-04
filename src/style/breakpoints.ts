@@ -14,7 +14,6 @@ const breakPoints = {
   phoneLandscape: `(orientation: landscape) and (max-height: ${breakpointSizes.phoneLandscape})`,
   shallowScreenOnly: `(max-width: 1430px) and (max-height: 664px)`,
   tabletPortraitUp: `(min-width: ${breakpointSizes.tabletPortrait})`,
-  tabletPortraitUpMax: `(max-width: ${breakpointSizes.tabletPortrait})`,
   tabletLandscapeUp: `(min-width: ${breakpointSizes.tabletLandscape})`,
   desktopUp: `(min-width: ${breakpointSizes.desktop})`,
   bigDesktopUp: `(min-width: ${breakpointSizes.bigDesktop})`,

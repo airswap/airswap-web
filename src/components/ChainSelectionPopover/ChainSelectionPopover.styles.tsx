@@ -34,10 +34,6 @@ export const Container = styled.div<ContainerProps>`
     right: 12rem;
   }
 
-  @media ${breakPoints.tabletPortraitUpMax} {
-    right: 10rem;
-  }
-
   @media ${breakPoints.phoneOnly} {
     top: 4rem;
     right: 4rem;

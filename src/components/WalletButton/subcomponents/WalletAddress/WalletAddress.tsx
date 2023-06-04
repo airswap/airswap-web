@@ -14,6 +14,7 @@ type WalletAddressPropsType = {
   glow?: boolean;
   setShowWalletList: (x: boolean) => void;
   setTransactionsTabOpen: (x: boolean) => void;
+  className?: string;
 };
 
 const WalletAddress = ({
@@ -23,6 +24,7 @@ const WalletAddress = ({
   glow,
   setShowWalletList,
   setTransactionsTabOpen,
+  className,
 }: WalletAddressPropsType) => {
   const addressOrName = useAddressOrEnsName(address);
 
@@ -40,6 +42,7 @@ const WalletAddress = ({
       onClick={() => {
         isConnected ? setTransactionsTabOpen(true) : setShowWalletList(true);
       }}
+      className={className}
     >
       {renderContent()}
     </Button>
