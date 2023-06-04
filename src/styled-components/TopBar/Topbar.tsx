@@ -80,7 +80,7 @@ export const StyledMenuButton = styled(IconButton)`
 export const StyledSettingsButton = styled(SettingsButton)`
   @media ${breakPoints.tabletPortraitUp} {
     order: 2;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
   }
 `;
 
@@ -98,5 +98,6 @@ export const StyledChainSelector = styled(ChainSelector)`
 
   @media ${breakPoints.tabletPortraitUp} {
     order: 1;
+    margin-right: 1rem;
   }
 `;

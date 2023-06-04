@@ -25,14 +25,10 @@ export const Container = styled.div<ContainerProps>`
   z-index: 1000;
 `;
 
-type ChainSelectionContainerType = {
-  $overflow: boolean;
-};
-
-export const NetworksContainer = styled.div<ChainSelectionContainerType>`
-  margin: 0.5rem 0 0 0;
+export const NetworksContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0.5rem 0 0 0;
 `;
 
 type ButtonStyleProps = {

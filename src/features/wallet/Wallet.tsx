@@ -293,13 +293,14 @@ export const Wallet: FC<WalletPropsType> = ({
           icon="airswap"
           iconSize={2}
         />
-        <StyledChainSelector
-          chainId={chainId}
-          account={account}
-          chainSelectionOpen={chainsOpen}
-          transactionsTabOpen={transactionsTabIsOpen}
-          setChainSelectionOpen={setChainsOpen}
-        />
+        {chainId && (
+          <StyledChainSelector
+            chainId={chainId}
+            chainSelectionOpen={chainsOpen}
+            transactionsTabOpen={transactionsTabIsOpen}
+            setChainSelectionOpen={setChainsOpen}
+          />
+        )}
         <StyledWalletButton
           isConnected={active}
           isUnsupportedNetwork={

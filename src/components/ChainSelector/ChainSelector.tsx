@@ -14,8 +14,7 @@ import {
 } from "./ChainSelector.style";
 
 type ChainSelectorType = {
-  chainId: number | undefined;
-  account: string | undefined | null;
+  chainId: number;
   chainSelectionOpen: boolean;
   transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
@@ -30,7 +29,6 @@ type ChainSelectorType = {
  */
 const ChainSelector = ({
   chainId,
-  account,
   chainSelectionOpen,
   transactionsTabOpen,
   setChainSelectionOpen,
@@ -73,23 +71,19 @@ const ChainSelector = ({
       shiftLeft={transactionsTabOpen}
     >
       <ChainSelectButton
-        aria-label={"common.settings"}
         onClick={() => {
           setChainSelectionOpen(!chainSelectionOpen);
         }}
       >
-        <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
-        <ChainNameText>
-          {chainId ? CHAIN_PARAMS[chainId].chainName : "Choose network"}
-        </ChainNameText>
+        <ChainIcon src={nativeCurrency[chainId].logoURI} />
+        <ChainNameText>{CHAIN_PARAMS[chainId].chainName}</ChainNameText>
         <ArrowIcon open={chainSelectionOpen}>
           <GoChevronDown />
         </ArrowIcon>
       </ChainSelectButton>
       {chainSelectionOpen && (
         <StyledChainSelectionPopover
-          chainId={chainId || 1}
-          account={account || ""}
+          chainId={chainId}
           open={chainSelectionOpen}
           popoverRef={popoverRef}
           transactionsTabOpen={transactionsTabOpen}
