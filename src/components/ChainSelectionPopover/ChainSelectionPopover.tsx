@@ -25,6 +25,7 @@ type ChainSelectionPopoverPropsType = {
   open: boolean;
   popoverRef: RefObject<HTMLDivElement>;
   transactionsTabOpen: boolean;
+  className?: string;
 };
 
 /**
@@ -41,6 +42,7 @@ const ChainSelectionPopover = ({
   open,
   popoverRef,
   transactionsTabOpen,
+  className,
 }: ChainSelectionPopoverPropsType) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -48,12 +50,6 @@ const ChainSelectionPopover = ({
   const { active } = useWeb3React<Web3Provider>();
 
   const handleNetworkSwitch = async (chainId: number) => {
-    dispatch(
-      setWalletConnected({
-        address: account || "0x",
-        chainId: nativeCurrency[+chainId].chainId,
-      })
-    );
     try {
       await (window as any).ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -102,6 +98,7 @@ const ChainSelectionPopover = ({
       open={open}
       shiftLeft={transactionsTabOpen}
       connected={active}
+      className={className}
     >
       {/* @ts-ignore */}
       <PopoverSection title={t("common.networks")}>

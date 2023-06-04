@@ -10,6 +10,7 @@ import {
   ChainIcon,
   ArrowIcon,
   ChainNameText,
+  StyledChainSelectionPopover,
 } from "./ChainSelector.style";
 
 type ChainSelectorType = {
@@ -65,30 +66,28 @@ const ChainSelector = ({
   }, []);
 
   return (
-    <>
-      <Container
-        className={className}
-        ref={containerRef}
-        open={chainSelectionOpen}
-        shiftLeft={transactionsTabOpen}
+    <Container
+      className={className}
+      ref={containerRef}
+      open={chainSelectionOpen}
+      shiftLeft={transactionsTabOpen}
+    >
+      <ChainSelectButton
+        aria-label={"common.settings"}
+        onClick={() => {
+          setChainSelectionOpen(!chainSelectionOpen);
+        }}
       >
-        <ChainSelectButton
-          aria-label={"common.settings"}
-          onClick={() => {
-            setChainSelectionOpen(!chainSelectionOpen);
-          }}
-        >
-          <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
-          <ChainNameText>
-            {chainId ? CHAIN_PARAMS[chainId].chainName : "Choose network"}
-          </ChainNameText>
-          <ArrowIcon open={chainSelectionOpen}>
-            <GoChevronDown />
-          </ArrowIcon>
-        </ChainSelectButton>
-      </Container>
+        <ChainIcon src={nativeCurrency[chainId || 1].logoURI} />
+        <ChainNameText>
+          {chainId ? CHAIN_PARAMS[chainId].chainName : "Choose network"}
+        </ChainNameText>
+        <ArrowIcon open={chainSelectionOpen}>
+          <GoChevronDown />
+        </ArrowIcon>
+      </ChainSelectButton>
       {chainSelectionOpen && (
-        <ChainSelectionPopover
+        <StyledChainSelectionPopover
           chainId={chainId || 1}
           account={account || ""}
           open={chainSelectionOpen}
@@ -96,7 +95,7 @@ const ChainSelector = ({
           transactionsTabOpen={transactionsTabOpen}
         />
       )}
-    </>
+    </Container>
   );
 };
 

@@ -13,31 +13,16 @@ type ContainerProps = {
 };
 
 export const Container = styled.div<ContainerProps>`
-  display: ${({ connected }) => (connected ? "flex" : "none")};
-  position: absolute;
+  display: flex;
   flex-direction: column;
   width: 16rem;
-  min-height: 100%;
-  top: 5rem;
-  right: 3.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  transform: ${(props) => (props.shiftLeft ? "translate(-16.75rem, 0)" : "0")};
+  padding: 0.5rem 0;
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.black};
   border: ${(props) => props.theme.colors.borderGrey} 1px solid;
   border-radius: 0.5rem;
   z-index: 1000;
-
-  @media ${breakPoints.tabletPortraitUp} {
-    right: 12rem;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    top: 4rem;
-    right: 4rem;
-  }
 `;
 
 type ChainSelectionContainerType = {

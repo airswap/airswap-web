@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
+import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
@@ -66,4 +67,11 @@ export const ArrowIcon = styled.div<ArrowIconProps>`
   transition: transform 0.3s ease-in-out;
 
   ${({ open }) => open && `transform: rotateX(180deg);`}
+`;
+
+export const StyledChainSelectionPopover = styled(ChainSelectionPopover)`
+  position: absolute;
+  min-height: 100%;
+  top: 3.5rem;
+  right: 0;
 `;
