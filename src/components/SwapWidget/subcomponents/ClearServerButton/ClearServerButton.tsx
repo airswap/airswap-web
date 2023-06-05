@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
@@ -10,22 +10,18 @@ import {
   ClearServerButtonText,
 } from "./ClearServerButton.styles";
 
-type ClearServerButtonProps = {
-  serverUrl: string | null;
-};
-
-const ClearServerButton: FC<ClearServerButtonProps> = ({ serverUrl }) => {
-  const dispatch = useAppDispatch();
+const ClearServerButton = () => {
   const serverURL = useAppSelector(selectServerURL);
+  const dispatch = useAppDispatch();
+
+  const handleClearServerUrl = () => {
+    dispatch(setServerURL(null));
+  };
 
   return (
     <ClearCustomServerButton
-      hasServerUrl={!!serverUrl}
-      onClick={() => {
-        // TODO: figure out why serverURL is not clearing
-        dispatch(setServerURL(null));
-        console.log(serverURL);
-      }}
+      hasServerUrl={!!serverURL}
+      onClick={() => handleClearServerUrl()}
     >
       <ClearServerButtonText>Clear custom server</ClearServerButtonText>
     </ClearCustomServerButton>

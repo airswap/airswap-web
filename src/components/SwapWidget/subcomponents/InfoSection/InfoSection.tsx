@@ -93,7 +93,7 @@ const InfoSection: FC<InfoSectionProps> = ({
         {t("orders.selectedServer", { serverURL })}
       </StyledInfoHeading>
       <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
-      <ClearServerButton serverUrl={serverURL} />
+      <ClearServerButton />
     </>
   );
 

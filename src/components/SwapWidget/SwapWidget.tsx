@@ -741,26 +741,10 @@ const SwapWidget: FC = () => {
     }
   }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
 
-  // check if serverURL query param exists
   useEffect(() => {
-    // if (serverURL) {
-    //   setIsQueryingSelectedServer(true);
-    // } else {
-    //   setIsQueryingSelectedServer(false);
-    // }
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
-  }, [
-    appRouteParams,
-    // serverURL
-  ]);
-
-  // setting setIsQueryingSelectedServer to false will get passed down to InfoSection.tsx. This will trigger logic that displays quotted price and fees in InfoSection.tsx
-  // useEffect(() => {
-  //   if (bestTradeOption) {
-  //     setIsQueryingSelectedServer(false);
-  //   }
-  // }, [bestTradeOption, isQueryingSelectedServer]);
+  }, [appRouteParams]);
 
   return (
     <>
