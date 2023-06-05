@@ -1,6 +1,6 @@
 import nativeCurrency from "../constants/nativeCurrency";
 
-const switchToChain = (chainId = 1): Promise<any> => {
+const switchToChain = (chainId = 1): Promise<null> => {
   return window.ethereum.request({
     method: "wallet_switchEthereumChain",
     params: [

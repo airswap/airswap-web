@@ -3,16 +3,7 @@ import styled from "styled-components/macro";
 import breakPoints from "../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../style/mixins";
 
-/**
- * @remarks props are used to manipulate the positioning of components
- */
-type ContainerProps = {
-  open: boolean;
-  shiftLeft: boolean;
-  connected: boolean;
-};
-
-export const Container = styled.div<ContainerProps>`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 16rem;

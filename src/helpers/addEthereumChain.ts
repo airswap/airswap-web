@@ -1,6 +1,8 @@
 import { CHAIN_PARAMS } from "../constants/supportedNetworks";
 
-const addEthereumChain = (chainId: number): Promise<any> => {
+// https://eips.ethereum.org/EIPS/eip-3085
+
+const addEthereumChain = (chainId: number): Promise<null> => {
   return window.ethereum.request({
     method: "wallet_addEthereumChain",
     params: [

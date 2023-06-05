@@ -6,12 +6,12 @@ import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopove
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
-  open: boolean;
+  isOpen: boolean;
   shiftLeft: boolean;
 };
 
 type ArrowIconProps = {
-  open: boolean;
+  isOpen: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
@@ -66,12 +66,17 @@ export const ArrowIcon = styled.div<ArrowIconProps>`
   margin-left: 0.5rem;
   transition: transform 0.3s ease-in-out;
 
-  ${({ open }) => open && `transform: rotateX(180deg);`}
+  ${({ isOpen }) => (isOpen ? "transform: rotateX(180deg);" : "")}
 `;
 
 export const StyledChainSelectionPopover = styled(ChainSelectionPopover)`
   position: absolute;
   min-height: 100%;
   top: 3.5rem;
-  right: 0;
+  left: 0;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    right: 0;
+    left: auto;
+  }
 `;

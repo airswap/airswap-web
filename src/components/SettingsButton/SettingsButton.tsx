@@ -60,7 +60,7 @@ const SettingsButton = ({
       <Container
         className={className}
         ref={containerRef}
-        open={transactionsTabOpen}
+        isOpen={transactionsTabOpen}
       >
         <SettingsButtonContainer
           aria-label={t("common.settings")}
@@ -70,7 +70,7 @@ const SettingsButton = ({
         </SettingsButtonContainer>
       </Container>
       {settingsOpen && (
-        <SettingsPopover open={transactionsTabOpen} popoverRef={popoverRef} />
+        <SettingsPopover isOpen={transactionsTabOpen} popoverRef={popoverRef} />
       )}
     </>
   );
