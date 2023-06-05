@@ -77,13 +77,6 @@ const InfoSection: FC<InfoSectionProps> = ({
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
   const serverURL = useAppSelector(selectServerURL);
 
-  /**
-   *
-   * start reusable logic
-   *
-   */
-
-  // No order & not fetching, but wallet connected.
   const genericWelcomeMessage = (
     <>
       <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
@@ -122,22 +115,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     </>
   );
 
-  const orderCompleteMessages = (
-    <>
-      <DoneAllIcon />
-      <StyledInfoHeading>{t("orders.transactionCompleted")}</StyledInfoHeading>
-      <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-    </>
-  );
-
-  const orderSubmittedMessages = (
-    <>
-      <DoneAllIcon />
-      <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-      <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-    </>
-  );
-
   const approvingOrderMessages = (
     <>
       <StyledInfoHeading>
@@ -164,13 +141,22 @@ const InfoSection: FC<InfoSectionProps> = ({
     </>
   );
 
-  /**
-   *
-   * end reusable logic
-   *
-   */
+  const orderSubmittedMessages = (
+    <>
+      <DoneAllIcon />
+      <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
+      <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+    </>
+  );
 
-  // Wallet not connected.
+  const orderCompleteMessages = (
+    <>
+      <DoneAllIcon />
+      <StyledInfoHeading>{t("orders.transactionCompleted")}</StyledInfoHeading>
+      <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+    </>
+  );
+
   if (!isConnected) {
     return genericWelcomeMessage;
   }
@@ -192,148 +178,131 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  // if custom server is selected and wallet is connected
-  if (hasSelectedCustomServer && !isPairUnavailable && !bestTradeOption) {
-    return customServerUrlMessage;
-  } else if (hasSelectedCustomServer && isPairUnavailable) {
-    return tradingPairUnavaialble;
-  } else if (
-    !!hasSelectedCustomServer &&
-    !isPairUnavailable &&
-    !!bestTradeOption
-  ) {
-    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
-    );
+  if (hasSelectedCustomServer) {
+    if (!isPairUnavailable && !bestTradeOption) {
+      return customServerUrlMessage;
+    } else if (isPairUnavailable) {
+      return tradingPairUnavaialble;
+    } else if (!isPairUnavailable && !!bestTradeOption && !orderSubmitted) {
+      let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+        baseAmount
+      );
 
-    if (invertPrice) {
-      price = new BigNumber(1).dividedBy(price);
-    }
+      if (invertPrice) {
+        price = new BigNumber(1).dividedBy(price);
+      }
 
-    return (
-      <>
+      return (
         <>
-          <StyledInfoHeading>
-            1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
-            {stringToSignificantDecimals(price.toString())}{" "}
-            {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
-            <RevertPriceButton
-              icon="swap"
-              ariaLabel={t("orders.revertPrice")}
-              iconSize={1}
-              onClick={() => setInvertPrice((p) => !p)}
-            />
-          </StyledInfoHeading>
-          <FeeTextContainer>
-            <FeeText>{t("marketing.includesFee")}</FeeText>
-            <InfoButton
-              onClick={onFeeButtonClick}
-              ariaLabel={t("orders.moreInformation")}
-              icon="information-circle-outline"
-            />
-          </FeeTextContainer>
+          <>
+            <StyledInfoHeading>
+              1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
+              {stringToSignificantDecimals(price.toString())}{" "}
+              {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
+              <RevertPriceButton
+                icon="swap"
+                ariaLabel={t("orders.revertPrice")}
+                iconSize={1}
+                onClick={() => setInvertPrice((p) => !p)}
+              />
+            </StyledInfoHeading>
+            <FeeTextContainer>
+              <FeeText>{t("marketing.includesFee")}</FeeText>
+              <InfoButton
+                onClick={onFeeButtonClick}
+                ariaLabel={t("orders.moreInformation")}
+                icon="information-circle-outline"
+              />
+            </FeeTextContainer>
+          </>
+          {requiresApproval && (
+            <ApprovalText>
+              {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
+            </ApprovalText>
+          )}
+          {showViewAllQuotes && (
+            <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+              {t("orders.viewAllQuotes")}
+              <Icon name="chevron-down" />
+            </StyledLargePillButton>
+          )}
         </>
-        {requiresApproval && (
-          <ApprovalText>
-            {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
-          </ApprovalText>
-        )}
-        {showViewAllQuotes && (
-          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-            {t("orders.viewAllQuotes")}
-            <Icon name="chevron-down" />
-          </StyledLargePillButton>
-        )}
-      </>
-    );
-  } else if (hasSelectedCustomServer && orderCompleted) {
-    return orderCompleteMessages;
-  } else if (hasSelectedCustomServer && orderSubmitted) {
-    return orderSubmittedMessages;
-  } else if (hasSelectedCustomServer && isApproving) {
-    return approvingOrderMessages;
-  } else if (hasSelectedCustomServer && isSwapping) {
-    return swappingMessages;
-  } else if (hasSelectedCustomServer && isWrapping) {
-    return isWrappingMessages;
-  }
-
-  // looking for order without custom server selected
-  if (isFetchingOrders && !hasSelectedCustomServer) {
-    return fetchingOrdersMessages;
-  }
-
-  if (isPairUnavailable) {
-    return tradingPairUnavaialble;
-  }
-
-  if (orderCompleted) {
-    return orderCompleteMessages;
-  }
-
-  if (orderSubmitted) {
-    return orderSubmittedMessages;
-  }
-
-  if (isApproving) {
-    return approvingOrderMessages;
-  }
-
-  if (isSwapping) {
-    return swappingMessages;
-  }
-
-  if (isWrapping) {
-    return isWrappingMessages;
-  }
-
-  if (!!bestTradeOption) {
-    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
-    );
-
-    if (invertPrice) {
-      price = new BigNumber(1).dividedBy(price);
+      );
+    } else if (isApproving) {
+      return approvingOrderMessages;
+    } else if (isSwapping) {
+      return swappingMessages;
+    } else if (isWrapping) {
+      return isWrappingMessages;
+    } else if (orderSubmitted && !orderCompleted) {
+      return orderSubmittedMessages;
+    } else if (orderCompleted) {
+      return orderCompleteMessages;
     }
-
-    return (
-      <>
-        <>
-          <StyledInfoHeading>
-            1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
-            {stringToSignificantDecimals(price.toString())}{" "}
-            {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
-            <RevertPriceButton
-              icon="swap"
-              ariaLabel={t("orders.revertPrice")}
-              iconSize={1}
-              onClick={() => setInvertPrice((p) => !p)}
-            />
-          </StyledInfoHeading>
-          <FeeTextContainer>
-            <FeeText>{t("marketing.includesFee")}</FeeText>
-            <InfoButton
-              onClick={onFeeButtonClick}
-              ariaLabel={t("orders.moreInformation")}
-              icon="information-circle-outline"
-            />
-          </FeeTextContainer>
-        </>
-        {requiresApproval && (
-          <ApprovalText>
-            {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
-          </ApprovalText>
-        )}
-        {showViewAllQuotes && (
-          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-            {t("orders.viewAllQuotes")}
-            <Icon name="chevron-down" />
-          </StyledLargePillButton>
-        )}
-      </>
-    );
   }
 
+  if (!hasSelectedCustomServer) {
+    if (isFetchingOrders) {
+      return fetchingOrdersMessages;
+    } else if (isPairUnavailable) {
+      return tradingPairUnavaialble;
+    } else if (orderCompleted) {
+      return orderCompleteMessages;
+    } else if (orderSubmitted) {
+      return orderSubmittedMessages;
+    } else if (isApproving) {
+      return approvingOrderMessages;
+    } else if (isSwapping) {
+      return swappingMessages;
+    } else if (isWrapping) {
+      return isWrappingMessages;
+    } else if (!!bestTradeOption) {
+      let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+        baseAmount
+      );
+
+      if (invertPrice) {
+        price = new BigNumber(1).dividedBy(price);
+      }
+
+      return (
+        <>
+          <>
+            <StyledInfoHeading>
+              1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
+              {stringToSignificantDecimals(price.toString())}{" "}
+              {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
+              <RevertPriceButton
+                icon="swap"
+                ariaLabel={t("orders.revertPrice")}
+                iconSize={1}
+                onClick={() => setInvertPrice((p) => !p)}
+              />
+            </StyledInfoHeading>
+            <FeeTextContainer>
+              <FeeText>{t("marketing.includesFee")}</FeeText>
+              <InfoButton
+                onClick={onFeeButtonClick}
+                ariaLabel={t("orders.moreInformation")}
+                icon="information-circle-outline"
+              />
+            </FeeTextContainer>
+          </>
+          {requiresApproval && (
+            <ApprovalText>
+              {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
+            </ApprovalText>
+          )}
+          {showViewAllQuotes && (
+            <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+              {t("orders.viewAllQuotes")}
+              <Icon name="chevron-down" />
+            </StyledLargePillButton>
+          )}
+        </>
+      );
+    }
+  }
   return genericWelcomeMessage;
 };
 
