@@ -10,6 +10,7 @@ import { selectServerURL } from "../../../../features/userSettings/userSettingsS
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import ClearServerButton from "../ClearServerButton/ClearServerButton";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -92,6 +93,7 @@ const InfoSection: FC<InfoSectionProps> = ({
         {t("orders.selectedServer", { serverURL })}
       </StyledInfoHeading>
       <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
+      <ClearServerButton serverUrl={serverURL} />
     </>
   );
 

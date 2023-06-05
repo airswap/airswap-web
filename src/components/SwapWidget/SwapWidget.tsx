@@ -807,13 +807,7 @@ const SwapWidget: FC = () => {
             }
             isConnected={active}
             // if `!pairUnavailable`, the <StyledInfoHeading> message will revert back to normal
-            hasSelectedCustomServer={
-              !!serverURL
-              // &&
-              // !pairUnavailable &&
-              // !isWrapping &&
-              // !showOrderSubmitted
-            }
+            hasSelectedCustomServer={!!serverURL}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
