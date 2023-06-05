@@ -27,11 +27,16 @@ import GithubInfo from "./subcomponents/GithubInfo/GithubInfo";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type SettingsPopoverPropsType = {
-  open: boolean;
+  isOpen: boolean;
   popoverRef: RefObject<HTMLDivElement>;
+  className?: string;
 };
 
-const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
+const SettingsPopover = ({
+  isOpen,
+  popoverRef,
+  className,
+}: SettingsPopoverPropsType) => {
   const { width, height } = useWindowSize();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const selectedTheme = useAppSelector(selectTheme);
@@ -64,7 +69,7 @@ const SettingsPopover = ({ open, popoverRef }: SettingsPopoverPropsType) => {
   }, [popoverRef, scrollContainerRef, width, height]);
 
   return (
-    <Container ref={popoverRef} open={open}>
+    <Container isOpen={isOpen} ref={popoverRef} className={className}>
       <PopoverSection title={t("common.theme")}>
         <ThemeContainer>
           <ThemeButton

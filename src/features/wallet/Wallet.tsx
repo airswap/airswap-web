@@ -11,7 +11,6 @@ import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
-import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
@@ -20,8 +19,10 @@ import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
+  StyledChainSelector,
   StyledMenuButton,
   StyledSettingsButton,
+  StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
@@ -91,6 +92,7 @@ export const Wallet: FC<WalletPropsType> = ({
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -285,18 +287,21 @@ export const Wallet: FC<WalletPropsType> = ({
   return (
     <>
       <TopBar>
-        <StyledMenuButton
-          onClick={onMobileMenuButtonClick}
-          ariaLabel={t("common.select")}
-          icon="menu"
-          iconSize={1.5625}
+        <StyledAirswapButton
+          onClick={onAirswapButtonClick}
+          ariaLabel={t("common.AirSwap")}
+          icon="airswap"
+          iconSize={2}
         />
-        <StyledSettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabIsOpen}
-        />
-        <WalletButton
+        {chainId && (
+          <StyledChainSelector
+            chainId={chainId}
+            chainSelectionOpen={chainsOpen}
+            transactionsTabOpen={transactionsTabIsOpen}
+            setChainSelectionOpen={setChainsOpen}
+          />
+        )}
+        <StyledWalletButton
           isConnected={active}
           isUnsupportedNetwork={
             error && error instanceof UnsupportedChainIdError
@@ -306,11 +311,16 @@ export const Wallet: FC<WalletPropsType> = ({
           setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
           setShowWalletList={setShowWalletList}
         />
-        <StyledAirswapButton
-          onClick={onAirswapButtonClick}
-          ariaLabel={t("common.AirSwap")}
-          icon="airswap"
-          iconSize={2}
+        <StyledSettingsButton
+          settingsOpen={settingsOpen}
+          setSettingsOpen={setSettingsOpen}
+          transactionsTabOpen={transactionsTabIsOpen}
+        />
+        <StyledMenuButton
+          onClick={onMobileMenuButtonClick}
+          ariaLabel={t("common.select")}
+          icon="menu"
+          iconSize={1.5625}
         />
       </TopBar>
       <TransactionsTab

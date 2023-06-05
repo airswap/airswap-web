@@ -12,6 +12,7 @@ export type WalletButtonProps = {
   setTransactionsTabOpen: (x: boolean) => void;
   onConnectWalletClicked?: () => void;
   onDisconnectWalletClicked?: () => void;
+  className?: string;
 };
 
 export const WalletButton = ({
@@ -21,6 +22,7 @@ export const WalletButton = ({
   glow,
   setShowWalletList,
   setTransactionsTabOpen,
+  className,
 }: WalletButtonProps) => {
   return (
     <WalletAddress
@@ -30,6 +32,7 @@ export const WalletButton = ({
       glow={glow}
       setShowWalletList={setShowWalletList}
       setTransactionsTabOpen={setTransactionsTabOpen}
+      className={className}
     />
   );
 };

@@ -1,16 +1,21 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
-import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
+import {
+  BorderedPill,
+  BorderlessButtonStyle,
+  InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
+} from "../../style/mixins";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
-  open: boolean;
+  isOpen: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
   position: relative;
-  transform: ${(props) => (props.open ? "translate(-12.75rem, 0)" : "0")};
+  transform: ${(props) => (props.isOpen ? "translate(-12.75rem, 0)" : "0")};
   transition: transform 0.3s ease-in-out;
 
   @media (prefers-reduced-motion: reduce) {
@@ -24,20 +29,21 @@ export const Container = styled.div<ContainerProps>`
 `;
 
 export const SettingsButtonContainer = styled.button`
-  ${BorderedPill}
-  ${InputOrButtonBorderStyle}
-  
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
+  ${BorderlessButtonStyle};
+  ${IconButtonStyle};
 
-  @media ${breakPoints.phoneOnly} {
-    ${IconButtonStyle};
-    width: 2rem;
-    height: 2rem;
+  width: 2rem;
+  height: 2rem;
 
-    svg {
-      width: 1.25rem;
-    }
+  svg {
+    width: 1.375rem;
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    ${BorderedPill};
+    ${InputOrButtonBorderStyle};
+
+    width: 3rem;
+    height: 3rem;
   }
 `;
