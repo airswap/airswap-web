@@ -184,7 +184,6 @@ const SwapWidget: FC = () => {
 
   const { t } = useTranslation();
 
-  // Check if URL query string contains server URL
   const location = useLocation();
   useSearchParams(location);
 
