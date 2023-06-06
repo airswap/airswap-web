@@ -277,14 +277,12 @@ const SwapWidget: FC = () => {
   }, [indexerUrls, library]);
 
   useEffect(() => {
-    if (indexerUrls) {
+    if (indexerUrls && baseTokenInfo && quoteTokenInfo) {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [baseTokenInfo?.address!],
-            signerTokens: [quoteTokenInfo?.address!],
-            offset: 0,
-            limit: 100,
+            senderTokens: [baseTokenInfo.address],
+            signerTokens: [quoteTokenInfo.address],
           },
         })
       );

@@ -154,19 +154,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [indexerUrls]);
 
   useEffect(() => {
-    if (indexerUrls && senderToken?.address && signerToken?.address) {
+    if (indexerUrls && senderToken && signerToken) {
       dispatch(
         getFilteredOrders({
           filter: {
             senderTokens: [senderToken.address],
             signerTokens: [signerToken.address],
-            offset: 0,
-            limit: 100,
           },
         })
       );
     }
-  }, [indexerUrls, senderToken?.address, signerToken?.address]);
+  }, [indexerUrls, senderToken, signerToken]);
 
   // button handlers
   const backToSwapPage = () => {
