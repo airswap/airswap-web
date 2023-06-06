@@ -47,8 +47,8 @@ const AvailableOrdersWidget = ({
     const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
 
     if (
-      bestRfqOrder.senderToken === senderToken.address &&
-      bestRfqOrder.signerToken === signerToken.address
+      bestRfqOrder.senderToken === senderToken?.address &&
+      bestRfqOrder.signerToken === signerToken?.address
     ) {
       ordersToSort.push(bestRfqOrder);
     }
