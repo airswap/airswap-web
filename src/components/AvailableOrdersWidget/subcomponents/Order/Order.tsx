@@ -11,7 +11,8 @@ import { Container, Text } from "./Order.styles";
 interface OrderProps {
   order: FullOrderERC20 | OrderERC20;
   index: number;
-  onOrderLinkClick: () => void;
+  onSwapLinkClick: () => void;
+  onFullOrderLinkClick?: () => void;
   onMouseEnter: (target: HTMLDivElement, index: number, shift: number) => void;
   onMouseLeave: () => void;
   invertRate?: boolean;
@@ -21,7 +22,8 @@ interface OrderProps {
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   order,
   index,
-  onOrderLinkClick,
+  onSwapLinkClick,
+  onFullOrderLinkClick,
   onMouseEnter,
   onMouseLeave,
   invertRate,
@@ -64,9 +66,14 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleClick = () => {
     if (isFullOrder(order)) {
-      history.push(`/order/${compressFullOrderERC20(order)}`);
+      history.push({
+        pathname: `/order/${compressFullOrderERC20(order)}`,
+        state: { isFromAvailableOrdersWidget: true },
+      });
+      onFullOrderLinkClick?.();
+    } else {
+      onSwapLinkClick();
     }
-    onOrderLinkClick();
   };
 
   return (

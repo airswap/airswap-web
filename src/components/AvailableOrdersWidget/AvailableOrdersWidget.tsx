@@ -2,10 +2,11 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { OrderERC20, TokenInfo } from "@airswap/types";
+import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/types";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
+import { selectBestOrder } from "../../features/orders/ordersSlice";
 import { AppRoutes } from "../../routes";
 import { Container } from "./AvailableOrdersWidget.styles";
 import { getSortedIndexerOrders } from "./helpers/getSortedIndexerOrders";
@@ -17,18 +18,19 @@ export type AvailableOrdersSortType = "senderAmount" | "signerAmount" | "rate";
 export type AvailableOrdersWidgetProps = {
   senderToken: TokenInfo;
   signerToken: TokenInfo;
-  bestSwapOption?: OrderERC20;
-  onOrderLinkClick: () => void;
+  onSwapLinkClick: () => void;
+  onFullOrderLinkClick?: () => void;
 };
 
 const AvailableOrdersWidget = ({
   senderToken,
   signerToken,
-  bestSwapOption,
-  onOrderLinkClick,
+  onSwapLinkClick,
+  onFullOrderLinkClick,
 }: AvailableOrdersWidgetProps): JSX.Element => {
   const history = useHistory();
   const { t } = useTranslation();
+  const bestRfqOrder = useAppSelector(selectBestOrder);
   const { orders, isLoading, noIndexersFound } =
     useAppSelector(selectIndexerReducer);
 
@@ -42,15 +44,22 @@ const AvailableOrdersWidget = ({
   });
 
   const sortedOrders = useMemo(() => {
-    if (orders) {
-      const orderToSort = bestSwapOption ? [...orders, bestSwapOption] : orders;
-      const isReverse =
-        sortType === "rate" && invertRate
-          ? sortTypeDirection["rate"]
-          : !sortTypeDirection[sortType];
-      return getSortedIndexerOrders(orderToSort, sortType, isReverse);
+    const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
+
+    if (
+      bestRfqOrder.senderToken === senderToken.address &&
+      bestRfqOrder.signerToken === signerToken.address
+    ) {
+      ordersToSort.push(bestRfqOrder);
     }
-  }, [bestSwapOption, invertRate, orders, sortType, sortTypeDirection]);
+
+    const isReverse =
+      sortType === "rate" && invertRate
+        ? sortTypeDirection["rate"]
+        : !sortTypeDirection[sortType];
+
+    return getSortedIndexerOrders(ordersToSort, sortType, isReverse);
+  }, [invertRate, orders, sortType, sortTypeDirection]);
 
   const helperText = useMemo(() => {
     if (isLoading) {
@@ -111,7 +120,8 @@ const AvailableOrdersWidget = ({
         invertRate={invertRate}
         onRateButtonClick={handleRateButtonClick}
         onSortButtonClick={handleSortButtonClick}
-        onOrderLinkClick={onOrderLinkClick}
+        onSwapLinkClick={onSwapLinkClick}
+        onFullOrderLinkClick={onFullOrderLinkClick}
       />
       <ActionButton
         title={t("orders.makeNewOrder")}

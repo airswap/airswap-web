@@ -128,6 +128,7 @@
     "gasFreeTrade": "Gasless swap",
     "insufficientBalance": "Insufficient {{symbol}} balance",
     "makeNewOrder": "Make new order",
+    "makeNewSwap": "Make new swap",
     "moreInformation": "More information",
     "nativeCurrencyMaxInfoText": "{{amount}}. This amount is calculated after subtracting a {{fee}} gas fee from your total balance.",
     "newQuoteIn": "New Quote In",

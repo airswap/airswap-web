@@ -25,7 +25,8 @@ interface MyOrdersListProps {
   invertRate: boolean;
   onRateButtonClick: () => void;
   onSortButtonClick: (type: AvailableOrdersSortType) => void;
-  onOrderLinkClick: () => void;
+  onSwapLinkClick: () => void;
+  onFullOrderLinkClick?: () => void;
   className?: string;
 }
 
@@ -37,7 +38,8 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   invertRate,
   onRateButtonClick,
   onSortButtonClick,
-  onOrderLinkClick,
+  onSwapLinkClick,
+  onFullOrderLinkClick,
   className,
   senderToken,
   signerToken,
@@ -111,7 +113,8 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 invertRate={invertRate}
-                onOrderLinkClick={onOrderLinkClick}
+                onSwapLinkClick={onSwapLinkClick}
+                onFullOrderLinkClick={onFullOrderLinkClick}
               />
             );
           })}

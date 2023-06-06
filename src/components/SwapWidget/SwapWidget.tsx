@@ -1,6 +1,13 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -108,12 +115,12 @@ import ActionButtons, {
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-const initialBaseAmount = "";
-
 const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const location = useLocation<{ isFromOrderDetailPage?: true }>();
+  const isFromOrderDetailPage = !!location.state?.isFromOrderDetailPage;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -125,8 +132,11 @@ const SwapWidget: FC = () => {
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const lastTransaction = useAppSelector(selectTransactions)[0];
-  const { indexerUrls, orders: indexerOrders } =
-    useAppSelector(selectIndexerReducer);
+  const {
+    indexerUrls,
+    orders: indexerOrders,
+    bestSwapOrder,
+  } = useAppSelector(selectIndexerReducer);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -141,7 +151,9 @@ const SwapWidget: FC = () => {
   const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
-  const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+  const [baseAmount, setBaseAmount] = useState(
+    isFromOrderDetailPage ? tradeTerms.baseAmount : ""
+  );
 
   // Pricing
   const {
@@ -158,7 +170,7 @@ const SwapWidget: FC = () => {
 
   const [showGasFeeInfo, setShowGasFeeInfo] = useState(false);
   const [protocolFeeInfo, setProtocolFeeInfo] = useState(false);
-  const [showAvailableSwaps, toggleShowAvailableSwaps] = useToggle(false);
+  const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle();
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
@@ -197,8 +209,6 @@ const SwapWidget: FC = () => {
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
-    setBaseAmount(initialBaseAmount);
-    dispatch(clearTradeTerms());
     unsubscribeFromGasPrice();
     unsubscribeFromTokenPrice();
     dispatch(clear());
@@ -226,7 +236,6 @@ const SwapWidget: FC = () => {
       setPairUnavailable(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
-      setBaseAmount(initialBaseAmount);
       LastLook.unsubscribeAllServers();
     }
   }, [ordersStatus, LastLook, dispatch]);
@@ -236,7 +245,7 @@ const SwapWidget: FC = () => {
     if (chainId) {
       dispatch(resetOrders());
     }
-  }, [chainId, dispatch]);
+  }, [chainId]);
 
   useEffect(() => {
     setAllowanceFetchFailed(
@@ -265,22 +274,27 @@ const SwapWidget: FC = () => {
     if (!indexerUrls && library) {
       dispatch(fetchIndexerUrls({ provider: library }));
     }
-  }, [dispatch, indexerUrls, library]);
+  }, [indexerUrls, library]);
 
   useEffect(() => {
-    if (indexerUrls) {
+    if (indexerUrls && baseTokenInfo && quoteTokenInfo) {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [baseTokenInfo?.address!],
-            signerTokens: [quoteTokenInfo?.address!],
-            offset: 0,
-            limit: 100,
+            senderTokens: [baseTokenInfo.address],
+            signerTokens: [quoteTokenInfo.address],
           },
         })
       );
     }
-  }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
+  }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
+
+  useEffect(() => {
+    if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
+      prepareForRequest();
+      requestQuotes();
+    }
+  }, []);
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -340,13 +354,13 @@ const SwapWidget: FC = () => {
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
       history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
-      setBaseAmount(initialBaseAmount);
+      setBaseAmount("");
     } else if (address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
 
-  const requestQuotes = async () => {
+  const requestQuotes = useCallback(async () => {
     if (swapType === "wrapOrUnwrap") {
       // This will re-render with a 1:1 price and a take button.
       setIsWrapping(true);
@@ -473,7 +487,19 @@ const SwapWidget: FC = () => {
     } finally {
       setIsRequestingQuotes(false);
     }
-  };
+  }, [
+    LastLook,
+    account,
+    baseAmount,
+    baseToken,
+    baseTokenInfo,
+    chainId,
+    dispatch,
+    library,
+    quoteToken,
+    swapType,
+    t,
+  ]);
 
   const swapWithRequestForQuote = async () => {
     try {
@@ -592,6 +618,39 @@ const SwapWidget: FC = () => {
     }
   };
 
+  const prepareForRequest = useCallback(() => {
+    dispatch(
+      setTradeTerms({
+        baseToken: {
+          address: baseToken!,
+          decimals: baseTokenInfo!.decimals,
+        },
+        baseAmount: baseAmount,
+        quoteToken: {
+          address: quoteToken!,
+          decimals: quoteTokenInfo!.decimals,
+        },
+        quoteAmount: null,
+        side: "sell",
+      })
+    );
+    subscribeToGasPrice();
+    subscribeToTokenPrice(
+      quoteTokenInfo!,
+      // @ts-ignore
+      library!,
+      chainId!
+    );
+  }, [
+    baseAmount,
+    baseToken,
+    baseTokenInfo,
+    chainId,
+    library,
+    quoteToken,
+    quoteTokenInfo,
+  ]);
+
   const takeBestOption = async () => {
     if (bestTradeOption!.protocol === "request-for-quote-erc20") {
       await swapWithRequestForQuote();
@@ -644,7 +703,7 @@ const SwapWidget: FC = () => {
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
-        setBaseAmount(initialBaseAmount);
+        setBaseAmount("");
         break;
 
       case ButtonActions.reloadPage:
@@ -660,28 +719,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.requestQuotes:
-        dispatch(
-          setTradeTerms({
-            baseToken: {
-              address: baseToken!,
-              decimals: baseTokenInfo!.decimals,
-            },
-            baseAmount: baseAmount,
-            quoteToken: {
-              address: quoteToken!,
-              decimals: quoteTokenInfo!.decimals,
-            },
-            quoteAmount: null,
-            side: "sell",
-          })
-        );
-        subscribeToGasPrice();
-        subscribeToTokenPrice(
-          quoteTokenInfo!,
-          // @ts-ignore
-          library!,
-          chainId!
-        );
+        prepareForRequest();
         await requestQuotes();
 
         break;
@@ -776,7 +814,7 @@ const SwapWidget: FC = () => {
             quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
             showViewAllQuotes={indexerOrders.length > 0}
-            onViewAllQuotesButtonClick={toggleShowAvailableSwaps}
+            onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
           />
         </InfoContainer>
@@ -812,7 +850,6 @@ const SwapWidget: FC = () => {
           )}
         </ButtonContainer>
       </StyledSwapWidget>
-
       <Overlay
         onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
         isHidden={!showTokenSelectModalFor}
@@ -864,18 +901,19 @@ const SwapWidget: FC = () => {
           onCloseButtonClick={() => setProtocolFeeInfo(false)}
         />
       </Overlay>
-      <Overlay
-        title={t("orders.availableOrders")}
-        isHidden={!showAvailableSwaps}
-        onCloseButtonClick={() => toggleShowAvailableSwaps(false)}
-      >
-        <AvailableOrdersWidget
-          senderToken={baseTokenInfo!}
-          signerToken={quoteTokenInfo!}
-          bestSwapOption={bestTradeOption?.order}
-          onOrderLinkClick={toggleShowAvailableSwaps}
-        />
-      </Overlay>
+      {baseTokenInfo && quoteTokenInfo && (
+        <Overlay
+          title={t("orders.availableOrders")}
+          isHidden={!showViewAllQuotes}
+          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+        >
+          <AvailableOrdersWidget
+            senderToken={baseTokenInfo}
+            signerToken={quoteTokenInfo}
+            onSwapLinkClick={() => toggleShowViewAllQuotes()}
+          />
+        </Overlay>
+      )}
     </>
   );
 };

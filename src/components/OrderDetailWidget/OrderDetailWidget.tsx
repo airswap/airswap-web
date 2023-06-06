@@ -1,6 +1,7 @@
 import { FC, useContext, useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -13,6 +14,11 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
+import {
+  getFilteredOrders,
+  fetchIndexerUrls,
+} from "../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import { check } from "../../features/orders/orderApi";
 import {
@@ -39,6 +45,7 @@ import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
@@ -66,6 +73,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const { account, library } = useWeb3React<Web3Provider>();
   const history = useHistory();
+  const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
+  const isFromAvailableOrdersWidget =
+    !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -74,6 +84,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
+  const { indexerUrls, orders, bestSwapOrder } =
+    useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
@@ -133,9 +145,42 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   }, [order]);
 
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
+  const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle(false);
+
+  useEffect(() => {
+    if (!indexerUrls && library) {
+      dispatch(fetchIndexerUrls({ provider: library }));
+    }
+  }, [indexerUrls]);
+
+  useEffect(() => {
+    if (indexerUrls && senderToken && signerToken) {
+      dispatch(
+        getFilteredOrders({
+          filter: {
+            senderTokens: [senderToken.address],
+            signerTokens: [signerToken.address],
+          },
+        })
+      );
+    }
+  }, [indexerUrls, senderToken, signerToken]);
 
   // button handlers
+  const backToSwapPage = () => {
+    history.push({
+      pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
+      state: { isFromOrderDetailPage: true },
+    });
+  };
+
   const handleBackButtonClick = () => {
+    if (isFromAvailableOrdersWidget) {
+      backToSwapPage();
+
+      return;
+    }
+
     history.push({
       pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
     });
@@ -260,9 +305,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
           <StyledInfoButtons
             isMakerOfSwap={userIsMakerOfSwap}
+            showViewAllQuotes={
+              isFromAvailableOrdersWidget && !userIsMakerOfSwap
+            }
             token1={signerTokenSymbol}
             token2={senderTokenSymbol}
             rate={tokenExchangeRate}
+            onViewAllQuotesButtonClick={toggleShowViewAllQuotes}
             onFeeButtonClick={toggleShowFeeInfo}
             onCopyButtonClick={handleCopyButtonClick}
           />
@@ -326,6 +375,20 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           }
         />
       </Overlay>
+      {signerToken && senderToken && (
+        <Overlay
+          title={t("orders.availableOrders")}
+          isHidden={!showViewAllQuotes}
+          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+        >
+          <AvailableOrdersWidget
+            senderToken={senderToken}
+            signerToken={signerToken}
+            onSwapLinkClick={backToSwapPage}
+            onFullOrderLinkClick={toggleShowViewAllQuotes}
+          />
+        </Overlay>
+      )}
     </Container>
   );
 };
