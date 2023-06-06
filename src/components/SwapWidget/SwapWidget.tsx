@@ -820,7 +820,6 @@ const SwapWidget: FC = () => {
         {!isApproving && !isSwapping && !showOrderSubmitted && (
           <SwapInputs
             baseAmount={baseAmount}
-            onBaseAmountChange={onBaseAmountChange}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             side="sell"
