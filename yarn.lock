@@ -1977,6 +1977,11 @@
   resolved "https://registry.yarnpkg.com/@fontsource/dm-mono/-/dm-mono-4.5.0.tgz#e94ab508d79021c267fb8215f574f2af42590fbd"
   integrity sha512-B2LaMZAU7gU/pGWUtN9KDKVTT/6YXTgKfhex3iVrs2zQeGl+2RpkAE2yEl3IY148Eu4T6TkUIVColtowqBirVw==
 
+"@greypixel_/nicenumbers@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@greypixel_/nicenumbers/-/nicenumbers-0.0.18.tgz#59b60cb68fe4e5d4e6c8b5ae5978e8978be63fc9"
+  integrity sha512-i1pK9UGuhBac6FOJc9N79LuYXiancKrLmLYqYdaBMO368+zjlQWDDUXzlmyvQaAu/kXGL7FHkWpSOR0R5vKyYw==
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"

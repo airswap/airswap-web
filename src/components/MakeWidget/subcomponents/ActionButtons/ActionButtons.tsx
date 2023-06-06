@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MakeWidgetState } from "../../MakeWidget";
 import { getActionButtonTranslation } from "../../helpers";
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
@@ -10,6 +11,8 @@ export enum ButtonActions {
   reloadPage,
   restart,
   goBack,
+  review,
+  list,
   sign,
   approve,
   deposit,
@@ -31,6 +34,7 @@ type ActionButtonsProps = {
   walletIsNotConnected: boolean;
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
+  widgetState: MakeWidgetState;
   onBackButtonClick: (action: ButtonActions) => void;
   onActionButtonClick: (action: ButtonActions) => void;
   className?: string;
@@ -51,7 +55,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   userIsSigning,
   walletIsNotConnected,
   makerTokenSymbol,
-  takerTokenSymbol,
+  widgetState,
   onBackButtonClick,
   onActionButtonClick,
   className,
@@ -68,8 +72,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasTokenAmountError ||
       userIsSigning) &&
     !walletIsNotConnected &&
-    !isNetworkUnsupported &&
-    !shouldDepositNativeToken;
+    !isNetworkUnsupported;
 
   const buttonText = getActionButtonTranslation(
     hasInsufficientAllowance,
@@ -82,8 +85,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     isNetworkUnsupported,
     shouldDepositNativeToken,
     walletIsNotConnected,
-    makerTokenSymbol,
-    takerTokenSymbol
+    widgetState,
+    makerTokenSymbol
   );
 
   const handleSignButtonClick = () => {
@@ -91,10 +94,12 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       onActionButtonClick(ButtonActions.connectWallet);
     } else if (isNetworkUnsupported) {
       onActionButtonClick(ButtonActions.switchNetwork);
-    } else if (hasInsufficientAllowance) {
-      onActionButtonClick(ButtonActions.approve);
+    } else if (widgetState === MakeWidgetState.list) {
+      onActionButtonClick(ButtonActions.review);
     } else if (shouldDepositNativeToken) {
       onActionButtonClick(ButtonActions.deposit);
+    } else if (hasInsufficientAllowance) {
+      onActionButtonClick(ButtonActions.approve);
     } else {
       onActionButtonClick(ButtonActions.sign);
     }
@@ -103,6 +108,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const handleBackButtonClick = () => {
     if (userIsSigning) {
       onBackButtonClick(ButtonActions.restart);
+    } else if (widgetState === MakeWidgetState.review) {
+      onBackButtonClick(ButtonActions.list);
     } else {
       onBackButtonClick(ButtonActions.goBack);
     }
@@ -111,7 +118,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   return (
     <Container className={className}>
       <BackButton onClick={handleBackButtonClick}>
-        {t("common.back")}
+        {widgetState === MakeWidgetState.review
+          ? t("common.edit")
+          : t("common.back")}
       </BackButton>
       <SignButton
         disabled={isDisabled}

@@ -18,6 +18,7 @@ import {
   selectProtocolFee,
 } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
+import useNativeWrappedToken from "./useNativeWrappedToken";
 
 const useShouldDepositNativeTokenAmount = (
   token?: string,
@@ -29,16 +30,14 @@ const useShouldDepositNativeTokenAmount = (
 
   const { chainId } = useWeb3React<Web3Provider>();
 
+  const wrappedNativeToken = useNativeWrappedToken(chainId);
+
   return useMemo(() => {
-    if (!token || !tokenAmount || !chainId) {
+    if (!token || !tokenAmount || !chainId || !wrappedNativeToken) {
       return undefined;
     }
 
-    const wrappedTokenAddress = WETH.getAddress(chainId);
-
-    if (!wrappedTokenAddress) {
-      return undefined;
-    }
+    const wrappedTokenAddress = wrappedNativeToken.address;
 
     if (token !== nativeCurrencyAddress && token !== wrappedTokenAddress) {
       return undefined;
@@ -97,7 +96,15 @@ const useShouldDepositNativeTokenAmount = (
     );
 
     return amountToDepositWithFee.toFormat();
-  }, [activeTokens, balances.values, token, tokenAmount, protocolFee, chainId]);
+  }, [
+    activeTokens,
+    balances.values,
+    token,
+    tokenAmount,
+    protocolFee,
+    wrappedNativeToken,
+    chainId,
+  ]);
 };
 
 export default useShouldDepositNativeTokenAmount;

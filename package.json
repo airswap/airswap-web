@@ -20,6 +20,7 @@
     "@airswap/utils": "^4.0.6",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
+    "@greypixel_/nicenumbers": "^0.0.18",
     "@react-hookz/web": "^14.2.2",
     "@reduxjs/toolkit": "~1.5.1",
     "@testing-library/jest-dom": "^5.14.1",

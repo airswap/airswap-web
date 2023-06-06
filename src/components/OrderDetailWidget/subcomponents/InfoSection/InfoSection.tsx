@@ -29,8 +29,11 @@ const InfoSection: FC<ActionButtonsProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { nativeToken, wrappedNativeToken, ownedWrappedNativeTokenAmount } =
-    useShouldDepositNativeTokenAmountInfo();
+  const {
+    nativeToken,
+    wrappedNativeTokenSymbol,
+    ownedWrappedNativeTokenAmount,
+  } = useShouldDepositNativeTokenAmountInfo();
 
   const warningText = useMemo(() => {
     return getFullOrderERC20WarningTranslation(
@@ -69,7 +72,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
       <Container className={className}>
         <InfoSubHeading>
           {t("orders.shouldDepositNativeTokenAmount", {
-            wrappedNativeToken,
+            wrappedNativeTokenSymbol,
             ownedWrappedNativeTokenAmount,
           })}
           &nbsp;
