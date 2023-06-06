@@ -44,8 +44,6 @@ import {
   fetchIndexerUrls,
   getFilteredOrders,
   selectIndexerReducer,
-  setBestSwapOrder,
-  setCurrentSearchAmount,
 } from "../../features/indexer/indexerSlice";
 import {
   selectActiveTokensWithoutCustomTokens,
@@ -117,13 +115,12 @@ import ActionButtons, {
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-const initialBaseAmount = "";
-
 const SwapWidget: FC = () => {
   // Redux
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation<{ fromSwapFlow?: boolean }>();
+  const location = useLocation<{ isFromOrderDetailPage?: true }>();
+  const isFromOrderDetailPage = !!location.state?.isFromOrderDetailPage;
   const balances = useAppSelector(selectBalances);
   const allowances = useAppSelector(selectAllowances);
   const bestRfqOrder = useAppSelector(selectBestOrder);
@@ -139,7 +136,6 @@ const SwapWidget: FC = () => {
     indexerUrls,
     orders: indexerOrders,
     bestSwapOrder,
-    currentSearchAmount,
   } = useAppSelector(selectIndexerReducer);
 
   // Contexts
@@ -155,7 +151,9 @@ const SwapWidget: FC = () => {
   const appRouteParams = useAppRouteParams();
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
-  const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
+  const [baseAmount, setBaseAmount] = useState(
+    isFromOrderDetailPage ? tradeTerms.baseAmount : ""
+  );
 
   // Pricing
   const {
@@ -211,8 +209,6 @@ const SwapWidget: FC = () => {
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
-    setBaseAmount(initialBaseAmount);
-    dispatch(clearTradeTerms());
     unsubscribeFromGasPrice();
     unsubscribeFromTokenPrice();
     dispatch(clear());
@@ -240,7 +236,6 @@ const SwapWidget: FC = () => {
       setPairUnavailable(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
-      setBaseAmount(initialBaseAmount);
       LastLook.unsubscribeAllServers();
     }
   }, [ordersStatus, LastLook, dispatch]);
@@ -250,7 +245,7 @@ const SwapWidget: FC = () => {
     if (chainId) {
       dispatch(resetOrders());
     }
-  }, [chainId, dispatch]);
+  }, [chainId]);
 
   useEffect(() => {
     setAllowanceFetchFailed(
@@ -276,22 +271,10 @@ const SwapWidget: FC = () => {
   }, [active]);
 
   useEffect(() => {
-    if (
-      tokenFrom !== bestSwapOrder?.senderToken ||
-      tokenTo !== bestSwapOrder?.signerToken
-    ) {
-      dispatch(setBestSwapOrder(null));
-    }
-    if (bestTradeOption?.order) {
-      dispatch(setBestSwapOrder(bestTradeOption.order));
-    }
-  }, [bestSwapOrder, bestTradeOption, dispatch, tokenFrom, tokenTo]);
-
-  useEffect(() => {
     if (!indexerUrls && library) {
       dispatch(fetchIndexerUrls({ provider: library }));
     }
-  }, [dispatch, indexerUrls, library]);
+  }, [indexerUrls, library]);
 
   useEffect(() => {
     if (indexerUrls) {
@@ -306,7 +289,14 @@ const SwapWidget: FC = () => {
         })
       );
     }
-  }, [baseTokenInfo, dispatch, indexerUrls, quoteTokenInfo]);
+  }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
+
+  useEffect(() => {
+    if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
+      prepareForRequest();
+      requestQuotes();
+    }
+  }, []);
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
@@ -366,162 +356,152 @@ const SwapWidget: FC = () => {
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
       history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
-      setBaseAmount(initialBaseAmount);
+      setBaseAmount("");
     } else if (address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
 
-  const onBaseAmountChange = (newValue: string) => {
-    setBaseAmount(newValue);
-    dispatch(setCurrentSearchAmount(null));
-  };
+  const requestQuotes = useCallback(async () => {
+    if (swapType === "wrapOrUnwrap") {
+      // This will re-render with a 1:1 price and a take button.
+      setIsWrapping(true);
+      return;
+    }
+    setIsRequestingQuotes(true);
 
-  const requestQuotes = useCallback(
-    async (searchAmount?: string) => {
-      if (swapType === "wrapOrUnwrap") {
-        // This will re-render with a 1:1 price and a take button.
-        setIsWrapping(true);
-        return;
-      }
-      setIsRequestingQuotes(true);
+    const usesWrapper = swapType === "swapWithWrap";
+    const weth = WETH.getAddress(chainId!);
+    const eth = nativeCurrency[chainId!];
+    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
+    const _baseToken = baseToken === eth.address ? weth : baseToken!;
 
-      const usesWrapper = swapType === "swapWithWrap";
-      const weth = WETH.getAddress(chainId!);
-      const eth = nativeCurrency[chainId!];
-      const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-      const _baseToken = baseToken === eth.address ? weth : baseToken!;
-
-      let rfqServers: Server[] = [];
-      let lastLookServers: Server[] = [];
+    let rfqServers: Server[] = [];
+    let lastLookServers: Server[] = [];
+    try {
       try {
-        try {
-          if (library && chainId) {
-            const servers = await Registry.getServers(
-              library,
-              chainId,
-              _quoteToken,
-              _baseToken,
-              {
-                initializeTimeout: 10 * 1000,
-              }
-            );
-            rfqServers = servers.filter((s) =>
-              s.supportsProtocol(Protocols.RequestForQuoteERC20)
-            );
-            lastLookServers = servers.filter((s) =>
-              s.supportsProtocol(Protocols.LastLookERC20)
-            );
-          }
-        } catch (e) {
-          console.error("Error requesting orders:", e);
-          throw new Error("error requesting orders");
-        }
-
-        let rfqPromise: Promise<OrderERC20[]> | null = null,
-          lastLookPromises: Promise<Pricing>[] | null = null;
-
-        if (rfqServers.length) {
-          let rfqDispatchResult = dispatch(
-            request({
-              servers: rfqServers,
-              senderToken: _baseToken,
-              senderAmount: searchAmount || baseAmount,
-              signerToken: _quoteToken,
-              senderTokenDecimals: baseTokenInfo!.decimals,
-              senderWallet: usesWrapper
-                ? Wrapper.getAddress(chainId!)
-                : account!,
-              proxyingFor: usesWrapper ? account! : undefined,
-            })
+        if (library && chainId) {
+          const servers = await Registry.getServers(
+            library,
+            chainId,
+            _quoteToken,
+            _baseToken,
+            {
+              initializeTimeout: 10 * 1000,
+            }
           );
-          rfqPromise = rfqDispatchResult
-            .then((result) => {
-              return unwrapResult(result);
-            })
-            .then((orders) => {
-              if (!orders.length) throw new Error("no valid orders");
-              return orders;
-            });
+          rfqServers = servers.filter((s) =>
+            s.supportsProtocol(Protocols.RequestForQuoteERC20)
+          );
+          lastLookServers = servers.filter((s) =>
+            s.supportsProtocol(Protocols.LastLookERC20)
+          );
         }
-
-        if (lastLookServers.length) {
-          if (usesWrapper) {
-            lastLookServers.forEach((s) => s.disconnect());
-          } else {
-            lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
-              baseToken: baseToken!,
-              quoteToken: quoteToken!,
-            });
-          }
-        }
-
-        let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
-        if (rfqPromise) orderPromises.push(rfqPromise);
-        if (lastLookPromises) {
-          orderPromises = orderPromises.concat(lastLookPromises);
-        }
-
-        // This promise times out if _no_ orders are received before the timeout
-        // but resolves if _any_ are.
-        const timeoutOnNoOrdersPromise = Promise.race<any>([
-          Promise.any(orderPromises),
-          new Promise((_, reject) =>
-            setTimeout(() => {
-              reject("no valid orders");
-            }, RECEIVE_QUOTE_TIMEOUT_MS)
-          ),
-        ]);
-
-        // This promise resolves either when all orders are received or X seconds
-        // after the first order is received.
-        const waitExtraForAllOrdersPromise = Promise.race<any>([
-          Promise.allSettled(orderPromises),
-          Promise.any(orderPromises).then(
-            () =>
-              new Promise((resolve) =>
-                setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
-              )
-          ),
-        ]);
-
-        await Promise.all([
-          waitExtraForAllOrdersPromise,
-          timeoutOnNoOrdersPromise,
-        ]);
-      } catch (e: any) {
-        switch (e.message) {
-          case "error requesting orders": {
-            notifyError({
-              heading: t("orders.errorRequesting"),
-              cta: t("orders.errorRequestingCta"),
-            });
-            break;
-          }
-
-          default: {
-            console.error(e);
-            setPairUnavailable(true);
-          }
-        }
-      } finally {
-        setIsRequestingQuotes(false);
+      } catch (e) {
+        console.error("Error requesting orders:", e);
+        throw new Error("error requesting orders");
       }
-    },
-    [
-      LastLook,
-      account,
-      baseAmount,
-      baseToken,
-      baseTokenInfo,
-      chainId,
-      dispatch,
-      library,
-      quoteToken,
-      swapType,
-      t,
-    ]
-  );
+
+      let rfqPromise: Promise<OrderERC20[]> | null = null,
+        lastLookPromises: Promise<Pricing>[] | null = null;
+
+      if (rfqServers.length) {
+        let rfqDispatchResult = dispatch(
+          request({
+            servers: rfqServers,
+            senderToken: _baseToken,
+            senderAmount: baseAmount,
+            signerToken: _quoteToken,
+            senderTokenDecimals: baseTokenInfo!.decimals,
+            senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
+            proxyingFor: usesWrapper ? account! : undefined,
+          })
+        );
+        rfqPromise = rfqDispatchResult
+          .then((result) => {
+            return unwrapResult(result);
+          })
+          .then((orders) => {
+            if (!orders.length) throw new Error("no valid orders");
+            return orders;
+          });
+      }
+
+      if (lastLookServers.length) {
+        if (usesWrapper) {
+          lastLookServers.forEach((s) => s.disconnect());
+        } else {
+          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
+            baseToken: baseToken!,
+            quoteToken: quoteToken!,
+          });
+        }
+      }
+
+      let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
+      if (rfqPromise) orderPromises.push(rfqPromise);
+      if (lastLookPromises) {
+        orderPromises = orderPromises.concat(lastLookPromises);
+      }
+
+      // This promise times out if _no_ orders are received before the timeout
+      // but resolves if _any_ are.
+      const timeoutOnNoOrdersPromise = Promise.race<any>([
+        Promise.any(orderPromises),
+        new Promise((_, reject) =>
+          setTimeout(() => {
+            reject("no valid orders");
+          }, RECEIVE_QUOTE_TIMEOUT_MS)
+        ),
+      ]);
+
+      // This promise resolves either when all orders are received or X seconds
+      // after the first order is received.
+      const waitExtraForAllOrdersPromise = Promise.race<any>([
+        Promise.allSettled(orderPromises),
+        Promise.any(orderPromises).then(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
+            )
+        ),
+      ]);
+
+      await Promise.all([
+        waitExtraForAllOrdersPromise,
+        timeoutOnNoOrdersPromise,
+      ]);
+    } catch (e: any) {
+      switch (e.message) {
+        case "error requesting orders": {
+          notifyError({
+            heading: t("orders.errorRequesting"),
+            cta: t("orders.errorRequestingCta"),
+          });
+          break;
+        }
+
+        default: {
+          console.error(e);
+          setPairUnavailable(true);
+        }
+      }
+    } finally {
+      setIsRequestingQuotes(false);
+    }
+  }, [
+    LastLook,
+    account,
+    baseAmount,
+    baseToken,
+    baseTokenInfo,
+    chainId,
+    dispatch,
+    library,
+    quoteToken,
+    swapType,
+    t,
+  ]);
 
   const swapWithRequestForQuote = async () => {
     try {
@@ -668,12 +648,9 @@ const SwapWidget: FC = () => {
     baseToken,
     baseTokenInfo,
     chainId,
-    dispatch,
     library,
     quoteToken,
     quoteTokenInfo,
-    subscribeToGasPrice,
-    subscribeToTokenPrice,
   ]);
 
   const takeBestOption = async () => {
@@ -715,7 +692,6 @@ const SwapWidget: FC = () => {
         setPairUnavailable(false);
         dispatch(clearTradeTerms());
         dispatch(clear());
-        dispatch(setCurrentSearchAmount(null));
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
@@ -726,11 +702,10 @@ const SwapWidget: FC = () => {
         // setValidatorErrors([]);
         dispatch(clearTradeTerms());
         dispatch(clear());
-        dispatch(setCurrentSearchAmount(null));
         unsubscribeFromGasPrice();
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
-        setBaseAmount(initialBaseAmount);
+        setBaseAmount("");
         break;
 
       case ButtonActions.reloadPage:
@@ -770,7 +745,6 @@ const SwapWidget: FC = () => {
         } else if (swapType === "wrapOrUnwrap") {
           await doWrap();
         }
-        dispatch(setCurrentSearchAmount(null));
         break;
 
       case ButtonActions.trackTransaction:
@@ -781,31 +755,6 @@ const SwapWidget: FC = () => {
       // Do nothing.
     }
   };
-
-  useEffect(() => {
-    if (
-      currentSearchAmount &&
-      baseAmount === "" &&
-      location.state?.fromSwapFlow
-    ) {
-      setBaseAmount(currentSearchAmount);
-      prepareForRequest();
-      requestQuotes(currentSearchAmount);
-    }
-  }, [
-    baseAmount,
-    prepareForRequest,
-    requestQuotes,
-    toggleShowViewAllQuotes,
-    currentSearchAmount,
-    location.state?.fromSwapFlow,
-  ]);
-
-  useEffect(() => {
-    if (!location.state?.fromSwapFlow) {
-      dispatch(setCurrentSearchAmount(null));
-    }
-  }, [dispatch, location]);
 
   return (
     <>
@@ -963,8 +912,6 @@ const SwapWidget: FC = () => {
           <AvailableOrdersWidget
             senderToken={baseTokenInfo}
             signerToken={quoteTokenInfo}
-            bestSwapOption={bestSwapOrder || undefined}
-            searchAmount={baseAmount}
             onSwapLinkClick={() => toggleShowViewAllQuotes()}
           />
         </Overlay>

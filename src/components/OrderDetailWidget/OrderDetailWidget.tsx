@@ -73,9 +73,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const { account, library } = useWeb3React<Web3Provider>();
   const history = useHistory();
-  const location = useLocation<{
-    fromSwapFlow?: boolean;
-  }>();
+  const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
+  const isFromAvailableOrdersWidget =
+    !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -144,8 +144,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
 
-  const userIsFromSwapFlow = !!location.state?.fromSwapFlow;
-
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const [showViewAllQuotes, toggleShowViewAllQuotes] = useToggle(false);
 
@@ -153,8 +151,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     if (!indexerUrls && library) {
       dispatch(fetchIndexerUrls({ provider: library }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexerUrls, library]);
+  }, [indexerUrls]);
 
   useEffect(() => {
     if (indexerUrls && senderToken?.address && signerToken?.address) {
@@ -169,22 +166,23 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         })
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexerUrls, senderToken?.address, signerToken?.address]);
 
   // button handlers
   const backToSwapPage = () => {
     history.push({
       pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
-      state: { fromSwapFlow: true },
+      state: { isFromOrderDetailPage: true },
     });
   };
 
   const handleBackButtonClick = () => {
-    if (userIsFromSwapFlow) {
+    if (isFromAvailableOrdersWidget) {
       backToSwapPage();
+
       return;
     }
+
     history.push({
       pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
     });
@@ -309,7 +307,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
           <StyledInfoButtons
             isMakerOfSwap={userIsMakerOfSwap}
-            showViewAllQuotes={userIsFromSwapFlow && !userIsMakerOfSwap}
+            showViewAllQuotes={
+              isFromAvailableOrdersWidget && !userIsMakerOfSwap
+            }
             token1={signerTokenSymbol}
             token2={senderTokenSymbol}
             rate={tokenExchangeRate}
@@ -377,19 +377,20 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           }
         />
       </Overlay>
-      <Overlay
-        title={t("orders.availableOrders")}
-        isHidden={!showViewAllQuotes}
-        onCloseButtonClick={() => toggleShowViewAllQuotes()}
-      >
-        <AvailableOrdersWidget
-          senderToken={senderToken!}
-          signerToken={signerToken!}
-          bestSwapOption={bestSwapOrder || undefined}
-          onSwapLinkClick={backToSwapPage}
-          onFullOrderLinkClick={toggleShowViewAllQuotes}
-        />
-      </Overlay>
+      {signerToken && senderToken && (
+        <Overlay
+          title={t("orders.availableOrders")}
+          isHidden={!showViewAllQuotes}
+          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+        >
+          <AvailableOrdersWidget
+            senderToken={senderToken}
+            signerToken={signerToken}
+            onSwapLinkClick={backToSwapPage}
+            onFullOrderLinkClick={toggleShowViewAllQuotes}
+          />
+        </Overlay>
+      )}
     </Container>
   );
 };

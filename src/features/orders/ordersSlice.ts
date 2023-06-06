@@ -186,7 +186,6 @@ export const resetOrders = createAsyncThunk(
   async (params: undefined, { getState, dispatch }) => {
     await dispatch(setResetStatus());
     dispatch(clear());
-    dispatch(clearTradeTerms());
   }
 );
 
