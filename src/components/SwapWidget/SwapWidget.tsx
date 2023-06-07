@@ -80,7 +80,10 @@ import {
   ProtocolType,
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
-import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
+import {
+  setUserTokens,
+  setServerUrl,
+} from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -88,6 +91,7 @@ import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useReferencePriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useSearchParams from "../../hooks/useSearchParams";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { AppRoutes } from "../../routes";
@@ -154,6 +158,8 @@ const SwapWidget: FC = () => {
   const [baseAmount, setBaseAmount] = useState(
     isFromOrderDetailPage ? tradeTerms.baseAmount : ""
   );
+
+  const serverUrl = useSearchParams(location);
 
   // Pricing
   const {
@@ -296,6 +302,12 @@ const SwapWidget: FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (serverUrl) {
+      dispatch(setServerUrl(serverUrl));
+    }
+  }, [serverUrl, dispatch]);
+
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -340,6 +352,7 @@ const SwapWidget: FC = () => {
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
       }`,
+      search: `serverUrl=${serverUrl}`,
     });
   };
 
@@ -353,10 +366,16 @@ const SwapWidget: FC = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
-      history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
+      history.push({
+        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
+        search: `serverUrl=${serverUrl}`,
+      });
       setBaseAmount("");
     } else if (address === quoteToken) {
-      history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
+      history.push({
+        pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-`,
+        search: `serverUrl=${serverUrl}`,
+      });
     }
   };
 
@@ -378,7 +397,13 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && chainId) {
+        if (library && serverUrl) {
+          const serverFromQueryString = await Server.at(serverUrl, {
+            chainId,
+            initializeTimeout: 10 * 1000,
+          });
+          rfqServers.push(serverFromQueryString);
+        } else if (library && chainId) {
           const servers = await Registry.getServers(
             library,
             chainId,
@@ -799,6 +824,7 @@ const SwapWidget: FC = () => {
               showOrderSubmitted && lastTransaction?.status === "succeeded"
             }
             isConnected={active}
+            hasSelectedCustomServer={!!serverUrl}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}

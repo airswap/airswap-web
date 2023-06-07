@@ -12,6 +12,7 @@ export interface UserTokenPair {
 export interface UserSettingsState {
   theme: ThemeType | "system";
   tokens: UserTokenPair;
+  serverUrl: string | null;
 }
 
 export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
@@ -22,6 +23,7 @@ const initialState: UserSettingsState = {
     tokenFrom: undefined,
     tokenTo: undefined,
   },
+  serverUrl: null,
 };
 
 const userSettingsSlice = createSlice({
@@ -49,6 +51,9 @@ const userSettingsSlice = createSlice({
         tokens,
       };
     },
+    setServerUrl: (state, action: PayloadAction<string | null>) => {
+      state.serverUrl = action.payload;
+    },
   },
 });
 
@@ -56,6 +61,10 @@ export const selectTheme = (state: RootState) => state.userSettings.theme;
 
 export const selectUserTokens = (state: RootState) => state.userSettings.tokens;
 
-export const { setTheme, setUserTokens } = userSettingsSlice.actions;
+export const selectServerUrl = (state: RootState) =>
+  state.userSettings.serverUrl;
+
+export const { setTheme, setUserTokens, setServerUrl } =
+  userSettingsSlice.actions;
 
 export default userSettingsSlice.reducer;
