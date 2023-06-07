@@ -2,8 +2,8 @@ import React from "react";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
-  selectServerURL,
-  setServerURL,
+  selectServerUrl,
+  setServerUrl,
 } from "../../../../features/userSettings/userSettingsSlice";
 import {
   ClearCustomServerButton,
@@ -11,16 +11,16 @@ import {
 } from "./ClearServerButton.styles";
 
 const ClearServerButton = () => {
-  const serverURL = useAppSelector(selectServerURL);
+  const serverUrl = useAppSelector(selectServerUrl);
   const dispatch = useAppDispatch();
 
   const handleClearServerUrl = () => {
-    dispatch(setServerURL(null));
+    dispatch(setServerUrl(null));
   };
 
   return (
     <ClearCustomServerButton
-      hasServerUrl={!!serverURL}
+      hasServerUrl={!!serverUrl}
       onClick={() => handleClearServerUrl()}
     >
       <ClearServerButtonText>Clear custom server</ClearServerButtonText>

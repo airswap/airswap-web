@@ -6,7 +6,7 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../../../../app/hooks";
-import { selectServerURL } from "../../../../features/userSettings/userSettingsSlice";
+import { selectServerUrl } from "../../../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
@@ -76,7 +76,7 @@ const InfoSection: FC<InfoSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
-  const serverURL = useAppSelector(selectServerURL);
+  const serverUrl = useAppSelector(selectServerUrl);
 
   const genericWelcomeMessage = (
     <>
@@ -90,7 +90,7 @@ const InfoSection: FC<InfoSectionProps> = ({
       <StyledInfoHeading>
         {/* TODO: Fix ts-ignore */}
         {/* @ts-ignore */}
-        {t("orders.selectedServer", { serverURL })}
+        {t("orders.selectedServer", { serverUrl })}
       </StyledInfoHeading>
       <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
       <ClearServerButton />

@@ -1,6 +1,7 @@
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
@@ -74,9 +75,8 @@ import {
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
 import {
+  setServerUrl,
   setUserTokens,
-  selectServerURL,
-  setServerURL,
 } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
@@ -116,48 +116,10 @@ import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader"
 const initialBaseAmount = "";
 
 const SwapWidget: FC = () => {
-  // Redux
-  const dispatch = useAppDispatch();
-  const history = useHistory();
-  const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
-  const bestRfqOrder = useAppSelector(selectBestOrder);
-  const ordersStatus = useAppSelector(selectOrdersStatus);
-  const ordersErrors = useAppSelector(selectOrdersErrors);
-  const bestTradeOption = useAppSelector(selectBestOption);
-  const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
-  const allTokens = useAppSelector(selectAllTokenInfo);
-  const supportedTokens = useAppSelector(selectAllSupportedTokens);
-  const tradeTerms = useAppSelector(selectTradeTerms);
-  const lastTransaction = useAppSelector(selectTransactions)[0];
-  const { indexerUrls, orders: indexerOrders } =
-    useAppSelector(selectIndexerReducer);
-  const serverURL = useAppSelector(selectServerURL);
-
-  // Contexts
-  const LastLook = useContext(LastLookContext);
-  const {
-    isConnecting,
-    transactionsTabIsOpen,
-    setShowWalletList,
-    setTransactionsTabIsOpen,
-  } = useContext(InterfaceContext);
-
   // Input states
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(initialBaseAmount);
-  // checks if server URL is present in URL query string
-
-  const appRouteParams = useAppRouteParams();
-
-  // Pricing
-  const {
-    subscribeToGasPrice,
-    subscribeToTokenPrice,
-    unsubscribeFromGasPrice,
-    unsubscribeFromTokenPrice,
-  } = useReferencePriceSubscriber();
 
   // Modals
   const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
@@ -174,18 +136,50 @@ const SwapWidget: FC = () => {
   const [isWrapping, setIsWrapping] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
   // if `bestTradeOption` is true, `isQueryingSelectedServer` will get toggled to false. This is so InfoSection.tsx renders the correct text & data
-  // const [isQueryingSelectedServer, setIsQueryingSelectedServer] =
-  useState(false);
 
   // Error states
   const [pairUnavailable, setPairUnavailable] = useState(false);
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
 
-  const { t } = useTranslation();
+  // Redux
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+  const balances = useAppSelector(selectBalances);
+  const allowances = useAppSelector(selectAllowances);
+  const bestRfqOrder = useAppSelector(selectBestOrder);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
+  const ordersErrors = useAppSelector(selectOrdersErrors);
+  const bestTradeOption = useAppSelector(selectBestOption);
+  const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
+  const allTokens = useAppSelector(selectAllTokenInfo);
+  const supportedTokens = useAppSelector(selectAllSupportedTokens);
+  const tradeTerms = useAppSelector(selectTradeTerms);
+  const lastTransaction = useAppSelector(selectTransactions)[0];
+  const { indexerUrls, orders: indexerOrders } =
+    useAppSelector(selectIndexerReducer);
 
+  // Contexts
+  const LastLook = useContext(LastLookContext);
+  const {
+    isConnecting,
+    transactionsTabIsOpen,
+    setShowWalletList,
+    setTransactionsTabIsOpen,
+  } = useContext(InterfaceContext);
+
+  // Pricing
+  const {
+    subscribeToGasPrice,
+    subscribeToTokenPrice,
+    unsubscribeFromGasPrice,
+    unsubscribeFromTokenPrice,
+  } = useReferencePriceSubscriber();
+
+  const { t } = useTranslation();
+  const appRouteParams = useAppRouteParams();
   const location = useLocation();
-  useSearchParams(location);
+  const serverUrl = useSearchParams(location);
 
   const {
     chainId,
@@ -244,18 +238,13 @@ const SwapWidget: FC = () => {
       .gte(baseAmount);
   };
 
-  const handleSetToken = (
-    type: TokenSelectModalTypes,
-    value: string,
-    serverURL: string | null
-  ) => {
+  const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     const baseRoute = `/${AppRoutes.swap}`;
     const tokenPairs = getTokenPairs(type, value, quoteToken, baseToken);
     const tokenFrom = transformAddressAliasToAddress(tokenPairs.tokenFrom!);
     const tokenTo = transformAddressAliasToAddress(tokenPairs.tokenTo!);
     const tokenFromAlias = transformAddressToAddressAlias(tokenFrom);
     const tokenToAlias = transformAddressToAddressAlias(tokenTo);
-    const queryString = `?serverURL=${serverURL}`;
 
     if (type === "base") {
       setBaseAmount("");
@@ -263,31 +252,29 @@ const SwapWidget: FC = () => {
 
     if (tokenFrom && tokenTo) {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
-      dispatch(setServerURL(serverURL));
     }
 
     history.push({
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
       }/`,
-      search: `${serverURL && queryString}`,
+      search: `serverUrl=${serverUrl}`,
     });
   };
 
   const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
   const handleRemoveActiveToken = (address: string) => {
-    const queryString = `?serverURL=${serverURL}`;
     if (address === baseToken) {
       history.push({
         pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
-        search: `${serverURL && queryString}`,
+        search: `serverUrl=${serverUrl}`,
       });
       setBaseAmount(initialBaseAmount);
     } else if (address === quoteToken) {
       history.push({
         pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-`,
-        search: `${serverURL && queryString}`,
+        search: `serverUrl=${serverUrl}`,
       });
     }
   };
@@ -310,8 +297,8 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && serverURL) {
-          const serverFromQueryString = await Server.at(serverURL, {
+        if (library && serverUrl) {
+          const serverFromQueryString = await Server.at(serverUrl, {
             chainId,
             initializeTimeout: 10 * 1000,
           });
@@ -746,6 +733,12 @@ const SwapWidget: FC = () => {
     setTokenTo(appRouteParams.tokenTo);
   }, [appRouteParams]);
 
+  useEffect(() => {
+    if (serverUrl) {
+      dispatch(setServerUrl(serverUrl));
+    }
+  }, [serverUrl, dispatch]);
+
   return (
     <>
       <StyledSwapWidget>
@@ -791,7 +784,7 @@ const SwapWidget: FC = () => {
             }
             isConnected={active}
             // if `!pairUnavailable`, the <StyledInfoHeading> message will revert back to normal
-            hasSelectedCustomServer={!!serverURL}
+            hasSelectedCustomServer={!!serverUrl}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
@@ -851,7 +844,7 @@ const SwapWidget: FC = () => {
         <TokenList
           onSelectToken={(newTokenAddress) => {
             // e.g. handleSetToken("base", "0x123")
-            handleSetToken(showTokenSelectModalFor, newTokenAddress, serverURL);
+            handleSetToken(showTokenSelectModalFor, newTokenAddress);
             // Close the modal
             setShowTokenSelectModalFor(null);
           }}
