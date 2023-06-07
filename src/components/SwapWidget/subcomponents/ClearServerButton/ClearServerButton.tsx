@@ -12,20 +12,20 @@ import {
 } from "./ClearServerButton.styles";
 
 /**
- * @remarks - when clicked, this button sets serverUrl in Redux to null, then changes search history
- * @returns
+ * @remarks when clicked, this button sets serverUrl in Redux to null, then changes search history
+ * @returns button that runs `handleClearServerUrl when clicked
  */
 const ClearServerButton = () => {
-  const serverUrl = useAppSelector(selectServerUrl);
   const dispatch = useAppDispatch();
+  const serverUrl = useAppSelector(selectServerUrl);
 
   const history = useHistory();
+  let location = history.location;
 
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
 
-    let location = history.location;
-    const searchParams = new URLSearchParams(location.search);
+    let searchParams = new URLSearchParams(location.search);
     searchParams.delete("serverUrl");
     history.push({
       ...location,
