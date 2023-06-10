@@ -356,7 +356,6 @@ const SwapWidget: FC = () => {
       pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
       }`,
-      search: `serverUrl=${serverUrl}`,
     });
   };
 
@@ -779,14 +778,15 @@ const SwapWidget: FC = () => {
     }
   };
 
+  console.log(AppRoutes);
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
-    let searchParams = new URLSearchParams(location.search);
-    searchParams.delete("serverUrl");
-    history.push({
-      ...location,
-      search: searchParams.toString(),
-    });
+    // let searchParams = new URLSearchParams(location.search);
+    // searchParams.delete("serverUrl");
+    // history.push({
+    //   ...location,
+    //   search: searchParams.toString(),
+    // });
   };
 
   return (

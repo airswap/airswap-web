@@ -125,22 +125,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  // if custom server is selected, display custom server message
-  if (hasSelectedCustomServer && !isPairUnavailable && !bestTradeOption) {
-    return (
-      <>
-        <StyledInfoHeading serverUrl={serverUrl}>
-          {t("orders.selectedServer", { serverUrl })}
-        </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
-        <ClearServerButton
-          serverUrl={serverUrl}
-          handleClearServerUrl={handleClearServerUrl}
-        />
-      </>
-    );
-  }
-
   if (isPairUnavailable) {
     return (
       <>
@@ -349,6 +333,21 @@ const InfoSection: FC<InfoSectionProps> = ({
             <Icon name="chevron-down" />
           </StyledLargePillButton>
         )}
+      </>
+    );
+  }
+
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading serverUrl={serverUrl}>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
+        <ClearServerButton
+          serverUrl={serverUrl}
+          handleClearServerUrl={handleClearServerUrl}
+        />
       </>
     );
   }
