@@ -52,6 +52,7 @@ export type InfoSectionProps = {
   showViewAllQuotes: boolean;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
+  serverUrl: string | null;
   handleClearServerUrl: () => void;
 };
 
@@ -74,11 +75,11 @@ const InfoSection: FC<InfoSectionProps> = ({
   showViewAllQuotes,
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
+  serverUrl,
   handleClearServerUrl,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
-  const serverUrl = useAppSelector(selectServerUrl);
 
   // Wallet not connected.
   if (!isConnected) {
@@ -132,93 +133,94 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
-        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
+        <ClearServerButton
+          serverUrl={serverUrl}
+          handleClearServerUrl={handleClearServerUrl}
+        />
       </>
     );
   }
 
-  if (!hasSelectedCustomServer) {
-    if (isPairUnavailable) {
-      return (
+  if (isPairUnavailable) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.tokenPairUnavailable")}
+        </StyledInfoHeading>
+        <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
+      </>
+    );
+  }
+
+  if (orderSubmitted && !orderCompleted) {
+    return (
+      <>
+        <DoneAllIcon />
+        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+      </>
+    );
+  } else if (orderCompleted) {
+    return (
+      <>
+        <DoneAllIcon />
+        <StyledInfoHeading>
+          {t("orders.transactionCompleted")}
+        </StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+      </>
+    );
+  }
+
+  if (!!bestTradeOption) {
+    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+      baseAmount
+    );
+    if (invertPrice) {
+      price = new BigNumber(1).dividedBy(price);
+    }
+    return (
+      <>
         <>
           <StyledInfoHeading>
-            {t("orders.tokenPairUnavailable")}
+            1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
+            {stringToSignificantDecimals(price.toString())}{" "}
+            {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
+            <RevertPriceButton
+              icon="swap"
+              ariaLabel={t("orders.revertPrice")}
+              iconSize={1}
+              onClick={() => setInvertPrice((p) => !p)}
+            />
           </StyledInfoHeading>
-          <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
-          {showViewAllQuotes && (
-            <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-              {t("orders.viewAllQuotes")}
-              <Icon name="chevron-down" />
-            </StyledLargePillButton>
-          )}
+          <FeeTextContainer>
+            <FeeText>{t("marketing.includesFee")}</FeeText>
+            <InfoButton
+              onClick={onFeeButtonClick}
+              ariaLabel={t("orders.moreInformation")}
+              icon="information-circle-outline"
+            />
+          </FeeTextContainer>
         </>
-      );
-    }
-
-    if (orderSubmitted && !orderCompleted) {
-      return (
-        <>
-          <DoneAllIcon />
-          <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-          <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        </>
-      );
-    } else if (orderCompleted) {
-      return (
-        <>
-          <DoneAllIcon />
-          <StyledInfoHeading>
-            {t("orders.transactionCompleted")}
-          </StyledInfoHeading>
-          <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        </>
-      );
-    }
-
-    if (!!bestTradeOption) {
-      let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-        baseAmount
-      );
-      if (invertPrice) {
-        price = new BigNumber(1).dividedBy(price);
-      }
-      return (
-        <>
-          <>
-            <StyledInfoHeading>
-              1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
-              {stringToSignificantDecimals(price.toString())}{" "}
-              {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
-              <RevertPriceButton
-                icon="swap"
-                ariaLabel={t("orders.revertPrice")}
-                iconSize={1}
-                onClick={() => setInvertPrice((p) => !p)}
-              />
-            </StyledInfoHeading>
-            <FeeTextContainer>
-              <FeeText>{t("marketing.includesFee")}</FeeText>
-              <InfoButton
-                onClick={onFeeButtonClick}
-                ariaLabel={t("orders.moreInformation")}
-                icon="information-circle-outline"
-              />
-            </FeeTextContainer>
-          </>
-          {requiresApproval && (
-            <ApprovalText>
-              {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
-            </ApprovalText>
-          )}
-          {showViewAllQuotes && (
-            <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-              {t("orders.viewAllQuotes")}
-              <Icon name="chevron-down" />
-            </StyledLargePillButton>
-          )}
-        </>
-      );
-    }
+        {requiresApproval && (
+          <ApprovalText>
+            {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
+          </ApprovalText>
+        )}
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
+      </>
+    );
   }
 
   if (isFetchingOrders) {
@@ -302,6 +304,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   }
 
   if (!!bestTradeOption) {
+    // @ts-ignore
     let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
       baseAmount
     );
@@ -309,6 +312,8 @@ const InfoSection: FC<InfoSectionProps> = ({
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);
     }
+
+    console.log(bestTradeOption, price);
 
     return (
       <>

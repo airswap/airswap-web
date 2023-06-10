@@ -83,6 +83,7 @@ import {
 import {
   setUserTokens,
   setServerUrl,
+  selectServerUrl,
 } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
@@ -160,6 +161,9 @@ const SwapWidget: FC = () => {
   );
 
   const serverUrl = useSearchParams("serverUrl");
+  const serverUrlFromRedux = useAppSelector(selectServerUrl);
+  console.log(serverUrl);
+  console.log(serverUrlFromRedux);
 
   // Pricing
   const {
@@ -366,7 +370,9 @@ const SwapWidget: FC = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
-      history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
+      history.push({
+        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
+      });
       setBaseAmount("");
     } else if (address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
@@ -775,6 +781,12 @@ const SwapWidget: FC = () => {
 
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
+    let searchParams = new URLSearchParams(location.search);
+    searchParams.delete("serverUrl");
+    history.push({
+      ...location,
+      search: searchParams.toString(),
+    });
   };
 
   return (
@@ -840,6 +852,7 @@ const SwapWidget: FC = () => {
             showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
+            serverUrl={serverUrlFromRedux}
             handleClearServerUrl={handleClearServerUrl}
           />
         </InfoContainer>
