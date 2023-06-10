@@ -52,6 +52,7 @@ export type InfoSectionProps = {
   showViewAllQuotes: boolean;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
+  handleClearServerUrl: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -73,6 +74,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   showViewAllQuotes,
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
+  handleClearServerUrl,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -130,7 +132,7 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
-        <ClearServerButton />
+        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
       </>
     );
   }

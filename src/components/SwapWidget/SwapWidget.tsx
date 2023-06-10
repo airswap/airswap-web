@@ -159,7 +159,7 @@ const SwapWidget: FC = () => {
     isFromOrderDetailPage ? tradeTerms.baseAmount : ""
   );
 
-  const serverUrl = useSearchParams('serverUrl');
+  const serverUrl = useSearchParams("serverUrl");
 
   // Pricing
   const {
@@ -366,7 +366,7 @@ const SwapWidget: FC = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
-    history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
+      history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
       setBaseAmount("");
     } else if (address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
@@ -773,6 +773,10 @@ const SwapWidget: FC = () => {
     }
   };
 
+  const handleClearServerUrl = () => {
+    dispatch(setServerUrl(null));
+  };
+
   return (
     <>
       <StyledSwapWidget>
@@ -836,6 +840,7 @@ const SwapWidget: FC = () => {
             showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
+            handleClearServerUrl={handleClearServerUrl}
           />
         </InfoContainer>
         <ButtonContainer>

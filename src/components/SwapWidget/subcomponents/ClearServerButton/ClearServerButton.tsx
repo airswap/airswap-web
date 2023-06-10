@@ -1,31 +1,24 @@
-import React from "react";
-import { useHistory } from "react-router";
+import React, { FC } from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import {
-  selectServerUrl,
-  setServerUrl,
-} from "../../../../features/userSettings/userSettingsSlice";
+import { useAppSelector } from "../../../../app/hooks";
+import { selectServerUrl } from "../../../../features/userSettings/userSettingsSlice";
 import {
   ClearCustomServerButton,
   ClearServerButtonText,
 } from "./ClearServerButton.styles";
 
+interface ClearServerButtonProps {
+  handleClearServerUrl: () => void;
+}
+
 /**
  * @remarks when clicked, this button sets serverUrl in Redux to null, then changes search history
  * @returns button that runs `handleClearServerUrl when clicked
  */
-const ClearServerButton = () => {
-  const dispatch = useAppDispatch();
+const ClearServerButton: FC<ClearServerButtonProps> = ({
+  handleClearServerUrl,
+}) => {
   const serverUrl = useAppSelector(selectServerUrl);
-
-  const history = useHistory();
-  let location = history.location;
-
-  const handleClearServerUrl = () => {
-    dispatch(setServerUrl(null));
-
-  };
 
   return (
     <ClearCustomServerButton
