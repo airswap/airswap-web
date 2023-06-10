@@ -127,7 +127,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     return (
       <>
         <StyledInfoHeading>
-          {/* @ts-ignore */}
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
