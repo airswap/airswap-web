@@ -25,12 +25,6 @@ const ClearServerButton = () => {
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
 
-    let searchParams = new URLSearchParams(location.search);
-    searchParams.delete("serverUrl");
-    history.push({
-      ...location,
-      search: searchParams.toString(),
-    });
   };
 
   return (
