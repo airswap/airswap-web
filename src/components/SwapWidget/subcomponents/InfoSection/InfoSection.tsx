@@ -129,7 +129,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (hasSelectedCustomServer && !isPairUnavailable && !bestTradeOption) {
     return (
       <>
-        <StyledInfoHeading>
+        <StyledInfoHeading serverUrl={serverUrl}>
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
