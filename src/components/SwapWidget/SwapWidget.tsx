@@ -369,10 +369,7 @@ const SwapWidget: FC = () => {
     history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
       setBaseAmount("");
     } else if (address === quoteToken) {
-      history.push({
-        pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-`,
-        search: `serverUrl=${serverUrl}`,
-      });
+      history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
 
