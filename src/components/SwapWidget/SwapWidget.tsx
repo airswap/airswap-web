@@ -366,10 +366,7 @@ const SwapWidget: FC = () => {
 
   const handleRemoveActiveToken = (address: string) => {
     if (address === baseToken) {
-      history.push({
-        pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}`,
-        search: `serverUrl=${serverUrl}`,
-      });
+    history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
       setBaseAmount("");
     } else if (address === quoteToken) {
       history.push({
