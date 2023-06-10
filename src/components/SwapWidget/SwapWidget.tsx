@@ -159,7 +159,7 @@ const SwapWidget: FC = () => {
     isFromOrderDetailPage ? tradeTerms.baseAmount : ""
   );
 
-  const serverUrl = useSearchParams(location);
+  const serverUrl = useSearchParams('serverUrl');
 
   // Pricing
   const {
