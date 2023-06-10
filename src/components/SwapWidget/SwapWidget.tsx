@@ -162,8 +162,6 @@ const SwapWidget: FC = () => {
 
   const serverUrl = useSearchParams("serverUrl");
   const serverUrlFromRedux = useAppSelector(selectServerUrl);
-  console.log(serverUrl);
-  console.log(serverUrlFromRedux);
 
   // Pricing
   const {
@@ -778,15 +776,9 @@ const SwapWidget: FC = () => {
     }
   };
 
-  console.log(AppRoutes);
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
-    // let searchParams = new URLSearchParams(location.search);
-    // searchParams.delete("serverUrl");
-    // history.push({
-    //   ...location,
-    //   search: searchParams.toString(),
-    // });
+    history.push(location.pathname);
   };
 
   return (
