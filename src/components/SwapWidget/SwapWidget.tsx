@@ -142,6 +142,7 @@ const SwapWidget: FC = () => {
     orders: indexerOrders,
     bestSwapOrder,
   } = useAppSelector(selectIndexerReducer);
+  const customServerUrl = useAppSelector(selectServerUrl);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -159,9 +160,6 @@ const SwapWidget: FC = () => {
   const [baseAmount, setBaseAmount] = useState(
     isFromOrderDetailPage ? tradeTerms.baseAmount : ""
   );
-
-  const serverUrl = useSearchParams("serverUrl");
-  const serverUrlFromRedux = useAppSelector(selectServerUrl);
 
   // Pricing
   const {
@@ -304,12 +302,6 @@ const SwapWidget: FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (serverUrl) {
-      dispatch(setServerUrl(serverUrl));
-    }
-  }, [serverUrl, dispatch]);
-
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -394,8 +386,8 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && serverUrl) {
-          const serverFromQueryString = await Server.at(serverUrl, {
+        if (library && customServerUrl) {
+          const serverFromQueryString = await Server.at(customServerUrl, {
             chainId,
             initializeTimeout: 10 * 1000,
           });
@@ -778,7 +770,6 @@ const SwapWidget: FC = () => {
 
   const handleClearServerUrl = () => {
     dispatch(setServerUrl(null));
-    history.push(location.pathname);
   };
 
   return (
@@ -826,7 +817,7 @@ const SwapWidget: FC = () => {
               showOrderSubmitted && lastTransaction?.status === "succeeded"
             }
             isConnected={active}
-            hasSelectedCustomServer={!!serverUrl}
+            hasSelectedCustomServer={!!customServerUrl}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
@@ -844,7 +835,7 @@ const SwapWidget: FC = () => {
             showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
-            serverUrl={serverUrlFromRedux}
+            serverUrl={customServerUrl}
             handleClearServerUrl={handleClearServerUrl}
           />
         </InfoContainer>
