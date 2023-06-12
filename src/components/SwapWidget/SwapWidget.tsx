@@ -211,10 +211,8 @@ const SwapWidget: FC = () => {
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   const txHash = useTransactionHash({
-    ordersStatus,
     transactions,
   });
-  console.log(txHash);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
