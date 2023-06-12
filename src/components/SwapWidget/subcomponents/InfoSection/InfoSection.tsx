@@ -8,6 +8,7 @@ import { BigNumber } from "bignumber.js";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import BlockExplorerLink from "../BlockExplorerLink/BlockExplorerLink";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -48,6 +49,8 @@ export type InfoSectionProps = {
   showViewAllQuotes: boolean;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
+  chainId: number | undefined;
+  txHash: string | undefined;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -68,6 +71,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   showViewAllQuotes,
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
+  chainId,
+  txHash,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -150,6 +155,7 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+        <BlockExplorerLink chainId={chainId} txHash={txHash} />
       </>
     );
   }

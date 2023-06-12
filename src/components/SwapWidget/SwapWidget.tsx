@@ -80,6 +80,7 @@ import {
   ProtocolType,
   selectTransactions,
 } from "../../features/transactions/transactionsSlice";
+import { selectOrderTransactions } from "../../features/transactions/transactionsSlice";
 import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
@@ -109,6 +110,7 @@ import StyledSwapWidget, {
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
+import useTransactionHash from "./hooks/useTransactionHash";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
@@ -137,6 +139,7 @@ const SwapWidget: FC = () => {
     orders: indexerOrders,
     bestSwapOrder,
   } = useAppSelector(selectIndexerReducer);
+  const transactions = useAppSelector(selectOrderTransactions);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -206,6 +209,11 @@ const SwapWidget: FC = () => {
     !!maxAmount &&
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
+
+  const txHash = useTransactionHash({
+    ordersStatus,
+    transactions,
+  });
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -816,6 +824,8 @@ const SwapWidget: FC = () => {
             showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
+            chainId={chainId}
+            txHash={txHash}
           />
         </InfoContainer>
         <ButtonContainer>
