@@ -12,8 +12,7 @@ interface UseBlockExplorerLinkProps {
 }
 /**
  *
- * @remarks
- * @returns
+ * @returns transaction hash for Swap order if successful
  */
 const useTransactionHash = ({
   ordersStatus,
@@ -29,12 +28,12 @@ const useTransactionHash = ({
 
   console.log(ordersStatus, lastTransaction);
 
-  if (orderCreated && lastTransaction.status === "succeeded") {
+  if (!!orderCreated && lastTransaction.status === "succeeded") {
     hash = lastTransaction.hash;
     return hash;
+  } else {
+    return undefined;
   }
-
-  return undefined;
 };
 
 export default useTransactionHash;

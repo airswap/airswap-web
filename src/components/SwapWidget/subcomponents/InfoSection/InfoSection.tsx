@@ -49,8 +49,8 @@ export type InfoSectionProps = {
   showViewAllQuotes: boolean;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
-  chainId: number | undefined;
-  txHash: string | undefined;
+  chainId: number;
+  txHash: string;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({

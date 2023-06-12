@@ -2,10 +2,6 @@ import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../../../style/mixins";
 
-export const Container = styled.div`
-  border: solid 1px black;
-`;
-
 export const Link = styled.a`
   margin-left: 0.5rem;
   padding: 0.5rem;
@@ -16,4 +12,14 @@ export const Link = styled.a`
   }
 
   ${BorderlessButtonStyle}
+`;
+
+export const LinkTextWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const LinkText = styled.span`
+  margin-right: 0.25rem;
 `;

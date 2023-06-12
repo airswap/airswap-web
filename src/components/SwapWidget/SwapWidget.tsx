@@ -214,6 +214,7 @@ const SwapWidget: FC = () => {
     ordersStatus,
     transactions,
   });
+  console.log(txHash);
 
   useEffect(() => {
     setAllowanceFetchFailed(false);
@@ -824,8 +825,8 @@ const SwapWidget: FC = () => {
             showViewAllQuotes={indexerOrders.length > 0}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
-            chainId={chainId}
-            txHash={txHash}
+            chainId={chainId || 1}
+            txHash={txHash || ""}
           />
         </InfoContainer>
         <ButtonContainer>

@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import { getReceiptUrl } from "@airswap/utils";
 
-import { Link, Container } from "./BlockExplorerLink.styles";
+import Icon from "../../../Icon/Icon";
+import { Link, LinkTextWrapper, LinkText } from "./BlockExplorerLink.styles";
 
 type BlockEplorerLinkProps = {
-  chainId: number | undefined;
-  txHash: string | undefined;
+  chainId: number;
+  txHash: string;
   className?: string;
 };
 
@@ -19,17 +20,18 @@ const BlockExplorerLink = ({
   const { t } = useTranslation();
 
   return (
-    <Container>
-      <Link
-        className={className}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={t("wallet.transactionLink")}
-        href={`${getReceiptUrl(chainId || 1, txHash || "")}`}
-      >
-        {t("orders.transactionLink")}
-      </Link>
-    </Container>
+    <Link
+      className={className}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={t("wallet.transactionLink")}
+      href={`${getReceiptUrl(chainId, txHash)}`}
+    >
+      <LinkTextWrapper>
+        <LinkText>{t("orders.transactionLink")}</LinkText>
+        <Icon iconSize={1} name="transaction-link" />
+      </LinkTextWrapper>
+    </Link>
   );
 };
 
