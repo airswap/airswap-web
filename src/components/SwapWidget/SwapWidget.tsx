@@ -302,6 +302,12 @@ const SwapWidget: FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!customServerUrl) {
+      history.push({ pathname: `${AppRoutes.swap}` });
+    }
+  }, [customServerUrl]);
+
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
