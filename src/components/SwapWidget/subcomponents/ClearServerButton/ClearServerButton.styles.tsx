@@ -15,6 +15,6 @@ export const ClearCustomServerButton = styled(
   Button
 )<ClearCustomServerButtonProps>`
   display: ${(props) => (props.hasServerUrl ? "flex" : "none")};
-  margin: 1rem;
+  margin-top: 1rem;
   width: fit-content;
 `;

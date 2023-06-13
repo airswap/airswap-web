@@ -297,8 +297,6 @@ const InfoSection: FC<InfoSectionProps> = ({
       price = new BigNumber(1).dividedBy(price);
     }
 
-    console.log(bestTradeOption, price);
-
     return (
       <>
         <>
@@ -340,7 +338,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (hasSelectedCustomServer) {
     return (
       <>
-        <StyledInfoHeading serverUrl={serverUrl}>
+        <StyledInfoHeading>
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>

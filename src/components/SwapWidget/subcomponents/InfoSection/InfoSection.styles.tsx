@@ -8,14 +8,9 @@ import IconButton from "../../../IconButton/IconButton";
 import { InfoHeading, InfoSubHeading } from "../../../Typography/Typography";
 import { StyledParagraph } from "../../../Typography/Typography.styles";
 
-type StyledInfoHeadingProps = {
-  serverUrl?: string | null;
-};
-
-export const StyledInfoHeading = styled(InfoHeading)<StyledInfoHeadingProps>`
+export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
   align-items: center;
-  margin-top: ${({ serverUrl }) => (serverUrl ? "1rem" : "0")};
 
   & + ${InfoSubHeading} {
     margin-top: 0.25rem;

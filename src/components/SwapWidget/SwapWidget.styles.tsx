@@ -14,7 +14,7 @@ export const InfoContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-grow: 2;
-  margin-bottom: 0.5rem;
+  margin: 1rem 0;
   max-height: 16rem;
   text-align: center;
 `;
