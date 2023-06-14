@@ -1,4 +1,4 @@
-import {CHAIN_PARAMS} from '../../src/constants/supportedNetworks'
+import { CHAIN_PARAMS } from "../../src/constants/supportedNetworks";
 
 interface UseBlockExplorerUrlProps {
   chainId: number | undefined;
@@ -9,15 +9,18 @@ interface UseBlockExplorerUrlProps {
  *
  * @returns block explorer link containing a token contract
  */
-const useBlockExplorerUrl = ({chainId, address}: UseBlockExplorerUrlProps): string | null => {
-  const zeroAddress = '0x0000000000000000000000000000000000000000'
+const useBlockExplorerUrl = ({
+  chainId,
+  address,
+}: UseBlockExplorerUrlProps): string | null => {
+  const zeroAddress = "0x0000000000000000000000000000000000000000";
   const chainData = CHAIN_PARAMS[chainId || 1];
-  const blockExplorerUrl = chainData.blockExplorerUrls[0]
-  if(address === zeroAddress) {
+  const blockExplorerUrl = chainData.blockExplorerUrls[0];
+  if (address === zeroAddress) {
     return null;
   } else {
     return `${blockExplorerUrl}address/${address}`;
-  };
+  }
 };
 
-export default useBlockExplorerUrl
+export default useBlockExplorerUrl;

@@ -18,8 +18,6 @@ const TransactionLink = ({
 }: TransactionLinkProps) => {
   const { t } = useTranslation();
 
-  console.log(getReceiptUrl(43114, ""))
-
   return (
     <Link
       className={className}

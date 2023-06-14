@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
 
+import useBlockExplorerUrl from "../../hooks/useBlockExplorerUrl";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -24,7 +25,6 @@ import {
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
-import useBlockExplorerUrl from "../../hooks/useBlockExplorerUrl";
 
 export type TokenSelectProps = {
   /**
@@ -120,8 +120,11 @@ const TokenSelect: FC<TokenSelectProps> = ({
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
 
-  const blockExplorerUrl = useBlockExplorerUrl({ chainId: selectedToken?.chainId, address: selectedToken?.address })
-  console.log(blockExplorerUrl);
+  // TODO: after design is ready, use blockExplorerUrl for value
+  const blockExplorerUrl = useBlockExplorerUrl({
+    chainId: selectedToken?.chainId,
+    address: selectedToken?.address,
+  });
 
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>
