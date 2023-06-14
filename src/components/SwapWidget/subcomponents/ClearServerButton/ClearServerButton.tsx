@@ -7,7 +7,6 @@ import {
 } from "./ClearServerButton.styles";
 
 interface ClearServerButtonProps {
-  serverUrl: string | null;
   handleClearServerUrl: () => void;
 }
 
@@ -18,13 +17,11 @@ interface ClearServerButtonProps {
  * @returns button that runs `handleClearServerUrl when clicked
  */
 const ClearServerButton: FC<ClearServerButtonProps> = ({
-  serverUrl,
   handleClearServerUrl,
 }) => {
   const { t } = useTranslation();
   return (
     <ClearCustomServerButton
-      hasServerUrl={!!serverUrl}
       onClick={() => handleClearServerUrl()}
     >
       <ClearServerButtonText>
