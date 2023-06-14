@@ -24,6 +24,7 @@ import {
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
+import useBlockExplorerUrl from "../../hooks/useBlockExplorerUrl";
 
 export type TokenSelectProps = {
   /**
@@ -118,6 +119,9 @@ const TokenSelect: FC<TokenSelectProps> = ({
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
+
+  const blockExplorerUrl = useBlockExplorerUrl({ chainId: selectedToken?.chainId, address: selectedToken?.address })
+  console.log(blockExplorerUrl);
 
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>
