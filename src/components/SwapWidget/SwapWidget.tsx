@@ -392,7 +392,7 @@ const SwapWidget: FC = () => {
             initializeTimeout: 10 * 1000,
           });
           rfqServers.push(serverFromQueryString);
-        } else if (library && chainId) {
+        } else if (library && chainId && !customServerUrl) {
           const servers = await Registry.getServers(
             library,
             chainId,
