@@ -199,18 +199,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (orderCompleted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>
-          {t("orders.transactionCompleted")}
-        </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-      </>
-    );
-  }
-
   if (isApproving) {
     return (
       <>
@@ -249,9 +237,7 @@ const InfoSection: FC<InfoSectionProps> = ({
         <StyledInfoHeading>
           {t("orders.selectedServer", { serverUrl })}
         </StyledInfoHeading>
-        <ClearServerButton
-          handleClearServerUrl={handleClearServerUrl}
-        />
+        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
       </>
     );
   }

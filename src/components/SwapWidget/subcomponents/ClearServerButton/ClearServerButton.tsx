@@ -21,9 +21,7 @@ const ClearServerButton: FC<ClearServerButtonProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <ClearCustomServerButton
-      onClick={() => handleClearServerUrl()}
-    >
+    <ClearCustomServerButton onClick={() => handleClearServerUrl()}>
       <ClearServerButtonText>
         {t("orders.clearCustomServer")}
       </ClearServerButtonText>
