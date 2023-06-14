@@ -14,7 +14,7 @@ const useTransactionHash = ({
 }: UseBlockExplorerLinkProps): string | undefined => {
   let lastTransaction = transactions[0];
 
-  if (lastTransaction.status === "succeeded") {
+  if (lastTransaction?.status === "succeeded") {
     return lastTransaction.hash;
   } else {
     return undefined;
