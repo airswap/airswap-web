@@ -30,4 +30,4 @@ export const IconBorder = styled.div`
   border-color: ${(props) => props.theme.colors.borderGrey};
   border-radius: 100%;
   padding: 0.5rem;
-`
+`;
