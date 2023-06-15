@@ -34,17 +34,17 @@ export type InfoSectionProps = {
   orderCompleted: boolean;
   failedToFetchAllowances: boolean;
   bestTradeOption:
-    | {
-        protocol: "last-look-erc20";
-        quoteAmount: string;
-        pricing: Levels;
-      }
-    | {
-        protocol: "request-for-quote-erc20";
-        quoteAmount: string;
-        order: OrderERC20;
-      }
-    | null;
+  | {
+    protocol: "last-look-erc20";
+    quoteAmount: string;
+    pricing: Levels;
+  }
+  | {
+    protocol: "request-for-quote-erc20";
+    quoteAmount: string;
+    order: OrderERC20;
+  }
+  | null;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
@@ -91,6 +91,17 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
+      </>
+    );
+  }
+
   if (
     isConnected &&
     failedToFetchAllowances &&
@@ -104,6 +115,32 @@ const InfoSection: FC<InfoSectionProps> = ({
         <InfoSubHeading>
           {t("balances.failedToFetchAllowancesCta")}
         </InfoSubHeading>
+      </>
+    );
+  }
+
+  if (
+    isConnected &&
+    failedToFetchAllowances &&
+    (!!bestTradeOption || isWrapping)
+  ) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("balances.failedToFetchAllowances")}
+        </StyledInfoHeading>
+        <InfoSubHeading>
+          {t("balances.failedToFetchAllowancesCta")}
+        </InfoSubHeading>
+      </>
+    );
+  }
+
+  if (isFetchingOrders) {
+    return (
+      <>
+        <StyledInfoHeading>{t("orders.findingBestPrice")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
       </>
     );
   }
@@ -125,15 +162,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (orderSubmitted && !orderCompleted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-      </>
-    );
-  } else if (orderCompleted) {
+  if (orderCompleted) {
     return (
       <>
         <DoneAllIcon />
@@ -145,56 +174,12 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!bestTradeOption) {
-    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
-    );
-    if (invertPrice) {
-      price = new BigNumber(1).dividedBy(price);
-    }
+  if (orderSubmitted) {
     return (
       <>
-        <>
-          <StyledInfoHeading>
-            1 {invertPrice ? quoteTokenInfo?.symbol : baseTokenInfo?.symbol} ={" "}
-            {stringToSignificantDecimals(price.toString())}{" "}
-            {invertPrice ? baseTokenInfo?.symbol : quoteTokenInfo?.symbol}
-            <RevertPriceButton
-              icon="swap"
-              ariaLabel={t("orders.revertPrice")}
-              iconSize={1}
-              onClick={() => setInvertPrice((p) => !p)}
-            />
-          </StyledInfoHeading>
-          <FeeTextContainer>
-            <FeeText>{t("marketing.includesFee")}</FeeText>
-            <InfoButton
-              onClick={onFeeButtonClick}
-              ariaLabel={t("orders.moreInformation")}
-              icon="information-circle-outline"
-            />
-          </FeeTextContainer>
-        </>
-        {requiresApproval && (
-          <ApprovalText>
-            {t("orders.approvalRequired", { symbol: baseTokenInfo?.symbol })}
-          </ApprovalText>
-        )}
-        {showViewAllQuotes && (
-          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
-            {t("orders.viewAllQuotes")}
-            <Icon name="chevron-down" />
-          </StyledLargePillButton>
-        )}
-      </>
-    );
-  }
-
-  if (isFetchingOrders) {
-    return (
-      <>
-        <StyledInfoHeading>{t("orders.findingBestPrice")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.scanningPeers")}</InfoSubHeading>
+        <DoneAllIcon />
+        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
       </>
     );
   }
@@ -231,13 +216,49 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (hasSelectedCustomServer) {
+  if (!!bestTradeOption) {
+    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
+      baseAmount
+    );
+
+    if (invertPrice) {
+      price = new BigNumber(1).dividedBy(price);
+    }
+
     return (
       <>
-        <StyledInfoHeading>
-          {t("orders.selectedServer", { serverUrl })}
-        </StyledInfoHeading>
-        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
+        <>
+          <StyledInfoHeading>
+            1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
+            {stringToSignificantDecimals(price.toString())}{" "}
+            {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
+            <RevertPriceButton
+              icon="swap"
+              ariaLabel={t("orders.revertPrice")}
+              iconSize={1}
+              onClick={() => setInvertPrice((p) => !p)}
+            />
+          </StyledInfoHeading>
+          <FeeTextContainer>
+            <FeeText>{t("marketing.includesFee")}</FeeText>
+            <InfoButton
+              onClick={onFeeButtonClick}
+              ariaLabel={t("orders.moreInformation")}
+              icon="information-circle-outline"
+            />
+          </FeeTextContainer>
+        </>
+        {requiresApproval && (
+          <ApprovalText>
+            {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
+          </ApprovalText>
+        )}
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
       </>
     );
   }
