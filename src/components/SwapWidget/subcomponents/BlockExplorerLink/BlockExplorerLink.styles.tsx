@@ -24,3 +24,10 @@ export const LinkTextWrapper = styled.div`
 export const LinkText = styled.span`
   margin-right: 1rem;
 `;
+
+export const IconBorder = styled.div`
+  border-width: 0.5px;
+  border-color: ${(props) => props.theme.colors.borderGrey};
+  border-radius: 100%;
+  padding: 0.5rem;
+`

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
-import { Link, LinkTextWrapper, LinkText } from "./BlockExplorerLink.styles";
+import { Link, LinkTextWrapper, LinkText, IconBorder } from "./BlockExplorerLink.styles";
 
 type BlockEplorerLinkProps = {
   chainId: number;
@@ -29,7 +29,9 @@ const BlockExplorerLink = ({
     >
       <LinkTextWrapper>
         <LinkText>{t("orders.transactionLink")}</LinkText>
-        <Icon iconSize={1} name="transaction-link" />
+        <IconBorder>
+          <Icon iconSize={1} name="transaction-link" />
+        </IconBorder>
       </LinkTextWrapper>
     </Link>
   );
