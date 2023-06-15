@@ -18,8 +18,9 @@ export const LinkTextWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: 1rem;
 `;
 
 export const LinkText = styled.span`
-  margin-right: 0.25rem;
+  margin-right: 1rem;
 `;
