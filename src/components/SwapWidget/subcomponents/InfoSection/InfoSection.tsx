@@ -8,6 +8,7 @@ import { BigNumber } from "bignumber.js";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import ClearServerButton from "../ClearServerButton/ClearServerButton";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -20,6 +21,8 @@ import {
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
+  failedToFetchAllowances: boolean;
+  hasSelectedCustomServer: boolean;
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
@@ -28,7 +31,8 @@ export type InfoSectionProps = {
   isWrapping: boolean;
   orderSubmitted: boolean;
   orderCompleted: boolean;
-  failedToFetchAllowances: boolean;
+  requiresApproval: boolean;
+  showViewAllQuotes: boolean;
   bestTradeOption:
     | {
         protocol: "last-look-erc20";
@@ -41,16 +45,18 @@ export type InfoSectionProps = {
         order: OrderERC20;
       }
     | null;
-  requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  showViewAllQuotes: boolean;
-  onViewAllQuotesButtonClick: () => void;
+  serverUrl: string | null;
+  onClearServerUrlButtonClick: () => void;
   onFeeButtonClick: () => void;
+  onViewAllQuotesButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
+  failedToFetchAllowances,
+  hasSelectedCustomServer,
   isApproving,
   isConnected,
   isFetchingOrders,
@@ -59,15 +65,16 @@ const InfoSection: FC<InfoSectionProps> = ({
   isWrapping,
   orderCompleted,
   orderSubmitted,
-  failedToFetchAllowances,
-  bestTradeOption,
   requiresApproval,
+  showViewAllQuotes,
+  bestTradeOption,
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
-  showViewAllQuotes,
-  onViewAllQuotesButtonClick,
+  serverUrl,
+  onClearServerUrlButtonClick,
   onFeeButtonClick,
+  onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -239,6 +246,17 @@ const InfoSection: FC<InfoSectionProps> = ({
             <Icon name="chevron-down" />
           </StyledLargePillButton>
         )}
+      </>
+    );
+  }
+
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <ClearServerButton onClick={onClearServerUrlButtonClick} />
       </>
     );
   }

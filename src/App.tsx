@@ -14,6 +14,7 @@ import Routes from "./components/Routes/Routes";
 import InterfaceProvider from "./contexts/interface/Interface";
 import LastLookProvider from "./contexts/lastLook/LastLook";
 import { selectTheme } from "./features/userSettings/userSettingsSlice";
+import useCustomServer from "./hooks/useCustomServer";
 import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
@@ -38,6 +39,8 @@ const App = (): JSX.Element => {
 
   const renderedTheme: ThemeType =
     theme === "system" ? systemTheme : (theme as ThemeType);
+
+  useCustomServer();
 
   return (
     <>
