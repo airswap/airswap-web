@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { useAppDispatch } from "../app/hooks";
-import { setServerUrl } from "../features/userSettings/userSettingsSlice";
+import { setCustomServerUrl } from "../features/userSettings/userSettingsSlice";
 import useSearchParams from "./useSearchParams";
 
 const useCustomServer = (): void => {
@@ -10,7 +10,7 @@ const useCustomServer = (): void => {
 
   useEffect(() => {
     if (serverUrl) {
-      dispatch(setServerUrl(serverUrl));
+      dispatch(setCustomServerUrl(serverUrl));
     }
   }, [serverUrl]);
 };

@@ -1,13 +1,15 @@
 import styled from "styled-components/macro";
 
-import Button from "../../../Button/Button";
+import {
+  BorderedPill,
+  InputOrButtonBorderStyle,
+} from "../../../../style/mixins";
 
-export const ClearServerButtonText = styled.span`
-  color: gray;
-  font-size: 0.75rem;
-`;
+export const ClearCustomServerButton = styled.button`
+  ${BorderedPill};
+  ${InputOrButtonBorderStyle};
 
-export const ClearCustomServerButton = styled(Button)`
+  font-size: 1rem;
   margin-top: 1rem;
   width: fit-content;
 `;

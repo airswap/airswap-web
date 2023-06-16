@@ -5,8 +5,6 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
-import { useAppSelector } from "../../../../app/hooks";
-import { selectServerUrl } from "../../../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
@@ -23,60 +21,60 @@ import {
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
+  failedToFetchAllowances: boolean;
+  hasSelectedCustomServer: boolean;
   isApproving: boolean;
   isConnected: boolean;
-  hasSelectedCustomServer: boolean;
   isFetchingOrders: boolean;
   isPairUnavailable: boolean;
   isSwapping: boolean;
   isWrapping: boolean;
   orderSubmitted: boolean;
   orderCompleted: boolean;
-  failedToFetchAllowances: boolean;
-  bestTradeOption:
-  | {
-    protocol: "last-look-erc20";
-    quoteAmount: string;
-    pricing: Levels;
-  }
-  | {
-    protocol: "request-for-quote-erc20";
-    quoteAmount: string;
-    order: OrderERC20;
-  }
-  | null;
   requiresApproval: boolean;
+  showViewAllQuotes: boolean;
+  bestTradeOption:
+    | {
+        protocol: "last-look-erc20";
+        quoteAmount: string;
+        pricing: Levels;
+      }
+    | {
+        protocol: "request-for-quote-erc20";
+        quoteAmount: string;
+        order: OrderERC20;
+      }
+    | null;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  showViewAllQuotes: boolean;
-  onViewAllQuotesButtonClick: () => void;
-  onFeeButtonClick: () => void;
   serverUrl: string | null;
-  handleClearServerUrl: () => void;
+  onClearServerUrlButtonClick: () => void;
+  onFeeButtonClick: () => void;
+  onViewAllQuotesButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
+  failedToFetchAllowances,
+  hasSelectedCustomServer,
   isApproving,
   isConnected,
-  hasSelectedCustomServer,
   isFetchingOrders,
   isPairUnavailable,
   isSwapping,
   isWrapping,
   orderCompleted,
   orderSubmitted,
-  failedToFetchAllowances,
-  bestTradeOption,
   requiresApproval,
+  showViewAllQuotes,
+  bestTradeOption,
   baseTokenInfo,
   baseAmount,
   quoteTokenInfo,
-  showViewAllQuotes,
-  onViewAllQuotesButtonClick,
-  onFeeButtonClick,
   serverUrl,
-  handleClearServerUrl,
+  onClearServerUrlButtonClick,
+  onFeeButtonClick,
+  onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -87,17 +85,6 @@ const InfoSection: FC<InfoSectionProps> = ({
       <>
         <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
         <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
-      </>
-    );
-  }
-
-  if (hasSelectedCustomServer) {
-    return (
-      <>
-        <StyledInfoHeading>
-          {t("orders.selectedServer", { serverUrl })}
-        </StyledInfoHeading>
-        <ClearServerButton handleClearServerUrl={handleClearServerUrl} />
       </>
     );
   }
@@ -259,6 +246,17 @@ const InfoSection: FC<InfoSectionProps> = ({
             <Icon name="chevron-down" />
           </StyledLargePillButton>
         )}
+      </>
+    );
+  }
+
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <ClearServerButton onClick={onClearServerUrlButtonClick} />
       </>
     );
   }
