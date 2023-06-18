@@ -41,6 +41,7 @@ import {
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import toMaxAllowedDecimalsNumberString from "../../helpers/toMaxAllowedDecimalsNumberString";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -49,7 +50,6 @@ import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTokenAddress from "../../hooks/useTokenAddress";
-import useTokenAmountError from "../../hooks/useTokenAmountError";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
@@ -140,18 +140,10 @@ const MakeWidget: FC = () => {
     makerTokenInfo,
     makerAmount
   );
-  const makerAmountError = useTokenAmountError(makerTokenInfo, makerAmount);
-  const takerAmountError = useTokenAmountError(takerTokenInfo, takerAmount);
   const hasMissingMakerAmount =
-    !makerAmount.length ||
-    parseFloat(makerAmount) === 0 ||
-    makerAmount === "." ||
-    !!makerAmountError;
+    !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
   const hasMissingTakerAmount =
-    !takerAmount.length ||
-    parseFloat(takerAmount) === 0 ||
-    takerAmount === "." ||
-    !!takerAmountError;
+    !takerAmount.length || parseFloat(takerAmount) === 0 || takerAmount === ".";
   const maxAmount = useMaxAmount(makerTokenInfo?.address || null, true);
   const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
   const showMaxInfoButton =
@@ -236,6 +228,18 @@ const MakeWidget: FC = () => {
     );
   };
 
+  const handleMakerAmountChange = (amount: string) => {
+    setMakerAmount(
+      toMaxAllowedDecimalsNumberString(amount, makerTokenInfo?.decimals)
+    );
+  };
+
+  const handleTakerAmountChange = (amount: string) => {
+    setTakerAmount(
+      toMaxAllowedDecimalsNumberString(amount, takerTokenInfo?.decimals)
+    );
+  };
+
   const handleSwitchTokensButtonClick = () => {
     handleSetToken("base", userTokens.tokenTo || defaultTokenToAddress);
     setMakerAmount(takerAmount);
@@ -288,23 +292,24 @@ const MakeWidget: FC = () => {
         chainId: chainId!,
         library: library!,
         activeIndexers: indexerUrls,
-        nativeCurrencyAddress: nativeCurrencyAddress,
+        shouldSendToIndexers: orderType === OrderType.publicListed,
       })
     );
   };
 
   const approveToken = () => {
-    const tokenAddress = makerTokenInfo?.address!;
+    const justifiedToken =
+      makerTokenInfo?.address === nativeCurrencyAddress
+        ? wrappedNativeToken
+        : makerTokenInfo;
 
     dispatch(
       approve({
-        token:
-          tokenAddress === nativeCurrencyAddress
-            ? WETH.getAddress(chainId!)
-            : tokenAddress,
+        token: justifiedToken!,
         library,
         contractType: "Swap",
         chainId: chainId!,
+        amount: makerAmountPlusFee,
       })
     );
   };
@@ -392,16 +397,14 @@ const MakeWidget: FC = () => {
             showMaxInfoButton={showMaxInfoButton}
             baseAmount={makerAmount}
             baseTokenInfo={makerTokenInfo}
-            baseAmountError={makerAmountError}
             maxAmount={maxAmount}
             side="sell"
             quoteAmount={takerAmount}
-            quoteAmountError={takerAmountError}
             quoteTokenInfo={takerTokenInfo}
-            onBaseAmountChange={setMakerAmount}
+            onBaseAmountChange={handleMakerAmountChange}
             onChangeTokenClick={setShowTokenSelectModal}
-            onMaxButtonClick={() => setMakerAmount(maxAmount || "0")}
-            onQuoteAmountChange={setTakerAmount}
+            onMaxButtonClick={() => handleMakerAmountChange(maxAmount || "0")}
+            onQuoteAmountChange={handleTakerAmountChange}
             onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
           />
           <OrderTypeSelectorAndRateFieldWrapper>
@@ -479,7 +482,6 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        hasTokenAmountError={!!(makerAmountError || takerAmountError)}
         isLoading={hasApprovalPending || hasDepositPending}
         isNetworkUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError

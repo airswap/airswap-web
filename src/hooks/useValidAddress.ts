@@ -13,7 +13,6 @@ const useValidAddress = (address: string): boolean => {
 
   const resolveEnsAddress = async (library: Web3Provider, address: string) => {
     const value = await library.resolveName(address);
-    console.log(value);
 
     return setIsValidAddress(!!value);
   };

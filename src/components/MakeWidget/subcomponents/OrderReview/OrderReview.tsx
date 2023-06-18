@@ -7,6 +7,7 @@ import { BigNumber } from "bignumber.js";
 
 import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../../../helpers/getExpiryTranslation";
+import toRoundedNumberString from "../../../../helpers/toRoundedNumberString";
 import useInsufficientBalance from "../../../../hooks/useInsufficientBalance";
 import useShouldDepositNativeTokenAmountInfo from "../../../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { OrderType } from "../../../../types/orderTypes";
@@ -81,10 +82,18 @@ const OrderReview: FC<OrderReviewProps> = ({
     () => getExpiryTranslation(new Date(), new Date(Date.now() + expiry)),
     [expiry]
   );
-  const feeAmount = useMemo(
-    () => new BigNumber(signerAmountPlusFee).minus(signerAmount).toString(),
-    [signerAmount, signerAmountPlusFee]
-  );
+  const roundedFeeAmount = useMemo(() => {
+    const amount = new BigNumber(signerAmountPlusFee)
+      .minus(signerAmount)
+      .toString();
+    return toRoundedNumberString(amount, justifiedSignerToken?.decimals);
+  }, [signerAmount, signerAmountPlusFee, justifiedSignerToken]);
+  const roundedSignerAmountPlusFee = useMemo(() => {
+    return toRoundedNumberString(
+      signerAmountPlusFee,
+      justifiedSignerToken?.decimals
+    );
+  }, [signerAmountPlusFee, justifiedSignerToken]);
 
   return (
     <Container className={className}>
@@ -147,14 +156,16 @@ const OrderReview: FC<OrderReviewProps> = ({
             />
             :
           </ReviewListItemLabel>
-          <ReviewListItemValue>{feeAmount}</ReviewListItemValue>
+          <ReviewListItemValue>{roundedFeeAmount}</ReviewListItemValue>
         </ReviewListItem>
 
         <ReviewListItem>
           <ReviewListItemLabel>
             {t("orders.totalSpending")}:
           </ReviewListItemLabel>
-          <ReviewListItemValue>{signerAmountPlusFee}</ReviewListItemValue>
+          <ReviewListItemValue>
+            {roundedSignerAmountPlusFee}
+          </ReviewListItemValue>
         </ReviewListItem>
 
         {justifiedSignerToken?.address === wrappedNativeToken?.address && (

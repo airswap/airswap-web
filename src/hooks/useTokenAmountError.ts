@@ -10,7 +10,6 @@ const useTokenAmountError = (
   amount: string
 ): AppError | undefined => {
   return useMemo(() => {
-    console.log(tokenInfo);
     if (!tokenInfo || !amount) {
       return undefined;
     }

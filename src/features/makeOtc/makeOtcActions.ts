@@ -19,12 +19,12 @@ export const createOtcOrder = createAsyncThunk(
   "make-otc/createOtcOrder",
   async (
     params: {
+      activeIndexers: string[] | null;
       chainId: number;
       library: Web3Provider;
       signerTokenInfo: TokenInfo;
       senderTokenInfo: TokenInfo;
-      activeIndexers: string[] | null;
-      nativeCurrencyAddress: string;
+      shouldSendToIndexers: boolean;
     } & UnsignedOrderERC20,
     { dispatch }
   ) => {
@@ -94,10 +94,7 @@ export const createOtcOrder = createAsyncThunk(
       };
 
       dispatch(setUserOrder(fullOrder));
-      if (
-        params.activeIndexers &&
-        fullOrder.senderWallet === params.nativeCurrencyAddress
-      ) {
+      if (params.shouldSendToIndexers && params.activeIndexers) {
         sendOrderToIndexers(fullOrder, params.activeIndexers);
       }
       notifyOrderCreated(fullOrder);

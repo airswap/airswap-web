@@ -4,12 +4,14 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
+import { constants } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
@@ -217,12 +219,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const approveToken = () => {
+    if (!senderToken || !senderAmount) {
+      return;
+    }
+
     dispatch(
       approve({
-        token: senderToken?.address!,
+        token: senderToken,
         library,
         contractType: "Swap",
         chainId: chainId!,
+        amount: senderAmount,
       })
     );
   };
@@ -240,7 +247,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
-    console.log(action);
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
     }

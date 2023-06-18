@@ -49,11 +49,11 @@ export const getActionButtonTranslation = (
   }
 
   if (widgetState === MakeWidgetState.list) {
-    return "Review";
+    return i18n.t("common.review");
   }
 
   if (shouldDepositNativeToken) {
-    return `Wrap ${makerTokenSymbol}`;
+    return `${i18n.t("common.wrap")} ${makerTokenSymbol}`;
   }
 
   if (hasInsufficientAllowance) {
