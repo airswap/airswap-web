@@ -1,5 +1,6 @@
-import { latest } from "immer/dist/internal";
 import React from "react";
+
+import { latest } from "immer/dist/internal";
 
 import { SubmittedTransaction } from "../../../features/transactions/transactionsSlice";
 
@@ -16,10 +17,10 @@ const useTransactionHash = ({
   nonce,
 }: UseBlockExplorerLinkProps): string | undefined => {
   const latestTransaction = transactions.filter((tx: SubmittedTransaction) => {
-    return tx.nonce === nonce && tx.status === 'succeeded'
-  })
+    return tx.nonce === nonce && tx.status === "succeeded";
+  });
 
-  return latestTransaction ? latestTransaction[0]?.hash : undefined
+  return latestTransaction ? latestTransaction[0]?.hash : undefined;
 };
 
 export default useTransactionHash;
