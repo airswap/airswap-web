@@ -4,6 +4,8 @@ import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
+import TransactionLink from "../../subcomponents/TransactionLink/TransactionLink";
+
 
 type ContainerProps = {
   disabled: boolean;
@@ -105,31 +107,31 @@ export const Container = styled.button<ContainerProps>`
   &:hover {
     ${TokenName} {
       color: ${({ theme, disabled }) =>
-        disabled
-          ? theme.colors.lightGrey
-          : theme.name === "dark"
-          ? theme.colors.white
-          : theme.colors.primary};
+    disabled
+      ? theme.colors.lightGrey
+      : theme.name === "dark"
+        ? theme.colors.white
+        : theme.colors.primary};
     }
 
     ${Balance} {
       color: ${({ theme }) =>
-        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
 
     ${DeleteIcon} {
       color: ${(props) =>
-        props.disabled
-          ? props.theme.colors.lightGrey
-          : props.theme.colors.white};
+    props.disabled
+      ? props.theme.colors.lightGrey
+      : props.theme.colors.white};
     }
   }
 
   @media ${breakPoints.phoneOnly} {
     grid-template-columns: ${(props) =>
-      props.showDeleteButton
-        ? "1.25rem calc(100% - 7.5rem) 3.25rem"
-        : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
+    props.showDeleteButton
+      ? "1.25rem calc(100% - 7.5rem) 3.25rem"
+      : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
     align-items: flex-start;
     height: 2.5rem;
   }
@@ -156,5 +158,13 @@ export const Symbol = styled.h3`
     margin-right: 0;
     line-height: 1;
     font-size: 1rem;
+  }
+`;
+
+export const StyledTransactionLink = styled(TransactionLink)`
+  margin-left: -0.5rem;
+  align-items: center;
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
   }
 `;

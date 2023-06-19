@@ -2,8 +2,6 @@ import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
-
-import useBlockExplorerUrl from "../../hooks/useBlockExplorerUrl";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -119,12 +117,6 @@ const TokenSelect: FC<TokenSelectProps> = ({
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
-
-  // TODO: after design is ready, use blockExplorerUrl for value
-  const blockExplorerUrl = useBlockExplorerUrl({
-    chainId: selectedToken?.chainId,
-    address: selectedToken?.address,
-  });
 
   return (
     <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>

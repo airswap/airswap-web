@@ -9,6 +9,7 @@ import {
   Balance,
   DeleteIcon,
   TokenSymbolAndName,
+  StyledTransactionLink,
 } from "./TokenButton.styles";
 
 export type TokenRowProps = {
@@ -58,6 +59,9 @@ const TokenButton = ({
     }
   };
 
+  // const blockExplorerUrl = useBlockExplorer({ chainId: token.chainId, address: token.address })
+  // console.log(blockExplorerUrl)
+
   return (
     <Container
       onClick={onClickHandler}
@@ -76,6 +80,8 @@ const TokenButton = ({
       ) : (
         <Balance>{stringToSignificantDecimals(balance)}</Balance>
       )}
+
+      <StyledTransactionLink chainId={token.chainId} address={token.address} />
     </Container>
   );
 };
