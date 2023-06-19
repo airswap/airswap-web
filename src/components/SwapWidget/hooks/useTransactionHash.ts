@@ -1,9 +1,11 @@
+import { latest } from "immer/dist/internal";
 import React from "react";
 
 import { SubmittedTransaction } from "../../../features/transactions/transactionsSlice";
 
 interface UseBlockExplorerLinkProps {
   transactions: SubmittedTransaction[];
+  nonce: string | undefined;
 }
 /**
  *
@@ -11,14 +13,13 @@ interface UseBlockExplorerLinkProps {
  */
 const useTransactionHash = ({
   transactions,
+  nonce,
 }: UseBlockExplorerLinkProps): string | undefined => {
-  let lastTransaction = transactions[0];
+  const latestTransaction = transactions.filter((tx: SubmittedTransaction) => {
+    return tx.nonce === nonce && tx.status === 'succeeded'
+  })
 
-  if (lastTransaction?.status === "succeeded") {
-    return lastTransaction.hash;
-  } else {
-    return undefined;
-  }
+  return latestTransaction ? latestTransaction[0]?.hash : undefined
 };
 
 export default useTransactionHash;
