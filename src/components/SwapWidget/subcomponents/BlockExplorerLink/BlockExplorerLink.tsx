@@ -5,20 +5,21 @@ import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
 import { Container, Link, IconContainer } from "./BlockExplorerLink.styles";
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 
 type BlockEplorerLinkProps = {
   chainId: number;
-  txHash: string;
+  transaction: SubmittedTransaction | undefined
   className?: string;
 };
 
 const BlockExplorerLink = ({
   chainId,
-  txHash,
+  transaction,
   className = "",
 }: BlockEplorerLinkProps) => {
   const { t } = useTranslation();
-
+  const transactionHash = transaction?.hash || ""
   return (
     <>
       <Container>
@@ -27,7 +28,7 @@ const BlockExplorerLink = ({
           target="_blank"
           rel="noreferrer"
           aria-label={t("orders.transactionLink")}
-          href={`${getReceiptUrl(chainId, txHash)}`}
+          href={`${getReceiptUrl(chainId, transactionHash)}`}
         >
           {t("orders.transactionLink")}
         </Link>
@@ -36,7 +37,7 @@ const BlockExplorerLink = ({
           target="_blank"
           rel="noreferrer"
           aria-label={t("orders.transactionLink")}
-          href={`${getReceiptUrl(chainId, txHash)}`}
+          href={`${getReceiptUrl(chainId, transactionHash)}`}
         >
           <IconContainer>
             <Icon iconSize={1} name="transaction-link" />

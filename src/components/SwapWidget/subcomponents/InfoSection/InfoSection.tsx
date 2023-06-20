@@ -19,6 +19,7 @@ import {
   StyledLargePillButton,
   DoneAllIcon,
 } from "./InfoSection.styles";
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 
 export type InfoSectionProps = {
   isApproving: boolean;
@@ -31,17 +32,17 @@ export type InfoSectionProps = {
   orderCompleted: boolean;
   failedToFetchAllowances: boolean;
   bestTradeOption:
-    | {
-        protocol: "last-look-erc20";
-        quoteAmount: string;
-        pricing: Levels;
-      }
-    | {
-        protocol: "request-for-quote-erc20";
-        quoteAmount: string;
-        order: OrderERC20;
-      }
-    | null;
+  | {
+    protocol: "last-look-erc20";
+    quoteAmount: string;
+    pricing: Levels;
+  }
+  | {
+    protocol: "request-for-quote-erc20";
+    quoteAmount: string;
+    order: OrderERC20;
+  }
+  | null;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
@@ -50,7 +51,7 @@ export type InfoSectionProps = {
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
   chainId: number;
-  txHash: string | any;
+  transaction: SubmittedTransaction | undefined
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -72,7 +73,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
   chainId,
-  txHash,
+  transaction,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -155,7 +156,7 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        <BlockExplorerLink chainId={chainId} txHash={txHash} />
+        <BlockExplorerLink chainId={chainId} transaction={transaction} />
       </>
     );
   }
