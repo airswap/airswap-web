@@ -6,8 +6,8 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem;
-  margin-top: 1rem
-`
+  margin-top: 1rem;
+`;
 
 export const Link = styled.a`
   color: ${(props) => props.theme.colors.lightGrey};

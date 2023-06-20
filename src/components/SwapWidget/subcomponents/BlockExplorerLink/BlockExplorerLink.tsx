@@ -4,11 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
-import {
-  Container,
-  Link,
-  IconContainer,
-} from "./BlockExplorerLink.styles";
+import { Container, Link, IconContainer } from "./BlockExplorerLink.styles";
 
 type BlockEplorerLinkProps = {
   chainId: number;

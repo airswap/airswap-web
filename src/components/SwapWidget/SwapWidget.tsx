@@ -110,12 +110,12 @@ import StyledSwapWidget, {
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
-import useTransactionHash from "./hooks/useTransactionHash";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
+import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 
 const SwapWidget: FC = () => {
   // Redux
@@ -210,11 +210,6 @@ const SwapWidget: FC = () => {
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
-  // const txHash = useTransactionHash({
-  //   transactions,
-  //   nonce: 'none'
-  // });
-
   useEffect(() => {
     setAllowanceFetchFailed(false);
     unsubscribeFromGasPrice();
@@ -258,7 +253,7 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     setAllowanceFetchFailed(
       allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
+      allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
 
@@ -272,11 +267,9 @@ const SwapWidget: FC = () => {
     [quoteAmount]
   );
 
-  const nonce = bestTradeOption?.order?.nonce;
-  const txHash = useTransactionHash({
-    transactions,
-    nonce,
-  });
+  const bestTradeOptionTransaction = useBestTradeOptionTransaction({
+    nonce: bestTradeOption?.order?.nonce
+  })
 
   useEffect(() => {
     if (!active) {
@@ -315,7 +308,7 @@ const SwapWidget: FC = () => {
     if (!tokenAddress) return false;
     if (
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
+      tokenAddress
       ] === undefined
     ) {
       // We don't currently know what the user's allowance is, this is an error
@@ -328,7 +321,7 @@ const SwapWidget: FC = () => {
     }
     return new BigNumber(
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
+      tokenAddress
       ]!
     )
       .div(10 ** (baseTokenInfo?.decimals || 18))
@@ -351,9 +344,8 @@ const SwapWidget: FC = () => {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
-        tokenToAlias || tokenTo
-      }`,
+      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${tokenToAlias || tokenTo
+        }`,
     });
   };
 
@@ -831,7 +823,7 @@ const SwapWidget: FC = () => {
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
             chainId={chainId || 1}
-            txHash={txHash || ""}
+            txHash={bestTradeOptionTransaction?.hash || ""}
           />
         </InfoContainer>
         <ButtonContainer>
