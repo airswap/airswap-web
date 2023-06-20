@@ -2,6 +2,7 @@ import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
+
 import {
   AmountInput,
   AmountAndDetailsContainer,
