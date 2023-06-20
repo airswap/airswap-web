@@ -23,7 +23,7 @@ interface ExtendedSubmittedTransaction extends SubmittedTransaction {
 
 const useBestTradeOptionTransaction = ({
   nonce,
-  quoteAmount
+  quoteAmount,
 }: UseBestTradeOptionTransactionProps): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
   const bestTradeOption = useAppSelector(selectBestOption);
