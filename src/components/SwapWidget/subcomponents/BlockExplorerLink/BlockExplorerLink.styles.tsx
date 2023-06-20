@@ -2,9 +2,14 @@ import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../../../style/mixins";
 
-export const Link = styled.a`
-  margin-left: 0.5rem;
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
   padding: 0.5rem;
+  margin-top: 1rem
+`
+
+export const Link = styled.a`
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
@@ -14,20 +19,10 @@ export const Link = styled.a`
   ${BorderlessButtonStyle}
 `;
 
-export const LinkTextWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 1rem;
-`;
-
-export const LinkText = styled.span`
-  margin-right: 1rem;
-`;
-
-export const IconBorder = styled.div`
+export const IconContainer = styled.div`
   border-width: 0.5px;
   border-color: ${(props) => props.theme.colors.borderGrey};
   border-radius: 100%;
   padding: 0.5rem;
+  margin-left: 1rem;
 `;

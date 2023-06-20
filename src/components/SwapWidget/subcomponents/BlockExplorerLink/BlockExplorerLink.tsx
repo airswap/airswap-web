@@ -5,10 +5,9 @@ import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../../../Icon/Icon";
 import {
+  Container,
   Link,
-  LinkTextWrapper,
-  LinkText,
-  IconBorder,
+  IconContainer,
 } from "./BlockExplorerLink.styles";
 
 type BlockEplorerLinkProps = {
@@ -25,20 +24,30 @@ const BlockExplorerLink = ({
   const { t } = useTranslation();
 
   return (
-    <Link
-      className={className}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={t("wallet.transactionLink")}
-      href={`${getReceiptUrl(chainId, txHash)}`}
-    >
-      <LinkTextWrapper>
-        <LinkText>{t("orders.transactionLink")}</LinkText>
-        <IconBorder>
-          <Icon iconSize={1} name="transaction-link" />
-        </IconBorder>
-      </LinkTextWrapper>
-    </Link>
+    <>
+      <Container>
+        <Link
+          className={className}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("orders.transactionLink")}
+          href={`${getReceiptUrl(chainId, txHash)}`}
+        >
+          {t("orders.transactionLink")}
+        </Link>
+        <Link
+          className={className}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("orders.transactionLink")}
+          href={`${getReceiptUrl(chainId, txHash)}`}
+        >
+          <IconContainer>
+            <Icon iconSize={1} name="transaction-link" />
+          </IconContainer>
+        </Link>
+      </Container>
+    </>
   );
 };
 
