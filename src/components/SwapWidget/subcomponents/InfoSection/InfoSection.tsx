@@ -31,17 +31,17 @@ export type InfoSectionProps = {
   orderCompleted: boolean;
   failedToFetchAllowances: boolean;
   bestTradeOption:
-  | {
-    protocol: "last-look-erc20";
-    quoteAmount: string;
-    pricing: Levels;
-  }
-  | {
-    protocol: "request-for-quote-erc20";
-    quoteAmount: string;
-    order: OrderERC20;
-  }
-  | null;
+    | {
+        protocol: "last-look-erc20";
+        quoteAmount: string;
+        pricing: Levels;
+      }
+    | {
+        protocol: "request-for-quote-erc20";
+        quoteAmount: string;
+        order: OrderERC20;
+      }
+    | null;
   requiresApproval: boolean;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;

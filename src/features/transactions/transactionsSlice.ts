@@ -56,22 +56,22 @@ export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
   order: OrderERC20;
 }
 
-export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder { }
+export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}
 
-export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder { }
+export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {}
 
 export interface LastLookTransaction
   extends SubmittedTransaction,
-  SubmittedLastLookOrder { }
+    SubmittedLastLookOrder {}
 export interface RfqTransaction
   extends SubmittedTransaction,
-  SubmittedRFQOrder { }
+    SubmittedRFQOrder {}
 
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
 }
 
-export interface SubmittedCancellation extends SubmittedTransaction { }
+export interface SubmittedCancellation extends SubmittedTransaction {}
 
 export interface SubmittedDepositOrder extends SubmittedTransaction {
   order: DepositOrWithdrawOrder;
@@ -103,7 +103,7 @@ function updateTransaction(params: {
       (s) =>
         s.nonce === nonce &&
         (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
-        signerWallet!.toLowerCase()
+          signerWallet!.toLowerCase()
     );
     if (swap) {
       swap.timestamp = Date.now();

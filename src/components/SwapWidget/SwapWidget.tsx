@@ -109,13 +109,13 @@ import StyledSwapWidget, {
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
+import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
-import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 
 const SwapWidget: FC = () => {
   // Redux
@@ -268,8 +268,9 @@ const SwapWidget: FC = () => {
   );
 
   const bestTradeOptionTransaction = useBestTradeOptionTransaction({
-    nonce: bestTradeOption?.order?.nonce
-  })
+    nonce: bestTradeOption?.order?.nonce,
+    quoteAmount
+  });
 
   useEffect(() => {
     if (!active) {
