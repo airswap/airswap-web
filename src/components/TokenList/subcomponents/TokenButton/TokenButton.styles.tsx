@@ -107,31 +107,31 @@ export const Container = styled.button<ContainerProps>`
   &:hover {
     ${TokenName} {
       color: ${({ theme, disabled }) =>
-    disabled
-      ? theme.colors.lightGrey
-      : theme.name === "dark"
-        ? theme.colors.white
-        : theme.colors.primary};
+        disabled
+          ? theme.colors.lightGrey
+          : theme.name === "dark"
+          ? theme.colors.white
+          : theme.colors.primary};
     }
 
     ${Balance} {
       color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+        theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
 
     ${DeleteIcon} {
       color: ${(props) =>
-    props.disabled
-      ? props.theme.colors.lightGrey
-      : props.theme.colors.white};
+        props.disabled
+          ? props.theme.colors.lightGrey
+          : props.theme.colors.white};
     }
   }
 
   @media ${breakPoints.phoneOnly} {
     grid-template-columns: ${(props) =>
-    props.showDeleteButton
-      ? "1.25rem calc(100% - 7.5rem) 3.25rem"
-      : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
+      props.showDeleteButton
+        ? "1.25rem calc(100% - 7.5rem) 3.25rem"
+        : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
     align-items: flex-start;
     height: 2.5rem;
   }
@@ -178,7 +178,7 @@ export const TooltipStyle = css`
   background: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
-  `
+`;
 
 export const Tooltip = styled.div`
   display: none;
