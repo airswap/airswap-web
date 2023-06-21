@@ -71,8 +71,7 @@ const TokenButton = ({
       <TokenSymbolAndName>
         <Symbol>{token.symbol}</Symbol>
         <TokenNameContainer>
-          <TokenName>{token.name}
-          </TokenName>
+          <TokenName>{token.name}</TokenName>
           <StyledIcon chainId={token.chainId} address={token.address} />
         </TokenNameContainer>
       </TokenSymbolAndName>
@@ -82,7 +81,6 @@ const TokenButton = ({
       ) : (
         <Balance>{stringToSignificantDecimals(balance)}</Balance>
       )}
-
     </Container>
   );
 };
