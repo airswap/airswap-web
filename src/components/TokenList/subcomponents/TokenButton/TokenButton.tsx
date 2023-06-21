@@ -5,11 +5,12 @@ import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
   Container,
   Symbol,
+  TokenNameContainer,
   TokenName,
   Balance,
   DeleteIcon,
   TokenSymbolAndName,
-  StyledTransactionLink,
+  StyledIcon,
 } from "./TokenButton.styles";
 
 export type TokenRowProps = {
@@ -59,9 +60,6 @@ const TokenButton = ({
     }
   };
 
-  // const blockExplorerUrl = useBlockExplorer({ chainId: token.chainId, address: token.address })
-  // console.log(blockExplorerUrl)
-
   return (
     <Container
       onClick={onClickHandler}
@@ -72,7 +70,11 @@ const TokenButton = ({
 
       <TokenSymbolAndName>
         <Symbol>{token.symbol}</Symbol>
-        <TokenName>{token.name}</TokenName>
+        <TokenNameContainer>
+          <TokenName>{token.name}
+          </TokenName>
+          <StyledIcon chainId={token.chainId} address={token.address} />
+        </TokenNameContainer>
       </TokenSymbolAndName>
 
       {showDeleteButton ? (
@@ -81,7 +83,6 @@ const TokenButton = ({
         <Balance>{stringToSignificantDecimals(balance)}</Balance>
       )}
 
-      <StyledTransactionLink chainId={token.chainId} address={token.address} />
     </Container>
   );
 };
