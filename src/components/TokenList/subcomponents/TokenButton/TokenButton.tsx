@@ -1,8 +1,9 @@
-import { TokenInfo } from "@airswap/types";
 import { useTranslation } from "react-i18next";
 
+import { TokenInfo } from "@airswap/types";
+
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import { StyledTooltip } from "../../../MakeWidget/MakeWidget.styles";
+
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
   Container,
@@ -13,8 +14,10 @@ import {
   DeleteIcon,
   TokenSymbolAndName,
   StyledIcon,
-  StyledEtherscanTooltip
+  TooltipStyle,
+  Tooltip,
 } from "./TokenButton.styles";
+
 
 export type TokenRowProps = {
   /**
@@ -51,7 +54,7 @@ const TokenButton = ({
   disabled = false,
   showDeleteButton = false,
 }: TokenRowProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const onClickHandler = () => {
     if (disabled) {
       return;
@@ -76,11 +79,8 @@ const TokenButton = ({
         <Symbol>{token.symbol}</Symbol>
         <TokenNameContainer>
           <TokenName>{token.name}</TokenName>
-
           <StyledIcon chainId={token.chainId} address={token.address} />
-          <StyledEtherscanTooltip>
-            {t("common.verifyEtherscan")}
-          </StyledEtherscanTooltip>
+          <Tooltip>{t("common.verifyEtherscan")}</Tooltip>
         </TokenNameContainer>
       </TokenSymbolAndName>
 

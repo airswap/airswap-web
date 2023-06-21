@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components/macro";
+import { css } from "styled-components/macro";
 
 import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../../../style/mixins";
@@ -161,26 +162,28 @@ export const Symbol = styled.h3`
   }
 `;
 
-export const StyledEtherscanTooltip = styled.div`
-  display: none;
+export const TooltipStyle = css`
   position: absolute;
   white-space: nowrap;
-  text-align: left;
-  line-height: 1.25;
-  font-size: 1rem;
-  font-weight: 400;
-  padding-right: 0.15rem;
-  padding-left: 0.15rem;
-  top: 100%;
+  top: 85%;
   left: 50%;
-  border-color: ${(props) => props.theme.name === "dark" ? props.theme.colors.black : props.theme.colors.lightGrey};
-  border-width: 0.5px;
-  border-radius: 2px;
   z-index: 1;
-  };
-  color: ${(props) =>
-    props.theme.name === "dark" ? props.theme.colors.lightGrey : props.theme.colors.lightGrey};
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2px;
+  padding: 0.5rem;
+  line-height: 1.2;
+  font-size: 0.875rem;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
+  filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
+  `
 
+export const Tooltip = styled.div`
+  display: none;
+
+  ${TooltipStyle};
 `;
 
 export const StyledIcon = styled(TransactionLink)`
@@ -191,7 +194,7 @@ export const StyledIcon = styled(TransactionLink)`
     color: ${(props) => props.theme.colors.white};
   }
 
-   &:hover + ${StyledEtherscanTooltip} {
+  &:hover + ${Tooltip} {
     display: block;
   }
 `;
