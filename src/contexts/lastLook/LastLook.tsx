@@ -72,8 +72,8 @@ const LastLookProvider: FC = ({ children }) => {
             const pairPricing = pricing.find(
               (p) =>
                 p &&
-                p.baseToken === pair.baseToken &&
-                p.quoteToken === pair.quoteToken
+                p.baseToken.toLowerCase() === pair.baseToken.toLowerCase() &&
+                p.quoteToken.toLowerCase() === pair.quoteToken.toLowerCase()
             );
             if (pairPricing) {
               resolve(pairPricing);

@@ -88,8 +88,8 @@ export const selectBestPricing = createSelector(
       const locatorPricing = pricing[locator];
       const relevantIndex = locatorPricing.findIndex(
         (p) =>
-          p.quoteToken === quoteToken.address &&
-          p.baseToken === baseToken.address
+          p.quoteToken.toLowerCase() === quoteToken.address.toLowerCase() &&
+          p.baseToken.toLowerCase() === baseToken.address.toLowerCase()
       );
 
       if (relevantIndex === -1) return;

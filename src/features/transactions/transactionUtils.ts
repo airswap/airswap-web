@@ -7,7 +7,10 @@ import { Action, Dispatch } from "@reduxjs/toolkit";
 import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
 import { mineTransaction, revertTransaction } from "./transactionActions";
-import { SubmittedTransaction } from "./transactionsSlice";
+import {
+  SubmittedTransaction,
+  SubmittedTransactionWithOrder,
+} from "./transactionsSlice";
 
 const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
@@ -175,8 +178,15 @@ async function checkPendingTransactionState(
   }
 }
 
+const isTransactionWithOrder = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedTransactionWithOrder => {
+  return "order" in transaction;
+};
+
 export {
   getSenderWalletForWrapperSwapLog,
   getSwapArgsFromWrappedSwapForLog,
   checkPendingTransactionState,
+  isTransactionWithOrder,
 };

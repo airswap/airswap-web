@@ -1,22 +1,29 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getReceiptUrl } from "@airswap/utils";
 
-import Icon from "../../../Icon/Icon";
-import { Link } from "./TransactionLink.style";
+import Icon from "../Icon/Icon";
+import { Label, Link } from "./TransactionLink.style";
 
 type TransactionLinkProps = {
+  hideLabel?: boolean;
   chainId: number;
   hash: string;
   className?: string;
 };
 
 const TransactionLink = ({
+  hideLabel = false,
   chainId,
   hash,
   className = "",
 }: TransactionLinkProps) => {
   const { t } = useTranslation();
+  const receiptUrl = useMemo(
+    () => getReceiptUrl(chainId, hash),
+    [chainId, hash]
+  );
 
   return (
     <Link
@@ -24,8 +31,9 @@ const TransactionLink = ({
       target="_blank"
       rel="noreferrer"
       aria-label={t("wallet.transactionLink")}
-      href={`${getReceiptUrl(chainId, hash)}`}
+      href={receiptUrl}
     >
+      {!hideLabel && <Label>{t("orders.transactionLink")}</Label>}
       <Icon iconSize={1} name="transaction-link" />
     </Link>
   );

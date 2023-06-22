@@ -5,10 +5,11 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
+import TransactionLink from "../../../TransactionLink/TransactionLink";
 import { InfoSubHeading } from "../../../Typography/Typography";
-import BlockExplorerLink from "../BlockExplorerLink/BlockExplorerLink";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -18,8 +19,8 @@ import {
   ApprovalText,
   StyledLargePillButton,
   DoneAllIcon,
+  StyledTransactionLink,
 } from "./InfoSection.styles";
-import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 
 export type InfoSectionProps = {
   isApproving: boolean;
@@ -28,30 +29,30 @@ export type InfoSectionProps = {
   isPairUnavailable: boolean;
   isSwapping: boolean;
   isWrapping: boolean;
+  failedToFetchAllowances: boolean;
   orderSubmitted: boolean;
   orderCompleted: boolean;
-  failedToFetchAllowances: boolean;
-  bestTradeOption:
-  | {
-    protocol: "last-look-erc20";
-    quoteAmount: string;
-    pricing: Levels;
-  }
-  | {
-    protocol: "request-for-quote-erc20";
-    quoteAmount: string;
-    order: OrderERC20;
-  }
-  | null;
   requiresApproval: boolean;
+  showViewAllQuotes: boolean;
+  bestTradeOption:
+    | {
+        protocol: "last-look-erc20";
+        quoteAmount: string;
+        pricing: Levels;
+      }
+    | {
+        protocol: "request-for-quote-erc20";
+        quoteAmount: string;
+        order: OrderERC20;
+      }
+    | null;
+  chainId: number;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
-  showViewAllQuotes: boolean;
+  transaction?: SubmittedTransaction;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
-  chainId: number;
-  transaction: SubmittedTransaction | undefined
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
@@ -64,16 +65,16 @@ const InfoSection: FC<InfoSectionProps> = ({
   orderCompleted,
   orderSubmitted,
   failedToFetchAllowances,
-  bestTradeOption,
   requiresApproval,
+  showViewAllQuotes,
   baseTokenInfo,
   baseAmount,
+  bestTradeOption,
+  chainId,
   quoteTokenInfo,
-  showViewAllQuotes,
+  transaction,
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
-  chainId,
-  transaction,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -156,7 +157,9 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        <BlockExplorerLink chainId={chainId} transaction={transaction} />
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }
@@ -167,6 +170,9 @@ const InfoSection: FC<InfoSectionProps> = ({
         <DoneAllIcon />
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }

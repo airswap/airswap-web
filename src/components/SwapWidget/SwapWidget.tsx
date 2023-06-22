@@ -76,11 +76,7 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../features/transactions/transactionActions";
-import {
-  ProtocolType,
-  selectTransactions,
-} from "../../features/transactions/transactionsSlice";
-import { selectOrderTransactions } from "../../features/transactions/transactionsSlice";
+import { ProtocolType } from "../../features/transactions/transactionsSlice";
 import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
@@ -133,13 +129,11 @@ const SwapWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
-  const lastTransaction = useAppSelector(selectTransactions)[0];
   const {
     indexerUrls,
     orders: indexerOrders,
-    bestSwapOrder,
+    bestSwapOrder: bestIndexerOrder,
   } = useAppSelector(selectIndexerReducer);
-  const transactions = useAppSelector(selectOrderTransactions);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -253,7 +247,7 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     setAllowanceFetchFailed(
       allowances.swap.status === "failed" ||
-      allowances.wrapper.status === "failed"
+        allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
 
@@ -267,10 +261,13 @@ const SwapWidget: FC = () => {
     [quoteAmount]
   );
 
-  const bestTradeOptionTransaction = useBestTradeOptionTransaction({
-    nonce: bestTradeOption?.order?.nonce,
-    quoteAmount,
-  });
+  const transactionOrderNonce =
+    bestTradeOption?.order?.nonce || bestIndexerOrder?.nonce;
+  const activeTransaction = useBestTradeOptionTransaction(
+    baseTokenInfo,
+    transactionOrderNonce,
+    bestTradeOption?.quoteAmount
+  );
 
   useEffect(() => {
     if (!active) {
@@ -309,7 +306,7 @@ const SwapWidget: FC = () => {
     if (!tokenAddress) return false;
     if (
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-      tokenAddress
+        tokenAddress
       ] === undefined
     ) {
       // We don't currently know what the user's allowance is, this is an error
@@ -322,7 +319,7 @@ const SwapWidget: FC = () => {
     }
     return new BigNumber(
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-      tokenAddress
+        tokenAddress
       ]!
     )
       .div(10 ** (baseTokenInfo?.decimals || 18))
@@ -345,8 +342,9 @@ const SwapWidget: FC = () => {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${tokenToAlias || tokenTo
-        }`,
+      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
+        tokenToAlias || tokenTo
+      }`,
     });
   };
 
@@ -803,28 +801,29 @@ const SwapWidget: FC = () => {
           <InfoSection
             orderSubmitted={showOrderSubmitted}
             orderCompleted={
-              showOrderSubmitted && lastTransaction?.status === "succeeded"
+              showOrderSubmitted && activeTransaction?.status === "succeeded"
             }
             isConnected={active}
             isPairUnavailable={pairUnavailable}
             isFetchingOrders={isRequestingQuotes}
             isApproving={isApproving}
             isSwapping={isSwapping}
-            failedToFetchAllowances={allowanceFetchFailed}
-            // @ts-ignore
-            bestTradeOption={bestTradeOption}
-            requiresApproval={
-              bestRfqOrder && !hasSufficientAllowance(baseToken!)
-            }
-            baseTokenInfo={baseTokenInfo}
-            baseAmount={baseAmount}
-            quoteTokenInfo={quoteTokenInfo}
             isWrapping={isWrapping}
             showViewAllQuotes={indexerOrders.length > 0}
+            failedToFetchAllowances={allowanceFetchFailed}
+            requiresApproval={
+              (bestRfqOrder || bestIndexerOrder) &&
+              !hasSufficientAllowance(baseToken!)
+            }
+            // @ts-ignore
+            bestTradeOption={bestTradeOption}
+            baseTokenInfo={baseTokenInfo}
+            baseAmount={baseAmount}
+            chainId={chainId || 1}
+            quoteTokenInfo={quoteTokenInfo}
+            transaction={activeTransaction}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
-            chainId={chainId || 1}
-            transaction={bestTradeOptionTransaction}
           />
         </InfoContainer>
         <ButtonContainer>

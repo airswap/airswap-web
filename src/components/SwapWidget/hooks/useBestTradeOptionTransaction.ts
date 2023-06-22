@@ -1,46 +1,40 @@
 import { useMemo } from "react";
 
+import { TokenInfo } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
+
 import { useAppSelector } from "../../../app/hooks";
-import { selectBestOption } from "../../../features/orders/ordersSlice";
+import { isTransactionWithOrder } from "../../../features/transactions/transactionUtils";
 import {
   selectOrderTransactions,
   SubmittedTransaction,
 } from "../../../features/transactions/transactionsSlice";
 
-type UseBestTradeOptionTransactionProps = {
-  nonce: string | undefined;
-  quoteAmount: string | undefined;
-};
-
-interface Order {
-  senderAmount: string;
-  signerAmount: string;
-}
-
-interface ExtendedSubmittedTransaction extends SubmittedTransaction {
-  order?: Order;
-}
-
-const useBestTradeOptionTransaction = ({
-  nonce,
-  quoteAmount,
-}: UseBestTradeOptionTransactionProps): SubmittedTransaction | undefined => {
+const useBestTradeOptionTransaction = (
+  tokenInfo: TokenInfo | null,
+  nonce?: string,
+  quoteAmount?: string
+): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
-  const bestTradeOption = useAppSelector(selectBestOption);
 
   return useMemo(() => {
-    if (bestTradeOption?.protocol === "request-for-quote-erc20") {
-      return transactions.find(
-        (transaction) => transaction.nonce === bestTradeOption?.order?.nonce
-      );
-    } else {
-      return transactions.find(
-        (transaction: ExtendedSubmittedTransaction) =>
-          transaction.order?.senderAmount ===
-          (Number(quoteAmount) * 10 ** 6).toString()
-      );
+    if (!quoteAmount || !tokenInfo) {
+      return undefined;
     }
-  }, [transactions, nonce]);
+
+    return transactions.find((transaction) => {
+      if (!isTransactionWithOrder(transaction)) {
+        return false;
+      }
+
+      const senderAmount = toAtomicString(quoteAmount, tokenInfo.decimals);
+
+      return (
+        transaction.order.nonce === nonce ||
+        transaction.order.senderAmount === senderAmount
+      );
+    });
+  }, [transactions, nonce, quoteAmount]);
 };
 
 export default useBestTradeOptionTransaction;
