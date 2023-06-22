@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { compareAsc, format } from "date-fns";
 
+import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
 import {
   Container,
   Strong,
@@ -10,7 +11,6 @@ import {
   StyledTooltip,
   Text,
 } from "./ExpiryIndicator.styles";
-import { getExpiryTranslation } from "./helpers";
 
 type ExpiryIndicatorProps = {
   expiry: Date;

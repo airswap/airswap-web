@@ -4,7 +4,7 @@ import { checkResultToErrors, orderERC20ToParams } from "@airswap/utils";
 import { toAtomicString } from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
-import { BigNumber, constants, ethers, Transaction } from "ethers";
+import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
@@ -87,7 +87,8 @@ export async function requestOrders(
 export async function approveToken(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper"
+  contractType: "Swap" | "Wrapper",
+  amount: string | number
 ) {
   const spender =
     contractType === "Swap"
@@ -99,10 +100,7 @@ export async function approveToken(
     // @ts-ignore
     provider.getSigner()
   );
-  const approvalTxHash = await erc20Contract.approve(
-    spender,
-    constants.MaxUint256
-  );
+  const approvalTxHash = await erc20Contract.approve(spender, amount);
   return approvalTxHash as any as Transaction;
 }
 

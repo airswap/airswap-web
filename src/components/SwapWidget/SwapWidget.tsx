@@ -12,12 +12,14 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
+import { constants } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -738,12 +740,14 @@ const SwapWidget: FC = () => {
 
       case ButtonActions.approve:
         setIsApproving(true);
+
         await dispatch(
           approve({
-            token: baseToken!,
+            token: baseTokenInfo!,
             library,
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             chainId: chainId!,
+            amount: baseAmount,
           })
         );
         setIsApproving(false);

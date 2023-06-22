@@ -42,7 +42,7 @@ const useSufficientAllowance = (
       return false;
     }
 
-    const tokenAllowance = allowances.swap.values[justifiedToken.address!];
+    const tokenAllowance = allowances.swap.values[justifiedToken.address];
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the

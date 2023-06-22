@@ -1,7 +1,7 @@
 import { formatDuration, compareAsc } from "date-fns";
 import i18 from "i18next";
 
-import getDifferenceBetweenDatesInTimeUnits from "../../../helpers/getDifferenceBetweenDatesInTimeUnits";
+import getDifferenceBetweenDatesInTimeUnits from "./getDifferenceBetweenDatesInTimeUnits";
 
 type formatDistanceLocaleKey = "xMinutes" | "xHours" | "xDays" | "xWeeks";
 

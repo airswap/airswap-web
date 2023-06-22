@@ -1,15 +1,34 @@
 import { useMemo } from "react";
 
-import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
+import { TokenInfo } from "@airswap/types";
+import { format } from "@greypixel_/nicenumbers";
+
+import { isAppError } from "../errors/appError";
+import toAtomicString from "../helpers/toAtomicString";
 
 const useStringToSignificantDecimals = (
-  input: string,
-  sigDecimals?: number,
-  length?: number
+  amount: string,
+  token: TokenInfo | null
 ): string => {
   return useMemo(() => {
-    return stringToSignificantDecimals(input, sigDecimals, length);
-  }, [input, sigDecimals, length]);
+    if (!token) {
+      return "0";
+    }
+
+    const tokenAmountBigNumber = toAtomicString(amount, token.decimals);
+
+    if (isAppError(tokenAmountBigNumber)) {
+      return "0";
+    }
+
+    return format(tokenAmountBigNumber, {
+      omitTrailingZeroes: true,
+      omitLeadingZero: true,
+      significantFigures: 10,
+      tokenDecimals: token.decimals,
+      useSymbols: false,
+    });
+  }, [amount, token]);
 };
 
 export default useStringToSignificantDecimals;
