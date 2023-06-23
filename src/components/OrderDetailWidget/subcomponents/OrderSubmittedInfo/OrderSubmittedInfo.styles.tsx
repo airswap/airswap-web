@@ -3,6 +3,7 @@ import { MdDoneAll } from "react-icons/md";
 import styled from "styled-components/macro";
 
 import Icon from "../../../Icon/Icon";
+import TransactionLink from "../../../TransactionLink/TransactionLink";
 import {
   InfoHeading,
   InfoSubHeading,
@@ -25,21 +26,8 @@ export const StyledInfoHeading = styled(InfoHeading)`
   }
 `;
 
-export const StyledLink = styled(Link)`
-  display: flex;
-  width: fit-content;
-  align-items: center;
+export const StyledTransactionLink = styled(TransactionLink)`
   margin-top: 1rem;
-  text-decoration: none;
-
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
-`;
-
-export const StyledLinkIcon = styled(Icon)`
-  margin-left: 0.5rem;
 `;
 
 export const DoneAllIcon = styled(MdDoneAll)`

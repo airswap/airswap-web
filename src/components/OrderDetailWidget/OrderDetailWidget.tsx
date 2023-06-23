@@ -332,7 +332,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
         </>
       ) : (
-        <OrderSubmittedInfo transaction={orderTransaction} />
+        <OrderSubmittedInfo chainId={chainId} transaction={orderTransaction} />
       )}
       <StyledActionButtons
         hasInsufficientBalance={hasInsufficientTokenBalance}

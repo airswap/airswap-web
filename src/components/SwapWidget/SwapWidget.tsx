@@ -78,10 +78,7 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../features/transactions/transactionActions";
-import {
-  ProtocolType,
-  selectTransactions,
-} from "../../features/transactions/transactionsSlice";
+import { ProtocolType } from "../../features/transactions/transactionsSlice";
 import {
   setUserTokens,
   setCustomServerUrl,
@@ -114,6 +111,7 @@ import StyledSwapWidget, {
   InfoContainer,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
+import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
@@ -137,11 +135,10 @@ const SwapWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
-  const lastTransaction = useAppSelector(selectTransactions)[0];
   const {
     indexerUrls,
     orders: indexerOrders,
-    bestSwapOrder,
+    bestSwapOrder: bestIndexerOrder,
   } = useAppSelector(selectIndexerReducer);
   const customServerUrl = useAppSelector(selectCustomServerUrl);
 
@@ -269,6 +266,14 @@ const SwapWidget: FC = () => {
   const formattedQuoteAmount = useMemo(
     () => stringToSignificantDecimals(quoteAmount),
     [quoteAmount]
+  );
+
+  const transactionOrderNonce =
+    bestTradeOption?.order?.nonce || bestIndexerOrder?.nonce;
+  const activeTransaction = useBestTradeOptionTransaction(
+    baseTokenInfo,
+    transactionOrderNonce,
+    bestTradeOption?.quoteAmount
   );
 
   useEffect(() => {
@@ -824,7 +829,7 @@ const SwapWidget: FC = () => {
             isWrapping={isWrapping}
             orderSubmitted={showOrderSubmitted}
             orderCompleted={
-              showOrderSubmitted && lastTransaction?.status === "succeeded"
+              showOrderSubmitted && activeTransaction?.status === "succeeded"
             }
             requiresApproval={
               bestRfqOrder && !hasSufficientAllowance(baseToken!)

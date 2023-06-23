@@ -604,7 +604,8 @@ export const selectBestOption = createSelector(
 
     if (
       pricing &&
-      bestRFQQuoteTokens!
+      bestRFQQuoteTokens &&
+      bestRFQQuoteTokens
         .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
         .lte(new BigNumber(pricing.quoteAmount))
     ) {

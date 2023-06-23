@@ -66,7 +66,9 @@ const WalletTransaction = ({
             {statusText} · {timeBetween}
           </SpanSubtitle>
         </TextContainer>
-        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+        {tx.hash && (
+          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+        )}
       </Container>
     );
   } else if (transaction.type === "Cancel") {

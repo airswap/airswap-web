@@ -5,6 +5,7 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
@@ -18,6 +19,7 @@ import {
   ApprovalText,
   StyledLargePillButton,
   DoneAllIcon,
+  StyledTransactionLink,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
@@ -45,12 +47,14 @@ export type InfoSectionProps = {
         order: OrderERC20;
       }
     | null;
+  chainId: number;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
   serverUrl: string | null;
   onClearServerUrlButtonClick: () => void;
   onFeeButtonClick: () => void;
+  transaction?: SubmittedTransaction;
   onViewAllQuotesButtonClick: () => void;
 };
 
@@ -70,7 +74,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   bestTradeOption,
   baseTokenInfo,
   baseAmount,
+  chainId,
   quoteTokenInfo,
+  transaction,
   serverUrl,
   onClearServerUrlButtonClick,
   onFeeButtonClick,
@@ -156,7 +162,9 @@ const InfoSection: FC<InfoSectionProps> = ({
         <StyledInfoHeading>
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }
@@ -167,6 +175,9 @@ const InfoSection: FC<InfoSectionProps> = ({
         <DoneAllIcon />
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }

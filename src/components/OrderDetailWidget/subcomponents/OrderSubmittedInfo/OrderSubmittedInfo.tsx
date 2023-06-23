@@ -7,14 +7,17 @@ import {
   Container,
   DoneAllIcon,
   StyledInfoHeading,
+  StyledTransactionLink,
 } from "./OrderSubmittedInfo.styles";
 
 interface OrderSubmittedInfoProps {
+  chainId?: number;
   transaction: SubmittedTransaction;
   className?: string;
 }
 
 const OrderSubmittedInfo: FC<OrderSubmittedInfoProps> = ({
+  chainId,
   transaction,
   className = "",
 }) => {
@@ -35,6 +38,9 @@ const OrderSubmittedInfo: FC<OrderSubmittedInfoProps> = ({
             {t("orders.transactionCompleted")}
           </StyledInfoHeading>
         </>
+      )}
+      {transaction.hash && chainId && (
+        <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
       )}
     </Container>
   );

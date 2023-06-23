@@ -9,12 +9,12 @@ import {
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
+import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
   InfoHeading,
   FormLabel,
 } from "../Typography/Typography";
-import TransactionLink from "./subcomponents/TransactionLink/TransactionLink";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
