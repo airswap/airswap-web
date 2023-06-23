@@ -162,7 +162,6 @@ const InfoSection: FC<InfoSectionProps> = ({
         <StyledInfoHeading>
           {t("orders.transactionCompleted")}
         </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
         {transaction?.hash && (
           <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
         )}

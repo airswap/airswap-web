@@ -27,10 +27,13 @@ const useSessionOrderTransaction = (
     ) {
       setProcessingTransactionHash(transactions[0].hash);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions]);
 
   return useMemo(() => {
+    if (!processingTransactionHash) {
+      return undefined;
+    }
+
     return transactions.find(
       (transaction) => transaction.hash === processingTransactionHash
     );
