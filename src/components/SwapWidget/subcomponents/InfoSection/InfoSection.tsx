@@ -8,8 +8,8 @@ import { BigNumber } from "bignumber.js";
 import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
-import TransactionLink from "../../../TransactionLink/TransactionLink";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import ClearServerButton from "../ClearServerButton/ClearServerButton";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -23,13 +23,14 @@ import {
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
+  failedToFetchAllowances: boolean;
+  hasSelectedCustomServer: boolean;
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
   isPairUnavailable: boolean;
   isSwapping: boolean;
   isWrapping: boolean;
-  failedToFetchAllowances: boolean;
   orderSubmitted: boolean;
   orderCompleted: boolean;
   requiresApproval: boolean;
@@ -50,12 +51,16 @@ export type InfoSectionProps = {
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  serverUrl: string | null;
+  onClearServerUrlButtonClick: () => void;
+  onFeeButtonClick: () => void;
   transaction?: SubmittedTransaction;
   onViewAllQuotesButtonClick: () => void;
-  onFeeButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
+  failedToFetchAllowances,
+  hasSelectedCustomServer,
   isApproving,
   isConnected,
   isFetchingOrders,
@@ -64,17 +69,18 @@ const InfoSection: FC<InfoSectionProps> = ({
   isWrapping,
   orderCompleted,
   orderSubmitted,
-  failedToFetchAllowances,
   requiresApproval,
   showViewAllQuotes,
+  bestTradeOption,
   baseTokenInfo,
   baseAmount,
-  bestTradeOption,
   chainId,
   quoteTokenInfo,
   transaction,
-  onViewAllQuotesButtonClick,
+  serverUrl,
+  onClearServerUrlButtonClick,
   onFeeButtonClick,
+  onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
@@ -252,6 +258,17 @@ const InfoSection: FC<InfoSectionProps> = ({
             <Icon name="chevron-down" />
           </StyledLargePillButton>
         )}
+      </>
+    );
+  }
+
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <ClearServerButton onClick={onClearServerUrlButtonClick} />
       </>
     );
   }

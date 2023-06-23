@@ -1,5 +1,5 @@
 import { Server, WETH } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20, Levels } from "@airswap/types";
+import { FullOrderERC20, OrderERC20, Levels, TokenInfo } from "@airswap/types";
 import { toAtomicString } from "@airswap/utils";
 import {
   createAsyncThunk,
@@ -24,6 +24,7 @@ import {
 import nativeCurrency from "../../constants/nativeCurrency";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import {
   allowancesSwapActions,
   allowancesWrapperActions,
@@ -74,8 +75,6 @@ const initialState: OrdersState = {
   reRequestTimerId: null,
   errors: [],
 };
-
-const APPROVE_AMOUNT = "90071992547409910000000000";
 
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: OrderERC20, chainId: number) => {
@@ -315,10 +314,11 @@ export const approve = createAsyncThunk<
   void,
   // Params
   {
-    token: string;
+    token: TokenInfo;
     library: any;
     contractType: "Wrapper" | "Swap";
     chainId: number;
+    amount: string;
   },
   // Types for ThunkAPI
   {
@@ -329,13 +329,21 @@ export const approve = createAsyncThunk<
 >("orders/approve", async (params, { getState, dispatch }) => {
   let tx: Transaction;
   try {
-    tx = await approveToken(params.token, params.library, params.contractType);
+    const { token, contractType, amount } = params;
+    const approveAmount = toRoundedAtomicString(amount, token.decimals);
+
+    tx = await approveToken(
+      token.address,
+      params.library,
+      contractType,
+      approveAmount
+    );
     if (tx.hash) {
       const transaction: SubmittedApproval = {
         type: "Approval",
         hash: tx.hash,
         status: "processing",
-        tokenAddress: params.token,
+        tokenAddress: token.address,
         timestamp: Date.now(),
       };
       dispatch(submitTransaction(transaction));
@@ -354,15 +362,15 @@ export const approve = createAsyncThunk<
           if (params.contractType === "Swap") {
             dispatch(
               allowancesSwapActions.set({
-                tokenAddress: params.token,
-                amount: APPROVE_AMOUNT,
+                tokenAddress: token.address,
+                amount: approveAmount,
               })
             );
           } else if (params.contractType === "Wrapper") {
             dispatch(
               allowancesWrapperActions.set({
-                tokenAddress: params.token,
-                amount: APPROVE_AMOUNT,
+                tokenAddress: token.address,
+                amount: approveAmount,
               })
             );
           }

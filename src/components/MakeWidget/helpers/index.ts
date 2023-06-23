@@ -1,6 +1,10 @@
+import { BigNumber } from "bignumber.js";
 import i18n from "i18next";
 
+import { getHumanReadableNumber } from "../../../helpers/getHumanReadableNumber";
+import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
+import { MakeWidgetState } from "../MakeWidget";
 
 export const getActionButtonTranslation = (
   hasInsufficientAllowance: boolean,
@@ -13,8 +17,8 @@ export const getActionButtonTranslation = (
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   walletIsNotConnected: boolean,
-  makerTokenSymbol?: string,
-  takerTokenSymbol?: string
+  widgetState: MakeWidgetState,
+  makerTokenSymbol?: string
 ): string => {
   if (walletIsNotConnected) {
     return i18n.t("wallet.connectWallet");
@@ -40,12 +44,16 @@ export const getActionButtonTranslation = (
     return i18n.t("orders.enterAmounts");
   }
 
-  if (shouldDepositNativeToken) {
-    return `Wrap ${makerTokenSymbol}`;
-  }
-
   if (hasInsufficientBalance) {
     return i18n.t("orders.insufficientBalance", { symbol: makerTokenSymbol });
+  }
+
+  if (widgetState === MakeWidgetState.list) {
+    return i18n.t("common.review");
+  }
+
+  if (shouldDepositNativeToken) {
+    return `${i18n.t("common.wrap")} ${makerTokenSymbol}`;
   }
 
   if (hasInsufficientAllowance) {
@@ -74,4 +82,18 @@ export const getNewTokenPair = (
     tokenFrom: newTokenFrom,
     tokenTo: newTokenTo,
   };
+};
+
+export const getTokenPairTranslation = (
+  token1 = "?",
+  token1Amount: string,
+  token2 = "?",
+  token2Amount: string
+) => {
+  const amount = new BigNumber(token2Amount).dividedBy(
+    new BigNumber(token1Amount)
+  );
+  const readableAmount = stringToSignificantDecimals(amount.toString(), 6);
+
+  return `1 ${token1} = ${readableAmount} ${token2}`;
 };

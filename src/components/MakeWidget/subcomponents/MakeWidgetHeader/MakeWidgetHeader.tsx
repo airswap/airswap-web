@@ -1,22 +1,31 @@
 import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
 import { Title } from "../../../Typography/Typography";
-import { StyledExpirySelector } from "./MakeWidgetHeader.styles";
+import { MakeWidgetState } from "../../MakeWidget";
+import {
+  StyledExpirySelector,
+  StyledWidgetHeader,
+} from "./MakeWidgetHeader.styles";
 
 type MakeWidgetHeaderProps = {
   hideExpirySelector?: boolean;
-  title: string;
+  state: MakeWidgetState;
   onExpiryChange: (date: number) => void;
 };
 
 const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
   hideExpirySelector = false,
-  title,
+  state,
   onExpiryChange,
 }) => {
+  const { t } = useTranslation();
+  const title =
+    state === MakeWidgetState.review ? t("common.review") : t("common.make");
+
   return (
-    <WidgetHeader>
+    <StyledWidgetHeader state={state}>
       <Title type="h2" as="h1">
         {title}
       </Title>
@@ -24,7 +33,7 @@ const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
         onChange={onExpiryChange}
         hideExpirySelector={hideExpirySelector}
       />
-    </WidgetHeader>
+    </StyledWidgetHeader>
   );
 };
 

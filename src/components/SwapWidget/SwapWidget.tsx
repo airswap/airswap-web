@@ -12,12 +12,14 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Protocols } from "@airswap/constants";
 import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
+import { constants } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -77,7 +79,11 @@ import {
   revertTransaction,
 } from "../../features/transactions/transactionActions";
 import { ProtocolType } from "../../features/transactions/transactionsSlice";
-import { setUserTokens } from "../../features/userSettings/userSettingsSlice";
+import {
+  setUserTokens,
+  setCustomServerUrl,
+  selectCustomServerUrl,
+} from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToEthereumChain from "../../helpers/switchToEthereumChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -134,6 +140,7 @@ const SwapWidget: FC = () => {
     orders: indexerOrders,
     bestSwapOrder: bestIndexerOrder,
   } = useAppSelector(selectIndexerReducer);
+  const customServerUrl = useAppSelector(selectCustomServerUrl);
 
   // Contexts
   const LastLook = useContext(LastLookContext);
@@ -342,7 +349,7 @@ const SwapWidget: FC = () => {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `${baseRoute}/${tokenFromAlias || tokenFrom}/${
+      pathname: `/${baseRoute}/${tokenFromAlias || tokenFrom}/${
         tokenToAlias || tokenTo
       }`,
     });
@@ -383,7 +390,13 @@ const SwapWidget: FC = () => {
     let lastLookServers: Server[] = [];
     try {
       try {
-        if (library && chainId) {
+        if (library && customServerUrl) {
+          const serverFromQueryString = await Server.at(customServerUrl, {
+            chainId,
+            initializeTimeout: 10 * 1000,
+          });
+          rfqServers.push(serverFromQueryString);
+        } else if (library && chainId) {
           const servers = await Registry.getServers(
             library,
             chainId,
@@ -651,6 +664,7 @@ const SwapWidget: FC = () => {
     baseToken,
     baseTokenInfo,
     chainId,
+    customServerUrl,
     library,
     quoteToken,
     quoteTokenInfo,
@@ -731,12 +745,14 @@ const SwapWidget: FC = () => {
 
       case ButtonActions.approve:
         setIsApproving(true);
+
         await dispatch(
           approve({
-            token: baseToken!,
+            token: baseTokenInfo!,
             library,
             contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
             chainId: chainId!,
+            amount: baseAmount,
           })
         );
         setIsApproving(false);
@@ -757,6 +773,10 @@ const SwapWidget: FC = () => {
       default:
       // Do nothing.
     }
+  };
+
+  const handleClearServerUrl = () => {
+    dispatch(setCustomServerUrl(null));
   };
 
   return (
@@ -799,31 +819,31 @@ const SwapWidget: FC = () => {
         )}
         <InfoContainer>
           <InfoSection
+            failedToFetchAllowances={allowanceFetchFailed}
+            hasSelectedCustomServer={!!customServerUrl}
+            isApproving={isApproving}
+            isConnected={active}
+            isFetchingOrders={isRequestingQuotes}
+            isPairUnavailable={pairUnavailable}
+            isSwapping={isSwapping}
+            isWrapping={isWrapping}
             orderSubmitted={showOrderSubmitted}
             orderCompleted={
               showOrderSubmitted && activeTransaction?.status === "succeeded"
             }
-            isConnected={active}
-            isPairUnavailable={pairUnavailable}
-            isFetchingOrders={isRequestingQuotes}
-            isApproving={isApproving}
-            isSwapping={isSwapping}
-            isWrapping={isWrapping}
-            showViewAllQuotes={indexerOrders.length > 0}
-            failedToFetchAllowances={allowanceFetchFailed}
             requiresApproval={
-              (bestRfqOrder || bestIndexerOrder) &&
-              !hasSufficientAllowance(baseToken!)
+              bestRfqOrder && !hasSufficientAllowance(baseToken!)
             }
+            showViewAllQuotes={indexerOrders.length > 0}
             // @ts-ignore
             bestTradeOption={bestTradeOption}
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
-            chainId={chainId || 1}
+            serverUrl={customServerUrl}
             quoteTokenInfo={quoteTokenInfo}
-            transaction={activeTransaction}
-            onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
+            onClearServerUrlButtonClick={handleClearServerUrl}
             onFeeButtonClick={() => setProtocolFeeInfo(true)}
+            onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
           />
         </InfoContainer>
         <ButtonContainer>

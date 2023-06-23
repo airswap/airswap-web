@@ -3,12 +3,12 @@ import React, { FC, PropsWithChildren, useMemo } from "react";
 import { FullOrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
 
+import { getExpiryTranslation } from "../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../hooks/useCancellationPending";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../../routes";
 import { OrderStatus } from "../../../../types/orderStatus";
-import { getExpiryTranslation } from "../../../ExpiryIndicator/helpers";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
 import {

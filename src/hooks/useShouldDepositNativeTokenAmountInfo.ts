@@ -15,7 +15,7 @@ import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals"
 
 interface DepositNativeTokenAmountInfo {
   nativeToken?: string;
-  wrappedNativeToken?: string;
+  wrappedNativeTokenSymbol?: string;
   ownedWrappedNativeTokenAmount?: string;
 }
 
@@ -71,7 +71,7 @@ const useShouldDepositNativeTokenAmountInfo =
 
     return {
       nativeToken: nativeTokenSymbol,
-      wrappedNativeToken: wrappedNativeTokenSymbol,
+      wrappedNativeTokenSymbol,
       ownedWrappedNativeTokenAmount: wrappedNativeTokenBalance,
     };
   };

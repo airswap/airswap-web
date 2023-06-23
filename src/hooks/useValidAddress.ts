@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -6,24 +6,37 @@ import { useWeb3React } from "@web3-react/core";
 import { isAddress } from "ethers/lib/utils";
 
 const useValidAddress = (address: string): boolean => {
+  const { library } = useWeb3React<Web3Provider>();
   const { chainId } = useWeb3React<Web3Provider>();
 
-  return useMemo(() => {
-    if (!address || !chainId) {
-      return false;
+  const [isValidAddress, setIsValidAddress] = useState(false);
+
+  const resolveEnsAddress = async (library: Web3Provider, address: string) => {
+    const value = await library.resolveName(address);
+
+    return setIsValidAddress(!!value);
+  };
+
+  useEffect(() => {
+    if (!address || !chainId || !library) {
+      return;
     }
 
     // Not validating other chains than ethereum right now. Can be added later.
     if (chainId > 5) {
-      return true;
+      return;
     }
 
     if (address.indexOf(".eth") !== -1) {
-      return true;
+      resolveEnsAddress(library, address);
+
+      return;
     }
 
-    return isAddress(address);
-  }, [address, chainId]);
+    setIsValidAddress(isAddress(address));
+  }, [address, chainId, library]);
+
+  return isValidAddress;
 };
 
 export default useValidAddress;
