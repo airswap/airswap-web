@@ -109,7 +109,7 @@ export const InfoLabel = styled.div`
   cursor: pointer;
 `;
 
-export const AmountInput = styled(FormInput)<{
+export const AmountInput = styled(FormInput) <{
   hasSubtext?: boolean;
   disabled: boolean;
 }>`
@@ -213,12 +213,12 @@ export const TokenSelectContainer = styled.div<{
 
   ${TokenLogoLeft} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
+    props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
   }
 
   ${StyledSelector} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
+    props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
 
   ${SubText},
@@ -226,12 +226,12 @@ export const TokenSelectContainer = styled.div<{
   ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+    props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
   }
 
   ${TokenLogoRight} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
+    props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
   }
 
   ${StyledLabel} {
@@ -251,7 +251,7 @@ const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
 
 export const StyledSelectButtonContent = styled.span``;
 
-export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
+export const StyledDownArrow = styled(MdKeyboardArrowDown) <{
   $invisible: boolean;
 }>`
   ${fadeOutWhenInvisible}
@@ -267,4 +267,12 @@ export const PlaceholderContainer = styled.div`
     transform: scaleX(-100%);
     height: 0.875rem;
   }
+`;
+
+export const UnknownTokenLoadingState = styled.div`
+  width: 100%;
+  height: 1.5rem;
+  background-image: ${(props) => props.theme.colors.placeholderGradient};
+  background-color: yellow;
+  animation: ${fadeOut} 0.35s ease-in-out infinite alternate;
 `;

@@ -21,6 +21,7 @@ import {
   InputAndMaxButtonWrapper,
   InfoLabel,
   SubText,
+  UnknownTokenLoadingState,
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
@@ -127,7 +128,10 @@ const TokenSelect: FC<TokenSelectProps> = ({
           <StyledSelector>
             <StyledLabel>{label}</StyledLabel>
             <StyledSelectItem>
-              <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
+              {selectedToken ?
+                <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent> :
+                <UnknownTokenLoadingState />
+              }
               <StyledDownArrow $invisible={readOnly} />
             </StyledSelectItem>
           </StyledSelector>
