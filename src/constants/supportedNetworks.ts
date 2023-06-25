@@ -1,10 +1,14 @@
-import { ChainIds, chainNames, apiUrls, chainCurrencies, explorerUrls } from "@airswap/constants";
+import {
+  ChainIds,
+  chainNames,
+  apiUrls,
+  chainCurrencies,
+  explorerUrls,
+} from "@airswap/constants";
 
 import { ChainParams } from "../types/chainParams";
 
-export const SUPPORTED_NETWORKS: ChainIds[] = [
-  ChainIds.LINEAGOERLI
-];
+export const SUPPORTED_NETWORKS: ChainIds[] = [ChainIds.LINEAGOERLI];
 
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   [ChainIds.MAINNET]: {
@@ -107,14 +111,14 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   //   blockExplorerUrls: ["https://arbiscan.io/"],
   // },
   [ChainIds.LINEAGOERLI]: {
-     chainId: +`0x${ChainIds.LINEAGOERLI.toString(16)}`,
-     chainName: chainNames[ChainIds.LINEAGOERLI],
-     nativeCurrency: {
-       name: chainCurrencies[ChainIds.LINEAGOERLI],
-       symbol: chainCurrencies[ChainIds.LINEAGOERLI],
-       decimals: 18,
-     },
-     rpcUrls: [apiUrls[ChainIds.LINEAGOERLI]],
-     blockExplorerUrls: [explorerUrls[ChainIds.LINEAGOERLI]],
+    chainId: +`0x${ChainIds.LINEAGOERLI.toString(16)}`,
+    chainName: chainNames[ChainIds.LINEAGOERLI],
+    nativeCurrency: {
+      name: chainCurrencies[ChainIds.LINEAGOERLI],
+      symbol: chainCurrencies[ChainIds.LINEAGOERLI],
+      decimals: 18,
+    },
+    rpcUrls: [apiUrls[ChainIds.LINEAGOERLI]],
+    blockExplorerUrls: [explorerUrls[ChainIds.LINEAGOERLI]],
   },
 };
