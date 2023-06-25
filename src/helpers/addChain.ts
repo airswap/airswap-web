@@ -2,7 +2,7 @@ import { CHAIN_PARAMS } from "../constants/supportedNetworks";
 
 // https://eips.ethereum.org/EIPS/eip-3085
 
-const addEthereumChain = (chainId: number): Promise<null> => {
+const addChain = (chainId: number): Promise<null> => {
   return window.ethereum.request({
     method: "wallet_addEthereumChain",
     params: [
@@ -15,4 +15,4 @@ const addEthereumChain = (chainId: number): Promise<null> => {
   });
 };
 
-export default addEthereumChain;
+export default addChain;

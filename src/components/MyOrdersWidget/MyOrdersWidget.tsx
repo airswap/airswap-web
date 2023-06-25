@@ -17,7 +17,7 @@ import {
 } from "../../features/myOrders/myOrdersSlice";
 import { getNonceUsed } from "../../features/orders/orderApi";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
-import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import { AppRoutes } from "../../routes";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
@@ -79,7 +79,7 @@ const MyOrdersWidget: FC = () => {
     }
 
     if (action === ButtonActions.switchNetwork) {
-      switchToEthereumChain();
+      switchToDefaultChain();
     }
     if (action === ButtonActions.newOrder) {
       history.push({ pathname: AppRoutes.make });
