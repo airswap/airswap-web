@@ -8,7 +8,14 @@ import {
 
 import { ChainParams } from "../types/chainParams";
 
-export const SUPPORTED_NETWORKS: ChainIds[] = [ChainIds.LINEAGOERLI];
+export const SUPPORTED_NETWORKS: ChainIds[] = [
+  ChainIds.MAINNET,
+  ChainIds.AVALANCHE,
+  ChainIds.BSC,
+  ChainIds.POLYGON,
+  ChainIds.GOERLI,
+  ChainIds.LINEAGOERLI,
+];
 
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   [ChainIds.MAINNET]: {

@@ -12,7 +12,7 @@ import {
   NetworkButton,
   NetworkIcon,
 } from "./ChainSelectionPopover.styles";
-import addAndSwitchToEthereumChain from "./helpers/addAndSwitchToEthereumChain";
+import addAndSwitchToDefaultChain from "./helpers/addAndSwitchToDefaultChain";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type ChainSelectionPopoverPropsType = {
@@ -29,7 +29,7 @@ const ChainSelectionPopover = ({
   const { t } = useTranslation();
 
   const handleNetworkButtonClick = (chainId: number) => {
-    addAndSwitchToEthereumChain(chainId);
+    addAndSwitchToDefaultChain(chainId);
   };
 
   const networkButtons = useMemo(() => {

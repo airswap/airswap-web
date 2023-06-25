@@ -1,14 +1,14 @@
-import addEthereumChain from "../../../helpers/addEthereumChain";
+import addChain from "../../../helpers/addChain";
 import switchToChain from "../../../helpers/switchToChain";
 
-const addAndSwitchToEthereumChain = async (chainId: number) => {
+const addAndSwitchToDefaultChain = async (chainId: number) => {
   const chainNotAddedCode = 4902;
 
   await switchToChain(chainId).catch((error: any) => {
     if (error.code === chainNotAddedCode) {
-      addEthereumChain(chainId);
+      addChain(chainId);
     }
   });
 };
 
-export default addAndSwitchToEthereumChain;
+export default addAndSwitchToDefaultChain;

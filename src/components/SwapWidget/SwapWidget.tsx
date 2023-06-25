@@ -85,7 +85,7 @@ import {
   selectCustomServerUrl,
 } from "../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
-import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -734,7 +734,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.switchNetwork:
-        switchToEthereumChain();
+        switchToDefaultChain();
         break;
 
       case ButtonActions.requestQuotes:

@@ -82,7 +82,7 @@ const nativeCurrency: Record<number, TokenInfo> = {
     name: "ETH",
     decimals: 18,
     symbol: "ETH",
-    logoURI: "images/ethereum-logo.png",
+    logoURI: "images/linea-logo.png",
   },
   80001: {
     chainId: 80001,

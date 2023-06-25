@@ -40,7 +40,7 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
-import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../helpers/toMaxAllowedDecimalsNumberString";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
@@ -332,7 +332,7 @@ const MakeWidget: FC = () => {
     }
 
     if (action === ButtonActions.switchNetwork) {
-      switchToEthereumChain();
+      switchToDefaultChain();
     }
 
     if (action === ButtonActions.review) {

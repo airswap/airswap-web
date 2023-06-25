@@ -36,7 +36,7 @@ import {
   selectTakeOtcErrors,
   setErrors,
 } from "../../features/takeOtc/takeOtcSlice";
-import switchToEthereumChain from "../../helpers/switchToEthereumChain";
+import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import writeTextToClipboard from "../../helpers/writeTextToClipboard";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
@@ -252,7 +252,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     }
 
     if (action === ButtonActions.switchNetwork) {
-      switchToEthereumChain();
+      switchToDefaultChain();
     }
 
     if (action === ButtonActions.restart) {
