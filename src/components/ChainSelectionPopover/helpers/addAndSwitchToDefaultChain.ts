@@ -1,7 +1,7 @@
 import addChain from "../../../helpers/addChain";
 import switchToChain from "../../../helpers/switchToChain";
 
-const addAndSwitchToDefaultChain = async (chainId: number) => {
+const addAndSwitchToChain = async (chainId: number) => {
   const chainNotAddedCode = 4902;
 
   await switchToChain(chainId).catch((error: any) => {
@@ -11,4 +11,4 @@ const addAndSwitchToDefaultChain = async (chainId: number) => {
   });
 };
 
-export default addAndSwitchToDefaultChain;
+export default addAndSwitchToChain;
