@@ -13,7 +13,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/constants": "^4.0.4",
+    "@airswap/constants": "^4.0.5",
     "@airswap/libraries": "^4.0.10",
     "@airswap/metadata": "^4.0.4",
     "@airswap/types": "^4.0.4",

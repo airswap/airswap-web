@@ -76,6 +76,14 @@ const nativeCurrency: Record<number, TokenInfo> = {
     symbol: "AVAX",
     logoURI: "images/avalanche-logo.png",
   },
+  59140: {
+    chainId: 59140,
+    address: nativeCurrencyAddress,
+    name: "ETH",
+    decimals: 18,
+    symbol: "ETH",
+    logoURI: "images/ethereum-logo.png",
+  },
   80001: {
     chainId: 80001,
     address: nativeCurrencyAddress,

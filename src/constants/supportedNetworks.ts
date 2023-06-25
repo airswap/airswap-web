@@ -1,13 +1,9 @@
-import { ChainIds } from "@airswap/constants";
+import { ChainIds, chainNames, apiUrls, chainCurrencies, explorerUrls } from "@airswap/constants";
 
 import { ChainParams } from "../types/chainParams";
 
 export const SUPPORTED_NETWORKS: ChainIds[] = [
-  ChainIds.MAINNET,
-  ChainIds.AVALANCHE,
-  ChainIds.BSC,
-  ChainIds.POLYGON,
-  ChainIds.GOERLI,
+  ChainIds.LINEAGOERLI
 ];
 
 export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
@@ -110,15 +106,15 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
   //   rpcUrls: ["https://arb1.arbitrum.io/rpc"],
   //   blockExplorerUrls: ["https://arbiscan.io/"],
   // },
-  // [ChainIds.LINEA]: {
-  //   chainId: +`0x${ChainIds.LINEA.toString(16)}`,
-  //   chainName: "Linea",
-  //   nativeCurrency: {
-  //     name: "LINA",
-  //     symbol: "LINA",
-  //     decimals: 18,
-  //   },
-  //   rpcUrls: ["https://linea-rpc-url"],
-  //   blockExplorerUrls: ["https://linea-explorer-url"],
-  // },
+  [ChainIds.LINEAGOERLI]: {
+     chainId: +`0x${ChainIds.LINEAGOERLI.toString(16)}`,
+     chainName: chainNames[ChainIds.LINEAGOERLI],
+     nativeCurrency: {
+       name: chainCurrencies[ChainIds.LINEAGOERLI],
+       symbol: chainCurrencies[ChainIds.LINEAGOERLI],
+       decimals: 18,
+     },
+     rpcUrls: [apiUrls[ChainIds.LINEAGOERLI]],
+     blockExplorerUrls: [explorerUrls[ChainIds.LINEAGOERLI]],
+  },
 };

@@ -14,6 +14,11 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-4.0.4.tgz#005866cf69db210aaed844c45463478eee4daaf4"
   integrity sha512-icV6+UfWhhfxLLm+8nNHxhqZ9gYA+1V+m8Lspaz2CFynvxqyIuc+BRaRafPu+0uk98Q27SHdZSXCcKO6Z+XCOw==
 
+"@airswap/constants@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-4.0.5.tgz#bee0409c95da56e871fc5600802121aea4de0f02"
+  integrity sha512-Ldoobg13JZobrhyoQMadfPYYwSqARHUAHiBt6O4A00YMkEotXANH3rNnZGbPdTpo97+B+7N72aSLuGCJqsLv8w==
+
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@airswap/jsonrpc-client-websocket/-/jsonrpc-client-websocket-0.0.1.tgz#e75932a0f19cb6c23cf145834277211cce150400"
