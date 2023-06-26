@@ -237,6 +237,7 @@ const InfoSection: FC<InfoSectionProps> = ({
               onClick={() => setInvertPrice((p) => !p)}
             />
           </StyledInfoHeading>
+          {/*
           <FeeTextContainer>
             <FeeText>{t("marketing.includesFee")}</FeeText>
             <InfoButton
@@ -245,6 +246,7 @@ const InfoSection: FC<InfoSectionProps> = ({
               icon="information-circle-outline"
             />
           </FeeTextContainer>
+          */}
         </>
         {requiresApproval && (
           <ApprovalText>

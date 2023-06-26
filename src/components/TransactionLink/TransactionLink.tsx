@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getReceiptUrl } from "@airswap/utils";
 
 import Icon from "../Icon/Icon";
-import { Label, Link } from "./TransactionLink.style";
+import { Link } from "./TransactionLink.style";
 
 type TransactionLinkProps = {
   hideLabel?: boolean;
@@ -33,7 +33,6 @@ const TransactionLink = ({
       aria-label={t("wallet.transactionLink")}
       href={receiptUrl}
     >
-      {!hideLabel && <Label>{t("orders.transactionLink")}</Label>}
       <Icon iconSize={1} name="transaction-link" />
     </Link>
   );

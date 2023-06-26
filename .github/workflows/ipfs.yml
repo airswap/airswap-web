@@ -1,0 +1,27 @@
+name: Build and IPFS Deploy
+on:
+  push:
+    branches:
+      - linea
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Build 🔧
+        env:
+          REACT_APP_RPC_URL_1: ${{ secrets.REACT_APP_RPC_URL_1 }}
+          REACT_APP_RPC_URL_5: ${{ secrets.REACT_APP_RPC_URL_5 }}
+        run: |
+          yarn
+          yarn build
+
+      - name: IPFS Deploy 🚀
+        uses: aquiladev/ipfs-action@master
+        with:
+          path: ./build
+          service: infura
+          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
+          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}

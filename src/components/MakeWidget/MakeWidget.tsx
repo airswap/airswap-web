@@ -444,6 +444,8 @@ const MakeWidget: FC = () => {
               )}
             </TooltipContainer>
           ) : (
+            <div />
+            /*
             <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
               <Checkbox
                 checked={orderType === OrderType.publicListed}
@@ -452,6 +454,7 @@ const MakeWidget: FC = () => {
                 onChange={handleOrderTypeCheckboxChange}
               />
             </StyledInputSection>
+            */
           )}
         </>
       )}
