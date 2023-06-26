@@ -227,6 +227,7 @@
   "wallet": {
     "activeTransactions": "Active transactions",
     "approve": "Approve {{symbol}}",
+    "clearTransactions": "Clear transactions",
     "completedTransactions": "Completed transactions",
     "connectWallet": "Connect Wallet",
     "copyAddress": "Copy address",

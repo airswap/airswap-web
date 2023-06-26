@@ -12,7 +12,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import { clear, setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -40,8 +40,10 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
+  ClearTransactionsButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { useAppDispatch } from "../../app/hooks";
 
 type TransactionsTabType = {
   address: string;
@@ -69,10 +71,12 @@ const TransactionsTab = ({
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
+  console.log(transactions)
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const { active } = useWeb3React<Web3Provider>();
 
@@ -88,8 +92,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-      ? addressOrName
-      : t("wallet.notConnected");
+        ? addressOrName
+        : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -149,6 +153,10 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
+
+  const handleClearTransactions = () => {
+    dispatch(setTransactions(null))
+  }
 
   return (
     <AnimatePresence initial={false}>
@@ -249,6 +257,13 @@ const TransactionsTab = ({
                   {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
+              {transactions.length > 0 &&
+                <ClearTransactionsButton
+                  aria-label={t('wallet.clearTransactions')}
+                  onClick={handleClearTransactions}
+                >
+                  {t("wallet.clearTransactions")}
+                </ClearTransactionsButton>}
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
