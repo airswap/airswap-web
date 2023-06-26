@@ -10,9 +10,14 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { clear, setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import {
+  clear,
+  setTransactions,
+  SubmittedTransaction,
+} from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -43,7 +48,6 @@ import {
   ClearTransactionsButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-import { useAppDispatch } from "../../app/hooks";
 
 type TransactionsTabType = {
   address: string;
@@ -71,7 +75,6 @@ const TransactionsTab = ({
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
-  console.log(transactions)
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
@@ -155,8 +158,8 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   const handleClearTransactions = () => {
-    dispatch(setTransactions(null))
-  }
+    dispatch(setTransactions(null));
+  };
 
   return (
     <AnimatePresence initial={false}>
@@ -257,13 +260,14 @@ const TransactionsTab = ({
                   {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
-              {transactions.length > 0 &&
+              {transactions.length > 0 && (
                 <ClearTransactionsButton
-                  aria-label={t('wallet.clearTransactions')}
+                  aria-label={t("wallet.clearTransactions")}
                   onClick={handleClearTransactions}
                 >
                   {t("wallet.clearTransactions")}
-                </ClearTransactionsButton>}
+                </ClearTransactionsButton>
+              )}
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
