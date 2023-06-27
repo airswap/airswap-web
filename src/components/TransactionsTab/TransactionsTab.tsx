@@ -48,6 +48,7 @@ import {
   ClearTransactionsButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { clearLocalStorage } from "./helpers/clearLocalStorage";
 
 type TransactionsTabType = {
   address: string;
@@ -159,6 +160,7 @@ const TransactionsTab = ({
 
   const handleClearTransactions = () => {
     dispatch(setTransactions(null));
+    clearLocalStorage('airswap/transactions')
   };
 
   return (
