@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-4.0.6.tgz#25395d9c76f77bf9a3465ccedd94c98491138215"
   integrity sha512-ls9vg97ugtzxCvefah4KY3Ao0cz3SxZf8og7cyhUn+EbI8u2YHEyc3QSw4CrmwHQCX9HZuvxmUf7h1DJ6xs0ug==
 
-"@airswap/constants@^4.0.7":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-4.0.7.tgz#978d5cddbd7827a588eb9bf1be02d87fd659f0f0"
-  integrity sha512-Z5WH8ldw6NL1g/NAOelnJm5Q0I12x3t1uO4h5VdsOI2VCn8oav/hTEQ4vAe6jOZPuq67JEXKdyUIGKwdDdzy6g==
+"@airswap/constants@^4.0.8":
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@airswap/constants/-/constants-4.0.8.tgz#f2e70d45b1634aef63249b05a0b608a869368658"
+  integrity sha512-f/A+hDcP4J+Sl6Bma/lY2Ukx20XNnfXsEYOezoAAJmkExRJR0vAyvdDmLSyBD6y7nkZtf0nSo0ua7VsxEfLoaA==
 
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
@@ -54,12 +54,12 @@
   dependencies:
     "@openzeppelin/contracts" "^4.8.1"
 
-"@airswap/metadata@^4.0.6":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.0.6.tgz#c8c80dad11f3afe5479b77deca799a33e6cbd113"
-  integrity sha512-oiZrrkGXrAPIkzDaHFIQrBAengwJ8oRmosTJzralA5rPvZekswC1PAgXcsNyF9X25aDQBH12o/aXGTDwn8dVmA==
+"@airswap/metadata@^4.0.8":
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.0.8.tgz#dea2f663e25277c30612a6ba2d1589a300605e84"
+  integrity sha512-ho/iAXOwVYsSUwmHWrruBxr6/HwrgpDv1RG97TjQZZnF5ZcoTso7yDHEQrtiAkX2z7hlID9akZ81lypxBvombg==
   dependencies:
-    "@airswap/constants" "^4.0.6"
+    "@airswap/constants" "^4.0.8"
     "@airswap/types" "^4.0.0"
     "@openzeppelin/contracts" "^4.8.3"
     "@uniswap/token-lists" "^1.0.0-beta.24"
