@@ -14,6 +14,7 @@ jobs:
         env:
           REACT_APP_RPC_URL_1: ${{ secrets.REACT_APP_RPC_URL_1 }}
           REACT_APP_RPC_URL_5: ${{ secrets.REACT_APP_RPC_URL_5 }}
+          REACT_APP_RPC_URL_59140: ${{ secrets.REACT_APP_RPC_URL_59140 }}
         run: |
           yarn
           yarn build
