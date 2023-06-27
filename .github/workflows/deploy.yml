@@ -12,9 +12,9 @@ jobs:
 
       - name: Install and Build 🔧
         env:
-          REACT_APP_RPC_URL_1: ${{ env.REACT_APP_RPC_URL_1 }}
-          REACT_APP_RPC_URL_5: ${{ env.REACT_APP_RPC_URL_5 }}
-          REACT_APP_RPC_URL_59140: ${{ env.REACT_APP_RPC_URL_59140 }}
+          REACT_APP_RPC_URL_1: ${{ vars.REACT_APP_RPC_URL_1 }}
+          REACT_APP_RPC_URL_5: ${{ vars.REACT_APP_RPC_URL_5 }}
+          REACT_APP_RPC_URL_59140: ${{ vars.REACT_APP_RPC_URL_59140 }}
         run: |
           yarn
           yarn build
