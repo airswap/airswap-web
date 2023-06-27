@@ -54,13 +54,14 @@
   dependencies:
     "@openzeppelin/contracts" "^4.8.1"
 
-"@airswap/metadata@^4.0.8":
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.0.8.tgz#dea2f663e25277c30612a6ba2d1589a300605e84"
-  integrity sha512-ho/iAXOwVYsSUwmHWrruBxr6/HwrgpDv1RG97TjQZZnF5ZcoTso7yDHEQrtiAkX2z7hlID9akZ81lypxBvombg==
+"@airswap/metadata@4.0.9":
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.0.9.tgz#64f21461a64764a7925faad9aa94b45b13e49a55"
+  integrity sha512-m71xm7FLNTRJxxpVkmA8KH4a0Q6IQ/4rFF/W8kYP99g/09Z/bsa/fJdZJenoyLo0oLq0A5zvoAhbDdJlfvsqXA==
   dependencies:
     "@airswap/constants" "^4.0.8"
     "@airswap/types" "^4.0.0"
+    "@airswap/wrapper" "^4.0.5"
     "@openzeppelin/contracts" "^4.8.3"
     "@uniswap/token-lists" "^1.0.0-beta.24"
     axios "^0.21.4"
@@ -116,7 +117,7 @@
     ethers "^5.6.9"
     lz-string "^1.5.0"
 
-"@airswap/wrapper@4.0.5":
+"@airswap/wrapper@4.0.5", "@airswap/wrapper@^4.0.5":
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-4.0.5.tgz#fa1b2d9a91aeeda32936a649f6097dc4b9bb54a2"
   integrity sha512-sWI6ofFaDuHJpft3BKj5rNhFA50eEhBH4UGc+xMNeKXcVLwJRhrqx7a++5vXpOO0dcRZOP0b+d5ll3VsdAMjjA==
