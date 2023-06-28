@@ -1,5 +1,6 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
@@ -12,7 +13,10 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import {
+  setTransactions,
+  SubmittedTransaction,
+} from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -40,11 +44,10 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
-  ClearFailedTxButton
+  ClearFailedTxButton,
 } from "./TransactionsTab.styles";
-import { clearLocalStorage } from "./helpers/clearLocalStorage";
+import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-import { useDispatch } from "react-redux";
 
 type TransactionsTabType = {
   address: string;
@@ -157,7 +160,7 @@ const TransactionsTab = ({
 
   const handleClearTransactions = () => {
     // dispatch(setTransactions(null));
-    clearLocalStorage();
+    clearLocalStorageFailedTx(address);
   };
 
   return (
