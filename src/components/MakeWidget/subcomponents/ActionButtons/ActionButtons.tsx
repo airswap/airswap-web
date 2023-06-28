@@ -122,7 +122,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <SignButton
         disabled={isDisabled}
         intent="primary"
-        loading={isLoading}
+        loading={widgetState === MakeWidgetState.review && isLoading}
         onClick={handleSignButtonClick}
       >
         {buttonText}
