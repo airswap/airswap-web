@@ -10,7 +10,9 @@ export const clearLocalStorageFailedTx = (address: string) => {
         const objectKeys = JSON.parse(keysWithTransactions);
         const orders = objectKeys.all;
 
-        const filteredOrders = orders?.filter((order: SubmittedTransaction) => order.status !== "declined");
+        const filteredOrders = orders?.filter(
+          (order: SubmittedTransaction) => order.status !== "declined"
+        );
 
         const updatedKeys = JSON.stringify({ all: filteredOrders });
         localStorage.setItem(key, updatedKeys);
