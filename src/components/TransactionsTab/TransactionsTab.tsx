@@ -48,6 +48,7 @@ import {
 } from "./TransactionsTab.styles";
 import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 
 type TransactionsTabType = {
   address: string;
@@ -159,7 +160,9 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   const handleClearTransactions = () => {
-    // dispatch(setTransactions(null));
+    const filteredTransactions = getFitleredFailedTransactions(transactions || []);
+
+    // dispatch(setTransactions(filteredTransactions));
     clearLocalStorageFailedTx(address);
   };
 
