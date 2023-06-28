@@ -267,3 +267,11 @@ export const BackdropFilter = styled.button`
     display: block;
   }
 `;
+
+export const ClearFailedTxButton = styled(Button)`
+  margin-top: 1rem;
+  ${InputOrButtonBorderStyleType2};
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;

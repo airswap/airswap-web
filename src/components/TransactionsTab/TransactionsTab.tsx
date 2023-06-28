@@ -12,7 +12,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import { setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -40,8 +40,11 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
+  ClearFailedTxButton
 } from "./TransactionsTab.styles";
+import { clearLocalStorage } from "./helpers/clearLocalStorage";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { useDispatch } from "react-redux";
 
 type TransactionsTabType = {
   address: string;
@@ -83,13 +86,15 @@ const TransactionsTab = ({
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  const dispatch = useDispatch();
+
   const addressOrName = useAddressOrEnsName(address);
   const walletInfoText = useMemo(() => {
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-      ? addressOrName
-      : t("wallet.notConnected");
+        ? addressOrName
+        : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -149,6 +154,11 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
+
+  const handleClearTransactions = () => {
+    // dispatch(setTransactions(null));
+    clearLocalStorage();
+  };
 
   return (
     <AnimatePresence initial={false}>
@@ -248,6 +258,14 @@ const TransactionsTab = ({
                   </IconContainer>
                   {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
+              )}
+              {transactions.length > 0 && (
+                <ClearFailedTxButton
+                  aria-label={t("wallet.clearFailedTransactions")}
+                  onClick={handleClearTransactions}
+                >
+                  {t("wallet.clearFailedTransactions")}
+                </ClearFailedTxButton>
               )}
             </TransactionContainer>
           </TransactionsContainer>
