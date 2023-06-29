@@ -29,7 +29,7 @@ const useSufficientAllowance = (
     // ETH can't have allowance because it's not a token. So we default to WETH.
     const justifiedAddress =
       token.address === nativeCurrencyAddress
-        ? WETH.getAddress(chainId)
+        ? WETH.getAddress(chainId).toLowerCase()
         : token.address;
 
     const justifiedToken = findEthOrTokenByAddress(

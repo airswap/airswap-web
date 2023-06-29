@@ -137,13 +137,26 @@ export const metadataSlice = createSlice({
       })
       .addCase(fetchAllTokens.fulfilled, (state, action) => {
         const { payload: tokenInfo } = action;
-        const all = tokenInfo.reduce(
-          (allTokens: { [address: string]: TokenInfo }, token) => {
-            const { address } = token;
+        const newAllTokens = tokenInfo.reduce(
+          (allTokens: MetadataTokens["all"], token) => {
+            const address = token.address.toLowerCase();
             if (!allTokens[address]) {
-              allTokens[address] = { ...token };
+              allTokens[address] = {
+                ...token,
+                address: token.address.toLowerCase(),
+              };
             }
             return allTokens;
+          },
+          {}
+        );
+
+        const stateAllTokens = Object.keys(state.tokens.all).reduce(
+          (allTokens: MetadataTokens["all"], token) => {
+            return {
+              ...allTokens,
+              [token.toLowerCase()]: state.tokens.all[token],
+            };
           },
           {}
         );
@@ -151,8 +164,8 @@ export const metadataSlice = createSlice({
         const tokens = {
           ...state.tokens,
           all: {
-            ...state.tokens.all,
-            ...all,
+            ...stateAllTokens,
+            ...newAllTokens,
           },
         };
 

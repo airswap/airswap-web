@@ -16,7 +16,8 @@ const useNativeWrappedToken = (chainId?: number): TokenInfo | null => {
 
     return (
       allTokens.find(
-        (tokenInfo) => tokenInfo.address === WETH.getAddress(chainId)
+        (tokenInfo) =>
+          tokenInfo.address === WETH.getAddress(chainId).toLowerCase()
       ) || null
     );
   }, [allTokens, chainId]);
