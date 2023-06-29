@@ -1,6 +1,5 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
@@ -11,9 +10,11 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
+  clear,
   setTransactions,
   SubmittedTransaction,
 } from "../../features/transactions/transactionsSlice";
@@ -46,9 +47,8 @@ import {
   BackdropFilter,
   ClearFailedTxButton,
 } from "./TransactionsTab.styles";
-import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
-import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
 
 type TransactionsTabType = {
   address: string;
@@ -80,6 +80,7 @@ const TransactionsTab = ({
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const { active } = useWeb3React<Web3Provider>();
 
@@ -89,8 +90,6 @@ const TransactionsTab = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
-
-  const dispatch = useDispatch();
 
   const addressOrName = useAddressOrEnsName(address);
   const walletInfoText = useMemo(() => {
@@ -159,11 +158,9 @@ const TransactionsTab = ({
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
-  const handleClearTransactions = () => {
-    const filteredTransactions = getFitleredFailedTransactions(transactions);
-
-    dispatch(setTransactions({ all: filteredTransactions }));
-    clearLocalStorageFailedTx(address);
+  const handleClearFailedTransactions = () => {
+    dispatch(setTransactions(null));
+    clearLocalStorageFailedTx(address)
   };
 
   return (
@@ -268,7 +265,7 @@ const TransactionsTab = ({
               {transactions.length > 0 && (
                 <ClearFailedTxButton
                   aria-label={t("wallet.clearFailedTransactions")}
-                  onClick={handleClearTransactions}
+                  onClick={handleClearFailedTransactions}
                 >
                   {t("wallet.clearFailedTransactions")}
                 </ClearFailedTxButton>
