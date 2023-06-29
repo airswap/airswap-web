@@ -48,8 +48,8 @@ import {
   ClearFailedTxButton,
 } from "./TransactionsTab.styles";
 import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
-import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
+import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
 type TransactionsTabType = {
   address: string;
@@ -97,8 +97,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-        ? addressOrName
-        : t("wallet.notConnected");
+      ? addressOrName
+      : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -160,7 +160,7 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   const handleClearFailedTransactions = () => {
-    const filteredTransactions = getFitleredFailedTransactions(transactions)
+    const filteredTransactions = getFitleredFailedTransactions(transactions);
     dispatch(setTransactions({ all: filteredTransactions }));
     clearLocalStorageFailedTx(address);
   };
