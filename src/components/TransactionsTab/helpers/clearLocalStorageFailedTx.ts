@@ -15,9 +15,7 @@ export const clearLocalStorageFailedTx = (address: string) => {
         );
 
         const updatedKeys = JSON.stringify({ all: filteredOrders });
-        console.log(updatedKeys)
         localStorage.setItem(key, updatedKeys);
-        console.log(localStorage.getItem(key))
       }
     }
   }
