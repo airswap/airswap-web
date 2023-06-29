@@ -13,7 +13,6 @@ import {
   DeleteIcon,
   TokenSymbolAndName,
   StyledIcon,
-  TooltipStyle,
   Tooltip,
 } from "./TokenButton.styles";
 
