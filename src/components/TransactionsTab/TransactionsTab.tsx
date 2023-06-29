@@ -47,8 +47,9 @@ import {
   BackdropFilter,
   ClearFailedTxButton,
 } from "./TransactionsTab.styles";
-import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
+import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 
 type TransactionsTabType = {
   address: string;
@@ -159,8 +160,9 @@ const TransactionsTab = ({
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
   const handleClearFailedTransactions = () => {
-    dispatch(setTransactions(null));
-    clearLocalStorageFailedTx(address)
+    const filteredTransactions = getFitleredFailedTransactions(transactions)
+    dispatch(setTransactions({ all: filteredTransactions }));
+    clearLocalStorageFailedTx(address);
   };
 
   return (
