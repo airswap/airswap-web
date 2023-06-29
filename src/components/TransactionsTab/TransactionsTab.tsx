@@ -160,7 +160,7 @@ const TransactionsTab = ({
 
   const handleClearTransactions = () => {
     dispatch(setTransactions(null));
-    clearLocalStorage('airswap/transactions')
+    clearLocalStorage(address)
   };
 
   return (
