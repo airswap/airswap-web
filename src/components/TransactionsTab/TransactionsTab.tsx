@@ -47,8 +47,8 @@ import {
   BackdropFilter,
   ClearTransactionsButton,
 } from "./TransactionsTab.styles";
-import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import { clearLocalStorage } from "./helpers/clearLocalStorage";
+import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
 type TransactionsTabType = {
   address: string;
@@ -96,8 +96,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-        ? addressOrName
-        : t("wallet.notConnected");
+      ? addressOrName
+      : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -160,7 +160,7 @@ const TransactionsTab = ({
 
   const handleClearTransactions = () => {
     dispatch(setTransactions(null));
-    clearLocalStorage(address)
+    clearLocalStorage(address);
   };
 
   return (
