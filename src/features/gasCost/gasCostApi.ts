@@ -5,6 +5,7 @@ import { TokenInfo } from "@airswap/types";
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
 
+import getWethAddress from "../../helpers/getWethAddress";
 import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
 import uniswapPairAbi from "../../uniswap/abis/pair.json";
 import uniswapDeploys from "../../uniswap/deployments";
@@ -33,7 +34,7 @@ const getPriceOfTokenInWethFromUniswap: (
   chainId: number
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
-  const wethAddress = WETH.getAddress(chainId);
+  const wethAddress = getWethAddress(chainId);
   if (tokenAddress === wethAddress || tokenAddress === ADDRESS_ZERO)
     return new BigNumber(1);
 

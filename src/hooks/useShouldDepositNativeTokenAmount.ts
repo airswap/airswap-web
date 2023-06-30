@@ -55,13 +55,8 @@ const useShouldDepositNativeTokenAmount = (
       activeTokens,
       chainId
     );
-    const wrappedTokenInfo = findEthOrTokenByAddress(
-      wrappedTokenAddress,
-      activeTokens,
-      chainId
-    );
 
-    if (!nativeTokenInfo || !wrappedTokenInfo) {
+    if (!nativeTokenInfo || !wrappedNativeToken) {
       return undefined;
     }
 
@@ -69,7 +64,7 @@ const useShouldDepositNativeTokenAmount = (
       10 ** nativeTokenInfo.decimals
     );
     const wrappedTokenBigNumber = new BigNumber(wrappedTokenBalance).div(
-      10 ** wrappedTokenInfo.decimals
+      10 ** wrappedNativeToken.decimals
     );
     const tokenAmountBigNumber = new BigNumber(
       toAtomicString(tokenAmount, nativeTokenInfo.decimals)

@@ -1,3 +1,4 @@
+import { WETH } from "@airswap/libraries";
 import {
   AsyncThunk,
   combineReducers,
@@ -11,6 +12,7 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import getWethAddress from "../../helpers/getWethAddress";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -79,11 +81,19 @@ const getThunk: (
     async (params, { getState, dispatch }) => {
       try {
         const state = getState();
+        const { chainId, address } = state.wallet;
+
+        const wrappedNativeCurrencyAddress = chainId
+          ? getWethAddress(chainId)
+          : undefined;
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
+          ...state.metadata.tokens.custom,
+          ...(wrappedNativeCurrencyAddress
+            ? [wrappedNativeCurrencyAddress]
+            : []),
           nativeCurrencyAddress,
         ];
-        const { chainId, address } = state.wallet;
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
         );

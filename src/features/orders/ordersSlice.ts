@@ -24,6 +24,7 @@ import {
 import nativeCurrency from "../../constants/nativeCurrency";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import getWethAddress from "../../helpers/getWethAddress";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import {
   allowancesSwapActions,
@@ -79,9 +80,9 @@ const initialState: OrdersState = {
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: OrderERC20, chainId: number) => {
   let newOrder = { ...order };
-  if (order.senderToken === WETH.getAddress(chainId)) {
+  if (order.senderToken === getWethAddress(chainId)) {
     newOrder.senderToken = nativeCurrency[chainId].address;
-  } else if (order.signerToken === WETH.getAddress(chainId)) {
+  } else if (order.signerToken === getWethAddress(chainId)) {
     newOrder.signerToken = nativeCurrency[chainId].address;
   }
   return newOrder;
@@ -129,7 +130,7 @@ export const deposit = createAsyncThunk(
         const transaction: SubmittedDepositOrder = {
           type: "Deposit",
           order: {
-            signerToken: WETH.getAddress(params.chainId),
+            signerToken: getWethAddress(params.chainId),
             signerAmount: senderAmount,
             senderToken: nativeCurrency[params.chainId].address,
             senderAmount: senderAmount,
@@ -216,7 +217,7 @@ export const withdraw = createAsyncThunk(
               params.senderAmount,
               params.senderTokenDecimals
             ),
-            senderToken: WETH.getAddress(params.chainId),
+            senderToken: getWethAddress(params.chainId),
             senderAmount: toAtomicString(
               params.senderAmount,
               params.senderTokenDecimals

@@ -84,6 +84,7 @@ import {
   setCustomServerUrl,
   selectCustomServerUrl,
 } from "../../features/userSettings/userSettingsSlice";
+import getWethAddress from "../../helpers/getWethAddress";
 import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -381,7 +382,7 @@ const SwapWidget: FC = () => {
     setIsRequestingQuotes(true);
 
     const usesWrapper = swapType === "swapWithWrap";
-    const weth = WETH.getAddress(chainId!);
+    const weth = getWethAddress(chainId!);
     const eth = nativeCurrency[chainId!];
     const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
     const _baseToken = baseToken === eth.address ? weth : baseToken!;
