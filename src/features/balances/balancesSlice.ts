@@ -12,6 +12,7 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import getWethAddress from "../../helpers/getWethAddress";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -83,7 +84,7 @@ const getThunk: (
         const { chainId, address } = state.wallet;
 
         const wrappedNativeCurrencyAddress = chainId
-          ? WETH.getAddress(chainId).toLowerCase()
+          ? getWethAddress(chainId)
           : undefined;
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,

@@ -40,6 +40,7 @@ import {
   selectUserTokens,
   setUserTokens,
 } from "../../features/userSettings/userSettingsSlice";
+import getWethAddress from "../../helpers/getWethAddress";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../helpers/toMaxAllowedDecimalsNumberString";
 import useApprovalPending from "../../hooks/useApprovalPending";
@@ -263,11 +264,11 @@ const MakeWidget: FC = () => {
 
     const signerToken =
       makerTokenAddress === nativeCurrencyAddress
-        ? WETH.getAddress(chainId!)
+        ? getWethAddress(chainId!)
         : makerTokenAddress;
     const senderToken =
       takerTokenAddress === nativeCurrencyAddress
-        ? WETH.getAddress(chainId!)
+        ? getWethAddress(chainId!)
         : takerTokenAddress;
 
     setMakerAmount(makerAmount);
