@@ -6,6 +6,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import nativeCurrency from "../constants/nativeCurrency";
+import getWethAddress from "../helpers/getWethAddress";
 import { SwapType } from "../types/swapType";
 
 const useSwapType = (
@@ -20,7 +21,7 @@ const useSwapType = (
     }
 
     const eth = nativeCurrency[chainId].address;
-    const weth = WETH.getAddress(chainId);
+    const weth = getWethAddress(chainId);
 
     if (
       [weth, eth].includes(token1.address) &&

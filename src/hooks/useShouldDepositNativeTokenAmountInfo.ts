@@ -11,6 +11,7 @@ import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
+import getWethAddress from "../helpers/getWethAddress";
 import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
 
 interface DepositNativeTokenAmountInfo {
@@ -37,7 +38,7 @@ const useShouldDepositNativeTokenAmountInfo =
         return;
       }
 
-      const wrappedTokenAddress = WETH.getAddress(chainId);
+      const wrappedTokenAddress = getWethAddress(chainId);
 
       if (!wrappedTokenAddress) {
         return;

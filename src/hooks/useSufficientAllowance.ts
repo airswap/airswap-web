@@ -12,6 +12,7 @@ import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
+import getWethAddress from "../helpers/getWethAddress";
 
 const useSufficientAllowance = (
   token: TokenInfo | null,
@@ -29,7 +30,7 @@ const useSufficientAllowance = (
     // ETH can't have allowance because it's not a token. So we default to WETH.
     const justifiedAddress =
       token.address === nativeCurrencyAddress
-        ? WETH.getAddress(chainId)
+        ? getWethAddress(chainId)
         : token.address;
 
     const justifiedToken = findEthOrTokenByAddress(

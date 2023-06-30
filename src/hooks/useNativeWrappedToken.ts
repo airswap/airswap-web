@@ -5,6 +5,7 @@ import { TokenInfo } from "@airswap/types";
 
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
+import getWethAddress from "../helpers/getWethAddress";
 
 const useNativeWrappedToken = (chainId?: number): TokenInfo | null => {
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -16,7 +17,7 @@ const useNativeWrappedToken = (chainId?: number): TokenInfo | null => {
 
     return (
       allTokens.find(
-        (tokenInfo) => tokenInfo.address === WETH.getAddress(chainId)
+        (tokenInfo) => tokenInfo.address === getWethAddress(chainId)
       ) || null
     );
   }, [allTokens, chainId]);

@@ -166,7 +166,7 @@
     "selectedServer": "Selected {{serverUrl}} as custom server",
     "settings": "Settings",
     "shouldApproveErc20TokenAmount": "Spending cap must be at least {{amount}} {{symbol}} + {{protocolFee}}% fee",
-    "shouldDepositNativeTokenAmount": "You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeToken}}. You will need to wrap at least",
+    "shouldDepositNativeTokenAmount": "You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeTokenSymbol}}. You will need to wrap at least",
     "specificTaker": "Specific Taker",
     "startByCreatingANewOrder": "Start by creating a new order",
     "submitted": "Transaction Submitted",
