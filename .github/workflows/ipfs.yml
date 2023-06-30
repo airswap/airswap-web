@@ -6,6 +6,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: linea
     steps:
       - uses: actions/setup-node@v3
         with:
@@ -16,6 +17,7 @@ jobs:
 
       - name: Install and Build 🔧
         env:
+          SENTRY_DSN: ${{ env.SENTRY_DSN }}
           REACT_APP_RPC_URL_1: ${{ vars.REACT_APP_RPC_URL_1 }}
           REACT_APP_RPC_URL_5: ${{ vars.REACT_APP_RPC_URL_5 }}
           REACT_APP_RPC_URL_59140: ${{ vars.REACT_APP_RPC_URL_59140 }}

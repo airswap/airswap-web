@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { HashRouter as Router } from "react-router-dom";
 
 import { Web3Provider } from "@ethersproject/providers";
+import * as Sentry from "@sentry/react";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
@@ -19,6 +20,23 @@ import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [
+    new Sentry.BrowserTracing({
+      tracePropagationTargets: [
+        "localhost",
+        /^https:\/\/airswap.io/,
+        /^https:\/\/linea.airswap.eth.limo/,
+      ],
+    }),
+    new Sentry.Replay(),
+  ],
+  tracesSampleRate: 0.1,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});
 
 // 1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
