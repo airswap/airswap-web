@@ -22,11 +22,6 @@ const useValidAddress = (address: string): boolean => {
       return;
     }
 
-    // Not validating other chains than ethereum right now. Can be added later.
-    if (chainId > 5) {
-      return;
-    }
-
     if (address.indexOf(".eth") !== -1) {
       resolveEnsAddress(library, address);
 
