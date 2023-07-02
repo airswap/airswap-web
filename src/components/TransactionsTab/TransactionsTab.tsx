@@ -13,11 +13,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import {
-  clear,
-  setTransactions,
-  SubmittedTransaction,
-} from "../../features/transactions/transactionsSlice";
+import { setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -47,7 +43,7 @@ import {
   BackdropFilter,
   ClearFailedTxButton,
 } from "./TransactionsTab.styles";
-import { clearLocalStorageFailedTx } from "./helpers/clearLocalStorageFailedTx";
+import { clearFailedTransactions, clearAllTransactions } from "./helpers/clearLocalStorage";
 import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 
@@ -97,8 +93,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-      ? addressOrName
-      : t("wallet.notConnected");
+        ? addressOrName
+        : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -159,10 +155,15 @@ const TransactionsTab = ({
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
+  const handleClearAllTransactions = () => {
+    dispatch(setTransactions(null))
+    clearAllTransactions(address)
+  }
+
   const handleClearFailedTransactions = () => {
     const filteredTransactions = getFitleredFailedTransactions(transactions);
     dispatch(setTransactions({ all: filteredTransactions }));
-    clearLocalStorageFailedTx(address);
+    clearFailedTransactions(address);
   };
 
   return (

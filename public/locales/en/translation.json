@@ -228,6 +228,7 @@
     "activeTransactions": "Active transactions",
     "approve": "Approve {{symbol}}",
     "completedTransactions": "Completed transactions",
+    "clearAllTransactions": "Clear transactions",
     "clearFailedTransactions": "Clear failed transactions",
     "connectWallet": "Connect Wallet",
     "copyAddress": "Copy address",

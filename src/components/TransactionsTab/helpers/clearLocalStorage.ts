@@ -1,6 +1,6 @@
 import { SubmittedTransaction } from "../../../features/transactions/transactionsSlice";
 
-export const clearLocalStorageFailedTx = (address: string) => {
+export const clearFailedTransactions = (address: string) => {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     const localStorageKey = `airswap/transactions/${address}`;
@@ -17,6 +17,15 @@ export const clearLocalStorageFailedTx = (address: string) => {
         const updatedKeys = JSON.stringify({ all: filteredOrders });
         localStorage.setItem(key, updatedKeys);
       }
+    }
+  }
+};
+
+export const clearAllTransactions = (address: string) => {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.includes(`airswap/transactions/${address}`)) {
+      localStorage.removeItem(key);
     }
   }
 };
