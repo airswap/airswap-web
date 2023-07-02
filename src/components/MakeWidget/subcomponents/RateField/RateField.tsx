@@ -4,7 +4,13 @@ import BigNumber from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../Icon/Icon";
-import { Text, Wrapper, StyledIconButton, RateBox } from "./RateField.styles";
+import {
+  Text,
+  Wrapper,
+  StyledIconButton,
+  RateBox,
+  Equals,
+} from "./RateField.styles";
 
 export type RateFieldProps = {
   isButton?: boolean;
@@ -50,7 +56,8 @@ export const RateField: React.FC<RateFieldProps> = ({
       isButton={isButton}
       className={className}
     >
-      <Text>{` 1 ${invertPair ? token2 : token1} =`}</Text>
+      1<Text>{invertPair ? token2 : token1}</Text>
+      <Equals>=</Equals>
       <RateBox>{displayRate}</RateBox>
       <Text>{invertPair ? token1 : token2}</Text>
       {isButton ? (

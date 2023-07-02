@@ -52,6 +52,7 @@ export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
 `;
 
 export const StyledInputSection = styled(InputSection)`
+  border-radius: 2px;
   margin-bottom: 1rem;
   height: 3.5rem;
 `;

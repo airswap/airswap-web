@@ -13,13 +13,20 @@ export const StyledIconButton = styled(IconButton)`
 
 export const Text = styled.div`
   ${TextEllipsis};
+
+  margin-left: 0.25rem;
+  max-width: 3rem;
+`;
+
+export const Equals = styled.div`
+  margin-left: 0.25rem;
 `;
 
 export const RateBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 0 0.25rem;
-  white-space: pre;
+  ${TextEllipsis};
+
+  margin-left: 0.25rem;
+  max-width: 7rem;
 `;
 
 export const Wrapper = styled.div<{ isButton: boolean }>`
@@ -46,7 +53,7 @@ export const Wrapper = styled.div<{ isButton: boolean }>`
         margin: 0;
         height: 2rem;
         padding: 0 0.5rem;
-        line-height: 1;
+        line-height: 2;
         font-family: ${fontMono};
         font-size: 0.875rem;
         font-weight: 500;
