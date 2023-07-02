@@ -48,7 +48,7 @@ import {
   selectIndexerReducer,
 } from "../../features/indexer/indexerSlice";
 import {
-  selectActiveTokensWithoutCustomTokens,
+  selectActiveTokens,
   selectAllTokenInfo,
 } from "../../features/metadata/metadataSlice";
 import { check } from "../../features/orders/orderApi";
@@ -132,7 +132,7 @@ const SwapWidget: FC = () => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const bestTradeOption = useAppSelector(selectBestOption);
-  const activeTokens = useAppSelector(selectActiveTokensWithoutCustomTokens);
+  const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
