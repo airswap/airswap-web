@@ -1,14 +1,17 @@
 import { motion } from "framer-motion";
 import styled from "styled-components/macro";
-
+import { css } from "styled-components";
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   InputOrButtonBorderStyleType2,
+  BorderlessButtonStyle,
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
+// import { Tooltip } from "../../styled-components/Tooltip/Tooltip";
 import Button from "../Button/Button";
+import Icon from "../Icon/Icon";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
@@ -17,6 +20,8 @@ import {
 } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
+import Dropdown from "../Dropdown/Dropdown";
+import { SelectButtonText } from "../Dropdown/Dropdown.styles";
 
 export const Container = styled(motion.div)`
   position: absolute;
@@ -68,8 +73,34 @@ export const StyledTransactionLink = styled(TransactionLink)`
   }
 `;
 
+export const TooltipStyle = css`
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2px;
+  padding: 0.75rem;
+  line-height: 1.2;
+  font-size: 0.875rem;
+  z-index: 1;
+   white-space: nowrap;
+  top: 85%;
+  left: 50%;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
+  filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
+`;
+
+export const Tooltip = styled.div`
+  display: none;
+
+  ${TooltipStyle};
+`;
+
+
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
@@ -89,6 +120,7 @@ export const Legend = styled(InfoSubHeading)`
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1rem;
+  width: 100%;
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:after {
@@ -107,6 +139,37 @@ export const Legend = styled(InfoSubHeading)`
 export const LegendLine = styled.span`
   background: transparent;
 `;
+
+export const IconBinContainer = styled.a`
+  display: flex;
+  margin-left: 0.5rem;
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+  }
+
+  // &:hover + ${Tooltip} {
+  //   display: block;
+  // }
+`;
+
+export const ClearInfoTooltip = styled(Tooltip) <{
+  containerScrollTop: number;
+  orderIndex?: number;
+  shift?: number;
+}>`
+  position: absolute;
+  top: calc(
+    5rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
+      ${({ orderIndex }) => orderIndex}
+  );
+  left: ${({ shift }) => `calc(33% * ${shift} + 0.5rem)`};
+  width: auto;
+  z-index: 3;
+  pointer-events: none;
+`;
+
 
 type TransactionsContainerProps = {
   $overflow: boolean;
@@ -178,6 +241,22 @@ export const IconContainer = styled.div`
   color: ${(props) => props.theme.colors.lightGrey};
   border-radius: 50%;
 `;
+
+export const SelectWrapper = styled.div`
+  display: flex;
+  height: 2rem;
+  width: fit-content;
+  z-index: 4;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+`;
+
+export const StyledDropdown = styled(Dropdown)`
+
+  ${SelectButtonText} {
+    max-width: 7rem;
+  }
+`
 
 export const BackButton = styled(motion.button)`
   ${InputOrButtonBorderStyleType2};

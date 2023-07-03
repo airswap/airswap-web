@@ -13,8 +13,10 @@
   },
   "common": {
     "AirSwap": "AirSwap",
+    "All": "All",
     "account": "Account",
     "active": "Active",
+    "approvals": "Approvals",
     "back": "Back",
     "build": "build",
     "cancel": "Cancel",
@@ -64,6 +66,7 @@
     "status": "Status",
     "success": "Success",
     "swap": "Swap",
+    "swaps": "Swaps",
     "system": "System",
     "taken": "Taken",
     "theme": "Theme",

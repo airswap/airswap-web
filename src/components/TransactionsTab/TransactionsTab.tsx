@@ -13,7 +13,10 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { setTransactions, SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import {
+  setTransactions,
+  SubmittedTransaction,
+} from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -42,10 +45,20 @@ import {
   StyledWalletMobileMenu,
   BackdropFilter,
   ClearFailedTxButton,
+  IconBinContainer,
+  ClearInfoTooltip,
+  Tooltip,
+  StyledDropdown,
+  SelectWrapper,
 } from "./TransactionsTab.styles";
-import { clearFailedTransactions, clearAllTransactions } from "./helpers/clearLocalStorage";
+import {
+  clearFailedTransactions,
+  clearAllTransactions,
+} from "./helpers/clearLocalStorage";
 import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import getClearTransactionOptions from "./helpers/getClearTransactionOptions";
+import { SelectOption } from "../Dropdown/Dropdown";
 
 type TransactionsTabType = {
   address: string;
@@ -73,6 +86,12 @@ const TransactionsTab = ({
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
+  // const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
+  // const [containerScrollTop, setContainerScrollTop] = useState(0);
+  // const [tooltipIndex, setTooltipIndex] = useState<number | undefined>();
+  // const [tooltipShift, setTooltipShift] = useState<number | undefined>();
+  // const [tooltipText, setTooltipText] = useState<string | null>(null);
+
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
@@ -155,16 +174,39 @@ const TransactionsTab = ({
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
+  // const handleMouseEnter = (
+  //   target: HTMLDivElement,
+  //   index: number,
+  //   shift: number
+  // ) => {
+  //   if (target.offsetWidth < target.scrollWidth) {
+  //     setTooltipIndex(index);
+  //     setTooltipShift(shift);
+  //     setTooltipText(target.textContent);
+  //     setIsTooltipOpen(true);
+  //   }
+  // };
+
   const handleClearAllTransactions = () => {
-    dispatch(setTransactions(null))
-    clearAllTransactions(address)
-  }
+    dispatch(setTransactions(null));
+    clearAllTransactions(address);
+  };
 
   const handleClearFailedTransactions = () => {
     const filteredTransactions = getFitleredFailedTransactions(transactions);
     dispatch(setTransactions({ all: filteredTransactions }));
     clearFailedTransactions(address);
   };
+
+  const translatedOptions = useMemo(() => {
+    return getClearTransactionOptions(t);
+  }, [t]);
+
+  const [unit, setUnit] = useState(translatedOptions[1]);
+
+  function handleUnitChange(option: SelectOption) {
+    setUnit(option);
+  }
 
   return (
     <AnimatePresence initial={false}>
@@ -245,6 +287,26 @@ const TransactionsTab = ({
                   {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
+              <IconBinContainer>
+                <Icon iconSize={1} name="bin" />
+                <SelectWrapper>
+                  <StyledDropdown
+                    selectedOption={unit}
+                    options={translatedOptions}
+                    onChange={handleUnitChange}
+                  />
+                </SelectWrapper>
+                {/* <Tooltip>Clear List</Tooltip> */}
+                {/* {isTooltipOpen && (
+                  <ClearInfoTooltip
+                    containerScrollTop={containerScrollTop}
+                    orderIndex={tooltipIndex}
+                    shift={tooltipShift}
+                  >
+                    Clear List
+                  </ClearInfoTooltip>)} */}
+
+              </IconBinContainer>
             </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>
@@ -265,14 +327,14 @@ const TransactionsTab = ({
                   {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
-              {transactions.length > 0 && (
+              {/* {transactions.length > 0 && (
                 <ClearFailedTxButton
                   aria-label={t("wallet.clearFailedTransactions")}
                   onClick={handleClearFailedTransactions}
                 >
                   {t("wallet.clearFailedTransactions")}
                 </ClearFailedTxButton>
-              )}
+              )} */}
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
