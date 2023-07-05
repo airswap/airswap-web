@@ -22,6 +22,7 @@ import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
+import { SelectOption } from "../Dropdown/Dropdown";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -55,10 +56,9 @@ import {
   clearFailedTransactions,
   clearAllTransactions,
 } from "./helpers/clearLocalStorage";
+import getClearTransactionOptions from "./helpers/getClearTransactionOptions";
 import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-import getClearTransactionOptions from "./helpers/getClearTransactionOptions";
-import { SelectOption } from "../Dropdown/Dropdown";
 
 type TransactionsTabType = {
   address: string;
@@ -91,6 +91,8 @@ const TransactionsTab = ({
   // const [tooltipIndex, setTooltipIndex] = useState<number | undefined>();
   // const [tooltipShift, setTooltipShift] = useState<number | undefined>();
   // const [tooltipText, setTooltipText] = useState<string | null>(null);
+
+  const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
@@ -204,8 +206,18 @@ const TransactionsTab = ({
 
   const [unit, setUnit] = useState(translatedOptions[1]);
 
-  function handleUnitChange(option: SelectOption) {
+  function handleClearTypeChange(option: SelectOption) {
     setUnit(option);
+    setIsSelectorOpen(false)
+    if (option.label === 'All') {
+      handleClearAllTransactions()
+    } else if (option.label === 'Failed') {
+      handleClearFailedTransactions()
+    }
+  }
+
+  const handleSetIsSelectorOpen = () => {
+    setIsSelectorOpen(!isSelectorOpen)
   }
 
   return (
@@ -287,15 +299,8 @@ const TransactionsTab = ({
                   {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
-              <IconBinContainer>
+              <IconBinContainer onClick={handleSetIsSelectorOpen}>
                 <Icon iconSize={1} name="bin" />
-                <SelectWrapper>
-                  <StyledDropdown
-                    selectedOption={unit}
-                    options={translatedOptions}
-                    onChange={handleUnitChange}
-                  />
-                </SelectWrapper>
                 {/* <Tooltip>Clear List</Tooltip> */}
                 {/* {isTooltipOpen && (
                   <ClearInfoTooltip
@@ -305,9 +310,16 @@ const TransactionsTab = ({
                   >
                     Clear List
                   </ClearInfoTooltip>)} */}
-
               </IconBinContainer>
             </LegendContainer>
+            <SelectWrapper $isOpen={isSelectorOpen}>
+              <StyledDropdown
+                selectedOption={unit}
+                options={translatedOptions}
+                onChange={handleClearTypeChange}
+                isOpen={isSelectorOpen}
+              />
+            </SelectWrapper>
             <TransactionContainer>
               <AnimatePresence initial={false}>
                 {completedTransactions.slice(0, 10).map((transaction) => (

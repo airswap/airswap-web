@@ -1,7 +1,10 @@
 import { TFunction } from "i18next";
+
 import { SelectOption } from "../../Dropdown/Dropdown";
 
-export default function getClearTransactionOptions(t: TFunction): SelectOption[] {
+export default function getClearTransactionOptions(
+  t: TFunction
+): SelectOption[] {
   return [
     {
       label: t("common.all"),

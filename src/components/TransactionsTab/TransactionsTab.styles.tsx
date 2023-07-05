@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import styled from "styled-components/macro";
 import { css } from "styled-components";
+import styled from "styled-components/macro";
+
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
@@ -11,7 +12,8 @@ import {
 import { sizes } from "../../style/sizes";
 // import { Tooltip } from "../../styled-components/Tooltip/Tooltip";
 import Button from "../Button/Button";
-import Icon from "../Icon/Icon";
+import Dropdown from "../Dropdown/Dropdown";
+import { SelectButtonText } from "../Dropdown/Dropdown.styles";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
@@ -20,8 +22,6 @@ import {
 } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
-import Dropdown from "../Dropdown/Dropdown";
-import { SelectButtonText } from "../Dropdown/Dropdown.styles";
 
 export const Container = styled(motion.div)`
   position: absolute;
@@ -80,7 +80,7 @@ export const TooltipStyle = css`
   line-height: 1.2;
   font-size: 0.875rem;
   z-index: 1;
-   white-space: nowrap;
+  white-space: nowrap;
   top: 85%;
   left: 50%;
   color: ${({ theme }) =>
@@ -95,7 +95,6 @@ export const Tooltip = styled.div`
 
   ${TooltipStyle};
 `;
-
 
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
@@ -170,7 +169,6 @@ export const ClearInfoTooltip = styled(Tooltip) <{
   pointer-events: none;
 `;
 
-
 type TransactionsContainerProps = {
   $overflow: boolean;
 };
@@ -242,21 +240,24 @@ export const IconContainer = styled.div`
   border-radius: 50%;
 `;
 
-export const SelectWrapper = styled.div`
-  display: flex;
+export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
+  display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
+  justify-content: end;
+  position: relative;
+  margin-top: -2rem;
+  top: 3.5rem;
+  right: 1.5rem;
   height: 2rem;
-  width: fit-content;
-  z-index: 4;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
 export const StyledDropdown = styled(Dropdown)`
+  ${SelectButtonText}
 
-  ${SelectButtonText} {
-    max-width: 7rem;
-  }
-`
+  text-align: left;
+  width: 30%;
+`;
 
 export const BackButton = styled(motion.button)`
   ${InputOrButtonBorderStyleType2};

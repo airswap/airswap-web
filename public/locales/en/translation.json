@@ -13,7 +13,7 @@
   },
   "common": {
     "AirSwap": "AirSwap",
-    "All": "All",
+    "all": "All",
     "account": "Account",
     "active": "Active",
     "approvals": "Approvals",

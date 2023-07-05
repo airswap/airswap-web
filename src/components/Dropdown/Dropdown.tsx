@@ -25,6 +25,7 @@ export type DropdownProps = {
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
   className?: string;
+  isOpen?: boolean
 };
 
 const Dropdown: FC<DropdownProps> = ({
@@ -32,6 +33,7 @@ const Dropdown: FC<DropdownProps> = ({
   options,
   onChange,
   className,
+  isOpen = false
 }) => {
   const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
@@ -87,7 +89,7 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex}>
+      <SelectOptions activeIndex={activeOptionIndex} isOpen={isOpen}>
         {options.map((option, index) => (
           <Option
             key={option.value}
