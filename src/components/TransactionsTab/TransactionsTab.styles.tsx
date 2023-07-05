@@ -153,7 +153,7 @@ export const IconBinContainer = styled.a`
   // }
 `;
 
-export const ClearInfoTooltip = styled(Tooltip) <{
+export const ClearInfoTooltip = styled(Tooltip)<{
   containerScrollTop: number;
   orderIndex?: number;
   shift?: number;
@@ -241,7 +241,7 @@ export const IconContainer = styled.div`
 `;
 
 export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
-  display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
   justify-content: end;
   position: relative;
   margin-top: -2rem;

@@ -108,6 +108,7 @@ const TransactionsTab = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const selectWrapperRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
   const walletInfoText = useMemo(() => {
@@ -189,6 +190,25 @@ const TransactionsTab = ({
   //   }
   // };
 
+  useEffect(() => {
+    if (selectWrapperRef.current) {
+
+      const handleClickOutside = (event: any) => {
+        if (isSelectorOpen) {
+          if (selectWrapperRef.current && !selectWrapperRef.current.contains(event.target)) {
+            setIsSelectorOpen(false)
+          }
+        }
+      }
+
+      document.addEventListener('click', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [isSelectorOpen, selectWrapperRef])
+
   const handleClearAllTransactions = () => {
     dispatch(setTransactions(null));
     clearAllTransactions(address);
@@ -208,17 +228,17 @@ const TransactionsTab = ({
 
   function handleClearTypeChange(option: SelectOption) {
     setUnit(option);
-    setIsSelectorOpen(false)
-    if (option.label === 'All') {
-      handleClearAllTransactions()
-    } else if (option.label === 'Failed') {
-      handleClearFailedTransactions()
+    setIsSelectorOpen(false);
+    if (option.label === "All") {
+      handleClearAllTransactions();
+    } else if (option.label === "Failed") {
+      handleClearFailedTransactions();
     }
   }
 
   const handleSetIsSelectorOpen = () => {
-    setIsSelectorOpen(!isSelectorOpen)
-  }
+    setIsSelectorOpen(!isSelectorOpen);
+  };
 
   return (
     <AnimatePresence initial={false}>
@@ -312,7 +332,7 @@ const TransactionsTab = ({
                   </ClearInfoTooltip>)} */}
               </IconBinContainer>
             </LegendContainer>
-            <SelectWrapper $isOpen={isSelectorOpen}>
+            <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
               <StyledDropdown
                 selectedOption={unit}
                 options={translatedOptions}

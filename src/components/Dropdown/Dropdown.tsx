@@ -25,7 +25,7 @@ export type DropdownProps = {
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
   className?: string;
-  isOpen?: boolean
+  isOpen?: boolean;
 };
 
 const Dropdown: FC<DropdownProps> = ({
@@ -33,7 +33,7 @@ const Dropdown: FC<DropdownProps> = ({
   options,
   onChange,
   className,
-  isOpen = false
+  isOpen = false,
 }) => {
   const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
