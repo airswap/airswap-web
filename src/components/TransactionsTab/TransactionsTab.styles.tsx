@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { css } from "styled-components";
 import styled from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
@@ -7,13 +6,12 @@ import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   InputOrButtonBorderStyleType2,
-  BorderlessButtonStyle,
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
-// import { Tooltip } from "../../styled-components/Tooltip/Tooltip";
 import Button from "../Button/Button";
 import Dropdown from "../Dropdown/Dropdown";
 import { SelectButtonText } from "../Dropdown/Dropdown.styles";
+import Tooltip from "../ExpiryIndicator/subcomponents/Tooltip";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
@@ -73,29 +71,6 @@ export const StyledTransactionLink = styled(TransactionLink)`
   }
 `;
 
-export const TooltipStyle = css`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2px;
-  padding: 0.75rem;
-  line-height: 1.2;
-  font-size: 0.875rem;
-  z-index: 1;
-  white-space: nowrap;
-  top: 85%;
-  left: 50%;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
-  background: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
-  filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
-`;
-
-export const Tooltip = styled.div`
-  display: none;
-
-  ${TooltipStyle};
-`;
-
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
   display: flex;
@@ -139,6 +114,16 @@ export const LegendLine = styled.span`
   background: transparent;
 `;
 
+export const StyledTooltip = styled(Tooltip) <{ $isTooltip: boolean }>`
+  display: ${({ $isTooltip }) => $isTooltip ? 'flex' : 'none'};
+  position: relative;
+  z-index: 3;
+  max-width: min-content;
+  margin-top: -2rem;
+  top: 1.25rem;
+  margin-left: 68%
+`;
+
 export const IconBinContainer = styled.a`
   display: flex;
   margin-left: 0.5rem;
@@ -148,25 +133,9 @@ export const IconBinContainer = styled.a`
     color: ${(props) => props.theme.colors.white};
   }
 
-  // &:hover + ${Tooltip} {
-  //   display: block;
-  // }
-`;
-
-export const ClearInfoTooltip = styled(Tooltip)<{
-  containerScrollTop: number;
-  orderIndex?: number;
-  shift?: number;
-}>`
-  position: absolute;
-  top: calc(
-    5rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
-      ${({ orderIndex }) => orderIndex}
-  );
-  left: ${({ shift }) => `calc(33% * ${shift} + 0.5rem)`};
-  width: auto;
-  z-index: 3;
-  pointer-events: none;
+  &:hover + ${StyledTooltip} {
+    display: flex;
+  }
 `;
 
 type TransactionsContainerProps = {
@@ -345,13 +314,5 @@ export const BackdropFilter = styled.button`
 
   @media ${breakPoints.phoneOnly} {
     display: block;
-  }
-`;
-
-export const ClearFailedTxButton = styled(Button)`
-  margin-top: 1rem;
-  ${InputOrButtonBorderStyleType2};
-  @media ${breakPoints.phoneOnly} {
-    display: none;
   }
 `;

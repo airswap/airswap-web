@@ -45,12 +45,10 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
-  ClearFailedTxButton,
   IconBinContainer,
-  ClearInfoTooltip,
-  Tooltip,
   StyledDropdown,
   SelectWrapper,
+  StyledTooltip,
 } from "./TransactionsTab.styles";
 import {
   clearFailedTransactions,
@@ -86,13 +84,8 @@ const TransactionsTab = ({
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
-  // const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
-  // const [containerScrollTop, setContainerScrollTop] = useState(0);
-  // const [tooltipIndex, setTooltipIndex] = useState<number | undefined>();
-  // const [tooltipShift, setTooltipShift] = useState<number | undefined>();
-  // const [tooltipText, setTooltipText] = useState<string | null>(null);
-
   const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
+  const [isTooltip, setIsTooltip] = useState(false);
 
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
@@ -177,37 +170,24 @@ const TransactionsTab = ({
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
-  // const handleMouseEnter = (
-  //   target: HTMLDivElement,
-  //   index: number,
-  //   shift: number
-  // ) => {
-  //   if (target.offsetWidth < target.scrollWidth) {
-  //     setTooltipIndex(index);
-  //     setTooltipShift(shift);
-  //     setTooltipText(target.textContent);
-  //     setIsTooltipOpen(true);
-  //   }
-  // };
-
   useEffect(() => {
-    if (selectWrapperRef.current) {
-
-      const handleClickOutside = (event: any) => {
-        if (isSelectorOpen) {
-          if (selectWrapperRef.current && !selectWrapperRef.current.contains(event.target)) {
-            setIsSelectorOpen(false)
-          }
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isSelectorOpen) {
+        if (
+          selectWrapperRef.current &&
+          !selectWrapperRef.current.contains(event.target as Node)
+        ) {
+          setIsSelectorOpen(false);
         }
       }
+    };
 
-      document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
-      return () => {
-        document.removeEventListener('click', handleClickOutside);
-      };
-    }
-  }, [isSelectorOpen, selectWrapperRef])
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isSelectorOpen, setIsSelectorOpen]);
 
   const handleClearAllTransactions = () => {
     dispatch(setTransactions(null));
@@ -319,19 +299,14 @@ const TransactionsTab = ({
                   {t("wallet.completedTransactions").toUpperCase()}
                 </LegendLine>
               </Legend>
-              <IconBinContainer onClick={handleSetIsSelectorOpen}>
+              <IconBinContainer
+                onClick={handleSetIsSelectorOpen}
+                onMouseEnter={() => setIsTooltip(true)}
+                onMouseLeave={() => setIsTooltip(false)}>
                 <Icon iconSize={1} name="bin" />
-                {/* <Tooltip>Clear List</Tooltip> */}
-                {/* {isTooltipOpen && (
-                  <ClearInfoTooltip
-                    containerScrollTop={containerScrollTop}
-                    orderIndex={tooltipIndex}
-                    shift={tooltipShift}
-                  >
-                    Clear List
-                  </ClearInfoTooltip>)} */}
               </IconBinContainer>
             </LegendContainer>
+            <StyledTooltip $isTooltip={isTooltip}>{t("wallet.clearList")}</StyledTooltip>
             <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
               <StyledDropdown
                 selectedOption={unit}
@@ -359,14 +334,6 @@ const TransactionsTab = ({
                   {t("wallet.noCompletedTransactions")}
                 </NoTransactions>
               )}
-              {/* {transactions.length > 0 && (
-                <ClearFailedTxButton
-                  aria-label={t("wallet.clearFailedTransactions")}
-                  onClick={handleClearFailedTransactions}
-                >
-                  {t("wallet.clearFailedTransactions")}
-                </ClearFailedTxButton>
-              )} */}
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
