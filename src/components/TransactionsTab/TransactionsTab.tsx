@@ -218,6 +218,7 @@ const TransactionsTab = ({
 
   const handleSetIsSelectorOpen = () => {
     setIsSelectorOpen(!isSelectorOpen);
+    setIsTooltip(false)
   };
 
   return (
@@ -302,11 +303,14 @@ const TransactionsTab = ({
               <IconBinContainer
                 onClick={handleSetIsSelectorOpen}
                 onMouseEnter={() => setIsTooltip(true)}
-                onMouseLeave={() => setIsTooltip(false)}>
+                onMouseLeave={() => setIsTooltip(false)}
+              >
                 <Icon iconSize={1} name="bin" />
               </IconBinContainer>
             </LegendContainer>
-            <StyledTooltip $isTooltip={isTooltip}>{t("wallet.clearList")}</StyledTooltip>
+            <StyledTooltip $isTooltip={isTooltip}>
+              {t("wallet.clearList")}
+            </StyledTooltip>
             <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
               <StyledDropdown
                 selectedOption={unit}

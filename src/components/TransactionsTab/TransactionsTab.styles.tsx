@@ -114,14 +114,14 @@ export const LegendLine = styled.span`
   background: transparent;
 `;
 
-export const StyledTooltip = styled(Tooltip) <{ $isTooltip: boolean }>`
-  display: ${({ $isTooltip }) => $isTooltip ? 'flex' : 'none'};
+export const StyledTooltip = styled(Tooltip)<{ $isTooltip: boolean }>`
+  display: ${({ $isTooltip }) => ($isTooltip ? "flex" : "none")};
   position: relative;
   z-index: 3;
   max-width: min-content;
   margin-top: -2rem;
   top: 1.25rem;
-  margin-left: 68%
+  margin-left: 68%;
 `;
 
 export const IconBinContainer = styled.a`
