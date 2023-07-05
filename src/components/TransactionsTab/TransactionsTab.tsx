@@ -108,8 +108,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-        ? addressOrName
-        : t("wallet.notConnected");
+      ? addressOrName
+      : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -218,7 +218,7 @@ const TransactionsTab = ({
 
   const handleSetIsSelectorOpen = () => {
     setIsSelectorOpen(!isSelectorOpen);
-    setIsTooltip(false)
+    setIsTooltip(false);
   };
 
   return (
