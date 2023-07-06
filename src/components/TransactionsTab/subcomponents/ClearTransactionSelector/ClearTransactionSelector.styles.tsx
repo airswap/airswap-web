@@ -1,10 +1,10 @@
 import styled from "styled-components/macro";
+
 import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import Dropdown from "../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../Dropdown/Dropdown.styles";
 
-
-export const StyledTooltip = styled(Tooltip) <{
+export const StyledTooltip = styled(Tooltip)<{
   $isSelectorOpen: boolean;
   $isTooltip: boolean;
 }>`

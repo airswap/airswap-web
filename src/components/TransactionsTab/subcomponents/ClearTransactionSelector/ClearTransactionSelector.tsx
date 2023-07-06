@@ -1,36 +1,55 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
+
 import { useAppDispatch } from "../../../../app/hooks";
-import { setTransactions, SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
+import {
+  setTransactions,
+  SubmittedTransaction,
+} from "../../../../features/transactions/transactionsSlice";
 import useHistoricalTransactions from "../../../../features/transactions/useHistoricalTransactions";
 import { SelectOption } from "../../../Dropdown/Dropdown";
-import { clearAllTransactions, clearFailedTransactions } from "../../helpers/clearLocalStorage";
+import {
+  clearAllTransactions,
+  clearFailedTransactions,
+} from "../../helpers/clearLocalStorage";
 import getClearTransactionOptions from "../../helpers/getClearTransactionOptions";
 import { getFitleredFailedTransactions } from "../../helpers/getFitleredFailedTransactions";
-import { SelectWrapper, StyledDropdown, StyledTooltip } from "./ClearTransactionSelector.styles";
+import {
+  SelectWrapper,
+  StyledDropdown,
+  StyledTooltip,
+} from "./ClearTransactionSelector.styles";
 
 type ClearTransactionSelectorType = {
   address: string;
-  transactions: SubmittedTransaction[]
+  chainId: number;
+  transactions: SubmittedTransaction[];
   isTooltip: boolean;
   isSelectorOpen: boolean;
   setIsSelectorOpen: Dispatch<SetStateAction<boolean>>;
-}
-
+};
 
 const ClearTransactionSelector = ({
   address,
+  chainId,
   transactions,
   isTooltip,
   isSelectorOpen,
-  setIsSelectorOpen
+  setIsSelectorOpen,
 }: ClearTransactionSelectorType) => {
   const selectWrapperRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const historicalTransactions = useHistoricalTransactions()
-  console.log(historicalTransactions)
+  const historicalTransactions = useHistoricalTransactions();
+  console.log(historicalTransactions);
 
   const translatedOptions = useMemo(() => {
     return getClearTransactionOptions(t);
@@ -40,13 +59,13 @@ const ClearTransactionSelector = ({
 
   const handleClearAllTransactions = () => {
     dispatch(setTransactions(null));
-    clearAllTransactions(address);
+    clearAllTransactions(address, chainId);
   };
 
   const handleClearFailedTransactions = () => {
     const filteredTransactions = getFitleredFailedTransactions(transactions);
     dispatch(setTransactions({ all: filteredTransactions }));
-    clearFailedTransactions(address);
+    clearFailedTransactions(address, chainId);
   };
 
   const handleClearTypeChange = (option: SelectOption) => {
@@ -80,10 +99,7 @@ const ClearTransactionSelector = ({
 
   return (
     <>
-      <StyledTooltip
-        $isSelectorOpen={isSelectorOpen}
-        $isTooltip={isTooltip}
-      >
+      <StyledTooltip $isSelectorOpen={isSelectorOpen} $isTooltip={isTooltip}>
         {t("wallet.clearList")}
       </StyledTooltip>
       <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
@@ -94,7 +110,7 @@ const ClearTransactionSelector = ({
         />
       </SelectWrapper>
     </>
-  )
-}
+  );
+};
 
-export default ClearTransactionSelector
+export default ClearTransactionSelector;

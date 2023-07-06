@@ -115,7 +115,6 @@ export const LegendLine = styled.span`
   background: transparent;
 `;
 
-
 export const IconBinContainer = styled.a`
   display: flex;
   margin-left: 0.5rem;

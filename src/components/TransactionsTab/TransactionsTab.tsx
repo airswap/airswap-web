@@ -249,6 +249,7 @@ const TransactionsTab = ({
             </LegendContainer>
             <ClearTransactionSelector
               address={address}
+              chainId={chainId}
               transactions={transactions}
               isTooltip={isTooltip}
               isSelectorOpen={isSelectorOpen}
