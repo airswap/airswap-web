@@ -206,7 +206,7 @@ const TransactionsTab = ({
 
   const [unit, setUnit] = useState(translatedOptions[1]);
 
-  function handleClearTypeChange(option: SelectOption) {
+  const handleClearTypeChange = (option: SelectOption) => {
     setUnit(option);
     setIsSelectorOpen(false);
     if (option.value === "All") {
@@ -316,7 +316,6 @@ const TransactionsTab = ({
                 selectedOption={unit}
                 options={translatedOptions}
                 onChange={handleClearTypeChange}
-                isOpen={isSelectorOpen}
               />
             </SelectWrapper>
             <TransactionContainer>
