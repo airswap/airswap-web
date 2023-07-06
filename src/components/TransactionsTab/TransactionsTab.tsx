@@ -108,8 +108,8 @@ const TransactionsTab = ({
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
       : addressOrName
-      ? addressOrName
-      : t("wallet.notConnected");
+        ? addressOrName
+        : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
@@ -209,9 +209,9 @@ const TransactionsTab = ({
   function handleClearTypeChange(option: SelectOption) {
     setUnit(option);
     setIsSelectorOpen(false);
-    if (option.label === "All") {
+    if (option.value === "All") {
       handleClearAllTransactions();
-    } else if (option.label === "Failed") {
+    } else if (option.value === "Failed") {
       handleClearFailedTransactions();
     }
   }
