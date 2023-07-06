@@ -87,7 +87,7 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex} >
+      <SelectOptions activeIndex={activeOptionIndex}>
         {options.map((option, index) => (
           <Option
             key={option.value}

@@ -214,7 +214,7 @@ const TransactionsTab = ({
     } else if (option.value === "Failed") {
       handleClearFailedTransactions();
     }
-  }
+  };
 
   const handleSetIsSelectorOpen = () => {
     setIsSelectorOpen(!isSelectorOpen);
@@ -308,7 +308,7 @@ const TransactionsTab = ({
                 <Icon iconSize={1} name="bin" />
               </IconBinContainer>
             </LegendContainer>
-            <StyledTooltip $isTooltip={isTooltip}>
+            <StyledTooltip $isSelectorOpen={isSelectorOpen} $isTooltip={isTooltip}>
               {t("wallet.clearList")}
             </StyledTooltip>
             <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>

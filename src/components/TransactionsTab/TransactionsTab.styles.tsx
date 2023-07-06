@@ -114,8 +114,11 @@ export const LegendLine = styled.span`
   background: transparent;
 `;
 
-export const StyledTooltip = styled(Tooltip) <{ $isTooltip: boolean }>`
-  display: ${({ $isTooltip }) => ($isTooltip ? "flex" : "none")};
+export const StyledTooltip = styled(Tooltip) <{
+  $isSelectorOpen: boolean;
+  $isTooltip: boolean
+}>`
+  display: ${({ $isSelectorOpen, $isTooltip }) => (!$isSelectorOpen && $isTooltip ? "flex" : "none")};
   position: relative;
   z-index: 3;
   max-width: min-content;
