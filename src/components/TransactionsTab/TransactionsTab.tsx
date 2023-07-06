@@ -10,19 +10,14 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import {
-  setTransactions,
-  SubmittedTransaction,
-} from "../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
-import { SelectOption } from "../Dropdown/Dropdown";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -46,17 +41,9 @@ import {
   StyledWalletMobileMenu,
   BackdropFilter,
   IconBinContainer,
-  StyledDropdown,
-  SelectWrapper,
-  StyledTooltip,
 } from "./TransactionsTab.styles";
-import {
-  clearFailedTransactions,
-  clearAllTransactions,
-} from "./helpers/clearLocalStorage";
-import getClearTransactionOptions from "./helpers/getClearTransactionOptions";
-import { getFitleredFailedTransactions } from "./helpers/getFitleredFailedTransactions";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import ClearTransactionSelector from "./subcomponents/ClearTransactionSelector/ClearTransactionSelector";
 
 type TransactionsTabType = {
   address: string;
@@ -91,7 +78,6 @@ const TransactionsTab = ({
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const { active } = useWeb3React<Web3Provider>();
 
@@ -101,7 +87,6 @@ const TransactionsTab = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
-  const selectWrapperRef = useRef<HTMLDivElement>(null);
 
   const addressOrName = useAddressOrEnsName(address);
   const walletInfoText = useMemo(() => {
@@ -169,52 +154,6 @@ const TransactionsTab = ({
   }, [transactions]);
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isSelectorOpen) {
-        if (
-          selectWrapperRef.current &&
-          !selectWrapperRef.current.contains(event.target as Node)
-        ) {
-          setIsSelectorOpen(false);
-        }
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isSelectorOpen, setIsSelectorOpen]);
-
-  const handleClearAllTransactions = () => {
-    dispatch(setTransactions(null));
-    clearAllTransactions(address);
-  };
-
-  const handleClearFailedTransactions = () => {
-    const filteredTransactions = getFitleredFailedTransactions(transactions);
-    dispatch(setTransactions({ all: filteredTransactions }));
-    clearFailedTransactions(address);
-  };
-
-  const translatedOptions = useMemo(() => {
-    return getClearTransactionOptions(t);
-  }, [t]);
-
-  const [unit, setUnit] = useState(translatedOptions[1]);
-
-  const handleClearTypeChange = (option: SelectOption) => {
-    setUnit(option);
-    setIsSelectorOpen(false);
-    if (option.value === "All") {
-      handleClearAllTransactions();
-    } else if (option.value === "Failed") {
-      handleClearFailedTransactions();
-    }
-  };
 
   const handleSetIsSelectorOpen = () => {
     setIsSelectorOpen(!isSelectorOpen);
@@ -308,16 +247,13 @@ const TransactionsTab = ({
                 <Icon iconSize={1} name="bin" />
               </IconBinContainer>
             </LegendContainer>
-            <StyledTooltip $isSelectorOpen={isSelectorOpen} $isTooltip={isTooltip}>
-              {t("wallet.clearList")}
-            </StyledTooltip>
-            <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
-              <StyledDropdown
-                selectedOption={unit}
-                options={translatedOptions}
-                onChange={handleClearTypeChange}
-              />
-            </SelectWrapper>
+            <ClearTransactionSelector
+              address={address}
+              transactions={transactions}
+              isTooltip={isTooltip}
+              isSelectorOpen={isSelectorOpen}
+              setIsSelectorOpen={setIsSelectorOpen}
+            />
             <TransactionContainer>
               <AnimatePresence initial={false}>
                 {completedTransactions.slice(0, 10).map((transaction) => (
