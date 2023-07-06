@@ -1,10 +1,11 @@
+import { Dispatch } from "react";
 import styled from "styled-components/macro";
 
 import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import Dropdown from "../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../Dropdown/Dropdown.styles";
 
-export const StyledTooltip = styled(Tooltip)<{
+export const StyledTooltip = styled(Tooltip) <{
   $isSelectorOpen: boolean;
   $isTooltip: boolean;
 }>`
@@ -15,7 +16,7 @@ export const StyledTooltip = styled(Tooltip)<{
   max-width: min-content;
   white-space: nowrap;
   margin-top: -1rem;
-  margin-left: 15rem;
+  margin-left: 13.25rem;
 `;
 
 export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
@@ -23,14 +24,17 @@ export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
   justify-content: end;
   position: relative;
   margin-top: -2rem;
-  top: 3.5rem;
+  // top: 3.5rem;
   right: 1.5rem;
   height: 2rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
-export const StyledDropdown = styled(Dropdown)`
+export const StyledDropdown = styled(Dropdown) <{
+  setIsSelectorOpen: Dispatch<React.SetStateAction<boolean>>,
+  isDefaultAllOptionsOpen: boolean
+}>`
   ${SelectButtonText}
 
   text-align: left;

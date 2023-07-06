@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { Dispatch, FC, useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
 import {
@@ -25,6 +25,8 @@ export type DropdownProps = {
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
   className?: string;
+  setIsSelectorOpen?: Dispatch<React.SetStateAction<boolean>>
+  isDefaultAllOptionsOpen?: boolean;
 };
 
 const Dropdown: FC<DropdownProps> = ({
@@ -32,6 +34,8 @@ const Dropdown: FC<DropdownProps> = ({
   options,
   onChange,
   className,
+  setIsSelectorOpen,
+  isDefaultAllOptionsOpen
 }) => {
   const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
@@ -72,6 +76,7 @@ const Dropdown: FC<DropdownProps> = ({
     );
     setActiveOptionIndex(index);
     setActiveHoverIndex(index);
+    setIsSelectorOpen && setIsSelectorOpen(false)
   };
 
   const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,7 +92,7 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex}>
+      <SelectOptions activeIndex={activeOptionIndex} isDefaultAllOptionsOpen={isDefaultAllOptionsOpen}>
         {options.map((option, index) => (
           <Option
             key={option.value}

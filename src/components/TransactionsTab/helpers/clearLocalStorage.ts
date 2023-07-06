@@ -2,10 +2,9 @@ import { getTransactionsLocalStorageKey } from "../../../features/metadata/metad
 import { SubmittedTransaction } from "../../../features/transactions/transactionsSlice";
 
 export const clearFailedTransactions = (address: string, chainId: number) => {
-
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    const localStorageKey = getTransactionsLocalStorageKey(address, chainId)
+    const localStorageKey = getTransactionsLocalStorageKey(address, chainId);
     if (key?.includes(localStorageKey)) {
       const keysWithTransactions = localStorage.getItem(key);
       if (keysWithTransactions) {
@@ -24,7 +23,7 @@ export const clearFailedTransactions = (address: string, chainId: number) => {
 };
 
 export const clearAllTransactions = (address: string, chainId: number) => {
-  const localStorageKey = getTransactionsLocalStorageKey(address, chainId)
+  const localStorageKey = getTransactionsLocalStorageKey(address, chainId);
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (key?.includes(localStorageKey)) {

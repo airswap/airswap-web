@@ -96,7 +96,10 @@ export const DropdownButtonText = styled.div`
   width: 100%;
 `;
 
-export const SelectOptions = styled.div<{ activeIndex: number }>`
+export const SelectOptions = styled.div<{
+  activeIndex: number,
+  isDefaultAllOptionsOpen?: boolean,
+}>`
   transform: translateY(
     calc(
       ${(props) => -props.activeIndex} * var(--dropdown-button-height) -
@@ -104,7 +107,8 @@ export const SelectOptions = styled.div<{ activeIndex: number }>`
     )
   );
 
-  display: flex;
+  display: ${({ isDefaultAllOptionsOpen }) => (isDefaultAllOptionsOpen ? "flex" : "none")};
+  // flex: none;
   flex-direction: column;
   position: absolute;
   width: calc(var(--dropdown-options-wrapper-padding) * 2 + 100%);

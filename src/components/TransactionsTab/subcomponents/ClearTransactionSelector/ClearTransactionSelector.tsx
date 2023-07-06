@@ -78,35 +78,18 @@ const ClearTransactionSelector = ({
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isSelectorOpen) {
-        if (
-          selectWrapperRef.current &&
-          !selectWrapperRef.current.contains(event.target as Node)
-        ) {
-          setIsSelectorOpen(false);
-        }
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isSelectorOpen, setIsSelectorOpen]);
-
   return (
     <>
       <StyledTooltip $isSelectorOpen={isSelectorOpen} $isTooltip={isTooltip}>
-        {t("wallet.clearList")}
+        {t("wallet.clearTransactions")}
       </StyledTooltip>
       <SelectWrapper $isOpen={isSelectorOpen} ref={selectWrapperRef}>
         <StyledDropdown
           selectedOption={unit}
           options={translatedOptions}
           onChange={handleClearTypeChange}
+          setIsSelectorOpen={setIsSelectorOpen}
+          isDefaultAllOptionsOpen
         />
       </SelectWrapper>
     </>

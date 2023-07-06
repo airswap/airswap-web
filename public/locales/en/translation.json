@@ -233,7 +233,7 @@
     "completedTransactions": "Completed transactions",
     "clearAllTransactions": "Clear transactions",
     "clearFailedTransactions": "Clear failed transactions",
-    "clearList": "Clear list",
+    "clearTransactions": "Clear list",
     "connectWallet": "Connect Wallet",
     "copyAddress": "Copy address",
     "dayAgo_one": "{{count}} day ago",
