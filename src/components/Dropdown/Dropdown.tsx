@@ -25,8 +25,8 @@ export type DropdownProps = {
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
   className?: string;
-  setIsSelectorOpen?: Dispatch<React.SetStateAction<boolean>>
-  isDefaultAllOptionsOpen?: boolean;
+  setIsSelectorOpen?: Dispatch<React.SetStateAction<boolean>>;
+  isMenuOpen?: boolean;
 };
 
 const Dropdown: FC<DropdownProps> = ({
@@ -35,7 +35,7 @@ const Dropdown: FC<DropdownProps> = ({
   onChange,
   className,
   setIsSelectorOpen,
-  isDefaultAllOptionsOpen
+  isMenuOpen = false,
 }) => {
   const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
@@ -76,7 +76,8 @@ const Dropdown: FC<DropdownProps> = ({
     );
     setActiveOptionIndex(index);
     setActiveHoverIndex(index);
-    setIsSelectorOpen && setIsSelectorOpen(false)
+    setIsSelectorOpen && setIsSelectorOpen(false);
+    console.log(e)
   };
 
   const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -92,7 +93,10 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex} isDefaultAllOptionsOpen={isDefaultAllOptionsOpen}>
+      <SelectOptions
+        activeIndex={activeOptionIndex}
+        isMenuOpen={isMenuOpen}
+      >
         {options.map((option, index) => (
           <Option
             key={option.value}

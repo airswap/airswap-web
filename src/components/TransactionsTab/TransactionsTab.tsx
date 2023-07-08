@@ -72,7 +72,7 @@ const TransactionsTab = ({
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
   const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
-  const [isTooltip, setIsTooltip] = useState(false);
+  const [isTooltip, setIsTooltip] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
@@ -248,8 +248,6 @@ const TransactionsTab = ({
               </IconBinContainer>
             </LegendContainer>
             <ClearTransactionSelector
-              address={address}
-              chainId={chainId}
               transactions={transactions}
               isTooltip={isTooltip}
               isSelectorOpen={isSelectorOpen}

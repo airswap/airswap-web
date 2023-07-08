@@ -97,8 +97,8 @@ export const DropdownButtonText = styled.div`
 `;
 
 export const SelectOptions = styled.div<{
-  activeIndex: number,
-  isDefaultAllOptionsOpen?: boolean,
+  activeIndex: number;
+  isMenuOpen?: boolean;
 }>`
   transform: translateY(
     calc(
@@ -107,8 +107,7 @@ export const SelectOptions = styled.div<{
     )
   );
 
-  display: ${({ isDefaultAllOptionsOpen }) => (isDefaultAllOptionsOpen ? "flex" : "none")};
-  // flex: none;
+  display: ${({ isMenuOpen }) => isMenuOpen ? "flex" : "none"};
   flex-direction: column;
   position: absolute;
   width: calc(var(--dropdown-options-wrapper-padding) * 2 + 100%);
@@ -122,9 +121,10 @@ export const SelectOptions = styled.div<{
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   box-shadow: ${({ theme }) => theme.shadows.selectOptionsShadow};
   z-index: 1;
+  pointer-events: auto;
 `;
 
-const SelectStyle = css`
+const SelectStyle = css<{ isMenuOpen?: boolean }>`
   ${InputOrButtonBorderStyle};
   ${ButtonStyle};
 

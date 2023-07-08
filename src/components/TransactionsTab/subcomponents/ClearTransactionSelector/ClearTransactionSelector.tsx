@@ -8,10 +8,11 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppDispatch } from "../../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   setTransactions,
   SubmittedTransaction,
+  transactionsSlice,
 } from "../../../../features/transactions/transactionsSlice";
 import useHistoricalTransactions from "../../../../features/transactions/useHistoricalTransactions";
 import { SelectOption } from "../../../Dropdown/Dropdown";
@@ -20,7 +21,6 @@ import {
   clearFailedTransactions,
 } from "../../helpers/clearLocalStorage";
 import getClearTransactionOptions from "../../helpers/getClearTransactionOptions";
-import { getFitleredFailedTransactions } from "../../helpers/getFitleredFailedTransactions";
 import {
   SelectWrapper,
   StyledDropdown,
@@ -28,8 +28,6 @@ import {
 } from "./ClearTransactionSelector.styles";
 
 type ClearTransactionSelectorType = {
-  address: string;
-  chainId: number;
   transactions: SubmittedTransaction[];
   isTooltip: boolean;
   isSelectorOpen: boolean;
@@ -37,12 +35,11 @@ type ClearTransactionSelectorType = {
 };
 
 const ClearTransactionSelector = ({
-  address,
-  chainId,
   transactions,
   isTooltip,
   isSelectorOpen,
   setIsSelectorOpen,
+
 }: ClearTransactionSelectorType) => {
   const selectWrapperRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -57,24 +54,13 @@ const ClearTransactionSelector = ({
 
   const [unit, setUnit] = useState(translatedOptions[1]);
 
-  const handleClearAllTransactions = () => {
-    dispatch(setTransactions(null));
-    clearAllTransactions(address, chainId);
-  };
-
-  const handleClearFailedTransactions = () => {
-    const filteredTransactions = getFitleredFailedTransactions(transactions);
-    dispatch(setTransactions({ all: filteredTransactions }));
-    clearFailedTransactions(address, chainId);
-  };
-
   const handleClearTypeChange = (option: SelectOption) => {
     setUnit(option);
     setIsSelectorOpen(false);
     if (option.value === "All") {
-      handleClearAllTransactions();
+      clearAllTransactions({ dispatch });
     } else if (option.value === "Failed") {
-      handleClearFailedTransactions();
+      clearFailedTransactions({ transactions, dispatch });
     }
   };
 
@@ -89,7 +75,7 @@ const ClearTransactionSelector = ({
           options={translatedOptions}
           onChange={handleClearTypeChange}
           setIsSelectorOpen={setIsSelectorOpen}
-          isDefaultAllOptionsOpen
+          isMenuOpen
         />
       </SelectWrapper>
     </>

@@ -1,4 +1,5 @@
 import { Dispatch } from "react";
+
 import styled from "styled-components/macro";
 
 import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
@@ -24,7 +25,7 @@ export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
   justify-content: end;
   position: relative;
   margin-top: -2rem;
-  // top: 3.5rem;
+  top: 3.5rem;
   right: 1.5rem;
   height: 2rem;
   color: ${({ theme }) =>
@@ -32,8 +33,8 @@ export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
 `;
 
 export const StyledDropdown = styled(Dropdown) <{
-  setIsSelectorOpen: Dispatch<React.SetStateAction<boolean>>,
-  isDefaultAllOptionsOpen: boolean
+  setIsSelectorOpen: Dispatch<React.SetStateAction<boolean>>;
+  isMenuOpen: boolean;
 }>`
   ${SelectButtonText}
 
