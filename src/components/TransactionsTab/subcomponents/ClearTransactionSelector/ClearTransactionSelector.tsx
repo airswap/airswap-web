@@ -28,6 +28,8 @@ import {
 } from "./ClearTransactionSelector.styles";
 
 type ClearTransactionSelectorType = {
+  address: string;
+  chainId: number;
   transactions: SubmittedTransaction[];
   isTooltip: boolean;
   isSelectorOpen: boolean;
@@ -35,11 +37,12 @@ type ClearTransactionSelectorType = {
 };
 
 const ClearTransactionSelector = ({
+  address,
+  chainId,
   transactions,
   isTooltip,
   isSelectorOpen,
   setIsSelectorOpen,
-
 }: ClearTransactionSelectorType) => {
   const selectWrapperRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -58,9 +61,9 @@ const ClearTransactionSelector = ({
     setUnit(option);
     setIsSelectorOpen(false);
     if (option.value === "All") {
-      clearAllTransactions({ dispatch });
+      clearAllTransactions({ address, chainId, dispatch });
     } else if (option.value === "Failed") {
-      clearFailedTransactions({ transactions, dispatch });
+      clearFailedTransactions({ address, chainId, transactions, dispatch });
     }
   };
 
