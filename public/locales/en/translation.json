@@ -189,7 +189,6 @@
     "track": "Track",
     "trackTransaction": "Track this transaction on the top right",
     "transactionCompleted": "Transaction Completed",
-    "transactionLink": "",
     "unableTake": "Unable to take",
     "viewAllQuotes": "View all quotes",
     "wrapMessage": "No protocol fee for ETH/WETH swaps",
