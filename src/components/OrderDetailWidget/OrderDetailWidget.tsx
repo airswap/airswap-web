@@ -37,7 +37,6 @@ import {
   setErrors,
 } from "../../features/takeOtc/takeOtcSlice";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
-import writeTextToClipboard from "../../helpers/writeTextToClipboard";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
@@ -52,7 +51,6 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
-import { notifyCopySuccess, notifyError } from "../Toasts/ToastController";
 import {
   Container,
   StyledActionButtons,
@@ -188,13 +186,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     });
   };
 
-  const handleCopyButtonClick = async () => {
-    const copy = await writeTextToClipboard(window.location.toString());
-    copy
-      ? notifyCopySuccess()
-      : notifyError({ heading: t("toast.copyFailed"), cta: "" });
-  };
-
   const takeOrder = async () => {
     if (!library) return;
     const errors = await check(
@@ -319,7 +310,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
             rate={tokenExchangeRate}
             onViewAllQuotesButtonClick={toggleShowViewAllQuotes}
             onFeeButtonClick={toggleShowFeeInfo}
-            onCopyButtonClick={handleCopyButtonClick}
           />
           <StyledInfoSection
             isExpired={orderStatus === OrderStatus.expired}

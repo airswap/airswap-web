@@ -10,6 +10,7 @@ import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField
 import {
   ButtonsWrapper,
   Container,
+  StyledCopyLinkButton,
   StyledLargePillButton,
 } from "./InfoButtons.styles";
 
@@ -21,7 +22,6 @@ type InfoButtonsProps = {
   rate: BigNumber;
   onViewAllQuotesButtonClick: () => void;
   onFeeButtonClick: () => void;
-  onCopyButtonClick: () => void;
   className?: string;
 };
 
@@ -33,7 +33,6 @@ const InfoButtons: FC<InfoButtonsProps> = ({
   rate,
   onViewAllQuotesButtonClick,
   onFeeButtonClick,
-  onCopyButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -51,12 +50,7 @@ const InfoButtons: FC<InfoButtonsProps> = ({
             <Icon name="information-circle-outline" />
           </StyledLargePillButton>
         )}
-        {isMakerOfSwap && (
-          <StyledLargePillButton onClick={onCopyButtonClick}>
-            {t("orders.copyLink")}
-            <Icon name="copy2" />
-          </StyledLargePillButton>
-        )}
+        {isMakerOfSwap && <StyledCopyLinkButton />}
         {showViewAllQuotes && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}
