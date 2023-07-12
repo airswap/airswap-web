@@ -29,7 +29,6 @@ type ActionButtonsProps = {
   isLoading: boolean;
   isNetworkUnsupported: boolean;
   shouldDepositNativeToken: boolean;
-  userIsSigning: boolean;
   walletIsNotConnected: boolean;
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
@@ -50,7 +49,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isLoading,
   isNetworkUnsupported,
   shouldDepositNativeToken,
-  userIsSigning,
   walletIsNotConnected,
   makerTokenSymbol,
   widgetState,
@@ -66,8 +64,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasMissingMakerAmount ||
       hasMissingMakerToken ||
       hasMissingTakerAmount ||
-      hasMissingTakerToken ||
-      userIsSigning) &&
+      hasMissingTakerToken) &&
     !walletIsNotConnected &&
     !isNetworkUnsupported;
 
@@ -103,9 +100,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   };
 
   const handleBackButtonClick = () => {
-    if (userIsSigning) {
-      onBackButtonClick(ButtonActions.restart);
-    } else if (widgetState === MakeWidgetState.review) {
+    if (widgetState === MakeWidgetState.review) {
       onBackButtonClick(ButtonActions.list);
     } else {
       onBackButtonClick(ButtonActions.goBack);

@@ -7,7 +7,7 @@ import { AppError } from "../../errors/appError";
 export interface TakeOtcState {
   isCancelSuccessFull: boolean;
   activeOrder?: FullOrderERC20;
-  status: "idle" | "not-found" | "open" | "taken" | "canceled";
+  status: "idle" | "not-found" | "open" | "taken" | "signing" | "failed";
   errors: AppError[];
 }
 
@@ -71,5 +71,7 @@ export const {
 export const selectTakeOtcReducer = (state: RootState) => state.takeOtc;
 
 export const selectTakeOtcErrors = (state: RootState) => state.takeOtc.errors;
+
+export const selectTakeOtcStatus = (state: RootState) => state.takeOtc.status;
 
 export default takeOtcSlice.reducer;

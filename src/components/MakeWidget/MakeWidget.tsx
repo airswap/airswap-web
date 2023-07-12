@@ -2,7 +2,6 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { WETH } from "@airswap/libraries";
 import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -35,7 +34,11 @@ import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../features/metadata/metadataSlice";
-import { approve, deposit } from "../../features/orders/ordersSlice";
+import {
+  approve,
+  deposit,
+  selectOrdersStatus,
+} from "../../features/orders/ordersSlice";
 import {
   selectUserTokens,
   setUserTokens,
@@ -63,6 +66,7 @@ import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModa
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import TokenList from "../TokenList/TokenList";
+import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
 import {
   Container,
   OrderTypeSelectorAndRateFieldWrapper,
@@ -96,7 +100,12 @@ const MakeWidget: FC = () => {
   const userTokens = useAppSelector(selectUserTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
-  const { status, error, lastUserOrder } = useAppSelector(selectMakeOtcReducer);
+  const {
+    status: makeOtcStatus,
+    error,
+    lastUserOrder,
+  } = useAppSelector(selectMakeOtcReducer);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
   const {
     active,
     chainId,
@@ -158,7 +167,6 @@ const MakeWidget: FC = () => {
     makerAmount
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const [showReviewErc20Approval, setShowReviewErc20Approval] = useState(false);
   const hasDepositPending = useDepositPending();
   const isValidAddress = useValidAddress(takerAddress);
 
@@ -201,12 +209,6 @@ const MakeWidget: FC = () => {
       setShowTokenSelectModal(null);
     }
   }, [active]);
-
-  useEffect(() => {
-    if (hasApprovalPending) {
-      setShowReviewErc20Approval(false);
-    }
-  }, [hasApprovalPending]);
 
   // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -341,7 +343,6 @@ const MakeWidget: FC = () => {
     }
 
     if (action === ButtonActions.approve) {
-      setShowReviewErc20Approval(true);
       approveToken();
     }
 
@@ -379,6 +380,14 @@ const MakeWidget: FC = () => {
     }
   };
 
+  if (makeOtcStatus === "signing" || ordersStatus === "signing") {
+    return (
+      <Container>
+        <WalletSignScreen />
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <MakeWidgetHeader
@@ -393,7 +402,7 @@ const MakeWidget: FC = () => {
           <SwapInputs
             canSetQuoteAmount
             disabled={!active}
-            readOnly={status === "signing" || !active}
+            readOnly={!active}
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
             baseAmount={makerAmount}
@@ -488,7 +497,6 @@ const MakeWidget: FC = () => {
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
         shouldDepositNativeToken={shouldDepositNativeToken}
-        userIsSigning={status === "signing"}
         walletIsNotConnected={!active}
         makerTokenSymbol={makerTokenInfo?.symbol}
         widgetState={state}

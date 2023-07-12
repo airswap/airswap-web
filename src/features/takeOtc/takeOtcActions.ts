@@ -73,6 +73,8 @@ export const cancelOrder = createAsyncThunk(
       return;
     }
 
+    dispatch(setStatus("signing"));
+
     const tx = await SwapERC20.getContract(
       params.library.getSigner(),
       params.chainId
@@ -85,9 +87,12 @@ export const cancelOrder = createAsyncThunk(
               heading: i18n.t("toast.cancelFailed"),
               cta: i18n.t("validatorErrors.unknownError"),
             });
+        dispatch(setStatus("failed"));
         dispatch(revertTransaction(transaction));
         return;
       });
+
+    dispatch(setStatus("open"));
 
     const transaction: SubmittedCancellation = {
       type: "Cancel",
