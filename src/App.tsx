@@ -25,11 +25,7 @@ Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [
     new Sentry.BrowserTracing({
-      tracePropagationTargets: [
-        "localhost",
-        "airswap.io",
-        "airswap.eth.limo"
-      ],
+      tracePropagationTargets: ["localhost", "airswap.io", "airswap.eth.limo"],
     }),
     new Sentry.Replay(),
   ],
