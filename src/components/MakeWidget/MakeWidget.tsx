@@ -446,16 +446,6 @@ const MakeWidget: FC = () => {
             </TooltipContainer>
           ) : (
             <div />
-            /*
-            <StyledInputSection onInfoButtonClick={toggleShowOrderTypeInfo}>
-              <Checkbox
-                checked={orderType === OrderType.publicListed}
-                label={t("orders.publiclyList")}
-                subLabel={t("orders.publiclyListDescription")}
-                onChange={handleOrderTypeCheckboxChange}
-              />
-            </StyledInputSection>
-            */
           )}
         </>
       )}

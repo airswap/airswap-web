@@ -127,16 +127,6 @@ const OrderReview: FC<OrderReviewProps> = ({
             )}
           </ReviewListItemValue>
         </ReviewListItem>
-        {/*
-        <ReviewListItem>
-          <ReviewListItemLabel>{t("orders.listed")}:</ReviewListItemLabel>
-          <ReviewListItemValue>
-            {orderType === OrderType.publicListed
-              ? t("common.yes")
-              : t("common.no")}
-          </ReviewListItemValue>
-        </ReviewListItem>
-        */}
         <ReviewListItem>
           <ReviewListItemLabel>{t("orders.expiryTime")}</ReviewListItemLabel>
           <ReviewListItemValue>{expiryTranslation}</ReviewListItemValue>
@@ -166,18 +156,6 @@ const OrderReview: FC<OrderReviewProps> = ({
             {roundedSignerAmountPlusFee} {justifiedSignerToken?.symbol}
           </ReviewListItemValue>
         </ReviewListItem>
-        {/*
-        {justifiedSignerToken?.address === wrappedNativeToken?.address && (
-          <ReviewListItem>
-            <ReviewListItemLabel>
-              {`${wrappedNativeTokenSymbol} ${t("balances.balance")}`}
-            </ReviewListItemLabel>
-            <ReviewListItemValue>
-              {ownedWrappedNativeTokenAmount}
-            </ReviewListItemValue>
-          </ReviewListItem>
-        )}
-        */}
       </ReviewList>
     </Container>
   );

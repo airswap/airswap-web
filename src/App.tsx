@@ -22,13 +22,13 @@ import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [
     new Sentry.BrowserTracing({
       tracePropagationTargets: [
         "localhost",
-        /^https:\/\/airswap.io/,
-        /^https:\/\/linea.airswap.eth.limo/,
+        "airswap.io",
+        "airswap.eth.limo"
       ],
     }),
     new Sentry.Replay(),

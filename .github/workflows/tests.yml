@@ -6,9 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test using Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.15.1'
+          node-version: 16.15.1
       - run: yarn
       - run: yarn test
       - name: Tests ✅
