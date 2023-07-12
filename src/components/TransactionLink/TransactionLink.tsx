@@ -33,7 +33,7 @@ const TransactionLink = ({
       aria-label={t("wallet.transactionLink")}
       href={receiptUrl}
     >
-      {!hideLabel && <Label>{t("orders.transactionLink")}</Label>}
+      {!hideLabel && <Label>{t("wallet.transactionLink")}</Label>}
       <Icon iconSize={1} name="transaction-link" />
     </Link>
   );

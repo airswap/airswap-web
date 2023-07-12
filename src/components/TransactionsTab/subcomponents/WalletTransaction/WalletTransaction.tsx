@@ -157,12 +157,9 @@ const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        {tx.status !== "processing" &&
-          (tx.hash ? (
-            <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-          ) : (
-            <span />
-          ))}
+        {tx.hash && (
+          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+        )}
       </Container>
     );
   }
