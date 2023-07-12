@@ -1,9 +1,11 @@
 import styled, { keyframes } from "styled-components/macro";
+import { css } from "styled-components/macro";
 
 import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
+import TransactionLink from "../../subcomponents/TransactionLink/TransactionLink";
 
 type ContainerProps = {
   disabled: boolean;
@@ -12,13 +14,13 @@ type ContainerProps = {
 
 export const TokenNameContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
+  width: 100%;
 `;
 
 export const TokenName = styled.h3`
-  width: 100%;
+  width: fit;
   text-align: left;
   line-height: 1.25;
   font-size: 1rem;
@@ -151,10 +153,48 @@ export const Symbol = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 30%;
 
   @media ${breakPoints.phoneOnly} {
     margin-right: 0;
     line-height: 1;
     font-size: 1rem;
+  }
+`;
+
+export const TooltipStyle = css`
+  position: absolute;
+  white-space: nowrap;
+  top: 85%;
+  left: 50%;
+  z-index: 1;
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2px;
+  padding: 0.5rem;
+  line-height: 1.2;
+  font-size: 0.875rem;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
+  filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
+`;
+
+export const Tooltip = styled.div`
+  display: none;
+
+  ${TooltipStyle};
+`;
+
+export const StyledIcon = styled(TransactionLink)`
+  display: flex;
+  position: relative;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+  }
+
+  &:hover + ${Tooltip} {
+    display: block;
   }
 `;
