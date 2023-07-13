@@ -65,7 +65,7 @@ import {
 
 export interface OrdersState {
   orders: OrderERC20[];
-  status: "idle" | "requesting" | "approving" | "taking" | "failed" | "reset";
+  status: "idle" | "requesting" | "signing" | "failed" | "reset";
   reRequestTimerId: number | null;
   errors: AppError[];
 }
@@ -510,7 +510,7 @@ export const ordersSlice = createSlice({
         state.orders = [];
       })
       .addCase(take.pending, (state) => {
-        state.status = "taking";
+        state.status = "signing";
       })
       .addCase(take.fulfilled, (state, action) => {
         state.status = "idle";
@@ -523,12 +523,21 @@ export const ordersSlice = createSlice({
         state.status = "failed";
       })
       .addCase(approve.pending, (state) => {
-        state.status = "approving";
+        state.status = "signing";
       })
       .addCase(approve.fulfilled, (state) => {
         state.status = "idle";
       })
       .addCase(approve.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(deposit.pending, (state) => {
+        state.status = "signing";
+      })
+      .addCase(deposit.fulfilled, (state) => {
+        state.status = "idle";
+      })
+      .addCase(deposit.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(setWalletConnected, (state) => {

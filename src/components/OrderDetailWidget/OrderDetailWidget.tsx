@@ -4,14 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
-import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { constants } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
@@ -34,6 +32,7 @@ import {
 import {
   reset,
   selectTakeOtcErrors,
+  selectTakeOtcStatus,
   setErrors,
 } from "../../features/takeOtc/takeOtcSlice";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
@@ -51,6 +50,7 @@ import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
+import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
 import {
   Container,
   StyledActionButtons,
@@ -268,6 +268,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       depositNativeToken();
     }
   };
+
+  if (ordersStatus === "signing") {
+    return (
+      <Container>
+        <WalletSignScreen />
+      </Container>
+    );
+  }
 
   return (
     <Container>

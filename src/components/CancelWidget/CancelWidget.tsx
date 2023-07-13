@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cancelOrder } from "../../features/takeOtc/takeOtcActions";
 import {
   selectTakeOtcReducer,
+  selectTakeOtcStatus,
   setIsCancelSuccessFull,
 } from "../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../hooks/useCancellationPending";
@@ -20,6 +21,7 @@ import Icon from "../Icon/Icon";
 import { useOrderStatus } from "../OrderDetailWidget/hooks/useOrderStatus";
 import { Title } from "../Typography/Typography";
 import { InfoSubHeading } from "../Typography/Typography";
+import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
 import {
   Container,
   StyledInfoHeading,
@@ -42,6 +44,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const dispatch = useAppDispatch();
 
   const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
+  const status = useAppSelector(selectTakeOtcStatus);
 
   const params = useParams<{ compressedOrder: string }>();
   const [orderStatus] = useOrderStatus(order);
@@ -76,6 +79,14 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
       })
     );
   };
+
+  if (status === "signing") {
+    return (
+      <Container>
+        <WalletSignScreen />
+      </Container>
+    );
+  }
 
   return (
     <Container>

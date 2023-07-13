@@ -10,16 +10,14 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
-import { Server, Registry, Wrapper, WETH } from "@airswap/libraries";
+import { Server, Registry, Wrapper } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
-import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
-import { constants } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -100,6 +98,7 @@ import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidge
 import { ErrorList } from "../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import { Container } from "../MakeWidget/MakeWidget.styles";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import {
@@ -107,6 +106,7 @@ import {
   notifyRejectedByUserError,
 } from "../Toasts/ToastController";
 import TokenList from "../TokenList/TokenList";
+import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
 import StyledSwapWidget, {
   ButtonContainer,
   InfoContainer,
@@ -780,6 +780,14 @@ const SwapWidget: FC = () => {
     dispatch(setCustomServerUrl(null));
   };
 
+  if (ordersStatus === "signing") {
+    return (
+      <Container>
+        <WalletSignScreen />
+      </Container>
+    );
+  }
+
   return (
     <>
       <StyledSwapWidget>
@@ -869,10 +877,7 @@ const SwapWidget: FC = () => {
               pairUnavailable={pairUnavailable}
               onButtonClicked={(action) => handleActionButtonClick(action)}
               isLoading={
-                isConnecting ||
-                isRequestingQuotes ||
-                ["approving", "taking"].includes(ordersStatus) ||
-                hasApprovalPending
+                isConnecting || isRequestingQuotes || hasApprovalPending
               }
               transactionsTabOpen={transactionsTabIsOpen}
             />
