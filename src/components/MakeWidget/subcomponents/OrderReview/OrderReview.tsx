@@ -115,7 +115,7 @@ const OrderReview: FC<OrderReviewProps> = ({
       )}
       <ReviewList>
         <ReviewListItem>
-          <ReviewListItemLabel>{t("common.for")}:</ReviewListItemLabel>
+          <ReviewListItemLabel>{t("common.for")}</ReviewListItemLabel>
           <ReviewListItemValue>
             {orderType === OrderType.private ? (
               <>
@@ -127,57 +127,35 @@ const OrderReview: FC<OrderReviewProps> = ({
             )}
           </ReviewListItemValue>
         </ReviewListItem>
-
         <ReviewListItem>
-          <ReviewListItemLabel>{t("orders.listed")}:</ReviewListItemLabel>
-          <ReviewListItemValue>
-            {orderType === OrderType.publicListed
-              ? t("common.yes")
-              : t("common.no")}
-          </ReviewListItemValue>
-        </ReviewListItem>
-
-        <ReviewListItem>
-          <ReviewListItemLabel>{t("orders.expiryTime")}:</ReviewListItemLabel>
+          <ReviewListItemLabel>{t("orders.expiryTime")}</ReviewListItemLabel>
           <ReviewListItemValue>{expiryTranslation}</ReviewListItemValue>
         </ReviewListItem>
 
         <ReviewListItem>
-          <ReviewListItemLabel>{t("orders.exchangeRate")}:</ReviewListItemLabel>
+          <ReviewListItemLabel>{t("orders.exchangeRate")}</ReviewListItemLabel>
           <ReviewListItemValue>{rate}</ReviewListItemValue>
         </ReviewListItem>
 
         <ReviewListItem>
           <ReviewListItemLabel>
-            {`${t("orders.protocolFee")} (${protocolFee}%)`}
+            {t("orders.protocolFee")}
             <StyledIconButton
               icon="information-circle-outline"
               onClick={onFeeButtonClick}
             />
-            :
-          </ReviewListItemLabel>
-          <ReviewListItemValue>{roundedFeeAmount}</ReviewListItemValue>
-        </ReviewListItem>
-
-        <ReviewListItem>
-          <ReviewListItemLabel>
-            {t("orders.totalSpending")}:
           </ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee}
+            {roundedFeeAmount} {justifiedSignerToken?.symbol}
           </ReviewListItemValue>
         </ReviewListItem>
 
-        {justifiedSignerToken?.address === wrappedNativeToken?.address && (
-          <ReviewListItem>
-            <ReviewListItemLabel>
-              {`${wrappedNativeTokenSymbol} ${t("balances.balance")}`}:
-            </ReviewListItemLabel>
-            <ReviewListItemValue>
-              {ownedWrappedNativeTokenAmount}
-            </ReviewListItemValue>
-          </ReviewListItem>
-        )}
+        <ReviewListItem>
+          <ReviewListItemLabel>{t("orders.totalSpending")}</ReviewListItemLabel>
+          <ReviewListItemValue>
+            {roundedSignerAmountPlusFee} {justifiedSignerToken?.symbol}
+          </ReviewListItemValue>
+        </ReviewListItem>
       </ReviewList>
     </Container>
   );

@@ -56,6 +56,9 @@ export const ChainIcon = styled.img`
 
 export const ChainNameText = styled.span`
   display: none;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: bold;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: inline;

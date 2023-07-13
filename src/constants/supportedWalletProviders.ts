@@ -45,6 +45,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
           rpc: {
             1: process.env.REACT_APP_RPC_URL_1 || "",
             5: process.env.REACT_APP_RPC_URL_5 || "",
+            59140: process.env.REACT_APP_RPC_URL_59140 || "",
           },
         });
       }

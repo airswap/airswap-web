@@ -653,7 +653,7 @@ const SwapWidget: FC = () => {
         side: "sell",
       })
     );
-    subscribeToGasPrice();
+    // subscribeToGasPrice();
     subscribeToTokenPrice(
       quoteTokenInfo!,
       // @ts-ignore
@@ -792,7 +792,7 @@ const SwapWidget: FC = () => {
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
-          title={isApproving ? t("orders.approve") : t("common.swap")}
+          title={isApproving ? t("orders.approve") : t("common.rfq")}
           isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           protocol={bestTradeOption?.protocol as ProtocolType}
