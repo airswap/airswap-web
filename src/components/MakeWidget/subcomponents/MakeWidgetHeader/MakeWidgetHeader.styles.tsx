@@ -4,15 +4,7 @@ import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetH
 import { MakeWidgetState } from "../../MakeWidget";
 import { ExpirySelector } from "../ExpirySelector/ExpirySelector";
 
-export const StyledWidgetHeader = styled(WidgetHeader)<{
-  state: MakeWidgetState;
-}>`
-  ${(props) =>
-    props.state === MakeWidgetState.review &&
-    `
-    margin-bottom: .75rem;
-  `}
-`;
+export const StyledWidgetHeader = styled(WidgetHeader)``;
 
 export const StyledExpirySelector = styled(ExpirySelector)<{
   hideExpirySelector: boolean;

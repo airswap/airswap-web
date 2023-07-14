@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { chainNames } from "@airswap/constants";
 import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -59,10 +60,10 @@ import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
-import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import OrderReview from "../OrderReview/OrderReview";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import TokenList from "../TokenList/TokenList";
@@ -82,7 +83,6 @@ import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
-import OrderReview from "./subcomponents/OrderReview/OrderReview";
 
 export enum MakeWidgetState {
   list = "list",
@@ -329,6 +329,14 @@ const MakeWidget: FC = () => {
     await unwrapResult(result);
   };
 
+  const handleEditOrderButtonClick = () => {
+    setState(MakeWidgetState.list);
+  };
+
+  const handleSignButtonClick = () => {
+    createOrder();
+  };
+
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -353,17 +361,9 @@ const MakeWidget: FC = () => {
     if (action === ButtonActions.deposit) {
       depositNativeToken();
     }
-
-    if (action === ButtonActions.sign) {
-      createOrder();
-    }
   };
 
   const handleBackButtonClick = (action: ButtonActions) => {
-    if (action === ButtonActions.list) {
-      setState(MakeWidgetState.list);
-    }
-
     if (action === ButtonActions.restart) {
       dispatch(reset());
     }
@@ -388,78 +388,9 @@ const MakeWidget: FC = () => {
     );
   }
 
-  return (
-    <Container>
-      <MakeWidgetHeader
-        hideExpirySelector={
-          !!showTokenSelectModal || state === MakeWidgetState.review
-        }
-        state={state}
-        onExpiryChange={setExpiry}
-      />
-      {state === MakeWidgetState.list && (
-        <>
-          <SwapInputs
-            canSetQuoteAmount
-            disabled={!active}
-            readOnly={!active}
-            showMaxButton={showMaxButton}
-            showMaxInfoButton={showMaxInfoButton}
-            baseAmount={makerAmount}
-            baseTokenInfo={makerTokenInfo}
-            maxAmount={maxAmount}
-            side="sell"
-            quoteAmount={takerAmount}
-            quoteTokenInfo={takerTokenInfo}
-            onBaseAmountChange={handleMakerAmountChange}
-            onChangeTokenClick={setShowTokenSelectModal}
-            onMaxButtonClick={() => handleMakerAmountChange(maxAmount || "0")}
-            onQuoteAmountChange={handleTakerAmountChange}
-            onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
-          />
-          <OrderTypeSelectorAndRateFieldWrapper>
-            <StyledOrderTypeSelector
-              options={orderTypeSelectOptions}
-              selectedOrderTypeOption={orderScopeTypeOption}
-              onChange={setOrderScopeTypeOption}
-            />
-            {makerTokenInfo &&
-              takerTokenInfo &&
-              !hasMissingMakerAmount &&
-              !hasMissingTakerAmount && (
-                <StyledRateField
-                  token1={makerTokenInfo.symbol}
-                  token2={takerTokenInfo.symbol}
-                  rate={new BigNumber(takerAmount).dividedBy(
-                    new BigNumber(makerAmount)
-                  )}
-                />
-              )}
-          </OrderTypeSelectorAndRateFieldWrapper>
-          {orderType === OrderType.private ? (
-            <TooltipContainer>
-              <StyledAddressInput
-                hasError={!!error}
-                value={takerAddress}
-                onChange={handleAddressInputChange}
-                onInfoButtonClick={toggleShowOrderTypeInfo}
-              />
-
-              {error && (
-                <StyledTooltip>
-                  {t("validatorErrors.invalidAddress", {
-                    address: takerAddress,
-                  })}
-                </StyledTooltip>
-              )}
-            </TooltipContainer>
-          ) : (
-            <div />
-          )}
-        </>
-      )}
-
-      {state === MakeWidgetState.review && (
+  if (state === MakeWidgetState.review) {
+    return (
+      <Container>
         <OrderReview
           chainId={chainId}
           expiry={expiry}
@@ -472,9 +403,76 @@ const MakeWidget: FC = () => {
           signerAmount={makerAmount}
           signerToken={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
+          onEditButtonClick={handleEditOrderButtonClick}
           onFeeButtonClick={toggleShowFeeInfo}
+          onSignButtonClick={handleSignButtonClick}
         />
+      </Container>
+    );
+  }
+
+  return (
+    <Container>
+      <MakeWidgetHeader
+        hideExpirySelector={!!showTokenSelectModal}
+        onExpiryChange={setExpiry}
+      />
+      <SwapInputs
+        canSetQuoteAmount
+        disabled={!active}
+        readOnly={!active}
+        showMaxButton={showMaxButton}
+        showMaxInfoButton={showMaxInfoButton}
+        baseAmount={makerAmount}
+        baseTokenInfo={makerTokenInfo}
+        maxAmount={maxAmount}
+        side="sell"
+        quoteAmount={takerAmount}
+        quoteTokenInfo={takerTokenInfo}
+        onBaseAmountChange={handleMakerAmountChange}
+        onChangeTokenClick={setShowTokenSelectModal}
+        onMaxButtonClick={() => handleMakerAmountChange(maxAmount || "0")}
+        onQuoteAmountChange={handleTakerAmountChange}
+        onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
+      />
+      <OrderTypeSelectorAndRateFieldWrapper>
+        <StyledOrderTypeSelector
+          options={orderTypeSelectOptions}
+          selectedOrderTypeOption={orderScopeTypeOption}
+          onChange={setOrderScopeTypeOption}
+        />
+        {makerTokenInfo &&
+          takerTokenInfo &&
+          !hasMissingMakerAmount &&
+          !hasMissingTakerAmount && (
+            <StyledRateField
+              token1={makerTokenInfo.symbol}
+              token2={takerTokenInfo.symbol}
+              rate={new BigNumber(takerAmount).dividedBy(
+                new BigNumber(makerAmount)
+              )}
+            />
+          )}
+      </OrderTypeSelectorAndRateFieldWrapper>
+      {orderType === OrderType.private && (
+        <TooltipContainer>
+          <StyledAddressInput
+            hasError={!!error}
+            value={takerAddress}
+            onChange={handleAddressInputChange}
+            onInfoButtonClick={toggleShowOrderTypeInfo}
+          />
+
+          {error && (
+            <StyledTooltip>
+              {t("validatorErrors.invalidAddress", {
+                address: takerAddress,
+              })}
+            </StyledTooltip>
+          )}
+        </TooltipContainer>
       )}
+
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
         hasInsufficientAllowance={hasInsufficientAllowance}
@@ -492,7 +490,6 @@ const MakeWidget: FC = () => {
         shouldDepositNativeToken={shouldDepositNativeToken}
         walletIsNotConnected={!active}
         makerTokenSymbol={makerTokenInfo?.symbol}
-        widgetState={state}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />

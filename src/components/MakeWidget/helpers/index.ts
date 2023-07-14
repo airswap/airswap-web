@@ -17,7 +17,6 @@ export const getActionButtonTranslation = (
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   walletIsNotConnected: boolean,
-  widgetState: MakeWidgetState,
   makerTokenSymbol?: string
 ): string => {
   if (walletIsNotConnected) {
@@ -48,10 +47,6 @@ export const getActionButtonTranslation = (
     return i18n.t("orders.insufficientBalance", { symbol: makerTokenSymbol });
   }
 
-  if (widgetState === MakeWidgetState.list) {
-    return i18n.t("common.review");
-  }
-
   if (shouldDepositNativeToken) {
     return `${i18n.t("common.wrap")} ${makerTokenSymbol}`;
   }
@@ -60,7 +55,7 @@ export const getActionButtonTranslation = (
     return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
   }
 
-  return i18n.t("common.sign");
+  return i18n.t("common.review");
 };
 
 export const getNewTokenPair = (

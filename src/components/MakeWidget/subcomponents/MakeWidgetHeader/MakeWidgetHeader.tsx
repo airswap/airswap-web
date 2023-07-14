@@ -11,23 +11,19 @@ import {
 
 type MakeWidgetHeaderProps = {
   hideExpirySelector?: boolean;
-  state: MakeWidgetState;
   onExpiryChange: (date: number) => void;
 };
 
 const MakeWidgetHeader: FC<MakeWidgetHeaderProps> = ({
   hideExpirySelector = false,
-  state,
   onExpiryChange,
 }) => {
   const { t } = useTranslation();
-  const title =
-    state === MakeWidgetState.review ? t("common.review") : t("common.make");
 
   return (
-    <StyledWidgetHeader state={state}>
+    <StyledWidgetHeader>
       <Title type="h2" as="h1">
-        {title}
+        {t("common.make")}
       </Title>
       <StyledExpirySelector
         onChange={onExpiryChange}

@@ -1,14 +1,21 @@
 import styled from "styled-components/macro";
 
-import breakPoints from "../../../../style/breakpoints";
-import {
-  BorderlessButtonStyle,
-  InputOrButtonBorderStyleType2,
-} from "../../../../style/mixins";
-import IconButton from "../../../IconButton/IconButton";
-import OrderReviewToken from "../OrderReviewToken/OrderReviewToken";
+import breakPoints from "../../style/breakpoints";
+import { BorderlessButtonStyle } from "../../style/mixins";
+import { WidgetHeader } from "../../styled-components/WidgetHeader/WidgetHeader";
+import IconButton from "../IconButton/IconButton";
+import OrderReviewToken from "../MakeWidget/subcomponents/OrderReviewToken/OrderReviewToken";
+import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+export const StyledWidgetHeader = styled(WidgetHeader)`
+  margin-bottom: 0.75rem;
+`;
 
 export const StyledOrderReviewToken = styled(OrderReviewToken)`
   border-bottom: 1px solid ${(props) => props.theme.colors.borderGrey};
@@ -56,4 +63,9 @@ export const StyledIconButton = styled(IconButton)`
   &:active {
     color: ${(props) => props.theme.colors.white};
   }
+`;
+
+export const StyledActionButtons = styled(ActionButtons)`
+  justify-self: flex-end;
+  margin-top: auto;
 `;

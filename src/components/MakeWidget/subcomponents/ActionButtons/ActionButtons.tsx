@@ -12,8 +12,6 @@ export enum ButtonActions {
   restart,
   goBack,
   review,
-  list,
-  sign,
   approve,
   deposit,
 }
@@ -32,7 +30,6 @@ type ActionButtonsProps = {
   walletIsNotConnected: boolean;
   makerTokenSymbol?: string;
   takerTokenSymbol?: string;
-  widgetState: MakeWidgetState;
   onBackButtonClick: (action: ButtonActions) => void;
   onActionButtonClick: (action: ButtonActions) => void;
   className?: string;
@@ -51,7 +48,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   shouldDepositNativeToken,
   walletIsNotConnected,
   makerTokenSymbol,
-  widgetState,
   onBackButtonClick,
   onActionButtonClick,
   className,
@@ -79,7 +75,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     isNetworkUnsupported,
     shouldDepositNativeToken,
     walletIsNotConnected,
-    widgetState,
     makerTokenSymbol
   );
 
@@ -88,36 +83,28 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       onActionButtonClick(ButtonActions.connectWallet);
     } else if (isNetworkUnsupported) {
       onActionButtonClick(ButtonActions.switchNetwork);
-    } else if (widgetState === MakeWidgetState.list) {
-      onActionButtonClick(ButtonActions.review);
     } else if (shouldDepositNativeToken) {
       onActionButtonClick(ButtonActions.deposit);
     } else if (hasInsufficientAllowance) {
       onActionButtonClick(ButtonActions.approve);
     } else {
-      onActionButtonClick(ButtonActions.sign);
+      onActionButtonClick(ButtonActions.review);
     }
   };
 
   const handleBackButtonClick = () => {
-    if (widgetState === MakeWidgetState.review) {
-      onBackButtonClick(ButtonActions.list);
-    } else {
-      onBackButtonClick(ButtonActions.goBack);
-    }
+    onBackButtonClick(ButtonActions.goBack);
   };
 
   return (
     <Container className={className}>
       <BackButton onClick={handleBackButtonClick}>
-        {widgetState === MakeWidgetState.review
-          ? t("common.edit")
-          : t("common.back")}
+        {t("common.back")}
       </BackButton>
       <SignButton
         disabled={isDisabled}
         intent="primary"
-        loading={widgetState === MakeWidgetState.review && isLoading}
+        loading={isLoading}
         onClick={handleSignButtonClick}
       >
         {buttonText}

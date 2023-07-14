@@ -5,22 +5,25 @@ import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
-import { getExpiryTranslation } from "../../../../helpers/getExpiryTranslation";
-import toRoundedNumberString from "../../../../helpers/toRoundedNumberString";
-import useInsufficientBalance from "../../../../hooks/useInsufficientBalance";
-import useShouldDepositNativeTokenAmountInfo from "../../../../hooks/useShouldDepositNativeTokenAmountInfo";
-import { OrderType } from "../../../../types/orderTypes";
-import { getTokenPairTranslation } from "../../helpers";
-import WalletLink from "../WalletLink/WalletLink";
+import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
+import toRoundedNumberString from "../../helpers/toRoundedNumberString";
+import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
+import { OrderType } from "../../types/orderTypes";
+import { getTokenPairTranslation } from "../MakeWidget/helpers";
+import WalletLink from "../MakeWidget/subcomponents/WalletLink/WalletLink";
+import { Title } from "../Typography/Typography";
 import {
   Container,
   ReviewList,
   ReviewListItem,
   ReviewListItemLabel,
   ReviewListItemValue,
+  StyledActionButtons,
   StyledIconButton,
   StyledOrderReviewToken,
+  StyledWidgetHeader,
 } from "./OrderReview.styles";
 
 interface OrderReviewProps {
@@ -35,7 +38,9 @@ interface OrderReviewProps {
   signerAmountPlusFee: string;
   signerToken: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
+  onEditButtonClick: () => void;
   onFeeButtonClick: () => void;
+  onSignButtonClick: () => void;
   className?: string;
 }
 
@@ -51,7 +56,9 @@ const OrderReview: FC<OrderReviewProps> = ({
   signerAmountPlusFee,
   signerToken,
   wrappedNativeToken,
+  onEditButtonClick,
   onFeeButtonClick,
+  onSignButtonClick,
   className = "",
 }): ReactElement => {
   const { t } = useTranslation();
@@ -97,6 +104,11 @@ const OrderReview: FC<OrderReviewProps> = ({
 
   return (
     <Container className={className}>
+      <StyledWidgetHeader>
+        <Title type="h2" as="h1">
+          {t("common.review")}
+        </Title>
+      </StyledWidgetHeader>
       {signerToken && (
         <StyledOrderReviewToken
           amount={signerAmount}
@@ -157,6 +169,11 @@ const OrderReview: FC<OrderReviewProps> = ({
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
+
+      <StyledActionButtons
+        onEditButtonClick={onEditButtonClick}
+        onSignButtonClick={onSignButtonClick}
+      />
     </Container>
   );
 };
