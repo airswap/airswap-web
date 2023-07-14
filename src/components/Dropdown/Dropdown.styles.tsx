@@ -121,10 +121,9 @@ export const SelectOptions = styled.div<{
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   box-shadow: ${({ theme }) => theme.shadows.selectOptionsShadow};
   z-index: 1;
-  pointer-events: auto;
 `;
 
-const SelectStyle = css<{ isMenuOpen?: boolean }>`
+const SelectStyle = css`
   ${InputOrButtonBorderStyle};
   ${ButtonStyle};
 

@@ -1,20 +1,14 @@
 import React, {
   Dispatch,
   SetStateAction,
-  useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import {
-  setTransactions,
-  SubmittedTransaction,
-  transactionsSlice,
-} from "../../../../features/transactions/transactionsSlice";
-import useHistoricalTransactions from "../../../../features/transactions/useHistoricalTransactions";
+import { useAppDispatch } from "../../../../app/hooks";
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import { SelectOption } from "../../../Dropdown/Dropdown";
 import {
   clearAllTransactions,
@@ -48,9 +42,6 @@ const ClearTransactionSelector = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const historicalTransactions = useHistoricalTransactions();
-  console.log(historicalTransactions);
-
   const translatedOptions = useMemo(() => {
     return getClearTransactionOptions(t);
   }, [t]);
@@ -78,7 +69,7 @@ const ClearTransactionSelector = ({
           options={translatedOptions}
           onChange={handleClearTypeChange}
           setIsSelectorOpen={setIsSelectorOpen}
-          isMenuOpen
+          isMenuOpen={true}
         />
       </SelectWrapper>
     </>

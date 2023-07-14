@@ -33,11 +33,12 @@ export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
 `;
 
 export const StyledDropdown = styled(Dropdown) <{
-  setIsSelectorOpen: Dispatch<React.SetStateAction<boolean>>;
+  setIsSelectorOpen: (Dispatch<React.SetStateAction<boolean>>);
   isMenuOpen: boolean;
 }>`
   ${SelectButtonText}
 
   text-align: left;
   width: 5rem;
+  // margin-top: -3rem
 `;

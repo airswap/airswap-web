@@ -9,9 +9,6 @@ import {
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
-import Dropdown from "../Dropdown/Dropdown";
-import { SelectButtonText } from "../Dropdown/Dropdown.styles";
-import Tooltip from "../ExpiryIndicator/subcomponents/Tooltip";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
