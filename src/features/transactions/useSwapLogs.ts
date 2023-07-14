@@ -6,6 +6,7 @@ import { useAsync } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
 import { providers } from "ethers";
+
 import { firstTransactionBlocks } from "../../constants/firstTransactionBlocks";
 
 const useSwapLogs = () => {
@@ -41,17 +42,31 @@ const useSwapLogs = () => {
         account // senderWallet
       );
 
-      const firstTxBlockSwapContract = chainId && firstTransactionBlocks.SwapERC20[chainId]
+      const firstTxBlockSwapContract =
+        chainId && firstTransactionBlocks.SwapERC20[chainId];
 
-      const firstTxBlockWrapperContract = chainId && firstTransactionBlocks.Wrapper[chainId]
+      const firstTxBlockWrapperContract =
+        chainId && firstTransactionBlocks.Wrapper[chainId];
 
-      const currentBlock = await provider?.getBlockNumber()
+      const currentBlock = await provider?.getBlockNumber();
 
       const [lastLookSwapLogs, rfqSwapLogs, wrappedSwapLogs] =
         await Promise.all([
-          swapContract.queryFilter(signerSwapFilter, firstTxBlockSwapContract, currentBlock),
-          swapContract.queryFilter(senderSwapFilter, firstTxBlockSwapContract, currentBlock),
-          wrapperContract.queryFilter(wrapperSwapFilter, firstTxBlockWrapperContract, currentBlock),
+          swapContract.queryFilter(
+            signerSwapFilter,
+            firstTxBlockSwapContract,
+            currentBlock
+          ),
+          swapContract.queryFilter(
+            senderSwapFilter,
+            firstTxBlockSwapContract,
+            currentBlock
+          ),
+          wrapperContract.queryFilter(
+            wrapperSwapFilter,
+            firstTxBlockWrapperContract,
+            currentBlock
+          ),
         ]);
 
       return {

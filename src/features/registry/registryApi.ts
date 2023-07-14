@@ -1,21 +1,31 @@
 import { Registry } from "@airswap/libraries";
 
 import { providers, Event } from "ethers";
+
 import { firstTransactionBlocks } from "../../constants/firstTransactionBlocks";
 
 async function getStakerTokens(chainId: number, provider: providers.Provider) {
   const registryContract = Registry.getContract(provider, chainId);
 
-  const firstTxRegistryContract = chainId && firstTransactionBlocks.Registry[chainId]
-  const currentBlock = await provider?.getBlockNumber()
+  const firstTxRegistryContract =
+    chainId && firstTransactionBlocks.Registry[chainId];
+  const currentBlock = await provider?.getBlockNumber();
 
   const addTokensEventFilter = registryContract.filters.AddTokens();
   const removeTokensEventFilter = registryContract.filters.RemoveTokens();
 
   // Fetch all AddTokens and RemoveTokens events from the registry
   const [addEvents, removeEvents] = await Promise.all([
-    registryContract.queryFilter(addTokensEventFilter, firstTxRegistryContract, currentBlock),
-    registryContract.queryFilter(removeTokensEventFilter, firstTxRegistryContract, currentBlock),
+    registryContract.queryFilter(
+      addTokensEventFilter,
+      firstTxRegistryContract,
+      currentBlock
+    ),
+    registryContract.queryFilter(
+      removeTokensEventFilter,
+      firstTxRegistryContract,
+      currentBlock
+    ),
   ]);
 
   // Order matters here, so order AddTokens and RemoveTokens chronologically

@@ -39,7 +39,7 @@ export const LastLookContext = createContext<{
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
   },
-  unsubscribeAllServers: () => { },
+  unsubscribeAllServers: () => {},
   sendOrderForConsideration: async () => {
     return false;
   },

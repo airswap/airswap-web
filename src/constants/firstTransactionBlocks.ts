@@ -1,5 +1,5 @@
 interface FirstTransactionBlocks {
-  [x: string]: { [x: number]: number }
+  [x: string]: { [x: number]: number };
 }
 
 export const firstTransactionBlocks: FirstTransactionBlocks = {
@@ -16,7 +16,7 @@ export const firstTransactionBlocks: FirstTransactionBlocks = {
     43114: 27131744, // Avalanche mainnet C-Chain
     59140: 464512, // Linea-goerli
     80001: 32858133, // Polygon Mumbai testnet
-    421613: 10431281 // Arbitrum goerli testnet
+    421613: 10431281, // Arbitrum goerli testnet
   },
   Wrapper: {
     1: 16776818,
@@ -31,7 +31,7 @@ export const firstTransactionBlocks: FirstTransactionBlocks = {
     43114: 27131759,
     59140: 705640,
     80001: 32858158,
-    421613: 10431377
+    421613: 10431377,
   },
   Registry: {
     1: 12782029,
@@ -47,5 +47,5 @@ export const firstTransactionBlocks: FirstTransactionBlocks = {
     59140: 992371,
     80001: 25550814,
     421613: 2333984,
-  }
-}
+  },
+};
