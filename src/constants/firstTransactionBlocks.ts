@@ -1,10 +1,15 @@
-interface FirstTransactionBlocks {
-  [x: string]: { [x: number]: number };
+import { ChainIds } from "@airswap/constants";
+
+interface V3ContractsDeploymentBlock {
+  SwapERC20: Record<ChainIds, number>;
+  Wrapper: Record<ChainIds, number>;
+  Registry: Record<ChainIds, number>;
 }
 
-export const firstTransactionBlocks: FirstTransactionBlocks = {
+export const firstTransactionBlocks: V3ContractsDeploymentBlock = {
   SwapERC20: {
-    1: 16776806, // Mainnet
+    [ChainIds.MAINNET]: 16776806,
+    // etc..
     5: 8613798, // Goerli testnet
     30: 5113768, // RSK mainnet
     31: 3642941, // RSK testnet
