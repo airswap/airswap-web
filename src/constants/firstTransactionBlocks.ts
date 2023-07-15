@@ -22,6 +22,7 @@ export const firstTransactionBlocks: V3ContractsDeploymentBlock = {
     59140: 464512, // Linea-goerli
     80001: 32858133, // Polygon Mumbai testnet
     421613: 10431281, // Arbitrum goerli testnet
+    31337: 0 // Hardhat
   },
   Wrapper: {
     1: 16776818,
@@ -37,6 +38,7 @@ export const firstTransactionBlocks: V3ContractsDeploymentBlock = {
     59140: 705640,
     80001: 32858158,
     421613: 10431377,
+    31337: 0
   },
   Registry: {
     1: 12782029,
@@ -52,5 +54,6 @@ export const firstTransactionBlocks: V3ContractsDeploymentBlock = {
     59140: 992371,
     80001: 25550814,
     421613: 2333984,
+    31337: 0
   },
 };
