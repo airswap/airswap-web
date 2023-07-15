@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { SwapERC20, Wrapper, Registry } from "@airswap/libraries";
+import { SwapERC20, Wrapper } from "@airswap/libraries";
 import { Contract } from "@ethersproject/contracts";
 import { useAsync } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
@@ -43,10 +43,10 @@ const useSwapLogs = () => {
       );
 
       const firstTxBlockSwapContract =
-        chainId && firstTransactionBlocks.SwapERC20[chainId];
+        chainId && firstTransactionBlocks.SwapERC20[chainId as keyof typeof firstTransactionBlocks.SwapERC20];
 
       const firstTxBlockWrapperContract =
-        chainId && firstTransactionBlocks.Wrapper[chainId];
+        chainId && firstTransactionBlocks.Wrapper[chainId as keyof typeof firstTransactionBlocks.Wrapper];
 
       const currentBlock = await provider?.getBlockNumber();
 

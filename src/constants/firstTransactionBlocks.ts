@@ -9,51 +9,50 @@ interface V3ContractsDeploymentBlock {
 export const firstTransactionBlocks: V3ContractsDeploymentBlock = {
   SwapERC20: {
     [ChainIds.MAINNET]: 16776806,
-    // etc..
-    5: 8613798, // Goerli testnet
-    30: 5113768, // RSK mainnet
-    31: 3642941, // RSK testnet
-    56: 26260582, // BSC mainnet
-    97: 27862913, // BSC testnet
-    137: 40074273, // Polygon mainnet
-    42161: 67890619, // Arbitrum One mainnet
-    43113: 19641038, // Avalanche Fuji testnet
-    43114: 27131744, // Avalanche mainnet C-Chain
-    59140: 464512, // Linea-goerli
-    80001: 32858133, // Polygon Mumbai testnet
-    421613: 10431281, // Arbitrum goerli testnet
-    31337: 0 // Hardhat
+    [ChainIds.GOERLI]: 8613798, //
+    [ChainIds.RSK]: 5113768,
+    [ChainIds.RSKTESTNET]: 3642941,
+    [ChainIds.BSC]: 26260582,
+    [ChainIds.BSCTESTNET]: 27862913,
+    [ChainIds.POLYGON]: 40074273,
+    [ChainIds.ARBITRUM]: 67890619,
+    [ChainIds.FUJI]: 19641038,
+    [ChainIds.AVALANCHE]: 27131744,
+    [ChainIds.LINEAGOERLI]: 464512,
+    [ChainIds.MUMBAI]: 32858133,
+    [ChainIds.ARBITRUMGOERLI]: 10431281,
+    [ChainIds.HARDHAT]: 0,
   },
   Wrapper: {
-    1: 16776818,
-    5: 8613803,
-    30: 5113775,
-    31: 3642943,
-    56: 26260601,
-    97: 27862925,
-    137: 40074292,
-    42161: 67890744,
-    43113: 19641085,
-    43114: 27131759,
-    59140: 705640,
-    80001: 32858158,
-    421613: 10431377,
-    31337: 0
+    [ChainIds.MAINNET]: 16776818,
+    [ChainIds.GOERLI]: 8613803,
+    [ChainIds.RSK]: 5113775,
+    [ChainIds.RSKTESTNET]: 3642943,
+    [ChainIds.BSC]: 26260601,
+    [ChainIds.BSCTESTNET]: 27862925,
+    [ChainIds.POLYGON]: 40074292,
+    [ChainIds.ARBITRUM]: 67890744,
+    [ChainIds.FUJI]: 19641085,
+    [ChainIds.AVALANCHE]: 27131759,
+    [ChainIds.LINEAGOERLI]: 705640,
+    [ChainIds.MUMBAI]: 32858158,
+    [ChainIds.ARBITRUMGOERLI]: 10431377,
+    [ChainIds.HARDHAT]: 0,
   },
   Registry: {
-    1: 12782029,
-    5: 6537104,
-    30: 5018400,
-    31: 3424107,
-    56: 15963896,
-    97: 17263882,
-    137: 26036024,
-    42161: 43864138,
-    43113: 6864382,
-    43114: 11969746,
-    59140: 992371,
-    80001: 25550814,
-    421613: 2333984,
-    31337: 0
+    [ChainIds.MAINNET]: 12782029,
+    [ChainIds.GOERLI]: 6537104,
+    [ChainIds.RSK]: 5018400,
+    [ChainIds.RSKTESTNET]: 3424107,
+    [ChainIds.BSC]: 15963896,
+    [ChainIds.BSCTESTNET]: 17263882,
+    [ChainIds.POLYGON]: 26036024,
+    [ChainIds.ARBITRUM]: 43864138,
+    [ChainIds.FUJI]: 6864382,
+    [ChainIds.AVALANCHE]: 11969746,
+    [ChainIds.LINEAGOERLI]: 992371,
+    [ChainIds.MUMBAI]: 25550814,
+    [ChainIds.ARBITRUMGOERLI]: 2333984,
+    [ChainIds.HARDHAT]: 0,
   },
 };

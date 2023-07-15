@@ -8,7 +8,7 @@ async function getStakerTokens(chainId: number, provider: providers.Provider) {
   const registryContract = Registry.getContract(provider, chainId);
 
   const firstTxRegistryContract =
-    chainId && firstTransactionBlocks.Registry[chainId];
+    chainId && firstTransactionBlocks.Registry[chainId as keyof typeof firstTransactionBlocks.Registry];
   const currentBlock = await provider?.getBlockNumber();
 
   const addTokensEventFilter = registryContract.filters.AddTokens();
