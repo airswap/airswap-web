@@ -12,7 +12,6 @@ export enum ButtonActions {
   restart,
   goBack,
   review,
-  approve,
   deposit,
 }
 
@@ -85,8 +84,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       onActionButtonClick(ButtonActions.switchNetwork);
     } else if (shouldDepositNativeToken) {
       onActionButtonClick(ButtonActions.deposit);
-    } else if (hasInsufficientAllowance) {
-      onActionButtonClick(ButtonActions.approve);
     } else {
       onActionButtonClick(ButtonActions.review);
     }

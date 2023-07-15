@@ -60,6 +60,7 @@ import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
+import ApproveReview from "../ApproveReview/ApproveReview";
 import { SelectOption } from "../Dropdown/Dropdown";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
@@ -83,6 +84,7 @@ import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
+import ProtocolFeeOverlay from "./subcomponents/ProtocolFeeOverlay/ProtocolFeeOverlay";
 
 export enum MakeWidgetState {
   list = "list",
@@ -329,12 +331,16 @@ const MakeWidget: FC = () => {
     await unwrapResult(result);
   };
 
-  const handleEditOrderButtonClick = () => {
+  const handleEditButtonClick = () => {
     setState(MakeWidgetState.list);
   };
 
   const handleSignButtonClick = () => {
     createOrder();
+  };
+
+  const onApproveSignButtonClick = () => {
+    approveToken();
   };
 
   const handleActionButtonClick = (action: ButtonActions) => {
@@ -348,10 +354,6 @@ const MakeWidget: FC = () => {
 
     if (action === ButtonActions.review) {
       reviewOrder();
-    }
-
-    if (action === ButtonActions.approve) {
-      approveToken();
     }
 
     if (action === ButtonActions.restart) {
@@ -388,23 +390,36 @@ const MakeWidget: FC = () => {
     );
   }
 
+  if (state === MakeWidgetState.review && hasInsufficientAllowance) {
+    return (
+      <Container>
+        <ApproveReview
+          amount={makerAmount}
+          amountPlusFee={makerAmountPlusFee}
+          token={makerTokenInfo}
+          wrappedNativeToken={wrappedNativeToken}
+          onEditButtonClick={handleEditButtonClick}
+          onSignButtonClick={onApproveSignButtonClick}
+        />
+      </Container>
+    );
+  }
+
   if (state === MakeWidgetState.review) {
     return (
       <Container>
         <OrderReview
           chainId={chainId}
           expiry={expiry}
-          signerAmountPlusFee={makerAmountPlusFee}
           orderType={orderType}
-          protocolFee={protocolFee / 100}
           senderAddress={takerAddress}
           senderAmount={takerAmount}
           senderToken={takerTokenInfo}
           signerAmount={makerAmount}
+          signerAmountPlusFee={makerAmountPlusFee}
           signerToken={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditOrderButtonClick}
-          onFeeButtonClick={toggleShowFeeInfo}
+          onEditButtonClick={handleEditButtonClick}
           onSignButtonClick={handleSignButtonClick}
         />
       </Container>
@@ -515,13 +530,10 @@ const MakeWidget: FC = () => {
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
       </Overlay>
-      <Overlay
-        title={t("information.protocolFee.title")}
+      <ProtocolFeeOverlay
+        isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo()}
-        isHidden={!showFeeInfo}
-      >
-        <ProtocolFeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
-      </Overlay>
+      />
     </Container>
   );
 };

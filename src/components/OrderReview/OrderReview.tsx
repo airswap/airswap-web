@@ -2,27 +2,30 @@ import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
+import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../helpers/toRoundedNumberString";
-import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
-import { OrderType } from "../../types/orderTypes";
-import { getTokenPairTranslation } from "../MakeWidget/helpers";
-import WalletLink from "../MakeWidget/subcomponents/WalletLink/WalletLink";
-import { Title } from "../Typography/Typography";
+import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
 import {
-  Container,
-  ReviewList,
   ReviewListItem,
   ReviewListItemLabel,
   ReviewListItemValue,
+} from "../../styled-components/ReviewListItem/ReviewListItem";
+import { OrderType } from "../../types/orderTypes";
+import { getTokenPairTranslation } from "../MakeWidget/helpers";
+import ProtocolFeeOverlay from "../MakeWidget/subcomponents/ProtocolFeeOverlay/ProtocolFeeOverlay";
+import WalletLink from "../MakeWidget/subcomponents/WalletLink/WalletLink";
+import OrderReviewToken from "../OrderReviewToken/OrderReviewToken";
+import { Title } from "../Typography/Typography";
+import {
+  Container,
   StyledActionButtons,
   StyledIconButton,
-  StyledOrderReviewToken,
   StyledWidgetHeader,
 } from "./OrderReview.styles";
 
@@ -30,7 +33,6 @@ interface OrderReviewProps {
   chainId?: number;
   expiry: number;
   orderType: OrderType;
-  protocolFee: number;
   senderAddress: string;
   senderAmount: string;
   senderToken: TokenInfo | null;
@@ -39,7 +41,6 @@ interface OrderReviewProps {
   signerToken: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick: () => void;
-  onFeeButtonClick: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
@@ -48,7 +49,6 @@ const OrderReview: FC<OrderReviewProps> = ({
   chainId,
   expiry,
   orderType,
-  protocolFee,
   senderAddress,
   senderAmount,
   senderToken,
@@ -57,11 +57,11 @@ const OrderReview: FC<OrderReviewProps> = ({
   signerToken,
   wrappedNativeToken,
   onEditButtonClick,
-  onFeeButtonClick,
   onSignButtonClick,
   className = "",
 }): ReactElement => {
   const { t } = useTranslation();
+  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
   const isSignerTokenNativeToken =
     signerToken?.address === nativeCurrencyAddress;
@@ -95,6 +95,7 @@ const OrderReview: FC<OrderReviewProps> = ({
       .toString();
     return toRoundedNumberString(amount, justifiedSignerToken?.decimals);
   }, [signerAmount, signerAmountPlusFee, justifiedSignerToken]);
+
   const roundedSignerAmountPlusFee = useMemo(() => {
     return toRoundedNumberString(
       signerAmountPlusFee,
@@ -110,7 +111,7 @@ const OrderReview: FC<OrderReviewProps> = ({
         </Title>
       </StyledWidgetHeader>
       {signerToken && (
-        <StyledOrderReviewToken
+        <OrderReviewToken
           amount={signerAmount}
           label={t("common.send")}
           tokenSymbol={justifiedSignerToken?.symbol || "?"}
@@ -118,7 +119,7 @@ const OrderReview: FC<OrderReviewProps> = ({
         />
       )}
       {senderToken && (
-        <StyledOrderReviewToken
+        <OrderReviewToken
           amount={senderAmount}
           label={t("common.receive")}
           tokenSymbol={justifiedSenderToken?.symbol || "?"}
@@ -154,7 +155,7 @@ const OrderReview: FC<OrderReviewProps> = ({
             {t("orders.protocolFee")}
             <StyledIconButton
               icon="information-circle-outline"
-              onClick={onFeeButtonClick}
+              onClick={toggleShowFeeInfo}
             />
           </ReviewListItemLabel>
           <ReviewListItemValue>
@@ -173,6 +174,11 @@ const OrderReview: FC<OrderReviewProps> = ({
       <StyledActionButtons
         onEditButtonClick={onEditButtonClick}
         onSignButtonClick={onSignButtonClick}
+      />
+
+      <ProtocolFeeOverlay
+        isHidden={showFeeInfo}
+        onCloseButtonClick={() => toggleShowFeeInfo()}
       />
     </Container>
   );

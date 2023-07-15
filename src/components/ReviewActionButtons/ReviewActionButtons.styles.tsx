@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../style/mixins";
-import Button from "../../../Button/Button";
+import { InputOrButtonBorderStyle } from "../../style/mixins";
+import Button from "../Button/Button";
 
 export const Container = styled.div`
   display: flex;

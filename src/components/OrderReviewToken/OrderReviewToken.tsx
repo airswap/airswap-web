@@ -2,7 +2,7 @@ import { FC, ReactElement } from "react";
 
 import { TokenInfo } from "@airswap/types";
 
-import TokenLogo from "../../../TokenLogo/TokenLogo";
+import TokenLogo from "../TokenLogo/TokenLogo";
 import {
   Amount,
   Container,

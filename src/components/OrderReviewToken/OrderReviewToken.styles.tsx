@@ -1,13 +1,14 @@
 import styled from "styled-components/macro";
 
-import { TextEllipsis } from "../../../../style/mixins";
-import { fontMono } from "../../../../style/themes";
-import TokenLogo from "../../../TokenLogo/TokenLogo";
+import { TextEllipsis } from "../../style/mixins";
+import { fontMono } from "../../style/themes";
+import TokenLogo from "../TokenLogo/TokenLogo";
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  border-bottom: 1px solid ${(props) => props.theme.colors.borderGrey};
   position: relative;
   height: 3.5rem;
 `;

@@ -5,7 +5,7 @@ import {
   BackButton,
   Container,
   SignButton,
-} from "../../../MakeWidget/subcomponents/ActionButtons/ActionButtons.styles";
+} from "./ReviewActionButtons.styles";
 
 interface ActionButtonsProps {
   onEditButtonClick: () => void;
@@ -13,7 +13,7 @@ interface ActionButtonsProps {
   className?: string;
 }
 
-const ActionButtons: FC<ActionButtonsProps> = ({
+const ReviewActionButtons: FC<ActionButtonsProps> = ({
   onEditButtonClick,
   onSignButtonClick,
   className = "",
@@ -30,4 +30,4 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   );
 };
 
-export default ActionButtons;
+export default ReviewActionButtons;
