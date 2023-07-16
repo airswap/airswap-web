@@ -69,6 +69,7 @@ import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import TokenList from "../TokenList/TokenList";
 import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
+import WrapReview from "../WrapReview/WrapReview";
 import {
   Container,
   OrderTypeSelectorAndRateFieldWrapper,
@@ -339,6 +340,10 @@ const MakeWidget: FC = () => {
     createOrder();
   };
 
+  const onWrapSignButtonClick = () => {
+    depositNativeToken();
+  };
+
   const onApproveSignButtonClick = () => {
     approveToken();
   };
@@ -358,10 +363,6 @@ const MakeWidget: FC = () => {
 
     if (action === ButtonActions.restart) {
       dispatch(reset());
-    }
-
-    if (action === ButtonActions.deposit) {
-      depositNativeToken();
     }
   };
 
@@ -386,6 +387,21 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <WalletSignScreen />
+      </Container>
+    );
+  }
+
+  if (state === MakeWidgetState.review && shouldDepositNativeToken) {
+    return (
+      <Container>
+        <WrapReview
+          amount={makerAmount}
+          amountPlusFee={makerAmountPlusFee}
+          shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
+          wrappedNativeToken={wrappedNativeToken}
+          onEditButtonClick={handleEditButtonClick}
+          onSignButtonClick={onWrapSignButtonClick}
+        />
       </Container>
     );
   }

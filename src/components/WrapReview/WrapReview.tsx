@@ -8,6 +8,7 @@ import { BigNumber } from "bignumber.js";
 
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import toRoundedNumberString from "../../helpers/toRoundedNumberString";
+import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
 import {
   ReviewListItem,
@@ -22,22 +23,22 @@ import {
   Container,
   StyledActionButtons,
   StyledWidgetHeader,
-} from "./ApproveReview.styles";
+} from "./WrapReview.styles";
 
-interface ApproveReviewProps {
+interface WrapReviewProps {
   amount: string;
   amountPlusFee: string;
-  token: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
+  shouldDepositNativeTokenAmount: string;
   onEditButtonClick: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
-const ApproveReview: FC<ApproveReviewProps> = ({
+const ApproveReview: FC<WrapReviewProps> = ({
   amount,
   amountPlusFee,
-  token,
+  shouldDepositNativeTokenAmount,
   wrappedNativeToken,
   onEditButtonClick,
   onSignButtonClick,
@@ -46,30 +47,33 @@ const ApproveReview: FC<ApproveReviewProps> = ({
   const { t } = useTranslation();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
-  const isTokenNativeToken = token?.address === nativeCurrencyAddress;
-  const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
+  const {
+    nativeTokenSymbol,
+    ownedWrappedNativeTokenAmount,
+    wrappedNativeTokenSymbol,
+  } = useShouldDepositNativeTokenAmountInfo();
 
   const roundedFeeAmount = useMemo(() => {
     const feeAmount = new BigNumber(amountPlusFee).minus(amount).toString();
-    return toRoundedNumberString(feeAmount, justifiedToken?.decimals);
-  }, [amount, amountPlusFee, justifiedToken]);
+    return toRoundedNumberString(feeAmount, wrappedNativeToken?.decimals);
+  }, [amount, amountPlusFee, wrappedNativeToken]);
 
   const roundedSignerAmountPlusFee = useMemo(() => {
-    return toRoundedNumberString(amountPlusFee, justifiedToken?.decimals);
-  }, [amountPlusFee, justifiedToken]);
+    return toRoundedNumberString(amountPlusFee, wrappedNativeToken?.decimals);
+  }, [amountPlusFee, wrappedNativeToken]);
 
   return (
     <Container className={className}>
       <StyledWidgetHeader>
         <Title type="h2" as="h1">
-          {t("orders.approve")} {justifiedToken?.symbol}
+          Wrap {nativeTokenSymbol}
         </Title>
       </StyledWidgetHeader>
       <OrderReviewToken
         amount={amount}
         label={t("common.sending")}
-        tokenSymbol={justifiedToken?.symbol || "?"}
-        tokenUri={justifiedToken?.logoURI}
+        tokenSymbol={wrappedNativeToken?.symbol || "?"}
+        tokenUri={wrappedNativeToken?.logoURI}
       />
       <ReviewList>
         <ReviewListItem>
@@ -81,14 +85,30 @@ const ApproveReview: FC<ApproveReviewProps> = ({
             />
           </ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedFeeAmount} {justifiedToken?.symbol}
+            {roundedFeeAmount} {wrappedNativeTokenSymbol}
           </ReviewListItemValue>
         </ReviewListItem>
 
         <ReviewListItem>
-          <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
+          <ReviewListItemLabel>{t("orders.totalSpending")}</ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee} {justifiedToken?.symbol}
+            {roundedSignerAmountPlusFee} {wrappedNativeTokenSymbol}
+          </ReviewListItemValue>
+        </ReviewListItem>
+
+        <ReviewListItem>
+          <ReviewListItemLabel>
+            {`${wrappedNativeTokenSymbol} ${t("balances.balance")}`}:
+          </ReviewListItemLabel>
+          <ReviewListItemValue>
+            {ownedWrappedNativeTokenAmount} {wrappedNativeTokenSymbol}
+          </ReviewListItemValue>
+        </ReviewListItem>
+
+        <ReviewListItem>
+          <ReviewListItemLabel>Amount of ETH to deposit:</ReviewListItemLabel>
+          <ReviewListItemValue>
+            {shouldDepositNativeTokenAmount} {nativeTokenSymbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>

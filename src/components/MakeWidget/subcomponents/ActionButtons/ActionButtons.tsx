@@ -82,8 +82,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       onActionButtonClick(ButtonActions.connectWallet);
     } else if (isNetworkUnsupported) {
       onActionButtonClick(ButtonActions.switchNetwork);
-    } else if (shouldDepositNativeToken) {
-      onActionButtonClick(ButtonActions.deposit);
     } else {
       onActionButtonClick(ButtonActions.review);
     }

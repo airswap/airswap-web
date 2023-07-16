@@ -30,7 +30,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
   const { t } = useTranslation();
 
   const {
-    nativeToken,
+    nativeTokenSymbol,
     wrappedNativeTokenSymbol,
     ownedWrappedNativeTokenAmount,
   } = useShouldDepositNativeTokenAmountInfo();
@@ -78,7 +78,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
           &nbsp;
           <Strong>{shouldDepositNativeTokenAmount}</Strong>
           &nbsp;
-          {nativeToken}.
+          {nativeTokenSymbol}.
         </InfoSubHeading>
       </Container>
     );

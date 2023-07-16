@@ -15,7 +15,7 @@ import getWethAddress from "../helpers/getWethAddress";
 import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
 
 interface DepositNativeTokenAmountInfo {
-  nativeToken?: string;
+  nativeTokenSymbol?: string;
   wrappedNativeTokenSymbol?: string;
   ownedWrappedNativeTokenAmount?: string;
 }
@@ -71,7 +71,7 @@ const useShouldDepositNativeTokenAmountInfo =
     }, [allTokens, chainId, balances]);
 
     return {
-      nativeToken: nativeTokenSymbol,
+      nativeTokenSymbol: nativeTokenSymbol,
       wrappedNativeTokenSymbol,
       ownedWrappedNativeTokenAmount: wrappedNativeTokenBalance,
     };
