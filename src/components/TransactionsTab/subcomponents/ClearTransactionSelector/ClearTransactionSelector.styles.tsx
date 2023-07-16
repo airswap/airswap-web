@@ -6,7 +6,7 @@ import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import Dropdown from "../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../Dropdown/Dropdown.styles";
 
-export const StyledTooltip = styled(Tooltip) <{
+export const StyledTooltip = styled(Tooltip)<{
   $isSelectorOpen: boolean;
   $isTooltip: boolean;
 }>`
@@ -32,8 +32,8 @@ export const SelectWrapper = styled.div<{ $isOpen: boolean }>`
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
-export const StyledDropdown = styled(Dropdown) <{
-  setIsSelectorOpen: (Dispatch<React.SetStateAction<boolean>>);
+export const StyledDropdown = styled(Dropdown)<{
+  setIsSelectorOpen: Dispatch<React.SetStateAction<boolean>>;
   isMenuOpen: boolean;
 }>`
   ${SelectButtonText}

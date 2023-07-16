@@ -107,7 +107,7 @@ export const SelectOptions = styled.div<{
     )
   );
 
-  display: ${({ isMenuOpen }) => isMenuOpen ? "flex" : "none"};
+  display: ${({ isMenuOpen }) => (isMenuOpen ? "flex" : "none")};
   flex-direction: column;
   position: absolute;
   width: calc(var(--dropdown-options-wrapper-padding) * 2 + 100%);

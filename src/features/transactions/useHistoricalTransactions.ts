@@ -13,7 +13,6 @@ import {
 import {
   setTransactions,
   SubmittedTransactionWithOrder,
-
 } from "./transactionsSlice";
 import useSwapLogs from "./useSwapLogs";
 import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
@@ -70,7 +69,7 @@ const useHistoricalTransactions = () => {
                   return (
                     order.nonce === args.nonce.toString() &&
                     order.signerWallet.toLowerCase() ===
-                    args.signerWallet.toLowerCase()
+                      args.signerWallet.toLowerCase()
                   );
                 }
               );
@@ -86,13 +85,13 @@ const useHistoricalTransactions = () => {
                 const senderToken = !isWrapped
                   ? args.senderToken
                   : args.senderToken.toLowerCase() === Weth9[chainId!]
-                    ? "0x0000000000000000000000000000000000000000"
-                    : args.senderToken;
+                  ? "0x0000000000000000000000000000000000000000"
+                  : args.senderToken;
                 const signerToken = !isWrapped
                   ? args.signerToken
                   : args.signerToken.toLowerCase() === Weth9[chainId!]
-                    ? "0x0000000000000000000000000000000000000000"
-                    : args.signerToken;
+                  ? "0x0000000000000000000000000000000000000000"
+                  : args.signerToken;
                 // We don't have a record of this transaction, so we need to create it.
                 // const newTransaction:
                 const blockTimestamp = (await swapLog.getBlock()).timestamp;
