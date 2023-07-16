@@ -71,13 +71,13 @@ const Toolbar: FC<ToolbarProps> = ({
         <ToolbarButton
           iconName="swap-horizontal"
           iconSize={1.25}
-          text={t("common.swapButton")}
+          text={t("common.rfq")}
           link={`/${AppRoutes.swap}`}
         />
         <ToolbarButton
           iconName="plus"
           iconSize={0.875}
-          text={t("common.makeButton")}
+          text={t("common.otc")}
           link={`/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`}
         />
         <ToolbarButton

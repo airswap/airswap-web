@@ -100,7 +100,7 @@ const OrderReview: FC<OrderReviewProps> = ({
       {signerToken && (
         <StyledOrderReviewToken
           amount={signerAmount}
-          label={t("common.sending")}
+          label={t("common.send")}
           tokenSymbol={justifiedSignerToken?.symbol || "?"}
           tokenUri={justifiedSignerToken?.logoURI}
         />
@@ -108,7 +108,7 @@ const OrderReview: FC<OrderReviewProps> = ({
       {senderToken && (
         <StyledOrderReviewToken
           amount={senderAmount}
-          label={t("common.receiving")}
+          label={t("common.receive")}
           tokenSymbol={justifiedSenderToken?.symbol || "?"}
           tokenUri={justifiedSenderToken?.logoURI}
         />
@@ -151,7 +151,7 @@ const OrderReview: FC<OrderReviewProps> = ({
         </ReviewListItem>
 
         <ReviewListItem>
-          <ReviewListItemLabel>{t("orders.totalSpending")}</ReviewListItemLabel>
+          <ReviewListItemLabel>{t("orders.total")}</ReviewListItemLabel>
           <ReviewListItemValue>
             {roundedSignerAmountPlusFee} {justifiedSignerToken?.symbol}
           </ReviewListItemValue>

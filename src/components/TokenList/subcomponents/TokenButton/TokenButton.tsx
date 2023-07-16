@@ -77,7 +77,7 @@ const TokenButton = ({
         <TokenNameContainer>
           <TokenName>{token.name}</TokenName>
           <StyledIcon chainId={token.chainId} address={token.address} />
-          <Tooltip>{t("common.verifyEtherscan")}</Tooltip>
+          <Tooltip>{t("common.verifyToken")}</Tooltip>
         </TokenNameContainer>
       </TokenSymbolAndName>
 

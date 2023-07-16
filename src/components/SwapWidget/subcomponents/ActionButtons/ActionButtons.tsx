@@ -25,7 +25,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.goBack]: "common.back",
   [ButtonActions.approve]: "orders.approve",
   [ButtonActions.requestQuotes]: "orders.continue",
-  [ButtonActions.takeQuote]: "orders.take",
+  [ButtonActions.takeQuote]: "orders.takeQuote",
   [ButtonActions.trackTransaction]: "orders.track",
 };
 
