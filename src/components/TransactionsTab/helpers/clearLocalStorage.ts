@@ -43,22 +43,22 @@ export const clearFailedTransactions = ({
   const filteredTransactions = transactions.filter(transaction => transaction.status !== 'declined');
   dispatch(setTransactions({ all: filteredTransactions }))
 
-  const localStorageKey = getTransactionsLocalStorageKey(address, chainId)
+  // const localStorageKey = getTransactionsLocalStorageKey(address, chainId)
 
-  for (let key in localStorage) {
-    if (key.includes(localStorageKey)) {
-      const keysWithTransactions = localStorage.getItem(key);
-      if (keysWithTransactions) {
-        const objectKeys = JSON.parse(keysWithTransactions);
-        const orders = objectKeys.all;
-        const filteredOrders = orders?.filter(
-          (order: SubmittedTransaction) => order.status !== "declined"
-        );
-        const updatedKeys = JSON.stringify({ all: filteredOrders });
-        localStorage?.setItem(key, updatedKeys);
-      }
-    }
-  }
+  // for (let key in localStorage) {
+  //   if (key.includes(localStorageKey)) {
+  //     const keysWithTransactions = localStorage.getItem(key);
+  //     if (keysWithTransactions) {
+  //       const objectKeys = JSON.parse(keysWithTransactions);
+  //       const orders = objectKeys.all;
+  //       const filteredOrders = orders?.filter(
+  //         (order: SubmittedTransaction) => order.status !== "declined"
+  //       );
+  //       const updatedKeys = JSON.stringify({ all: filteredOrders });
+  //       localStorage?.setItem(key, updatedKeys);
+  //     }
+  //   }
+  // }
 
 };
 

@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, useCallback, useEffect, useRef, useState } from "react";
+import React, { Dispatch, FC, useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
 import {
@@ -55,14 +55,6 @@ const Dropdown: FC<DropdownProps> = ({
     }
   }, []);
 
-  // const dropdownRef = useRef<HTMLDivElement | null>(null);
-
-  // useEffect(() => {
-  //   if (isMenuOpen && dropdownRef.current) {
-  //     dropdownRef.current.focus();
-  //   }
-  // }, [isMenuOpen]);
-
   const handleOptionClick = (newSelectedOption: SelectOption) => {
     onChange(newSelectedOption);
   };
@@ -103,8 +95,6 @@ const Dropdown: FC<DropdownProps> = ({
       <SelectOptions
         activeIndex={activeOptionIndex}
         isMenuOpen={isMenuOpen}
-      // ref={dropdownRef}
-      // tabIndex={-1}
       >
         {options.map((option, index) => (
           <Option
