@@ -12,7 +12,6 @@ export enum ButtonActions {
   restart,
   goBack,
   review,
-  deposit,
 }
 
 type ActionButtonsProps = {

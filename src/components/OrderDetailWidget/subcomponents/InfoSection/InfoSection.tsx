@@ -13,7 +13,6 @@ type ActionButtonsProps = {
   isMakerOfSwap: boolean;
   isNotConnected: boolean;
   orderChainId: number;
-  shouldDepositNativeTokenAmount?: string;
   className?: string;
 };
 
@@ -24,17 +23,8 @@ const InfoSection: FC<ActionButtonsProps> = ({
   isMakerOfSwap,
   isNotConnected,
   orderChainId,
-  shouldDepositNativeTokenAmount,
   className,
 }) => {
-  const { t } = useTranslation();
-
-  const {
-    nativeTokenSymbol,
-    wrappedNativeTokenSymbol,
-    ownedWrappedNativeTokenAmount,
-  } = useShouldDepositNativeTokenAmountInfo();
-
   const warningText = useMemo(() => {
     return getFullOrderERC20WarningTranslation(
       isDifferentChainId,
@@ -57,29 +47,6 @@ const InfoSection: FC<ActionButtonsProps> = ({
     return (
       <Container className={className}>
         <InfoSubHeading>{warningText}</InfoSubHeading>
-      </Container>
-    );
-  }
-
-  if (
-    shouldDepositNativeTokenAmount &&
-    !isMakerOfSwap &&
-    !isExpired &&
-    !isNotConnected &&
-    !isDifferentChainId
-  ) {
-    return (
-      <Container className={className}>
-        <InfoSubHeading>
-          {t("orders.shouldDepositNativeTokenAmount", {
-            wrappedNativeTokenSymbol,
-            ownedWrappedNativeTokenAmount,
-          })}
-          &nbsp;
-          <Strong>{shouldDepositNativeTokenAmount}</Strong>
-          &nbsp;
-          {nativeTokenSymbol}.
-        </InfoSubHeading>
       </Container>
     );
   }

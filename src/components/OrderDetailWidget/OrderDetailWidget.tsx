@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -39,18 +39,21 @@ import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
+import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useOrderTransactionLink from "../../hooks/useOrderTransactionLink";
 import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
 import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import { AppRoutes } from "../../routes";
 import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
+import ApproveReview from "../ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import WalletSignScreen from "../WalletSignScreen/WalletSignScreen";
+import WrapReview from "../WrapReview/WrapReview";
 import {
   Container,
   StyledActionButtons,
@@ -67,6 +70,11 @@ import OrderSubmittedInfo from "./subcomponents/OrderSubmittedInfo/OrderSubmitte
 
 interface OrderDetailWidgetProps {
   order: FullOrderERC20;
+}
+
+export enum OrderDetailWidgetState {
+  overview = "overview",
+  review = "review",
 }
 
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
@@ -88,6 +96,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
+  const [state, setState] = useState<OrderDetailWidgetState>(
+    OrderDetailWidgetState.overview
+  );
   const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
   const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
     order.senderToken
@@ -110,6 +121,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     signerAmount!
   );
   const hasApprovalPending = useApprovalPending(order.senderToken);
+  const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
   const hasInsufficientAllowance = !useSufficientAllowance(
     senderToken,
@@ -237,7 +249,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     await unwrapResult(result);
   };
 
+  const handleEditButtonClick = () => {
+    setState(OrderDetailWidgetState.overview);
+  };
+
   const handleActionButtonClick = async (action: ButtonActions) => {
+    console.log(action);
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
     }
@@ -252,20 +269,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       history.push({ pathname: `/${AppRoutes.make}` });
     }
 
-    if (action === ButtonActions.sign) {
-      takeOrder();
-    }
-
-    if (action === ButtonActions.approve) {
-      approveToken();
+    if (action === ButtonActions.review) {
+      setState(OrderDetailWidgetState.review);
     }
 
     if (action === ButtonActions.cancel) {
       history.push({ pathname: `/order/${params.compressedOrder}/cancel` });
-    }
-
-    if (action === ButtonActions.deposit) {
-      depositNativeToken();
     }
   };
 
@@ -273,6 +282,36 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     return (
       <Container>
         <WalletSignScreen />
+      </Container>
+    );
+  }
+
+  if (state === OrderDetailWidgetState.review && shouldDepositNativeToken) {
+    return (
+      <Container>
+        <WrapReview
+          isLoading={hasDepositPending}
+          amount={senderAmount || "0"}
+          shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
+          wrappedNativeToken={wrappedNativeToken}
+          onEditButtonClick={handleEditButtonClick}
+          onSignButtonClick={depositNativeToken}
+        />
+      </Container>
+    );
+  }
+
+  if (state === OrderDetailWidgetState.review && hasInsufficientAllowance) {
+    return (
+      <Container>
+        <ApproveReview
+          isLoading={hasApprovalPending}
+          amount={senderAmount || "0"}
+          token={senderToken}
+          wrappedNativeToken={wrappedNativeToken}
+          onEditButtonClick={handleEditButtonClick}
+          onSignButtonClick={approveToken}
+        />
       </Container>
     );
   }
@@ -326,7 +365,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
             isMakerOfSwap={userIsMakerOfSwap}
             isNotConnected={!active}
             orderChainId={orderChainId}
-            shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           />
         </>
       ) : (

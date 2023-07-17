@@ -27,7 +27,7 @@ import {
   StyledActionButtons,
   StyledIconButton,
   StyledWidgetHeader,
-} from "./OrderReview.styles";
+} from "./MakeOrderReview.styles";
 
 interface OrderReviewProps {
   chainId?: number;
@@ -45,7 +45,7 @@ interface OrderReviewProps {
   className?: string;
 }
 
-const OrderReview: FC<OrderReviewProps> = ({
+const MakeOrderReview: FC<OrderReviewProps> = ({
   chainId,
   expiry,
   orderType,
@@ -73,9 +73,6 @@ const OrderReview: FC<OrderReviewProps> = ({
   const justifiedSenderToken = isSenderTokenNativeToken
     ? wrappedNativeToken
     : senderToken;
-
-  const { ownedWrappedNativeTokenAmount, wrappedNativeTokenSymbol } =
-    useShouldDepositNativeTokenAmountInfo();
 
   const rate = useMemo(() => {
     return getTokenPairTranslation(
@@ -184,4 +181,4 @@ const OrderReview: FC<OrderReviewProps> = ({
   );
 };
 
-export default OrderReview;
+export default MakeOrderReview;

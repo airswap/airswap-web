@@ -14,8 +14,8 @@ import {
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../styled-components/ReviewListItem/ReviewListItem";
+import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
 import ProtocolFeeOverlay from "../MakeWidget/subcomponents/ProtocolFeeOverlay/ProtocolFeeOverlay";
-import { StyledIconButton } from "../OrderReview/OrderReview.styles";
 import OrderReviewToken from "../OrderReviewToken/OrderReviewToken";
 import { Title } from "../Typography/Typography";
 import {
@@ -25,8 +25,9 @@ import {
 } from "./ApproveReview.styles";
 
 interface ApproveReviewProps {
+  isLoading: boolean;
   amount: string;
-  amountPlusFee: string;
+  amountPlusFee?: string;
   token: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick: () => void;
@@ -35,6 +36,7 @@ interface ApproveReviewProps {
 }
 
 const ApproveReview: FC<ApproveReviewProps> = ({
+  isLoading,
   amount,
   amountPlusFee,
   token,
@@ -50,11 +52,19 @@ const ApproveReview: FC<ApproveReviewProps> = ({
   const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
 
   const roundedFeeAmount = useMemo(() => {
+    if (!amountPlusFee) {
+      return undefined;
+    }
+
     const feeAmount = new BigNumber(amountPlusFee).minus(amount).toString();
     return toRoundedNumberString(feeAmount, justifiedToken?.decimals);
   }, [amount, amountPlusFee, justifiedToken]);
 
   const roundedSignerAmountPlusFee = useMemo(() => {
+    if (!amountPlusFee) {
+      return undefined;
+    }
+
     return toRoundedNumberString(amountPlusFee, justifiedToken?.decimals);
   }, [amountPlusFee, justifiedToken]);
 
@@ -67,33 +77,36 @@ const ApproveReview: FC<ApproveReviewProps> = ({
       </StyledWidgetHeader>
       <OrderReviewToken
         amount={amount}
-        label={t("common.sending")}
+        label={t("common.send")}
         tokenSymbol={justifiedToken?.symbol || "?"}
         tokenUri={justifiedToken?.logoURI}
       />
       <ReviewList>
-        <ReviewListItem>
-          <ReviewListItemLabel>
-            {t("orders.protocolFee")}
-            <StyledIconButton
-              icon="information-circle-outline"
-              onClick={toggleShowFeeInfo}
-            />
-          </ReviewListItemLabel>
-          <ReviewListItemValue>
-            {roundedFeeAmount} {justifiedToken?.symbol}
-          </ReviewListItemValue>
-        </ReviewListItem>
+        {roundedFeeAmount && (
+          <ReviewListItem>
+            <ReviewListItemLabel>
+              {t("orders.protocolFee")}
+              <StyledIconButton
+                icon="information-circle-outline"
+                onClick={toggleShowFeeInfo}
+              />
+            </ReviewListItemLabel>
+            <ReviewListItemValue>
+              {roundedFeeAmount} {justifiedToken?.symbol}
+            </ReviewListItemValue>
+          </ReviewListItem>
+        )}
 
         <ReviewListItem>
           <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee} {justifiedToken?.symbol}
+            {roundedSignerAmountPlusFee || amount} {justifiedToken?.symbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
 
       <StyledActionButtons
+        isLoading={isLoading}
         onEditButtonClick={onEditButtonClick}
         onSignButtonClick={onSignButtonClick}
       />

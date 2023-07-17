@@ -10,9 +10,7 @@ export enum ButtonActions {
   reloadPage,
   restart,
   cancel,
-  sign,
-  approve,
-  deposit,
+  review,
 }
 
 type ActionButtonsProps = {
@@ -124,15 +122,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onActionButtonClick(ButtonActions.cancel);
     }
 
-    if (shouldDepositNativeToken) {
-      return onActionButtonClick(ButtonActions.deposit);
-    }
-
-    if (hasInsufficientAllowance) {
-      return onActionButtonClick(ButtonActions.approve);
-    }
-
-    return onActionButtonClick(ButtonActions.sign);
+    return onActionButtonClick(ButtonActions.review);
   };
 
   return (

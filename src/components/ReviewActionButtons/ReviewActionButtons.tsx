@@ -8,12 +8,14 @@ import {
 } from "./ReviewActionButtons.styles";
 
 interface ActionButtonsProps {
+  isLoading?: boolean;
   onEditButtonClick: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
 const ReviewActionButtons: FC<ActionButtonsProps> = ({
+  isLoading = false,
   onEditButtonClick,
   onSignButtonClick,
   className = "",
@@ -23,7 +25,11 @@ const ReviewActionButtons: FC<ActionButtonsProps> = ({
   return (
     <Container className={className}>
       <BackButton onClick={onEditButtonClick}>{t("common.edit")}</BackButton>
-      <SignButton intent="primary" onClick={onSignButtonClick}>
+      <SignButton
+        loading={isLoading}
+        intent="primary"
+        onClick={onSignButtonClick}
+      >
         {t("common.sign")}
       </SignButton>
     </Container>

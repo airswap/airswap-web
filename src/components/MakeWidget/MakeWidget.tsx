@@ -63,8 +63,7 @@ import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
 import ApproveReview from "../ApproveReview/ApproveReview";
 import { SelectOption } from "../Dropdown/Dropdown";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
-import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
-import OrderReview from "../OrderReview/OrderReview";
+import MakeOrderReview from "../MakeOrderReview/MakeOrderReview";
 import Overlay from "../Overlay/Overlay";
 import SwapInputs from "../SwapInputs/SwapInputs";
 import TokenList from "../TokenList/TokenList";
@@ -75,7 +74,6 @@ import {
   OrderTypeSelectorAndRateFieldWrapper,
   StyledActionButtons,
   StyledAddressInput,
-  StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
   StyledTooltip,
@@ -336,18 +334,6 @@ const MakeWidget: FC = () => {
     setState(MakeWidgetState.list);
   };
 
-  const handleSignButtonClick = () => {
-    createOrder();
-  };
-
-  const onWrapSignButtonClick = () => {
-    depositNativeToken();
-  };
-
-  const onApproveSignButtonClick = () => {
-    approveToken();
-  };
-
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -395,12 +381,13 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <WrapReview
+          isLoading={hasDepositPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
-          onSignButtonClick={onWrapSignButtonClick}
+          onSignButtonClick={depositNativeToken}
         />
       </Container>
     );
@@ -410,12 +397,13 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <ApproveReview
+          isLoading={hasApprovalPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
           token={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
-          onSignButtonClick={onApproveSignButtonClick}
+          onSignButtonClick={approveToken}
         />
       </Container>
     );
@@ -424,7 +412,7 @@ const MakeWidget: FC = () => {
   if (state === MakeWidgetState.review) {
     return (
       <Container>
-        <OrderReview
+        <MakeOrderReview
           chainId={chainId}
           expiry={expiry}
           orderType={orderType}
@@ -436,7 +424,7 @@ const MakeWidget: FC = () => {
           signerToken={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
-          onSignButtonClick={handleSignButtonClick}
+          onSignButtonClick={createOrder}
         />
       </Container>
     );
