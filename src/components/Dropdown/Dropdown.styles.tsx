@@ -22,12 +22,16 @@ const ButtonStyle = css`
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
   background: ${({ theme }) => theme.colors.black};
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const ItemBackground = styled.div`
   ${ButtonStyle};
 
-  transition: transform 0.3s ease-out;
+  transition: transform 0.2s cubic-bezier(0, 0.76, 0.44, 1.01);
   position: absolute;
   top: var(--dropdown-options-wrapper-padding);
   margin-top: -1px;
@@ -110,7 +114,8 @@ export const SelectOptions = styled.div<{ activeIndex: number }>`
   border-radius: 4px;
   margin-top: 1px;
   padding: var(--dropdown-options-wrapper-padding);
-  background: ${({ theme }) => theme.colors.darkGrey};
+  background: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
   box-shadow: ${({ theme }) => theme.shadows.selectOptionsShadow};
   z-index: 1;
 `;
@@ -120,7 +125,7 @@ const SelectStyle = css`
   ${ButtonStyle};
 
   border-top-right-radius: 1rem;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 1rem;
   padding-right: 0.5rem;
 
   &:focus + ${SelectOptions} {
@@ -171,4 +176,16 @@ export const Wrapper = styled.div`
       display: block;
     }
   }
+`;
+
+export const Sizer = styled.div`
+  ${ButtonStyle};
+
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  width: auto;
+  padding: 0;
+  pointer-events: none;
+  opacity: 0;
 `;

@@ -2,11 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
-import { wrappedTokenAddresses } from "@airswap/constants";
-import { Swap, Wrapper } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
-//@ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
+import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -14,9 +10,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as Weth9Contract from "../../assets/weth9.abi.json";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
-import WalletButton from "../../components/WalletButton/WalletButton";
 import {
   AbstractConnector,
   WalletProvider,
@@ -25,8 +19,10 @@ import SUPPORTED_WALLET_PROVIDERS from "../../constants/supportedWalletProviders
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import {
   StyledAirswapButton,
+  StyledChainSelector,
   StyledMenuButton,
   StyledSettingsButton,
+  StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
@@ -42,9 +38,11 @@ import {
 } from "../balances/balancesSlice";
 import {
   fetchAllTokens,
+  fetchProtocolFee,
   fetchUnkownTokens,
   selectActiveTokens,
   selectAllTokenInfo,
+  selectMetaDataReducer,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
@@ -84,6 +82,7 @@ export const Wallet: FC<WalletPropsType> = ({
   const { providerName } = useAppSelector(selectWallet);
   const transactions = useAppSelector(selectTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
+  const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
   const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Interface context
@@ -93,6 +92,7 @@ export const Wallet: FC<WalletPropsType> = ({
   // Local component state
   const [, setIsActivating] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
@@ -102,7 +102,7 @@ export const Wallet: FC<WalletPropsType> = ({
 
   useBeforeunload(() => {
     if (swapContract) {
-      swapContract.removeAllListeners("Swap");
+      swapContract.removeAllListeners("SwapERC20");
     }
     if (wrapContract) {
       wrapContract.removeAllListeners("Withdrawal");
@@ -126,7 +126,7 @@ export const Wallet: FC<WalletPropsType> = ({
       });
       return () => {
         if (swapContract) {
-          swapContract.removeAllListeners("Swap");
+          swapContract.removeAllListeners("SwapERC20");
         }
         if (wrapContract) {
           wrapContract.removeAllListeners("Withdrawal");
@@ -138,20 +138,8 @@ export const Wallet: FC<WalletPropsType> = ({
 
   useEffect(() => {
     if (chainId && account && library) {
-      const swapContract = new Contract(
-        swapDeploys[chainId],
-        SwapContract.abi,
-        //@ts-ignore
-        library
-      );
-      setSwapContract(swapContract);
-      const wrapContract = new Contract(
-        wrappedTokenAddresses[chainId],
-        Weth9Contract.abi,
-        //@ts-ignore
-        library
-      );
-      setWrapContract(wrapContract);
+      setSwapContract(SwapERC20.getContract(library, chainId));
+      setWrapContract(WETH.getContract(library, chainId));
     }
   }, [library, chainId, account]);
 
@@ -195,10 +183,12 @@ export const Wallet: FC<WalletPropsType> = ({
           address: account,
         })
       );
+      dispatch(fetchProtocolFee({ chainId, provider: library }));
       saveLastAccount(account, provider);
-
       Promise.all([
-        dispatch(fetchAllTokens()),
+        ...(!isFetchingAllTokens
+          ? [dispatch(fetchAllTokens(chainId) as any)]
+          : []),
         dispatch(
           fetchSupportedTokens({
             provider: library,
@@ -252,7 +242,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: Swap.getAddress(),
+        spenderAddress: SwapERC20.getAddress(chainId),
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
@@ -265,7 +255,7 @@ export const Wallet: FC<WalletPropsType> = ({
         },
         onApproval: (tokenAddress, spenderAddress, amount) => {
           const actionCreator =
-            spenderAddress === Wrapper.getAddress().toLowerCase()
+            spenderAddress === Wrapper.getAddress(chainId)
               ? setAllowanceWrapper
               : setAllowanceSwap;
           dispatch(
@@ -297,31 +287,40 @@ export const Wallet: FC<WalletPropsType> = ({
   return (
     <>
       <TopBar>
-        <StyledMenuButton
-          onClick={onMobileMenuButtonClick}
-          ariaLabel={t("common.select")}
-          icon="menu"
-          iconSize={1.5625}
+        <StyledAirswapButton
+          onClick={onAirswapButtonClick}
+          ariaLabel={t("common.AirSwap")}
+          icon="airswap"
+          iconSize={2}
+        />
+        {chainId && (
+          <StyledChainSelector
+            chainId={chainId}
+            chainSelectionOpen={chainsOpen}
+            transactionsTabOpen={transactionsTabIsOpen}
+            setChainSelectionOpen={setChainsOpen}
+          />
+        )}
+        <StyledWalletButton
+          isConnected={active}
+          isUnsupportedNetwork={
+            error && error instanceof UnsupportedChainIdError
+          }
+          address={account}
+          glow={!!pendingTransactions.length}
+          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
+          setShowWalletList={setShowWalletList}
         />
         <StyledSettingsButton
           settingsOpen={settingsOpen}
           setSettingsOpen={setSettingsOpen}
           transactionsTabOpen={transactionsTabIsOpen}
         />
-        <WalletButton
-          address={account}
-          isUnsupportedNetwork={
-            error && error instanceof UnsupportedChainIdError
-          }
-          glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
-          setShowWalletList={setShowWalletList}
-        />
-        <StyledAirswapButton
-          onClick={onAirswapButtonClick}
-          ariaLabel={t("common.AirSwap")}
-          icon="airswap"
-          iconSize={2}
+        <StyledMenuButton
+          onClick={onMobileMenuButtonClick}
+          ariaLabel={t("common.select")}
+          icon="menu"
+          iconSize={1.5625}
         />
       </TopBar>
       <TransactionsTab

@@ -1,3 +1,4 @@
+import { WETH } from "@airswap/libraries";
 import {
   AsyncThunk,
   combineReducers,
@@ -11,7 +12,11 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
-import { setWalletConnected } from "../wallet/walletSlice";
+import getWethAddress from "../../helpers/getWethAddress";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
 import {
   fetchAllowancesSwap,
   fetchAllowancesWrapper,
@@ -76,11 +81,19 @@ const getThunk: (
     async (params, { getState, dispatch }) => {
       try {
         const state = getState();
+        const { chainId, address } = state.wallet;
+
+        const wrappedNativeCurrencyAddress = chainId
+          ? getWethAddress(chainId)
+          : undefined;
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
+          ...state.metadata.tokens.custom,
+          ...(wrappedNativeCurrencyAddress
+            ? [wrappedNativeCurrencyAddress]
+            : []),
           nativeCurrencyAddress,
         ];
-        const { chainId, address } = state.wallet;
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
         );
@@ -162,9 +175,6 @@ const getSlice = (
     },
     extraReducers: (builder) => {
       builder
-        // Reset to initial state if a new account is connected.
-        .addCase(setWalletConnected, () => initialState)
-
         // Handle requesting balances
         .addCase(asyncThunk.pending, (state) => {
           state.status = "fetching";
@@ -194,7 +204,9 @@ const getSlice = (
         })
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
-        });
+        })
+        .addCase(setWalletConnected, () => initialState)
+        .addCase(setWalletDisconnected, () => initialState);
     },
   });
 };

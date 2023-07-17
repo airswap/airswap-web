@@ -6,6 +6,21 @@
 
 First, please give us a star! ⭐️
 
-This repo is a peer-to-peer web frontend for AirSwap. AirSwap is an open developer community focused on decentralized trading systems. Check [Design](https://github.com/airswap/airswap-web/projects/2) and [Development](https://github.com/airswap/airswap-web/projects/1) for project status and details. Designers and developers earn for contributing; check [CONTRIBUTING](CONTRIBUTING.md) and join the [Discord](https://chat.airswap.io/) server to learn more.
+### Stack
+
+- React
+- NodeJS v16
+- Yarn
+
+### Quick start
+
+```
+$ git clone https://github.com/<YOUR-GITHUB-USER>/airswap-web
+$ cd airswap-web
+$ yarn install
+$ yarn start
+```
+
+This repo is a peer-to-peer web frontend for AirSwap. AirSwap is an open developer community focused on decentralized trading systems. Designers and developers earn for contributing; check [CONTRIBUTING](CONTRIBUTING.md) and join the [Discord](https://chat.airswap.io/) server to learn more.
 
 Let's build stuff! 🛠️

@@ -1,18 +1,19 @@
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
-import { formatUnits } from "ethers/lib/utils";
 
 import {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../constants/nativeCurrency";
 import { BalancesState } from "../features/balances/balancesSlice";
+import stringToSignificantDecimals from "./stringToSignificantDecimals";
 
 const getTokenMaxAmount = (
   baseToken: string,
   balances: BalancesState,
-  baseTokenInfo: TokenInfo
+  baseTokenInfo: TokenInfo,
+  protocolFeePercentage?: number
 ): string | null => {
   if (!balances.values[baseToken] || balances.values[baseToken] === "0") {
     return null;
@@ -21,17 +22,23 @@ const getTokenMaxAmount = (
   const transactionFee =
     baseTokenInfo.address === nativeCurrencyAddress &&
     nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
-  const formattedAmount = formatUnits(
-    balances.values[baseToken] || "0",
-    baseTokenInfo.decimals
+
+  let totalAmount = new BigNumber(balances.values[baseToken] || "0").div(
+    10 ** baseTokenInfo.decimals
   );
 
-  if (transactionFee) {
-    const usable = new BigNumber(formattedAmount).minus(transactionFee);
-    return usable.gt(0) ? usable.toString() : "0";
+  if (protocolFeePercentage) {
+    totalAmount = totalAmount.minus(
+      totalAmount.multipliedBy(protocolFeePercentage)
+    );
   }
 
-  return formattedAmount;
+  if (transactionFee) {
+    const usable = totalAmount.minus(transactionFee);
+    totalAmount = usable.gt(0) ? usable : new BigNumber("0");
+  }
+
+  return stringToSignificantDecimals(totalAmount.toString(), 10);
 };
 
 export default getTokenMaxAmount;

@@ -3,7 +3,7 @@ import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
-import TransactionLink from "../TransactionLink/TransactionLink";
+import TransactionLink from "../../../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 
 export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;

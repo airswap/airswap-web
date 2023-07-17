@@ -22,7 +22,7 @@ export default function subscribeToSwapEvents(params: {
   const { swapContract, account, dispatch, chainId } = params;
 
   const _account = account.toLowerCase();
-  const wrapperAddress = Wrapper.getAddress(chainId).toLowerCase();
+  const wrapperAddress = Wrapper.getAddress(chainId);
 
   const onSwap = async (...argsAndEvent: any[]) => {
     // Listeners are called with all args first, then an event object.
@@ -46,15 +46,15 @@ export default function subscribeToSwapEvents(params: {
         hash: swapEvent.transactionHash,
         protocol:
           args.signerWallet.toLowerCase() === _account
-            ? "last-look"
-            : "request-for-quote",
+            ? "last-look-erc20"
+            : "request-for-quote-erc20",
       })
     );
 
     const transactions = store.getState().transactions;
 
     const matchingTransaction = transactions.all.find((tx) => {
-      if (tx.protocol === "last-look") {
+      if (tx.protocol === "last-look-erc20") {
         // Last look transactions don't have a nonce, but the
         const llTransaction = tx as LastLookTransaction;
         return (
@@ -77,5 +77,5 @@ export default function subscribeToSwapEvents(params: {
       );
     }
   };
-  swapContract.on("Swap", onSwap);
+  swapContract.on("SwapERC20", onSwap);
 }

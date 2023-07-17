@@ -1,30 +1,38 @@
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
 
 export type WalletButtonProps = {
-  /**
-   * Address of currenlty connected wallet, if any
-   */
-  address?: string | null;
-  setTransactionsTabOpen: (x: boolean) => void;
+  isConnected: boolean;
   isUnsupportedNetwork?: boolean;
+  tokens?: any[];
+  transactions?: any[];
+  chainId?: number;
+  address?: string | null;
   glow?: boolean;
   setShowWalletList: (x: boolean) => void;
+  setTransactionsTabOpen: (x: boolean) => void;
+  onConnectWalletClicked?: () => void;
+  onDisconnectWalletClicked?: () => void;
+  className?: string;
 };
 
 export const WalletButton = ({
-  address,
-  setTransactionsTabOpen,
+  isConnected,
   isUnsupportedNetwork = false,
-  setShowWalletList,
+  address,
   glow,
+  setShowWalletList,
+  setTransactionsTabOpen,
+  className,
 }: WalletButtonProps) => {
   return (
     <WalletAddress
+      isConnected={isConnected}
       isUnsupportedNetwork={isUnsupportedNetwork}
       address={address || null}
-      setTransactionsTabOpen={setTransactionsTabOpen}
-      setShowWalletList={setShowWalletList}
       glow={glow}
+      setShowWalletList={setShowWalletList}
+      setTransactionsTabOpen={setTransactionsTabOpen}
+      className={className}
     />
   );
 };

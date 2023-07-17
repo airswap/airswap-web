@@ -1,5 +1,5 @@
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
-import * as WrapperContract from "@airswap/wrapper/build/contracts/Wrapper.sol/Wrapper.json";
+import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
+import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
 import { Interface } from "@ethersproject/abi";
 import { Web3Provider } from "@ethersproject/providers";
 import { Action, Dispatch } from "@reduxjs/toolkit";
@@ -7,15 +7,17 @@ import { Action, Dispatch } from "@reduxjs/toolkit";
 import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
 import { mineTransaction, revertTransaction } from "./transactionActions";
-import { SubmittedTransaction } from "./transactionsSlice";
+import {
+  SubmittedTransaction,
+  SubmittedTransactionWithOrder,
+} from "./transactionsSlice";
 
-const wrapperInterface = new Interface(WrapperContract.abi);
-const swapInterface = new Interface(SwapContract.abi);
+const wrapperInterface = new Interface(Wrapper__factory.abi);
+const swapInterface = new Interface(SwapERC20__factory.abi);
 
 // Event from interface for reference.
 // event Swap(
 //   uint256 indexed nonce,
-//   uint256 timestamp,
 //   address indexed signerWallet,
 //   address signerToken,
 //   uint256 signerAmount,
@@ -75,7 +77,7 @@ const getSwapArgsFromWrappedSwapForLog: (
   for (let i = 0; i < receipt.logs.length; i++) {
     try {
       const parsedLog = swapInterface.parseLog(receipt.logs[i]);
-      if (parsedLog.name === "Swap") {
+      if (parsedLog.name === "SwapERC20") {
         return parsedLog.args as unknown as SwapEventArgs;
       }
     } catch (e) {
@@ -92,7 +94,7 @@ const getSwapArgsFromWrappedSwapForLog: (
 /**
  * if pending, call getTransaction to see if it was a success/failure/pending
  * update accordingly. if pending: wait() and poll at a sensible interval.
- * this is only good for request-for-quote orders
+ * this is only good for request-for-quote-erc20 orders
  * @param transactionInState
  * @param walletHasChanged
  * @param dispatch
@@ -176,8 +178,15 @@ async function checkPendingTransactionState(
   }
 }
 
+const isTransactionWithOrder = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedTransactionWithOrder => {
+  return "order" in transaction;
+};
+
 export {
   getSenderWalletForWrapperSwapLog,
   getSwapArgsFromWrappedSwapForLog,
   checkPendingTransactionState,
+  isTransactionWithOrder,
 };

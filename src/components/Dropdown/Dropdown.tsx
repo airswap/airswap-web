@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
-import { Sizer } from "../MakeWidget/subcomponents/ExpirySelector/ExpirySelector.styles";
 import {
   Option,
   Wrapper,
@@ -9,6 +8,7 @@ import {
   Select,
   ItemBackground,
   SelectButtonText,
+  Sizer,
   NativeSelect,
   NativeSelectWrapper,
   NativeSelectIcon,
@@ -27,7 +27,7 @@ export type DropdownProps = {
   className?: string;
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown: FC<DropdownProps> = ({
   selectedOption,
   options,
   onChange,
@@ -120,9 +120,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
       </NativeSelectWrapper>
       <Sizer ref={sizerRef}>
         {options.map((option) => (
-          <SelectButtonText>{option.label}</SelectButtonText>
+          <SelectButtonText key={option.value}>{option.label}</SelectButtonText>
         ))}
       </Sizer>
     </Wrapper>
   );
 };
+
+export default Dropdown;

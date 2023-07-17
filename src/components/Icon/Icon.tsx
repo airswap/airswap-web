@@ -11,12 +11,15 @@ import {
   IconArrowRight,
   IconChevronUpDown,
   IconBars,
+  IconBin,
+  IconCampaign,
   IconCheck,
   IconChevronDown,
   IconChevronRight,
-  IconCampaign,
+  IconClose,
   IconCode,
   IconCopy,
+  IconCopy2,
   IconContactSupport,
   IconDarkModeSwitch,
   IconDeny,
@@ -38,8 +41,8 @@ import {
   IconTwitter,
   IconVote,
   IconX,
+  IconCloseCircleOutline,
 } from "./icons";
-import IconClose from "./icons/IconClose";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -58,6 +61,7 @@ export const icons: IconSet = {
   "arrow-right": IconArrowRight,
   "arrow-left": IconArrowLeft,
   bars: IconBars,
+  bin: IconBin,
   "button-x": IconX,
   campaign: IconCampaign,
   check: IconCheck,
@@ -65,8 +69,10 @@ export const icons: IconSet = {
   "chevron-right": IconChevronRight,
   "chevron-up-down": IconChevronUpDown,
   close: IconClose,
+  "close-circle-outline": IconCloseCircleOutline,
   code: IconCode,
   copy: IconCopy,
+  copy2: IconCopy2,
   "contact-support": IconContactSupport,
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,

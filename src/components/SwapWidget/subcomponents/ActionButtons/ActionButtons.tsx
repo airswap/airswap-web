@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import { MainButton, BackButton } from "./ActionButtons.styles";
 
@@ -21,11 +21,11 @@ const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.connectWallet]: "wallet.connectWallet",
   [ButtonActions.switchNetwork]: "wallet.switchNetwork",
   [ButtonActions.reloadPage]: "common.reloadPage",
-  [ButtonActions.restart]: "orders.newSwap",
+  [ButtonActions.restart]: "orders.makeNewSwap",
   [ButtonActions.goBack]: "common.back",
   [ButtonActions.approve]: "orders.approve",
   [ButtonActions.requestQuotes]: "orders.continue",
-  [ButtonActions.takeQuote]: "orders.take",
+  [ButtonActions.takeQuote]: "orders.takeQuote",
   [ButtonActions.trackTransaction]: "orders.track",
 };
 
@@ -116,7 +116,7 @@ const ActionButtons: FC<{
     else if (!baseTokenInfo || !quoteTokenInfo)
       mainButtonText = t("orders.chooseToken");
     else if (!hasSufficientBalance)
-      mainButtonText = t("orders.insufficentBalance", {
+      mainButtonText = t("orders.insufficientBalance", {
         symbol: baseTokenInfo.symbol,
       });
   } else {

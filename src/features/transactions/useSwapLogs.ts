@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 
-import { Wrapper } from "@airswap/libraries";
-import * as SwapContract from "@airswap/swap/build/contracts/Swap.sol/Swap.json";
-//@ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
-import * as WrapperContract from "@airswap/wrapper/build/contracts/Wrapper.sol/Wrapper.json";
+import { SwapERC20, Wrapper } from "@airswap/libraries";
 import { Contract } from "@ethersproject/contracts";
 import { useAsync } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
@@ -18,9 +14,8 @@ const useSwapLogs = () => {
       wrapperContract: Contract,
       account: string
     ) => {
-      const signerSwapFilter = swapContract.filters.Swap(
+      const signerSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
-        null, // timestamp,
         account, // signerWallet
         null, // signerToken
         null, // signerAmount,
@@ -30,9 +25,8 @@ const useSwapLogs = () => {
         null // senderAmount
       );
 
-      const senderSwapFilter = swapContract.filters.Swap(
+      const senderSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
-        null, // timestamp,
         null, // signerWallet
         null, // signerToken
         null, // signerAmount,cd
@@ -73,17 +67,8 @@ const useSwapLogs = () => {
   useEffect(() => {
     if (!chainId || !account || !provider) return;
 
-    const swapContract = new Contract(
-      swapDeploys[chainId],
-      SwapContract.abi,
-      provider
-    );
-
-    const wrapperContract = new Contract(
-      Wrapper.getAddress(chainId),
-      WrapperContract.abi,
-      provider
-    );
+    const swapContract = SwapERC20.getContract(provider, chainId);
+    const wrapperContract = Wrapper.getContract(provider, chainId);
     actions.execute(swapContract, wrapperContract, account);
   }, [chainId, account, provider, actions]);
 

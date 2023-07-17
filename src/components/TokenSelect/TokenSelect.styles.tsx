@@ -5,12 +5,7 @@ import styled, { css, keyframes } from "styled-components/macro";
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { BorderlessButtonStyle } from "../../style/mixins";
 import TokenLogo from "../TokenLogo/TokenLogo";
-import {
-  SelectItem,
-  FormLabel,
-  FormInput,
-  Metadata,
-} from "../Typography/Typography";
+import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
 
 const fadeOut = keyframes`
   from {
@@ -77,6 +72,7 @@ export const MaxButtonStyle = css`
   bottom: 1px;
   align-self: center;
   border-radius: 0.125rem;
+  font-family: Verdana, sans-serif;
   font-weight: 600;
   font-size: 0.75rem;
   line-height: 1;
@@ -120,12 +116,16 @@ export const AmountInput = styled(FormInput)<{
   ${quoteTransition};
 
   padding-right: 0;
-  margin-top: ${(props) => (props.hasSubtext ? "-0.75rem" : 0)};
+  margin-top: ${(props) => (props.hasSubtext ? "-0.375rem" : 0)};
   cursor: ${(props) => (props.disabled ? "inherit" : "text")};
   text-align: right;
 
   &:focus {
     outline: 0;
+
+    &::placeholder {
+      color: transparent;
+    }
   }
 `;
 
@@ -159,6 +159,7 @@ export const StyledSelectItem = styled(SelectItem)`
   display: flex;
   flex-direction: row;
   align-items: center;
+  text-align: left;
   line-height: 1;
   gap: 0.375rem;
   color: ${(props) =>
@@ -171,6 +172,16 @@ export const StyledLabel = styled(FormLabel)`
   ${fontTransition};
   text-align: left;
   text-transform: uppercase;
+`;
+
+export const SubText = styled.div`
+  ${quoteTransition};
+
+  line-height: 0.75;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
 export const TokenSelectContainer = styled.div<{
@@ -191,7 +202,7 @@ export const TokenSelectContainer = styled.div<{
       ? props.theme.colors.darkGrey
       : props.theme.colors.primaryLight};
   overflow: hidden;
-  
+
   &:first-of-type {
     margin-bottom: 0.5rem;
   }
@@ -210,16 +221,9 @@ export const TokenSelectContainer = styled.div<{
       props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
 
-  ${AmountInput} {
-    transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
-  }
-
-  ${MaxButton} {
-    transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
-  }
-
+  ${SubText},
+  ${AmountInput},
+  ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
       props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
@@ -237,7 +241,6 @@ export const TokenSelectContainer = styled.div<{
   ${StyledSelectItem} {
     font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
   }
-}
 `;
 
 const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
@@ -254,13 +257,14 @@ export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   ${fadeOutWhenInvisible}
 `;
 
-export const AmountSubtext = styled(Metadata)`
-  margin-top: -0.25rem;
-`;
-
 export const PlaceholderContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 50%;
+
+  &:first-child ${PlaceHolderBar} {
+    transform: scaleX(-100%);
+    height: 0.875rem;
+  }
 `;

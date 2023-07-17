@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import writeAddressToClipboard from "../../../../helpers/writeAddressToClipboard";
+import writeTextToClipboard from "../../../../helpers/writeTextToClipboard";
 import selectElement from "../../helpers/selectElement";
 import {
   StyledIcon,
@@ -31,7 +31,7 @@ const CopyAdressButton: FC<CopyAdressButtonProps> = ({ address }) => {
 
   const handleClick = async () => {
     setShowAddress(true);
-    setWriteAddressToClipboardSuccess(await writeAddressToClipboard(address));
+    setWriteAddressToClipboardSuccess(await writeTextToClipboard(address));
   };
 
   if (showAddress) {

@@ -53,7 +53,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   };
 
   const handleAirswapButtonClick = () => {
-    history.push(appRouteParams.justifiedBaseUrl);
+    history.push("/");
   };
 
   const handleCloseMobileToolbarButtonClick = () => {
@@ -102,6 +102,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           onAirswapButtonClick={handleAirswapButtonClick}
           onMobileMenuButtonClick={handleOpenMobileToolbarButtonClick}
         />
+
         <WidgetFrame
           isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}

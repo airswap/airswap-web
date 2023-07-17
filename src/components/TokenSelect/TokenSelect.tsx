@@ -1,7 +1,7 @@
-import { FC, MouseEventHandler, FormEventHandler } from "react";
+import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import {
   AmountInput,
@@ -20,7 +20,9 @@ import {
   MaxButton,
   InputAndMaxButtonWrapper,
   InfoLabel,
+  SubText,
 } from "./TokenSelect.styles";
+import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
@@ -69,9 +71,13 @@ export type TokenSelectProps = {
    */
   onAmountChange?: FormEventHandler<HTMLInputElement>;
   /**
-   * Used for showing loading state
+   * Used for showing requesting amount state
    */
-  isLoading?: boolean;
+  isRequestingAmount?: boolean;
+  /**
+   * Used for showing requesting token state
+   */
+  isRequestingToken?: boolean;
   /**
    * Show max button
    */
@@ -84,6 +90,8 @@ export type TokenSelectProps = {
    * Used for showing quote style
    */
   isQuote?: boolean;
+  hasError?: boolean;
+  subText?: string;
 };
 
 const TokenSelect: FC<TokenSelectProps> = ({
@@ -91,40 +99,53 @@ const TokenSelect: FC<TokenSelectProps> = ({
   includeAmountInput,
   label,
   selectedToken,
+  subText,
   onChangeTokenClicked,
   onMaxClicked,
   onInfoLabelMouseEnter,
   onInfoLabelMouseLeave,
   amount,
   onAmountChange,
-  isLoading = false,
+  isRequestingAmount = false,
+  isRequestingToken = false,
   isQuote = false,
+  hasError = false,
   showMaxButton = false,
   showMaxInfoButton = false,
 }) => {
   const { t } = useTranslation();
 
+  const tokenText = useMemo(() => {
+    return getTokenText(selectedToken, readOnly);
+  }, [selectedToken, readOnly]);
+
   return (
-    <TokenSelectContainer $isQuote={isQuote} $isLoading={isLoading}>
-      <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-        <TokenLogoLeft size="large" tokenInfo={selectedToken} />
-        <StyledSelector>
+    <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>
+      {!isRequestingToken ? (
+        <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
+          <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
+          <StyledSelector>
+            <StyledLabel>{label}</StyledLabel>
+            <StyledSelectItem>
+              <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
+              <StyledDownArrow $invisible={readOnly} />
+            </StyledSelectItem>
+          </StyledSelector>
+        </ContainingButton>
+      ) : (
+        <PlaceholderContainer>
           <StyledLabel>{label}</StyledLabel>
-          <StyledSelectItem>
-            <StyledSelectButtonContent>
-              {selectedToken ? selectedToken.symbol : t("common.select")}
-            </StyledSelectButtonContent>
-            <StyledDownArrow $invisible={readOnly} />
-          </StyledSelectItem>
-        </StyledSelector>
-      </ContainingButton>
+          <PlaceHolderBar />
+        </PlaceholderContainer>
+      )}
       <TokenSelectFocusBorder position="left" />
-      {includeAmountInput ? (
+      {includeAmountInput && selectedToken && !isRequestingAmount ? (
         <InputAndMaxButtonWrapper>
           <AmountAndDetailsContainer>
             <AmountInput
               // @ts-ignore
               inputMode="decimal"
+              hasSubtext={!!subText}
               tabIndex={readOnly ? -1 : 0}
               autoComplete="off"
               pattern="^[0-9]*[.,]?[0-9]*$"
@@ -136,7 +157,10 @@ const TokenSelect: FC<TokenSelectProps> = ({
               onChange={onAmountChange}
               placeholder="0.00"
             />
-            <TokenSelectFocusBorder position="right" />
+            {!readOnly && (
+              <TokenSelectFocusBorder position="right" hasError={hasError} />
+            )}
+            {subText && <SubText>{subText}</SubText>}
           </AmountAndDetailsContainer>
           {onMaxClicked && showMaxButton && !readOnly && (
             <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
@@ -149,7 +173,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               i
             </InfoLabel>
           )}
-          <TokenLogoRight size="medium" tokenInfo={selectedToken} />
+          <TokenLogoRight logoURI={selectedToken?.logoURI} size="medium" />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

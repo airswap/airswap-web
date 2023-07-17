@@ -7,6 +7,7 @@ export const SUPPORTED_LOCALES = [
   "pt",
   "tr",
   "ro",
+  "ukr",
   "zh-tr",
 ] as const;
 
@@ -22,6 +23,7 @@ export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   fr: "Français",
   tr: "Türkçe",
   ro: "Limba română",
+  ukr: "українська",
   "zh-tr": "中文繁體",
 };
 

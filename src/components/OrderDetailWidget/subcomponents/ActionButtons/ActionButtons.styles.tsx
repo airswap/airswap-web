@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Button from "../../../Button/Button";
 
 export const Container = styled.div`
@@ -10,9 +11,11 @@ export const Container = styled.div`
 `;
 
 export const BackButton = styled(Button)`
+  ${InputOrButtonBorderStyle};
+
   width: calc(50% - 0.5rem);
 `;
 
-export const SignButton = styled(Button)`
-  width: calc(50% - 0.5rem);
+export const SignButton = styled(Button)<{ isFilled: boolean }>`
+  ${({ isFilled }) => (isFilled ? `` : `width: calc(50% - 0.5rem);`)};
 `;

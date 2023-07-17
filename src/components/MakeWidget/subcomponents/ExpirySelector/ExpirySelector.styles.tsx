@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
-import { Dropdown } from "../../../Dropdown/Dropdown";
+import Dropdown from "../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../Dropdown/Dropdown.styles";
 
 export const SelectorStyle = css`
@@ -10,6 +10,10 @@ export const SelectorStyle = css`
   font-size: 0.75rem;
   font-weight: 700;
   margin-right: -1px;
+
+  @supports (-moz-appearance: none) {
+    padding-top: 0.125rem;
+  }
 `;
 
 export const Wrapper = styled.div`
@@ -56,10 +60,4 @@ export const StyledDropdown = styled(Dropdown)`
   ${SelectButtonText} {
     max-width: 7rem;
   }
-`;
-
-export const Sizer = styled.div`
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
 `;

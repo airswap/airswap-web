@@ -1,5 +1,6 @@
-import { fetchTokens } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/typescript";
+import { getKnownTokens } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
 import {
   createAsyncThunk,
   createSelector,
@@ -7,7 +8,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { providers } from "ethers";
+import * as ethers from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registrySlice";
@@ -17,44 +18,53 @@ import {
 } from "../wallet/walletSlice";
 import {
   getActiveTokensFromLocalStorage,
+  getAllTokensFromLocalStorage,
+  getCustomTokensFromLocalStorage,
+  getProtocolFee,
   getUnknownTokens,
 } from "./metadataApi";
 
-export interface MetadataState {
-  tokens: {
-    all: {
-      [address: string]: TokenInfo;
-    };
-    active: string[];
+export interface MetadataTokens {
+  all: {
+    [address: string]: TokenInfo;
   };
+  active: string[];
+  custom: string[];
+}
+
+export interface MetadataState {
+  isFetchingAllTokens: boolean;
+  protocolFee: number;
+  tokens: MetadataTokens;
 }
 
 const initialState: MetadataState = {
+  isFetchingAllTokens: false,
+  protocolFee: 7,
   tokens: {
     all: {},
     active: [],
+    custom: [],
   },
 };
 
 export const fetchAllTokens = createAsyncThunk<
   TokenInfo[], // Return type
-  void, // First argument
+  number, // First argument
   {
     // thunkApi
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/fetchTokens", async (_, thunkApi) => {
-  const { wallet } = thunkApi.getState();
-  if (!wallet.connected) return [];
-  return (await fetchTokens(wallet.chainId!)).tokens;
+>("metadata/getKnownTokens", async (chainId, thunkApi) => {
+  return (await getKnownTokens(chainId)).tokens;
 });
 
 export const fetchUnkownTokens = createAsyncThunk<
   TokenInfo[], // Return type
   {
     // First argument
-    provider: providers.Provider;
+    provider: ethers.providers.BaseProvider;
   },
   {
     // thunkApi
@@ -72,6 +82,21 @@ export const fetchUnkownTokens = createAsyncThunk<
   );
 });
 
+export const fetchProtocolFee = createAsyncThunk<
+  number,
+  {
+    provider: Web3Provider;
+    chainId: number;
+  }
+>("metadata/fetchProtocolFee", async ({ provider, chainId }) => {
+  try {
+    return getProtocolFee(chainId, provider);
+  } catch {
+    console.error("Error getting protocol fee from contract, defaulting to 7.");
+    return 7;
+  }
+});
+
 export const metadataSlice = createSlice({
   name: "metadata",
   initialState,
@@ -82,35 +107,81 @@ export const metadataSlice = createSlice({
         state.tokens.active.push(lowerCasedToken);
       }
     },
-    removeActiveToken: (state, action: PayloadAction<string>) => {
-      if (state.tokens.active.includes(action.payload)) {
-        state.tokens.active = state.tokens.active.filter(
-          (tokenAddress) => tokenAddress !== action.payload
-        );
+    addCustomToken: (state, action: PayloadAction<string>) => {
+      const lowerCasedToken = action.payload.trim().toLowerCase();
+      if (!state.tokens.custom.includes(lowerCasedToken)) {
+        state.tokens.custom.push(lowerCasedToken);
       }
     },
+    addTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
+      state.tokens.all[action.payload.address] = action.payload;
+    },
+    removeActiveToken: (state, action: PayloadAction<string>) => {
+      state.tokens.active = state.tokens.active.filter(
+        (tokenAddress) => tokenAddress !== action.payload
+      );
+    },
+    removeCustomToken: (state, action: PayloadAction<string>) => {
+      state.tokens.custom = state.tokens.active.filter(
+        (tokenAddress) => tokenAddress !== action.payload
+      );
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: async (builder) => {
     builder
       .addCase(fetchAllTokens.pending, (state) => {
-        // TODO: consider whether we need to put a pending state to prevent dupes
+        return {
+          ...state,
+          isFetchingAllTokens: true,
+        };
       })
       .addCase(fetchAllTokens.fulfilled, (state, action) => {
         const { payload: tokenInfo } = action;
-        state.tokens.all = tokenInfo.reduce(
-          (allTokens: { [address: string]: TokenInfo }, token) => {
-            const { address } = token;
+        const newAllTokens = tokenInfo.reduce(
+          (allTokens: MetadataTokens["all"], token) => {
+            const address = token.address.toLowerCase();
             if (!allTokens[address]) {
-              allTokens[address] = { ...token };
+              allTokens[address] = {
+                ...token,
+                address: token.address.toLowerCase(),
+              };
             }
             return allTokens;
           },
           {}
         );
+
+        const stateAllTokens = Object.keys(state.tokens.all).reduce(
+          (allTokens: MetadataTokens["all"], token) => {
+            return {
+              ...allTokens,
+              [token.toLowerCase()]: state.tokens.all[token],
+            };
+          },
+          {}
+        );
+
+        const tokens = {
+          ...state.tokens,
+          all: {
+            ...stateAllTokens,
+            ...newAllTokens,
+          },
+        };
+
+        return {
+          ...state,
+          isFetchingAllTokens: false,
+          tokens,
+        };
       })
       .addCase(fetchAllTokens.rejected, (state) => {
         // TODO: handle failure?
         // perhaps rejected state can be for when errors.length === known.length ?
+        return {
+          ...state,
+          isFetchingAllTokens: false,
+        };
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
         if (!state.tokens.active?.length)
@@ -121,23 +192,36 @@ export const metadataSlice = createSlice({
           state.tokens.all[token.address] = token;
         });
       })
+      .addCase(fetchProtocolFee.fulfilled, (state, action) => {
+        state.protocolFee = action.payload;
+      })
       .addCase(setWalletConnected, (state, action) => {
         const { chainId, address } = action.payload;
         state.tokens.active =
           getActiveTokensFromLocalStorage(address, chainId) || [];
+        state.tokens.custom =
+          getCustomTokensFromLocalStorage(address, chainId) || [];
+        state.tokens.all = getAllTokensFromLocalStorage(chainId);
       })
-      .addCase(setWalletDisconnected, (state) => {
-        state.tokens.active = [];
-      });
+      .addCase(setWalletDisconnected, () => initialState);
   },
 });
 
-export const { addActiveToken, removeActiveToken } = metadataSlice.actions;
+export const {
+  addActiveToken,
+  addCustomToken,
+  addTokenInfo,
+  removeActiveToken,
+  removeCustomToken,
+} = metadataSlice.actions;
 
 const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
-export const selectAllTokenInfo = (state: RootState) =>
-  Object.values(state.metadata.tokens.all);
+export const selectCustomTokenAddresses = (state: RootState) =>
+  state.metadata.tokens.custom;
+export const selectAllTokenInfo = (state: RootState) => [
+  ...Object.values(state.metadata.tokens.all),
+];
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
@@ -146,5 +230,18 @@ export const selectActiveTokens = createSelector(
     );
   }
 );
+export const selectActiveTokensWithoutCustomTokens = createSelector(
+  [selectActiveTokenAddresses, selectCustomTokenAddresses, selectAllTokenInfo],
+  (activeTokenAddresses, customTokenAddresses, allTokenInfo) => {
+    return Object.values(allTokenInfo).filter(
+      (tokenInfo) =>
+        activeTokenAddresses.includes(tokenInfo.address) &&
+        !customTokenAddresses.includes(tokenInfo.address)
+    );
+  }
+);
+export const selectMetaDataReducer = (state: RootState) => state.metadata;
+export const selectProtocolFee = (state: RootState) =>
+  state.metadata.protocolFee;
 
 export default metadataSlice.reducer;

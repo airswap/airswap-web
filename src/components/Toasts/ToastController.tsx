@@ -1,7 +1,9 @@
 import toast from "react-hot-toast";
 
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/typescript";
+import { FullOrderERC20, TokenInfo } from "@airswap/types";
+
+import i18n from "i18next";
 
 import {
   SubmittedApproval,
@@ -10,7 +12,10 @@ import {
   TransactionType,
 } from "../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import ConfirmationToast from "./ConfirmationToast";
+import CopyToast from "./CopyToast";
 import ErrorToast from "./ErrorToast";
+import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
@@ -20,7 +25,7 @@ export const notifyTransaction = (
   error: boolean,
   chainId?: number
 ) => {
-  let token: TokenInfo;
+  let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
   if (
     (type === "Order" || type === "Deposit" || type === "Withdraw") &&
@@ -51,8 +56,8 @@ export const notifyTransaction = (
             onClose={() => toast.dismiss(t.id)}
             type={type}
             transaction={transaction}
-            senderToken={senderToken}
-            signerToken={signerToken}
+            senderToken={senderToken || undefined}
+            signerToken={signerToken || undefined}
             error={error}
           />
         ),
@@ -70,7 +75,7 @@ export const notifyTransaction = (
           onClose={() => toast.dismiss(t.id)}
           type={type}
           transaction={transaction}
-          approvalToken={token}
+          approvalToken={token || undefined}
           error={error}
         />
       ),
@@ -94,4 +99,49 @@ export const notifyError = (props: { heading: string; cta: string }) => {
       duration: 3000,
     }
   );
+};
+
+export const notifyConfirmation = (props: { heading: string; cta: string }) => {
+  toast(
+    (t) => (
+      <ConfirmationToast
+        onClose={() => toast.dismiss(t.id)}
+        heading={props.heading}
+        cta={props.cta}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyOrderCreated = (order: FullOrderERC20) => {
+  toast(
+    (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyCopySuccess = () => {
+  toast(
+    (t) => (
+      <CopyToast
+        onClose={() => toast.dismiss(t.id)}
+        heading={i18n.t("toast.copiedToClipboard")}
+      />
+    ),
+    {
+      duration: 1000,
+    }
+  );
+};
+
+export const notifyRejectedByUserError = () => {
+  notifyError({
+    heading: i18n.t("orders.swapFailed"),
+    cta: i18n.t("orders.swapRejectedByUser"),
+  });
 };

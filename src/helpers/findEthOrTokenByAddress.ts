@@ -1,5 +1,5 @@
 import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@uniswap/token-lists";
+import { TokenInfo } from "@airswap/types";
 
 import nativeCurrency, {
   nativeCurrencyAddress,
@@ -9,8 +9,8 @@ export default function findEthOrTokenByAddress(
   tokenAddress: string,
   activeTokens: TokenInfo[],
   chainId: number
-) {
+): TokenInfo | null {
   return tokenAddress === nativeCurrencyAddress
-    ? nativeCurrency[chainId!]
+    ? nativeCurrency[chainId]
     : findTokenByAddress(tokenAddress, activeTokens);
 }

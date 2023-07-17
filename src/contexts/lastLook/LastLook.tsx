@@ -1,19 +1,17 @@
 import { createContext, FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Server } from "@airswap/libraries";
-// TODO: type defs for this.
-// @ts-ignore
-import * as swapDeploys from "@airswap/swap/deploys.js";
-import { Order, Pricing } from "@airswap/typescript";
-import { createOrder, createSwapSignature } from "@airswap/utils";
+import { Server, SwapERC20 } from "@airswap/libraries";
+import { OrderERC20, Pricing } from "@airswap/types";
+import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
+import { selectProtocolFee } from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
 import {
@@ -31,12 +29,12 @@ export const LastLookContext = createContext<{
   unsubscribeAllServers: () => void;
   sendOrderForConsideration: (params: {
     locator: string;
-    order: Order;
+    order: OrderERC20;
   }) => Promise<boolean>;
   getSignedOrder: (params: {
     locator: string;
     terms: TradeTerms;
-  }) => Promise<{ order: Order; senderWallet: string }>;
+  }) => Promise<{ order: OrderERC20; senderWallet: string }>;
 }>({
   subscribeAllServers(servers: Server[], pair: Pair): Promise<Pricing | any>[] {
     return [];
@@ -48,7 +46,7 @@ export const LastLookContext = createContext<{
   getSignedOrder: async (params: {
     locator: string;
     terms: TradeTerms;
-  }): Promise<Order | any> => {
+  }): Promise<OrderERC20 | any> => {
     return {};
   },
 });
@@ -60,6 +58,7 @@ const LastLookProvider: FC = ({ children }) => {
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
+  const protocolFee = useAppSelector(selectProtocolFee);
 
   const subscribeAllServers = useCallback(
     (servers: Server[], pair: Pair) => {
@@ -73,8 +72,8 @@ const LastLookProvider: FC = ({ children }) => {
             const pairPricing = pricing.find(
               (p) =>
                 p &&
-                p.baseToken === pair.baseToken &&
-                p.quoteToken === pair.quoteToken
+                p.baseToken.toLowerCase() === pair.baseToken.toLowerCase() &&
+                p.quoteToken.toLowerCase() === pair.quoteToken.toLowerCase()
             );
             if (pairPricing) {
               resolve(pairPricing);
@@ -91,14 +90,14 @@ const LastLookProvider: FC = ({ children }) => {
             }
           };
 
-          server.on("pricing", handlePricing.bind(null));
+          server.on("pricing-erc20", handlePricing.bind(null));
           server.on("error", (e) => {
             console.error(
               `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
               e
             );
           });
-          const pricing = await server.subscribe([pair]);
+          const pricing = await server.subscribePricingERC20([pair]);
           handlePricing(pricing);
         });
       });
@@ -119,7 +118,7 @@ const LastLookProvider: FC = ({ children }) => {
     async (params: {
       locator: string;
       terms: TradeTerms;
-    }): Promise<{ order: Order; senderWallet: string }> => {
+    }): Promise<{ order: OrderERC20; senderWallet: string }> => {
       const { locator, terms } = params;
       const server = connectedServers[locator];
 
@@ -139,24 +138,24 @@ const LastLookProvider: FC = ({ children }) => {
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
 
-      const unsignedOrder = createOrder({
+      const unsignedOrder = createOrderERC20({
         expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
         nonce: Date.now().toString(),
         senderWallet: server.getSenderWallet(),
         signerWallet: account,
         signerToken: terms.baseToken.address,
         senderToken: terms.quoteToken.address,
-        protocolFee: "7",
+        protocolFee: protocolFee.toString(),
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
-      const signature = await createSwapSignature(
+      const signature = await createOrderERC20Signature(
         unsignedOrder,
         library.getSigner(),
-        swapDeploys[chainId],
+        SwapERC20.getAddress(chainId!),
         chainId!
       );
-      const order: Order = {
+      const order: OrderERC20 = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,
         senderToken: unsignedOrder.senderToken,
@@ -172,7 +171,7 @@ const LastLookProvider: FC = ({ children }) => {
         order: order,
         nonce: order.nonce,
         status: "processing",
-        protocol: "last-look",
+        protocol: "last-look-erc20",
         expiry: unsignedOrder.expiry,
         timestamp: Date.now(),
       };
@@ -194,15 +193,15 @@ const LastLookProvider: FC = ({ children }) => {
         senderWallet: unsignedOrder.senderWallet,
       };
     },
-    [account, chainId, dispatch, library, t]
+    [account, chainId, dispatch, library, protocolFee, t]
   );
 
   const sendOrderForConsideration = useCallback(
-    async (params: { locator: string; order: Order }) => {
+    async (params: { locator: string; order: OrderERC20 }) => {
       const { locator, order } = params;
       const server = connectedServers[locator];
       try {
-        return server.consider(order);
+        return server.considerOrderERC20(order);
       } catch (e) {
         console.error("Server unable to consider order: ", e);
         throw e;

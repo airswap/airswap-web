@@ -1,9 +1,10 @@
-import { Pricing } from "@airswap/typescript";
+import { Pricing } from "@airswap/types";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 
 import { RootState } from "../../app/store";
+import { selectProtocolFee } from "../metadata/metadataSlice";
 import {
   clearTradeTerms,
   selectTradeTerms,
@@ -73,7 +74,8 @@ const selectPricing = (state: RootState) => state.pricing;
 export const selectBestPricing = createSelector(
   selectTradeTerms,
   selectPricing,
-  (terms, pricing) => {
+  selectProtocolFee,
+  (terms, pricing, protocolFee) => {
     let bestQuoteAmount = new BigNumber(0);
     let bestPricing: {
       locator: string;
@@ -86,8 +88,8 @@ export const selectBestPricing = createSelector(
       const locatorPricing = pricing[locator];
       const relevantIndex = locatorPricing.findIndex(
         (p) =>
-          p.quoteToken === quoteToken.address &&
-          p.baseToken === baseToken.address
+          p.quoteToken.toLowerCase() === quoteToken.address.toLowerCase() &&
+          p.baseToken.toLowerCase() === baseToken.address.toLowerCase()
       );
 
       if (relevantIndex === -1) return;
@@ -98,7 +100,7 @@ export const selectBestPricing = createSelector(
           calculateQuoteAmount({
             baseAmount: baseTokenAmount,
             pricing: relevantPricing,
-            protocolFee: "7",
+            protocolFee: protocolFee,
             side,
           })
         );

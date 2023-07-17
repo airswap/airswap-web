@@ -47,11 +47,11 @@ const SettingsButton = ({
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleEscKey, false);
+    document.addEventListener("keydown", handleEscKey);
 
     return () => {
       document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleEscKey, false);
+      document.removeEventListener("keydown", handleEscKey);
     };
   }, [handleClick, handleEscKey]);
 
@@ -60,7 +60,7 @@ const SettingsButton = ({
       <Container
         className={className}
         ref={containerRef}
-        open={transactionsTabOpen}
+        isOpen={transactionsTabOpen}
       >
         <SettingsButtonContainer
           aria-label={t("common.settings")}
@@ -70,7 +70,7 @@ const SettingsButton = ({
         </SettingsButtonContainer>
       </Container>
       {settingsOpen && (
-        <SettingsPopover open={transactionsTabOpen} popoverRef={popoverRef} />
+        <SettingsPopover isOpen={transactionsTabOpen} popoverRef={popoverRef} />
       )}
     </>
   );

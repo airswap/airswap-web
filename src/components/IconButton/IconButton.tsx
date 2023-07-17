@@ -10,12 +10,24 @@ export type IconButtonProps = {
   iconSize?: number;
   tabIndex?: number;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   className?: string;
 };
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   (
-    { text, ariaLabel, icon, iconSize, tabIndex = 0, className, onClick },
+    {
+      text,
+      ariaLabel,
+      icon,
+      iconSize,
+      tabIndex = 0,
+      onMouseEnter,
+      onMouseLeave,
+      className,
+      onClick,
+    },
     ref
   ): ReactElement => {
     return (
@@ -25,6 +37,8 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         tabIndex={tabIndex}
         className={className}
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         ref={ref}
       >
         {text}

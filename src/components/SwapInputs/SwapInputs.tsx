@@ -1,80 +1,101 @@
 import { FC, FormEvent, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
-import stringToSignificantDecimals from "../../helpers/stringToSignificantDecimals";
+import { AppError } from "../../errors/appError";
 import TokenSelect from "../TokenSelect/TokenSelect";
-import { Container, SwapIconContainer } from "./SwapInputs.styles";
-import getSwapInputIcon from "./helpers/getSwapInputIcon";
+import {
+  BaseAmountErrorTooltip,
+  Container,
+  MaxAmountInfoTooltip,
+  QuoteAmountErrorTooltip,
+  SwitchTokensButton,
+} from "./SwapInputs.styles";
+import getSwitchTokensButtonIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
-import Tooltip from "./subcomponents/Tooltip/Tooltip";
+import useErrorTranslation from "./hooks/useErrorTranslation";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 const SwapInputs: FC<{
   disabled?: boolean;
-  isRequesting?: boolean;
+  canSetQuoteAmount?: boolean;
+  isRequestingBaseAmount?: boolean;
+  isRequestingBaseToken?: boolean;
+  isRequestingQuoteAmount?: boolean;
+  isRequestingQuoteToken?: boolean;
   readOnly?: boolean;
   showMaxButton?: boolean;
   showMaxInfoButton?: boolean;
   tradeNotAllowed?: boolean;
 
   baseAmount: string;
+  baseAmountSubText?: string;
   baseTokenInfo: TokenInfo | null;
+  baseAmountError?: AppError;
   maxAmount: string | null;
   side: "buy" | "sell";
   quoteTokenInfo: TokenInfo | null;
   quoteAmount: string;
+  quoteAmountError?: AppError;
 
-  onMaxButtonClick: () => void;
-  onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
   onBaseAmountChange: (newValue: string) => void;
+  onChangeTokenClick: (baseOrQuote: "base" | "quote") => void;
+  onMaxButtonClick: () => void;
+  onQuoteAmountChange?: (newValue: string) => void;
+  onSwitchTokensButtonClick?: () => void;
 }> = ({
   disabled = false,
-  isRequesting = false,
+  canSetQuoteAmount = false,
+  isRequestingBaseAmount = false,
+  isRequestingBaseToken = false,
+  isRequestingQuoteAmount = false,
+  isRequestingQuoteToken = false,
   readOnly = false,
   showMaxButton = false,
   showMaxInfoButton = false,
   tradeNotAllowed = false,
 
   baseAmount,
+  baseAmountSubText,
   baseTokenInfo,
+  baseAmountError,
   maxAmount = null,
   quoteAmount,
   quoteTokenInfo,
+  quoteAmountError,
   side,
 
   onBaseAmountChange,
-  onMaxButtonClick,
   onChangeTokenClick,
+  onMaxButtonClick,
+  onQuoteAmountChange,
+  onSwitchTokensButtonClick,
 }) => {
   const { t } = useTranslation();
   const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
 
   const isSell = side === "sell";
-  const fromAmount = useMemo(
-    () => (isSell ? baseAmount : stringToSignificantDecimals(quoteAmount)),
-    [isSell, baseAmount, quoteAmount]
-  );
-  const toAmount = useMemo(
-    () => (isSell ? stringToSignificantDecimals(quoteAmount) : baseAmount),
-    [isSell, baseAmount, quoteAmount]
-  );
+
   const maxAmountInfoText = useMemo(
     () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
     [baseTokenInfo, maxAmount, t]
   );
-  const isQuote = !!fromAmount && !!toAmount && readOnly;
+  const isQuote = !!baseAmount && !!quoteAmount && readOnly;
+  const baseAmountErrorText = useErrorTranslation(baseAmountError);
+  const quoteAmountErrorText = useErrorTranslation(quoteAmountError);
 
-  // Note: it will only be possible for the user to change the base amount.
-  const handleTokenAmountChange = (e: FormEvent<HTMLInputElement>) => {
+  const handleTokenAmountChange = (
+    e: FormEvent<HTMLInputElement>,
+    callback: Function
+  ) => {
     let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {
       if (value[value.length - 1] === ",")
         value = value.slice(0, value.length - 1) + ".";
       value = value.replace(/^0+/, "0");
-      onBaseAmountChange(value);
+      callback(value);
     }
   };
 
@@ -94,42 +115,80 @@ const SwapInputs: FC<{
   return (
     <Container $disabled={disabled}>
       <TokenSelect
+        hasError={!!baseAmountError}
+        isQuote={isQuote}
+        isRequestingAmount={
+          !isSell ? isRequestingQuoteAmount : isRequestingBaseAmount
+        }
+        isRequestingToken={
+          !isSell ? isRequestingQuoteToken : isRequestingBaseToken
+        }
+        showMaxButton={showMaxButton}
+        showMaxInfoButton={showMaxInfoButton}
+        readOnly={readOnly}
+        amount={isSell ? baseAmount : quoteAmount}
+        includeAmountInput={
+          isSell || (!!quoteAmount && !isRequestingQuoteAmount)
+        }
         label={t("orders.from")}
-        amount={fromAmount}
-        onAmountChange={(e) => handleTokenAmountChange(e)}
+        selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
+        subText={baseAmountSubText}
+        onAmountChange={(e) => handleTokenAmountChange(e, onBaseAmountChange)}
         onChangeTokenClicked={() => {
           onChangeTokenClick(isSell ? "base" : "quote");
         }}
         onMaxClicked={handleMaxButtonClick}
         onInfoLabelMouseEnter={handleInfoLabelMouseEnter}
         onInfoLabelMouseLeave={handleInfoLabelMouseLeave}
-        readOnly={readOnly}
-        includeAmountInput={isSell || (!!quoteAmount && !isRequesting)}
-        selectedToken={isSell ? baseTokenInfo : quoteTokenInfo}
-        isLoading={!isSell && isRequesting}
-        isQuote={isQuote}
-        showMaxButton={showMaxButton}
-        showMaxInfoButton={showMaxInfoButton}
       />
-      <SwapIconContainer>{getSwapInputIcon(tradeNotAllowed)}</SwapIconContainer>
+      <SwitchTokensButton
+        disabled={tradeNotAllowed || readOnly}
+        onClick={onSwitchTokensButtonClick}
+      >
+        {getSwitchTokensButtonIcon(tradeNotAllowed)}
+      </SwitchTokensButton>
       <TokenSelect
+        hasError={!!quoteAmountError}
+        isQuote={isQuote}
+        isRequestingAmount={
+          isSell ? isRequestingQuoteAmount : isRequestingBaseAmount
+        }
+        isRequestingToken={
+          isSell ? isRequestingQuoteToken : isRequestingBaseToken
+        }
+        amount={isSell ? quoteAmount : baseAmount}
+        includeAmountInput={
+          !isSell ||
+          canSetQuoteAmount ||
+          (!!quoteAmount && !isRequestingBaseAmount)
+        }
+        readOnly={readOnly}
         label={t("orders.to")}
-        amount={toAmount}
-        onAmountChange={(e) => handleTokenAmountChange(e)}
+        selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
+        onAmountChange={(e) =>
+          handleTokenAmountChange(e, onQuoteAmountChange || onBaseAmountChange)
+        }
         onChangeTokenClicked={() => {
           onChangeTokenClick(!isSell ? "base" : "quote");
         }}
-        readOnly={readOnly}
-        includeAmountInput={!isSell || (!!quoteAmount && !isRequesting)}
-        selectedToken={!isSell ? baseTokenInfo : quoteTokenInfo}
-        isLoading={isSell && isRequesting}
-        isQuote={isQuote}
       />
       {!showMaxButton &&
         showMaxInfoButton &&
         showMaxAmountInfo &&
         maxAmountInfoText &&
-        !readOnly && <Tooltip>{maxAmountInfoText}</Tooltip>}
+        !readOnly && (
+          <MaxAmountInfoTooltip>{maxAmountInfoText}</MaxAmountInfoTooltip>
+        )}
+
+      {baseAmountErrorText && (
+        <BaseAmountErrorTooltip>{baseAmountErrorText}</BaseAmountErrorTooltip>
+      )}
+
+      {quoteAmountErrorText && (
+        <QuoteAmountErrorTooltip>
+          {quoteAmountErrorText}
+        </QuoteAmountErrorTooltip>
+      )}
     </Container>
   );
 };

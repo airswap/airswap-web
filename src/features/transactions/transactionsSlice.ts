@@ -1,4 +1,4 @@
-import { Order } from "@airswap/typescript";
+import { OrderERC20 } from "@airswap/types";
 import {
   createSlice,
   createSelector,
@@ -7,6 +7,10 @@ import {
 
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
+import {
+  setWalletConnected,
+  setWalletDisconnected,
+} from "../wallet/walletSlice";
 import {
   declineTransaction,
   expireTransaction,
@@ -22,7 +26,12 @@ export interface DepositOrWithdrawOrder {
   senderAmount: string;
 }
 
-export type TransactionType = "Approval" | "Order" | "Deposit" | "Withdraw";
+export type TransactionType =
+  | "Approval"
+  | "Order"
+  | "Deposit"
+  | "Withdraw"
+  | "Cancel";
 
 export type StatusType =
   | "processing"
@@ -31,7 +40,7 @@ export type StatusType =
   | "declined"
   | "expired";
 
-export type ProtocolType = "request-for-quote" | "last-look";
+export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
 
 export interface SubmittedTransaction {
   type: TransactionType;
@@ -44,7 +53,7 @@ export interface SubmittedTransaction {
 }
 
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  order: Order;
+  order: OrderERC20;
 }
 
 export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}
@@ -61,6 +70,8 @@ export interface RfqTransaction
 export interface SubmittedApproval extends SubmittedTransaction {
   tokenAddress: string;
 }
+
+export interface SubmittedCancellation extends SubmittedTransaction {}
 
 export interface SubmittedDepositOrder extends SubmittedTransaction {
   order: DepositOrWithdrawOrder;
@@ -230,6 +241,8 @@ export const transactionsSlice = createSlice({
         protocol: action.payload.protocol,
       });
     });
+    builder.addCase(setWalletConnected, () => initialState);
+    builder.addCase(setWalletDisconnected, () => initialState);
   },
 });
 
@@ -243,8 +256,33 @@ export const selectPendingTransactions = createSelector(
   }
 );
 
+export const selectOrderTransactions = createSelector(
+  selectTransactions,
+  (transactions) => {
+    return transactions.filter((tx) => tx.type === "Order");
+  }
+);
+
+export const selectPendingDeposits = (
+  state: RootState
+): SubmittedDepositOrder[] =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "processing" && tx.type === "Deposit"
+  ) as SubmittedDepositOrder[];
+
 export const selectPendingApprovals = (state: RootState) =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"
   ) as SubmittedApproval[];
+
+export const selectCancellations = (state: RootState) =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "succeeded" && tx.type === "Cancel"
+  ) as SubmittedCancellation[];
+
+export const selectPendingCancellations = (state: RootState) =>
+  state.transactions.all.filter(
+    (tx) => tx.status === "processing" && tx.type === "Cancel"
+  ) as SubmittedCancellation[];
+
 export default transactionsSlice.reducer;

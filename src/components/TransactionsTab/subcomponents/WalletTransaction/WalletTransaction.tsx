@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
 import BigNumber from "bignumber.js";
@@ -10,12 +9,13 @@ import { HTMLMotionProps } from "framer-motion";
 
 import {
   SubmittedApproval,
+  SubmittedCancellation,
   SubmittedTransactionWithOrder,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
-import getTimeBetweenTwoDates from "../../../../helpers/getTimeBetweenTwoDates";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
+import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
   Container,
@@ -57,20 +57,30 @@ const WalletTransaction = ({
 
   if (transaction.type === "Approval") {
     const tx: SubmittedApproval = transaction as SubmittedApproval;
-    const approvalToken = findTokenByAddress(tx.tokenAddress, tokens);
-    //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <>
-            <SpanTitle>
-              {t("wallet.approve", { symbol: approvalToken?.symbol })}
-            </SpanTitle>
-            <SpanSubtitle>
-              {statusText} · {timeBetween}
-            </SpanSubtitle>
-          </>
+          <SpanTitle>{t("wallet.approve")}</SpanTitle>
+          <SpanSubtitle>
+            {statusText} · {timeBetween}
+          </SpanSubtitle>
+        </TextContainer>
+        {tx.hash && (
+          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+        )}
+      </Container>
+    );
+  } else if (transaction.type === "Cancel") {
+    const tx: SubmittedCancellation = transaction as SubmittedCancellation;
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+    return (
+      <Container transition={transition} animate={animate} initial={initial}>
+        <TextContainer>
+          <SpanTitle>{t("orders.cancelOrder")}</SpanTitle>
+          <SpanSubtitle>
+            {statusText} · {timeBetween}
+          </SpanSubtitle>
         </TextContainer>
         {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
       </Container>
@@ -93,14 +103,14 @@ const WalletTransaction = ({
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
     let signerAmountWithFee: string | null = null;
-    if (tx.protocol === "last-look") {
+    if (tx.protocol === "last-look-erc20") {
       signerAmountWithFee = new BigNumber(tx.order.signerAmount)
         .multipliedBy(1.0007)
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
     }
     //@ts-ignore
-    const timeBetween = getTimeBetweenTwoDates(new Date(tx.timestamp), t);
+    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>
@@ -112,7 +122,7 @@ const WalletTransaction = ({
             <>
               <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
                 {t(
-                  tx.protocol === "last-look"
+                  tx.protocol === "last-look-erc20"
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {
@@ -147,12 +157,9 @@ const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        {tx.status !== "processing" &&
-          (tx.hash ? (
-            <StyledTransactionLink chainId={chainId} hash={tx.hash} />
-          ) : (
-            <span />
-          ))}
+        {tx.hash && (
+          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+        )}
       </Container>
     );
   }

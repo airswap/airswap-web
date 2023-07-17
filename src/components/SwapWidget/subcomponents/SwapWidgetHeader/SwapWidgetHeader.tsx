@@ -40,14 +40,14 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
         {title}
       </Title>
 
-      {protocol === "last-look" && isQuote && (
+      {protocol === "last-look-erc20" && isQuote && (
         <Button onClick={onGasFreeTradeButtonClick}>
           <StyledIcon name="star" iconSize={0.875} />
           {t("orders.gasFreeTrade")}
         </Button>
       )}
 
-      {protocol === "request-for-quote" && isQuote && (
+      {protocol === "request-for-quote-erc20" && isQuote && (
         <Quote>
           <NewQuoteText>{t("orders.newQuoteIn")}</NewQuoteText>
           {expiryTime && <Timer expiryTime={expiryTime} />}

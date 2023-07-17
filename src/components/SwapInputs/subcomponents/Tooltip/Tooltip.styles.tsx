@@ -1,16 +1,13 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../../style/breakpoints";
+import { TooltipStyle } from "../../../../styled-components/Tooltip/Tooltip";
 
 const triangleSize = 14;
 
 export const Container = styled.div`
-  position: absolute;
   display: flex;
   align-items: flex-end;
-  bottom: calc(100% + 1rem);
-  right: 0;
-  width: 100%;
   max-width: 17rem;
   height: 4.5rem;
 
@@ -20,20 +17,14 @@ export const Container = styled.div`
     right: inherit;
     bottom: inherit;
     left: calc(100% + 1.25rem);
+    width: 100%;
+    height: auto;
   }
 `;
 
 export const ContentContainer = styled.div`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2px;
-  padding: 0.75rem;
-  line-height: 1.2;
-  font-size: 0.875rem;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
-  background: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
-  filter: drop-shadow(${(props) => props.theme.shadows.tooltipGlow});
+  ${TooltipStyle};
+
   pointer-events: none;
 `;
 

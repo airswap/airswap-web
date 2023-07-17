@@ -9,5 +9,5 @@ export default function getSwapInputIcon(
     return <Icon name="forbidden" iconSize={0.9375} />;
   }
 
-  return <Icon name="arrow-down" iconSize={0.8125} />;
+  return <Icon name="swap" iconSize={0.8125} />;
 }

@@ -1,6 +1,6 @@
 import { TFunction } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import {
   nativeCurrencyAddress,
@@ -19,7 +19,7 @@ export default function getTokenMaxInfoText(
   const transactionFee =
     tokenInfo.address === nativeCurrencyAddress &&
     nativeCurrencySafeTransactionFee[tokenInfo.chainId];
-  const amountAndSymbolText = `${maxAmount} ${tokenInfo.symbol}`;
+  const amountAndSymbolText = `${maxAmount} ${tokenInfo?.symbol}`;
 
   if (transactionFee) {
     return t("orders.nativeCurrencyMaxInfoText", {

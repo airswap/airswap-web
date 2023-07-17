@@ -26,7 +26,9 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
-          supportedChainIds: [1, 4, 5, 56, 97, 137, 43113, 43114, 80001],
+          supportedChainIds: [
+            1, 5, 30, 31, 56, 97, 137, 43113, 43114, 59140, 80001,
+          ],
         });
       }
       return cachedConnectors.MetaMask;
@@ -42,7 +44,8 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
         cachedConnectors.WalletConnect = new WalletConnectConnector({
           rpc: {
             1: process.env.REACT_APP_RPC_URL_1 || "",
-            4: process.env.REACT_APP_RPC_URL_4 || "",
+            5: process.env.REACT_APP_RPC_URL_5 || "",
+            59140: process.env.REACT_APP_RPC_URL_59140 || "",
           },
         });
       }

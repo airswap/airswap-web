@@ -4,12 +4,15 @@ import { ThemeType } from "styled-components/macro";
 
 import { RootState } from "../../app/store";
 
+export interface UserTokenPair {
+  tokenFrom?: string;
+  tokenTo?: string;
+}
+
 export interface UserSettingsState {
   theme: ThemeType | "system";
-  tokens: {
-    tokenFrom?: string;
-    tokenTo?: string;
-  };
+  tokens: UserTokenPair;
+  customServerUrl: string | null;
 }
 
 export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
@@ -20,6 +23,7 @@ const initialState: UserSettingsState = {
     tokenFrom: undefined,
     tokenTo: undefined,
   },
+  customServerUrl: null,
 };
 
 const userSettingsSlice = createSlice({
@@ -32,9 +36,23 @@ const userSettingsSlice = createSlice({
     },
     setUserTokens: (
       state,
-      action: PayloadAction<{ tokenFrom: string; tokenTo: string }>
+      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>
     ) => {
-      state.tokens = action.payload;
+      const tokens = {
+        ...state.tokens,
+        ...(action.payload.tokenFrom && {
+          tokenFrom: action.payload.tokenFrom,
+        }),
+        ...(action.payload.tokenTo && { tokenTo: action.payload.tokenTo }),
+      };
+
+      return {
+        ...state,
+        tokens,
+      };
+    },
+    setCustomServerUrl: (state, action: PayloadAction<string | null>) => {
+      state.customServerUrl = action.payload;
     },
   },
 });
@@ -43,6 +61,10 @@ export const selectTheme = (state: RootState) => state.userSettings.theme;
 
 export const selectUserTokens = (state: RootState) => state.userSettings.tokens;
 
-export const { setTheme, setUserTokens } = userSettingsSlice.actions;
+export const selectCustomServerUrl = (state: RootState) =>
+  state.userSettings.customServerUrl;
+
+export const { setTheme, setUserTokens, setCustomServerUrl } =
+  userSettingsSlice.actions;
 
 export default userSettingsSlice.reducer;

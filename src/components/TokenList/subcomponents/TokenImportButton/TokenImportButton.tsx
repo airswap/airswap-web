@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
+import { TokenInfo } from "@airswap/types";
 
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
@@ -36,7 +36,7 @@ const TokenImportButton = ({
 
   return (
     <Container>
-      <TokenLogo tokenInfo={token} size="medium" />
+      <TokenLogo logoURI={token.logoURI} size="medium" />
 
       <TextContainer>
         <Symbol>{token.symbol}</Symbol>

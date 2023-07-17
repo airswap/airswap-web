@@ -1,14 +1,15 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/typescript";
-import { Levels } from "@airswap/typescript";
-import { Order } from "@airswap/typescript";
+import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
+import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
+import Icon from "../../../Icon/Icon";
 import { InfoSubHeading } from "../../../Typography/Typography";
+import ClearServerButton from "../ClearServerButton/ClearServerButton";
 import {
   StyledInfoHeading,
   RevertPriceButton,
@@ -16,54 +17,74 @@ import {
   InfoButton,
   FeeTextContainer,
   ApprovalText,
+  StyledLargePillButton,
+  DoneAllIcon,
+  StyledTransactionLink,
 } from "./InfoSection.styles";
 
 export type InfoSectionProps = {
-  isConnected: boolean;
-  isPairUnavailable: boolean;
-  orderSubmitted: boolean;
-  isFetchingOrders: boolean;
-  isApproving: boolean;
-  isSwapping: boolean;
   failedToFetchAllowances: boolean;
+  hasSelectedCustomServer: boolean;
+  isApproving: boolean;
+  isConnected: boolean;
+  isFetchingOrders: boolean;
+  isPairUnavailable: boolean;
+  isSwapping: boolean;
+  isWrapping: boolean;
+  orderSubmitted: boolean;
+  orderCompleted: boolean;
+  requiresApproval: boolean;
+  showViewAllQuotes: boolean;
   bestTradeOption:
     | {
-        protocol: "last-look";
+        protocol: "last-look-erc20";
         quoteAmount: string;
         pricing: Levels;
       }
     | {
-        protocol: "request-for-quote";
+        protocol: "request-for-quote-erc20";
         quoteAmount: string;
-        order: Order;
+        order: OrderERC20;
       }
     | null;
-  isWrapping: boolean;
-  requiresApproval: boolean;
+  chainId: number;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
+  serverUrl: string | null;
+  onClearServerUrlButtonClick: () => void;
   onFeeButtonClick: () => void;
+  transaction?: SubmittedTransaction;
+  onViewAllQuotesButtonClick: () => void;
 };
 
 const InfoSection: FC<InfoSectionProps> = ({
-  isConnected,
-  isPairUnavailable,
-  orderSubmitted,
-  isApproving,
-  isSwapping,
   failedToFetchAllowances,
-  bestTradeOption,
-  isWrapping,
+  hasSelectedCustomServer,
+  isApproving,
+  isConnected,
   isFetchingOrders,
+  isPairUnavailable,
+  isSwapping,
+  isWrapping,
+  orderCompleted,
+  orderSubmitted,
   requiresApproval,
+  showViewAllQuotes,
+  bestTradeOption,
   baseTokenInfo,
   baseAmount,
+  chainId,
   quoteTokenInfo,
+  transaction,
+  serverUrl,
+  onClearServerUrlButtonClick,
   onFeeButtonClick,
+  onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
+
   // Wallet not connected.
   if (!isConnected) {
     return (
@@ -124,6 +145,26 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.tokenPairUnavailable")}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
+      </>
+    );
+  }
+
+  if (orderCompleted) {
+    return (
+      <>
+        <DoneAllIcon />
+        <StyledInfoHeading>
+          {t("orders.transactionCompleted")}
+        </StyledInfoHeading>
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }
@@ -131,8 +172,12 @@ const InfoSection: FC<InfoSectionProps> = ({
   if (orderSubmitted) {
     return (
       <>
+        <DoneAllIcon />
         <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
         <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+        {transaction?.hash && (
+          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
+        )}
       </>
     );
   }
@@ -192,20 +237,29 @@ const InfoSection: FC<InfoSectionProps> = ({
               onClick={() => setInvertPrice((p) => !p)}
             />
           </StyledInfoHeading>
-          <FeeTextContainer>
-            <FeeText>{t("marketing.includesFee")}</FeeText>
-            <InfoButton
-              onClick={onFeeButtonClick}
-              ariaLabel={t("orders.moreInformation")}
-              icon="information-circle-outline"
-            />
-          </FeeTextContainer>
         </>
         {requiresApproval && (
           <ApprovalText>
             {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
           </ApprovalText>
         )}
+        {showViewAllQuotes && (
+          <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
+            {t("orders.viewAllQuotes")}
+            <Icon name="chevron-down" />
+          </StyledLargePillButton>
+        )}
+      </>
+    );
+  }
+
+  if (hasSelectedCustomServer) {
+    return (
+      <>
+        <StyledInfoHeading>
+          {t("orders.selectedServer", { serverUrl })}
+        </StyledInfoHeading>
+        <ClearServerButton onClick={onClearServerUrlButtonClick} />
       </>
     );
   }

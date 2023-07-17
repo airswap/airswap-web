@@ -1,8 +1,9 @@
 import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 
+import Cancel from "../../pages/Cancel/Cancel";
 import MakePage from "../../pages/Make/Make";
-import MySwapsPage from "../../pages/MyOrders/MySwaps";
+import MySwapsPage from "../../pages/MyOrders/MyOrders";
 import OrderDetail from "../../pages/OrderDetail/OrderDetail";
 import SwapPage from "../../pages/Swap/Swap";
 import { AppRoutes } from "../../routes";
@@ -10,20 +11,22 @@ import { AppRoutes } from "../../routes";
 const Routes: FC = () => {
   return (
     <Switch>
+      <Route path={`/${AppRoutes.make}`} component={MakePage} key="make" />
       <Route
-        path={[`/${AppRoutes.make}`, `/:lang/${AppRoutes.make}`]}
-        component={MakePage}
-        key="make"
-      />
-      <Route
-        path={[`/${AppRoutes.myOrders}`, `/:lang/${AppRoutes.myOrders}`]}
+        path={`/${AppRoutes.myOrders}`}
         component={MySwapsPage}
         key="my-swaps"
       />
       <Route
-        path={[`/${AppRoutes.order}`, `/:lang/${AppRoutes.order}`]}
+        exact
+        path={`/${AppRoutes.order}/:compressedOrder`}
         component={OrderDetail}
         key="order-detail"
+      />
+      <Route
+        path={`/${AppRoutes.order}/:compressedOrder/cancel`}
+        component={Cancel}
+        key="cancel"
       />
       <Route path="/*" component={SwapPage} key="swap" />
     </Switch>
