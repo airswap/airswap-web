@@ -1,28 +1,22 @@
 {
   "files": {
-    "main.js": "/static/js/main.9fc655d1.chunk.js",
-    "main.js.map": "/static/js/main.9fc655d1.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.a2c55636.js",
-    "runtime-main.js.map": "/static/js/runtime-main.a2c55636.js.map",
-    "static/css/2.0c2baecd.chunk.css": "/static/css/2.0c2baecd.chunk.css",
-    "static/js/2.4b417c15.chunk.js": "/static/js/2.4b417c15.chunk.js",
-    "static/js/2.4b417c15.chunk.js.map": "/static/js/2.4b417c15.chunk.js.map",
-    "static/js/3.ec647d57.chunk.js": "/static/js/3.ec647d57.chunk.js",
-    "static/js/3.ec647d57.chunk.js.map": "/static/js/3.ec647d57.chunk.js.map",
-    "static/js/4.48f522c4.chunk.js": "/static/js/4.48f522c4.chunk.js",
-    "static/js/4.48f522c4.chunk.js.map": "/static/js/4.48f522c4.chunk.js.map",
+    "main.css": "/static/css/main.a4c4b860.css",
+    "main.js": "/static/js/main.4efa0605.js",
+    "static/js/563.dfcc64e1.chunk.js": "/static/js/563.dfcc64e1.chunk.js",
+    "static/js/163.a9071429.chunk.js": "/static/js/163.a9071429.chunk.js",
+    "static/media/dm-mono-all-500-normal.woff": "/static/media/dm-mono-all-500-normal.c11a95afa3c504fe3ca3.woff",
+    "static/media/dm-mono-latin-500-normal.woff2": "/static/media/dm-mono-latin-500-normal.36e961e1a43113ab3885.woff2",
+    "static/media/dm-mono-latin-ext-500-normal.woff2": "/static/media/dm-mono-latin-ext-500-normal.6904779913911f66799b.woff2",
+    "static/media/metamask.svg": "/static/media/metamask.6d38290c9294d207475e3666072b9f8a.svg",
+    "static/media/walletconnect.svg": "/static/media/walletconnect.dfa25e470b69d81428be54242b6c9bd1.svg",
     "index.html": "/index.html",
-    "static/css/2.0c2baecd.chunk.css.map": "/static/css/2.0c2baecd.chunk.css.map",
-    "static/js/2.4b417c15.chunk.js.LICENSE.txt": "/static/js/2.4b417c15.chunk.js.LICENSE.txt",
-    "static/media/500.css": "/static/media/dm-mono-latin-ext-500-normal.69047799.woff2",
-    "static/media/getFetch.cjs": "/static/media/getFetch.582d29c4.cjs",
-    "static/media/metamask.45038d58.svg": "/static/media/metamask.45038d58.svg",
-    "static/media/walletconnect.dfa25e47.svg": "/static/media/walletconnect.dfa25e47.svg"
+    "static/media/getFetch.cjs": "/static/media/getFetch.c780682470504fffbd04.cjs",
+    "main.a4c4b860.css.map": "/static/css/main.a4c4b860.css.map",
+    "main.4efa0605.js.map": "/static/js/main.4efa0605.js.map",
+    "163.a9071429.chunk.js.map": "/static/js/163.a9071429.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.a2c55636.js",
-    "static/css/2.0c2baecd.chunk.css",
-    "static/js/2.4b417c15.chunk.js",
-    "static/js/main.9fc655d1.chunk.js"
+    "static/css/main.a4c4b860.css",
+    "static/js/main.4efa0605.js"
   ]
 }
