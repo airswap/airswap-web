@@ -84,6 +84,14 @@ const nativeCurrency: Record<number, TokenInfo> = {
     symbol: "ETH",
     logoURI: "images/linea-logo.png",
   },
+  59144: {
+    chainId: 59144,
+    address: nativeCurrencyAddress,
+    name: "ETH",
+    decimals: 18,
+    symbol: "ETH",
+    logoURI: "images/linea-logo.png",
+  },
   80001: {
     chainId: 80001,
     address: nativeCurrencyAddress,
