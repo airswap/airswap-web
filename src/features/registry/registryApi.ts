@@ -2,13 +2,11 @@ import { Registry } from "@airswap/libraries";
 
 import { providers, Event } from "ethers";
 
-import { firstTransactionBlocks } from "../../constants/firstTransactionBlocks";
-
 async function getStakerTokens(chainId: number, provider: providers.Provider) {
   const registryContract = Registry.getContract(provider, chainId);
 
   const firstTxRegistryContract =
-    chainId && firstTransactionBlocks.Registry[chainId as keyof typeof firstTransactionBlocks.Registry];
+    chainId && Registry.blockNumbers[chainId as keyof typeof Registry.blockNumbers];
   const currentBlock = await provider?.getBlockNumber();
 
   const addTokensEventFilter = registryContract.filters.AddTokens();

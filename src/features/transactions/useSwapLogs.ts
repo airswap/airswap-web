@@ -7,8 +7,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import { providers } from "ethers";
 
-import { firstTransactionBlocks } from "../../constants/firstTransactionBlocks";
-
 const useSwapLogs = () => {
   const [state, actions] = useAsync(
     async (
@@ -43,12 +41,11 @@ const useSwapLogs = () => {
       );
 
       const firstTxBlockSwapContract =
-        chainId && firstTransactionBlocks.SwapERC20[chainId as keyof typeof firstTransactionBlocks.SwapERC20];
-
+        chainId && SwapERC20.blockNumbers[chainId as keyof typeof SwapERC20.blockNumbers];
       const firstTxBlockWrapperContract =
-        chainId && firstTransactionBlocks.Wrapper[chainId as keyof typeof firstTransactionBlocks.Wrapper];
-
+        chainId && Wrapper.blockNumbers[chainId as keyof typeof Wrapper.blockNumbers];
       const currentBlock = await provider?.getBlockNumber();
+
 
       const [lastLookSwapLogs, rfqSwapLogs, wrappedSwapLogs] =
         await Promise.all([
