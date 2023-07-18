@@ -139,5 +139,5 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     },
     rpcUrls: [apiUrls[ChainIds.LINEA]],
     blockExplorerUrls: [explorerUrls[ChainIds.LINEA]],
-  }
+  },
 };
