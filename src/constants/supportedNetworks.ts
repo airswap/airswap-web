@@ -13,6 +13,7 @@ export const SUPPORTED_NETWORKS: ChainIds[] = [
   ChainIds.AVALANCHE,
   ChainIds.BSC,
   ChainIds.POLYGON,
+  ChainIds.LINEA,
   ChainIds.GOERLI,
   ChainIds.LINEAGOERLI,
 ];
@@ -128,4 +129,15 @@ export const CHAIN_PARAMS: { [key: number]: ChainParams } = {
     rpcUrls: [apiUrls[ChainIds.LINEAGOERLI]],
     blockExplorerUrls: [explorerUrls[ChainIds.LINEAGOERLI]],
   },
+  [ChainIds.LINEA]: {
+    chainId: +`0x${ChainIds.LINEA.toString(16)}`,
+    chainName: chainNames[ChainIds.LINEA],
+    nativeCurrency: {
+      name: chainCurrencies[ChainIds.LINEA],
+      symbol: chainCurrencies[ChainIds.LINEA],
+      decimals: 18,
+    },
+    rpcUrls: [apiUrls[ChainIds.LINEA]],
+    blockExplorerUrls: [explorerUrls[ChainIds.LINEA]],
+  }
 };
