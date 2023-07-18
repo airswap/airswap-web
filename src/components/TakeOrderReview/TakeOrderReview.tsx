@@ -4,40 +4,29 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@airswap/types";
 import { useToggle } from "@react-hookz/web";
 
-import { BigNumber } from "bignumber.js";
-
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
-import toRoundedNumberString from "../../helpers/toRoundedNumberString";
-import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
 import {
   ReviewListItem,
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../styled-components/ReviewListItem/ReviewListItem";
-import { OrderType } from "../../types/orderTypes";
 import { getTokenPairTranslation } from "../MakeWidget/helpers";
 import ProtocolFeeOverlay from "../MakeWidget/subcomponents/ProtocolFeeOverlay/ProtocolFeeOverlay";
-import WalletLink from "../MakeWidget/subcomponents/WalletLink/WalletLink";
 import OrderReviewToken from "../OrderReviewToken/OrderReviewToken";
 import { Title } from "../Typography/Typography";
 import {
   Container,
   StyledActionButtons,
-  StyledIconButton,
   StyledWidgetHeader,
-} from "./MakeOrderReview.styles";
+} from "./TakeOrderReview.styles";
 
-interface MakeOrderReviewProps {
-  chainId?: number;
+interface TakeOrderReviewProps {
   expiry: number;
-  orderType: OrderType;
-  senderAddress: string;
   senderAmount: string;
   senderToken: TokenInfo | null;
   signerAmount: string;
-  signerAmountPlusFee: string;
   signerToken: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick: () => void;
@@ -45,15 +34,11 @@ interface MakeOrderReviewProps {
   className?: string;
 }
 
-const MakeOrderReview: FC<MakeOrderReviewProps> = ({
-  chainId,
+const MakeOrderReview: FC<TakeOrderReviewProps> = ({
   expiry,
-  orderType,
-  senderAddress,
   senderAmount,
   senderToken,
   signerAmount,
-  signerAmountPlusFee,
   signerToken,
   wrappedNativeToken,
   onEditButtonClick,
@@ -83,22 +68,9 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
     );
   }, [signerAmount, senderAmount]);
   const expiryTranslation = useMemo(
-    () => getExpiryTranslation(new Date(), new Date(Date.now() + expiry)),
+    () => getExpiryTranslation(new Date(), new Date(expiry * 1000)),
     [expiry]
   );
-  const roundedFeeAmount = useMemo(() => {
-    const amount = new BigNumber(signerAmountPlusFee)
-      .minus(signerAmount)
-      .toString();
-    return toRoundedNumberString(amount, justifiedSignerToken?.decimals);
-  }, [signerAmount, signerAmountPlusFee, justifiedSignerToken]);
-
-  const roundedSignerAmountPlusFee = useMemo(() => {
-    return toRoundedNumberString(
-      signerAmountPlusFee,
-      justifiedSignerToken?.decimals
-    );
-  }, [signerAmountPlusFee, justifiedSignerToken]);
 
   return (
     <Container className={className}>
@@ -125,19 +97,6 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
       )}
       <ReviewList>
         <ReviewListItem>
-          <ReviewListItemLabel>{t("common.for")}</ReviewListItemLabel>
-          <ReviewListItemValue>
-            {orderType === OrderType.private ? (
-              <>
-                {t("orders.specificTaker")}
-                <WalletLink address={senderAddress} chainId={chainId || 1} />
-              </>
-            ) : (
-              t("orders.anyone")
-            )}
-          </ReviewListItemValue>
-        </ReviewListItem>
-        <ReviewListItem>
           <ReviewListItemLabel>{t("orders.expiryTime")}</ReviewListItemLabel>
           <ReviewListItemValue>{expiryTranslation}</ReviewListItemValue>
         </ReviewListItem>
@@ -148,28 +107,15 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
         </ReviewListItem>
 
         <ReviewListItem>
-          <ReviewListItemLabel>
-            {t("orders.protocolFee")}
-            <StyledIconButton
-              icon="information-circle-outline"
-              onClick={toggleShowFeeInfo}
-            />
-          </ReviewListItemLabel>
-          <ReviewListItemValue>
-            {roundedFeeAmount} {justifiedSignerToken?.symbol}
-          </ReviewListItemValue>
-        </ReviewListItem>
-
-        <ReviewListItem>
           <ReviewListItemLabel>{t("orders.total")}</ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee} {justifiedSignerToken?.symbol}
+            {senderAmount} {justifiedSignerToken?.symbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
 
       <StyledActionButtons
-        backButtonText={t("common.edit")}
+        backButtonText={t("common.back")}
         onEditButtonClick={onEditButtonClick}
         onSignButtonClick={onSignButtonClick}
       />

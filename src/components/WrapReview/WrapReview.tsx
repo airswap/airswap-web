@@ -29,6 +29,7 @@ interface WrapReviewProps {
   isLoading: boolean;
   amount: string;
   amountPlusFee?: string;
+  backButtonText?: string;
   wrappedNativeToken: TokenInfo | null;
   shouldDepositNativeTokenAmount: string;
   onEditButtonClick: () => void;
@@ -40,6 +41,7 @@ const ApproveReview: FC<WrapReviewProps> = ({
   isLoading,
   amount,
   amountPlusFee,
+  backButtonText,
   shouldDepositNativeTokenAmount,
   wrappedNativeToken,
   onEditButtonClick,
@@ -129,6 +131,7 @@ const ApproveReview: FC<WrapReviewProps> = ({
 
       <StyledActionButtons
         isLoading={isLoading}
+        backButtonText={backButtonText || t("common.back")}
         onEditButtonClick={onEditButtonClick}
         onSignButtonClick={onSignButtonClick}
       />

@@ -2,7 +2,6 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { chainNames } from "@airswap/constants";
 import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -47,13 +46,13 @@ import {
 import getWethAddress from "../../helpers/getWethAddress";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../helpers/toMaxAllowedDecimalsNumberString";
+import useAllowance from "../../hooks/useAllowance";
 import useApprovalPending from "../../hooks/useApprovalPending";
 import useDepositPending from "../../hooks/useDepositPending";
 import useInsufficientBalance from "../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../hooks/useMaxAmount";
 import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useShouldDepositNativeToken from "../../hooks/useShouldDepositNativeTokenAmount";
-import useSufficientAllowance from "../../hooks/useSufficientAllowance";
 import useTokenAddress from "../../hooks/useTokenAddress";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import useValidAddress from "../../hooks/useValidAddress";
@@ -143,7 +142,7 @@ const MakeWidget: FC = () => {
       .toString();
   }, [makerAmount, protocolFee]);
 
-  const hasInsufficientAllowance = !useSufficientAllowance(
+  const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     makerAmountPlusFee
   );
@@ -384,6 +383,7 @@ const MakeWidget: FC = () => {
           isLoading={hasDepositPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
+          backButtonText={t("common.edit")}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
@@ -393,13 +393,15 @@ const MakeWidget: FC = () => {
     );
   }
 
-  if (state === MakeWidgetState.review && hasInsufficientAllowance) {
+  if (state === MakeWidgetState.review && !hasSufficientAllowance) {
     return (
       <Container>
         <ApproveReview
           isLoading={hasApprovalPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
+          backButtonText={t("common.edit")}
+          readableAllowance={readableAllowance}
           token={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
@@ -494,7 +496,7 @@ const MakeWidget: FC = () => {
 
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
-        hasInsufficientAllowance={hasInsufficientAllowance}
+        hasInsufficientAllowance={!hasSufficientAllowance}
         hasInsufficientBalance={
           hasInsufficientBalance && !shouldDepositNativeToken
         }

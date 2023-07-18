@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import { WidgetHeader } from "../../styled-components/WidgetHeader/WidgetHeader";
-import ActionButtons from "../ReviewActionButtons/ReviewActionButtons";
+import ReviewActionButtons from "../ReviewActionButtons/ReviewActionButtons";
 
 export const Container = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ export const StyledWidgetHeader = styled(WidgetHeader)`
   margin-bottom: 0.75rem;
 `;
 
-export const StyledActionButtons = styled(ActionButtons)`
+export const StyledActionButtons = styled(ReviewActionButtons)`
   justify-self: flex-end;
   margin-top: auto;
 `;

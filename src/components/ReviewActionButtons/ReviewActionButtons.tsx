@@ -9,6 +9,7 @@ import {
 
 interface ActionButtonsProps {
   isLoading?: boolean;
+  backButtonText: string;
   onEditButtonClick: () => void;
   onSignButtonClick: () => void;
   className?: string;
@@ -16,6 +17,7 @@ interface ActionButtonsProps {
 
 const ReviewActionButtons: FC<ActionButtonsProps> = ({
   isLoading = false,
+  backButtonText,
   onEditButtonClick,
   onSignButtonClick,
   className = "",
@@ -24,7 +26,7 @@ const ReviewActionButtons: FC<ActionButtonsProps> = ({
 
   return (
     <Container className={className}>
-      <BackButton onClick={onEditButtonClick}>{t("common.edit")}</BackButton>
+      <BackButton onClick={onEditButtonClick}>{backButtonText}</BackButton>
       <SignButton
         loading={isLoading}
         intent="primary"

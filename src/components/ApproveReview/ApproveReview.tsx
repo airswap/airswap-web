@@ -28,6 +28,8 @@ interface ApproveReviewProps {
   isLoading: boolean;
   amount: string;
   amountPlusFee?: string;
+  backButtonText?: string;
+  readableAllowance: string;
   token: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick: () => void;
@@ -39,6 +41,8 @@ const ApproveReview: FC<ApproveReviewProps> = ({
   isLoading,
   amount,
   amountPlusFee,
+  backButtonText,
+  readableAllowance,
   token,
   wrappedNativeToken,
   onEditButtonClick,
@@ -47,9 +51,9 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 }): ReactElement => {
   const { t } = useTranslation();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-
   const isTokenNativeToken = token?.address === nativeCurrencyAddress;
   const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
+  const tokenSymbol = justifiedToken?.symbol || "?";
 
   const roundedFeeAmount = useMemo(() => {
     if (!amountPlusFee) {
@@ -72,16 +76,30 @@ const ApproveReview: FC<ApproveReviewProps> = ({
     <Container className={className}>
       <StyledWidgetHeader>
         <Title type="h2" as="h1">
-          {t("orders.approve")} {justifiedToken?.symbol}
+          {t("orders.approve")} {tokenSymbol}
         </Title>
       </StyledWidgetHeader>
       <OrderReviewToken
         amount={amount}
         label={t("common.send")}
-        tokenSymbol={justifiedToken?.symbol || "?"}
+        tokenSymbol={tokenSymbol}
         tokenUri={justifiedToken?.logoURI}
       />
       <ReviewList>
+        {readableAllowance !== "0" && (
+          <ReviewListItem>
+            <ReviewListItemLabel>Current approve amount</ReviewListItemLabel>
+            <ReviewListItemValue>
+              {readableAllowance} {tokenSymbol}
+            </ReviewListItemValue>
+          </ReviewListItem>
+        )}
+        <ReviewListItem>
+          <ReviewListItemLabel>Order amount</ReviewListItemLabel>
+          <ReviewListItemValue>
+            {amount} {tokenSymbol}
+          </ReviewListItemValue>
+        </ReviewListItem>
         {roundedFeeAmount && (
           <ReviewListItem>
             <ReviewListItemLabel>
@@ -92,7 +110,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
               />
             </ReviewListItemLabel>
             <ReviewListItemValue>
-              {roundedFeeAmount} {justifiedToken?.symbol}
+              {roundedFeeAmount} {tokenSymbol}
             </ReviewListItemValue>
           </ReviewListItem>
         )}
@@ -100,13 +118,14 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         <ReviewListItem>
           <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee || amount} {justifiedToken?.symbol}
+            {roundedSignerAmountPlusFee || amount} {tokenSymbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
 
       <StyledActionButtons
         isLoading={isLoading}
+        backButtonText={backButtonText || t("common.back")}
         onEditButtonClick={onEditButtonClick}
         onSignButtonClick={onSignButtonClick}
       />

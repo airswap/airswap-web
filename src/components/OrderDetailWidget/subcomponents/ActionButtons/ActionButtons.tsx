@@ -21,7 +21,6 @@ type ActionButtonsProps = {
   isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
-  isLoading: boolean;
   isMakerOfSwap: boolean;
   isNetworkUnsupported: boolean;
   isNotConnected: boolean;
@@ -42,7 +41,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isTaken,
   isDifferentChainId,
   isIntendedRecipient,
-  isLoading,
   isMakerOfSwap,
   isNotConnected,
   isNetworkUnsupported,
@@ -86,10 +84,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return t("orders.unableTake");
     }
 
-    if (isOrderSubmitted) {
-      return t("orders.makeNewOrder");
-    }
-
     if (shouldDepositNativeToken) {
       return `Wrap ${senderTokenSymbol}`;
     }
@@ -102,7 +96,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return `${t("orders.approve")} ${senderTokenSymbol || ""}`;
     }
 
-    return t("orders.takeOtc");
+    return t("common.review");
   };
 
   const handleActionButtonClick = () => {
@@ -114,7 +108,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       return onActionButtonClick(ButtonActions.connectWallet);
     }
 
-    if (isOrderSubmitted || isExpired || isTaken || isCanceled) {
+    if (isExpired || isTaken || isCanceled) {
       return onActionButtonClick(ButtonActions.restart);
     }
 
@@ -142,7 +136,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         }
         intent={isButtonDisabled ? "neutral" : "primary"}
         disabled={isButtonDisabled}
-        loading={isLoading}
         onClick={handleActionButtonClick}
       >
         {signButtonText()}
