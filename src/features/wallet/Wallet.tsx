@@ -25,6 +25,7 @@ import {
   StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
+import { ClearOrderType } from "../../types/clearOrderType";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -49,6 +50,7 @@ import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectPendingTransactions,
   selectTransactions,
+  setFilter,
 } from "../transactions/transactionsSlice";
 import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
@@ -99,6 +101,10 @@ export const Wallet: FC<WalletPropsType> = ({
   const [activated, setActivated] = useState(false);
   const [swapContract, setSwapContract] = useState<Contract>();
   const [wrapContract, setWrapContract] = useState<Contract>();
+
+  const handleClearTransactionsChange = (type: ClearOrderType) => {
+    dispatch(setFilter(type));
+  };
 
   useBeforeunload(() => {
     if (swapContract) {
@@ -328,6 +334,7 @@ export const Wallet: FC<WalletPropsType> = ({
         chainId={chainId!}
         open={transactionsTabIsOpen}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
+        onClearTransactionsChange={handleClearTransactionsChange}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();

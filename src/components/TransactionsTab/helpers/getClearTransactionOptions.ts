@@ -1,18 +1,17 @@
-import { TFunction } from "i18next";
+import i18n from "i18next";
 
+import { ClearOrderType } from "../../../types/clearOrderType";
 import { SelectOption } from "../../Dropdown/Dropdown";
 
-export default function getClearTransactionOptions(
-  t: TFunction
-): SelectOption[] {
+export default function getClearTransactionOptions(): SelectOption[] {
   return [
     {
-      label: t("common.all"),
-      value: t("common.all"),
+      label: i18n.t("common.all"),
+      value: ClearOrderType.all,
     },
     {
-      label: t("common.failed"),
-      value: t("common.failed"),
+      label: i18n.t("common.failed"),
+      value: ClearOrderType.failed,
     },
     // {
     //   label: t("common.approvals"),

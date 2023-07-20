@@ -3,10 +3,12 @@ import {
   createSlice,
   createSelector,
   createAsyncThunk,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
+import { ClearOrderType } from "../../types/clearOrderType";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -18,6 +20,7 @@ import {
   revertTransaction,
   submitTransaction,
 } from "./transactionActions";
+import { filterTransactionByDate } from "./transactionUtils";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;
@@ -83,10 +86,15 @@ export interface SubmittedWithdrawOrder extends SubmittedTransaction {
 
 export interface TransactionsState {
   all: SubmittedTransaction[];
+  filterTimestamps: {
+    [ClearOrderType.failed]?: number;
+    [ClearOrderType.all]?: number;
+  };
 }
 
 const initialState: TransactionsState = {
   all: [],
+  filterTimestamps: {},
 };
 
 function updateTransaction(params: {
@@ -185,13 +193,14 @@ export const transactionsSlice = createSlice({
     clear: (state) => {
       state.all = [];
     },
-    setTransactions: (state, action) => {
-      try {
-        state.all = action.payload.all;
-      } catch (err) {
-        console.error(err);
-        state.all = [];
-      }
+    setFilter: (state, action: PayloadAction<ClearOrderType>) => {
+      state.filterTimestamps = {
+        ...state.filterTimestamps,
+        [action.payload]: new Date().getTime(),
+      };
+    },
+    setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
+      state.all = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -246,8 +255,24 @@ export const transactionsSlice = createSlice({
   },
 });
 
-export const { clear, setTransactions } = transactionsSlice.actions;
-export const selectTransactions = (state: RootState) => state.transactions.all;
+export const { clear, setFilter, setTransactions } = transactionsSlice.actions;
+export const selectTransactions = (state: RootState) => {
+  const { all, filterTimestamps } = state.transactions;
+  const clearAllOrdersDate = filterTimestamps[ClearOrderType.all];
+  const clearFailedOrdersDate = filterTimestamps[ClearOrderType.failed];
+
+  return all
+    .filter(
+      (transaction) =>
+        !clearAllOrdersDate ||
+        filterTransactionByDate(transaction, clearAllOrdersDate)
+    )
+    .filter(
+      (transaction) =>
+        !clearFailedOrdersDate ||
+        filterTransactionByDate(transaction, clearFailedOrdersDate, "declined")
+    );
+};
 
 export const selectPendingTransactions = createSelector(
   selectTransactions,
@@ -284,5 +309,9 @@ export const selectPendingCancellations = (state: RootState) =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
+
+export const selectFilterTimestamps = (state: RootState) => {
+  return state.transactions.filterTimestamps;
+};
 
 export default transactionsSlice.reducer;

@@ -8,14 +8,15 @@ import {
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
+import { Tooltip } from "../../styled-components/Tooltip/Tooltip";
 import Button from "../Button/Button";
+import IconButton from "../IconButton/IconButton";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,
   InfoHeading,
   FormLabel,
 } from "../Typography/Typography";
-import { StyledTooltip } from "./subcomponents/ClearTransactionSelector/ClearTransactionSelector.styles";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
@@ -73,11 +74,12 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
-  overflow: hidden;
   transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
+  background: ${(props) => props.theme.colors.black};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -109,21 +111,8 @@ export const Legend = styled(InfoSubHeading)`
 `;
 
 export const LegendLine = styled.span`
+  text-transform: uppercase;
   background: transparent;
-`;
-
-export const IconBinContainer = styled.a`
-  display: flex;
-  margin-left: 0.5rem;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.white};
-  }
-
-  &:hover + ${StyledTooltip} {
-    display: flex;
-  }
 `;
 
 type TransactionsContainerProps = {

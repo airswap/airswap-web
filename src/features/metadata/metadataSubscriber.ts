@@ -1,6 +1,7 @@
 import { TokenInfo } from "@airswap/types";
 
 import { store } from "../../app/store";
+import { getTransactionsLocalStorageKey } from "../transactions/transactionUtils";
 import {
   SubmittedTransaction,
   TransactionsState,
@@ -9,7 +10,6 @@ import {
   getActiveTokensLocalStorageKey,
   getAllTokensLocalStorageKey,
   getCustomTokensLocalStorageKey,
-  getTransactionsLocalStorageKey,
 } from "./metadataApi";
 
 interface TokensCache {

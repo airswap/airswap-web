@@ -112,12 +112,6 @@ export const getSavedActiveTokensInfo = async (
   return uniqBy(matchingTokens, (token) => token.address);
 };
 
-export const getTransactionsLocalStorageKey: (
-  walletAddress: string,
-  chainId: number
-) => string = (walletAddress, chainId) =>
-  `airswap/transactions/${walletAddress}/${chainId}`;
-
 export const getProtocolFee = async (
   chainId: number,
   provider: Web3Provider

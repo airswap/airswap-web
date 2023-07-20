@@ -21,21 +21,19 @@ export type SelectOption = {
 };
 
 export type DropdownProps = {
+  isMenuOpen?: boolean;
   selectedOption: SelectOption;
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
   className?: string;
-  setIsSelectorOpen?: Dispatch<React.SetStateAction<boolean>>;
-  isMenuOpen?: boolean;
 };
 
 const Dropdown: FC<DropdownProps> = ({
+  isMenuOpen = false,
   selectedOption,
   options,
   onChange,
   className,
-  setIsSelectorOpen,
-  isMenuOpen = false,
 }) => {
   const [selectWidth, setSelectWidth] = useState<number | undefined>();
 
@@ -76,7 +74,6 @@ const Dropdown: FC<DropdownProps> = ({
     );
     setActiveOptionIndex(index);
     setActiveHoverIndex(index);
-    setIsSelectorOpen && setIsSelectorOpen(false);
   };
 
   const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -92,7 +89,10 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex} isMenuOpen={isMenuOpen}>
+      <SelectOptions
+        activeIndex={isMenuOpen ? 0 : activeOptionIndex}
+        isMenuOpen={isMenuOpen}
+      >
         {options.map((option, index) => (
           <Option
             key={option.value}

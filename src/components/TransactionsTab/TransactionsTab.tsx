@@ -10,14 +10,19 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { useAppDispatch } from "../../app/hooks";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import {
+  setTransactions,
+  SubmittedTransaction,
+} from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
+import { ClearOrderType } from "../../types/clearOrderType";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -40,16 +45,16 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
-  IconBinContainer,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
-import ClearTransactionSelector from "./subcomponents/ClearTransactionSelector/ClearTransactionSelector";
+import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
 type TransactionsTabType = {
   address: string;
   chainId: number;
   open: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
+  onClearTransactionsChange: (value: ClearOrderType) => void;
   /**
    * Callback function for when disconnect button is clicked
    */
@@ -65,15 +70,13 @@ const TransactionsTab = ({
   chainId,
   open,
   setTransactionsTabOpen,
+  onClearTransactionsChange,
   onDisconnectWalletClicked,
   transactions = [],
   tokens = [],
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
-  const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
-  const [isTooltip, setIsTooltip] = useState<boolean>(false);
-
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
@@ -155,11 +158,6 @@ const TransactionsTab = ({
 
   const balance = balances.values[nativeCurrencyAddress] || "0";
 
-  const handleSetIsSelectorOpen = () => {
-    setIsSelectorOpen(!isSelectorOpen);
-    setIsTooltip(false);
-  };
-
   return (
     <AnimatePresence initial={false}>
       {open && (
@@ -235,26 +233,15 @@ const TransactionsTab = ({
             </TransactionContainer>
             <LegendContainer $isVisible>
               <Legend>
-                <LegendLine>
-                  {t("wallet.completedTransactions").toUpperCase()}
-                </LegendLine>
+                <LegendLine>{t("wallet.completedTransactions")}</LegendLine>
               </Legend>
-              <IconBinContainer
-                onClick={handleSetIsSelectorOpen}
-                onMouseEnter={() => setIsTooltip(true)}
-                onMouseLeave={() => setIsTooltip(false)}
-              >
-                <Icon iconSize={1} name="bin" />
-              </IconBinContainer>
+              <ClearTransactionsSelector
+                address={address}
+                chainId={chainId}
+                transactions={transactions}
+                onChange={onClearTransactionsChange}
+              />
             </LegendContainer>
-            <ClearTransactionSelector
-              address={address}
-              chainId={chainId}
-              transactions={transactions}
-              isTooltip={isTooltip}
-              isSelectorOpen={isSelectorOpen}
-              setIsSelectorOpen={setIsSelectorOpen}
-            />
             <TransactionContainer>
               <AnimatePresence initial={false}>
                 {completedTransactions.slice(0, 10).map((transaction) => (
