@@ -86,7 +86,7 @@ export interface SubmittedWithdrawOrder extends SubmittedTransaction {
 
 export interface TransactionsState {
   all: SubmittedTransaction[];
-  filterTimestamps: {
+  filter: {
     [ClearOrderType.failed]?: number;
     [ClearOrderType.all]?: number;
   };
@@ -94,7 +94,7 @@ export interface TransactionsState {
 
 const initialState: TransactionsState = {
   all: [],
-  filterTimestamps: {},
+  filter: {},
 };
 
 function updateTransaction(params: {
@@ -194,10 +194,13 @@ export const transactionsSlice = createSlice({
       state.all = [];
     },
     setFilter: (state, action: PayloadAction<ClearOrderType>) => {
-      state.filterTimestamps = {
-        ...state.filterTimestamps,
+      state.filter = {
+        ...state.filter,
         [action.payload]: new Date().getTime(),
       };
+    },
+    setFilters: (state, action: PayloadAction<TransactionsState["filter"]>) => {
+      state.filter = action.payload;
     },
     setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
       state.all = action.payload;
@@ -255,11 +258,15 @@ export const transactionsSlice = createSlice({
   },
 });
 
-export const { clear, setFilter, setTransactions } = transactionsSlice.actions;
-export const selectTransactions = (state: RootState) => {
-  const { all, filterTimestamps } = state.transactions;
-  const clearAllOrdersDate = filterTimestamps[ClearOrderType.all];
-  const clearFailedOrdersDate = filterTimestamps[ClearOrderType.failed];
+export const { clear, setFilter, setFilters, setTransactions } =
+  transactionsSlice.actions;
+
+export const selectTransactions = (state: RootState) => state.transactions.all;
+
+export const selectFilteredTransactions = (state: RootState) => {
+  const { all, filter } = state.transactions;
+  const clearAllOrdersDate = filter[ClearOrderType.all];
+  const clearFailedOrdersDate = filter[ClearOrderType.failed];
 
   return all
     .filter(
@@ -310,8 +317,8 @@ export const selectPendingCancellations = (state: RootState) =>
     (tx) => tx.status === "processing" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
 
-export const selectFilterTimestamps = (state: RootState) => {
-  return state.transactions.filterTimestamps;
+export const selectTransactionsFilter = (state: RootState) => {
+  return state.transactions.filter;
 };
 
 export default transactionsSlice.reducer;

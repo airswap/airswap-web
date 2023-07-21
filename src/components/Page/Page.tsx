@@ -10,6 +10,7 @@ import { WalletProvider } from "../../constants/supportedWalletProviders";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { resetOrders } from "../../features/orders/ordersSlice";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
+import useTransactionsFilterFromLocalStorage from "../../features/transactions/useTransactionsFilterFromLocalStorage";
 import { Wallet } from "../../features/wallet/Wallet";
 import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
@@ -44,6 +45,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   } = useContext(InterfaceContext);
 
   useHistoricalTransactions();
+  useTransactionsFilterFromLocalStorage();
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 

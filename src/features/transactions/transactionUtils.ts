@@ -185,7 +185,7 @@ const isTransactionWithOrder = (
   return "order" in transaction;
 };
 
-export const getTransactionsFilterTimestampsLocalStorageKey: (
+export const getTransactionsFilterLocalStorageKey: (
   walletAddress: string,
   chainId: number
 ) => string = (walletAddress, chainId) =>

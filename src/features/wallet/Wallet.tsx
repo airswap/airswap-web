@@ -48,6 +48,7 @@ import {
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
+  selectFilteredTransactions,
   selectPendingTransactions,
   selectTransactions,
   setFilter,
@@ -82,7 +83,7 @@ export const Wallet: FC<WalletPropsType> = ({
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const { providerName } = useAppSelector(selectWallet);
-  const transactions = useAppSelector(selectTransactions);
+  const transactions = useAppSelector(selectFilteredTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
   const allTokens = useAppSelector(selectAllTokenInfo);
