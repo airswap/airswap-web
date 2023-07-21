@@ -16,21 +16,14 @@ import {
 } from "./ClearTransactionsSelector.styles";
 
 type ClearTransactionSelectorType = {
-  address: string;
-  chainId: number;
-  transactions: SubmittedTransaction[];
   onChange: (value: ClearOrderType) => void;
   className?: string;
 };
 
 const ClearTransactionsSelector: FC<ClearTransactionSelectorType> = ({
-  address,
-  chainId,
-  transactions,
   onChange,
   className,
 }) => {
-  const dispatch = useAppDispatch();
   const [
     isClearTransactionsDropdownOpen,
     toggleIsClearTransactionsDropdownOpen,

@@ -231,12 +231,7 @@ const TransactionsTab = ({
               <Legend>
                 <LegendLine>{t("wallet.completedTransactions")}</LegendLine>
               </Legend>
-              <ClearTransactionsSelector
-                address={address}
-                chainId={chainId}
-                transactions={transactions}
-                onChange={onClearTransactionsChange}
-              />
+              <ClearTransactionsSelector onChange={onClearTransactionsChange} />
             </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>
