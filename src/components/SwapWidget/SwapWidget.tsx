@@ -39,6 +39,7 @@ import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorT
 import {
   selectAllowances,
   selectBalances,
+  requestActiveTokenAllowancesSwap
 } from "../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -212,6 +213,8 @@ const SwapWidget: FC = () => {
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
+  const newSwapInitiated = !!isApproving || !!isSwapping || !!isWrapping || !!isRequestingQuotes
+
   useEffect(() => {
     setAllowanceFetchFailed(false);
     unsubscribeFromGasPrice();
@@ -255,7 +258,7 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     setAllowanceFetchFailed(
       allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
+      allowances.wrapper.status === "failed"
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
 
@@ -314,7 +317,7 @@ const SwapWidget: FC = () => {
     if (!tokenAddress) return false;
     if (
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
+      tokenAddress
       ] === undefined
     ) {
       // We don't currently know what the user's allowance is, this is an error
@@ -327,7 +330,7 @@ const SwapWidget: FC = () => {
     }
     return new BigNumber(
       allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
+      tokenAddress
       ]!
     )
       .div(10 ** (baseTokenInfo?.decimals || 18))
@@ -350,9 +353,8 @@ const SwapWidget: FC = () => {
       dispatch(setUserTokens({ tokenFrom, tokenTo }));
     }
     history.push({
-      pathname: `/${baseRoute}/${tokenFromAlias || tokenFrom}/${
-        tokenToAlias || tokenTo
-      }`,
+      pathname: `/${baseRoute}/${tokenFromAlias || tokenFrom}/${tokenToAlias || tokenTo
+        }`,
     });
   };
 
@@ -653,6 +655,7 @@ const SwapWidget: FC = () => {
         side: "sell",
       })
     );
+    library && dispatch(requestActiveTokenAllowancesSwap({ provider: library }))
     // subscribeToGasPrice();
     subscribeToTokenPrice(
       quoteTokenInfo!,
@@ -669,6 +672,7 @@ const SwapWidget: FC = () => {
     library,
     quoteToken,
     quoteTokenInfo,
+    newSwapInitiated
   ]);
 
   const takeBestOption = async () => {
