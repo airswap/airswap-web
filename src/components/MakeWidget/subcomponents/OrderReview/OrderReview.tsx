@@ -8,7 +8,6 @@ import { BigNumber } from "bignumber.js";
 import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../../../helpers/toRoundedNumberString";
-import useInsufficientBalance from "../../../../hooks/useInsufficientBalance";
 import useShouldDepositNativeTokenAmountInfo from "../../../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { OrderType } from "../../../../types/orderTypes";
 import { getTokenPairTranslation } from "../../helpers";
