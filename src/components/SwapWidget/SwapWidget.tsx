@@ -312,6 +312,15 @@ const SwapWidget: FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (showOrderSubmitted && activeTransaction?.status === "succeeded") {
+      library &&
+        dispatch(requestActiveTokenAllowancesSwap({
+          provider: library
+        }))
+    }
+  }, [showOrderSubmitted, activeTransaction, library])
+
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -655,7 +664,6 @@ const SwapWidget: FC = () => {
         side: "sell",
       })
     );
-    library && dispatch(requestActiveTokenAllowancesSwap({ provider: library }))
     // subscribeToGasPrice();
     subscribeToTokenPrice(
       quoteTokenInfo!,
@@ -672,7 +680,6 @@ const SwapWidget: FC = () => {
     library,
     quoteToken,
     quoteTokenInfo,
-    newSwapInitiated
   ]);
 
   const takeBestOption = async () => {
