@@ -8,9 +8,7 @@ import {
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
-import { Tooltip } from "../../styled-components/Tooltip/Tooltip";
 import Button from "../Button/Button";
-import IconButton from "../IconButton/IconButton";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import {
   InfoSubHeading,

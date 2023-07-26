@@ -13,6 +13,7 @@ export const StyledDropdown = styled(Dropdown)`
   top: 2.125rem;
   right: 2.125rem;
   min-width: 5rem;
+  z-index: 1;
 `;
 
 export const ClearListButtonTooltip = styled(Tooltip)`

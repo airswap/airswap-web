@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import { useToggle } from "@react-hookz/web";
 
-import { useAppDispatch } from "../../../../app/hooks";
-import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import { ClearOrderType } from "../../../../types/clearOrderType";
 import { SelectOption } from "../../../Dropdown/Dropdown";
 import getClearTransactionOptions from "../../helpers/getClearTransactionOptions";

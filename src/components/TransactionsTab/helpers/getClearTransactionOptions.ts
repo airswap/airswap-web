@@ -13,13 +13,5 @@ export default function getClearTransactionOptions(): SelectOption[] {
       label: i18n.t("common.failed"),
       value: ClearOrderType.failed,
     },
-    // {
-    //   label: t("common.approvals"),
-    //   value: t("common.approvals"),
-    // },
-    // {
-    //   label: t("common.swaps"),
-    //   value: t("common.swaps"),
-    // },
   ];
 }
