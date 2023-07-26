@@ -39,7 +39,7 @@ import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorT
 import {
   selectAllowances,
   selectBalances,
-  requestActiveTokenAllowancesSwap
+  requestActiveTokenAllowancesSwap,
 } from "../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -213,8 +213,6 @@ const SwapWidget: FC = () => {
     baseTokenInfo?.address === nativeCurrencyAddress &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
-  const newSwapInitiated = !!isApproving || !!isSwapping || !!isWrapping || !!isRequestingQuotes
-
   useEffect(() => {
     setAllowanceFetchFailed(false);
     unsubscribeFromGasPrice();
@@ -315,11 +313,13 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     if (showOrderSubmitted && activeTransaction?.status === "succeeded") {
       library &&
-        dispatch(requestActiveTokenAllowancesSwap({
-          provider: library
-        }))
+        dispatch(
+          requestActiveTokenAllowancesSwap({
+            provider: library,
+          })
+        );
     }
-  }, [showOrderSubmitted, activeTransaction, library])
+  }, [showOrderSubmitted, activeTransaction, library]);
 
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
