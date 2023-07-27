@@ -310,17 +310,6 @@ const SwapWidget: FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (showOrderSubmitted && activeTransaction?.status === "succeeded") {
-      library &&
-        dispatch(
-          requestActiveTokenAllowancesSwap({
-            provider: library,
-          })
-        );
-    }
-  }, [showOrderSubmitted, activeTransaction, library]);
-
   const hasSufficientAllowance = (tokenAddress: string | undefined) => {
     if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
     if (!tokenAddress) return false;
@@ -735,6 +724,8 @@ const SwapWidget: FC = () => {
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount("");
+        library && dispatch(requestActiveTokenAllowancesSwap({ provider: library })
+        );
         break;
 
       case ButtonActions.reloadPage:
