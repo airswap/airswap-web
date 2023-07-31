@@ -41,11 +41,12 @@ const useSwapLogs = () => {
       );
 
       const firstTxBlockSwapContract =
-        chainId && SwapERC20.blockNumbers[chainId as keyof typeof SwapERC20.blockNumbers];
+        chainId &&
+        SwapERC20.blockNumbers[chainId as keyof typeof SwapERC20.blockNumbers];
       const firstTxBlockWrapperContract =
-        chainId && Wrapper.blockNumbers[chainId as keyof typeof Wrapper.blockNumbers];
+        chainId &&
+        Wrapper.blockNumbers[chainId as keyof typeof Wrapper.blockNumbers];
       const currentBlock = await provider?.getBlockNumber();
-
 
       const [lastLookSwapLogs, rfqSwapLogs, wrappedSwapLogs] =
         await Promise.all([

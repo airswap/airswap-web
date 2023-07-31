@@ -13,6 +13,7 @@
   },
   "common": {
     "AirSwap": "AirSwap",
+    "all": "All",
     "account": "Account",
     "active": "Active",
     "back": "Back",
@@ -228,6 +229,7 @@
     "activeTransactions": "Active transactions",
     "approve": "Approve {{symbol}}",
     "completedTransactions": "Completed transactions",
+    "clearTransactions": "Clear list",
     "connectWallet": "Connect Wallet",
     "copyAddress": "Copy address",
     "dayAgo_one": "{{count}} day ago",

@@ -9,6 +9,7 @@ export type IconButtonProps = {
   icon: keyof typeof icons;
   iconSize?: number;
   tabIndex?: number;
+  onBlur?: () => void;
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -26,6 +27,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       onMouseEnter,
       onMouseLeave,
       className,
+      onBlur,
       onClick,
     },
     ref
@@ -36,6 +38,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         aria-label={ariaLabel}
         tabIndex={tabIndex}
         className={className}
+        onBlur={onBlur}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

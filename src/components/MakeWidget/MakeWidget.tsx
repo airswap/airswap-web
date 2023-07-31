@@ -59,7 +59,6 @@ import useValidAddress from "../../hooks/useValidAddress";
 import { AppRoutes } from "../../routes";
 import { OrderScopeType, OrderType } from "../../types/orderTypes";
 import { TokenSelectModalTypes } from "../../types/tokenSelectModalTypes";
-import Checkbox from "../Checkbox/Checkbox";
 import { SelectOption } from "../Dropdown/Dropdown";
 import OrderTypesModal from "../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
@@ -72,7 +71,6 @@ import {
   OrderTypeSelectorAndRateFieldWrapper,
   StyledActionButtons,
   StyledAddressInput,
-  StyledInputSection,
   StyledOrderTypeSelector,
   StyledRateField,
   StyledTooltip,
