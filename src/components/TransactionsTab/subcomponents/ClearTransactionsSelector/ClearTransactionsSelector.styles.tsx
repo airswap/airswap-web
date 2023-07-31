@@ -24,6 +24,7 @@ export const ClearListButtonTooltip = styled(Tooltip)`
   max-width: min-content;
   white-space: nowrap;
   pointer-events: none;
+  z-index: 1;
 `;
 
 export const ClearListButton = styled(IconButton)`
