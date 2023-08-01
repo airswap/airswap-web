@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";

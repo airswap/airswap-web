@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Title } from "../../../Typography/Typography";
-import { MakeWidgetState } from "../../MakeWidget";
 import {
   StyledExpirySelector,
   StyledWidgetHeader,

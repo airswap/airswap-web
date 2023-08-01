@@ -1,7 +1,6 @@
 import styled from "styled-components/macro";
 
 import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
-import { MakeWidgetState } from "../../MakeWidget";
 import { ExpirySelector } from "../ExpirySelector/ExpirySelector";
 
 export const StyledWidgetHeader = styled(WidgetHeader)``;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { WETH } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 

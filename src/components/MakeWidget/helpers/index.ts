@@ -1,10 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import i18n from "i18next";
 
-import { getHumanReadableNumber } from "../../../helpers/getHumanReadableNumber";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
-import { MakeWidgetState } from "../MakeWidget";
 
 export const getActionButtonTranslation = (
   hasInsufficientAllowance: boolean,

@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { MakeWidgetState } from "../../MakeWidget";
 import { getActionButtonTranslation } from "../../helpers";
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 

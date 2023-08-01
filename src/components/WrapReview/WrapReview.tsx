@@ -6,7 +6,6 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import toRoundedNumberString from "../../helpers/toRoundedNumberString";
 import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
