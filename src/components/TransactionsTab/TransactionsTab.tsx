@@ -18,6 +18,7 @@ import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
+import { ClearOrderType } from "../../types/clearOrderType";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -42,12 +43,14 @@ import {
   BackdropFilter,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
+import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
 type TransactionsTabType = {
   address: string;
   chainId: number;
   open: boolean;
   setTransactionsTabOpen: (x: boolean) => void;
+  onClearTransactionsChange: (value: ClearOrderType) => void;
   /**
    * Callback function for when disconnect button is clicked
    */
@@ -63,6 +66,7 @@ const TransactionsTab = ({
   chainId,
   open,
   setTransactionsTabOpen,
+  onClearTransactionsChange,
   onDisconnectWalletClicked,
   transactions = [],
   tokens = [],
@@ -225,10 +229,9 @@ const TransactionsTab = ({
             </TransactionContainer>
             <LegendContainer $isVisible>
               <Legend>
-                <LegendLine>
-                  {t("wallet.completedTransactions").toUpperCase()}
-                </LegendLine>
+                <LegendLine>{t("wallet.completedTransactions")}</LegendLine>
               </Legend>
+              <ClearTransactionsSelector onChange={onClearTransactionsChange} />
             </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>

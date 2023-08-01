@@ -9,7 +9,6 @@ import { BigNumber } from "bignumber.js";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../helpers/toRoundedNumberString";
-import useShouldDepositNativeTokenAmountInfo from "../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
 import {
   ReviewListItem,

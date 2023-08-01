@@ -32,7 +32,6 @@ import {
 import {
   reset,
   selectTakeOtcErrors,
-  selectTakeOtcStatus,
   setErrors,
 } from "../../features/takeOtc/takeOtcSlice";
 import switchToDefaultChain from "../../helpers/switchToDefaultChain";
@@ -93,8 +92,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
-  const { indexerUrls, orders, bestSwapOrder } =
-    useAppSelector(selectIndexerReducer);
+  const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [state, setState] = useState<OrderDetailWidgetState>(

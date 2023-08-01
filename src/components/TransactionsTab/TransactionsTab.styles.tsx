@@ -70,11 +70,14 @@ export const StyledTransactionLink = styled(TransactionLink)`
 
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
-  overflow: hidden;
   transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
+  background: ${(props) => props.theme.colors.black};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -89,6 +92,7 @@ export const Legend = styled(InfoSubHeading)`
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1rem;
+  width: 100%;
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:after {
@@ -105,6 +109,7 @@ export const Legend = styled(InfoSubHeading)`
 `;
 
 export const LegendLine = styled.span`
+  text-transform: uppercase;
   background: transparent;
 `;
 

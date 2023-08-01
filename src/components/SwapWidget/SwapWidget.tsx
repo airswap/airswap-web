@@ -39,6 +39,7 @@ import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorT
 import {
   selectAllowances,
   selectBalances,
+  requestActiveTokenAllowancesSwap,
 } from "../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -724,6 +725,8 @@ const SwapWidget: FC = () => {
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount("");
+        library &&
+          dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
         break;
 
       case ButtonActions.reloadPage:
