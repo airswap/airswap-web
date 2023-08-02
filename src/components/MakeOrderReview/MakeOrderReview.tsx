@@ -2,31 +2,36 @@ import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/types";
+import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../../constants/nativeCurrency";
-import { getExpiryTranslation } from "../../../../helpers/getExpiryTranslation";
-import toRoundedNumberString from "../../../../helpers/toRoundedNumberString";
-import useShouldDepositNativeTokenAmountInfo from "../../../../hooks/useShouldDepositNativeTokenAmountInfo";
-import { OrderType } from "../../../../types/orderTypes";
-import { getTokenPairTranslation } from "../../helpers";
-import WalletLink from "../WalletLink/WalletLink";
+import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
+import toRoundedNumberString from "../../helpers/toRoundedNumberString";
+import { ReviewList } from "../../styled-components/ReviewList/ReviewList";
 import {
-  Container,
-  ReviewList,
   ReviewListItem,
   ReviewListItemLabel,
   ReviewListItemValue,
+} from "../../styled-components/ReviewListItem/ReviewListItem";
+import { OrderType } from "../../types/orderTypes";
+import { getTokenPairTranslation } from "../MakeWidget/helpers";
+import ProtocolFeeOverlay from "../MakeWidget/subcomponents/ProtocolFeeOverlay/ProtocolFeeOverlay";
+import WalletLink from "../MakeWidget/subcomponents/WalletLink/WalletLink";
+import OrderReviewToken from "../OrderReviewToken/OrderReviewToken";
+import { Title } from "../Typography/Typography";
+import {
+  Container,
+  StyledActionButtons,
   StyledIconButton,
-  StyledOrderReviewToken,
-} from "./OrderReview.styles";
+  StyledWidgetHeader,
+} from "./MakeOrderReview.styles";
 
-interface OrderReviewProps {
+interface MakeOrderReviewProps {
   chainId?: number;
   expiry: number;
   orderType: OrderType;
-  protocolFee: number;
   senderAddress: string;
   senderAmount: string;
   senderToken: TokenInfo | null;
@@ -34,15 +39,15 @@ interface OrderReviewProps {
   signerAmountPlusFee: string;
   signerToken: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
-  onFeeButtonClick: () => void;
+  onEditButtonClick: () => void;
+  onSignButtonClick: () => void;
   className?: string;
 }
 
-const OrderReview: FC<OrderReviewProps> = ({
+const MakeOrderReview: FC<MakeOrderReviewProps> = ({
   chainId,
   expiry,
   orderType,
-  protocolFee,
   senderAddress,
   senderAmount,
   senderToken,
@@ -50,10 +55,12 @@ const OrderReview: FC<OrderReviewProps> = ({
   signerAmountPlusFee,
   signerToken,
   wrappedNativeToken,
-  onFeeButtonClick,
+  onEditButtonClick,
+  onSignButtonClick,
   className = "",
 }): ReactElement => {
   const { t } = useTranslation();
+  const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
   const isSignerTokenNativeToken =
     signerToken?.address === nativeCurrencyAddress;
@@ -65,9 +72,6 @@ const OrderReview: FC<OrderReviewProps> = ({
   const justifiedSenderToken = isSenderTokenNativeToken
     ? wrappedNativeToken
     : senderToken;
-
-  const { ownedWrappedNativeTokenAmount, wrappedNativeTokenSymbol } =
-    useShouldDepositNativeTokenAmountInfo();
 
   const rate = useMemo(() => {
     return getTokenPairTranslation(
@@ -87,6 +91,7 @@ const OrderReview: FC<OrderReviewProps> = ({
       .toString();
     return toRoundedNumberString(amount, justifiedSignerToken?.decimals);
   }, [signerAmount, signerAmountPlusFee, justifiedSignerToken]);
+
   const roundedSignerAmountPlusFee = useMemo(() => {
     return toRoundedNumberString(
       signerAmountPlusFee,
@@ -96,8 +101,13 @@ const OrderReview: FC<OrderReviewProps> = ({
 
   return (
     <Container className={className}>
+      <StyledWidgetHeader>
+        <Title type="h2" as="h1">
+          {t("common.review")}
+        </Title>
+      </StyledWidgetHeader>
       {signerToken && (
-        <StyledOrderReviewToken
+        <OrderReviewToken
           amount={signerAmount}
           label={t("common.send")}
           tokenSymbol={justifiedSignerToken?.symbol || "?"}
@@ -105,7 +115,7 @@ const OrderReview: FC<OrderReviewProps> = ({
         />
       )}
       {senderToken && (
-        <StyledOrderReviewToken
+        <OrderReviewToken
           amount={senderAmount}
           label={t("common.receive")}
           tokenSymbol={justifiedSenderToken?.symbol || "?"}
@@ -141,7 +151,7 @@ const OrderReview: FC<OrderReviewProps> = ({
             {t("orders.protocolFee")}
             <StyledIconButton
               icon="information-circle-outline"
-              onClick={onFeeButtonClick}
+              onClick={toggleShowFeeInfo}
             />
           </ReviewListItemLabel>
           <ReviewListItemValue>
@@ -156,8 +166,19 @@ const OrderReview: FC<OrderReviewProps> = ({
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
+
+      <StyledActionButtons
+        backButtonText={t("common.edit")}
+        onEditButtonClick={onEditButtonClick}
+        onSignButtonClick={onSignButtonClick}
+      />
+
+      <ProtocolFeeOverlay
+        isHidden={showFeeInfo}
+        onCloseButtonClick={() => toggleShowFeeInfo()}
+      />
     </Container>
   );
 };
 
-export default OrderReview;
+export default MakeOrderReview;

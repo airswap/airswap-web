@@ -166,7 +166,6 @@
     "searchByNameOrAddress": "Search name or paste address",
     "selectedServer": "Selected {{serverUrl}} as custom server",
     "settings": "Settings",
-    "shouldDepositNativeTokenAmount": "You currently own {{ownedWrappedNativeTokenAmount}} {{wrappedNativeTokenSymbol}}. You will need to wrap at least",
     "specificTaker": "Specific Taker",
     "startByCreatingANewOrder": "Start by creating a new order",
     "submitted": "Transaction Submitted",

@@ -1,10 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import i18n from "i18next";
 
-import { getHumanReadableNumber } from "../../../helpers/getHumanReadableNumber";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
-import { MakeWidgetState } from "../MakeWidget";
 
 export const getActionButtonTranslation = (
   hasInsufficientAllowance: boolean,
@@ -17,7 +15,6 @@ export const getActionButtonTranslation = (
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   walletIsNotConnected: boolean,
-  widgetState: MakeWidgetState,
   makerTokenSymbol?: string
 ): string => {
   if (walletIsNotConnected) {
@@ -48,10 +45,6 @@ export const getActionButtonTranslation = (
     return i18n.t("orders.insufficientBalance", { symbol: makerTokenSymbol });
   }
 
-  if (widgetState === MakeWidgetState.list) {
-    return i18n.t("common.review");
-  }
-
   if (shouldDepositNativeToken) {
     return `${i18n.t("common.wrap")} ${makerTokenSymbol}`;
   }
@@ -60,7 +53,7 @@ export const getActionButtonTranslation = (
     return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
   }
 
-  return i18n.t("common.sign");
+  return i18n.t("common.review");
 };
 
 export const getNewTokenPair = (

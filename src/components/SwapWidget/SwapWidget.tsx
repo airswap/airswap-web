@@ -725,8 +725,8 @@ const SwapWidget: FC = () => {
         unsubscribeFromTokenPrice();
         LastLook.unsubscribeAllServers();
         setBaseAmount("");
-        library && dispatch(requestActiveTokenAllowancesSwap({ provider: library })
-        );
+        library &&
+          dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
         break;
 
       case ButtonActions.reloadPage:

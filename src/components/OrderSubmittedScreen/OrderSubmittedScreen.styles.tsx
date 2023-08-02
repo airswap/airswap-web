@@ -2,15 +2,17 @@ import { MdDoneAll } from "react-icons/md";
 
 import styled from "styled-components/macro";
 
-import Icon from "../../../Icon/Icon";
-import TransactionLink from "../../../TransactionLink/TransactionLink";
-import {
-  InfoHeading,
-  InfoSubHeading,
-  Link,
-} from "../../../Typography/Typography";
+import Button from "../Button/Button";
+import TransactionLink from "../TransactionLink/TransactionLink";
+import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,4 +37,8 @@ export const DoneAllIcon = styled(MdDoneAll)`
   margin: 2rem auto;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+`;
+
+export const MakeNewOrderButton = styled(Button)`
+  width: 100%;
 `;
