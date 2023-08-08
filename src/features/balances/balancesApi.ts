@@ -127,9 +127,9 @@ subscribeToTransfersAndApprovals = ({
 
       // Ignore approvals for other spenders.
       const approvalAddress = parsedEvent.args[1].toLowerCase();
-      const wrapperAddress = Wrapper.getAddress(
+      const wrapperAddress = (Wrapper.getAddress(
         provider.network.chainId
-      ).toLowerCase();
+      ) || '').toLowerCase();
       if (
         isApproval &&
         approvalAddress !== spenderAddress.toLowerCase() &&

@@ -424,25 +424,31 @@ const SwapWidget: FC = () => {
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
-        let rfqDispatchResult = dispatch(
-          request({
-            servers: rfqServers,
-            senderToken: _baseToken,
-            senderAmount: baseAmount,
-            signerToken: _quoteToken,
-            senderTokenDecimals: baseTokenInfo!.decimals,
-            senderWallet: usesWrapper ? Wrapper.getAddress(chainId!) : account!,
-            proxyingFor: usesWrapper ? account! : undefined,
-          })
-        );
-        rfqPromise = rfqDispatchResult
-          .then((result) => {
-            return unwrapResult(result);
-          })
-          .then((orders) => {
-            if (!orders.length) throw new Error("no valid orders");
-            return orders;
-          });
+        const senderWallet = usesWrapper ? Wrapper.getAddress(chainId!) : account!
+        if (senderWallet) {
+          let rfqDispatchResult = dispatch(
+            request({
+              servers: rfqServers,
+              senderToken: _baseToken,
+              senderAmount: baseAmount,
+              signerToken: _quoteToken,
+              senderTokenDecimals: baseTokenInfo!.decimals,
+              senderWallet: senderWallet,
+              proxyingFor: usesWrapper ? account! : undefined,
+            })
+          );
+          rfqPromise = rfqDispatchResult
+            .then((result) => {
+              return unwrapResult(result);
+            })
+            .then((orders) => {
+              if (!orders.length) throw new Error("no valid orders");
+              return orders;
+            });
+        } else {
+          console.error("No sender wallet or wrapper for selected chain", chainId);
+          throw new Error("No sender wallet or wrapper for selected chain");
+        }
       }
 
       if (lastLookServers.length) {
@@ -524,9 +530,11 @@ const SwapWidget: FC = () => {
   const swapWithRequestForQuote = async () => {
     try {
       if (!library) return;
+      const senderWallet = swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!
+      if (!senderWallet) return;
       const errors = await check(
         bestTradeOption!.order!,
-        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!,
+        senderWallet,
         chainId || 1,
         library
       );
