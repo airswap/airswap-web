@@ -42,7 +42,9 @@ const useSwapLogs = () => {
 
       const firstTxBlockSwapContract =
         chainId &&
-        SwapERC20.deployedBlocks[chainId as keyof typeof SwapERC20.deployedBlocks];
+        SwapERC20.deployedBlocks[
+          chainId as keyof typeof SwapERC20.deployedBlocks
+        ];
       const firstTxBlockWrapperContract =
         chainId &&
         Wrapper.deployedBlocks[chainId as keyof typeof Wrapper.deployedBlocks];

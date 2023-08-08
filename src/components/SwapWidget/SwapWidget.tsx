@@ -424,7 +424,9 @@ const SwapWidget: FC = () => {
         lastLookPromises: Promise<Pricing>[] | null = null;
 
       if (rfqServers.length) {
-        const senderWallet = usesWrapper ? Wrapper.getAddress(chainId!) : account!
+        const senderWallet = usesWrapper
+          ? Wrapper.getAddress(chainId!)
+          : account!;
         if (senderWallet) {
           let rfqDispatchResult = dispatch(
             request({
@@ -446,7 +448,10 @@ const SwapWidget: FC = () => {
               return orders;
             });
         } else {
-          console.error("No sender wallet or wrapper for selected chain", chainId);
+          console.error(
+            "No sender wallet or wrapper for selected chain",
+            chainId
+          );
           throw new Error("No sender wallet or wrapper for selected chain");
         }
       }
@@ -530,7 +535,8 @@ const SwapWidget: FC = () => {
   const swapWithRequestForQuote = async () => {
     try {
       if (!library) return;
-      const senderWallet = swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!
+      const senderWallet =
+        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!;
       if (!senderWallet) return;
       const errors = await check(
         bestTradeOption!.order!,

@@ -71,7 +71,7 @@ export const createOtcOrder = createAsyncThunk(
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         params.library.getSigner(),
-        SwapERC20.getAddress(params.chainId) || '',
+        SwapERC20.getAddress(params.chainId) || "",
         params.chainId
       );
 
@@ -90,7 +90,7 @@ export const createOtcOrder = createAsyncThunk(
         ...unsignedOrder,
         ...signature,
         chainId: params.chainId,
-        swapContract: SwapERC20.getAddress(params.chainId) || '',
+        swapContract: SwapERC20.getAddress(params.chainId) || "",
       };
 
       dispatch(setUserOrder(fullOrder));

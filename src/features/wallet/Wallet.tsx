@@ -249,7 +249,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: SwapERC20.getAddress(chainId) || '',
+        spenderAddress: SwapERC20.getAddress(chainId) || "",
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
