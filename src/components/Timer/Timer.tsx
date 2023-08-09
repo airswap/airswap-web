@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 
+import { Container } from "./Timer.styles";
+
 export type TimerProps = {
   /**
    * Expiration time in unix timestamp (s)
    */
   expiryTime: number;
   onTimerComplete?: () => void;
+  className?: string;
 };
 
 export const Timer = ({
   expiryTime = Date.now() / 1000 + 300,
   onTimerComplete,
+  className,
 }: TimerProps) => {
   const [distance, setDistance] = useState<number>(
     Math.floor(expiryTime - Date.now() / 1000)
@@ -35,12 +39,12 @@ export const Timer = ({
   }, [expiryTime, onTimerComplete]);
 
   return distance !== undefined ? (
-    <span>
+    <Container className={className}>
       {Math.floor(distance / 60)}:
       {Math.floor(distance % 60) < 10
         ? `0${Math.floor(distance % 60)}`
         : Math.floor(distance % 60)}
-    </span>
+    </Container>
   ) : null;
 };
 

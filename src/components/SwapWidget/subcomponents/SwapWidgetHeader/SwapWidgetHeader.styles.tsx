@@ -2,6 +2,7 @@ import styled, { css } from "styled-components/macro";
 
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
+import Timer from "../../../Timer/Timer";
 
 export const PillStyle = css`
   display: flex;
@@ -31,11 +32,16 @@ export const Quote = styled.span`
 `;
 
 export const NewQuoteText = styled.span`
-  margin-right: 0.25rem;
+  margin-right: 0.3125rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 `;
 
 export const StyledIcon = styled(Icon)`
   margin-right: 0.375rem;
+`;
+
+export const StyledTimer = styled(Timer)`
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
 `;
