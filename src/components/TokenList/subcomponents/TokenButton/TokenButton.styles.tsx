@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components/macro";
 import { css } from "styled-components/macro";
 
 import breakPoints from "../../../../style/breakpoints";
-import { BorderlessButtonStyle } from "../../../../style/mixins";
+import { BorderlessButtonStyle, TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import Icon from "../../../Icon/Icon";
 import TransactionLink from "../../subcomponents/TransactionLink/TransactionLink";
@@ -20,14 +20,13 @@ export const TokenNameContainer = styled.div`
 `;
 
 export const TokenName = styled.h3`
-  width: fit;
-  text-align: left;
+  ${TextEllipsis};
+
   line-height: 1.25;
+  max-width: 8.5rem;
   font-size: 1rem;
   font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: left;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
 
@@ -87,10 +86,7 @@ export const Container = styled.button<ContainerProps>`
 
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: ${(props) =>
-    props.showDeleteButton
-      ? "1.25rem calc(100% - 7.5rem) 3.25rem"
-      : "1.25rem 50% calc(50% - 4.5rem)"};
+  grid-template-columns: 1.25rem 50% calc(50% - 3.5rem);
   grid-gap: 1rem;
   align-items: center;
   position: relative;
@@ -130,8 +126,8 @@ export const Container = styled.button<ContainerProps>`
   @media ${breakPoints.phoneOnly} {
     grid-template-columns: ${(props) =>
       props.showDeleteButton
-        ? "1.25rem calc(100% - 7.5rem) 3.25rem"
-        : "1.25rem calc(50% - 2rem) calc(50% - 2.5rem)"};
+        ? "1.25rem calc(100% - 7.5rem) 4.25rem"
+        : "1.25rem calc(50% - 2rem) calc(50% - 1.5rem)"};
     align-items: flex-start;
     height: 2.5rem;
   }
