@@ -152,7 +152,7 @@ const LastLookProvider: FC = ({ children }) => {
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         library.getSigner(),
-        SwapERC20.getAddress(chainId!),
+        SwapERC20.getAddress(chainId!) || "",
         chainId!
       );
       const order: OrderERC20 = {
