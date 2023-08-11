@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../constants/configParams";
 import { ProtocolType } from "../../../../features/transactions/transactionsSlice";
 import { WidgetHeader } from "../../../../styled-components/WidgetHeader/WidgetHeader";
-import Timer from "../../../Timer/Timer";
 import { Title } from "../../../Typography/Typography";
 import {
   Button,
   NewQuoteText,
   Quote,
   StyledIcon,
+  StyledTimer,
 } from "./SwapWidgetHeader.styles";
 
 interface SwapWidgetHeaderProps {
@@ -50,7 +50,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
       {protocol === "request-for-quote-erc20" && isQuote && (
         <Quote>
           <NewQuoteText>{t("orders.newQuoteIn")}</NewQuoteText>
-          {expiryTime && <Timer expiryTime={expiryTime} />}
+          {expiryTime && <StyledTimer expiryTime={expiryTime} />}
         </Quote>
       )}
     </WidgetHeader>
