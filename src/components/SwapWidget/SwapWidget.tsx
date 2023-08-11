@@ -336,7 +336,7 @@ const SwapWidget: FC = () => {
   };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
-    const baseRoute = `/${AppRoutes.swap}`;
+    const baseRoute = AppRoutes.swap;
     const tokenPairs = getTokenPairs(type, value, quoteToken, baseToken);
     const tokenFrom = transformAddressAliasToAddress(tokenPairs.tokenFrom!);
     const tokenTo = transformAddressAliasToAddress(tokenPairs.tokenTo!);
