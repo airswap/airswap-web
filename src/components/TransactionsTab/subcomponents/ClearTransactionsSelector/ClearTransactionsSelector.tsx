@@ -54,7 +54,7 @@ const ClearTransactionsSelector: FC<ClearTransactionSelectorType> = ({
       />
       {!hideTooltip && (
         <ClearListButtonTooltip>
-          {t("wallet.clearTransactions")}
+          {t("wallet.cleanupOptions")}
         </ClearListButtonTooltip>
       )}
       {isClearTransactionsDropdownOpen && (

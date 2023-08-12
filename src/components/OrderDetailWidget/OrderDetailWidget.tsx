@@ -346,6 +346,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   return (
     <Container>
       <OrderDetailWidgetHeader
+        isMakerOfSwap={userIsMakerOfSwap}
         isOrderStatusLoading={isOrderStatusLoading}
         expiry={parsedExpiry}
         orderStatus={orderStatus}

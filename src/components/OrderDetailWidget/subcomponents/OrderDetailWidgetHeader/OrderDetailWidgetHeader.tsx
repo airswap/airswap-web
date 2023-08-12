@@ -12,6 +12,7 @@ import {
 } from "./OrderDetailWidgetHeader.styles";
 
 type OrderDetailWidgetHeaderProps = {
+  isMakerOfSwap: boolean;
   isOrderStatusLoading: boolean;
   expiry: Date;
   orderStatus: OrderStatus;
@@ -23,6 +24,7 @@ type OrderDetailWidgetHeaderProps = {
 };
 
 const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
+  isMakerOfSwap,
   isOrderStatusLoading,
   expiry,
   orderStatus,
@@ -37,7 +39,7 @@ const OrderDetailWidgetHeader: FC<OrderDetailWidgetHeaderProps> = ({
   return (
     <StyledWidgetHeader className={className}>
       <Title type="h2" as="h1">
-        {t("common.swap")}
+        {isMakerOfSwap ? t("common.order") : t("common.otc")}
       </Title>
       <InfoContainer>
         <StyledOrderRecipientInfo
