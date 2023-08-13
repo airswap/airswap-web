@@ -30,7 +30,7 @@ const useSwapType = (
       return "wrapOrUnwrap";
     }
 
-    if ([token1.address, token2.address].includes(eth)) {
+    if ([token1.address].includes(eth)) {
       return "swapWithWrap";
     }
 

@@ -8,7 +8,7 @@ import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
-import { AppError } from "../../errors/appError";
+import { AppError, AppErrorType } from "../../errors/appError";
 import {
   SwapError,
   transformSwapErrorToAppError,
@@ -43,7 +43,8 @@ async function swapWrapper(
   order: OrderERC20
 ) {
   return (await Wrapper.getContract(provider.getSigner(), chainId)).swap(
-    ...orderERC20ToParams(order)
+    ...orderERC20ToParams(order),
+    { value: order.senderAmount }
   );
 }
 
@@ -191,7 +192,8 @@ export async function check(
   order: OrderERC20,
   senderWallet: string,
   chainId: number,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.Web3Provider,
+  isSwapWithWrap?: boolean
 ): Promise<AppError[]> {
   const [strings, count] = await (
     await SwapERC20.getContract(provider, chainId)
@@ -199,11 +201,20 @@ export async function check(
 
   const errors = checkResultToErrors(strings, count) as SwapError[];
 
-  if (errors.length) {
+  // If swapping with wrapper then ignore sender errors.
+  const filteredErrors = isSwapWithWrap
+    ? errors.filter((error) => {
+        return !(
+          error === "SenderAllowanceLow" || error === "SenderBalanceLow"
+        );
+      })
+    : errors;
+
+  if (filteredErrors.length) {
     console.error(errors);
   }
 
-  return errors.map((error) => transformSwapErrorToAppError(error));
+  return filteredErrors.map((error) => transformSwapErrorToAppError(error));
 }
 
 export async function getNonceUsed(
