@@ -168,7 +168,9 @@ const TokenSelect: FC<TokenSelectProps> = ({
           {showMaxInfoButton && !showMaxButton && !readOnly && (
             <InfoLabel
               onMouseOver={onInfoLabelMouseEnter}
+              onFocus={onInfoLabelMouseEnter}
               onMouseOut={onInfoLabelMouseLeave}
+              onBlur={onInfoLabelMouseLeave}
             >
               i
             </InfoLabel>
