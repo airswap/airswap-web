@@ -542,20 +542,10 @@ const SwapWidget: FC = () => {
         bestTradeOption!.order!,
         senderWallet,
         chainId || 1,
-        library
+        library,
+        swapType === "swapWithWrap"
       );
 
-      // If swapping with wrapper then ignore sender errors.
-      if (swapType === "swapWithWrap") {
-        for (let i = errors.length - 1; i >= 0; i--) {
-          if (
-            errors[i].type === AppErrorType.senderAllowanceLow ||
-            errors[i].type === AppErrorType.senderBalanceLow
-          ) {
-            errors.splice(i, 1);
-          }
-        }
-      }
       if (errors.length) {
         dispatch(setErrors(errors));
         setIsSwapping(false);
