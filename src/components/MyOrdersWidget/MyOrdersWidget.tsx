@@ -98,7 +98,7 @@ const MyOrdersWidget: FC = () => {
     <Container>
       {!!sortedUserOrders.length && (
         <>
-          <MyOrdersWidgetHeader title={t("common.myOrders")} />
+          <MyOrdersWidgetHeader title={t("common.otc")} />
           <MyOrdersList
             activeSortType={activeSortType}
             orders={sortedUserOrders}
