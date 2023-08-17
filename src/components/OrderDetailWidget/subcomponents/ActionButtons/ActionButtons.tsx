@@ -24,9 +24,7 @@ type ActionButtonsProps = {
   isMakerOfSwap: boolean;
   isNetworkUnsupported: boolean;
   isNotConnected: boolean;
-  isOrderSubmitted: boolean;
   shouldDepositNativeToken: boolean;
-  orderType: OrderType;
   senderTokenSymbol?: string;
   onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
@@ -44,101 +42,125 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isMakerOfSwap,
   isNotConnected,
   isNetworkUnsupported,
-  isOrderSubmitted,
   shouldDepositNativeToken,
-  orderType,
   senderTokenSymbol,
   onBackButtonClick,
   onActionButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
-  const isPrivate = orderType === OrderType.private;
-  const isButtonDisabled =
-    ((hasInsufficientBalance && !isMakerOfSwap) ||
-      (!isIntendedRecipient && !isMakerOfSwap) ||
-      isDifferentChainId) &&
-    !isNotConnected &&
-    !isTaken &&
-    !isExpired &&
-    !shouldDepositNativeToken;
 
-  const signButtonText = () => {
-    if (isNetworkUnsupported) {
-      return t("wallet.switchNetwork");
-    }
+  if (isNotConnected) {
+    return (
+      <Container className={className}>
+        <SignButton
+          isFilled
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.connectWallet)}
+        >
+          {t("wallet.connectWallet")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (isNotConnected) {
-      return t("wallet.connectWallet");
-    }
+  if (isNetworkUnsupported || isDifferentChainId) {
+    return (
+      <Container className={className}>
+        <SignButton
+          isFilled
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.switchNetwork)}
+        >
+          {t("wallet.switchNetwork")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (isExpired || isTaken || isCanceled) {
-      return t("orders.makeNewOrder");
-    }
+  if (isExpired || isTaken || isCanceled) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.restart)}
+        >
+          {t("orders.makeNewOrder")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (isMakerOfSwap) {
-      return t("orders.cancelOrder");
-    }
+  if (isMakerOfSwap) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.cancel)}>
+          {t("orders.cancelOrder")}
+        </BackButton>
+        <SignButton intent="primary">{t("orders.copyLink")}</SignButton>
+      </Container>
+    );
+  }
 
-    if (!isIntendedRecipient) {
-      return t("orders.unableTake");
-    }
+  if (!isIntendedRecipient) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton disabled intent="neutral">
+          {t("orders.unableTake")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (shouldDepositNativeToken) {
-      return `Wrap ${senderTokenSymbol}`;
-    }
+  if (shouldDepositNativeToken) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.review)}
+        >
+          {`${t("common.wrap")} ${senderTokenSymbol}`}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (hasInsufficientBalance) {
-      return t("orders.insufficientBalance");
-    }
+  if (hasInsufficientBalance) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton disabled intent="neutral">
+          {t("orders.insufficientBalance")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-    if (hasInsufficientAllowance) {
-      return `${t("orders.approve")} ${senderTokenSymbol || ""}`;
-    }
-
-    return t("common.review");
-  };
-
-  const handleActionButtonClick = () => {
-    if (isNetworkUnsupported) {
-      return onActionButtonClick(ButtonActions.switchNetwork);
-    }
-
-    if (isNotConnected) {
-      return onActionButtonClick(ButtonActions.connectWallet);
-    }
-
-    if (isExpired || isTaken || isCanceled) {
-      return onActionButtonClick(ButtonActions.restart);
-    }
-
-    if (isMakerOfSwap) {
-      return onActionButtonClick(ButtonActions.cancel);
-    }
-
-    return onActionButtonClick(ButtonActions.review);
-  };
+  if (hasInsufficientAllowance) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.review)}
+        >
+          {`${t("orders.approve")} ${senderTokenSymbol || ""}`}
+        </SignButton>
+      </Container>
+    );
+  }
 
   return (
     <Container className={className}>
-      {!isNotConnected &&
-        !isOrderSubmitted &&
-        ((isPrivate && !isExpired) || !isPrivate || isTaken) && (
-          <BackButton onClick={onBackButtonClick}>
-            {isPrivate && !isIntendedRecipient && !isTaken
-              ? t("orders.makeNewOrder")
-              : t("common.back")}
-          </BackButton>
-        )}
+      <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
       <SignButton
-        isFilled={
-          isNotConnected || isOrderSubmitted || (isPrivate && isExpired)
-        }
-        intent={isButtonDisabled ? "neutral" : "primary"}
-        disabled={isButtonDisabled}
-        onClick={handleActionButtonClick}
+        intent="primary"
+        onClick={() => onActionButtonClick(ButtonActions.review)}
       >
-        {signButtonText()}
+        {t("common.review")}
       </SignButton>
     </Container>
   );

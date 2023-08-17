@@ -47,6 +47,7 @@ import { OrderStatus } from "../../types/orderStatus";
 import { OrderType } from "../../types/orderTypes";
 import ApproveReview from "../ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../AvailableOrdersWidget/AvailableOrdersWidget";
+import addAndSwitchToChain from "../ChainSelectionPopover/helpers/addAndSwitchToChain";
 import { ErrorList } from "../ErrorList/ErrorList";
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import OrderSubmittedScreen from "../OrderSubmittedScreen/OrderSubmittedScreen";
@@ -261,7 +262,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     }
 
     if (action === ButtonActions.switchNetwork) {
-      switchToDefaultChain();
+      addAndSwitchToChain(order.chainId);
     }
 
     if (action === ButtonActions.restart) {
@@ -400,8 +401,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!active}
-        isOrderSubmitted={!!orderTransaction}
-        orderType={orderType}
         isNetworkUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }
