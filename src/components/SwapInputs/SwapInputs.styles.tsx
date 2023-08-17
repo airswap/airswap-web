@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../style/mixins";
 import Tooltip from "./subcomponents/Tooltip/Tooltip";
 
@@ -48,6 +49,11 @@ export const SwitchTokensButton = styled.button`
 export const MaxAmountInfoTooltip = styled(Tooltip)`
   position: absolute;
   right: 0;
+  height: 0;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    height: 4.5rem;
+  }
 `;
 
 export const BaseAmountErrorTooltip = styled(Tooltip)`
