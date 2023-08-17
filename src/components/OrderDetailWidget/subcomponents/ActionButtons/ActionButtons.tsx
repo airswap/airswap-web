@@ -2,7 +2,13 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OrderType } from "../../../../types/orderTypes";
-import { BackButton, Container, SignButton } from "./ActionButtons.styles";
+import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
+import {
+  BackButton,
+  Container,
+  SignButton,
+  StyledCopyLinkButton,
+} from "./ActionButtons.styles";
 
 export enum ButtonActions {
   connectWallet,
@@ -98,7 +104,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         <BackButton onClick={() => onActionButtonClick(ButtonActions.cancel)}>
           {t("orders.cancelOrder")}
         </BackButton>
-        <SignButton intent="primary">{t("orders.copyLink")}</SignButton>
+        <StyledCopyLinkButton>{t("orders.copyLink")}</StyledCopyLinkButton>
       </Container>
     );
   }

@@ -1,5 +1,6 @@
 import styled, { css, DefaultTheme } from "styled-components/macro";
 
+import Icon from "../Icon/Icon";
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
 
 function getButtonBackground(
@@ -123,4 +124,8 @@ export const ButtonStyle = css<StyledButtonProps>`
 
 export const StyledButton = styled.button`
   ${ButtonStyle}
+`;
+
+export const StyledIcon = styled(Icon)`
+  margin-left: 0.5rem;
 `;

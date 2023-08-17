@@ -50,7 +50,6 @@ const InfoButtons: FC<InfoButtonsProps> = ({
             <Icon name="information-circle-outline" />
           </StyledLargePillButton>
         )}
-        {isMakerOfSwap && <StyledCopyLinkButton />}
         {showViewAllQuotes && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}

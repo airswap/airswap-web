@@ -9,10 +9,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 
 import writeTextToClipboard from "../../../../helpers/writeTextToClipboard";
-import { LargePillButton } from "../../../../styled-components/Pill/Pill";
-import Icon from "../../../Icon/Icon";
 import { notifyCopySuccess } from "../../../Toasts/ToastController";
-import { CopyLinkElement } from "./CopyLinkButton.styles";
+import { CopyLinkElement, StyledButton } from "./CopyLinkButton.styles";
 
 interface CopyLinkButtonProps {
   className?: string;
@@ -54,7 +52,7 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
     return (
       <CopyLinkElement
         as="div"
-        id="snavie"
+        id="copy-link-element"
         ref={copyLinkElement}
         className={className}
       >
@@ -64,10 +62,14 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
   }
 
   return (
-    <LargePillButton onClick={handleCopyButtonClick} className={className}>
+    <StyledButton
+      icon="copy2"
+      intent="primary"
+      onClick={handleCopyButtonClick}
+      className={className}
+    >
       {t("orders.copyLink")}
-      <Icon name="copy2" />
-    </LargePillButton>
+    </StyledButton>
   );
 };
 
