@@ -15,7 +15,8 @@ import getWethAddress from "../helpers/getWethAddress";
 
 const useAllowance = (
   token: TokenInfo | null,
-  amount?: string
+  amount?: string,
+  wrapNativeToken?: boolean
 ): {
   hasSufficientAllowance: boolean;
   allowance: string;
@@ -42,7 +43,16 @@ const useAllowance = (
       return;
     }
 
-    // ETH can't have allowance because it's not a token. So we default to WETH.
+    // ETH can't have allowance because it's not a token. So we default to WETH when wrapNativeToken is true.
+
+    if (token.address === nativeCurrencyAddress && !wrapNativeToken) {
+      setHasSufficientAllowance(true);
+      setAllowance("0");
+      setReadableAllowance("0");
+
+      return;
+    }
+
     const justifiedAddress =
       token.address === nativeCurrencyAddress
         ? getWethAddress(chainId)

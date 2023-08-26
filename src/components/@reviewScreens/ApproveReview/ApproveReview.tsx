@@ -64,7 +64,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
     return toRoundedNumberString(feeAmount, justifiedToken?.decimals);
   }, [amount, amountPlusFee, justifiedToken]);
 
-  const roundedSignerAmountPlusFee = useMemo(() => {
+  const roundedAmountPlusFee = useMemo(() => {
     if (!amountPlusFee) {
       return undefined;
     }
@@ -94,31 +94,33 @@ const ApproveReview: FC<ApproveReviewProps> = ({
             </ReviewListItemValue>
           </ReviewListItem>
         )}
-        <ReviewListItem>
-          <ReviewListItemLabel>Order amount</ReviewListItemLabel>
-          <ReviewListItemValue>
-            {amount} {tokenSymbol}
-          </ReviewListItemValue>
-        </ReviewListItem>
         {roundedFeeAmount && (
-          <ReviewListItem>
-            <ReviewListItemLabel>
-              {t("orders.protocolFee")}
-              <StyledIconButton
-                icon="information-circle-outline"
-                onClick={toggleShowFeeInfo}
-              />
-            </ReviewListItemLabel>
-            <ReviewListItemValue>
-              {roundedFeeAmount} {tokenSymbol}
-            </ReviewListItemValue>
-          </ReviewListItem>
+          <>
+            <ReviewListItem>
+              <ReviewListItemLabel>Order amount</ReviewListItemLabel>
+              <ReviewListItemValue>
+                {amount} {tokenSymbol}
+              </ReviewListItemValue>
+            </ReviewListItem>
+            <ReviewListItem>
+              <ReviewListItemLabel>
+                {t("orders.protocolFee")}
+                <StyledIconButton
+                  icon="information-circle-outline"
+                  onClick={toggleShowFeeInfo}
+                />
+              </ReviewListItemLabel>
+              <ReviewListItemValue>
+                {roundedFeeAmount} {tokenSymbol}
+              </ReviewListItemValue>
+            </ReviewListItem>
+          </>
         )}
 
         <ReviewListItem>
           <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedSignerAmountPlusFee || amount} {tokenSymbol}
+            {roundedAmountPlusFee || amount} {tokenSymbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>

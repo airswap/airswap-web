@@ -238,11 +238,6 @@ const InfoSection: FC<InfoSectionProps> = ({
             />
           </StyledInfoHeading>
         </>
-        {requiresApproval && (
-          <ApprovalText>
-            {t("orders.approvalRequired", { symbol: baseTokenInfo!.symbol })}
-          </ApprovalText>
-        )}
         {showViewAllQuotes && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}

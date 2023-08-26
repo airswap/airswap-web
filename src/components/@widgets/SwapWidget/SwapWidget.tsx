@@ -10,19 +10,17 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { Protocols } from "@airswap/constants";
-import { Server, Registry, Wrapper } from "@airswap/libraries";
+import { Registry, Server, Wrapper } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
-import { BigNumber } from "bignumber.js";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
-  transformAddressToAddressAlias,
   transformAddressAliasToAddress,
+  transformAddressToAddressAlias,
 } from "../../../constants/addressAliases";
 import {
   ADDITIONAL_QUOTE_BUFFER,
@@ -37,9 +35,9 @@ import { LastLookContext } from "../../../contexts/lastLook/LastLook";
 import { AppErrorType } from "../../../errors/appError";
 import transformUnknownErrorToAppError from "../../../errors/transformUnknownErrorToAppError";
 import {
+  requestActiveTokenAllowancesSwap,
   selectAllowances,
   selectBalances,
-  requestActiveTokenAllowancesSwap,
 } from "../../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -79,22 +77,25 @@ import {
 } from "../../../features/transactions/transactionActions";
 import { ProtocolType } from "../../../features/transactions/transactionsSlice";
 import {
-  setUserTokens,
-  setCustomServerUrl,
   selectCustomServerUrl,
+  setCustomServerUrl,
+  setUserTokens,
 } from "../../../features/userSettings/userSettingsSlice";
 import getWethAddress from "../../../helpers/getWethAddress";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import useAllowance from "../../../hooks/useAllowance";
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
+import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
 import useReferencePriceSubscriber from "../../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../../hooks/useSwapType";
 import useTokenInfo from "../../../hooks/useTokenInfo";
 import { AppRoutes } from "../../../routes";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
+import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -120,6 +121,11 @@ import ActionButtons, {
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
+
+export enum SwapWidgetState {
+  overview = "overview",
+  review = "review",
+}
 
 const SwapWidget: FC = () => {
   // Redux
@@ -160,10 +166,10 @@ const SwapWidget: FC = () => {
   const [baseAmount, setBaseAmount] = useState(
     isFromOrderDetailPage ? tradeTerms.baseAmount : ""
   );
+  const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
   // Pricing
   const {
-    subscribeToGasPrice,
     subscribeToTokenPrice,
     unsubscribeFromGasPrice,
     unsubscribeFromTokenPrice,
@@ -204,6 +210,11 @@ const SwapWidget: FC = () => {
 
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
+  const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
+  const { hasSufficientAllowance, readableAllowance } = useAllowance(
+    baseTokenInfo,
+    baseAmount
+  );
 
   const hasApprovalPending = useApprovalPending(baseToken);
   const maxAmount = useMaxAmount(baseToken);
@@ -309,31 +320,6 @@ const SwapWidget: FC = () => {
       requestQuotes();
     }
   }, []);
-
-  const hasSufficientAllowance = (tokenAddress: string | undefined) => {
-    if (tokenAddress === nativeCurrency[chainId || 1].address) return true;
-    if (!tokenAddress) return false;
-    if (
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
-      ] === undefined
-    ) {
-      // We don't currently know what the user's allowance is, this is an error
-      // state we shouldn't repeatedly hit, so we'll prompt a reload.
-      if (!allowanceFetchFailed) setAllowanceFetchFailed(true);
-      // safter to return true here (has allowance) as validator will catch the
-      // missing allowance, so the user won't swap, and they won't pay
-      // unnecessary gas for an approval they may not need.
-      return true;
-    }
-    return new BigNumber(
-      allowances[swapType === "swapWithWrap" ? "wrapper" : "swap"].values[
-        tokenAddress
-      ]!
-    )
-      .div(10 ** (baseTokenInfo?.decimals || 18))
-      .gte(baseAmount);
-  };
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     const baseRoute = AppRoutes.swap;
@@ -752,18 +738,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.approve:
-        setIsApproving(true);
-
-        await dispatch(
-          approve({
-            token: baseTokenInfo!,
-            library,
-            contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-            chainId: chainId!,
-            amount: baseAmount,
-          })
-        );
-        setIsApproving(false);
+        setState(SwapWidgetState.review);
         break;
 
       case ButtonActions.takeQuote:
@@ -777,10 +752,26 @@ const SwapWidget: FC = () => {
       case ButtonActions.trackTransaction:
         setTransactionsTabIsOpen(true);
         break;
-
-      default:
-      // Do nothing.
     }
+  };
+
+  const approveToken = async () => {
+    setIsApproving(true);
+
+    await dispatch(
+      approve({
+        token: baseTokenInfo!,
+        library,
+        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
+        chainId: chainId!,
+        amount: baseAmount,
+      })
+    );
+    setIsApproving(false);
+  };
+
+  const handleEditButtonClick = () => {
+    setState(SwapWidgetState.overview);
   };
 
   const handleClearServerUrl = () => {
@@ -791,6 +782,22 @@ const SwapWidget: FC = () => {
     return (
       <Container>
         <WalletSignScreen />
+      </Container>
+    );
+  }
+
+  if (state === SwapWidgetState.review && !hasSufficientAllowance) {
+    return (
+      <Container>
+        <ApproveReview
+          isLoading={hasApprovalPending}
+          amount={baseAmount || "0"}
+          readableAllowance={readableAllowance}
+          token={baseTokenInfo}
+          wrappedNativeToken={wrappedNativeTokenInfo}
+          onEditButtonClick={handleEditButtonClick}
+          onSignButtonClick={approveToken}
+        />
       </Container>
     );
   }
@@ -847,9 +854,7 @@ const SwapWidget: FC = () => {
             orderCompleted={
               showOrderSubmitted && activeTransaction?.status === "succeeded"
             }
-            requiresApproval={
-              bestRfqOrder && !hasSufficientAllowance(baseToken!)
-            }
+            requiresApproval={bestRfqOrder && !hasSufficientAllowance}
             showViewAllQuotes={indexerOrders.length > 0}
             // @ts-ignore
             bestTradeOption={bestTradeOption}
@@ -880,7 +885,7 @@ const SwapWidget: FC = () => {
                 !isRequestingQuotes && (!!bestTradeOption || isWrapping)
               }
               hasSufficientBalance={!insufficientBalance}
-              needsApproval={!!baseToken && !hasSufficientAllowance(baseToken)}
+              needsApproval={!!baseToken && !hasSufficientAllowance}
               pairUnavailable={pairUnavailable}
               onButtonClicked={(action) => handleActionButtonClick(action)}
               isLoading={

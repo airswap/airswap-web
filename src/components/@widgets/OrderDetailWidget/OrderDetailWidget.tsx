@@ -123,7 +123,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const hasApprovalPending = useApprovalPending(order.senderToken);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
-  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
+  const { hasSufficientAllowance } = useAllowance(
+    senderToken,
+    senderAmount,
+    true
+  );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,

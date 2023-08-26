@@ -144,7 +144,8 @@ const MakeWidget: FC = () => {
 
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
-    makerAmountPlusFee
+    makerAmountPlusFee,
+    true
   );
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
