@@ -5,7 +5,7 @@ import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 import { compressFullOrderERC20 } from "@airswap/utils";
 
 import useTokenInfo from "../../../../hooks/useTokenInfo";
-import { getTokenAmountWithDecimals } from "../../../MyOrdersWidget/helpers";
+import { getTokenAmountWithDecimals } from "../../../@widgets/MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
 
 interface OrderProps {

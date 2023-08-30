@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
 import { useAppSelector } from "../../app/hooks";
-import { CancelWidget } from "../../components/CancelWidget/CancelWidget";
+import { CancelWidget } from "../../components/@widgets/CancelWidget/CancelWidget";
 import Page from "../../components/Page/Page";
 import { decompressAndSetActiveOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
