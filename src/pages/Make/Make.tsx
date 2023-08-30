@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from "react";
 
 import { useAppDispatch } from "../../app/hooks";
-import MakeWidget from "../../components/MakeWidget/MakeWidget";
+import MakeWidget from "../../components/@widgets/MakeWidget/MakeWidget";
 import { reset } from "../../features/takeOtc/takeOtcSlice";
 import { StyledPage } from "./Make.styles";
 

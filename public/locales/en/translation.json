@@ -109,7 +109,6 @@
     "afterFee": "After {{fee}} fee",
     "amount": "Amount",
     "anyone": "Anyone",
-    "approvalRequired": "To continue you must approve {{symbol}}",
     "approve": "Approve",
     "approveMessage": "Approve AirSwap to transfer your tokens.",
     "approvePending": "Prepared to approve {{symbol}}",
