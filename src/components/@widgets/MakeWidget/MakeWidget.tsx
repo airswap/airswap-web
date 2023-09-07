@@ -46,6 +46,7 @@ import {
 import getWethAddress from "../../../helpers/getWethAddress";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../../helpers/toMaxAllowedDecimalsNumberString";
+import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useAllowance from "../../../hooks/useAllowance";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
@@ -257,6 +258,18 @@ const MakeWidget: FC = () => {
       return;
     }
 
+    const formattedMakerAmount = toRoundedNumberString(
+      makerAmount,
+      makerTokenInfo?.decimals
+    );
+    const formattedTakerAmount = toRoundedNumberString(
+      takerAmount,
+      takerTokenInfo?.decimals
+    );
+
+    setMakerAmount(formattedMakerAmount);
+    setTakerAmount(formattedTakerAmount);
+
     setState(MakeWidgetState.review);
   };
 
@@ -273,9 +286,6 @@ const MakeWidget: FC = () => {
       takerTokenAddress === nativeCurrencyAddress
         ? getWethAddress(chainId!)
         : takerTokenAddress;
-
-    setMakerAmount(makerAmount);
-    setTakerAmount(takerAmount);
 
     dispatch(
       createOtcOrder({
