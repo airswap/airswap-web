@@ -22,7 +22,7 @@ export default function subscribeToSwapEvents(params: {
   const { swapContract, account, dispatch, chainId } = params;
 
   const _account = account.toLowerCase();
-  const wrapperAddress = Wrapper.getAddress(chainId);
+  const wrapperAddress = Wrapper.getAddress(chainId) || "";
 
   const onSwap = async (...argsAndEvent: any[]) => {
     // Listeners are called with all args first, then an event object.

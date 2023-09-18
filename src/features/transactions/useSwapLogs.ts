@@ -40,11 +40,33 @@ const useSwapLogs = () => {
         account // senderWallet
       );
 
+      const firstTxBlockSwapContract =
+        chainId &&
+        SwapERC20.deployedBlocks[
+          chainId as keyof typeof SwapERC20.deployedBlocks
+        ];
+      const firstTxBlockWrapperContract =
+        chainId &&
+        Wrapper.deployedBlocks[chainId as keyof typeof Wrapper.deployedBlocks];
+      const currentBlock = await provider?.getBlockNumber();
+
       const [lastLookSwapLogs, rfqSwapLogs, wrappedSwapLogs] =
         await Promise.all([
-          swapContract.queryFilter(signerSwapFilter),
-          swapContract.queryFilter(senderSwapFilter),
-          wrapperContract.queryFilter(wrapperSwapFilter),
+          swapContract.queryFilter(
+            signerSwapFilter,
+            firstTxBlockSwapContract,
+            currentBlock
+          ),
+          swapContract.queryFilter(
+            senderSwapFilter,
+            firstTxBlockSwapContract,
+            currentBlock
+          ),
+          wrapperContract.queryFilter(
+            wrapperSwapFilter,
+            firstTxBlockWrapperContract,
+            currentBlock
+          ),
         ]);
 
       return {

@@ -8,6 +8,7 @@ import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
 import { mineTransaction, revertTransaction } from "./transactionActions";
 import {
+  StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
 } from "./transactionsSlice";
@@ -182,6 +183,31 @@ const isTransactionWithOrder = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedTransactionWithOrder => {
   return "order" in transaction;
+};
+
+export const getTransactionsFilterLocalStorageKey: (
+  walletAddress: string,
+  chainId: number
+) => string = (walletAddress, chainId) =>
+  `airswap/transactions/filterTimestamps/${walletAddress}/${chainId}`;
+
+export const getTransactionsLocalStorageKey: (
+  walletAddress: string,
+  chainId: number
+) => string = (walletAddress, chainId) =>
+  `airswap/transactions/${walletAddress}/${chainId}`;
+
+export const filterTransactionByDate = (
+  transaction: SubmittedTransaction,
+  timestamp: number,
+  status?: StatusType
+) => {
+  if (status && transaction.status !== status) {
+    return true;
+  }
+
+  return transaction.timestamp > timestamp;
+  // return transaction.timestamp + 7170349144 > timestamp;
 };
 
 export {

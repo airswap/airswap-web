@@ -1,7 +1,7 @@
 import { useLocalStorageValue } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
-import { getTransactionsLocalStorageKey } from "../metadata/metadataApi";
+import { getTransactionsLocalStorageKey } from "./transactionUtils";
 import { SubmittedTransaction } from "./transactionsSlice";
 
 const useTransactionsFromLocalStorage = () => {

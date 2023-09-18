@@ -32,6 +32,7 @@ export type OverlayProps = {
    */
   isHidden?: boolean;
   shouldAnimate?: boolean;
+  className?: string;
 };
 
 export const overlayShowHideAnimationDuration = 0.3;
@@ -43,6 +44,7 @@ const Overlay: FC<OverlayProps> = ({
   subTitle = "",
   shouldAnimate = true,
   children,
+  className = "",
 }) => {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
@@ -56,7 +58,7 @@ const Overlay: FC<OverlayProps> = ({
   }, []);
 
   return (
-    <Container hasTitle={!!title} isHidden={isHidden}>
+    <Container hasTitle={!!title} isHidden={isHidden} className={className}>
       <TitleContainer>
         <TitleSubContainer>
           <StyledTitle type="h2" as="h1">

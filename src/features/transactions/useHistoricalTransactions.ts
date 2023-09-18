@@ -1,9 +1,11 @@
+import { useEffect } from "react";
+
 import { useCustomCompareEffect } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
   checkPendingTransactionState,
@@ -11,6 +13,7 @@ import {
   SwapEventArgs,
 } from "./transactionUtils";
 import {
+  selectTransactions,
   setTransactions,
   SubmittedTransactionWithOrder,
 } from "./transactionsSlice";
@@ -20,6 +23,7 @@ import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 const useHistoricalTransactions = () => {
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
+  const transactions = useAppSelector(selectTransactions);
   const {
     transactions: localStorageTransactions,
     setTransactions: setLocalStorageTransactions,
@@ -128,7 +132,7 @@ const useHistoricalTransactions = () => {
         ]);
 
         setLocalStorageTransactions(localTransactionsCopy);
-        dispatch(setTransactions(localTransactionsCopy));
+        dispatch(setTransactions(localTransactionsCopy?.all || []));
 
         localTransactionsCopy.all
           .filter((tx) => tx.status === "processing")
@@ -164,6 +168,10 @@ const useHistoricalTransactions = () => {
       );
     }
   );
+
+  useEffect(() => {
+    setLocalStorageTransactions({ all: transactions });
+  }, [transactions]);
 };
 
 export default useHistoricalTransactions;

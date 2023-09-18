@@ -13,11 +13,11 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/constants": "^4.0.8",
-    "@airswap/libraries": "^4.0.12",
-    "@airswap/metadata": "4.0.9",
-    "@airswap/types": "^4.0.5",
-    "@airswap/utils": "^4.0.7",
+    "@airswap/constants": "4.0.10",
+    "@airswap/libraries": "4.0.19",
+    "@airswap/metadata": "4.0.12",
+    "@airswap/types": "4.0.5",
+    "@airswap/utils": "4.0.8",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",

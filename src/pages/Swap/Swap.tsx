@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
+import SwapWidget from "../../components/@widgets/SwapWidget/SwapWidget";
 import Page from "../../components/Page/Page";
-import SwapWidget from "../../components/SwapWidget/SwapWidget";
 
 const SwapPage: FC = () => {
   return (

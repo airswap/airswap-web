@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { Dispatch, FC, useCallback, useState } from "react";
 
 import Icon from "../Icon/Icon";
 import {
@@ -21,6 +21,7 @@ export type SelectOption = {
 };
 
 export type DropdownProps = {
+  isMenuOpen?: boolean;
   selectedOption: SelectOption;
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
@@ -28,6 +29,7 @@ export type DropdownProps = {
 };
 
 const Dropdown: FC<DropdownProps> = ({
+  isMenuOpen = false,
   selectedOption,
   options,
   onChange,
@@ -87,7 +89,10 @@ const Dropdown: FC<DropdownProps> = ({
         </SelectButtonText>
         <Icon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
-      <SelectOptions activeIndex={activeOptionIndex}>
+      <SelectOptions
+        activeIndex={isMenuOpen ? 0 : activeOptionIndex}
+        isMenuOpen={isMenuOpen}
+      >
         {options.map((option, index) => (
           <Option
             key={option.value}

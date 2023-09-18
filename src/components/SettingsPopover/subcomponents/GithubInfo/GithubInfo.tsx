@@ -5,13 +5,17 @@ import Icon from "../../../Icon/Icon";
 import { CommitButton, Container, GithubButton } from "./GithubInfo.styles";
 
 const githubLink = "https://github.com/airswap/airswap-web";
+const githubLastCommitIdFallback = "DEV";
 const githubLastCommitId = process.env.BUILD_VERSION;
 const commitDate = process.env.BUILD_DATE;
 const readableCommitId = githubLastCommitId
   ? githubLastCommitId.substr(0, 6)
   : undefined;
 const readableCommitDate = commitDate ? commitDate.substr(0, 10) : undefined;
-const commitLink = `${githubLink}/commit/${githubLastCommitId}`;
+const commitLink =
+  githubLastCommitId === githubLastCommitIdFallback
+    ? `${githubLink}/commits`
+    : `${githubLink}/commit/${githubLastCommitId}`;
 
 const GithubInfo: FC = () => {
   const { t } = useTranslation();

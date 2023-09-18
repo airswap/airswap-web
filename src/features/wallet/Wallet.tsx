@@ -25,6 +25,7 @@ import {
   StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
+import { ClearOrderType } from "../../types/clearOrderType";
 import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
 import {
   decrementBalanceBy,
@@ -47,8 +48,10 @@ import {
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
+  selectFilteredTransactions,
   selectPendingTransactions,
   selectTransactions,
+  setFilter,
 } from "../transactions/transactionsSlice";
 import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
@@ -80,7 +83,7 @@ export const Wallet: FC<WalletPropsType> = ({
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const { providerName } = useAppSelector(selectWallet);
-  const transactions = useAppSelector(selectTransactions);
+  const transactions = useAppSelector(selectFilteredTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -99,6 +102,10 @@ export const Wallet: FC<WalletPropsType> = ({
   const [activated, setActivated] = useState(false);
   const [swapContract, setSwapContract] = useState<Contract>();
   const [wrapContract, setWrapContract] = useState<Contract>();
+
+  const handleClearTransactionsChange = (type: ClearOrderType) => {
+    dispatch(setFilter(type));
+  };
 
   useBeforeunload(() => {
     if (swapContract) {
@@ -242,7 +249,7 @@ export const Wallet: FC<WalletPropsType> = ({
         activeTokenAddresses: activeTokens.map((t) => t.address),
         provider: library,
         walletAddress: account,
-        spenderAddress: SwapERC20.getAddress(chainId),
+        spenderAddress: SwapERC20.getAddress(chainId) || "",
         onBalanceChange: (tokenAddress, amount, direction) => {
           const actionCreator =
             direction === "in" ? incrementBalanceBy : decrementBalanceBy;
@@ -328,6 +335,7 @@ export const Wallet: FC<WalletPropsType> = ({
         chainId={chainId!}
         open={transactionsTabIsOpen}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
+        onClearTransactionsChange={handleClearTransactionsChange}
         onDisconnectWalletClicked={() => {
           clearLastAccount();
           deactivate();

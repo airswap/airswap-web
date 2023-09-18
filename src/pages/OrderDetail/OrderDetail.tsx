@@ -2,7 +2,7 @@ import React, { FC, useEffect } from "react";
 import { useParams } from "react-router";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import OrderDetailWidget from "../../components/OrderDetailWidget/OrderDetailWidget";
+import OrderDetailWidget from "../../components/@widgets/OrderDetailWidget/OrderDetailWidget";
 import Page from "../../components/Page/Page";
 import {
   fetchAllTokens,
