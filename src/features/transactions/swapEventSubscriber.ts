@@ -1,14 +1,14 @@
 import { Wrapper } from "@airswap/libraries";
+import { getFullSwapERC20 } from "@airswap/utils";
 import { Dispatch } from "@reduxjs/toolkit";
 
-import { Contract, Event as EthersEvent } from "ethers";
+import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import {
   getSenderWalletForWrapperSwapLog,
-  SwapEventArgs,
 } from "./transactionUtils";
 import { LastLookTransaction } from "./transactionsSlice";
 
@@ -24,15 +24,15 @@ export default function subscribeToSwapEvents(params: {
   const _account = account.toLowerCase();
   const wrapperAddress = Wrapper.getAddress(chainId) || "";
 
-  const onSwap = async (...argsAndEvent: any[]) => {
-    // Listeners are called with all args first, then an event object.
-    const swapEvent: EthersEvent = argsAndEvent[argsAndEvent.length - 1];
-    const args = swapEvent.args as unknown as SwapEventArgs;
+  const onSwap = async (nonce: BigNumber, signerWallet: string, swapEvent: EthersEvent) => {
+    const fullArgs = await getFullSwapERC20({
+      nonce: nonce.toString(), signerWallet
+    }, await swapEvent.getTransaction())
 
     if (
-      args.senderWallet.toLowerCase() !== _account &&
-      args.signerWallet.toLowerCase() !== _account &&
-      (args.senderWallet.toLowerCase() !== wrapperAddress.toLowerCase() ||
+      fullArgs.senderWallet.toLowerCase() !== _account &&
+      fullArgs.signerWallet.toLowerCase() !== _account &&
+      (fullArgs.senderWallet.toLowerCase() !== wrapperAddress.toLowerCase() ||
         (await getSenderWalletForWrapperSwapLog(swapEvent)) !== _account)
     ) {
       // Ignore events that don't involve us.
@@ -41,11 +41,11 @@ export default function subscribeToSwapEvents(params: {
 
     dispatch(
       mineTransaction({
-        signerWallet: args.signerWallet,
-        nonce: args.nonce.toString(),
+        signerWallet,
+        nonce: nonce.toString(),
         hash: swapEvent.transactionHash,
         protocol:
-          args.signerWallet.toLowerCase() === _account
+          signerWallet.toLowerCase() === _account
             ? "last-look-erc20"
             : "request-for-quote-erc20",
       })
@@ -58,7 +58,7 @@ export default function subscribeToSwapEvents(params: {
         // Last look transactions don't have a nonce, but the
         const llTransaction = tx as LastLookTransaction;
         return (
-          llTransaction.order.nonce === args.nonce.toString() &&
+          llTransaction.order.nonce === nonce.toString() &&
           llTransaction.order.signerWallet.toLowerCase() === _account
         );
       } else {
