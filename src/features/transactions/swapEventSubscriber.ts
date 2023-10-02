@@ -7,9 +7,7 @@ import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
-import {
-  getSenderWalletForWrapperSwapLog,
-} from "./transactionUtils";
+import { getSenderWalletForWrapperSwapLog } from "./transactionUtils";
 import { LastLookTransaction } from "./transactionsSlice";
 
 export default function subscribeToSwapEvents(params: {
@@ -24,10 +22,18 @@ export default function subscribeToSwapEvents(params: {
   const _account = account.toLowerCase();
   const wrapperAddress = Wrapper.getAddress(chainId) || "";
 
-  const onSwap = async (nonce: BigNumber, signerWallet: string, swapEvent: EthersEvent) => {
-    const fullArgs = await getFullSwapERC20({
-      nonce: nonce.toString(), signerWallet
-    }, await swapEvent.getTransaction())
+  const onSwap = async (
+    nonce: BigNumber,
+    signerWallet: string,
+    swapEvent: EthersEvent
+  ) => {
+    const fullArgs = await getFullSwapERC20(
+      {
+        nonce: nonce.toString(),
+        signerWallet,
+      },
+      await swapEvent.getTransaction()
+    );
 
     if (
       fullArgs.senderWallet.toLowerCase() !== _account &&
