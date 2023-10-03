@@ -1,14 +1,10 @@
-import { ethers } from 'ethers'
 import { Wrapper } from "@airswap/libraries";
-import { getFullSwapERC20 } from '@airswap/utils';
-import { SwapERC20__factory } from '@airswap/swap-erc20/typechain/factories/contracts'
-import erc20Abi from "erc-20-abi";
-
-const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi)
-const tokenInterface = new ethers.utils.Interface(erc20Abi)
-
+import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
+import { getFullSwapERC20 } from "@airswap/utils";
 import { Dispatch } from "@reduxjs/toolkit";
 
+import erc20Abi from "erc-20-abi";
+import { ethers } from "ethers";
 import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 
 import { store } from "../../app/store";
@@ -16,6 +12,9 @@ import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import { getSenderWalletForWrapperSwapLog } from "./transactionUtils";
 import { LastLookTransaction } from "./transactionsSlice";
+
+const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi);
+const tokenInterface = new ethers.utils.Interface(erc20Abi);
 
 export default function subscribeToSwapEvents(params: {
   swapContract: Contract;
@@ -41,7 +40,7 @@ export default function subscribeToSwapEvents(params: {
       {
         nonce: nonce.toString(),
         signerWallet,
-      },
+      }
     );
 
     if (
