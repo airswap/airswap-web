@@ -1,5 +1,12 @@
+import { ethers } from 'ethers'
 import { Wrapper } from "@airswap/libraries";
-import { getFullSwapERC20 } from "@airswap/utils";
+import { getFullSwapERC20 } from '@airswap/utils';
+import { SwapERC20__factory } from '@airswap/swap-erc20/typechain/factories/contracts'
+import erc20Abi from "erc-20-abi";
+
+const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi)
+const tokenInterface = new ethers.utils.Interface(erc20Abi)
+
 import { Dispatch } from "@reduxjs/toolkit";
 
 import { BigNumber, Contract, Event as EthersEvent } from "ethers";
@@ -28,11 +35,13 @@ export default function subscribeToSwapEvents(params: {
     swapEvent: EthersEvent
   ) => {
     const fullArgs = await getFullSwapERC20(
+      swapInterface,
+      tokenInterface,
+      await swapEvent.getTransaction(),
       {
         nonce: nonce.toString(),
         signerWallet,
       },
-      await swapEvent.getTransaction()
     );
 
     if (
