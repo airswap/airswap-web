@@ -708,7 +708,7 @@ const SwapWidget: FC = () => {
 
       case ButtonActions.restart:
         setShowOrderSubmitted(false);
-        // setValidatorErrors([]);
+        setState(SwapWidgetState.overview);
         dispatch(clearTradeTerms());
         dispatch(clear());
         unsubscribeFromGasPrice();
