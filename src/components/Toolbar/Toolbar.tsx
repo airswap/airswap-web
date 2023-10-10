@@ -85,16 +85,6 @@ const Toolbar: FC<ToolbarProps> = ({
           text={t("common.stats")}
           href="https://dune.com/airswap/airswap-v3"
         />
-        <ToolbarButton
-          iconName="vote"
-          text={t("common.vote")}
-          href="https://activate.codefi.network/staking/airswap/governance"
-        />
-        <ToolbarButton
-          iconName="contact-support"
-          text={t("common.join")}
-          href="https://about.airswap.io/community/onboarding"
-        />
         <StyledSocialButtons />
       </ToolbarButtonsContainer>
     </ToolbarContainer>
