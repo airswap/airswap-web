@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/types";
 import { ADDRESS_ZERO } from "@airswap/constants";
+import { FullOrderERC20 } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
