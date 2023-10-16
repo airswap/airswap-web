@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/types";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -12,7 +13,6 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
@@ -146,13 +146,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     !!chainId && orderChainId !== chainId;
 
   const orderType =
-    order.senderWallet === nativeCurrencyAddress
+    order.senderWallet === ADDRESS_ZERO
       ? OrderType.publicUnlisted
       : OrderType.private;
   const userIsMakerOfSwap = order.signerWallet === account;
   const userIsIntendedRecipient =
-    order.senderWallet === account ||
-    order.senderWallet === nativeCurrencyAddress;
+    order.senderWallet.toLowerCase() === account?.toLowerCase() ||
+    order.senderWallet === ADDRESS_ZERO;
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
