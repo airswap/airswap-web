@@ -13,8 +13,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/libraries": "4.1.7",
-    "@airswap/metadata": "4.1.4",
+    "@airswap/libraries": "4.1.9",
+    "@airswap/metadata": "4.1.7",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",
