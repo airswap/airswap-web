@@ -51,10 +51,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.8.1"
 
-"@airswap/metadata@4.1.7":
-  version "4.1.7"
-  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.1.7.tgz#8929af3de59ad322719c618b0b94be43c733d93f"
-  integrity sha512-Kmc+zLxrZFRFshefD5O1So3Z8OdMTIivMDo/fjf7qA6kPbcnvDQPf6ptpFiL6j0wfRHhsKQDkkXed7cg8KIkPQ==
+"@airswap/metadata@4.1.8":
+  version "4.1.8"
+  resolved "https://registry.yarnpkg.com/@airswap/metadata/-/metadata-4.1.8.tgz#1fc7ab4f8008dbd62fbc9f5a5246844269d77f03"
+  integrity sha512-CAulN2L0nKC5TuSXzUxVW2jFXNEh5ZQsCV9MU9nND0Cln6kMo4JtYYmRUqIvwmz77eSkcuIdGkOjwgYlvC5jMg==
   dependencies:
     "@airswap/constants" "^4.1.3"
     "@airswap/types" "^4.1.1"
