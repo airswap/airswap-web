@@ -4,7 +4,7 @@ import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { BorderlessButtonStyle } from "../../style/mixins";
-import TransactionLink from "../TokenList/subcomponents/TransactionLink/TransactionLink";
+import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
 import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
@@ -277,7 +277,7 @@ export const PlaceholderContainer = styled.div`
   }
 `;
 
-export const TokenAccountButton = styled(TransactionLink)`
+export const TokenAccountButton = styled(AccountLink)`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 50%;
   min-width: 1.5rem;

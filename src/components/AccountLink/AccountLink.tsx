@@ -3,20 +3,20 @@ import { useTranslation } from "react-i18next";
 
 import { getAccountUrl } from "@airswap/utils";
 
-import Icon from "../../../Icon/Icon";
-import { Link } from "./TransactionLink.style";
+import Icon from "../Icon/Icon";
+import { Link } from "./AccountLink.style";
 
-type TransactionLinkProps = {
+type AccountLinkProps = {
   chainId: number;
   address: string;
   className?: string;
 };
 
-const TransactionLink = ({
+const AccountLink = ({
   chainId,
   address,
   className = "",
-}: TransactionLinkProps) => {
+}: AccountLinkProps) => {
   const { t } = useTranslation();
 
   return (
@@ -32,4 +32,4 @@ const TransactionLink = ({
   );
 };
 
-export default TransactionLink;
+export default AccountLink;
