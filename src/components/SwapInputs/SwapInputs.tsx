@@ -28,6 +28,7 @@ const SwapInputs: FC<{
   readOnly?: boolean;
   showMaxButton?: boolean;
   showMaxInfoButton?: boolean;
+  showTokenContractLink?: boolean;
   tradeNotAllowed?: boolean;
 
   baseAmount: string;
@@ -55,6 +56,7 @@ const SwapInputs: FC<{
   readOnly = false,
   showMaxButton = false,
   showMaxInfoButton = false,
+  showTokenContractLink = false,
   tradeNotAllowed = false,
 
   baseAmount,
@@ -126,6 +128,7 @@ const SwapInputs: FC<{
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         readOnly={readOnly}
+        showTokenContractLink={showTokenContractLink}
         amount={isSell ? baseAmount : quoteAmount}
         includeAmountInput={
           isSell || (!!quoteAmount && !isRequestingQuoteAmount)
@@ -156,6 +159,7 @@ const SwapInputs: FC<{
         isRequestingToken={
           isSell ? isRequestingQuoteToken : isRequestingBaseToken
         }
+        showTokenContractLink={showTokenContractLink}
         amount={isSell ? quoteAmount : baseAmount}
         includeAmountInput={
           !isSell ||

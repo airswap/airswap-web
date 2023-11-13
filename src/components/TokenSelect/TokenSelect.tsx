@@ -21,6 +21,7 @@ import {
   InputAndMaxButtonWrapper,
   InfoLabel,
   SubText,
+  TokenAccountButton,
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
@@ -89,6 +90,7 @@ export type TokenSelectProps = {
   /**
    * Used for showing quote style
    */
+  showTokenContractLink?: boolean;
   isQuote?: boolean;
   hasError?: boolean;
   subText?: string;
@@ -112,6 +114,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   hasError = false,
   showMaxButton = false,
   showMaxInfoButton = false,
+  showTokenContractLink = false,
 }) => {
   const { t } = useTranslation();
 
@@ -120,7 +123,17 @@ const TokenSelect: FC<TokenSelectProps> = ({
   }, [selectedToken, readOnly]);
 
   return (
-    <TokenSelectContainer $isQuote={isQuote} $isLoading={isRequestingAmount}>
+    <TokenSelectContainer
+      $isQuote={isQuote}
+      $isLoading={isRequestingAmount}
+      showTokenContractLink={showTokenContractLink}
+    >
+      {selectedToken && showTokenContractLink && (
+        <TokenAccountButton
+          chainId={selectedToken.chainId}
+          address={selectedToken.address}
+        />
+      )}
       {!isRequestingToken ? (
         <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
           <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />

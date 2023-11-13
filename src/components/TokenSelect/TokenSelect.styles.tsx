@@ -4,7 +4,9 @@ import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { BorderlessButtonStyle } from "../../style/mixins";
+import TransactionLink from "../TokenList/subcomponents/TransactionLink/TransactionLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
+import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
 import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
 
 const fadeOut = keyframes`
@@ -187,10 +189,12 @@ export const SubText = styled.div`
 export const TokenSelectContainer = styled.div<{
   $isLoading: boolean;
   $isQuote: boolean;
+  showTokenContractLink: boolean;
 }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   position: relative;
   width: 100%;
   height: 4.5rem;
@@ -209,6 +213,10 @@ export const TokenSelectContainer = styled.div<{
 
   ${PlaceHolderBar} {
     ${(props) => (!props.$isLoading ? "animation: none" : "")};
+  }
+
+  ${ContainingButton} ${StyledTokenLogo} {
+    ${(props) => (props.showTokenContractLink ? "visibility: hidden" : "")};
   }
 
   ${TokenLogoLeft} {
@@ -267,4 +275,13 @@ export const PlaceholderContainer = styled.div`
     transform: scaleX(-100%);
     height: 0.875rem;
   }
+`;
+
+export const TokenAccountButton = styled(TransactionLink)`
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 50%;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  margin-right: 0.5rem;
+  background: ${(props) => props.theme.colors.black};
 `;
