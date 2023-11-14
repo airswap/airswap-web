@@ -367,6 +367,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isRequestingBaseToken={isSignerTokenLoading}
         isRequestingQuoteAmount={isSenderTokenLoading}
         isRequestingQuoteToken={isSenderTokenLoading}
+        showTokenContractLink
         baseAmount={signerAmount || "0.00"}
         baseTokenInfo={signerToken}
         maxAmount={null}
