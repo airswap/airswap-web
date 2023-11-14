@@ -4,8 +4,8 @@ import { css } from "styled-components/macro";
 import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle, TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
+import AccountLink from "../../../AccountLink/AccountLink";
 import Icon from "../../../Icon/Icon";
-import TransactionLink from "../../subcomponents/TransactionLink/TransactionLink";
 
 type ContainerProps = {
   disabled: boolean;
@@ -182,7 +182,7 @@ export const Tooltip = styled.div`
   ${TooltipStyle};
 `;
 
-export const StyledIcon = styled(TransactionLink)`
+export const StyledIcon = styled(AccountLink)`
   display: flex;
   position: relative;
 

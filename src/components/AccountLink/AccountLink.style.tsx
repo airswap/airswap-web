@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import { BorderlessButtonStyle } from "../../../../style/mixins";
+import { BorderlessButtonStyle } from "../../style/mixins";
 
 export const Link = styled.a`
   padding: 0.25rem;
