@@ -3,7 +3,10 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
-import { BorderlessButtonStyle } from "../../style/mixins";
+import {
+  BorderlessButtonStyle,
+  InputOrButtonBorderStyle,
+} from "../../style/mixins";
 import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
@@ -278,10 +281,13 @@ export const PlaceholderContainer = styled.div`
 `;
 
 export const TokenAccountButton = styled(AccountLink)`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  ${InputOrButtonBorderStyle};
+
   border-radius: 50%;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
   margin-right: 0.5rem;
+  min-width: 1.625rem;
+  max-width: 1.625rem;
+  min-height: 1.625rem;
+  max-height: 1.625rem;
   background: ${(props) => props.theme.colors.black};
 `;
