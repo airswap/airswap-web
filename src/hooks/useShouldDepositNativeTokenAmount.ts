@@ -32,7 +32,13 @@ const useShouldDepositNativeTokenAmount = (
   const wrappedNativeToken = useNativeWrappedToken(chainId);
 
   return useMemo(() => {
-    if (!token || !tokenAmount || !chainId || !wrappedNativeToken) {
+    if (
+      !token ||
+      !tokenAmount ||
+      !Number(tokenAmount) ||
+      !chainId ||
+      !wrappedNativeToken
+    ) {
       return undefined;
     }
 
