@@ -1,10 +1,9 @@
+import { ChainIds, chainCurrencies, ADDRESS_ZERO } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
 
-import { ChainIds, chainCurrencies, ADDRESS_ZERO } from '@airswap/constants'
+export const nativeCurrencyDecimals = 18;
 
-export const nativeCurrencyDecimals = 18
-
-const nativeCurrency: Record<number, TokenInfo> = {}
+const nativeCurrency: Record<number, TokenInfo> = {};
 
 const currencyIcons: Record<number, number> = {
   [ChainIds.MAINNET]: ChainIds.MAINNET,
@@ -26,7 +25,7 @@ const currencyIcons: Record<number, number> = {
   [ChainIds.BASEGOERLI]: ChainIds.MAINNET,
   [ChainIds.ARBITRUMGOERLI]: ChainIds.MAINNET,
   [ChainIds.SEPOLIA]: ChainIds.MAINNET,
-}
+};
 
 for (let chainId in ChainIds) {
   nativeCurrency[chainId] = {
@@ -35,8 +34,8 @@ for (let chainId in ChainIds) {
     decimals: nativeCurrencyDecimals,
     name: chainCurrencies[chainId],
     symbol: chainCurrencies[chainId],
-    logoURI: `images/networks/${currencyIcons[chainId]}.png`
-  }
+    logoURI: `images/networks/${currencyIcons[chainId]}.png`,
+  };
 }
 
 export const nativeCurrencySafeTransactionFee: Partial<Record<number, number>> =

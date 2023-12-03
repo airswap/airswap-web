@@ -1,11 +1,9 @@
-import { TokenInfo } from "@airswap/types";
 import { ADDRESS_ZERO } from "@airswap/constants";
+import { TokenInfo } from "@airswap/types";
 
 import { BigNumber } from "bignumber.js";
 
-import {
-  nativeCurrencySafeTransactionFee,
-} from "../constants/nativeCurrency";
+import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { BalancesState } from "../features/balances/balancesSlice";
 import stringToSignificantDecimals from "./stringToSignificantDecimals";
 

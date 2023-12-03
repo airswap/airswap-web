@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
 import { FullOrderERC20, OrderERC20 } from "@airswap/types";
 import { checkResultToErrors, orderERC20ToParams } from "@airswap/utils";
@@ -7,7 +8,6 @@ import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { ADDRESS_ZERO } from "@airswap/constants";
 import { AppError, AppErrorType } from "../../errors/appError";
 import {
   SwapError,

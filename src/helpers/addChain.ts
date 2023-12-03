@@ -1,4 +1,4 @@
-import { apiUrls, explorerUrls } from "@airswap/constants"
+import { apiUrls, explorerUrls } from "@airswap/constants";
 
 // https://eips.ethereum.org/EIPS/eip-3085
 

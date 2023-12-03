@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { WETH } from "@airswap/libraries";
 import {
   AsyncThunk,
@@ -11,7 +12,6 @@ import {
 import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { ADDRESS_ZERO } from "@airswap/constants";
 import getWethAddress from "../../helpers/getWethAddress";
 import {
   setWalletConnected,
@@ -89,9 +89,7 @@ const getThunk: (
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
           ...state.metadata.tokens.custom,
-          ...(wrappedADDRESS_ZERO
-            ? [wrappedADDRESS_ZERO]
-            : []),
+          ...(wrappedADDRESS_ZERO ? [wrappedADDRESS_ZERO] : []),
           ADDRESS_ZERO,
         ];
         dispatch(

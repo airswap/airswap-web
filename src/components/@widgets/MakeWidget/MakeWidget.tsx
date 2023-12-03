@@ -2,8 +2,8 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { compressFullOrderERC20 } from "@airswap/utils";
 import { ADDRESS_ZERO } from "@airswap/constants";
+import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -297,9 +297,7 @@ const MakeWidget: FC = () => {
         signerAmount: makerAmount,
         protocolFee: protocolFee.toString(),
         senderWallet:
-          orderType === OrderType.private
-            ? takerAddress!
-            : ADDRESS_ZERO,
+          orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
         senderToken,
         senderTokenInfo: takerTokenInfo!,
         senderAmount: takerAmount,

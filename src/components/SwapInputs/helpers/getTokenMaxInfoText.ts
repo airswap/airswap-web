@@ -1,11 +1,9 @@
 import { TFunction } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
 import { ADDRESS_ZERO } from "@airswap/constants";
+import { TokenInfo } from "@airswap/types";
 
-import {
-  nativeCurrencySafeTransactionFee,
-} from "../../../constants/nativeCurrency";
+import { nativeCurrencySafeTransactionFee } from "../../../constants/nativeCurrency";
 
 export default function getTokenMaxInfoText(
   tokenInfo: TokenInfo | null,

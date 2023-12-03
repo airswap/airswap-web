@@ -1,9 +1,10 @@
 import { RefObject, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+
 import { chainNames } from "@airswap/constants";
 
-import { supportedNetworks } from "../../constants/supportedNetworks";
 import nativeCurrency from "../../constants/nativeCurrency";
+import { supportedNetworks } from "../../constants/supportedNetworks";
 import {
   Container,
   NetworksContainer,
@@ -31,14 +32,16 @@ const ChainSelectionPopover = ({
   };
 
   const networkButtons = useMemo(() => {
-    return supportedNetworks.map(id => <NetworkButton
+    return supportedNetworks.map((id) => (
+      <NetworkButton
         key={id}
         $isActive={chainId === Number(id)}
         onClick={() => handleNetworkButtonClick(Number(id))}
       >
         <NetworkIcon src={`images/networks/${id}.png`} />
         {chainNames[id]}
-      </NetworkButton>)
+      </NetworkButton>
+    ));
   }, [chainId]);
 
   return (

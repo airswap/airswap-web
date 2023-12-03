@@ -26,7 +26,9 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../../constants/configParams";
-import nativeCurrency, { nativeCurrencySafeTransactionFee } from "../../../constants/nativeCurrency";
+import nativeCurrency, {
+  nativeCurrencySafeTransactionFee,
+} from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { LastLookContext } from "../../../contexts/lastLook/LastLook";
 import { AppErrorType } from "../../../errors/appError";
@@ -382,7 +384,7 @@ const SwapWidget: FC = () => {
           });
           rfqServers.push(serverFromQueryString);
         } else if (library && chainId) {
-          rfqServers= await Registry.getServers(
+          rfqServers = await Registry.getServers(
             library,
             chainId,
             Protocols.RequestForQuoteERC20,

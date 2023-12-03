@@ -18,15 +18,15 @@ export const supportedNetworks: number[] = [
   ChainIds.TELOS,
   ChainIds.BSC,
   ChainIds.RSK,
-]
+];
 
-const chainParams: { [key: number]: ChainParams } = {}
+const chainParams: { [key: number]: ChainParams } = {};
 export const networkParams = supportedNetworks.map((chainId) => {
   chainParams[chainId] = {
     chainId: Number(chainId),
     chainName: chainNames[chainId],
     nativeCurrency: nativeCurrency[chainId],
     rpcUrls: [apiUrls[chainId]],
-    blockExplorerUrls: [explorerUrls[chainId]]
-  }
-})
+    blockExplorerUrls: [explorerUrls[chainId]],
+  };
+});

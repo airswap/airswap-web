@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { chainCurrencies, chainNames } from "@airswap/constants";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { TokenInfo } from "@airswap/types";
 import { getAccountUrl } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -10,7 +11,6 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { ADDRESS_ZERO } from "@airswap/constants";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";

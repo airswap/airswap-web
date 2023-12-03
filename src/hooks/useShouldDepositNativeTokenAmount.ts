@@ -1,16 +1,14 @@
 import { useMemo } from "react";
 
-import { toAtomicString } from "@airswap/utils";
 import { ADDRESS_ZERO } from "@airswap/constants";
+import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import {
-  nativeCurrencySafeTransactionFee,
-} from "../constants/nativeCurrency";
+import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
   selectActiveTokens,
