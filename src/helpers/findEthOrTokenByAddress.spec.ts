@@ -1,6 +1,5 @@
-import nativeCurrency, {
-  nativeCurrencyAddress,
-} from "../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
+import nativeCurrency from "../constants/nativeCurrency";
 import findEthOrTokenByAddress from "./findEthOrTokenByAddress";
 
 const WETH = {
@@ -33,7 +32,7 @@ describe("findEthOrTokenByAddress", () => {
   it("should return ETH TokenInfo", () => {
     const chainId = 4;
     const tokenInfo = findEthOrTokenByAddress(
-      nativeCurrencyAddress,
+      ADDRESS_ZERO,
       allTokens,
       chainId
     );

@@ -7,7 +7,7 @@ import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { AppError, AppErrorType } from "../../errors/appError";
 import {
   SwapError,
@@ -25,7 +25,7 @@ async function swap(
   order: OrderERC20 | FullOrderERC20
 ) {
   let contract = await SwapERC20.getContract(provider.getSigner(), chainId);
-  if ("senderWallet" in order && order.senderWallet === nativeCurrencyAddress) {
+  if ("senderWallet" in order && order.senderWallet === ADDRESS_ZERO) {
     return contract.swapAnySender(
       await (await provider.getSigner()).getAddress(),
       ...orderERC20ToParams(order)

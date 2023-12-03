@@ -5,7 +5,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../app/hooks";
-import { nativeCurrencyAddress } from "../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { selectPendingApprovals } from "../features/transactions/transactionsSlice";
 import getWethAddress from "../helpers/getWethAddress";
 
@@ -20,7 +20,7 @@ const useApprovalPending = (tokenAddress?: string | null): boolean => {
 
     // ETH can't have approvals because it's not a token. So we default to WETH.
     const justifiedAddress =
-      tokenAddress === nativeCurrencyAddress
+      tokenAddress === ADDRESS_ZERO
         ? getWethAddress(chainId)
         : tokenAddress;
 

@@ -9,7 +9,7 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { Protocols } from "@airswap/constants";
+import { Protocols, ADDRESS_ZERO } from "@airswap/constants";
 import { Registry, Server, Wrapper } from "@airswap/libraries";
 import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
@@ -26,10 +26,7 @@ import {
   ADDITIONAL_QUOTE_BUFFER,
   RECEIVE_QUOTE_TIMEOUT_MS,
 } from "../../../constants/configParams";
-import nativeCurrency, {
-  nativeCurrencyAddress,
-  nativeCurrencySafeTransactionFee,
-} from "../../../constants/nativeCurrency";
+import nativeCurrency, { nativeCurrencySafeTransactionFee } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { LastLookContext } from "../../../contexts/lastLook/LastLook";
 import { AppErrorType } from "../../../errors/appError";
@@ -221,7 +218,7 @@ const SwapWidget: FC = () => {
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
-    baseTokenInfo?.address === nativeCurrencyAddress &&
+    baseTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   useEffect(() => {
@@ -385,20 +382,25 @@ const SwapWidget: FC = () => {
           });
           rfqServers.push(serverFromQueryString);
         } else if (library && chainId) {
-          const servers = await Registry.getServers(
+          rfqServers= await Registry.getServers(
             library,
             chainId,
+            Protocols.RequestForQuoteERC20,
             _quoteToken,
             _baseToken,
             {
               initializeTimeout: 10 * 1000,
             }
           );
-          rfqServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.RequestForQuoteERC20)
-          );
-          lastLookServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.LastLookERC20)
+          lastLookServers = await Registry.getServers(
+            library,
+            chainId,
+            Protocols.LastLookERC20,
+            _quoteToken,
+            _baseToken,
+            {
+              initializeTimeout: 10 * 1000,
+            }
           );
         }
       } catch (e) {

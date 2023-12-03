@@ -6,7 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import { nativeCurrencyAddress } from "../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { selectBalances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
@@ -44,7 +44,7 @@ const useShouldDepositNativeTokenAmountInfo =
       }
 
       const nativeTokenInfo = findEthOrTokenByAddress(
-        nativeCurrencyAddress,
+        ADDRESS_ZERO,
         allTokens,
         chainId
       );

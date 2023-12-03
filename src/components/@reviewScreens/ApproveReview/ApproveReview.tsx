@@ -6,7 +6,7 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
 import {
@@ -51,7 +51,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 }): ReactElement => {
   const { t } = useTranslation();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const isTokenNativeToken = token?.address === nativeCurrencyAddress;
+  const isTokenNativeToken = token?.address === ADDRESS_ZERO;
   const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
   const tokenSymbol = justifiedToken?.symbol || "?";
 

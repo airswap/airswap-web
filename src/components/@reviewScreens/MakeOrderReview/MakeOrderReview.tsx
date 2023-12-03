@@ -6,7 +6,7 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -63,9 +63,9 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
   const isSignerTokenNativeToken =
-    signerToken?.address === nativeCurrencyAddress;
+    signerToken?.address === ADDRESS_ZERO;
   const isSenderTokenNativeToken =
-    senderToken?.address === nativeCurrencyAddress;
+    senderToken?.address === ADDRESS_ZERO;
   const justifiedSignerToken = isSignerTokenNativeToken
     ? wrappedNativeToken
     : signerToken;

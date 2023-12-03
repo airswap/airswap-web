@@ -1,4 +1,4 @@
-import { CHAIN_PARAMS } from "../constants/supportedNetworks";
+import { apiUrls, explorerUrls } from "@airswap/constants"
 
 // https://eips.ethereum.org/EIPS/eip-3085
 
@@ -7,9 +7,9 @@ const addChain = (chainId: number): Promise<null> => {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: `0x${CHAIN_PARAMS[chainId].chainId.toString(16)}`,
-        rpcUrls: CHAIN_PARAMS[chainId].rpcUrls,
-        chainName: CHAIN_PARAMS[chainId].chainName,
+        chainId: `0x${chainId.toString(16)}`,
+        rpcUrls: [apiUrls[chainId]],
+        chainName: [explorerUrls[chainId]],
       },
     ],
   });

@@ -10,7 +10,7 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
@@ -152,7 +152,7 @@ const TransactionsTab = ({
       .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 
-  const balance = balances.values[nativeCurrencyAddress] || "0";
+  const balance = balances.values[ADDRESS_ZERO] || "0";
 
   return (
     <AnimatePresence initial={false}>
