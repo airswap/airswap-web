@@ -83,13 +83,13 @@ const getThunk: (
         const state = getState();
         const { chainId, address } = state.wallet;
 
-        const wrappedADDRESS_ZERO = chainId
+        const wrappedNativeToken = chainId
           ? getWethAddress(chainId)
           : undefined;
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
           ...state.metadata.tokens.custom,
-          ...(wrappedADDRESS_ZERO ? [wrappedADDRESS_ZERO] : []),
+          ...(wrappedNativeToken ? [wrappedNativeToken] : []),
           ADDRESS_ZERO,
         ];
         dispatch(
