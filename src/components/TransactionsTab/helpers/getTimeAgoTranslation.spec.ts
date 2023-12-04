@@ -22,7 +22,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return now if less than one minute", () => {
-    var xMinutesAgo = new Date(Date.now() - 0.1 * MS_PER_MINUTE);
+    const xMinutesAgo = new Date(Date.now() - 0.1 * MS_PER_MINUTE);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMinutesAgo, t);
@@ -30,7 +30,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 5 mins", () => {
-    var xMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
+    const xMinutesAgo = new Date(Date.now() - 5 * MS_PER_MINUTE);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMinutesAgo, t);
@@ -38,7 +38,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 59 mins", () => {
-    var xMinutesAgo = new Date(Date.now() - 59 * MS_PER_MINUTE);
+    const xMinutesAgo = new Date(Date.now() - 59 * MS_PER_MINUTE);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMinutesAgo, t);
@@ -46,7 +46,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 1 hour", () => {
-    var xHoursAgo = new Date(Date.now() - 1 * MS_PER_HOUR);
+    const xHoursAgo = new Date(Date.now() - 1 * MS_PER_HOUR);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xHoursAgo, t);
@@ -54,7 +54,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 23 hours", () => {
-    var xHoursAgo = new Date(Date.now() - 23 * MS_PER_HOUR);
+    const xHoursAgo = new Date(Date.now() - 23 * MS_PER_HOUR);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xHoursAgo, t);
@@ -62,7 +62,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 1 month", () => {
-    var xMonthsAgo = addMonths(Date.now(), -1);
+    const xMonthsAgo = addMonths(Date.now(), -1);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMonthsAgo, t);
@@ -70,7 +70,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 11 months", () => {
-    var xMonthsAgo = addMonths(addSeconds(Date.now(), -1), -11);
+    const xMonthsAgo = addMonths(addSeconds(Date.now(), -1), -11);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xMonthsAgo, t);
@@ -78,7 +78,7 @@ describe("Get Time Difference Between Two Dates", () => {
   });
 
   it("should return 5 years", () => {
-    var xYearsAgo = addYears(addSeconds(Date.now(), -1), -5);
+    const xYearsAgo = addYears(addSeconds(Date.now(), -1), -5);
     const { t } = useTranslation();
 
     const res = getTimeTranslation(xYearsAgo, t);

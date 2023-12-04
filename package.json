@@ -75,14 +75,20 @@
     "@types/react-blockies": "^1.4.1",
     "@types/react-helmet": "^6.1.5",
     "@types/react-router-dom": "^5.1.8",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "autoprefixer": "^9",
     "craco-plugin-env": "^1.0.4",
+    "eslint": "^8.50.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
     "express": "^4.18.2",
     "husky": "^7.0.1",
     "jest-canvas-mock": "^2.3.1",
-    "postcss": "^7",
-    "prettier": "2.6.2"
+    "postcss": "^8.4.31",
+    "prettier": "3.0.3",
+    "prettier-plugin-organize-imports": "^3.2.3",
+    "prettier-plugin-tailwindcss": "^0.5.4"
   },
   "eslintConfig": {
     "extends": "react-app"

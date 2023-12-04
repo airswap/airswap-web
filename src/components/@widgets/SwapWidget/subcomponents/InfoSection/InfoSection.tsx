@@ -214,7 +214,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!bestTradeOption) {
+  if (bestTradeOption) {
     let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
       baseAmount
     );

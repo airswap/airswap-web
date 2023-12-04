@@ -125,7 +125,7 @@ const ActionButtons: FC<{
   }
 
   //@ts-ignore
-  let secondaryButtonText: string | null = !!secondaryAction
+  const secondaryButtonText: string | null = secondaryAction
     ? // @ts-ignore dynamic translation key.
       t(buttonTextMapping[secondaryAction])
     : null;

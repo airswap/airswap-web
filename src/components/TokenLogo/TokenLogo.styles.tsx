@@ -19,7 +19,7 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   min-width: ${(props) => remSizes[props.size]};
   height: ${(props) => remSizes[props.size]};
   background-image: ${(props) =>
-    !!props.logoURI ? `url("${props.logoURI}")` : "none"};
+    props.logoURI ? `url("${props.logoURI}")` : "none"};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

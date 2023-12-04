@@ -59,10 +59,10 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     const { wallet, metadata, transactions } = store.getState();
     if (!wallet.connected) return;
 
-    let previousChainId = currentChainId;
+    const previousChainId = currentChainId;
     currentChainId = wallet.chainId!;
 
-    let previousTransaction = currentTransaction;
+    const previousTransaction = currentTransaction;
     currentTransaction = transactions;
 
     if (

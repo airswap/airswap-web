@@ -37,7 +37,7 @@ Sentry.init({
 // 1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
-let cachedLibrary: Record<string, Web3Provider> = {};
+const cachedLibrary: Record<string, Web3Provider> = {};
 
 function getLibrary(provider: any): Web3Provider {
   if (!cachedLibrary[provider.chainId]) {

@@ -48,7 +48,7 @@ const useHistoricalTransactions = () => {
           rfqSwapLogs: Event[] = [],
           wrappedSwapLogs: Event[] = [];
 
-        if (!!swapLogs) {
+        if (swapLogs) {
           lastLookSwapLogs = swapLogs.lastLookSwapLogs;
           rfqSwapLogs = swapLogs.rfqSwapLogs;
           wrappedSwapLogs = swapLogs.wrappedSwapLogs;

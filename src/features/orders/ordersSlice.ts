@@ -79,7 +79,7 @@ const initialState: OrdersState = {
 
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: OrderERC20, chainId: number) => {
-  let newOrder = { ...order };
+  const newOrder = { ...order };
   if (order.senderToken === getWethAddress(chainId)) {
     newOrder.senderToken = nativeCurrency[chainId].address;
   } else if (order.signerToken === getWethAddress(chainId)) {
@@ -443,7 +443,7 @@ export const take = createAsyncThunk<
 
   // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
   // we should change the order tokens to WETH -> ETH
-  let newOrder =
+  const newOrder =
     params.contractType === "Swap"
       ? params.order
       : refactorOrder(params.order, params.library._network.chainId);
@@ -580,7 +580,7 @@ export const selectBestOption = createSelector(
       return null;
     }
 
-    let pricing = bestPricing as unknown as {
+    const pricing = bestPricing as unknown as {
       pricing: Levels;
       locator: string;
       quoteAmount: string;

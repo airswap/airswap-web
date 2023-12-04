@@ -24,7 +24,7 @@ async function swap(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20 | FullOrderERC20
 ) {
-  let contract = await SwapERC20.getContract(provider.getSigner(), chainId);
+  const contract = await SwapERC20.getContract(provider.getSigner(), chainId);
   if ("senderWallet" in order && order.senderWallet === nativeCurrencyAddress) {
     return contract.swapAnySender(
       await (await provider.getSigner()).getAddress(),
