@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { compressFullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -12,7 +13,6 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import nativeCurrency, {
-  nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
@@ -160,7 +160,7 @@ const MakeWidget: FC = () => {
   const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
-    makerTokenInfo?.address === nativeCurrencyAddress &&
+    makerTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
@@ -279,11 +279,11 @@ const MakeWidget: FC = () => {
     const takerTokenAddress = takerTokenInfo?.address!;
 
     const signerToken =
-      makerTokenAddress === nativeCurrencyAddress
+      makerTokenAddress === ADDRESS_ZERO
         ? getWethAddress(chainId!)
         : makerTokenAddress;
     const senderToken =
-      takerTokenAddress === nativeCurrencyAddress
+      takerTokenAddress === ADDRESS_ZERO
         ? getWethAddress(chainId!)
         : takerTokenAddress;
 
@@ -297,9 +297,7 @@ const MakeWidget: FC = () => {
         signerAmount: makerAmount,
         protocolFee: protocolFee.toString(),
         senderWallet:
-          orderType === OrderType.private
-            ? takerAddress!
-            : nativeCurrencyAddress,
+          orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
         senderToken,
         senderTokenInfo: takerTokenInfo!,
         senderAmount: takerAmount,
@@ -313,7 +311,7 @@ const MakeWidget: FC = () => {
 
   const approveToken = () => {
     const justifiedToken =
-      makerTokenInfo?.address === nativeCurrencyAddress
+      makerTokenInfo?.address === ADDRESS_ZERO
         ? wrappedNativeToken
         : makerTokenInfo;
 

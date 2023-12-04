@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { ADDRESS_ZERO } from "@airswap/constants";
 import { toAtomicString } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
@@ -7,10 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import {
-  nativeCurrencyAddress,
-  nativeCurrencySafeTransactionFee,
-} from "../constants/nativeCurrency";
+import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -44,11 +42,11 @@ const useShouldDepositNativeTokenAmount = (
 
     const wrappedTokenAddress = wrappedNativeToken.address;
 
-    if (token !== nativeCurrencyAddress && token !== wrappedTokenAddress) {
+    if (token !== ADDRESS_ZERO && token !== wrappedTokenAddress) {
       return undefined;
     }
 
-    const nativeTokenBalance = balances.values[nativeCurrencyAddress];
+    const nativeTokenBalance = balances.values[ADDRESS_ZERO];
     const wrappedTokenBalance = balances.values[wrappedTokenAddress];
 
     if (!nativeTokenBalance || !wrappedTokenBalance) {
@@ -56,7 +54,7 @@ const useShouldDepositNativeTokenAmount = (
     }
 
     const nativeTokenInfo = findEthOrTokenByAddress(
-      nativeCurrencyAddress,
+      ADDRESS_ZERO,
       activeTokens,
       chainId
     );

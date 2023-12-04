@@ -21,15 +21,14 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@4.1.9":
-  version "4.1.9"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.1.9.tgz#bb1518dd7159613b7f97fe08db66f6149a63f2a7"
-  integrity sha512-pKnRtIIqiq4hHx8Smq9swb2t7/mNgSUmynyQ7YJ5cmRVkTJsG2L/7qo1ocmOLVDbtK7XLhG3ZugzJkWBbA8FJQ==
+"@airswap/libraries@4.1.10":
+  version "4.1.10"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.1.10.tgz#f5b87f8c2e3e6e1bca7cbb476eb1aef970330312"
+  integrity sha512-Pz5Kb4bn58UOdvm9bk7wNH2OxH6A2mQVxqwHWf72Z/NLVX9hVCUSkTqNlGRxP7UC59WZNu+VLSWXrpMiN7B9Rg==
   dependencies:
     "@airswap/balances" "4.0.2"
     "@airswap/constants" "^4.1.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/maker-registry" "4.0.4"
     "@airswap/pool" "4.1.3"
     "@airswap/registry" "4.1.2"
     "@airswap/staking" "4.0.4"
@@ -43,13 +42,6 @@
     jayson "^4.0.0"
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
-
-"@airswap/maker-registry@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@airswap/maker-registry/-/maker-registry-4.0.4.tgz#57296740a3c08ee40982c4cbf02e84513df738cc"
-  integrity sha512-EuYXfnsLnRHbxDOONcmV6Qk4Q5CikcyyRki068+w6CwGC3s6FXdgUkSfQ6aYea/GGfjxqVdpHm2xsnyhEx0Z9w==
-  dependencies:
-    "@openzeppelin/contracts" "^4.8.1"
 
 "@airswap/metadata@4.1.8":
   version "4.1.8"
@@ -2383,7 +2375,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openzeppelin/contracts@^4.8.1", "@openzeppelin/contracts@^4.8.3":
+"@openzeppelin/contracts@^4.8.3":
   version "4.9.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.9.2.tgz#1cb2d5e4d3360141a17dbc45094a8cad6aac16c1"
   integrity sha512-mO+y6JaqXjWeMh9glYVzVu8HYPGknAAnWyxTRhGeckOruyXQMNnlcW6w/Dx9ftLeIQk6N+ZJFuVmTwF7lEIFrg==

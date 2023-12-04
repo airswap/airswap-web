@@ -1,3 +1,4 @@
+import { mainnets, testnets } from "@airswap/constants";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -26,9 +27,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
-          supportedChainIds: [
-            1, 5, 30, 31, 56, 97, 137, 43113, 43114, 59140, 59144, 80001,
-          ],
+          supportedChainIds: mainnets.concat(testnets),
         });
       }
       return cachedConnectors.MetaMask;
