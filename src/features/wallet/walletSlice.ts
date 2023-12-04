@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { RootState } from "../../app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface WalletState {
   connected: boolean;
@@ -22,7 +21,7 @@ const walletSlice = createSlice({
   reducers: {
     setWalletConnected: (
       state,
-      action: PayloadAction<{ address: string; chainId: number }>
+      action: PayloadAction<{ address: string; chainId: number }>,
     ) => {
       state.connected = true;
       state.address = action.payload.address;

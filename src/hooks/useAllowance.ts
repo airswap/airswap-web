@@ -1,22 +1,19 @@
-import { useEffect, useState } from "react";
-
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppSelector } from "../app/hooks";
 import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import getWethAddress from "../helpers/getWethAddress";
+import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "bignumber.js";
+import { useEffect, useState } from "react";
 
 const useAllowance = (
   token: TokenInfo | null,
   amount?: string,
-  wrapNativeToken?: boolean
+  wrapNativeToken?: boolean,
 ): {
   hasSufficientAllowance: boolean;
   allowance: string;
@@ -61,7 +58,7 @@ const useAllowance = (
     const justifiedToken = findEthOrTokenByAddress(
       justifiedAddress,
       allTokens,
-      chainId
+      chainId,
     );
 
     if (!justifiedToken) {

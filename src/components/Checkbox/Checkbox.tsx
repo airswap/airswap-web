@@ -1,5 +1,3 @@
-import React, { FC } from "react";
-
 import {
   CheckContainer,
   CheckIcon,
@@ -9,6 +7,7 @@ import {
   LabelContainer,
   SubLabel,
 } from "./Checkbox.styles";
+import React, { FC } from "react";
 
 export type HTMLInputProps = JSX.IntrinsicElements["input"];
 

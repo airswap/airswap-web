@@ -1,9 +1,8 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { ModalParagraph } from "../../../../styled-components/Modal/Modal";
 import { OverlayActionButton } from "../../../Overlay/Overlay.styles";
 import { FeeContainer } from "./ProtocolFeeModal.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type ProtocolFeeModalProps = {
   onCloseButtonClick: () => void;

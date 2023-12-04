@@ -1,6 +1,5 @@
-import React, { FC, ReactElement } from "react";
-
 import { SvgIconProps } from "../Icon";
+import React, { FC, ReactElement } from "react";
 
 // used for OTC in menu bar.
 const IconSwap: FC<SvgIconProps> = ({ className = "" }): ReactElement => (

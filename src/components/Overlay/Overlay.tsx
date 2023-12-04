@@ -1,8 +1,3 @@
-import { FC, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { AnimatePresence, useReducedMotion } from "framer-motion";
-
 import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
@@ -13,6 +8,9 @@ import {
   TitleSubContainer,
   StyledInfoSubHeading,
 } from "./Overlay.styles";
+import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type OverlayProps = {
   /**

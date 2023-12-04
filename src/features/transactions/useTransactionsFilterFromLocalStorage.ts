@@ -1,8 +1,3 @@
-import { useEffect } from "react";
-
-import { useLocalStorageValue } from "@react-hookz/web/esm";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getTransactionsFilterLocalStorageKey } from "./transactionUtils";
 import {
@@ -10,6 +5,9 @@ import {
   setFilters,
   TransactionsState,
 } from "./transactionsSlice";
+import { useLocalStorageValue } from "@react-hookz/web/esm";
+import { useWeb3React } from "@web3-react/core";
+import { useEffect } from "react";
 
 const useTransactionsFilterFromLocalStorage = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +17,7 @@ const useTransactionsFilterFromLocalStorage = () => {
   const [filter, setFilter] = useLocalStorageValue<TransactionsState["filter"]>(
     getTransactionsFilterLocalStorageKey(account || "-", chainId || 1),
     {},
-    { handleStorageEvent: false }
+    { handleStorageEvent: false },
   );
 
   useEffect(() => {
@@ -36,7 +34,7 @@ const useTransactionsFilterFromLocalStorage = () => {
 
     if (
       filterFromLocalStorageValues.every(
-        (value, index) => filterFromStoreValues[index] === value
+        (value, index) => filterFromStoreValues[index] === value,
       )
     ) {
       return;

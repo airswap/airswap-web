@@ -1,7 +1,6 @@
+import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import { findTokensBySymbol } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
-
-import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 
 export default function findTokenFromAndTokenToAddress(
   allTokens: TokenInfo[],
@@ -9,7 +8,7 @@ export default function findTokenFromAndTokenToAddress(
   toSymbol: string,
   fromAddress?: string,
   toAddress?: string,
-  chainId?: number
+  chainId?: number,
 ): { fromAddress: string | undefined; toAddress: string | undefined } {
   let fromToken: TokenInfo | undefined;
   let toToken: TokenInfo | undefined;

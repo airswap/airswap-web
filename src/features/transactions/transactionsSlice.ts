@@ -1,11 +1,3 @@
-import { OrderERC20 } from "@airswap/types";
-import {
-  createSlice,
-  createSelector,
-  createAsyncThunk,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
 import { ClearOrderType } from "../../types/clearOrderType";
@@ -21,6 +13,13 @@ import {
   submitTransaction,
 } from "./transactionActions";
 import { filterTransactionByDate } from "./transactionUtils";
+import { OrderERC20 } from "@airswap/types";
+import {
+  createSlice,
+  createSelector,
+  createAsyncThunk,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;
@@ -111,7 +110,7 @@ function updateTransaction(params: {
       (s) =>
         s.nonce === nonce &&
         (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
-          signerWallet!.toLowerCase()
+          signerWallet!.toLowerCase(),
     );
     if (swap) {
       swap.timestamp = Date.now();
@@ -128,7 +127,7 @@ function updateTransaction(params: {
       "Can't update transaction without either signerWallet and nonce, ",
       "or transaction hash\n",
       "Supplied params: ",
-      params
+      params,
     );
   }
 }
@@ -164,7 +163,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
     dispatch(submitTransaction(transaction));
     if (!transaction.expiry) {
       console.warn(
-        "submitTransactionWithExpiry called with transaction that has no expiry"
+        "submitTransactionWithExpiry called with transaction that has no expiry",
       );
       return;
     }
@@ -179,11 +178,11 @@ export const submitTransactionWithExpiry = createAsyncThunk<
         expireTransaction({
           signerWallet,
           nonce: transaction.nonce!,
-        })
+        }),
       );
       onExpired();
     }, timeToExpiryNotification);
-  }
+  },
 );
 
 export const transactionsSlice = createSlice({
@@ -272,12 +271,12 @@ export const selectFilteredTransactions = (state: RootState) => {
     .filter(
       (transaction) =>
         !clearAllOrdersDate ||
-        filterTransactionByDate(transaction, clearAllOrdersDate)
+        filterTransactionByDate(transaction, clearAllOrdersDate),
     )
     .filter(
       (transaction) =>
         !clearFailedOrdersDate ||
-        filterTransactionByDate(transaction, clearFailedOrdersDate, "declined")
+        filterTransactionByDate(transaction, clearFailedOrdersDate, "declined"),
     );
 };
 
@@ -285,36 +284,36 @@ export const selectPendingTransactions = createSelector(
   selectTransactions,
   (transactions) => {
     return transactions.filter((tx) => tx.status === "processing");
-  }
+  },
 );
 
 export const selectOrderTransactions = createSelector(
   selectTransactions,
   (transactions) => {
     return transactions.filter((tx) => tx.type === "Order");
-  }
+  },
 );
 
 export const selectPendingDeposits = (
-  state: RootState
+  state: RootState,
 ): SubmittedDepositOrder[] =>
   state.transactions.all.filter(
-    (tx) => tx.status === "processing" && tx.type === "Deposit"
+    (tx) => tx.status === "processing" && tx.type === "Deposit",
   ) as SubmittedDepositOrder[];
 
 export const selectPendingApprovals = (state: RootState) =>
   state.transactions.all.filter(
-    (tx) => tx.status === "processing" && tx.type === "Approval"
+    (tx) => tx.status === "processing" && tx.type === "Approval",
   ) as SubmittedApproval[];
 
 export const selectCancellations = (state: RootState) =>
   state.transactions.all.filter(
-    (tx) => tx.status === "succeeded" && tx.type === "Cancel"
+    (tx) => tx.status === "succeeded" && tx.type === "Cancel",
   ) as SubmittedCancellation[];
 
 export const selectPendingCancellations = (state: RootState) =>
   state.transactions.all.filter(
-    (tx) => tx.status === "processing" && tx.type === "Cancel"
+    (tx) => tx.status === "processing" && tx.type === "Cancel",
   ) as SubmittedCancellation[];
 
 export const selectTransactionsFilter = (state: RootState) => {

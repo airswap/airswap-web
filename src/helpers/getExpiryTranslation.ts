@@ -1,7 +1,6 @@
+import getDifferenceBetweenDatesInTimeUnits from "./getDifferenceBetweenDatesInTimeUnits";
 import { formatDuration, compareAsc } from "date-fns";
 import i18 from "i18next";
-
-import getDifferenceBetweenDatesInTimeUnits from "./getDifferenceBetweenDatesInTimeUnits";
 
 type formatDistanceLocaleKey = "xMinutes" | "xHours" | "xDays" | "xWeeks";
 
@@ -14,7 +13,7 @@ type formatDistanceLocaleKey = "xMinutes" | "xHours" | "xDays" | "xWeeks";
 
 export const getExpiryTranslation = (
   expiry: Date,
-  now: Date
+  now: Date,
 ): string | undefined => {
   if (compareAsc(now, expiry) === -1) {
     return undefined;
@@ -22,7 +21,7 @@ export const getExpiryTranslation = (
 
   const { minutes, hours, days, weeks } = getDifferenceBetweenDatesInTimeUnits(
     now,
-    expiry
+    expiry,
   );
 
   const formatDistanceLocale: Record<formatDistanceLocaleKey, string> = {
@@ -56,7 +55,7 @@ export const getExpiryTranslation = (
         hours: hoursRemainder,
         minutes: minutesRemainder,
       },
-      { format, locale }
+      { format, locale },
     );
   }
 

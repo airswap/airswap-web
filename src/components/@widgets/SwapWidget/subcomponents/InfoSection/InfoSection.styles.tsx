@@ -1,13 +1,11 @@
-import { MdDoneAll } from "react-icons/md";
-
-import styled from "styled-components/macro";
-
 import { BorderlessButtonStyle } from "../../../../../style/mixins";
 import { LargePillButton } from "../../../../../styled-components/Pill/Pill";
 import IconButton from "../../../../IconButton/IconButton";
 import TransactionLink from "../../../../TransactionLink/TransactionLink";
 import { InfoHeading, InfoSubHeading } from "../../../../Typography/Typography";
 import { StyledParagraph } from "../../../../Typography/Typography.styles";
+import { MdDoneAll } from "react-icons/md";
+import styled from "styled-components/macro";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;

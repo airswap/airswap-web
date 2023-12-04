@@ -1,15 +1,3 @@
-import { getKnownTokens } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-
-import * as ethers from "ethers";
-
 import { AppDispatch, RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registrySlice";
 import {
@@ -23,6 +11,16 @@ import {
   getProtocolFee,
   getUnknownTokens,
 } from "./metadataApi";
+import { getKnownTokens } from "@airswap/metadata";
+import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import * as ethers from "ethers";
 
 export interface MetadataTokens {
   all: {
@@ -78,7 +76,7 @@ export const fetchUnkownTokens = createAsyncThunk<
     wallet.chainId,
     registry.allSupportedTokens,
     Object.values(metadata.tokens.all),
-    provider
+    provider,
   );
 });
 
@@ -118,12 +116,12 @@ export const metadataSlice = createSlice({
     },
     removeActiveToken: (state, action: PayloadAction<string>) => {
       state.tokens.active = state.tokens.active.filter(
-        (tokenAddress) => tokenAddress !== action.payload
+        (tokenAddress) => tokenAddress !== action.payload,
       );
     },
     removeCustomToken: (state, action: PayloadAction<string>) => {
       state.tokens.custom = state.tokens.active.filter(
-        (tokenAddress) => tokenAddress !== action.payload
+        (tokenAddress) => tokenAddress !== action.payload,
       );
     },
   },
@@ -148,7 +146,7 @@ export const metadataSlice = createSlice({
             }
             return allTokens;
           },
-          {}
+          {},
         );
 
         const stateAllTokens = Object.keys(state.tokens.all).reduce(
@@ -158,7 +156,7 @@ export const metadataSlice = createSlice({
               [token.toLowerCase()]: state.tokens.all[token],
             };
           },
-          {}
+          {},
         );
 
         const tokens = {
@@ -226,9 +224,9 @@ export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
     return Object.values(allTokenInfo).filter((tokenInfo) =>
-      activeTokenAddresses.includes(tokenInfo.address)
+      activeTokenAddresses.includes(tokenInfo.address),
     );
-  }
+  },
 );
 export const selectActiveTokensWithoutCustomTokens = createSelector(
   [selectActiveTokenAddresses, selectCustomTokenAddresses, selectAllTokenInfo],
@@ -236,9 +234,9 @@ export const selectActiveTokensWithoutCustomTokens = createSelector(
     return Object.values(allTokenInfo).filter(
       (tokenInfo) =>
         activeTokenAddresses.includes(tokenInfo.address) &&
-        !customTokenAddresses.includes(tokenInfo.address)
+        !customTokenAddresses.includes(tokenInfo.address),
     );
-  }
+  },
 );
 export const selectMetaDataReducer = (state: RootState) => state.metadata;
 export const selectProtocolFee = (state: RootState) =>

@@ -1,6 +1,3 @@
-import { FullOrderERC20 } from "@airswap/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { RootState } from "../../app/store";
 import { setUserOrder } from "../makeOtc/makeOtcSlice";
 import {
@@ -11,6 +8,8 @@ import {
   getUserOrdersFromLocalStorage,
   writeUserOrdersToLocalStorage,
 } from "./myOrdersHelpers";
+import { FullOrderERC20 } from "@airswap/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type OrdersSortType =
   | "active"
@@ -41,15 +40,15 @@ export const myOrdersSlice = createSlice({
   reducers: {
     removeUserOrder: (
       state,
-      action: PayloadAction<FullOrderERC20>
+      action: PayloadAction<FullOrderERC20>,
     ): MyOrdersState => {
       const userOrders = [...state.userOrders].filter(
-        (order) => order.nonce !== action.payload.nonce
+        (order) => order.nonce !== action.payload.nonce,
       );
       writeUserOrdersToLocalStorage(
         userOrders,
         action.payload.signerWallet,
-        action.payload.chainId
+        action.payload.chainId,
       );
 
       return {
@@ -59,7 +58,7 @@ export const myOrdersSlice = createSlice({
     },
     setActiveSortType: (
       state,
-      action: PayloadAction<OrdersSortType>
+      action: PayloadAction<OrdersSortType>,
     ): MyOrdersState => {
       const sortTypeDirection = { ...state.sortTypeDirection };
       const currentSorting = sortTypeDirection[action.payload];
@@ -85,7 +84,7 @@ export const myOrdersSlice = createSlice({
     builder.addCase(setWalletConnected, (state, action) => {
       const userOrders = getUserOrdersFromLocalStorage(
         action.payload.address,
-        action.payload.chainId
+        action.payload.chainId,
       );
 
       return {

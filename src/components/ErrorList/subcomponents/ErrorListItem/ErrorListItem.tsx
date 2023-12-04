@@ -1,5 +1,3 @@
-import React, { FC } from "react";
-
 import { InfoHeading } from "../../../Typography/Typography";
 import {
   ErrorTextContainer,
@@ -7,6 +5,7 @@ import {
   StyledErrorIcon,
   StyledSubText,
 } from "./ErrorListItem.styles";
+import React, { FC } from "react";
 
 export interface ErrorListItemProps {
   title: string;

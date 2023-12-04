@@ -1,12 +1,10 @@
-import { Link } from "react-router-dom";
-
-import styled, { css } from "styled-components/macro";
-
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import { sizes } from "../../../../style/sizes";
 import Icon from "../../../Icon/Icon";
+import { Link } from "react-router-dom";
+import styled, { css } from "styled-components/macro";
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyle};

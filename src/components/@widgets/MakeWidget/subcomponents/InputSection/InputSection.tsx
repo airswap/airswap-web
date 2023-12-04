@@ -1,6 +1,5 @@
-import React, { FC, PropsWithChildren } from "react";
-
 import { Wrapper, StyledIconButton } from "./InputSection.styles";
+import React, { FC, PropsWithChildren } from "react";
 
 interface InfoSectionProps {
   onInfoButtonClick?: () => void;

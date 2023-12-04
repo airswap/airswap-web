@@ -20,7 +20,7 @@ export interface NumericFaultError {
 }
 
 export const isNumericFaultErrorError = (
-  error: any
+  error: any,
 ): error is NumericFaultError => {
   return (
     typeof error === "object" &&
@@ -34,13 +34,13 @@ export const isNumericFaultErrorError = (
 };
 
 export const transformNumericFaultErrorErrorToAppError = (
-  error: NumericFaultError
+  error: NumericFaultError,
 ): AppError => {
   if (error.fault === "underflow") {
     return transformToAppError(
       AppErrorType.arithmeticUnderflow,
       error,
-      error.reason
+      error.reason,
     );
   }
 

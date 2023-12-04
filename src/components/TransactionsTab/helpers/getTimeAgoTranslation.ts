@@ -1,12 +1,11 @@
-import { TFunction } from "react-i18next";
-
 import getTimeBetweenTwoDates, {
   TimeUnit,
 } from "../../../helpers/getTimeBetweenTwoDates";
+import { TFunction } from "react-i18next";
 
 export default function getTimeAgoTranslation(
   date: Date,
-  t: TFunction<"translation">
+  t: TFunction<"translation">,
 ): string {
   const currentDate = new Date();
 

@@ -1,10 +1,9 @@
-import { motion } from "framer-motion";
-import styled, { css } from "styled-components/macro";
-
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 import TransactionLink from "../../../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
+import { motion } from "framer-motion";
+import styled, { css } from "styled-components/macro";
 
 export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 

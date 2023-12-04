@@ -1,13 +1,11 @@
-import { useMemo } from "react";
-
-import { WETH } from "@airswap/libraries";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../app/hooks";
 import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectPendingApprovals } from "../features/transactions/transactionsSlice";
 import getWethAddress from "../helpers/getWethAddress";
+import { WETH } from "@airswap/libraries";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { useMemo } from "react";
 
 const useApprovalPending = (tokenAddress?: string | null): boolean => {
   const { chainId } = useWeb3React<Web3Provider>();

@@ -1,10 +1,9 @@
-import styled from "styled-components/macro";
-
 import {
   InputOrButtonBorderStyle,
   TextEllipsis,
 } from "../../../../../style/mixins";
 import Button from "../../../../Button/Button";
+import styled from "styled-components/macro";
 
 export const StyledButton = styled(Button)`
   display: flex;

@@ -1,8 +1,7 @@
-import styled, { css } from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyle, TextEllipsis } from "../../style/mixins";
 import Icon from "../Icon/Icon";
+import styled, { css } from "styled-components/macro";
 
 const ButtonStyle = css`
   ${InputOrButtonBorderStyle};

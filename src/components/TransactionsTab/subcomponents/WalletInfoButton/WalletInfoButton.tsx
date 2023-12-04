@@ -1,7 +1,6 @@
-import { FC } from "react";
-
 import { ConnectionStatusCircle } from "../../TransactionsTab.styles";
 import { Container, StyledInfoHeading } from "./WalletInfoButton.styles";
+import { FC } from "react";
 
 type WalletInfoButtonType = {
   isConnected?: boolean;

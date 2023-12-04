@@ -1,6 +1,3 @@
-import { motion } from "framer-motion";
-import styled from "styled-components/macro";
-
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
@@ -17,6 +14,8 @@ import {
 } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
+import { motion } from "framer-motion";
+import styled from "styled-components/macro";
 
 export const Container = styled(motion.div)`
   position: absolute;
@@ -76,7 +75,9 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
-  transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
+  transition:
+    height ease-out 0.3s,
+    margin-bottom ease-out 0.3s;
   background: ${(props) => props.theme.colors.black};
 
   @media (prefers-reduced-motion: reduce) {

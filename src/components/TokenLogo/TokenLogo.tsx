@@ -1,6 +1,5 @@
-import { BaseHTMLAttributes, FC } from "react";
-
 import StyledTokenLogo, { StyledTokenLogoProps } from "./TokenLogo.styles";
+import { BaseHTMLAttributes, FC } from "react";
 
 export type TokenLogoProps = {
   logoURI?: string;

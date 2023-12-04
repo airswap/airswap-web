@@ -1,11 +1,3 @@
-import React, { FC, ReactElement, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-import { useToggle } from "@react-hookz/web";
-
-import { BigNumber } from "bignumber.js";
-
 import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
@@ -27,6 +19,11 @@ import {
   StyledIconButton,
   StyledWidgetHeader,
 } from "./MakeOrderReview.styles";
+import { TokenInfo } from "@airswap/types";
+import { useToggle } from "@react-hookz/web";
+import { BigNumber } from "bignumber.js";
+import React, { FC, ReactElement, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface MakeOrderReviewProps {
   chainId?: number;
@@ -78,12 +75,12 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
       justifiedSignerToken?.symbol,
       signerAmount,
       justifiedSenderToken?.symbol,
-      senderAmount
+      senderAmount,
     );
   }, [signerAmount, senderAmount]);
   const expiryTranslation = useMemo(
     () => getExpiryTranslation(new Date(), new Date(Date.now() + expiry)),
-    [expiry]
+    [expiry],
   );
   const roundedFeeAmount = useMemo(() => {
     const amount = new BigNumber(signerAmountPlusFee)
@@ -95,7 +92,7 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
   const roundedSignerAmountPlusFee = useMemo(() => {
     return toRoundedNumberString(
       signerAmountPlusFee,
-      justifiedSignerToken?.decimals
+      justifiedSignerToken?.decimals,
     );
   }, [signerAmountPlusFee, justifiedSignerToken]);
 

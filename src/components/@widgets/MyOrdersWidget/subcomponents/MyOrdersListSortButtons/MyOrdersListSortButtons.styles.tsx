@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   ${MyOrdersGrid};

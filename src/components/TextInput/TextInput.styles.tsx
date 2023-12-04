@@ -1,8 +1,6 @@
-import React from "react";
-
-import styled from "styled-components/macro";
-
 import { FormInput, FormLabel } from "../Typography/Typography";
+import React from "react";
+import styled from "styled-components/macro";
 
 type TextInputStyleProps = {
   hideLabel?: boolean;

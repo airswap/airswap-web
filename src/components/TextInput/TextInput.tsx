@@ -1,10 +1,9 @@
-import React, { FC, ReactElement, RefObject } from "react";
-
 import {
   StyledFormLabel,
   StyledInput,
   StyledTextInput,
 } from "./TextInput.styles";
+import React, { FC, ReactElement, RefObject } from "react";
 
 type HTMLInputProps = Omit<React.HTMLProps<HTMLInputElement>, "ref" | "as">;
 

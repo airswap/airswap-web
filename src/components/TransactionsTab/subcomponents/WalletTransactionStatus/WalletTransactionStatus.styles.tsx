@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import Icon from "../../../Icon/Icon";
+import styled from "styled-components/macro";
 
 export const IconContainer = styled.div`
   width: 1.75rem;

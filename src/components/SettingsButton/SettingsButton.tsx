@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
-
 import Icon from "../Icon/Icon";
 import SettingsPopover from "../SettingsPopover/SettingsPopover";
 import { Container, SettingsButtonContainer } from "./SettingsButton.style";
+import { useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
@@ -33,7 +32,7 @@ const SettingsButton = ({
       }
       setSettingsOpen(false);
     },
-    [setSettingsOpen]
+    [setSettingsOpen],
   );
 
   const handleEscKey = useCallback(
@@ -42,7 +41,7 @@ const SettingsButton = ({
         setSettingsOpen(false);
       }
     },
-    [setSettingsOpen]
+    [setSettingsOpen],
   );
 
   useEffect(() => {

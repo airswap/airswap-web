@@ -4,7 +4,7 @@ export default function getTokenPairs(
   type: TokenSelectModalTypes,
   value: string,
   quoteToken: string | null,
-  baseToken: string | null
+  baseToken: string | null,
 ): { tokenFrom: string | null; tokenTo: string | null } {
   if (type === "base") {
     return value === quoteToken

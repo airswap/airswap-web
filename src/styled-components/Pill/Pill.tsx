@@ -1,8 +1,7 @@
-import styled from "styled-components";
-import { css } from "styled-components/macro";
-
 import { StyledIcon } from "../../components/Icon/Icon.styles";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+import styled from "styled-components";
+import { css } from "styled-components/macro";
 
 export const PillStyle = css`
   display: flex;

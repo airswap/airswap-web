@@ -1,10 +1,3 @@
-import toast from "react-hot-toast";
-
-import { findTokenByAddress } from "@airswap/metadata";
-import { FullOrderERC20, TokenInfo } from "@airswap/types";
-
-import i18n from "i18next";
-
 import {
   SubmittedApproval,
   SubmittedTransaction,
@@ -17,13 +10,17 @@ import CopyToast from "./CopyToast";
 import ErrorToast from "./ErrorToast";
 import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
+import { findTokenByAddress } from "@airswap/metadata";
+import { FullOrderERC20, TokenInfo } from "@airswap/types";
+import i18n from "i18next";
+import toast from "react-hot-toast";
 
 export const notifyTransaction = (
   type: TransactionType,
   transaction: SubmittedTransaction,
   tokens: TokenInfo[],
   error: boolean,
-  chainId?: number
+  chainId?: number,
 ) => {
   let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
@@ -43,12 +40,12 @@ export const notifyTransaction = (
       const senderToken = findEthOrTokenByAddress(
         tx.order.senderToken,
         tokens,
-        chainId
+        chainId,
       );
       const signerToken = findEthOrTokenByAddress(
         tx.order.signerToken,
         tokens,
-        chainId
+        chainId,
       );
       toast(
         (t) => (
@@ -63,7 +60,7 @@ export const notifyTransaction = (
         ),
         {
           duration: 3000,
-        }
+        },
       );
     }
   } else {
@@ -81,7 +78,7 @@ export const notifyTransaction = (
       ),
       {
         duration: 3000,
-      }
+      },
     );
   }
 };
@@ -97,7 +94,7 @@ export const notifyError = (props: { heading: string; cta: string }) => {
     ),
     {
       duration: 3000,
-    }
+    },
   );
 };
 
@@ -112,7 +109,7 @@ export const notifyConfirmation = (props: { heading: string; cta: string }) => {
     ),
     {
       duration: 3000,
-    }
+    },
   );
 };
 
@@ -121,7 +118,7 @@ export const notifyOrderCreated = (order: FullOrderERC20) => {
     (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
     {
       duration: 3000,
-    }
+    },
   );
 };
 
@@ -135,7 +132,7 @@ export const notifyCopySuccess = () => {
     ),
     {
       duration: 1000,
-    }
+    },
   );
 };
 

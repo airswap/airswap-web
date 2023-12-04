@@ -1,9 +1,7 @@
-import { useMemo } from "react";
-
-import { findTokensBySymbol } from "@airswap/metadata";
-
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
+import { findTokensBySymbol } from "@airswap/metadata";
+import { useMemo } from "react";
 
 const useTokenAddress = (tokenSymbol: string): string | null => {
   const allTokens = useAppSelector(selectAllTokenInfo);

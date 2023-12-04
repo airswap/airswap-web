@@ -1,9 +1,8 @@
-import { css } from "styled-components";
-import styled from "styled-components/macro";
-
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
+import { css } from "styled-components";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

@@ -1,9 +1,8 @@
-import styled from "styled-components/macro";
-
 import isActiveLanguageLogographic from "../../../../helpers/isActiveLanguageLogographic";
 import breakPoints from "../../../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
+import styled from "styled-components/macro";
 
 export const StyledIcon = styled(Icon)`
   margin-bottom: 0.375rem;

@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { OrderType } from "../../../../../types/orderTypes";
 import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
 import {
@@ -9,6 +6,8 @@ import {
   SignButton,
   StyledCopyLinkButton,
 } from "./ActionButtons.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export enum ButtonActions {
   connectWallet,

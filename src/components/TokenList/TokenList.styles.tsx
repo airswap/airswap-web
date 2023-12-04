@@ -1,5 +1,3 @@
-import styled from "styled-components/macro";
-
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import breakPoints from "../../style/breakpoints";
 import { InputTextStyle } from "../../style/mixins";
@@ -9,6 +7,7 @@ import { ScrollContainer } from "../Overlay/Overlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 import { Title } from "../Typography/Typography";
+import styled from "styled-components/macro";
 
 export const StyledScrollContainer = styled(ScrollContainer)`
   max-height: calc(100% - 7rem);

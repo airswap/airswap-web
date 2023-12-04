@@ -47,7 +47,7 @@ export const isAppError = (x: any): x is AppError => {
 export function transformToAppError(
   type: AppErrorType,
   error?: AppError["error"],
-  argument?: string
+  argument?: string,
 ): AppError {
   return {
     argument,

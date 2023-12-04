@@ -1,17 +1,15 @@
-import { Wrapper } from "@airswap/libraries";
-import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
-import { getFullSwapERC20 } from "@airswap/utils";
-import { Dispatch } from "@reduxjs/toolkit";
-
-import erc20Abi from "erc-20-abi";
-import { ethers } from "ethers";
-import { BigNumber, Contract, Event as EthersEvent } from "ethers";
-
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
 import { mineTransaction } from "./transactionActions";
 import { getSenderWalletForWrapperSwapLog } from "./transactionUtils";
 import { LastLookTransaction } from "./transactionsSlice";
+import { Wrapper } from "@airswap/libraries";
+import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
+import { getFullSwapERC20 } from "@airswap/utils";
+import { Dispatch } from "@reduxjs/toolkit";
+import erc20Abi from "erc-20-abi";
+import { ethers } from "ethers";
+import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 
 const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi);
 const tokenInterface = new ethers.utils.Interface(erc20Abi);
@@ -31,7 +29,7 @@ export default function subscribeToSwapEvents(params: {
   const onSwap = async (
     nonce: BigNumber,
     signerWallet: string,
-    swapEvent: EthersEvent
+    swapEvent: EthersEvent,
   ) => {
     const fullArgs = await getFullSwapERC20(
       swapInterface,
@@ -40,7 +38,7 @@ export default function subscribeToSwapEvents(params: {
       {
         nonce: nonce.toString(),
         signerWallet,
-      }
+      },
     );
 
     if (
@@ -62,7 +60,7 @@ export default function subscribeToSwapEvents(params: {
           signerWallet.toLowerCase() === _account
             ? "last-look-erc20"
             : "request-for-quote-erc20",
-      })
+      }),
     );
 
     const transactions = store.getState().transactions;
@@ -87,7 +85,7 @@ export default function subscribeToSwapEvents(params: {
         matchingTransaction,
         Object.values(store.getState().metadata.tokens.all),
         false,
-        chainId
+        chainId,
       );
     }
   };

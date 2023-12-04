@@ -1,9 +1,7 @@
+import { MainButton, BackButton } from "./ActionButtons.styles";
+import { TokenInfo } from "@airswap/types";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-
-import { MainButton, BackButton } from "./ActionButtons.styles";
 
 export enum ButtonActions {
   connectWallet,

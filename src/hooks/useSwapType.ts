@@ -1,17 +1,15 @@
-import { useMemo } from "react";
-
+import nativeCurrency from "../constants/nativeCurrency";
+import getWethAddress from "../helpers/getWethAddress";
+import { SwapType } from "../types/swapType";
 import { WETH } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
-import nativeCurrency from "../constants/nativeCurrency";
-import getWethAddress from "../helpers/getWethAddress";
-import { SwapType } from "../types/swapType";
+import { useMemo } from "react";
 
 const useSwapType = (
   token1: TokenInfo | null,
-  token2: TokenInfo | null
+  token2: TokenInfo | null,
 ): SwapType => {
   const { chainId } = useWeb3React<Web3Provider>();
 

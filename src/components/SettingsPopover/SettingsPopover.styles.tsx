@@ -1,5 +1,3 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import {
   BorderlessButtonStyle,
@@ -7,6 +5,7 @@ import {
   ScrollBarStyle,
 } from "../../style/mixins";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
+import styled from "styled-components/macro";
 
 type ContainerProps = {
   isOpen: boolean;

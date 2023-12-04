@@ -1,17 +1,3 @@
-import { FC, useContext, useMemo, useState } from "react";
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { FullOrderERC20 } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
@@ -68,6 +54,17 @@ import useSessionOrderTransaction from "./hooks/useSessionOrderTransaction";
 import useTakerTokenInfo from "./hooks/useTakerTokenInfo";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import OrderDetailWidgetHeader from "./subcomponents/OrderDetailWidgetHeader/OrderDetailWidgetHeader";
+import { ADDRESS_ZERO } from "@airswap/constants";
+import { FullOrderERC20 } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { useToggle } from "@react-hookz/web";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { BigNumber } from "bignumber.js";
+import { FC, useContext, useMemo, useState } from "react";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 interface OrderDetailWidgetProps {
   order: FullOrderERC20;
@@ -97,28 +94,28 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [state, setState] = useState<OrderDetailWidgetState>(
-    OrderDetailWidgetState.overview
+    OrderDetailWidgetState.overview,
   );
   const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
   const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
-    order.senderToken
+    order.senderToken,
   );
   const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
-    order.signerToken
+    order.signerToken,
   );
 
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
-    senderToken?.decimals
+    senderToken?.decimals,
   );
   const signerAmount = useFormattedTokenAmount(
     order.signerAmount,
-    signerToken?.decimals
+    signerToken?.decimals,
   );
   const senderTokenSymbol = senderToken?.symbol;
   const signerTokenSymbol = signerToken?.symbol;
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
-    signerAmount!
+    signerAmount!,
   );
   const hasApprovalPending = useApprovalPending(order.senderToken);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
@@ -126,17 +123,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { hasSufficientAllowance } = useAllowance(
     senderToken,
     senderAmount,
-    true
+    true,
   );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
-    senderAmount!
+    senderAmount!,
   );
 
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     senderToken?.address,
-    senderAmount
+    senderAmount,
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
@@ -174,7 +171,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
             senderTokens: [senderToken.address],
             signerTokens: [signerToken.address],
           },
-        })
+        }),
       );
     }
   }, [indexerUrls, senderToken, signerToken]);
@@ -205,7 +202,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       order,
       order.senderWallet,
       order.chainId,
-      library
+      library,
     );
     if (errors.length) {
       dispatch(setErrors(errors));
@@ -218,7 +215,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         library: library,
         contractType: "Swap",
         onExpired: () => {},
-      })
+      }),
     );
   };
 
@@ -234,7 +231,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         contractType: "Swap",
         chainId: chainId!,
         amount: senderAmount,
-      })
+      }),
     );
   };
 
@@ -245,7 +242,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         senderAmount: shouldDepositNativeTokenAmount!,
         senderTokenDecimals: senderToken!.decimals,
         provider: library!,
-      })
+      }),
     );
     await unwrapResult(result);
   };

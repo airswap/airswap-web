@@ -1,6 +1,5 @@
-import React, { FC, ReactElement } from "react";
-
 import { SvgIconProps } from "../Icon";
+import React, { FC, ReactElement } from "react";
 
 const IconContactSupport: FC<SvgIconProps> = ({
   className = "",

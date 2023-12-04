@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { OrderStatus } from "../../../../../types/orderStatus";
 import { OrderType } from "../../../../../types/orderTypes";
 import { Title } from "../../../../Typography/Typography";
@@ -10,6 +7,8 @@ import {
   StyledOrderStatusInfo,
   StyledWidgetHeader,
 } from "./OrderDetailWidgetHeader.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type OrderDetailWidgetHeaderProps = {
   isMakerOfSwap: boolean;

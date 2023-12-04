@@ -1,8 +1,6 @@
-import React, { FC, ReactElement, ElementType } from "react";
-
-import { DefaultTheme, StyledComponent } from "styled-components/macro";
-
 import { StyledH1, StyledH2, StyledH3, StyledH4 } from "./Typography.styles";
+import React, { FC, ReactElement, ElementType } from "react";
+import { DefaultTheme, StyledComponent } from "styled-components/macro";
 
 type TitleType = "h1" | "h2" | "h3" | "h4";
 

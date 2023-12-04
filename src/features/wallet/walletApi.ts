@@ -7,7 +7,7 @@ const LAST_ACCOUNT_LOCAL_STORAGE_KEY = `airswap/lastConnectedAccount`;
 const saveLastAccount = (address: string, provider: WalletProvider) => {
   localStorage.setItem(
     LAST_ACCOUNT_LOCAL_STORAGE_KEY,
-    `${provider.name}/${address}`
+    `${provider.name}/${address}`,
   );
 };
 
@@ -21,7 +21,7 @@ const loadLastAccount = () => {
     if (!storedString) throw new Error("No connected accounts saved");
     const [providerName, address] = storedString.split("/");
     const provider = SUPPORTED_WALLET_PROVIDERS.find(
-      (p) => p.name === providerName
+      (p) => p.name === providerName,
     );
     if (!provider) throw new Error(`Could not find provider: ${providerName}`);
     return {

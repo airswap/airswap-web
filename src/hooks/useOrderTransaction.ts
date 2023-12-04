@@ -1,13 +1,12 @@
-import { useMemo } from "react";
-
 import { useAppSelector } from "../app/hooks";
 import {
   selectOrderTransactions,
   SubmittedTransaction,
 } from "../features/transactions/transactionsSlice";
+import { useMemo } from "react";
 
 const useOrderTransaction = (
-  nonce: string
+  nonce: string,
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 

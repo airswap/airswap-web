@@ -1,11 +1,10 @@
-import styled, { keyframes } from "styled-components/macro";
-import { css } from "styled-components/macro";
-
 import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle, TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import AccountLink from "../../../AccountLink/AccountLink";
 import Icon from "../../../Icon/Icon";
+import styled, { keyframes } from "styled-components/macro";
+import { css } from "styled-components/macro";
 
 type ContainerProps = {
   disabled: boolean;

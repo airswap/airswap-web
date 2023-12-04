@@ -1,6 +1,5 @@
-import { FC } from "react";
-
 import { LoadingSpinnerContainer, SpinningIcon } from "./LoadingSpinner.styles";
+import { FC } from "react";
 
 interface LoadingSpinnerProps {
   className?: string;

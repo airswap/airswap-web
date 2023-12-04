@@ -1,6 +1,5 @@
-import styled, { ThemeType } from "styled-components/macro";
-
 import { InfoSubHeading } from "../Typography/Typography";
+import styled, { ThemeType } from "styled-components/macro";
 
 // Notice we are overriding background-color with !important
 // this is necessary to override built-in styling of toasts

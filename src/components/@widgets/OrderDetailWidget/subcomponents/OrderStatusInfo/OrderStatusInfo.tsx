@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { OrderStatus } from "../../../../../types/orderStatus";
 import ExpiryIndicator from "../../../../ExpiryIndicator/ExpiryIndicator";
 import {
@@ -9,6 +6,8 @@ import {
   StyledIcon,
   StyledLoadingSpinner,
 } from "./OrderStatusInfo.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type OrderStatusInfoProps = {
   isLoading?: boolean;

@@ -1,11 +1,3 @@
-import { SwapERC20 } from "@airswap/libraries";
-import { FullOrderERC20, UnsignedOrderERC20, TokenInfo } from "@airswap/types";
-import { createOrderERC20, toAtomicString } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-
-import { ethers } from "ethers";
-
 import {
   notifyOrderCreated,
   notifyRejectedByUserError,
@@ -14,6 +6,12 @@ import { AppErrorType, isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import { sendOrderToIndexers } from "../indexer/indexerHelpers";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
+import { SwapERC20 } from "@airswap/libraries";
+import { FullOrderERC20, UnsignedOrderERC20, TokenInfo } from "@airswap/types";
+import { createOrderERC20, toAtomicString } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ethers } from "ethers";
 
 export const createOtcOrder = createAsyncThunk(
   "make-otc/createOtcOrder",
@@ -26,7 +24,7 @@ export const createOtcOrder = createAsyncThunk(
       senderTokenInfo: TokenInfo;
       shouldSendToIndexers: boolean;
     } & UnsignedOrderERC20,
-    { dispatch }
+    { dispatch },
   ) => {
     try {
       const signerWallet = ethers.utils.isAddress(params.signerWallet)
@@ -39,18 +37,18 @@ export const createOtcOrder = createAsyncThunk(
           setError({
             type: AppErrorType.invalidAddress,
             argument: params.signerWallet,
-          })
+          }),
         );
         return;
       }
 
       const signerAmount = toAtomicString(
         params.signerAmount,
-        params.signerTokenInfo.decimals
+        params.signerTokenInfo.decimals,
       );
       const senderAmount = toAtomicString(
         params.senderAmount,
-        params.senderTokenInfo.decimals
+        params.senderTokenInfo.decimals,
       );
 
       const unsignedOrder = createOrderERC20({
@@ -72,7 +70,7 @@ export const createOtcOrder = createAsyncThunk(
         unsignedOrder,
         params.library.getSigner(),
         SwapERC20.getAddress(params.chainId) || "",
-        params.chainId
+        params.chainId,
       );
 
       if (isAppError(signature)) {
@@ -103,5 +101,5 @@ export const createOtcOrder = createAsyncThunk(
       dispatch(setStatus("failed"));
       dispatch(setError({ type: AppErrorType.unknownError }));
     }
-  }
+  },
 );

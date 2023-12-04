@@ -1,10 +1,7 @@
-import { FC, ReactElement, useMemo } from "react";
-
-import { getAccountUrl } from "@airswap/utils";
-
-import truncateEthAddress from "truncate-eth-address";
-
 import { Link, StyledIcon } from "./WalletLink.styles";
+import { getAccountUrl } from "@airswap/utils";
+import { FC, ReactElement, useMemo } from "react";
+import truncateEthAddress from "truncate-eth-address";
 
 interface WalletLinkProps {
   address: string;
@@ -19,7 +16,7 @@ const WalletLink: FC<WalletLinkProps> = ({
 }): ReactElement => {
   const truncatedAddress = useMemo(
     () => truncateEthAddress(address),
-    [address]
+    [address],
   );
 
   return (

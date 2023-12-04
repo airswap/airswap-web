@@ -1,5 +1,3 @@
-import React, { FC } from "react";
-
 import {
   StyledIcon,
   Text,
@@ -7,6 +5,7 @@ import {
   ToolbarButtonContainer,
   ToolBarLinkContainer,
 } from "./ToolbarButton.styles";
+import React, { FC } from "react";
 
 type ToolbarButtonProps = {
   text: string;
@@ -15,7 +14,7 @@ type ToolbarButtonProps = {
   href?: string;
   link?: string;
   onClick?: (
-    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => void;
 };
 

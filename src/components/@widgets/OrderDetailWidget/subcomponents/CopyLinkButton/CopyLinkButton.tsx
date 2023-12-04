@@ -1,3 +1,6 @@
+import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
+import { notifyCopySuccess } from "../../../../Toasts/ToastController";
+import { CopyLinkElement, StyledButton } from "./CopyLinkButton.styles";
 import React, {
   FC,
   ReactElement,
@@ -7,10 +10,6 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-
-import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
-import { notifyCopySuccess } from "../../../../Toasts/ToastController";
-import { CopyLinkElement, StyledButton } from "./CopyLinkButton.styles";
 
 interface CopyLinkButtonProps {
   className?: string;

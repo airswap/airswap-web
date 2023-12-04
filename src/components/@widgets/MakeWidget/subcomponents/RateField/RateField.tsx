@@ -1,7 +1,3 @@
-import { useState, useMemo, useEffect } from "react";
-
-import BigNumber from "bignumber.js";
-
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
 import {
@@ -11,6 +7,8 @@ import {
   RateBox,
   Equals,
 } from "./RateField.styles";
+import BigNumber from "bignumber.js";
+import { useState, useMemo, useEffect } from "react";
 
 export type RateFieldProps = {
   isButton?: boolean;
@@ -32,7 +30,7 @@ export const RateField: React.FC<RateFieldProps> = ({
 
   const displayRate = useMemo(
     () => stringToSignificantDecimals(currentRate.toString(), 4, 7),
-    [currentRate]
+    [currentRate],
   );
 
   useEffect(() => {

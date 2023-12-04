@@ -1,10 +1,8 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { getReceiptUrl } from "@airswap/utils";
-
 import Icon from "../Icon/Icon";
 import { Label, Link } from "./TransactionLink.style";
+import { getReceiptUrl } from "@airswap/utils";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type TransactionLinkProps = {
   hideLabel?: boolean;
@@ -22,7 +20,7 @@ const TransactionLink = ({
   const { t } = useTranslation();
   const receiptUrl = useMemo(
     () => getReceiptUrl(chainId, hash),
-    [chainId, hash]
+    [chainId, hash],
   );
 
   return (

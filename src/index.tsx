@@ -1,12 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-
-import * as buffer from "buffer";
-
 import App from "./App";
 import { store } from "./app/store";
 import * as serviceWorker from "./serviceWorker";
+import * as buffer from "buffer";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 
 window.Buffer = buffer.Buffer;
 
@@ -16,7 +14,7 @@ ReactDOM.render(
       <App />
     </Provider>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );
 
 // If you want your app to work offline and load faster, you can change

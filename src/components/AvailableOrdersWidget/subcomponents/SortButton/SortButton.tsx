@@ -1,5 +1,3 @@
-import React, { FC, PropsWithChildren } from "react";
-
 import {
   Arrow,
   Button,
@@ -7,6 +5,7 @@ import {
   StyledIconButton,
   TokenText,
 } from "./SortButton.styles";
+import React, { FC, PropsWithChildren } from "react";
 
 interface SortButtonProps {
   tokenText: string;

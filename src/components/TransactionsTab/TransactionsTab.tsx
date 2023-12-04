@@ -1,15 +1,3 @@
-import { useEffect, useRef, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { chainCurrencies, chainNames } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
-import { getAccountUrl } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { formatUnits } from "ethers/lib/utils";
-import { AnimatePresence, useReducedMotion } from "framer-motion";
-
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
@@ -44,6 +32,15 @@ import {
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
+import { chainCurrencies, chainNames } from "@airswap/constants";
+import { TokenInfo } from "@airswap/types";
+import { getAccountUrl } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { formatUnits } from "ethers/lib/utils";
+import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type TransactionsTabType = {
   address: string;
@@ -97,7 +94,7 @@ const TransactionsTab = ({
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
     () => getAccountUrl(chainId, address),
-    [chainId, address]
+    [chainId, address],
   );
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
@@ -142,7 +139,7 @@ const TransactionsTab = ({
 
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
-      (transaction) => transaction.status === "processing"
+      (transaction) => transaction.status === "processing",
     );
   }, [transactions]);
 

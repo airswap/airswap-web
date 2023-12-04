@@ -1,10 +1,8 @@
-import "@fontsource/dm-mono/500.css";
-
-import { createGlobalStyle } from "styled-components/macro";
-
 import breakPoints from "./breakpoints";
 import reset from "./reset";
 import { fontLoos, fontMono } from "./themes";
+import "@fontsource/dm-mono/500.css";
+import { createGlobalStyle } from "styled-components/macro";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}

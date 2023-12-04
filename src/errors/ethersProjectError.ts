@@ -16,7 +16,7 @@ export interface EthersProjectError {
 }
 
 export const isEthersProjectError = (
-  error: any
+  error: any,
 ): error is EthersProjectError => {
   return (
     typeof error === "object" &&
@@ -28,7 +28,7 @@ export const isEthersProjectError = (
 };
 
 export const transformEthersProjectErrorToAppError = (
-  error: EthersProjectError
+  error: EthersProjectError,
 ): AppError => {
   if (error.argument === "address") {
     return transformToAppError(AppErrorType.invalidAddress, error, error.value);

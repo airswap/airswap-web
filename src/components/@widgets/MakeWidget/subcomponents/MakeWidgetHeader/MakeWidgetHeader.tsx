@@ -1,11 +1,10 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { Title } from "../../../../Typography/Typography";
 import {
   StyledExpirySelector,
   StyledWidgetHeader,
 } from "./MakeWidgetHeader.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type MakeWidgetHeaderProps = {
   hideExpirySelector?: boolean;

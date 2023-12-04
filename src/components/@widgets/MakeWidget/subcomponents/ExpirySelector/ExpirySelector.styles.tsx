@@ -1,8 +1,7 @@
-import styled, { css } from "styled-components/macro";
-
 import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
 import Dropdown from "../../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../../Dropdown/Dropdown.styles";
+import styled, { css } from "styled-components/macro";
 
 export const SelectorStyle = css`
   ${InputOrButtonBorderStyleType2};

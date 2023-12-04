@@ -1,7 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-
 import Icon from "../../../../components/Icon/Icon";
 import {
   InfoSubHeading,
@@ -14,6 +10,9 @@ import {
   InfoContainer,
   BackButton,
 } from "./InvalidOrder.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const InvalidOrder: FC = () => {
   const { t } = useTranslation();

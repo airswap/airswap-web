@@ -3,7 +3,7 @@ import stringToSignificantDecimals from "./stringToSignificantDecimals";
 export const getHumanReadableNumber: (
   input: string,
   numSigDecimals?: number,
-  maxDigits?: number
+  maxDigits?: number,
 ) => string = (input, numSigDecimals = 2, maxDigits = 4) => {
   //auto sets to 2 decimals max, 4 digits
   const beforeDecimalPoint = input.split(".")[0];
@@ -28,7 +28,7 @@ export const getHumanReadableNumber: (
     if (suffixTracker !== 0) {
       readableNumber = beforeDecimalPoint.substring(
         0,
-        beforeDecimalPoint.length - (suffixTracker - (numSigDecimals - 1))
+        beforeDecimalPoint.length - (suffixTracker - (numSigDecimals - 1)),
       );
       //check if after decimal is not 0
       if (

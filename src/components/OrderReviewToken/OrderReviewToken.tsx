@@ -1,5 +1,3 @@
-import { FC, ReactElement } from "react";
-
 import {
   Amount,
   Container,
@@ -7,6 +5,7 @@ import {
   StyledTokenLogo,
   Symbol,
 } from "./OrderReviewToken.styles";
+import { FC, ReactElement } from "react";
 
 interface OrderReviewTokenProps {
   amount: string;

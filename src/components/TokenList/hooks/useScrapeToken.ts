@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-
+import { addTokenInfo } from "../../../features/metadata/metadataSlice";
+import scrapeToken from "../../../helpers/scrapeToken";
 import { TokenInfo } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
-import { addTokenInfo } from "../../../features/metadata/metadataSlice";
-import scrapeToken from "../../../helpers/scrapeToken";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const useScrapeToken = (
   address: string,
-  tokens: TokenInfo[]
+  tokens: TokenInfo[],
 ): TokenInfo | undefined => {
   const dispatch = useDispatch();
   const { library } = useWeb3React<Web3Provider>();
@@ -31,7 +29,7 @@ const useScrapeToken = (
 
     if (
       tokens.some(
-        (token) => token.address.toLowerCase() === address.toLowerCase()
+        (token) => token.address.toLowerCase() === address.toLowerCase(),
       )
     ) {
       return;

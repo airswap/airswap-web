@@ -21,7 +21,7 @@ describe("balances and allowances reducers", () => {
     "%s should return initial state given an unknown action",
     (name, reducer) => {
       expect(reducer(undefined, { type: "unknown" })).toEqual(initialState);
-    }
+    },
   );
   test.each(reducers)(
     "%s should reset to initial state after wallet connected",
@@ -41,10 +41,10 @@ describe("balances and allowances reducers", () => {
           setWalletConnected({
             address: "0x123",
             chainId: 1,
-          })
-        )
+          }),
+        ),
       ).toEqual(initialState);
-    }
+    },
   );
   test.each(reducers)(
     "%s should set values correctly.",
@@ -68,7 +68,7 @@ describe("balances and allowances reducers", () => {
           sometokenaddress: "4567",
         },
       });
-    }
+    },
   );
   test.each(reducers)(
     "%s should increment values correctly.",
@@ -98,7 +98,7 @@ describe("balances and allowances reducers", () => {
         };
         expect(reducer(initial, action)).toEqual(expected);
       });
-    }
+    },
   );
   test.each(reducers)(
     "%s should decerement values correctly.",
@@ -128,6 +128,6 @@ describe("balances and allowances reducers", () => {
         };
         expect(reducer(initial, action)).toEqual(expected);
       });
-    }
+    },
   );
 });

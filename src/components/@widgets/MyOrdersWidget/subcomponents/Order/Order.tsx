@@ -1,8 +1,3 @@
-import React, { FC, PropsWithChildren, useMemo } from "react";
-
-import { FullOrderERC20 } from "@airswap/types";
-import { compressFullOrderERC20 } from "@airswap/utils";
-
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
 import useCancelPending from "../../../../../hooks/useCancellationPending";
@@ -24,6 +19,9 @@ import {
   StyledNavLink,
   Text,
 } from "./Order.styles";
+import { FullOrderERC20 } from "@airswap/types";
+import { compressFullOrderERC20 } from "@airswap/utils";
+import React, { FC, PropsWithChildren, useMemo } from "react";
 
 interface OrderProps {
   order: FullOrderERC20;
@@ -56,10 +54,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       getHumanReadableNumber(
         getTokenAmountWithDecimals(
           order.senderAmount,
-          senderTokenInfo?.decimals
-        ).toString()
+          senderTokenInfo?.decimals,
+        ).toString(),
       ),
-    [order, senderTokenInfo]
+    [order, senderTokenInfo],
   );
 
   const signerAmount = useMemo(
@@ -67,10 +65,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       getHumanReadableNumber(
         getTokenAmountWithDecimals(
           order.signerAmount,
-          signerTokenInfo?.decimals
-        ).toString()
+          signerTokenInfo?.decimals,
+        ).toString(),
       ),
-    [order, signerTokenInfo]
+    [order, signerTokenInfo],
   );
 
   const timeLeft = useMemo(() => {
@@ -81,7 +79,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
   const orderStatusTranslation = useMemo(
     () => getOrderStatusTranslation(orderStatus),
-    [orderStatus]
+    [orderStatus],
   );
 
   const handleDeleteOrderButtonClick = () => {
@@ -114,7 +112,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
             onMouseEnter={() =>
               onDeleteOrderButtonMouseEnter(
                 index,
-                orderStatus === OrderStatus.open
+                orderStatus === OrderStatus.open,
               )
             }
             onMouseLeave={onDeleteOrderButtonMouseLeave}

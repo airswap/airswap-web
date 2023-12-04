@@ -23,7 +23,7 @@ describe("toMaxAllowedDecimalsNumberString", () => {
     const result1 = toMaxAllowedDecimalsNumberString("1.343434344334", 6);
     const result2 = toMaxAllowedDecimalsNumberString(
       "999999999999999999.9999999999999",
-      6
+      6,
     );
 
     expect(result1).toBe("1.343434344334");

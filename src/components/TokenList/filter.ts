@@ -1,5 +1,4 @@
 import { TokenInfo } from "@airswap/types";
-
 import { ethers } from "ethers";
 
 /**
@@ -7,7 +6,7 @@ import { ethers } from "ethers";
  * @param search the search query to apply to the token
  */
 export function createTokenFilterFunction<T extends TokenInfo>(
-  search: string
+  search: string,
 ): (tokens: T) => boolean {
   const searchingAddress = ethers.utils.isAddress(search);
 
@@ -31,7 +30,7 @@ export function createTokenFilterFunction<T extends TokenInfo>(
     return lowerSearchParts.every(
       (p) =>
         p.length === 0 ||
-        sParts.some((sp) => sp.startsWith(p) || sp.endsWith(p))
+        sParts.some((sp) => sp.startsWith(p) || sp.endsWith(p)),
     );
   };
 
@@ -41,7 +40,7 @@ export function createTokenFilterFunction<T extends TokenInfo>(
 
 export function filterTokens<T extends TokenInfo>(
   tokens: T[],
-  search: string
+  search: string,
 ): T[] {
   return tokens.filter(createTokenFilterFunction(search));
 }

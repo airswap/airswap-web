@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { Tooltip } from "../../../../styled-components/Tooltip/Tooltip";
 import Dropdown from "../../../Dropdown/Dropdown";
 import IconButton from "../../../IconButton/IconButton";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   position: relative;

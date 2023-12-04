@@ -1,6 +1,5 @@
 import { Formula, Levels, Pricing } from "@airswap/types";
 import { calculateCostFromLevels } from "@airswap/utils";
-
 import { BigNumber } from "bignumber.js";
 
 export function pricingIsLevels(value: Levels | Formula): value is Levels {
@@ -43,7 +42,7 @@ export const calculateQuoteAmount: (params: {
     // NOTE: this can throw if requested amount exceeds available.
     const senderAmount = calculateCostFromLevels(
       signerAmount.toString(),
-      levels
+      levels,
     );
 
     return senderAmount;
@@ -56,7 +55,7 @@ export const calculateQuoteAmount: (params: {
     const senderAmount = baseAmount;
     // Fee comes out of signerAmount, so we need to add it to the quoteAmount
     const signerAmount = new BigNumber(
-      calculateCostFromLevels(senderAmount, levels)
+      calculateCostFromLevels(senderAmount, levels),
     )
       .multipliedBy(1 + protocolFee / 10000)
       // .integerValue(BigNumber.ROUND_FLOOR)

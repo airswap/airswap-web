@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { WalletProvider } from "../../../../constants/supportedWalletProviders";
 import {
   ButtonIcon,
@@ -9,6 +6,8 @@ import {
   StyledButton,
   StyledLink,
 } from "./WalletProviderButton.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type ToolbarButtonProps = {
   provider: WalletProvider;

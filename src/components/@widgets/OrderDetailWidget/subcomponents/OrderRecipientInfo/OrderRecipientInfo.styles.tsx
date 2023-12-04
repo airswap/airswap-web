@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import { PillButton, Pill } from "../../../../../styled-components/Pill/Pill";
 import Icon from "../../../../Icon/Icon";
+import styled from "styled-components/macro";
 
 export const For = styled.div`
   margin-right: 0.25rem;

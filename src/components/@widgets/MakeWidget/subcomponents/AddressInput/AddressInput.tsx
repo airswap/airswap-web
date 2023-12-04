@@ -1,8 +1,7 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import useAutoFocus from "../../../../../hooks/useAutoFocus";
 import { Input, Wrapper, StyledIconButton } from "./AddressInput.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export type HTMLInputProps = JSX.IntrinsicElements["input"];
 

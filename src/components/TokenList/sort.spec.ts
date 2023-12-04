@@ -1,11 +1,10 @@
-import { TokenInfo } from "@airswap/types";
-
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   sortTokenByExactMatch,
   sortTokensBySymbol,
   sortTokensBySymbolAndBalance,
 } from "./sort";
+import { TokenInfo } from "@airswap/types";
 
 describe("Sort Tokens", () => {
   let activeTokens: TokenInfo[];

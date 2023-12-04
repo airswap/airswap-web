@@ -1,5 +1,4 @@
 import { Registry } from "@airswap/libraries";
-
 import { providers, Event } from "ethers";
 
 async function getStakerTokens(chainId: number, provider: providers.Provider) {
@@ -18,12 +17,12 @@ async function getStakerTokens(chainId: number, provider: providers.Provider) {
     registryContract.queryFilter(
       addTokensEventFilter,
       firstTxRegistryContract,
-      currentBlock
+      currentBlock,
     ),
     registryContract.queryFilter(
       removeTokensEventFilter,
       firstTxRegistryContract,
-      currentBlock
+      currentBlock,
     ),
   ]);
 
@@ -49,12 +48,12 @@ async function getStakerTokens(chainId: number, provider: providers.Provider) {
     if (log.event === "AddTokens") {
       // Adding tokens
       stakerTokens[staker] = (stakerTokens[staker] || []).concat(
-        lowerCasedTokens
+        lowerCasedTokens,
       );
     } else {
       // Removing tokens
       stakerTokens[staker] = (stakerTokens[staker] || []).filter(
-        (token) => !lowerCasedTokens.includes(token)
+        (token) => !lowerCasedTokens.includes(token),
       );
     }
   });

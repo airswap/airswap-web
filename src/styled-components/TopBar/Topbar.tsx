@@ -1,5 +1,3 @@
-import styled from "styled-components/macro";
-
 import ChainSelector from "../../components/ChainSelector/ChainSelector";
 import IconButton from "../../components/IconButton/IconButton";
 import { IconButtonStyle } from "../../components/IconButton/IconButton.styles";
@@ -8,6 +6,7 @@ import WalletButton from "../../components/WalletButton/WalletButton";
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import { AirswapButton } from "../AirswapButton/AirswapButton";
+import styled from "styled-components/macro";
 
 export const TopBar = styled.div`
   display: flex;

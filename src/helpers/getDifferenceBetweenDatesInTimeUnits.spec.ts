@@ -1,6 +1,5 @@
-import { addDays, addHours, addMinutes, addSeconds, addWeeks } from "date-fns";
-
 import getDifferenceBetweenDatesInTimeUnits from "./getDifferenceBetweenDatesInTimeUnits";
+import { addDays, addHours, addMinutes, addSeconds, addWeeks } from "date-fns";
 
 describe("getDifferenceBetweenDatesInTimeUnits", () => {
   it("should return the difference in time units between two dates", () => {
@@ -8,23 +7,23 @@ describe("getDifferenceBetweenDatesInTimeUnits", () => {
     const now = addSeconds(new Date(), 1);
     const result1 = getDifferenceBetweenDatesInTimeUnits(
       addMinutes(now, 1),
-      new Date()
+      new Date(),
     );
     const result2 = getDifferenceBetweenDatesInTimeUnits(
       addHours(now, 2),
-      new Date()
+      new Date(),
     );
     const result3 = getDifferenceBetweenDatesInTimeUnits(
       addDays(now, 3),
-      new Date()
+      new Date(),
     );
     const result4 = getDifferenceBetweenDatesInTimeUnits(
       addDays(addWeeks(now, 4), 4),
-      new Date()
+      new Date(),
     );
     const result5 = getDifferenceBetweenDatesInTimeUnits(
       addDays(addWeeks(now, 4), 7),
-      new Date()
+      new Date(),
     );
 
     expect(result1.minutes).toBe(1);

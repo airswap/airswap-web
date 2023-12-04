@@ -1,7 +1,3 @@
-import { toAtomicString as airswapToAtomicString } from "@airswap/utils";
-
-import { ethers } from "ethers";
-
 import {
   AppError,
   AppErrorType,
@@ -15,10 +11,12 @@ import {
   isNumericFaultErrorError,
   transformNumericFaultErrorErrorToAppError,
 } from "../errors/numericFaultError";
+import { toAtomicString as airswapToAtomicString } from "@airswap/utils";
+import { ethers } from "ethers";
 
 const toAtomicString = (
   value: string | ethers.BigNumber,
-  decimals: string | number
+  decimals: string | number,
 ): string | AppError => {
   try {
     return airswapToAtomicString(value, decimals);

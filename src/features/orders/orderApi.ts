@@ -1,11 +1,3 @@
-import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
-import { checkResultToErrors, orderERC20ToParams } from "@airswap/utils";
-import { toAtomicString } from "@airswap/utils";
-
-import erc20Abi from "erc-20-abi";
-import { BigNumber, ethers, Transaction } from "ethers";
-
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import { AppError, AppErrorType } from "../../errors/appError";
@@ -14,6 +6,12 @@ import {
   transformSwapErrorToAppError,
 } from "../../errors/swapError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
+import { checkResultToErrors, orderERC20ToParams } from "@airswap/utils";
+import { toAtomicString } from "@airswap/utils";
+import erc20Abi from "erc-20-abi";
+import { BigNumber, ethers, Transaction } from "ethers";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -22,29 +20,29 @@ const erc20Interface = new ethers.utils.Interface(erc20Abi);
 async function swap(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: OrderERC20 | FullOrderERC20
+  order: OrderERC20 | FullOrderERC20,
 ) {
   const contract = await SwapERC20.getContract(provider.getSigner(), chainId);
   if ("senderWallet" in order && order.senderWallet === nativeCurrencyAddress) {
     return contract.swapAnySender(
       await (await provider.getSigner()).getAddress(),
-      ...orderERC20ToParams(order)
+      ...orderERC20ToParams(order),
     );
   }
   return contract.swap(
     await (await provider.getSigner()).getAddress(),
-    ...orderERC20ToParams(order)
+    ...orderERC20ToParams(order),
   );
 }
 
 async function swapWrapper(
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  order: OrderERC20
+  order: OrderERC20,
 ) {
   return (await Wrapper.getContract(provider.getSigner(), chainId)).swap(
     ...orderERC20ToParams(order),
-    { value: order.senderAmount }
+    { value: order.senderAmount },
   );
 }
 
@@ -55,7 +53,7 @@ export async function requestOrders(
   baseTokenAmount: string,
   baseTokenDecimals: number,
   senderWallet: string,
-  proxyingFor?: string
+  proxyingFor?: string,
 ): Promise<OrderERC20[]> {
   if (!servers.length) {
     throw new Error("no counterparties");
@@ -67,13 +65,13 @@ export async function requestOrders(
         quoteToken,
         baseToken,
         senderWallet,
-        proxyingFor
+        proxyingFor,
       ),
       // servers should respond in a timely manner for orders to be considered
       new Promise((resolve, reject) =>
         setTimeout(() => {
           reject("ETIMEDOUT");
-        }, REQUEST_ORDER_TIMEOUT_MS)
+        }, REQUEST_ORDER_TIMEOUT_MS),
       ),
     ]);
     return order as any as OrderERC20;
@@ -89,7 +87,7 @@ export async function approveToken(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper",
-  amount: string | number
+  amount: string | number,
 ) {
   const spender =
     contractType === "Swap"
@@ -99,7 +97,7 @@ export async function approveToken(
     baseToken,
     erc20Interface,
     // @ts-ignore
-    provider.getSigner()
+    provider.getSigner(),
   );
   const approvalTxHash = await erc20Contract.approve(spender, amount);
   return approvalTxHash as any as Transaction;
@@ -108,7 +106,7 @@ export async function approveToken(
 export async function takeOrder(
   order: OrderERC20 | FullOrderERC20,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper"
+  contractType: "Swap" | "Wrapper",
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>(async (resolve) => {
     try {
@@ -166,7 +164,7 @@ export async function depositETH(
   chainId: number,
   senderAmount: string,
   senderTokenDecimals: number,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.Web3Provider,
 ) {
   const signer = WETH.getContract(provider.getSigner(), chainId);
   const tx = await signer.deposit({
@@ -179,11 +177,11 @@ export async function withdrawETH(
   chainId: number,
   senderAmount: string,
   senderTokenDecimals: number,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.Web3Provider,
 ) {
   const signer = WETH.getContract(provider.getSigner(), chainId);
   const tx = await signer.withdraw(
-    toAtomicString(senderAmount, senderTokenDecimals)
+    toAtomicString(senderAmount, senderTokenDecimals),
   );
   return tx as any as Transaction;
 }
@@ -193,7 +191,7 @@ export async function check(
   senderWallet: string,
   chainId: number,
   provider: ethers.providers.Web3Provider,
-  isSwapWithWrap?: boolean
+  isSwapWithWrap?: boolean,
 ): Promise<AppError[]> {
   const [strings, count] = await (
     await SwapERC20.getContract(provider, chainId)
@@ -219,10 +217,10 @@ export async function check(
 
 export async function getNonceUsed(
   order: FullOrderERC20,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.Web3Provider,
 ): Promise<boolean> {
   return (await SwapERC20.getContract(provider, order.chainId)).nonceUsed(
     order.signerWallet,
-    order.nonce
+    order.nonce,
   );
 }

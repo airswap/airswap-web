@@ -1,13 +1,3 @@
-import { createContext, FC, useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { Server, SwapERC20 } from "@airswap/libraries";
-import { OrderERC20, Pricing } from "@airswap/types";
-import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
-import { useWeb3React } from "@web3-react/core";
-
-import BigNumber from "bignumber.js";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
@@ -18,6 +8,13 @@ import {
   SubmittedTransactionWithOrder,
   submitTransactionWithExpiry,
 } from "../../features/transactions/transactionsSlice";
+import { Server, SwapERC20 } from "@airswap/libraries";
+import { OrderERC20, Pricing } from "@airswap/types";
+import { createOrderERC20, createOrderERC20Signature } from "@airswap/utils";
+import { useWeb3React } from "@web3-react/core";
+import BigNumber from "bignumber.js";
+import { createContext, FC, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type Pair = {
   baseToken: string;
@@ -73,7 +70,7 @@ const LastLookProvider: FC = ({ children }) => {
               (p) =>
                 p &&
                 p.baseToken.toLowerCase() === pair.baseToken.toLowerCase() &&
-                p.quoteToken.toLowerCase() === pair.quoteToken.toLowerCase()
+                p.quoteToken.toLowerCase() === pair.quoteToken.toLowerCase(),
             );
             if (pairPricing) {
               resolve(pairPricing);
@@ -81,11 +78,11 @@ const LastLookProvider: FC = ({ children }) => {
                 updatePricing({
                   locator: server.locator,
                   pricing: pairPricing,
-                })
+                }),
               );
             } else {
               console.warn(
-                `Didn't receive pricing for pair in update from ${server.locator}`
+                `Didn't receive pricing for pair in update from ${server.locator}`,
               );
             }
           };
@@ -94,7 +91,7 @@ const LastLookProvider: FC = ({ children }) => {
           server.on("error", (e) => {
             console.error(
               `RPC WebSocket error: [${server.locator}]: ${e.code} - ${e.message}`,
-              e
+              e,
             );
           });
           const pricing = await server.subscribePricingERC20([pair]);
@@ -102,7 +99,7 @@ const LastLookProvider: FC = ({ children }) => {
         });
       });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const unsubscribeAllServers = useCallback(() => {
@@ -153,7 +150,7 @@ const LastLookProvider: FC = ({ children }) => {
         unsignedOrder,
         library.getSigner(),
         SwapERC20.getAddress(chainId!) || "",
-        chainId!
+        chainId!,
       );
       const order: OrderERC20 = {
         expiry: unsignedOrder.expiry,
@@ -185,7 +182,7 @@ const LastLookProvider: FC = ({ children }) => {
               cta: t("orders.swapExpiredCallToAction"),
             });
           },
-        })
+        }),
       );
 
       return {
@@ -193,7 +190,7 @@ const LastLookProvider: FC = ({ children }) => {
         senderWallet: unsignedOrder.senderWallet,
       };
     },
-    [account, chainId, dispatch, library, protocolFee, t]
+    [account, chainId, dispatch, library, protocolFee, t],
   );
 
   const sendOrderForConsideration = useCallback(
@@ -207,7 +204,7 @@ const LastLookProvider: FC = ({ children }) => {
         throw e;
       }
     },
-    []
+    [],
   );
 
   const value = useMemo(
@@ -222,7 +219,7 @@ const LastLookProvider: FC = ({ children }) => {
       subscribeAllServers,
       unsubscribeAllServers,
       sendOrderForConsideration,
-    ]
+    ],
   );
 
   return (

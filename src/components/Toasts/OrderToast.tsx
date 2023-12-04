@@ -1,10 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-import { HiX } from "react-icons/hi";
-import { MdBeenhere } from "react-icons/md";
-
-import { FullOrderERC20 } from "@airswap/types";
-
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -12,6 +5,11 @@ import {
   IconContainer,
   TextContainer,
 } from "./Toast.styles";
+import { FullOrderERC20 } from "@airswap/types";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { HiX } from "react-icons/hi";
+import { MdBeenhere } from "react-icons/md";
 
 export type OrderToastProps = {
   order: FullOrderERC20;

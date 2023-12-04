@@ -1,7 +1,3 @@
-import { FC } from "react";
-import { HiX } from "react-icons/hi";
-import { MdError } from "react-icons/md";
-
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 import {
   Container,
@@ -9,6 +5,9 @@ import {
   HiXContainer,
   TextContainer,
 } from "./Toast.styles";
+import { FC } from "react";
+import { HiX } from "react-icons/hi";
+import { MdError } from "react-icons/md";
 
 export type ErrorToastProps = {
   /**

@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { ScrollBarStyle } from "../../../../../style/mixins";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

@@ -1,5 +1,4 @@
 import { Toaster as T } from "react-hot-toast";
-
 import styled from "styled-components/macro";
 
 const ToasterWrapper = styled.div`

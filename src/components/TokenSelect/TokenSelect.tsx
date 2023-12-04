@@ -1,8 +1,3 @@
-import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -25,6 +20,9 @@ import {
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
 import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
+import { TokenInfo } from "@airswap/types";
+import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export type TokenSelectProps = {
   /**

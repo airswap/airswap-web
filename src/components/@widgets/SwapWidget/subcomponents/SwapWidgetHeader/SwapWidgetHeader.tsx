@@ -1,6 +1,3 @@
-import { FC, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../../constants/configParams";
 import { ProtocolType } from "../../../../../features/transactions/transactionsSlice";
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
@@ -12,6 +9,8 @@ import {
   StyledIcon,
   StyledTimer,
 } from "./SwapWidgetHeader.styles";
+import { FC, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SwapWidgetHeaderProps {
   title: string;

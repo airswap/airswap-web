@@ -1,11 +1,10 @@
-import { useReducedMotion } from "framer-motion";
-
 import SUPPORTED_WALLET_PROVIDERS, {
   WalletProvider,
 } from "../../constants/supportedWalletProviders";
 import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
 import { StyledWalletProviderList } from "./WalletProviderList.styles";
 import WalletProviderButton from "./subcomponents/WalletProviderButton/WalletProviderButton";
+import { useReducedMotion } from "framer-motion";
 
 export type WalletProviderListProps = {
   onProviderSelected: (provider: WalletProvider) => void;
@@ -26,7 +25,7 @@ const WalletProviderList = ({
       () => {
         onProviderSelected(provider);
       },
-      shouldReduceMotion ? 0 : overlayShowHideAnimationDuration * 1000
+      shouldReduceMotion ? 0 : overlayShowHideAnimationDuration * 1000,
     );
   };
 

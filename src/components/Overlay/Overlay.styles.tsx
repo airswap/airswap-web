@@ -1,7 +1,3 @@
-import { motion } from "framer-motion";
-import { css } from "styled-components";
-import styled from "styled-components/macro";
-
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import { ScrollBarStyle } from "../../style/mixins";
@@ -11,6 +7,9 @@ import Button from "../Button/Button";
 import { ButtonStyle } from "../Button/Button.styles";
 import { InfoSubHeading } from "../Typography/Typography";
 import { StyledH2 } from "../Typography/Typography.styles";
+import { motion } from "framer-motion";
+import { css } from "styled-components";
+import styled from "styled-components/macro";
 
 type ContainerProps = {
   isHidden: boolean;

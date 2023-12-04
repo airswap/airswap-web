@@ -12,7 +12,7 @@ interface ProgressBarAnimationProps {
 export default function getProgressBarAnimationProps(
   startTime: Date,
   endTime: Date,
-  now: Date
+  now: Date,
 ): ProgressBarAnimationProps {
   const minStartTime = endTime.getTime() - 300000;
   const justifiedStartTime = Math.max(minStartTime, startTime.getTime());
@@ -20,7 +20,7 @@ export default function getProgressBarAnimationProps(
   const durationLeft = Math.max(endTime.getTime() - now.getTime(), 0);
   const progress = Math.max(1 - durationLeft / totalDuration, 0);
   const durationLeftInSeconds = Math.round(
-    ((1 - progress) * totalDuration) / 1000
+    ((1 - progress) * totalDuration) / 1000,
   );
 
   return {

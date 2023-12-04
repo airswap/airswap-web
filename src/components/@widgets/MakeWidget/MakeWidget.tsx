@@ -1,15 +1,3 @@
-import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-
-import { compressFullOrderERC20 } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import nativeCurrency, {
   nativeCurrencyAddress,
@@ -84,6 +72,15 @@ import { getNewTokenPair } from "./helpers";
 import useOrderTypeSelectOptions from "./hooks/useOrderTypeSelectOptions";
 import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import MakeWidgetHeader from "./subcomponents/MakeWidgetHeader/MakeWidgetHeader";
+import { compressFullOrderERC20 } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useToggle } from "@react-hookz/web";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { BigNumber } from "bignumber.js";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 export enum MakeWidgetState {
   list = "list",
@@ -132,10 +129,10 @@ const MakeWidget: FC = () => {
   const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
-    userTokens.tokenFrom || defaultTokenFromAddress || null
+    userTokens.tokenFrom || defaultTokenFromAddress || null,
   );
   const takerTokenInfo = useTokenInfo(
-    userTokens.tokenTo || defaultTokenToAddress || null
+    userTokens.tokenTo || defaultTokenToAddress || null,
   );
   const makerAmountPlusFee = useMemo(() => {
     return new BigNumber(makerAmount)
@@ -146,11 +143,11 @@ const MakeWidget: FC = () => {
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     makerAmountPlusFee,
-    true
+    true,
   );
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
-    makerAmount
+    makerAmount,
   );
   const hasMissingMakerAmount =
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
@@ -166,7 +163,7 @@ const MakeWidget: FC = () => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
-    makerAmount
+    makerAmount,
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
@@ -222,26 +219,26 @@ const MakeWidget: FC = () => {
       type,
       value,
       userTokens.tokenTo || defaultTokenToAddress || undefined,
-      userTokens.tokenFrom || defaultTokenFromAddress || undefined
+      userTokens.tokenFrom || defaultTokenFromAddress || undefined,
     );
 
     dispatch(
       setUserTokens({
         tokenFrom,
         tokenTo,
-      })
+      }),
     );
   };
 
   const handleMakerAmountChange = (amount: string) => {
     setMakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, makerTokenInfo?.decimals)
+      toMaxAllowedDecimalsNumberString(amount, makerTokenInfo?.decimals),
     );
   };
 
   const handleTakerAmountChange = (amount: string) => {
     setTakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, takerTokenInfo?.decimals)
+      toMaxAllowedDecimalsNumberString(amount, takerTokenInfo?.decimals),
     );
   };
 
@@ -260,11 +257,11 @@ const MakeWidget: FC = () => {
 
     const formattedMakerAmount = toRoundedNumberString(
       makerAmount,
-      makerTokenInfo?.decimals
+      makerTokenInfo?.decimals,
     );
     const formattedTakerAmount = toRoundedNumberString(
       takerAmount,
-      takerTokenInfo?.decimals
+      takerTokenInfo?.decimals,
     );
 
     setMakerAmount(formattedMakerAmount);
@@ -307,7 +304,7 @@ const MakeWidget: FC = () => {
         library: library!,
         activeIndexers: indexerUrls,
         shouldSendToIndexers: orderType === OrderType.publicListed,
-      })
+      }),
     );
   };
 
@@ -324,7 +321,7 @@ const MakeWidget: FC = () => {
         contractType: "Swap",
         chainId: chainId!,
         amount: makerAmountPlusFee,
-      })
+      }),
     );
   };
 
@@ -335,7 +332,7 @@ const MakeWidget: FC = () => {
         senderAmount: shouldDepositNativeTokenAmount!,
         senderTokenDecimals: makerTokenInfo!.decimals,
         provider: library!,
-      })
+      }),
     );
     await unwrapResult(result);
   };
@@ -481,7 +478,7 @@ const MakeWidget: FC = () => {
               token1={makerTokenInfo.symbol}
               token2={takerTokenInfo.symbol}
               rate={new BigNumber(takerAmount).dividedBy(
-                new BigNumber(makerAmount)
+                new BigNumber(makerAmount),
               )}
             />
           )}

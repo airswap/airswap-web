@@ -1,12 +1,11 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import {
   ModalParagraph,
   ModalSubTitle,
   ScrollableModalContainer,
 } from "../../../../styled-components/Modal/Modal";
 import { StyledCloseButton } from "./OrderTypesModal.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type OrderTypesModalProps = {
   onCloseButtonClick: () => void;

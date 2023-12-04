@@ -1,8 +1,3 @@
-import React, { FC, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { useToggle } from "@react-hookz/web";
-
 import { ClearOrderType } from "../../../../types/clearOrderType";
 import { SelectOption } from "../../../Dropdown/Dropdown";
 import getClearTransactionOptions from "../../helpers/getClearTransactionOptions";
@@ -12,6 +7,9 @@ import {
   ClearListButton,
   ClearListButtonTooltip,
 } from "./ClearTransactionsSelector.styles";
+import { useToggle } from "@react-hookz/web";
+import React, { FC, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type ClearTransactionSelectorType = {
   onChange: (value: ClearOrderType) => void;

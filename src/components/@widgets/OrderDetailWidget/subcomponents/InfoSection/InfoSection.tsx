@@ -1,10 +1,9 @@
-import React, { FC, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import useShouldDepositNativeTokenAmountInfo from "../../../../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { InfoSubHeading } from "../../../../Typography/Typography";
 import { getFullOrderERC20WarningTranslation } from "../../helpers";
 import { Container, Strong } from "./InfoSection.styles";
+import React, { FC, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type ActionButtonsProps = {
   isDifferentChainId: boolean;
@@ -32,7 +31,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
       isIntendedRecipient,
       isMakerOfSwap,
       isNotConnected,
-      orderChainId
+      orderChainId,
     );
   }, [
     isDifferentChainId,

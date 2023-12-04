@@ -1,12 +1,11 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import {
   SelectLabel,
   SelectWrapper,
 } from "../../../../../styled-components/Select/Select";
 import { SelectOption } from "../../../../Dropdown/Dropdown";
 import { StyledDropdown } from "./OrderTypeSelector.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export type OrderTypeSelectorProps = {
   options: SelectOption[];

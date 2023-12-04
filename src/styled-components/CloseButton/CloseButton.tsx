@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import IconButton from "../../components/IconButton/IconButton";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+import styled from "styled-components/macro";
 
 const CloseButton = styled(IconButton)`
   ${InputOrButtonBorderStyleType2};

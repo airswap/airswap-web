@@ -1,7 +1,6 @@
+import { ClearCustomServerButton } from "./ClearServerButton.styles";
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-
-import { ClearCustomServerButton } from "./ClearServerButton.styles";
 
 interface ClearServerButtonProps {
   onClick?: () => void;

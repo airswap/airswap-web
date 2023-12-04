@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import { InfoSubHeading } from "../Typography/Typography";
 import {
@@ -11,6 +8,8 @@ import {
   StyledInfoHeading,
   StyledTransactionLink,
 } from "./OrderSubmittedScreen.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 interface OrderSubmittedInfoProps {
   chainId?: number;

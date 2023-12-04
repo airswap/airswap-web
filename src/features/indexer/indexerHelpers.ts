@@ -3,7 +3,7 @@ import { FullOrderERC20 } from "@airswap/types";
 
 export const sendOrderToIndexers = async (
   order: FullOrderERC20,
-  indexerArray: string[]
+  indexerArray: string[],
 ) => {
   const indexers = indexerArray.map(async (url) => await Server.at(url));
   if (!indexers) throw new Error("No indexers available");
@@ -12,7 +12,7 @@ export const sendOrderToIndexers = async (
   const addOrderPromises = indexerPromises
     .filter(
       (value): value is PromiseFulfilledResult<Server> =>
-        value.status === "fulfilled"
+        value.status === "fulfilled",
     )
     .map((value) => {
       const server = value.value;
@@ -22,7 +22,7 @@ export const sendOrderToIndexers = async (
         .catch((e: any) => {
           console.log(
             `[indexerSlice] Order indexing failed for ${server.locator}`,
-            e.message || ""
+            e.message || "",
           );
         });
     });

@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import Icon from "../Icon/Icon";
 import { Link } from "../Typography/Typography";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

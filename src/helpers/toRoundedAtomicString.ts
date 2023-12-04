@@ -1,5 +1,4 @@
 import { toAtomicString } from "@airswap/utils";
-
 import { BigNumber } from "bignumber.js";
 
 // This helper function is used to round the atomic string to the nearest possible decimal allowed.

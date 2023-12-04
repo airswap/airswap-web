@@ -1,15 +1,12 @@
-import { useMemo } from "react";
-
-import { TokenInfo } from "@airswap/types";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppSelector } from "../app/hooks";
 import { selectBalances } from "../features/balances/balancesSlice";
+import { TokenInfo } from "@airswap/types";
+import { BigNumber } from "bignumber.js";
+import { useMemo } from "react";
 
 const useInsufficientBalance = (
   tokenInfo: TokenInfo | null,
-  amount: string
+  amount: string,
 ): boolean => {
   const balances = useAppSelector(selectBalances);
 
@@ -27,7 +24,7 @@ const useInsufficientBalance = (
     }
 
     return new BigNumber(balances.values[tokenInfo.address] || "0").lt(
-      new BigNumber(amount).multipliedBy(10 ** tokenInfo.decimals)
+      new BigNumber(amount).multipliedBy(10 ** tokenInfo.decimals),
     );
   }, [balances, tokenInfo, amount]);
 };

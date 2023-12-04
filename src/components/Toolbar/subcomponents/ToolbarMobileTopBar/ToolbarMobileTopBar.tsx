@@ -1,10 +1,9 @@
-import React, { FC, RefObject } from "react";
-
 import {
   Container,
   StyledAirswapButton,
   StyledCloseButton,
 } from "./ToolbarMobileTopBar.styles";
+import React, { FC, RefObject } from "react";
 
 export type ToolbarMobileTopBarType = {
   toolbarRef: RefObject<HTMLDivElement>;

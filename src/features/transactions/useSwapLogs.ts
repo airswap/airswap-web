@@ -1,18 +1,16 @@
-import { useEffect } from "react";
-
 import { SwapERC20, Wrapper } from "@airswap/libraries";
 import { Contract } from "@ethersproject/contracts";
 import { useAsync } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
-
 import { providers } from "ethers";
+import { useEffect } from "react";
 
 const useSwapLogs = () => {
   const [state, actions] = useAsync(
     async (
       swapContract: Contract,
       wrapperContract: Contract,
-      account: string
+      account: string,
     ) => {
       const signerSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
@@ -22,7 +20,7 @@ const useSwapLogs = () => {
         null, // protocol fee
         null, // senderWallet
         null, // senderToken
-        null // senderAmount
+        null, // senderAmount
       );
 
       const senderSwapFilter = swapContract.filters.SwapERC20(
@@ -33,11 +31,11 @@ const useSwapLogs = () => {
         null, // protocol fee
         account, // senderWallet
         null, // senderToken
-        null // senderAmount
+        null, // senderAmount
       );
 
       const wrapperSwapFilter = wrapperContract.filters.WrappedSwapFor(
-        account // senderWallet
+        account, // senderWallet
       );
 
       const firstTxBlockSwapContract =
@@ -55,17 +53,17 @@ const useSwapLogs = () => {
           swapContract.queryFilter(
             signerSwapFilter,
             firstTxBlockSwapContract,
-            currentBlock
+            currentBlock,
           ),
           swapContract.queryFilter(
             senderSwapFilter,
             firstTxBlockSwapContract,
-            currentBlock
+            currentBlock,
           ),
           wrapperContract.queryFilter(
             wrapperSwapFilter,
             firstTxBlockWrapperContract,
-            currentBlock
+            currentBlock,
           ),
         ]);
 
@@ -77,7 +75,7 @@ const useSwapLogs = () => {
         account,
       };
     },
-    null
+    null,
   );
 
   const {

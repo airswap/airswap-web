@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import { InfoHeading, InfoSubHeading } from "../../../../Typography/Typography";
+import styled from "styled-components/macro";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;

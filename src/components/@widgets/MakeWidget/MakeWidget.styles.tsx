@@ -1,5 +1,3 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../style/breakpoints";
 import { SelectLabel } from "../../../styled-components/Select/Select";
 import Tooltip from "../../SwapInputs/subcomponents/Tooltip/Tooltip";
@@ -8,6 +6,7 @@ import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import InputSection from "./subcomponents/InputSection/InputSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 import { RateField } from "./subcomponents/RateField/RateField";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

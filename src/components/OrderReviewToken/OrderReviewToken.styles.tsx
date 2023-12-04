@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { TextEllipsis } from "../../style/mixins";
 import { fontMono } from "../../style/themes";
 import TokenLogo from "../TokenLogo/TokenLogo";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

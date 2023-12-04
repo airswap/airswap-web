@@ -1,9 +1,8 @@
-import { DefaultTheme } from "styled-components/macro";
-import styled from "styled-components/macro";
-
 import { InfoSubHeading, Title } from "../../components/Typography/Typography";
 import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
+import { DefaultTheme } from "styled-components/macro";
+import styled from "styled-components/macro";
 
 export const ScrollableModalContainer = styled.div`
   ${ScrollBarStyle};

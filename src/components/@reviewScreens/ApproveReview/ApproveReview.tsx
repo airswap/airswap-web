@@ -1,11 +1,3 @@
-import React, { FC, ReactElement, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-import { useToggle } from "@react-hookz/web";
-
-import { BigNumber } from "bignumber.js";
-
 import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -23,6 +15,11 @@ import {
   StyledActionButtons,
   StyledWidgetHeader,
 } from "./ApproveReview.styles";
+import { TokenInfo } from "@airswap/types";
+import { useToggle } from "@react-hookz/web";
+import { BigNumber } from "bignumber.js";
+import React, { FC, ReactElement, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ApproveReviewProps {
   isLoading: boolean;

@@ -1,6 +1,5 @@
-import React, { FC, PropsWithChildren } from "react";
-
 import { Arrow, Button, Container } from "./SortButton.styles";
+import React, { FC, PropsWithChildren } from "react";
 
 interface SortButtonProps {
   isActive?: boolean;

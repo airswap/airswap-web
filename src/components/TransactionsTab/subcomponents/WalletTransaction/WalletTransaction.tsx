@@ -1,12 +1,3 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-import { formatUnits } from "@ethersproject/units";
-
-import BigNumber from "bignumber.js";
-import { HTMLMotionProps } from "framer-motion";
-
 import {
   SubmittedApproval,
   SubmittedCancellation,
@@ -25,6 +16,12 @@ import {
   StyledTransactionLink,
   TextContainer,
 } from "./WalletTransaction.styles";
+import { TokenInfo } from "@airswap/types";
+import { formatUnits } from "@ethersproject/units";
+import BigNumber from "bignumber.js";
+import { HTMLMotionProps } from "framer-motion";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface WalletTransactionProps extends HTMLMotionProps<"div"> {
   /**
@@ -91,12 +88,12 @@ const WalletTransaction = ({
     const senderToken = findEthOrTokenByAddress(
       tx.order.senderToken,
       tokens,
-      chainId
+      chainId,
     );
     const signerToken = findEthOrTokenByAddress(
       tx.order.signerToken,
       tokens,
-      chainId
+      chainId,
     );
     const hasExpiry = !!tx.expiry;
 
@@ -128,20 +125,23 @@ const WalletTransaction = ({
                   {
                     senderAmount: parseFloat(
                       Number(
-                        formatUnits(tx.order.senderAmount, senderToken.decimals)
-                      ).toFixed(5)
+                        formatUnits(
+                          tx.order.senderAmount,
+                          senderToken.decimals,
+                        ),
+                      ).toFixed(5),
                     ),
                     senderToken: senderToken.symbol,
                     signerAmount: parseFloat(
                       Number(
                         formatUnits(
                           signerAmountWithFee || tx.order.signerAmount,
-                          signerToken.decimals
-                        )
-                      ).toFixed(5)
+                          signerToken.decimals,
+                        ),
+                      ).toFixed(5),
                     ),
                     signerToken: signerToken.symbol,
-                  }
+                  },
                 )}
               </SpanTitle>
               {hasExpiry && tx.status === "processing" ? (

@@ -1,10 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-
-import { ThemeProvider } from "styled-components/macro";
-
 import { darkTheme } from "../../style/themes";
 import WalletButton from "./WalletButton";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { ThemeProvider } from "styled-components/macro";
 
 describe("WalletButton", () => {
   // TODO: this doesn't work because of the `react-blockies` package - not
@@ -25,7 +23,7 @@ describe("WalletButton", () => {
           address={"0x73580000000000000000000000000000000bcBE5"}
           chainId={1}
         />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     userEvent.click(screen.getByText("0x7358…cBE5"));

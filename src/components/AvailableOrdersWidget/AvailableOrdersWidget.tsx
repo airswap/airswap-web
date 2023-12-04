@@ -1,9 +1,3 @@
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-
-import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/types";
-
 import { useAppSelector } from "../../app/hooks";
 import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
 import { selectBestOrder } from "../../features/orders/ordersSlice";
@@ -12,6 +6,10 @@ import { Container } from "./AvailableOrdersWidget.styles";
 import { getSortedIndexerOrders } from "./helpers/getSortedIndexerOrders";
 import ActionButton from "./subcomponents/ActionButton/ActionButton";
 import AvailableOrdersList from "./subcomponents/AvailableOrdersList/AvailableOrdersList";
+import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/types";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 export type AvailableOrdersSortType = "senderAmount" | "signerAmount" | "rate";
 

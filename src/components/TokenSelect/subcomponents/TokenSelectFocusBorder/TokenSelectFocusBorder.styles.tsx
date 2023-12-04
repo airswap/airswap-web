@@ -1,6 +1,5 @@
-import styled, { createGlobalStyle } from "styled-components/macro";
-
 import convertHexToRGBA from "../../../../helpers/transformHexToRgba";
+import styled, { createGlobalStyle } from "styled-components/macro";
 
 type BorderType = {
   position: "left" | "right";

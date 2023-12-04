@@ -1,5 +1,4 @@
 import { SwapERC20, Wrapper, Balances } from "@airswap/libraries";
-
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event } from "ethers";
 import { hexZeroPad, id } from "ethers/lib/utils";
@@ -12,12 +11,12 @@ interface SubscribeParams {
   onBalanceChange: (
     tokenAddress: string,
     amount: BigNumber,
-    direction: "in" | "out"
+    direction: "in" | "out",
   ) => void;
   onApproval: (
     tokenAddress: string,
     spenderAddress: string,
-    amount: BigNumber
+    amount: BigNumber,
   ) => void;
 }
 
@@ -37,11 +36,11 @@ const erc20Interface = new ethers.utils.Interface(erc20Abi);
 const fetchBalancesOrAllowances: (
   method: "walletBalances" | "walletAllowances",
   spenderAddressType: "Wrapper" | "Swap" | "None",
-  params: WalletParams
+  params: WalletParams,
 ) => Promise<string[]> = async (
   method,
   spenderAddressType,
-  { chainId, provider, tokenAddresses, walletAddress }
+  { chainId, provider, tokenAddresses, walletAddress },
 ) => {
   const contract = Balances.getContract(provider, chainId);
   const args =
@@ -58,17 +57,17 @@ const fetchBalancesOrAllowances: (
 const fetchBalances = fetchBalancesOrAllowances.bind(
   null,
   "walletBalances",
-  "None"
+  "None",
 );
 const fetchAllowancesSwap = fetchBalancesOrAllowances.bind(
   null,
   "walletAllowances",
-  "Swap"
+  "Swap",
 );
 const fetchAllowancesWrapper = fetchBalancesOrAllowances.bind(
   null,
   "walletAllowances",
-  "Wrapper"
+  "Wrapper",
 );
 
 // event Transfer(address indexed _from, address indexed _to, uint256 _value)

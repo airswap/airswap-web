@@ -1,11 +1,10 @@
+import { BalancesState } from "../../features/balances/balancesSlice";
 import { TokenInfo } from "@airswap/types";
 import { formatUnits } from "@ethersproject/units";
 
-import { BalancesState } from "../../features/balances/balancesSlice";
-
 export function sortTokensByBalance(
   tokens: TokenInfo[],
-  balances: BalancesState
+  balances: BalancesState,
 ) {
   return tokens.sort((a, b) =>
     parseFloat(formatUnits(balances.values[a.address]!, a.decimals)) <
@@ -16,13 +15,13 @@ export function sortTokensByBalance(
       ? a.symbol > b.symbol
         ? 1
         : -1
-      : -1
+      : -1,
   );
 }
 
 export function sortTokensBySymbol(tokens: TokenInfo[]) {
   return tokens.sort((a, b) =>
-    a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1
+    a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1,
   );
 }
 
@@ -34,13 +33,13 @@ function getTokenBalance(token: TokenInfo, balances: BalancesState): number {
   }
 
   return parseFloat(
-    formatUnits(balances.values[token.address]!, token.decimals)
+    formatUnits(balances.values[token.address]!, token.decimals),
   );
 }
 
 export function sortTokensBySymbolAndBalance(
   tokens: TokenInfo[],
-  balances: BalancesState
+  balances: BalancesState,
 ) {
   return tokens.sort((a, b) => {
     const aBalance = getTokenBalance(a, balances);
@@ -58,7 +57,7 @@ export function sortTokensBySymbolAndBalance(
 
 export function sortTokenByExactMatch(
   filteredTokens: TokenInfo[],
-  tokenQuery: string
+  tokenQuery: string,
 ) {
   if (!filteredTokens.length) return [];
   if (!tokenQuery || tokenQuery === "") return filteredTokens;

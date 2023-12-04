@@ -1,8 +1,7 @@
-import { useEffect } from "react";
-
 import { useAppDispatch } from "../app/hooks";
 import { setCustomServerUrl } from "../features/userSettings/userSettingsSlice";
 import useSearchParams from "./useSearchParams";
+import { useEffect } from "react";
 
 const useCustomServer = (): void => {
   const dispatch = useAppDispatch();

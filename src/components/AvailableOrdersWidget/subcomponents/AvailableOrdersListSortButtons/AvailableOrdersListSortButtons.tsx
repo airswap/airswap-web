@@ -1,9 +1,8 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
 import SortButton from "../SortButton/SortButton";
 import { Container } from "./AvailableOrdersListSortButtons.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AvailableOrdersListProps {
   activeSortType: AvailableOrdersSortType;

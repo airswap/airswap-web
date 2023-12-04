@@ -1,7 +1,6 @@
-import React, { FC } from "react";
-
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
 import { Title } from "../../../../Typography/Typography";
+import React, { FC } from "react";
 
 type MakeWidgetHeaderProps = {
   title: string;

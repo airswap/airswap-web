@@ -1,17 +1,15 @@
-import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
-import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
-import { Interface } from "@ethersproject/abi";
-import { Web3Provider } from "@ethersproject/providers";
-import { Action, Dispatch } from "@reduxjs/toolkit";
-
-import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
-
 import { mineTransaction, revertTransaction } from "./transactionActions";
 import {
   StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
 } from "./transactionsSlice";
+import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
+import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
+import { Interface } from "@ethersproject/abi";
+import { Web3Provider } from "@ethersproject/providers";
+import { Action, Dispatch } from "@reduxjs/toolkit";
+import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
 const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
@@ -49,7 +47,7 @@ export type SwapEventArgs = {
  * @returns Promise<String> The original senderWallet
  */
 const getSenderWalletForWrapperSwapLog: (
-  log: EthersEvent
+  log: EthersEvent,
 ) => Promise<string> = async (log) => {
   const receipt = await log.getTransactionReceipt();
   // Find the `WrappedSwapFor` log that must have been emitted too.
@@ -66,12 +64,12 @@ const getSenderWalletForWrapperSwapLog: (
     }
   }
   throw new Error(
-    `Could not find WrappedSwapFor event in tx with hash: ${log.transactionHash}`
+    `Could not find WrappedSwapFor event in tx with hash: ${log.transactionHash}`,
   );
 };
 
 const getSwapArgsFromWrappedSwapForLog: (
-  log: EthersEvent
+  log: EthersEvent,
 ) => Promise<SwapEventArgs> = async (log: EthersEvent) => {
   const receipt = await log.getTransactionReceipt();
   // Find the `Swap` log that must have been emitted too.
@@ -88,7 +86,7 @@ const getSwapArgsFromWrappedSwapForLog: (
     }
   }
   throw new Error(
-    `Could not find Swap event in tx with hash: ${log.transactionHash}`
+    `Could not find Swap event in tx with hash: ${log.transactionHash}`,
   );
 };
 
@@ -104,12 +102,12 @@ const getSwapArgsFromWrappedSwapForLog: (
 async function checkPendingTransactionState(
   transactionInState: SubmittedTransaction,
   dispatch: Dispatch<Action>,
-  library: Web3Provider
+  library: Web3Provider,
 ) {
   try {
     if (transactionInState.status === "processing" && transactionInState.hash) {
       let receipt = await library.getTransactionReceipt(
-        transactionInState.hash
+        transactionInState.hash,
       );
       if (receipt !== null) {
         const status = receipt.status;
@@ -121,7 +119,7 @@ async function checkPendingTransactionState(
             revertTransaction({
               hash: transactionInState.hash,
               reason: "Reverted",
-            })
+            }),
           ); // reverted
         return;
         // Orders will automatically be picked up by swapEventSubscriber
@@ -131,7 +129,7 @@ async function checkPendingTransactionState(
         // can sometimes also return null (e.g. gas price too low or tx only
         // recently sent) depending on backend.
         const transaction = await library.getTransaction(
-          transactionInState.hash
+          transactionInState.hash,
         );
         if (transaction) {
           try {
@@ -143,7 +141,7 @@ async function checkPendingTransactionState(
               revertTransaction({
                 hash: transactionInState.hash,
                 reason: "Reverted",
-              })
+              }),
             );
           }
           return;
@@ -155,7 +153,7 @@ async function checkPendingTransactionState(
             // wait 30 seconds
             await new Promise((res) => setTimeout(res, 30000));
             receipt = await library!.getTransactionReceipt(
-              transactionInState.hash
+              transactionInState.hash,
             );
           }
           if (!receipt || receipt.status === 0) {
@@ -163,7 +161,7 @@ async function checkPendingTransactionState(
               revertTransaction({
                 hash: transactionInState.hash,
                 reason: "Reverted",
-              })
+              }),
             );
           } else {
             dispatch(mineTransaction({ hash: transactionInState.hash })); // success
@@ -180,27 +178,27 @@ async function checkPendingTransactionState(
 }
 
 const isTransactionWithOrder = (
-  transaction: SubmittedTransaction
+  transaction: SubmittedTransaction,
 ): transaction is SubmittedTransactionWithOrder => {
   return "order" in transaction;
 };
 
 export const getTransactionsFilterLocalStorageKey: (
   walletAddress: string,
-  chainId: number
+  chainId: number,
 ) => string = (walletAddress, chainId) =>
   `airswap/transactions/filterTimestamps/${walletAddress}/${chainId}`;
 
 export const getTransactionsLocalStorageKey: (
   walletAddress: string,
-  chainId: number
+  chainId: number,
 ) => string = (walletAddress, chainId) =>
   `airswap/transactions/${walletAddress}/${chainId}`;
 
 export const filterTransactionByDate = (
   transaction: SubmittedTransaction,
   timestamp: number,
-  status?: StatusType
+  status?: StatusType,
 ) => {
   if (status && transaction.status !== status) {
     return true;

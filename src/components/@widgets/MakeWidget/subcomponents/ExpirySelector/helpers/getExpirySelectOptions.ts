@@ -1,6 +1,5 @@
-import { TFunction } from "react-i18next";
-
 import { SelectOption } from "../../../../../Dropdown/Dropdown";
+import { TFunction } from "react-i18next";
 
 const MS_PER_MINUTE = 60000;
 

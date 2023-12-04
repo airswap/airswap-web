@@ -1,7 +1,3 @@
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
   Container,
@@ -11,6 +7,8 @@ import {
   ImportButton,
   UnsupportedTokenText,
 } from "./TokenImportButton.styles";
+import { TokenInfo } from "@airswap/types";
+import { useTranslation } from "react-i18next";
 
 export type TokenImportRowProps = {
   /**

@@ -1,8 +1,3 @@
-import { FC, ReactElement } from "react";
-import { BiCheck } from "react-icons/bi";
-import { HiX } from "react-icons/hi";
-import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
-
 import { StyledIcon } from "./Icon.styles";
 import {
   IconAirswap,
@@ -43,6 +38,10 @@ import {
   IconX,
   IconCloseCircleOutline,
 } from "./icons";
+import { FC, ReactElement } from "react";
+import { BiCheck } from "react-icons/bi";
+import { HiX } from "react-icons/hi";
+import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;

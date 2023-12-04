@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { Pill, PillButton } from "../../../../../styled-components/Pill/Pill";
 import Icon from "../../../../Icon/Icon";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
+import styled from "styled-components/macro";
 
 export const InfoWrapper = styled(Pill)`
   color: ${({ theme }) => theme.colors.lightGrey};

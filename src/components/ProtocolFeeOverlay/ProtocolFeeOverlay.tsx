@@ -1,8 +1,7 @@
-import { FC, ReactElement } from "react";
-import { useTranslation } from "react-i18next";
-
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../Overlay/Overlay";
+import { FC, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ProtocolFeeOverlayProps {
   isHidden: boolean;

@@ -1,11 +1,3 @@
-import { useTranslation } from "react-i18next";
-import { HiX } from "react-icons/hi";
-import { MdBeenhere, MdError } from "react-icons/md";
-
-import { TokenInfo } from "@airswap/types";
-
-import { formatUnits } from "ethers/lib/utils";
-
 import {
   SubmittedLastLookOrder,
   SubmittedRFQOrder,
@@ -20,6 +12,11 @@ import {
   SwapAmounts,
   TextContainer,
 } from "./Toast.styles";
+import { TokenInfo } from "@airswap/types";
+import { formatUnits } from "ethers/lib/utils";
+import { useTranslation } from "react-i18next";
+import { HiX } from "react-icons/hi";
+import { MdBeenhere, MdError } from "react-icons/md";
 
 export type TransactionToastProps = {
   /**
@@ -98,14 +95,14 @@ const TransactionToast = ({
                 return t(translationKey, {
                   senderAmount: parseFloat(
                     Number(
-                      formatUnits(tx.order.senderAmount, senderToken.decimals)
-                    ).toFixed(5)
+                      formatUnits(tx.order.senderAmount, senderToken.decimals),
+                    ).toFixed(5),
                   ),
                   senderToken: senderToken.symbol,
                   signerAmount: parseFloat(
                     Number(
-                      formatUnits(tx.order.signerAmount, signerToken.decimals)
-                    ).toFixed(5)
+                      formatUnits(tx.order.signerAmount, signerToken.decimals),
+                    ).toFixed(5),
                   ),
                   signerToken: signerToken.symbol,
                 });

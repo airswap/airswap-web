@@ -1,11 +1,8 @@
-import { useMemo } from "react";
-
+import { getRpcUrl } from "../helpers/getRpcUrl";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
 import { getDefaultProvider } from "ethers";
-
-import { getRpcUrl } from "../helpers/getRpcUrl";
+import { useMemo } from "react";
 
 // Hook for getting library from connected wallet or from rpc url, this way you can still use it in ethers.js methods
 

@@ -1,11 +1,10 @@
-import styled from "styled-components/macro";
-
 import Button from "../../../../components/Button/Button";
 import {
   InfoHeading,
   InfoSubHeading,
 } from "../../../../components/Typography/Typography";
 import { InputOrButtonBorderStyle } from "../../../../style/mixins";
+import styled from "styled-components/macro";
 
 export const Header = styled.div`
   justify-self: flex-start;

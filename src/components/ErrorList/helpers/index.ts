@@ -1,7 +1,6 @@
-import i18n from "i18next";
-
 import { AppError, AppErrorType } from "../../../errors/appError";
 import { ErrorListItemProps } from "../subcomponents/ErrorListItem/ErrorListItem";
+import i18n from "i18next";
 
 export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
   if (error.type === AppErrorType.expiryPassed) {

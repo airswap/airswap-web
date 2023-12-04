@@ -1,6 +1,3 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import {
   SelectLabel,
   SelectWrapper,
@@ -8,6 +5,8 @@ import {
 import { SelectOption } from "../../../../Dropdown/Dropdown";
 import { Input, StyledDropdown } from "./ExpirySelector.styles";
 import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
+import React, { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 const floatRegExp = new RegExp("^([0-9])*$");
 

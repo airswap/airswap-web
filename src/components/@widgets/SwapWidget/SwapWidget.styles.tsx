@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
+import styled from "styled-components/macro";
 
 export const Header = styled.div`
   display: flex;

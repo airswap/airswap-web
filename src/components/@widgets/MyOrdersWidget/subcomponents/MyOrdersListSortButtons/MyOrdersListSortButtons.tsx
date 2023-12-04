@@ -1,9 +1,8 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { OrdersSortType } from "../../../../../features/myOrders/myOrdersSlice";
 import SortButton from "../SortButton/SortButton";
 import { Container } from "./MyOrdersListSortButtons.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;

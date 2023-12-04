@@ -11,7 +11,7 @@ export enum TimeUnit {
 
 export default function getTimeBetweenTwoDates(
   date1: Date,
-  date2: Date
+  date2: Date,
 ): { timeUnit: TimeUnit; amount: number } {
   // if date is past the current date;
   if (date1 < date2) {

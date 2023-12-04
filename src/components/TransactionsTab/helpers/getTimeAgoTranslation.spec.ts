@@ -1,8 +1,6 @@
-import { useTranslation } from "react-i18next";
-
-import { addMonths, addSeconds, addYears } from "date-fns";
-
 import getTimeTranslation from "./getTimeAgoTranslation";
+import { addMonths, addSeconds, addYears } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;

@@ -1,10 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppSelector } from "../app/hooks";
 import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
@@ -12,6 +5,10 @@ import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import getWethAddress from "../helpers/getWethAddress";
 import stringToSignificantDecimals from "../helpers/stringToSignificantDecimals";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "bignumber.js";
+import { useEffect, useState } from "react";
 
 interface DepositNativeTokenAmountInfo {
   nativeTokenSymbol?: string;
@@ -46,12 +43,12 @@ const useShouldDepositNativeTokenAmountInfo =
       const nativeTokenInfo = findEthOrTokenByAddress(
         nativeCurrencyAddress,
         allTokens,
-        chainId
+        chainId,
       );
       const wrappedNativeTokenInfo = findEthOrTokenByAddress(
         wrappedTokenAddress,
         allTokens,
-        chainId
+        chainId,
       );
 
       if (!wrappedNativeTokenInfo || !nativeTokenInfo) {
@@ -61,7 +58,7 @@ const useShouldDepositNativeTokenAmountInfo =
       const balance = stringToSignificantDecimals(
         new BigNumber(balances.values[wrappedTokenAddress] || 0)
           .div(10 ** wrappedNativeTokenInfo.decimals)
-          .toFormat()
+          .toFormat(),
       );
 
       setNativeTokenSymbol(nativeTokenInfo.symbol);

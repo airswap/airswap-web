@@ -1,5 +1,3 @@
-import { FC, useState } from "react";
-
 import { icons } from "../Icon/Icon";
 import {
   Container,
@@ -8,6 +6,7 @@ import {
   PlainLink,
   Divider,
 } from "./SocialButtons.styles";
+import { FC, useState } from "react";
 
 type Destination = {
   icon: keyof typeof icons;
@@ -48,7 +47,7 @@ type SocialButtonsProps = {
 
 const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
   const [hoveredIcon, setHoveredIcon] = useState<keyof typeof icons | null>(
-    null
+    null,
   );
   const [hoveredLocale, setHoveredLocale] = useState<string | null>(null);
   const [userIsUsingTouch, setUserIsUsingTouch] = useState(false);

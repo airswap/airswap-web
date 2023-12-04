@@ -11,7 +11,7 @@ export interface RpcSignRejectedError {
 }
 
 export const isRpcSignRejectedError = (
-  error: any
+  error: any,
 ): error is RpcSignRejectedError => {
   return (
     typeof error === "object" &&
@@ -23,7 +23,7 @@ export const isRpcSignRejectedError = (
 };
 
 export const transformRpcSignRejectedErrorToAppError = (
-  error: RpcSignRejectedError
+  error: RpcSignRejectedError,
 ): AppError => {
   // For now we have only one error for this format. Might add more later.
   return transformToAppError(AppErrorType.rejectedByUser, error);

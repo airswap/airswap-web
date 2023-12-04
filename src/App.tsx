@@ -1,13 +1,3 @@
-import React, { Suspense } from "react";
-import { HashRouter as Router } from "react-router-dom";
-
-import { Web3Provider } from "@ethersproject/providers";
-import * as Sentry from "@sentry/react";
-import { Web3ReactProvider } from "@web3-react/core";
-
-import BigNumber from "bignumber.js";
-import { ThemeProvider, ThemeType } from "styled-components/macro";
-
 import { useAppSelector } from "./app/hooks";
 import HelmetContainer from "./components/HelmetContainer/HelmetContainer";
 import PageLoader from "./components/PageLoader/PageLoader";
@@ -20,6 +10,13 @@ import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
+import { Web3Provider } from "@ethersproject/providers";
+import * as Sentry from "@sentry/react";
+import { Web3ReactProvider } from "@web3-react/core";
+import BigNumber from "bignumber.js";
+import React, { Suspense } from "react";
+import { HashRouter as Router } from "react-router-dom";
+import { ThemeProvider, ThemeType } from "styled-components/macro";
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,

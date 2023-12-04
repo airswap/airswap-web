@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import Icon from "../../../Icon/Icon";
 import { SubText } from "../../../Typography/Typography";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import { sizes } from "../../../../style/sizes";
+import styled from "styled-components/macro";
 
 export const FeeContainer = styled.div`
   display: flex;

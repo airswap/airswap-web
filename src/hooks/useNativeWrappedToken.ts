@@ -1,11 +1,9 @@
-import { useMemo } from "react";
-
-import { WETH } from "@airswap/libraries";
-import { TokenInfo } from "@airswap/types";
-
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import getWethAddress from "../helpers/getWethAddress";
+import { WETH } from "@airswap/libraries";
+import { TokenInfo } from "@airswap/types";
+import { useMemo } from "react";
 
 const useNativeWrappedToken = (chainId?: number): TokenInfo | null => {
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -17,7 +15,7 @@ const useNativeWrappedToken = (chainId?: number): TokenInfo | null => {
 
     return (
       allTokens.find(
-        (tokenInfo) => tokenInfo.address === getWethAddress(chainId)
+        (tokenInfo) => tokenInfo.address === getWethAddress(chainId),
       ) || null
     );
   }, [allTokens, chainId]);

@@ -1,11 +1,10 @@
-import styled, { css, DefaultTheme } from "styled-components/macro";
-
 import Icon from "../Icon/Icon";
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
+import styled, { css, DefaultTheme } from "styled-components/macro";
 
 function getButtonBackground(
   theme: DefaultTheme,
-  intent?: ButtonIntent
+  intent?: ButtonIntent,
 ): string {
   switch (intent) {
     case "destructive":
@@ -21,7 +20,7 @@ function getButtonBackground(
 
 function getButtonHoverBackground(
   theme: DefaultTheme,
-  intent?: ButtonIntent
+  intent?: ButtonIntent,
 ): string {
   switch (intent) {
     case "destructive":
@@ -38,7 +37,7 @@ function getButtonHoverBackground(
 function getButtonBorderColor(
   theme: DefaultTheme,
   intent?: ButtonIntent,
-  disabled?: boolean
+  disabled?: boolean,
 ) {
   if (disabled) {
     return theme.colors.darkGrey;

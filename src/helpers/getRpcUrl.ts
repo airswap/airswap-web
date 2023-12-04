@@ -5,7 +5,7 @@ export const getRpcUrl = (chainId: number): string | undefined => {
 
   if (!rpcUrl) {
     console.error(
-      `No rpc url found for chainId ${chainId}, did you setup your .env correctly?`
+      `No rpc url found for chainId ${chainId}, did you setup your .env correctly?`,
     );
 
     return undefined;

@@ -1,8 +1,7 @@
-import { FullOrderERC20 } from "@airswap/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
+import { FullOrderERC20 } from "@airswap/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TakeOtcState {
   isCancelSuccessFull: boolean;
@@ -23,7 +22,7 @@ export const takeOtcSlice = createSlice({
   reducers: {
     setActiveOrder: (
       state,
-      action: PayloadAction<FullOrderERC20>
+      action: PayloadAction<FullOrderERC20>,
     ): TakeOtcState => {
       return {
         ...state,
@@ -32,7 +31,7 @@ export const takeOtcSlice = createSlice({
     },
     setIsCancelSuccessFull: (
       state,
-      action: PayloadAction<boolean>
+      action: PayloadAction<boolean>,
     ): TakeOtcState => {
       return {
         ...state,
@@ -41,7 +40,7 @@ export const takeOtcSlice = createSlice({
     },
     setStatus: (
       state,
-      action: PayloadAction<TakeOtcState["status"]>
+      action: PayloadAction<TakeOtcState["status"]>,
     ): TakeOtcState => {
       return {
         ...state,

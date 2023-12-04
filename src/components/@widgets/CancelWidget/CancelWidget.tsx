@@ -1,11 +1,3 @@
-import { FC, useEffect, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router-dom";
-
-import { FullOrderERC20 } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import {
@@ -31,6 +23,12 @@ import {
   BackButton,
   CancelButton,
 } from "./CancelWidget.styles";
+import { FullOrderERC20 } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { FC, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory, useParams } from "react-router-dom";
 
 interface CancelWidgetProps {
   library: Web3Provider;
@@ -76,7 +74,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
         order,
         chainId: chainId!,
         library: library,
-      })
+      }),
     );
   };
 

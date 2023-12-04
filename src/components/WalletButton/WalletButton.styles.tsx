@@ -1,9 +1,8 @@
-import styled from "styled-components/macro";
-
 import Button from "../Button/Button";
 import IconButton from "../IconButton/IconButton";
 import { InfoHeading } from "../Typography/Typography";
 import WalletAddress from "./subcomponents/WalletAddress/WalletAddress";
+import styled from "styled-components/macro";
 
 export const OpenWallet = styled.div`
   display: flex;

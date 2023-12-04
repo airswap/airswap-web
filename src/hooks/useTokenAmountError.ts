@@ -1,13 +1,11 @@
-import { useMemo } from "react";
-
-import { TokenInfo } from "@airswap/types";
-
 import { AppError, isAppError } from "../errors/appError";
 import toAtomicString from "../helpers/toAtomicString";
+import { TokenInfo } from "@airswap/types";
+import { useMemo } from "react";
 
 const useTokenAmountError = (
   tokenInfo: TokenInfo | null,
-  amount: string
+  amount: string,
 ): AppError | undefined => {
   return useMemo(() => {
     if (!tokenInfo || !amount) {

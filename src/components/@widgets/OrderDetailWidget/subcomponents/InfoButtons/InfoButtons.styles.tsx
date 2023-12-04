@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import { LargePillButton } from "../../../../../styled-components/Pill/Pill";
 import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

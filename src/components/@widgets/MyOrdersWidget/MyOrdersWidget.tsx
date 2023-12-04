@@ -1,11 +1,3 @@
-import React, { FC, useContext, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-
-import { FullOrderERC20 } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
@@ -27,6 +19,12 @@ import ActionButtons, {
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import MyOrdersList from "./subcomponents/MyOrdersList/MyOrdersList";
 import MyOrdersWidgetHeader from "./subcomponents/MyOrdersWidgetHeader/MyOrdersWidgetHeader";
+import { FullOrderERC20 } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import React, { FC, useContext, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
@@ -41,7 +39,7 @@ const MyOrdersWidget: FC = () => {
   const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
-    selectMyOrdersReducer
+    selectMyOrdersReducer,
   );
 
   // Modal states
@@ -54,7 +52,7 @@ const MyOrdersWidget: FC = () => {
           activeSortType,
           allTokens,
           chainId,
-          !sortTypeDirection[activeSortType]
+          !sortTypeDirection[activeSortType],
         )
       : userOrders;
   }, [userOrders, activeSortType, allTokens, chainId, sortTypeDirection]);
@@ -66,7 +64,7 @@ const MyOrdersWidget: FC = () => {
 
     if (!isExpired && !nonceUsed) {
       await dispatch(
-        cancelOrder({ order: order, chainId: chainId!, library: library! })
+        cancelOrder({ order: order, chainId: chainId!, library: library! }),
       );
     } else {
       dispatch(removeUserOrder(order));

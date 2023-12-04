@@ -1,8 +1,7 @@
-import { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import Icon from "../../../Icon/Icon";
 import { CommitButton, Container, GithubButton } from "./GithubInfo.styles";
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 const githubLink = "https://github.com/airswap/airswap-web";
 const githubLastCommitIdFallback = "DEV";

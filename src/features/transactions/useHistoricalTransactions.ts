@@ -1,10 +1,3 @@
-import { useEffect } from "react";
-
-import { useCustomCompareEffect } from "@react-hookz/web/esm";
-import { useWeb3React } from "@web3-react/core";
-
-import { Event } from "ethers";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
@@ -19,6 +12,10 @@ import {
 } from "./transactionsSlice";
 import useSwapLogs from "./useSwapLogs";
 import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
+import { useCustomCompareEffect } from "@react-hookz/web/esm";
+import { useWeb3React } from "@web3-react/core";
+import { Event } from "ethers";
+import { useEffect } from "react";
 
 const useHistoricalTransactions = () => {
   const { chainId, library, account } = useWeb3React();
@@ -57,7 +54,7 @@ const useHistoricalTransactions = () => {
         const reconcileLogs = async (
           protocol: "last-look-erc20" | "request-for-quote-erc20",
           logs: Event[],
-          isWrapped: boolean = false
+          isWrapped: boolean = false,
         ) => {
           await Promise.all(
             logs.map(async (swapLog) => {
@@ -75,7 +72,7 @@ const useHistoricalTransactions = () => {
                     order.signerWallet.toLowerCase() ===
                       args.signerWallet.toLowerCase()
                   );
-                }
+                },
               );
               if (matchedTxFromStorage) {
                 // We already knew this one had succeeded.
@@ -121,7 +118,7 @@ const useHistoricalTransactions = () => {
                 };
                 localTransactionsCopy.all.push(newTx);
               }
-            })
+            }),
           );
         };
 
@@ -155,7 +152,7 @@ const useHistoricalTransactions = () => {
     ],
     (
       [account, chainId, swapLogs, swapLogStatus],
-      [accountNew, chainIdNew, swapLogsNew, swapLogStatusNew]
+      [accountNew, chainIdNew, swapLogsNew, swapLogStatusNew],
     ) => {
       // This is a change comparator so that we don't run this effect too
       // frequently. Without this, we'd get an infinite loop because the
@@ -166,7 +163,7 @@ const useHistoricalTransactions = () => {
         chainId === chainIdNew &&
         account === accountNew
       );
-    }
+    },
   );
 
   useEffect(() => {

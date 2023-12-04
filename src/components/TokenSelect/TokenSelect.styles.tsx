@@ -1,7 +1,3 @@
-import { MdKeyboardArrowDown } from "react-icons/md";
-
-import styled, { css, keyframes } from "styled-components/macro";
-
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import {
   BorderlessButtonStyle,
@@ -11,6 +7,8 @@ import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
 import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import styled, { css, keyframes } from "styled-components/macro";
 
 const fadeOut = keyframes`
   from {

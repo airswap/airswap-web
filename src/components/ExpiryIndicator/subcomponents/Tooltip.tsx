@@ -1,6 +1,5 @@
-import { FC } from "react";
-
 import { Container, Content } from "./Tooltip.styles";
+import { FC } from "react";
 
 interface ToolTipProps {
   className?: string;

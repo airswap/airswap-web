@@ -1,6 +1,3 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-
 import writeTextToClipboard from "../../../../helpers/writeTextToClipboard";
 import selectElement from "../../helpers/selectElement";
 import {
@@ -9,6 +6,8 @@ import {
   WalletMobileMenuDiv,
 } from "../WalletMobileMenu/WalletMobileMenu.styles";
 import { Text } from "./CopyAdressButton.styles";
+import { FC, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type CopyAdressButtonProps = {
   address: string;

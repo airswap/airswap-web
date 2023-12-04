@@ -1,6 +1,3 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import { AppError } from "../../errors/appError";
 import { OverlayActionButton } from "../Overlay/Overlay.styles";
 import {
@@ -11,6 +8,8 @@ import {
 } from "./ErrorList.styles";
 import { getAppErrorTranslation } from "./helpers";
 import ErrorListItem from "./subcomponents/ErrorListItem/ErrorListItem";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type ErrorListProps = {
   errors: AppError[];
@@ -25,7 +24,7 @@ export const ErrorList = ({
 
   const errorListItems = useMemo(
     () => errors.map((error) => getAppErrorTranslation(error)),
-    [errors]
+    [errors],
   );
 
   return (

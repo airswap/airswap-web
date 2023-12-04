@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-
-import { TokenInfo } from "@airswap/types";
-
-import { useReducedMotion } from "framer-motion";
-import { useTheme } from "styled-components";
-
 import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
 import WalletTransaction from "../WalletTransaction/WalletTransaction";
 import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.styles";
 import { Container } from "./AnimatedWalletTransaction.styles";
+import { TokenInfo } from "@airswap/types";
+import { useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { useTheme } from "styled-components";
 
 interface AnimatedWalletTransactionProps {
   /**
@@ -40,7 +37,7 @@ const AnimatedWalletTransaction = ({
   // Prevents all older (half hour) transactions animating simultaneously when user changes wallet
   const transactionTooOld = useMemo(
     () => (new Date().getTime() - transaction.timestamp) / 1000 > 1800,
-    [transaction]
+    [transaction],
   );
 
   const heightAnimationDuration =

@@ -1,3 +1,4 @@
+import { GuideButtonContainer, StyledIcon, Text } from "./GuideButton.styles";
 import React, { FC } from "react";
 import {
   DefaultNamespace,
@@ -5,8 +6,6 @@ import {
   TFuncKey,
   useTranslation,
 } from "react-i18next";
-
-import { GuideButtonContainer, StyledIcon, Text } from "./GuideButton.styles";
 
 export interface GuideButtonProps<T extends Namespace = DefaultNamespace> {
   iconName: string;

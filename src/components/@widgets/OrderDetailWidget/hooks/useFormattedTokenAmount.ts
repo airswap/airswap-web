@@ -1,10 +1,9 @@
-import { useMemo } from "react";
-
 import { ethers } from "ethers";
+import { useMemo } from "react";
 
 const useFormattedTokenAmount = (
   amount?: string,
-  decimals?: number
+  decimals?: number,
 ): string | undefined => {
   return useMemo(() => {
     if (!amount || !decimals) {

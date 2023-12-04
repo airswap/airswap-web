@@ -1,6 +1,5 @@
-import { FC } from "react";
-
 import { CreateSwapButton } from "./ActionButton.styles";
+import { FC } from "react";
 
 type ActionButtonProps = {
   title: string;

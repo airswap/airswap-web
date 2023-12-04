@@ -1,8 +1,3 @@
-import { Pricing } from "@airswap/types";
-import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
-
-import BigNumber from "bignumber.js";
-
 import { RootState } from "../../app/store";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import {
@@ -10,6 +5,9 @@ import {
   selectTradeTerms,
 } from "../tradeTerms/tradeTermsSlice";
 import { calculateQuoteAmount } from "./pricingApi";
+import { Pricing } from "@airswap/types";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import BigNumber from "bignumber.js";
 
 export interface PricingState {
   [locator: string]: Pricing[];
@@ -29,7 +27,7 @@ export const pricingSlice = createSlice({
   reducers: {
     updatePricing: (
       state,
-      action: PayloadAction<{ locator: string; pricing: Pricing }>
+      action: PayloadAction<{ locator: string; pricing: Pricing }>,
     ) => {
       const { locator, pricing } = action.payload;
       if (!state[locator]) {
@@ -38,7 +36,7 @@ export const pricingSlice = createSlice({
         const existingIndex = state[locator].findIndex(
           (existingPricing) =>
             existingPricing.baseToken === pricing.baseToken &&
-            existingPricing.quoteToken === pricing.quoteToken
+            existingPricing.quoteToken === pricing.quoteToken,
         );
         if (existingIndex !== -1) {
           state[locator][existingIndex] = pricing;
@@ -49,14 +47,14 @@ export const pricingSlice = createSlice({
     },
     clearPricing: (
       state,
-      action: PayloadAction<{ locator: string; pair: Pair }>
+      action: PayloadAction<{ locator: string; pair: Pair }>,
     ) => {
       const { locator, pair } = action.payload;
       if (!state[locator]) return;
       const i = state[locator].findIndex(
         (existingPricing) =>
           existingPricing.baseToken === pair.baseToken &&
-          existingPricing.quoteToken === pair.quoteToken
+          existingPricing.quoteToken === pair.quoteToken,
       );
       if (i === -1) return;
       state[locator].splice(i, 1);
@@ -89,7 +87,7 @@ export const selectBestPricing = createSelector(
       const relevantIndex = locatorPricing.findIndex(
         (p) =>
           p.quoteToken.toLowerCase() === quoteToken.address.toLowerCase() &&
-          p.baseToken.toLowerCase() === baseToken.address.toLowerCase()
+          p.baseToken.toLowerCase() === baseToken.address.toLowerCase(),
       );
 
       if (relevantIndex === -1) return;
@@ -102,7 +100,7 @@ export const selectBestPricing = createSelector(
             pricing: relevantPricing,
             protocolFee: protocolFee,
             side,
-          })
+          }),
         );
         if (
           (side === "sell" && quoteAmount.gt(bestQuoteAmount)) ||
@@ -123,7 +121,7 @@ export const selectBestPricing = createSelector(
     });
 
     return bestPricing;
-  }
+  },
 );
 
 export default pricingSlice.reducer;

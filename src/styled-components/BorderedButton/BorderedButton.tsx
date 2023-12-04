@@ -1,6 +1,5 @@
-import styled, { keyframes, css } from "styled-components/macro";
-
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
+import styled, { keyframes, css } from "styled-components/macro";
 
 const beatAnimation = keyframes`
  0% {

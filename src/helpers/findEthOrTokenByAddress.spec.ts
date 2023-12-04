@@ -35,7 +35,7 @@ describe("findEthOrTokenByAddress", () => {
     const tokenInfo = findEthOrTokenByAddress(
       nativeCurrencyAddress,
       allTokens,
-      chainId
+      chainId,
     );
     expect(tokenInfo).toBe(nativeCurrency[chainId]);
   });
@@ -45,7 +45,7 @@ describe("findEthOrTokenByAddress", () => {
     const tokenInfo = findEthOrTokenByAddress(
       "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
       allTokens,
-      chainId
+      chainId,
     );
     expect(tokenInfo).toBe(WETH);
   });

@@ -1,9 +1,3 @@
-import React, { FC, ReactElement, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-import { useToggle } from "@react-hookz/web";
-
 import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -21,6 +15,10 @@ import {
   StyledActionButtons,
   StyledWidgetHeader,
 } from "./TakeOrderReview.styles";
+import { TokenInfo } from "@airswap/types";
+import { useToggle } from "@react-hookz/web";
+import React, { FC, ReactElement, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface TakeOrderReviewProps {
   expiry: number;
@@ -64,12 +62,12 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
       justifiedSignerToken?.symbol,
       signerAmount,
       justifiedSenderToken?.symbol,
-      senderAmount
+      senderAmount,
     );
   }, [signerAmount, senderAmount]);
   const expiryTranslation = useMemo(
     () => getExpiryTranslation(new Date(), new Date(expiry * 1000)),
-    [expiry]
+    [expiry],
   );
 
   return (

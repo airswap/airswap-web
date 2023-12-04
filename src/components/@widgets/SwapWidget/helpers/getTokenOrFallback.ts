@@ -7,7 +7,7 @@ export default function getTokenOrFallback(
   pairedUserToken: UserTokenPair["tokenTo"] | UserTokenPair["tokenFrom"],
   defaultTokenAddress: string | null,
   defaultPairedTokenAddress: string | null,
-  customTokens: string[]
+  customTokens: string[],
 ): string | null {
   if (token) {
     return token;

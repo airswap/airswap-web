@@ -1,9 +1,8 @@
-import styled from "styled-components/macro";
-
 import {
   BorderedPill,
   InputOrButtonBorderStyle,
 } from "../../../../../style/mixins";
+import styled from "styled-components/macro";
 
 export const ClearCustomServerButton = styled.button`
   ${BorderedPill};

@@ -1,7 +1,3 @@
-import { useMemo } from "react";
-
-import { TokenInfo } from "@airswap/types";
-
 import { useAppSelector } from "../../../../app/hooks";
 import { isTransactionWithOrder } from "../../../../features/transactions/transactionUtils";
 import {
@@ -9,11 +5,13 @@ import {
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
 import toAtomicString from "../../../../helpers/toAtomicString";
+import { TokenInfo } from "@airswap/types";
+import { useMemo } from "react";
 
 const useBestTradeOptionTransaction = (
   tokenInfo: TokenInfo | null,
   nonce?: string,
-  quoteAmount?: string
+  quoteAmount?: string,
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 

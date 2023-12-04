@@ -1,6 +1,5 @@
-import React, { FC, ReactElement } from "react";
-
 import { SvgIconProps } from "../Icon";
+import React, { FC, ReactElement } from "react";
 
 const IconCopy2: FC<SvgIconProps> = ({ className = "" }): ReactElement => (
   <svg viewBox="0 0 14 10" className={className}>

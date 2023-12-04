@@ -1,15 +1,3 @@
-import { WETH } from "@airswap/libraries";
-import {
-  AsyncThunk,
-  combineReducers,
-  createAction,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-
-import { BigNumber, ethers } from "ethers";
-
 import { AppDispatch, RootState } from "../../app/store";
 import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import getWethAddress from "../../helpers/getWethAddress";
@@ -22,6 +10,16 @@ import {
   fetchAllowancesWrapper,
   fetchBalances,
 } from "./balancesApi";
+import { WETH } from "@airswap/libraries";
+import {
+  AsyncThunk,
+  combineReducers,
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import { BigNumber, ethers } from "ethers";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -47,13 +45,13 @@ export const initialState: BalancesState = {
 };
 
 const getSetInFlightRequestTokensAction = (
-  type: "balances" | "allowances.swap" | "allowances.wrapper"
+  type: "balances" | "allowances.swap" | "allowances.wrapper",
 ) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
 const getThunk: (
-  type: "balances" | "allowances.swap" | "allowances.wrapper"
+  type: "balances" | "allowances.swap" | "allowances.wrapper",
 ) => AsyncThunk<
   { address: string; amount: string }[],
   {
@@ -95,7 +93,7 @@ const getThunk: (
           nativeCurrencyAddress,
         ];
         dispatch(
-          getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
+          getSetInFlightRequestTokensAction(type)(activeTokensAddresses),
         );
         const amounts = await methods[type]({
           ...params,
@@ -130,13 +128,13 @@ const getThunk: (
           return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
         }
       },
-    }
+    },
   );
 };
 
 const getSlice = (
   type: "balances" | "allowances.swap" | "allowances.wrapper",
-  asyncThunk: ReturnType<typeof getThunk>
+  asyncThunk: ReturnType<typeof getThunk>,
 ) => {
   return createSlice({
     name: type,
@@ -144,10 +142,10 @@ const getSlice = (
     reducers: {
       incrementBy: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: string }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>,
       ) => {
         const currentAmount = BigNumber.from(
-          state.values[action.payload.tokenAddress.toLowerCase()] || 0
+          state.values[action.payload.tokenAddress.toLowerCase()] || 0,
         );
         state.values[action.payload.tokenAddress.toLowerCase()] = currentAmount
           .add(action.payload.amount)
@@ -155,10 +153,10 @@ const getSlice = (
       },
       decrementBy: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: string }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>,
       ) => {
         const currentAmount = BigNumber.from(
-          state.values[action.payload.tokenAddress.toLowerCase()] || 0
+          state.values[action.payload.tokenAddress.toLowerCase()] || 0,
         );
         let newAmount = currentAmount.sub(action.payload.amount);
         if (newAmount.lt("0")) newAmount = BigNumber.from("0");
@@ -167,7 +165,7 @@ const getSlice = (
       },
       set: (
         state,
-        action: PayloadAction<{ tokenAddress: string; amount: string }>
+        action: PayloadAction<{ tokenAddress: string; amount: string }>,
       ) => {
         state.values[action.payload.tokenAddress.toLowerCase()] =
           action.payload.amount;
@@ -195,7 +193,7 @@ const getSlice = (
           if (
             state.inFlightFetchTokens &&
             tokenBalances.every(
-              (result, i) => state.inFlightFetchTokens![i] === result.address
+              (result, i) => state.inFlightFetchTokens![i] === result.address,
             )
           ) {
             state.inFlightFetchTokens = null;
@@ -225,11 +223,11 @@ export const requestActiveTokenAllowancesWrapper =
 export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSwapSlice = getSlice(
   "allowances.swap",
-  requestActiveTokenAllowancesSwap
+  requestActiveTokenAllowancesSwap,
 );
 export const allowancesWrapperSlice = getSlice(
   "allowances.wrapper",
-  requestActiveTokenAllowancesWrapper
+  requestActiveTokenAllowancesWrapper,
 );
 
 export const {

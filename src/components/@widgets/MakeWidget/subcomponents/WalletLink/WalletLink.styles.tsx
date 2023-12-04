@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../../../style/breakpoints";
 import { BorderlessButtonStyle } from "../../../../../style/mixins";
 import Icon from "../../../../Icon/Icon";
+import styled from "styled-components/macro";
 
 export const Link = styled.a`
   ${BorderlessButtonStyle};

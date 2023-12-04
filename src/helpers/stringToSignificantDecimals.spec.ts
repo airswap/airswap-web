@@ -24,7 +24,7 @@ describe("stringToSignificantDecimals", () => {
 
   it("Should (only) ignore insignificant decimal places", () => {
     expect(stringToSignificantDecimals("100000000000.0000000000001", 10)).toBe(
-      "> 999999999.9"
+      "> 999999999.9",
     );
   });
 });

@@ -1,17 +1,3 @@
-import { Server, WETH } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20, Levels, TokenInfo } from "@airswap/types";
-import { toAtomicString } from "@airswap/utils";
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  Dispatch,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-
-import BigNumber from "bignumber.js";
-import { Transaction, providers } from "ethers";
-
 import { AppDispatch, RootState } from "../../app/store";
 import {
   notifyRejectedByUserError,
@@ -62,6 +48,18 @@ import {
   takeOrder,
   withdrawETH,
 } from "./orderApi";
+import { Server, WETH } from "@airswap/libraries";
+import { FullOrderERC20, OrderERC20, Levels, TokenInfo } from "@airswap/types";
+import { toAtomicString } from "@airswap/utils";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import BigNumber from "bignumber.js";
+import { Transaction, providers } from "ethers";
 
 export interface OrdersState {
   orders: OrderERC20[];
@@ -111,7 +109,7 @@ export const deposit = createAsyncThunk(
       senderTokenDecimals: number;
       provider: providers.Web3Provider;
     },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     let tx: Transaction;
     try {
@@ -119,12 +117,12 @@ export const deposit = createAsyncThunk(
         params.chainId,
         params.senderAmount,
         params.senderTokenDecimals,
-        params.provider
+        params.provider,
       );
       if (tx.hash) {
         const senderAmount = toAtomicString(
           params.senderAmount,
-          params.senderTokenDecimals
+          params.senderTokenDecimals,
         );
         // Since this is a Deposit, senderAmount === signerAmount
         const transaction: SubmittedDepositOrder = {
@@ -148,28 +146,28 @@ export const deposit = createAsyncThunk(
             dispatch(
               mineTransaction({
                 hash: receipt.transactionHash,
-              })
+              }),
             );
             notifyTransaction(
               "Deposit",
               transaction,
               tokens,
               false,
-              params.chainId
+              params.chainId,
             );
           } else {
             dispatch(
               revertTransaction({
                 hash: receipt.transactionHash,
                 reason: "Transaction reverted",
-              })
+              }),
             );
             notifyTransaction(
               "Deposit",
               transaction,
               tokens,
               true,
-              params.chainId
+              params.chainId,
             );
           }
         });
@@ -178,7 +176,7 @@ export const deposit = createAsyncThunk(
       handleOrderError(dispatch, e);
       throw e;
     }
-  }
+  },
 );
 
 export const resetOrders = createAsyncThunk(
@@ -186,7 +184,7 @@ export const resetOrders = createAsyncThunk(
   async (params: undefined, { getState, dispatch }) => {
     await dispatch(setResetStatus());
     dispatch(clear());
-  }
+  },
 );
 
 export const withdraw = createAsyncThunk(
@@ -198,7 +196,7 @@ export const withdraw = createAsyncThunk(
       senderTokenDecimals: number;
       provider: any;
     },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     let tx: Transaction;
     try {
@@ -206,7 +204,7 @@ export const withdraw = createAsyncThunk(
         params.chainId,
         params.senderAmount,
         params.senderTokenDecimals,
-        params.provider
+        params.provider,
       );
       if (tx.hash) {
         const transaction: SubmittedWithdrawOrder = {
@@ -215,12 +213,12 @@ export const withdraw = createAsyncThunk(
             signerToken: nativeCurrency[params.chainId].address,
             signerAmount: toAtomicString(
               params.senderAmount,
-              params.senderTokenDecimals
+              params.senderTokenDecimals,
             ),
             senderToken: getWethAddress(params.chainId),
             senderAmount: toAtomicString(
               params.senderAmount,
-              params.senderTokenDecimals
+              params.senderTokenDecimals,
             ),
           },
           hash: tx.hash,
@@ -236,14 +234,14 @@ export const withdraw = createAsyncThunk(
             dispatch(
               mineTransaction({
                 hash: receipt.transactionHash,
-              })
+              }),
             );
             notifyTransaction(
               "Withdraw",
               transaction,
               tokens,
               false,
-              params.chainId
+              params.chainId,
             );
           } else {
             dispatch(revertTransaction(receipt.transactionHash));
@@ -252,7 +250,7 @@ export const withdraw = createAsyncThunk(
               transaction,
               tokens,
               true,
-              params.chainId
+              params.chainId,
             );
           }
         });
@@ -261,7 +259,7 @@ export const withdraw = createAsyncThunk(
       handleOrderError(dispatch, e);
       throw e;
     }
-  }
+  },
 );
 
 export const request = createAsyncThunk(
@@ -276,7 +274,7 @@ export const request = createAsyncThunk(
       senderWallet: string;
       proxyingFor?: string;
     },
-    { dispatch }
+    { dispatch },
   ) => {
     const orders = await requestOrders(
       params.servers,
@@ -285,7 +283,7 @@ export const request = createAsyncThunk(
       params.senderAmount,
       params.senderTokenDecimals,
       params.senderWallet,
-      params.proxyingFor
+      params.proxyingFor,
     );
     if (orders.length) {
       const bestOrder = [...orders].sort(orderSortingFunction)[0];
@@ -298,16 +296,16 @@ export const request = createAsyncThunk(
 
       const timeTilReRequest = Math.max(
         expiry - now - RFQ_EXPIRY_BUFFER_MS,
-        RFQ_MINIMUM_REREQUEST_DELAY_MS
+        RFQ_MINIMUM_REREQUEST_DELAY_MS,
       );
       const reRequestTimerId = window.setTimeout(
         () => dispatch(request(params)),
-        timeTilReRequest
+        timeTilReRequest,
       );
       dispatch(setReRequestTimerId(reRequestTimerId));
     }
     return orders;
-  }
+  },
 );
 
 export const approve = createAsyncThunk<
@@ -337,7 +335,7 @@ export const approve = createAsyncThunk<
       token.address,
       params.library,
       contractType,
-      approveAmount
+      approveAmount,
     );
     if (tx.hash) {
       const transaction: SubmittedApproval = {
@@ -356,7 +354,7 @@ export const approve = createAsyncThunk<
           dispatch(
             mineTransaction({
               hash: receipt.transactionHash,
-            })
+            }),
           );
           // Optimistically update allowance (this is not really optimistic,
           // but it preempts receiving the event)
@@ -365,14 +363,14 @@ export const approve = createAsyncThunk<
               allowancesSwapActions.set({
                 tokenAddress: token.address,
                 amount: approveAmount,
-              })
+              }),
             );
           } else if (params.contractType === "Wrapper") {
             dispatch(
               allowancesWrapperActions.set({
                 tokenAddress: token.address,
                 amount: approveAmount,
-              })
+              }),
             );
           }
 
@@ -381,7 +379,7 @@ export const approve = createAsyncThunk<
             transaction,
             tokens,
             false,
-            params.chainId
+            params.chainId,
           );
         } else {
           dispatch(revertTransaction(receipt.transactionHash));
@@ -390,7 +388,7 @@ export const approve = createAsyncThunk<
             transaction,
             tokens,
             true,
-            params.chainId
+            params.chainId,
           );
         }
       });
@@ -428,7 +426,7 @@ export const take = createAsyncThunk<
           signerWallet: params.order.signerWallet,
           nonce: params.order.nonce,
           reason: appError.type,
-        })
+        }),
       );
     } else {
       dispatch(setErrors([appError]));
@@ -463,7 +461,7 @@ export const take = createAsyncThunk<
         transaction,
         signerWallet: params.order.signerWallet,
         onExpired: params.onExpired,
-      })
+      }),
     );
   }
 });
@@ -602,7 +600,7 @@ export const selectBestOption = createSelector(
     let bestRFQQuoteTokens: BigNumber | undefined;
     if (bestRfqOrder) {
       bestRFQQuoteTokens = new BigNumber(bestRfqOrder.signerAmount).div(
-        new BigNumber(10).pow(terms.quoteToken.decimals)
+        new BigNumber(10).pow(terms.quoteToken.decimals),
       );
       rfqOrder = {
         quoteAmount: bestRFQQuoteTokens.toString(),
@@ -623,7 +621,7 @@ export const selectBestOption = createSelector(
     } else {
       return rfqOrder;
     }
-  }
+  },
 );
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;

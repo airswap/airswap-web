@@ -1,5 +1,3 @@
-import React, { Dispatch, FC, useCallback, useState } from "react";
-
 import Icon from "../Icon/Icon";
 import {
   Option,
@@ -14,6 +12,7 @@ import {
   NativeSelectIcon,
   DropdownButtonText,
 } from "./Dropdown.styles";
+import React, { Dispatch, FC, useCallback, useState } from "react";
 
 export type SelectOption = {
   label: string;
@@ -40,7 +39,7 @@ const Dropdown: FC<DropdownProps> = ({
   // activeOptionIndex is used for styling SelectOptions vertical position. This way
   // the active option in SelectOptions always opens directly on top of the Select.
   const [activeOptionIndex, setActiveOptionIndex] = useState(
-    options.findIndex((option) => option.value === selectedOption.value)
+    options.findIndex((option) => option.value === selectedOption.value),
   );
 
   // activeHoverIndex is for setting the hover effect element position. It is animated
@@ -58,10 +57,10 @@ const Dropdown: FC<DropdownProps> = ({
   };
 
   const handleNativeSelectChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const newSelectedOption = options.find(
-      (option) => option.value === e.target.value
+      (option) => option.value === e.target.value,
     );
     if (newSelectedOption) {
       onChange(newSelectedOption);
@@ -70,7 +69,7 @@ const Dropdown: FC<DropdownProps> = ({
 
   const handleSelectBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
     const index = options.findIndex(
-      (option) => option.value === selectedOption.value
+      (option) => option.value === selectedOption.value,
     );
     setActiveOptionIndex(index);
     setActiveHoverIndex(index);

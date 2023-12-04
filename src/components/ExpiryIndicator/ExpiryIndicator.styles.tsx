@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { TextEllipsis } from "../../style/mixins";
 import { Pill } from "../../styled-components/Pill/Pill";
 import Tooltip from "./subcomponents/Tooltip";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   position: relative;

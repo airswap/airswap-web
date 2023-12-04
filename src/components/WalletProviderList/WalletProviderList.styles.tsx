@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
+import styled from "styled-components/macro";
 
 export const StyledWalletProviderList = styled.div`
   display: flex;

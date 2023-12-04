@@ -1,8 +1,6 @@
-import { useState, useLayoutEffect } from "react";
-
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
+import { useState, useLayoutEffect } from "react";
 import truncateEthAddress from "truncate-eth-address";
 
 // This is an in-memory cache that will be lost when we refresh the page, as
@@ -12,7 +10,7 @@ const ensCachedResponses: Record<number, Record<string, string | null>> = {};
 
 const useAddressOrEnsName = (
   address: string | null,
-  truncate: boolean = true
+  truncate: boolean = true,
 ) => {
   const { library, chainId } = useWeb3React<Web3Provider>();
 

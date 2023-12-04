@@ -1,5 +1,5 @@
 export default async function writeTextToClipboard(
-  text: string
+  text: string,
 ): Promise<boolean> {
   if (!navigator.clipboard || !navigator.clipboard.writeText) {
     return false;

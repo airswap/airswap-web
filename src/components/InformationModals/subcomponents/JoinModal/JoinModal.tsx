@@ -1,6 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import {
   ModalParagraph,
   ModalSubTitle,
@@ -9,6 +6,8 @@ import {
 import HelmetContainer from "../../../HelmetContainer/HelmetContainer";
 import GuideButton, { GuideButtonProps } from "../GuideButton/GuideButton";
 import { GuideButtons } from "./JoinModal.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 const guideButtons: GuideButtonProps[] = [
   {

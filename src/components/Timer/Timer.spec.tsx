@@ -1,13 +1,12 @@
-import { render, screen } from "@testing-library/react";
-
 import Timer from "./Timer";
+import { render, screen } from "@testing-library/react";
 
 jest.useFakeTimers();
 
 describe("Timer", () => {
   it("should increment index by 3 after 3 second", () => {
     const start: number = parseInt(
-      ((new Date().getTime() + 300000) / 1000).toFixed(0)
+      ((new Date().getTime() + 300000) / 1000).toFixed(0),
     );
 
     render(<Timer expiryTime={start} onTimerComplete={() => void 1} />);

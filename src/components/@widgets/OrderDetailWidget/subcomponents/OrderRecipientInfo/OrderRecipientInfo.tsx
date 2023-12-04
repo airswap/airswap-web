@@ -1,6 +1,3 @@
-import React, { FC, useState } from "react";
-import { useTranslation } from "react-i18next";
-
 import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
 import useEnsAddress from "../../../../../hooks/useEnsAddress";
 import { OrderType } from "../../../../../types/orderTypes";
@@ -12,6 +9,8 @@ import {
   StyledCopyIcon,
   You,
 } from "./OrderRecipientInfo.styles";
+import React, { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type OrderRecipientInfoProps = {
   orderType: OrderType;
@@ -37,7 +36,7 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
   const handleClick = async () => {
     if (readableAddress) {
       setWriteAddressToClipboardSuccess(
-        await writeTextToClipboard(readableAddress)
+        await writeTextToClipboard(readableAddress),
       );
     }
   };
@@ -53,7 +52,7 @@ const OrderRecipientInfo: FC<OrderRecipientInfoProps> = ({
         <For>{`${t("common.for")}:`}</For>
         {`${readableAddress.substr(0, 3)}...${readableAddress.substr(
           readableAddress.length - 3,
-          3
+          3,
         )}`}
         <StyledCopyIcon
           name={writeAddressToClipboardSuccess ? "check" : "copy"}

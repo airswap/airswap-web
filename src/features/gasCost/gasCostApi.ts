@@ -1,14 +1,12 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { WETH } from "@airswap/libraries";
-import { TokenInfo } from "@airswap/types";
-
-import { BigNumber } from "bignumber.js";
-import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
-
 import getWethAddress from "../../helpers/getWethAddress";
 import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
 import uniswapPairAbi from "../../uniswap/abis/pair.json";
 import uniswapDeploys from "../../uniswap/deployments";
+import { ADDRESS_ZERO } from "@airswap/constants";
+import { WETH } from "@airswap/libraries";
+import { TokenInfo } from "@airswap/types";
+import { BigNumber } from "bignumber.js";
+import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
 
 export const gasUsedPerSwap = 185555;
 
@@ -31,7 +29,7 @@ const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
 const getPriceOfTokenInWethFromUniswap: (
   tokenInfo: TokenInfo,
   provider: providers.Provider,
-  chainId: number
+  chainId: number,
 ) => Promise<BigNumber> = async (tokenInfo, provider, chainId) => {
   const tokenAddress = tokenInfo.address;
   const wethAddress = getWethAddress(chainId);
@@ -42,7 +40,7 @@ const getPriceOfTokenInWethFromUniswap: (
   const FactoryContract = new Contract(
     uniswapDeploys.factory,
     uniswapFactoryAbi,
-    provider
+    provider,
   );
   const pairAddress = await FactoryContract.getPair(tokenAddress, wethAddress);
   const pairContract = new Contract(pairAddress, uniswapPairAbi, provider);
@@ -59,11 +57,11 @@ const getPriceOfTokenInWethFromUniswap: (
   if (token0Address.toLowerCase() === wethAddress) {
     wethUnits = new BigNumber(reserve0.toString()).dividedBy(10 ** 18);
     tokenUnits = new BigNumber(reserve1.toString()).dividedBy(
-      10 ** tokenInfo.decimals
+      10 ** tokenInfo.decimals,
     );
   } else {
     tokenUnits = new BigNumber(reserve0.toString()).dividedBy(
-      10 ** tokenInfo.decimals
+      10 ** tokenInfo.decimals,
     );
     wethUnits = new BigNumber(reserve1.toString()).dividedBy(10 ** 18);
   }

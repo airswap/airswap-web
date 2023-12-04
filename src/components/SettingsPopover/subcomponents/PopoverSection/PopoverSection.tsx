@@ -1,11 +1,10 @@
-import { FC } from "react";
-
 import {
   Container,
   TitleContainer,
   Line,
   Title,
 } from "./PopoverSection.styles";
+import { FC } from "react";
 
 type PopoverSectionType = {
   title?: string;

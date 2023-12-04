@@ -1,6 +1,3 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-
 import { useAppSelector } from "../../app/hooks";
 import { selectMyOrdersReducer } from "../../features/myOrders/myOrdersSlice";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -15,6 +12,8 @@ import {
 } from "./Toolbar.styles";
 import ToolbarButton from "./subcomponents/ToolbarButton/ToolbarButton";
 import ToolbarMobileTopBar from "./subcomponents/ToolbarMobileTopBar/ToolbarMobileTopBar";
+import React, { FC, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type ToolbarProps = {
   onAirswapButtonClick?: () => void;

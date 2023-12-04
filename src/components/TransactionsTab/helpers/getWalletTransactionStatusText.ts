@@ -1,10 +1,9 @@
-import { TFunction } from "react-i18next";
-
 import { StatusType } from "../../../features/transactions/transactionsSlice";
+import { TFunction } from "react-i18next";
 
 export default function getWalletTransactionStatusText(
   status: StatusType,
-  t: TFunction
+  t: TFunction,
 ): string {
   switch (status) {
     case "succeeded":

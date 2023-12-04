@@ -1,6 +1,5 @@
-import React, { FC, ReactElement } from "react";
-
 import { WidgetFrameWrapper, StyledWidgetFrame } from "./WidgetFrame.styles";
+import React, { FC, ReactElement } from "react";
 
 type WidgetFrameType = {
   children?: React.ReactNode;

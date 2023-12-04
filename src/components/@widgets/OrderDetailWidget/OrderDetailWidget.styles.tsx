@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import InfoButtons from "./subcomponents/InfoButtons/InfoButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

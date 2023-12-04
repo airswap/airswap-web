@@ -1,5 +1,4 @@
 import { AiOutlineLoading } from "react-icons/ai";
-
 import styled, { keyframes } from "styled-components/macro";
 
 export const LoadingSpinnerContainer = styled.div`

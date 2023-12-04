@@ -1,9 +1,8 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
+import styled from "styled-components/macro";
 
 type ContainerProps = {
   isOpen: boolean;

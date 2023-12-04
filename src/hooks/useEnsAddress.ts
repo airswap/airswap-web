@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
+import { useEffect, useState } from "react";
 
 const useEnsAddress = (address?: string): string | undefined => {
   const { library } = useWeb3React<Web3Provider>();

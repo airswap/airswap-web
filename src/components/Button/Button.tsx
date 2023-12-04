@@ -1,8 +1,7 @@
-import React from "react";
-
 import Icon from "../Icon/Icon";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { StyledButton, StyledIcon, Text } from "./Button.styles";
+import React from "react";
 
 export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 export type ButtonJustifyContent = "center" | "flex-start" | "flex-end";
@@ -44,7 +43,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       ...rest
     },
-    ref
+    ref,
   ) => {
     return (
       <StyledButton
@@ -64,7 +63,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading && <LoadingSpinner />}
       </StyledButton>
     );
-  }
+  },
 );
 
 export default Button;

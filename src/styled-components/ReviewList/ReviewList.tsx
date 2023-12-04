@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
+import styled from "styled-components/macro";
 
 export const ReviewList = styled.ul`
   list-style: none;

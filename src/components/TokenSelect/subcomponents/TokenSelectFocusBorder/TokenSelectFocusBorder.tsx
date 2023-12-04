@@ -1,11 +1,10 @@
-import { FC } from "react";
-
 import {
   GlobalStyle,
   BorderBottom,
   BorderRight,
   BorderTop,
 } from "./TokenSelectFocusBorder.styles";
+import { FC } from "react";
 
 type TokenSelectFocusBorderProps = {
   position?: "left" | "right";

@@ -1,3 +1,6 @@
+import { AppDispatch, RootState } from "../../app/store";
+import { INDEXER_ORDER_RESPONSE_TIME_MS } from "../../constants/configParams";
+import { getIndexerUrls } from "./indexerRegistryApi";
 import { Server } from "@airswap/libraries";
 import {
   IndexedOrder,
@@ -7,12 +10,7 @@ import {
 } from "@airswap/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-
 import { providers } from "ethers";
-
-import { AppDispatch, RootState } from "../../app/store";
-import { INDEXER_ORDER_RESPONSE_TIME_MS } from "../../constants/configParams";
-import { getIndexerUrls } from "./indexerRegistryApi";
 
 export interface IndexerState {
   /** List of indexer urls for servers that have responded successfully to
@@ -54,12 +52,12 @@ export const getFilteredOrders = createAsyncThunk<
   let orders: Record<string, IndexedOrder<FullOrderERC20>> = {};
   if (indexerState.indexerUrls) {
     const serverPromises = await Promise.allSettled(
-      indexerState.indexerUrls.map((url) => Server.at(url))
+      indexerState.indexerUrls.map((url) => Server.at(url)),
     );
     const servers: Server[] = serverPromises
       .filter(
         (value): value is PromiseFulfilledResult<Server> =>
-          value.status === "fulfilled"
+          value.status === "fulfilled",
       )
       .map((value) => value.value);
 
@@ -77,7 +75,7 @@ export const getFilteredOrders = createAsyncThunk<
           `[indexerSlice] Order request failed for ${
             indexerState.indexerUrls![i] || "an indexer node"
           }`,
-          e || ""
+          e || "",
         );
       }
     });

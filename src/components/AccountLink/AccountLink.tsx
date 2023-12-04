@@ -1,10 +1,8 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-
-import { getAccountUrl } from "@airswap/utils";
-
 import Icon from "../Icon/Icon";
 import { Link } from "./AccountLink.style";
+import { getAccountUrl } from "@airswap/utils";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 type AccountLinkProps = {
   chainId: number;

@@ -1,6 +1,5 @@
-import { useTranslation } from "react-i18next";
-
 import { Container, Text } from "./TokenDeleteButton.styles";
+import { useTranslation } from "react-i18next";
 
 type TokenDeleteButtonProps = {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;

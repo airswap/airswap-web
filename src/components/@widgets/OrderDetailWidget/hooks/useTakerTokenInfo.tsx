@@ -1,11 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { getDefaultProvider } from "ethers";
-
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
 import {
@@ -17,12 +9,17 @@ import { selectWallet } from "../../../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import { getRpcUrl } from "../../../../helpers/getRpcUrl";
 import scrapeToken from "../../../../helpers/scrapeToken";
+import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { getDefaultProvider } from "ethers";
+import { useEffect, useState } from "react";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
 
 const useTakerTokenInfo = (
-  address: string | null
+  address: string | null,
 ): [TokenInfo | null, boolean] => {
   const dispatch = useAppDispatch();
   const { library } = useWeb3React<Web3Provider>();

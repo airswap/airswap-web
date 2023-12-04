@@ -1,6 +1,3 @@
-import { useCallback, useEffect, useRef } from "react";
-import { GoChevronDown } from "react-icons/go";
-
 import nativeCurrency from "../../constants/nativeCurrency";
 import { CHAIN_PARAMS } from "../../constants/supportedNetworks";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
@@ -12,6 +9,8 @@ import {
   ChainNameText,
   StyledChainSelectionPopover,
 } from "./ChainSelector.style";
+import { useCallback, useEffect, useRef } from "react";
+import { GoChevronDown } from "react-icons/go";
 
 type ChainSelectorType = {
   chainId: number;

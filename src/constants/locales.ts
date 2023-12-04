@@ -11,7 +11,7 @@ export const SUPPORTED_LOCALES = [
   "zh-tr",
 ] as const;
 
-export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 export const DEFAULT_LOCALE: SupportedLocale = "en";
 
@@ -33,7 +33,7 @@ export const getUserLanguage = (): SupportedLocale => {
     ?.substring(0, 2) as SupportedLocale;
   const deviceLanguage = window.navigator.language.substring(
     0,
-    2
+    2,
   ) as SupportedLocale;
 
   if (

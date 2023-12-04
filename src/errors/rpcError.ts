@@ -1,6 +1,5 @@
-import { errorCodes } from "eth-rpc-errors";
-
 import { AppError, AppErrorType, transformToAppError } from "./appError";
+import { errorCodes } from "eth-rpc-errors";
 
 export interface RpcError {
   code: number;
@@ -14,7 +13,7 @@ export const isRpcError = (error: any): error is RpcError => {
     error !== null &&
     "code" in error &&
     Object.values({ ...errorCodes.rpc, ...errorCodes.provider }).includes(
-      error.code
+      error.code,
     )
   );
 };

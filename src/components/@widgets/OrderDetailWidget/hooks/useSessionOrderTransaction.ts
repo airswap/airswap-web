@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-
 import { useAppSelector } from "../../../../app/hooks";
 import {
   selectOrderTransactions,
   SubmittedTransaction,
 } from "../../../../features/transactions/transactionsSlice";
+import { useEffect, useMemo, useState } from "react";
 
 // This hook is very similar to useOrderTransaction but it will only return transactions that have been added since the component was mounted.
 
 const useSessionOrderTransaction = (
-  nonce: string
+  nonce: string,
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 
@@ -35,7 +34,7 @@ const useSessionOrderTransaction = (
     }
 
     return transactions.find(
-      (transaction) => transaction.hash === processingTransactionHash
+      (transaction) => transaction.hash === processingTransactionHash,
     );
   }, [processingTransactionHash, transactions]);
 };

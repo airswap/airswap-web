@@ -1,13 +1,3 @@
-import { SwapERC20 } from "@airswap/libraries";
-import { FullOrderERC20 } from "@airswap/types";
-import {
-  decompressFullOrderERC20,
-  isValidFullOrderERC20,
-} from "@airswap/utils";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-
-import { providers } from "ethers";
-
 import {
   notifyRejectedByUserError,
   notifyError,
@@ -28,6 +18,14 @@ import {
   setIsCancelSuccessFull,
   setStatus,
 } from "./takeOtcSlice";
+import { SwapERC20 } from "@airswap/libraries";
+import { FullOrderERC20 } from "@airswap/types";
+import {
+  decompressFullOrderERC20,
+  isValidFullOrderERC20,
+} from "@airswap/utils";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { providers } from "ethers";
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -48,7 +46,7 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
       console.error(e);
       dispatch(setStatus("not-found"));
     }
-  }
+  },
 );
 
 export const cancelOrder = createAsyncThunk(
@@ -59,7 +57,7 @@ export const cancelOrder = createAsyncThunk(
       chainId: number;
       library: providers.Web3Provider;
     },
-    { dispatch }
+    { dispatch },
   ) => {
     // pre-cancel checks
     const nonceUsed = await getNonceUsed(params.order, params.library);
@@ -77,7 +75,7 @@ export const cancelOrder = createAsyncThunk(
 
     const tx = await SwapERC20.getContract(
       params.library.getSigner(),
-      params.chainId
+      params.chainId,
     )
       .cancel([params.order.nonce])
       .catch((e: any) => {
@@ -118,5 +116,5 @@ export const cancelOrder = createAsyncThunk(
         cta: i18n.t("validatorErrors.unknownError"),
       });
     }
-  }
+  },
 );

@@ -1,9 +1,3 @@
-import { useMemo, useRef } from "react";
-
-import { TokenInfo } from "@airswap/types";
-
-import { providers } from "ethers";
-
 import { useAppDispatch } from "../app/hooks";
 import { REFERENCE_PRICE_UPDATE_INTERVAL_MS } from "../constants/configParams";
 import {
@@ -14,6 +8,9 @@ import {
   setFastGasPrice,
   setTokenPrice,
 } from "../features/gasCost/gasCostSlice";
+import { TokenInfo } from "@airswap/types";
+import { providers } from "ethers";
+import { useMemo, useRef } from "react";
 
 const useGasPriceSubscriber = () => {
   const dispatch = useAppDispatch();
@@ -38,12 +35,12 @@ const useGasPriceSubscriber = () => {
       };
       intervals.current.gas = window.setInterval(
         updateGasPrice,
-        REFERENCE_PRICE_UPDATE_INTERVAL_MS
+        REFERENCE_PRICE_UPDATE_INTERVAL_MS,
       );
       // also call immediately.
       updateGasPrice();
     },
-    [dispatch]
+    [dispatch],
   );
 
   const unsubscribeFromGasPrice = useMemo(
@@ -53,7 +50,7 @@ const useGasPriceSubscriber = () => {
       clearInterval(interval);
       intervals.current.gas = null;
     },
-    []
+    [],
   );
 
   const subscribeToTokenPrice = useMemo(
@@ -64,13 +61,13 @@ const useGasPriceSubscriber = () => {
           const price = await getPriceOfTokenInWethFromUniswap(
             token,
             provider,
-            chainId
+            chainId,
           );
           dispatch(
             setTokenPrice({
               tokenAddress: token.address,
               tokenPriceInWeth: price.toString(),
-            })
+            }),
           );
         } catch (e: any) {
           console.error(e);
@@ -78,11 +75,11 @@ const useGasPriceSubscriber = () => {
       };
       intervals.current.tokens[token.address] = window.setInterval(
         updateTokenPrice,
-        REFERENCE_PRICE_UPDATE_INTERVAL_MS
+        REFERENCE_PRICE_UPDATE_INTERVAL_MS,
       );
       updateTokenPrice();
     },
-    [dispatch]
+    [dispatch],
   );
 
   const unsubscribeFromTokenPrice = useMemo(
@@ -100,7 +97,7 @@ const useGasPriceSubscriber = () => {
         intervals.current.tokens = {};
       }
     },
-    []
+    [],
   );
 
   return {

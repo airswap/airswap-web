@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
 import OrderRecipientInfo from "../OrderRecipientInfo/OrderRecipientInfo";
 import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
+import styled from "styled-components/macro";
 
 export const InfoContainer = styled.div`
   display: flex;

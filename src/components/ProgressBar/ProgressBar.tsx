@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from "react";
-
 import { Track, Progress } from "./ProgressBar.styles";
 import getProgressBarAnimationProps from "./helpers/getProgressBarAnimationProps";
+import { FC, useEffect, useState } from "react";
 
 const ProgressBar: FC<{
   startTime: number;
@@ -20,7 +19,7 @@ const ProgressBar: FC<{
   const { initialProgress, duration } = getProgressBarAnimationProps(
     new Date(startTime),
     new Date(endTime),
-    new Date()
+    new Date(),
   );
 
   return (

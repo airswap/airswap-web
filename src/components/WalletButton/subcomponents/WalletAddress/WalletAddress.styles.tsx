@@ -1,7 +1,3 @@
-import Blockies from "react-blockies";
-
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../../style/breakpoints";
 import {
   BorderedPill,
@@ -9,6 +5,8 @@ import {
 } from "../../../../style/mixins";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
+import Blockies from "react-blockies";
+import styled from "styled-components/macro";
 
 export const Button = styled.div`
   border: 0;

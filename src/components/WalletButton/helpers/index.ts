@@ -3,7 +3,7 @@ import i18 from "i18next";
 export const getWalletButtonText = (
   isConnected: boolean,
   isUnsupportedNetwork: boolean,
-  addressOrName: string | null
+  addressOrName: string | null,
 ): string => {
   if (isUnsupportedNetwork) {
     return i18.t("wallet.unsupportedNetwork");

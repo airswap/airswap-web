@@ -1,16 +1,14 @@
-import { TFunction } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-
 import {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
+import { TokenInfo } from "@airswap/types";
+import { TFunction } from "react-i18next";
 
 export default function getTokenMaxInfoText(
   tokenInfo: TokenInfo | null,
   maxAmount: string | null,
-  t: TFunction<"translation">
+  t: TFunction<"translation">,
 ): string | null {
   if (!maxAmount || !tokenInfo) {
     return null;

@@ -1,8 +1,7 @@
-import React, { FC, useMemo } from "react";
-
 import { AppRoutes } from "../../../../../routes";
 import { Container, SignButton, StyledLink } from "./ActionButtons.styles";
 import { getActionButtonTranslation } from "./helpers";
+import React, { FC, useMemo } from "react";
 
 export enum ButtonActions {
   connectWallet,
@@ -26,13 +25,13 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   const buttonText = useMemo(() => {
     return getActionButtonTranslation(
       networkIsUnsupported,
-      walletIsNotConnected
+      walletIsNotConnected,
     );
   }, [networkIsUnsupported, walletIsNotConnected]);
 
   const showNewOrderLink = useMemo(
     () => !networkIsUnsupported && !walletIsNotConnected,
-    [networkIsUnsupported, walletIsNotConnected]
+    [networkIsUnsupported, walletIsNotConnected],
   );
 
   const handleActionButtonClick = () => {

@@ -1,5 +1,3 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-
 import {
   balancesReducer,
   allowancesReducer,
@@ -18,6 +16,7 @@ import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
 import userSettingsReducer from "../features/userSettings/userSettingsSlice";
 import walletReducer from "../features/wallet/walletSlice";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {

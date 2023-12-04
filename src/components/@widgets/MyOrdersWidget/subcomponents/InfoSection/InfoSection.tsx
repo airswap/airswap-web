@@ -1,8 +1,7 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { InfoSubHeading } from "../../../../Typography/Typography";
 import { StyledInfoHeading } from "./InfoSection.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type ActionButtonsProps = {
   userHasNoOrders: boolean;

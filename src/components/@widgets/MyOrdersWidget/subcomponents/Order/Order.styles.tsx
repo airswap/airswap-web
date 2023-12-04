@@ -1,12 +1,10 @@
-import { NavLink } from "react-router-dom";
-
-import styled, { DefaultTheme } from "styled-components/macro";
-
 import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
 import { fontMono } from "../../../../../style/themes";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import IconButton from "../../../../IconButton/IconButton";
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
+import { NavLink } from "react-router-dom";
+import styled, { DefaultTheme } from "styled-components/macro";
 
 export const Circle = styled.div`
   border-radius: 50%;
@@ -17,7 +15,7 @@ export const Circle = styled.div`
 
 const getIndicatorColor = (
   theme: DefaultTheme,
-  orderStatus: OrderStatus
+  orderStatus: OrderStatus,
 ): string => {
   if (orderStatus === OrderStatus.canceled) {
     return theme.colors.red;

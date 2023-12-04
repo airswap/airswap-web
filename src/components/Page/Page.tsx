@@ -1,10 +1,3 @@
-import React, { FC, ReactElement, useContext, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch } from "../../app/hooks";
 import { WalletProvider } from "../../constants/supportedWalletProviders";
 import { InterfaceContext } from "../../contexts/interface/Interface";
@@ -22,6 +15,11 @@ import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
 import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import React, { FC, ReactElement, useContext, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 type PageProps = {
   className?: string;

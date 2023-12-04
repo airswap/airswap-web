@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { FullOrderERC20 } from "@airswap/types";
-
 import { useAppSelector } from "../../../../app/hooks";
 import { getNonceUsed } from "../../../../features/orders/orderApi";
 import { selectPendingTransactions } from "../../../../features/transactions/transactionsSlice";
 import useCancellationSuccess from "../../../../hooks/useCancellationSuccess";
 import useDefaultLibrary from "../../../../hooks/useDefaultLibrary";
 import { OrderStatus } from "../../../../types/orderStatus";
+import { FullOrderERC20 } from "@airswap/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useOrderStatus = (
-  order: FullOrderERC20
+  order: FullOrderERC20,
 ): [OrderStatus, boolean] => {
   const library = useDefaultLibrary(order.chainId);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
@@ -30,7 +28,7 @@ export const useOrderStatus = (
         setIsLoading(false);
       }
     },
-    [library]
+    [library],
   );
 
   useEffect(() => {

@@ -1,14 +1,12 @@
-import { useMemo } from "react";
-import { useRouteMatch } from "react-router-dom";
-
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import {
   transformAddressToAddressAlias,
   transformAddressAliasToAddress,
 } from "../constants/addressAliases";
 import { AppRoutes, SwapRoutes } from "../routes";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { useMemo } from "react";
+import { useRouteMatch } from "react-router-dom";
 
 export interface AppRouteParams {
   route?: AppRoutes;
@@ -36,11 +34,11 @@ const useAppRouteParams = (): AppRouteParams => {
     if (swapMatch) {
       const tokenFrom = transformAddressAliasToAddress(
         swapMatch.params.tokenFrom,
-        chainId
+        chainId,
       );
       const tokenTo = transformAddressAliasToAddress(
         swapMatch.params.tokenTo,
-        chainId
+        chainId,
       );
       const tokenFromAlias = transformAddressToAddressAlias(tokenFrom, chainId);
       const tokenToAlias = transformAddressToAddressAlias(tokenTo, chainId);

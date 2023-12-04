@@ -1,6 +1,3 @@
-import { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import CopyAdressButton from "../CopyAddressButton/CopyAdressButton";
 import {
   Container,
@@ -8,6 +5,8 @@ import {
   WalletMobileMenuButton,
   WalletMobileMenuLink,
 } from "./WalletMobileMenu.styles";
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type WalletMobileMenuType = {
   walletUrl?: string;

@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import { FlexAlignCenter, TextEllipsis } from "../../style/mixins";
 import Icon from "../Icon/Icon";
+import styled from "styled-components/macro";
 
 export const CheckLabel = styled.label<{ isDisabled?: boolean }>`
   display: flex;

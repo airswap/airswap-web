@@ -1,11 +1,3 @@
-import { useMemo } from "react";
-
-import { toAtomicString } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppSelector } from "../app/hooks";
 import {
   nativeCurrencyAddress,
@@ -18,10 +10,15 @@ import {
 } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import useNativeWrappedToken from "./useNativeWrappedToken";
+import { toAtomicString } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "bignumber.js";
+import { useMemo } from "react";
 
 const useShouldDepositNativeTokenAmount = (
   token?: string,
-  tokenAmount?: string
+  tokenAmount?: string,
 ): string | undefined => {
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
@@ -58,7 +55,7 @@ const useShouldDepositNativeTokenAmount = (
     const nativeTokenInfo = findEthOrTokenByAddress(
       nativeCurrencyAddress,
       activeTokens,
-      chainId
+      chainId,
     );
 
     if (!nativeTokenInfo || !wrappedNativeToken) {
@@ -66,13 +63,13 @@ const useShouldDepositNativeTokenAmount = (
     }
 
     const nativeTokenBigNumber = new BigNumber(nativeTokenBalance).div(
-      10 ** nativeTokenInfo.decimals
+      10 ** nativeTokenInfo.decimals,
     );
     const wrappedTokenBigNumber = new BigNumber(wrappedTokenBalance).div(
-      10 ** wrappedNativeToken.decimals
+      10 ** wrappedNativeToken.decimals,
     );
     const tokenAmountBigNumber = new BigNumber(
-      toAtomicString(tokenAmount, nativeTokenInfo.decimals)
+      toAtomicString(tokenAmount, nativeTokenInfo.decimals),
     ).div(10 ** nativeTokenInfo.decimals);
 
     const totalBigNumber = nativeTokenBigNumber
@@ -92,7 +89,7 @@ const useShouldDepositNativeTokenAmount = (
     // Else it means WETH is not enough, but with wrapping extra ETH it will.
     const amountToDeposit = tokenAmountBigNumber.minus(wrappedTokenBigNumber);
     const amountToDepositWithFee = amountToDeposit.plus(
-      tokenAmountBigNumber.multipliedBy(protocolFee / 10000)
+      tokenAmountBigNumber.multipliedBy(protocolFee / 10000),
     );
 
     return amountToDepositWithFee.toFormat();

@@ -1,8 +1,3 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { providers } from "ethers";
-import uniqBy from "lodash.uniqby";
-
 import { AppDispatch, RootState } from "../../app/store";
 import { getActiveTokensFromLocalStorage } from "../metadata/metadataApi";
 import {
@@ -10,6 +5,9 @@ import {
   setWalletDisconnected,
 } from "../wallet/walletSlice";
 import { getStakerTokens } from "./registryApi";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { providers } from "ethers";
+import uniqBy from "lodash.uniqby";
 
 export interface RegistryState {
   stakerTokens: Record<string, string[]>;
@@ -43,11 +41,11 @@ export const fetchSupportedTokens = createAsyncThunk<
   // Combine token lists from all makers and flatten them.
   const allSupportedTokens = uniqBy(
     Object.values(stakerTokens).flat(),
-    (i) => i
+    (i) => i,
   );
   const activeTokensLocalStorage = getActiveTokensFromLocalStorage(
     wallet.address!,
-    wallet.chainId!
+    wallet.chainId!,
   );
   const activeTokens =
     (activeTokensLocalStorage.length && activeTokensLocalStorage) ||
@@ -62,7 +60,7 @@ export const registrySlice = createSlice({
   reducers: {
     setStakerTokens: (
       state,
-      action: PayloadAction<Record<string, string[]>>
+      action: PayloadAction<Record<string, string[]>>,
     ) => {
       state.stakerTokens = { ...action.payload };
     },

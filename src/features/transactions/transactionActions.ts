@@ -1,10 +1,9 @@
-import { createAction } from "@reduxjs/toolkit";
-
 import {
   SubmittedTransaction,
   SubmittedApproval,
   ProtocolType,
 } from "./transactionsSlice";
+import { createAction } from "@reduxjs/toolkit";
 
 const submitTransaction = createAction<
   SubmittedTransaction | SubmittedApproval

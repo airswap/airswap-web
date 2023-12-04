@@ -1,8 +1,3 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { FullOrderERC20 } from "@airswap/types";
-
 import { OrdersSortType } from "../../../../../features/myOrders/myOrdersSlice";
 import useWindowSize from "../../../../../hooks/useWindowSize";
 import { OrderStatus } from "../../../../../types/orderStatus";
@@ -16,6 +11,9 @@ import {
   Shadow,
   StyledMyOrdersListSortButtons,
 } from "./MyOrdersList.styles";
+import { FullOrderERC20 } from "@airswap/types";
+import React, { FC, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
@@ -55,7 +53,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 
   const handleDeleteOrderButtonMouseEnter = (
     index: number,
-    orderIsOpen: boolean
+    orderIsOpen: boolean,
   ) => {
     setActiveDeleteButtonTooltipIndex(index);
     const tooltipText = orderIsOpen
@@ -70,7 +68,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 
   const handleStatusIndicatorMouseEnter = (
     index: number,
-    status: OrderStatus
+    status: OrderStatus,
   ) => {
     setTooltipText(getOrderStatusTranslation(status));
     setActiveOrderIndicatorTooltipIndex(index);
@@ -87,12 +85,12 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   useEffect(() => {
     containerRef.current?.addEventListener(
       "scroll",
-      handleOnContainerScroll.bind(this)
+      handleOnContainerScroll.bind(this),
     );
 
     return containerRef.current?.removeEventListener(
       "scroll",
-      handleOnContainerScroll.bind(this)
+      handleOnContainerScroll.bind(this),
     );
   }, [containerRef]);
 

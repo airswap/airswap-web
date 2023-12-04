@@ -1,11 +1,10 @@
-import styled from "styled-components/macro";
-
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import { AirswapButton } from "../../styled-components/AirswapButton/AirswapButton";
 import SocialButtons from "../SocialButtons/SocialButtons";
+import styled from "styled-components/macro";
 
 export const ToolbarContainer = styled.div<{
   $isHiddenOnMobile?: boolean;

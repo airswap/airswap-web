@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import { WidgetHeader } from "../../styled-components/WidgetHeader/WidgetHeader";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

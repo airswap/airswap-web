@@ -1,8 +1,3 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { compareAsc, format } from "date-fns";
-
 import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
 import {
   Container,
@@ -11,6 +6,9 @@ import {
   StyledTooltip,
   Text,
 } from "./ExpiryIndicator.styles";
+import { compareAsc, format } from "date-fns";
+import React, { FC, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type ExpiryIndicatorProps = {
   expiry: Date;
@@ -21,13 +19,13 @@ const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry, className }) => {
   const { t } = useTranslation();
 
   const [timeLeft, setTimeLeft] = useState(
-    getExpiryTranslation(new Date(), expiry)
+    getExpiryTranslation(new Date(), expiry),
   );
 
   const hasExpired = useMemo(
     () => compareAsc(new Date(), expiry) === 1,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [expiry, timeLeft]
+    [expiry, timeLeft],
   );
 
   useEffect(() => {

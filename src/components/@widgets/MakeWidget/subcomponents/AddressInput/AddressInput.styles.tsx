@@ -1,9 +1,8 @@
-import styled from "styled-components/macro";
-
 import { InputTextStyle } from "../../../../../style/mixins";
 import IconButton from "../../../../IconButton/IconButton";
 import TextInput from "../../../../TextInput/TextInput";
 import { StyledInput } from "../../../../TextInput/TextInput.styles";
+import styled from "styled-components/macro";
 
 export const Wrapper = styled.div`
   position: relative;

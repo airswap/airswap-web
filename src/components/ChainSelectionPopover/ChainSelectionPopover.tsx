@@ -1,6 +1,3 @@
-import { RefObject, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
   CHAIN_PARAMS,
@@ -14,6 +11,8 @@ import {
 } from "./ChainSelectionPopover.styles";
 import addAndSwitchToChain from "./helpers/addAndSwitchToChain";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
+import { RefObject, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type ChainSelectionPopoverPropsType = {
   chainId: number;

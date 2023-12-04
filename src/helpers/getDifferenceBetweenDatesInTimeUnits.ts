@@ -10,7 +10,7 @@ import {
 
 const getDifferenceBetweenDatesInTimeUnits = (
   date1: Date,
-  date2: Date
+  date2: Date,
 ): {
   seconds: number;
   minutes: number;

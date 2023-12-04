@@ -1,7 +1,6 @@
-import React, { ReactElement } from "react";
-
 import { icons } from "../Icon/Icon";
 import { StyledIcon, StyledIconButton } from "./IconButton.styles";
+import React, { ReactElement } from "react";
 
 export type IconButtonProps = {
   text?: string;
@@ -30,7 +29,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       onBlur,
       onClick,
     },
-    ref
+    ref,
   ): ReactElement => {
     return (
       <StyledIconButton
@@ -48,7 +47,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         <StyledIcon name={icon} iconSize={iconSize} />
       </StyledIconButton>
     );
-  }
+  },
 );
 
 export default IconButton;

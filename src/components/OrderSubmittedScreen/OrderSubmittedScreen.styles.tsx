@@ -1,10 +1,8 @@
-import { MdDoneAll } from "react-icons/md";
-
-import styled from "styled-components/macro";
-
 import Button from "../Button/Button";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
+import { MdDoneAll } from "react-icons/md";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

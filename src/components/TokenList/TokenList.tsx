@@ -1,11 +1,3 @@
-import { useState, useMemo, useRef, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { formatUnits } from "@ethersproject/units";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
@@ -40,6 +32,12 @@ import useScrapeToken from "./hooks/useScrapeToken";
 import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
 import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
 import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import { TokenInfo } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { formatUnits } from "@ethersproject/units";
+import { useWeb3React } from "@web3-react/core";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export type TokenListProps = {
   /**
@@ -114,7 +112,7 @@ const TokenList = ({
   const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
     return sortTokenByExactMatch(
       allTokens.filter((token) => !activeTokens.includes(token)),
-      tokenQuery
+      tokenQuery,
     );
   }, [allTokens, activeTokens, tokenQuery]);
 
@@ -127,7 +125,7 @@ const TokenList = ({
     // else only take the top 100 tokens
     return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
       0,
-      100
+      100,
     );
   }, [sortedInactiveTokens, tokenQuery, scrapedToken]);
 
@@ -142,7 +140,7 @@ const TokenList = ({
 
       setOverflow(
         scrollHeight + offsetTop + buttonHeight >
-          sizingContainerRef.current.offsetHeight
+          sizingContainerRef.current.offsetHeight,
       );
     }
   }, [
@@ -216,13 +214,13 @@ const TokenList = ({
                       token={token}
                       balance={formatUnits(
                         balances.values[token.address] || 0,
-                        token.decimals
+                        token.decimals,
                       )}
                       setToken={onSelectToken}
                       removeActiveToken={handleRemoveActiveToken}
                       key={token.address}
                     />
-                  )
+                  ),
                 )}
               </TokenContainer>
             )}
@@ -236,11 +234,12 @@ const TokenList = ({
                 }}
               />
             )}
-            {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
-              <NoResultsContainer>
-                <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
-              </NoResultsContainer>
-            )}
+            {sortedFilteredTokens.length === 0 &&
+              inactiveTokens.length === 0 && (
+                <NoResultsContainer>
+                  <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
+                </NoResultsContainer>
+              )}
           </StyledScrollContainer>
           <OverlayActionButton
             intent="primary"

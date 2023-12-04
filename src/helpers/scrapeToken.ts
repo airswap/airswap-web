@@ -1,12 +1,11 @@
 import { getTokenInfo as airSwapScrapeToken } from "@airswap/metadata";
 import { TokenInfo } from "@airswap/types";
-
 import * as ethers from "ethers";
 
 const scrapeToken = (
   address: string,
   provider: ethers.providers.BaseProvider,
-  chainId?: number
+  chainId?: number,
 ): Promise<TokenInfo | undefined> => {
   return new Promise<TokenInfo | undefined>(async (resolve) => {
     if (!ethers.utils.isAddress(address)) {

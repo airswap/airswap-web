@@ -1,8 +1,7 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
 import { getActionButtonTranslation } from "../../helpers";
 import { BackButton, Container, SignButton } from "./ActionButtons.styles";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export enum ButtonActions {
   connectWallet,
@@ -72,7 +71,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     isNetworkUnsupported,
     shouldDepositNativeToken,
     walletIsNotConnected,
-    makerTokenSymbol
+    makerTokenSymbol,
   );
 
   const handleSignButtonClick = () => {

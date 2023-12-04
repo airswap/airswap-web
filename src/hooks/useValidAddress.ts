@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
 import { isAddress } from "ethers/lib/utils";
+import { useEffect, useMemo, useState } from "react";
 
 const useValidAddress = (address: string): boolean => {
   const { library } = useWeb3React<Web3Provider>();

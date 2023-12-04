@@ -1,6 +1,3 @@
-import { FC } from "react";
-import { HiX } from "react-icons/hi";
-
 import Icon from "../Icon/Icon";
 import { InfoHeading } from "../Typography/Typography";
 import {
@@ -9,6 +6,8 @@ import {
   HiXContainer,
   TextContainer,
 } from "./Toast.styles";
+import { FC } from "react";
+import { HiX } from "react-icons/hi";
 
 export type CopyToastProps = {
   /**

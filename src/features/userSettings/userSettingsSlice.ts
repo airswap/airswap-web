@@ -1,8 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { ThemeType } from "styled-components/macro";
-
 import { RootState } from "../../app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ThemeType } from "styled-components/macro";
 
 export interface UserTokenPair {
   tokenFrom?: string;
@@ -36,7 +34,7 @@ const userSettingsSlice = createSlice({
     },
     setUserTokens: (
       state,
-      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>
+      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>,
     ) => {
       const tokens = {
         ...state.tokens,

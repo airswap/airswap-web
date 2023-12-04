@@ -1,11 +1,10 @@
+import breakPoints from "../../style/breakpoints";
 import styled, {
   DefaultTheme,
   ThemedStyledFunction,
   css,
   StyledComponent,
 } from "styled-components/macro";
-
-import breakPoints from "../../style/breakpoints";
 
 const elementMap: Record<
   keyof DefaultTheme["typography"],
@@ -40,7 +39,7 @@ const elementMap: Record<
  */
 const makeTypographyComponent = (
   key: keyof DefaultTheme["typography"],
-  additionalCSS?: any
+  additionalCSS?: any,
 ): StyledComponent<keyof JSX.IntrinsicElements, DefaultTheme> => {
   const tag = elementMap[key];
   const Component = (styled[tag] as ThemedStyledFunction<
@@ -74,7 +73,7 @@ export const StyledH1 = makeTypographyComponent(
       props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.alwaysBlack};
-  `
+  `,
 );
 export const StyledH2 = makeTypographyComponent(
   "title2",
@@ -83,7 +82,7 @@ export const StyledH2 = makeTypographyComponent(
       props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.primary};
-  `
+  `,
 );
 export const StyledH3 = makeTypographyComponent("title3");
 export const StyledH4 = makeTypographyComponent("title4");
@@ -91,13 +90,13 @@ export const StyledSubtitle = makeTypographyComponent(
   "subtitle",
   css`
     text-transform: uppercase;
-  `
+  `,
 );
 export const StyledSubText = makeTypographyComponent(
   "subText",
   css`
     color: ${(props) => props.theme.colors.darkSubText};
-  `
+  `,
 );
 export const StyledParagraph = makeTypographyComponent(
   "paragraph",
@@ -106,7 +105,7 @@ export const StyledParagraph = makeTypographyComponent(
       props.theme.name === "dark"
         ? props.theme.colors.white
         : props.theme.colors.grey};
-  `
+  `,
 );
 
 export const StyledLink = makeTypographyComponent(
@@ -114,7 +113,7 @@ export const StyledLink = makeTypographyComponent(
   css`
     text-transform: uppercase;
     text-decoration: underline;
-  `
+  `,
 ) as StyledComponent<"a", DefaultTheme, {}>;
 
 export const StyledNavigation = makeTypographyComponent("nav");
@@ -123,14 +122,14 @@ export const StyledInfoSubHeading = makeTypographyComponent(
   "infoSubHeading",
   css`
     color: ${(props) => props.theme.colors.lightGrey};
-  `
+  `,
 );
 export const StyledFormLabel = makeTypographyComponent(
   "formLabel",
   css`
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.lightGrey : theme.colors.darkGrey};
-  `
+  `,
 );
 export const StyledFormInput = makeTypographyComponent(
   "formInput",
@@ -145,12 +144,12 @@ export const StyledFormInput = makeTypographyComponent(
     &::placeholder {
       color: ${(props) => props.theme.colors.placeholderGrey};
     }
-  `
+  `,
 );
 export const StyledSelectItem = makeTypographyComponent("selectItem");
 export const StyledMetadata = makeTypographyComponent(
   "small",
   css`
     color: ${(props) => props.theme.colors.lightGrey};
-  `
+  `,
 );

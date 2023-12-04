@@ -25,7 +25,7 @@ type RpcErrorWithSwapErrorCode = {
 };
 
 export const isRpcErrorWithSwapErrorCode = (
-  error: any
+  error: any,
 ): error is RpcErrorWithSwapErrorCode => {
   return (
     typeof error === "object" &&
@@ -37,10 +37,10 @@ export const isRpcErrorWithSwapErrorCode = (
 };
 
 export const transformRpcErrorWithSwapErrorCodeToAppError = (
-  error: RpcErrorWithSwapErrorCode
+  error: RpcErrorWithSwapErrorCode,
 ): AppError => {
   const reasonError = swapErrors.find(
-    (swapError) => error.reason.indexOf(swapError) !== -1
+    (swapError) => error.reason.indexOf(swapError) !== -1,
   );
   return transformSwapErrorToAppError(reasonError || error.code);
 };

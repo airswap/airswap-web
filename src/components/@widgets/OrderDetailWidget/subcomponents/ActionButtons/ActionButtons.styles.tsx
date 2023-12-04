@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import Button from "../../../../Button/Button";
 import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

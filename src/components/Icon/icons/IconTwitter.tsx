@@ -1,6 +1,5 @@
-import { FC, ReactElement } from "react";
-
 import { SvgIconProps } from "../Icon";
+import { FC, ReactElement } from "react";
 
 const IconTwitter: FC<SvgIconProps> = ({ className = "" }): ReactElement => (
   <svg

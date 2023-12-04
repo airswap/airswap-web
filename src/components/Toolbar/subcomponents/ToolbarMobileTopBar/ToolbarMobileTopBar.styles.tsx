@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../../style/breakpoints";
 import IconButton from "../../../IconButton/IconButton";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;

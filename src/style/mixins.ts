@@ -1,7 +1,6 @@
-import { css } from "styled-components/macro";
-
 import convertHexToRGBA from "../helpers/transformHexToRgba";
 import breakPoints from "./breakpoints";
+import { css } from "styled-components/macro";
 
 export const ScrollBarStyle = css`
   &::-webkit-scrollbar {

@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../style/mixins";
 import Tooltip from "./subcomponents/Tooltip/Tooltip";
+import styled from "styled-components/macro";
 
 export const Container = styled.div<{ $disabled: boolean }>`
   display: flex;
@@ -11,7 +10,8 @@ export const Container = styled.div<{ $disabled: boolean }>`
   opacity: ${(props) => (props.$disabled ? 0.6 : 1)};
   cursor: ${(props) => (props.$disabled ? "not-allowed" : "inherit")};
   will-change: opacity, transform;
-  transition: opacity 0.3s ease-in-out,
+  transition:
+    opacity 0.3s ease-in-out,
     transform 0.4s cubic-bezier(0.45, 0.22, 0, 1);
   transform: scale(${(props) => (props.$disabled ? 0.95 : 1)});
 

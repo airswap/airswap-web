@@ -1,14 +1,12 @@
-import { useMemo } from "react";
-
-import { getReceiptUrl } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../app/hooks";
 import {
   selectTransactions,
   SubmittedTransaction,
 } from "../features/transactions/transactionsSlice";
+import { getReceiptUrl } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
+import { useMemo } from "react";
 
 const useOrderTransactionLink = (nonce: string): string | undefined => {
   const { chainId } = useWeb3React<Web3Provider>();
@@ -18,7 +16,7 @@ const useOrderTransactionLink = (nonce: string): string | undefined => {
   return useMemo(() => {
     const succeededTransaction = transactions.find(
       (transaction) =>
-        transaction.nonce === nonce && transaction.status === "succeeded"
+        transaction.nonce === nonce && transaction.status === "succeeded",
     );
 
     if (!succeededTransaction?.hash || !chainId) {

@@ -1,11 +1,10 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../../style/breakpoints";
 import {
   BorderedPill,
   InputOrButtonBorderStyleType2,
 } from "../../../../style/mixins";
 import { InfoHeading } from "../../../Typography/Typography";
+import styled from "styled-components/macro";
 
 export const Container = styled.button`
   ${BorderedPill}

@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import { fontMono } from "../../../../style/themes";
 import { AvailableOrdersGrid } from "../../AvailableOrdersWidget.styles";
+import styled from "styled-components/macro";
 
 export const Container = styled.div`
   ${AvailableOrdersGrid};

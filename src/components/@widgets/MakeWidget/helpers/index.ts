@@ -1,8 +1,7 @@
-import { BigNumber } from "bignumber.js";
-import i18n from "i18next";
-
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { TokenSelectModalTypes } from "../../../../types/tokenSelectModalTypes";
+import { BigNumber } from "bignumber.js";
+import i18n from "i18next";
 
 export const getActionButtonTranslation = (
   hasInsufficientAllowance: boolean,
@@ -15,7 +14,7 @@ export const getActionButtonTranslation = (
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   walletIsNotConnected: boolean,
-  makerTokenSymbol?: string
+  makerTokenSymbol?: string,
 ): string => {
   if (walletIsNotConnected) {
     return i18n.t("wallet.connectWallet");
@@ -60,7 +59,7 @@ export const getNewTokenPair = (
   type: TokenSelectModalTypes,
   newToken: string,
   tokenTo?: string,
-  tokenFrom?: string
+  tokenFrom?: string,
 ): { tokenFrom?: string; tokenTo?: string } => {
   let newTokenTo = type === "quote" ? newToken : tokenTo;
   let newTokenFrom = type === "base" ? newToken : tokenFrom;
@@ -81,10 +80,10 @@ export const getTokenPairTranslation = (
   token1 = "?",
   token1Amount: string,
   token2 = "?",
-  token2Amount: string
+  token2Amount: string,
 ) => {
   const amount = new BigNumber(token2Amount).dividedBy(
-    new BigNumber(token1Amount)
+    new BigNumber(token1Amount),
   );
   const readableAmount = stringToSignificantDecimals(amount.toString(), 6);
 

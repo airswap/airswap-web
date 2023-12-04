@@ -1,5 +1,4 @@
 import { chainNames } from "@airswap/constants";
-
 import i18n from "i18next";
 
 export const getFullOrderERC20WarningTranslation = (
@@ -8,7 +7,7 @@ export const getFullOrderERC20WarningTranslation = (
   isIntendedRecipient: boolean,
   isMakerOfSwap: boolean,
   isNotConnected: boolean,
-  orderChainId: number
+  orderChainId: number,
 ): string | undefined => {
   const orderIsNotForConnectedWallet =
     !isIntendedRecipient && !isMakerOfSwap && !isNotConnected;

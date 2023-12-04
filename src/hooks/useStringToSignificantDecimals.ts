@@ -1,14 +1,12 @@
-import { useMemo } from "react";
-
-import { TokenInfo } from "@airswap/types";
-import { format } from "@greypixel_/nicenumbers";
-
 import { isAppError } from "../errors/appError";
 import toAtomicString from "../helpers/toAtomicString";
+import { TokenInfo } from "@airswap/types";
+import { format } from "@greypixel_/nicenumbers";
+import { useMemo } from "react";
 
 const useStringToSignificantDecimals = (
   amount: string,
-  token: TokenInfo | null
+  token: TokenInfo | null,
 ): string => {
   return useMemo(() => {
     if (!token) {

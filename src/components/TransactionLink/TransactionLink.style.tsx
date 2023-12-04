@@ -1,6 +1,5 @@
-import styled from "styled-components/macro";
-
 import { BorderlessButtonStyle } from "../../style/mixins";
+import styled from "styled-components/macro";
 
 export const Link = styled.a`
   display: flex;

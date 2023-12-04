@@ -1,19 +1,17 @@
-import { TokenInfo } from "@airswap/types";
-
-import { BigNumber } from "bignumber.js";
-
 import {
   nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../constants/nativeCurrency";
 import { BalancesState } from "../features/balances/balancesSlice";
 import stringToSignificantDecimals from "./stringToSignificantDecimals";
+import { TokenInfo } from "@airswap/types";
+import { BigNumber } from "bignumber.js";
 
 const getTokenMaxAmount = (
   baseToken: string,
   balances: BalancesState,
   baseTokenInfo: TokenInfo,
-  protocolFeePercentage?: number
+  protocolFeePercentage?: number,
 ): string | null => {
   if (!balances.values[baseToken] || balances.values[baseToken] === "0") {
     return null;
@@ -24,12 +22,12 @@ const getTokenMaxAmount = (
     nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   let totalAmount = new BigNumber(balances.values[baseToken] || "0").div(
-    10 ** baseTokenInfo.decimals
+    10 ** baseTokenInfo.decimals,
   );
 
   if (protocolFeePercentage) {
     totalAmount = totalAmount.minus(
-      totalAmount.multipliedBy(protocolFeePercentage)
+      totalAmount.multipliedBy(protocolFeePercentage),
     );
   }
 

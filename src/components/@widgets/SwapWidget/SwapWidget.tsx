@@ -1,22 +1,3 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
-
-import { Protocols } from "@airswap/constants";
-import { Registry, Server, Wrapper } from "@airswap/libraries";
-import { OrderERC20, Pricing } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   transformAddressAliasToAddress,
@@ -121,6 +102,23 @@ import ActionButtons, {
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
+import { Protocols } from "@airswap/constants";
+import { Registry, Server, Wrapper } from "@airswap/libraries";
+import { OrderERC20, Pricing } from "@airswap/types";
+import { Web3Provider } from "@ethersproject/providers";
+import { useToggle } from "@react-hookz/web";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory, useLocation } from "react-router-dom";
 
 export enum SwapWidgetState {
   overview = "overview",
@@ -164,7 +162,7 @@ const SwapWidget: FC = () => {
   const [tokenFrom, setTokenFrom] = useState<string | undefined>();
   const [tokenTo, setTokenTo] = useState<string | undefined>();
   const [baseAmount, setBaseAmount] = useState(
-    isFromOrderDetailPage ? tradeTerms.baseAmount : ""
+    isFromOrderDetailPage ? tradeTerms.baseAmount : "",
   );
   const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
@@ -213,7 +211,7 @@ const SwapWidget: FC = () => {
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     baseTokenInfo,
-    baseAmount
+    baseAmount,
   );
 
   const hasApprovalPending = useApprovalPending(baseToken);
@@ -267,7 +265,7 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     setAllowanceFetchFailed(
       allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
+        allowances.wrapper.status === "failed",
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
 
@@ -278,7 +276,7 @@ const SwapWidget: FC = () => {
       : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
   const formattedQuoteAmount = useMemo(
     () => stringToSignificantDecimals(quoteAmount),
-    [quoteAmount]
+    [quoteAmount],
   );
 
   const transactionOrderNonce =
@@ -286,7 +284,7 @@ const SwapWidget: FC = () => {
   const activeTransaction = useBestTradeOptionTransaction(
     baseTokenInfo,
     transactionOrderNonce,
-    bestTradeOption?.quoteAmount
+    bestTradeOption?.quoteAmount,
   );
 
   useEffect(() => {
@@ -309,7 +307,7 @@ const SwapWidget: FC = () => {
             senderTokens: [baseTokenInfo.address],
             signerTokens: [quoteTokenInfo.address],
           },
-        })
+        }),
       );
     }
   }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
@@ -392,13 +390,13 @@ const SwapWidget: FC = () => {
             _baseToken,
             {
               initializeTimeout: 10 * 1000,
-            }
+            },
           );
           rfqServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.RequestForQuoteERC20)
+            s.supportsProtocol(Protocols.RequestForQuoteERC20),
           );
           lastLookServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.LastLookERC20)
+            s.supportsProtocol(Protocols.LastLookERC20),
           );
         }
       } catch (e) {
@@ -423,7 +421,7 @@ const SwapWidget: FC = () => {
               senderTokenDecimals: baseTokenInfo!.decimals,
               senderWallet: senderWallet,
               proxyingFor: usesWrapper ? account! : undefined,
-            })
+            }),
           );
           rfqPromise = rfqDispatchResult
             .then((result) => {
@@ -436,7 +434,7 @@ const SwapWidget: FC = () => {
         } else {
           console.error(
             "No sender wallet or wrapper for selected chain",
-            chainId
+            chainId,
           );
           throw new Error("No sender wallet or wrapper for selected chain");
         }
@@ -466,7 +464,7 @@ const SwapWidget: FC = () => {
         new Promise((_, reject) =>
           setTimeout(() => {
             reject("no valid orders");
-          }, RECEIVE_QUOTE_TIMEOUT_MS)
+          }, RECEIVE_QUOTE_TIMEOUT_MS),
         ),
       ]);
 
@@ -477,8 +475,8 @@ const SwapWidget: FC = () => {
         Promise.any(orderPromises).then(
           () =>
             new Promise((resolve) =>
-              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
-            )
+              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER),
+            ),
         ),
       ]);
 
@@ -529,7 +527,7 @@ const SwapWidget: FC = () => {
         senderWallet,
         chainId || 1,
         library,
-        swapType === "swapWithWrap"
+        swapType === "swapWithWrap",
       );
 
       if (errors.length) {
@@ -550,7 +548,7 @@ const SwapWidget: FC = () => {
               cta: t("orders.swapExpiredCallToAction"),
             });
           },
-        })
+        }),
       );
       setIsSwapping(false);
       await unwrapResult(result);
@@ -603,7 +601,7 @@ const SwapWidget: FC = () => {
             signerWallet: order.signerWallet,
             nonce: order.nonce,
             reason: "Pricing expired",
-          })
+          }),
         );
       }
     } catch (e: any) {
@@ -618,7 +616,7 @@ const SwapWidget: FC = () => {
             signerWallet: order?.signerWallet,
             nonce: order?.nonce,
             reason: e.message,
-          })
+          }),
         );
       } else {
         dispatch(setErrors([appError]));
@@ -642,14 +640,14 @@ const SwapWidget: FC = () => {
         },
         quoteAmount: null,
         side: "sell",
-      })
+      }),
     );
     // subscribeToGasPrice();
     subscribeToTokenPrice(
       quoteTokenInfo!,
       // @ts-ignore
       library!,
-      chainId!
+      chainId!,
     );
   }, [
     baseAmount,
@@ -681,7 +679,7 @@ const SwapWidget: FC = () => {
           senderAmount: baseAmount,
           senderTokenDecimals: baseTokenInfo!.decimals,
           provider: library!,
-        })
+        }),
       );
       await unwrapResult(result);
       setIsSwapping(false);
@@ -765,7 +763,7 @@ const SwapWidget: FC = () => {
         contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
         chainId: chainId!,
         amount: baseAmount,
-      })
+      }),
     );
     setIsApproving(false);
   };

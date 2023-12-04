@@ -1,5 +1,3 @@
-import { TokenInfo } from "@airswap/types";
-
 import { store } from "../../app/store";
 import { getTransactionsLocalStorageKey } from "../transactions/transactionUtils";
 import {
@@ -11,6 +9,7 @@ import {
   getAllTokensLocalStorageKey,
   getCustomTokensLocalStorageKey,
 } from "./metadataApi";
+import { TokenInfo } from "@airswap/types";
 
 interface TokensCache {
   [address: string]: {
@@ -29,7 +28,7 @@ const compareAndWriteTokensToLocalStorage = (
   tokens: string[],
   address: string,
   chainId: number,
-  localStorageKey: string
+  localStorageKey: string,
 ) => {
   if (!tokensCache[address]) {
     tokensCache[address] = {};
@@ -73,8 +72,8 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       // Store only the top 10 transactions
       const txs: TransactionsState = JSON.parse(
         localStorage.getItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
-        )!
+          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
+        )!,
       ) || { all: [] };
 
       const mostRecentTransactions = transactions.all;
@@ -83,7 +82,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
         transactionCache[wallet.address!] = {};
         transactionCache[wallet.address!][wallet.chainId!] = txs.all.slice(
           0,
-          10
+          10,
         );
       }
       if (
@@ -97,7 +96,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
           JSON.stringify({
             all: mostRecentTransactions,
-          })
+          }),
         );
       }
     }
@@ -118,7 +117,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       allTokensCache[wallet.chainId!] = metadata.tokens.all;
       localStorage.setItem(
         getAllTokensLocalStorageKey(wallet.chainId!),
-        JSON.stringify(metadata.tokens.all)
+        JSON.stringify(metadata.tokens.all),
       );
     }
 
@@ -132,7 +131,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       metadata.tokens.active,
       wallet.address,
       wallet.chainId,
-      getActiveTokensLocalStorageKey(wallet.address, wallet.chainId)
+      getActiveTokensLocalStorageKey(wallet.address, wallet.chainId),
     );
 
     // Custom tokens
@@ -141,7 +140,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       metadata.tokens.custom,
       wallet.address,
       wallet.chainId,
-      getCustomTokensLocalStorageKey(wallet.address, wallet.chainId)
+      getCustomTokensLocalStorageKey(wallet.address, wallet.chainId),
     );
   });
 };

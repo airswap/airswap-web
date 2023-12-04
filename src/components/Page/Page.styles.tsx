@@ -1,8 +1,7 @@
-import styled from "styled-components/macro";
-
 import breakPoints, { breakpointSizes } from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
 import SocialButtons from "../SocialButtons/SocialButtons";
+import styled from "styled-components/macro";
 
 export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   display: flex;

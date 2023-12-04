@@ -1,9 +1,3 @@
-import { useState, useEffect, useRef, RefObject } from "react";
-import { useTranslation } from "react-i18next";
-
-import i18n from "i18next";
-import { ThemeType } from "styled-components/macro";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   SUPPORTED_LOCALES,
@@ -25,6 +19,10 @@ import {
 } from "./SettingsPopover.styles";
 import GithubInfo from "./subcomponents/GithubInfo/GithubInfo";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
+import i18n from "i18next";
+import { useState, useEffect, useRef, RefObject } from "react";
+import { useTranslation } from "react-i18next";
+import { ThemeType } from "styled-components/macro";
 
 type SettingsPopoverPropsType = {
   isOpen: boolean;
@@ -46,7 +44,7 @@ const SettingsPopover = ({
   const [selectedLocale, setSelectedLocale] = useState<string>(
     localStorage.getItem("i18nextLng")?.substring(0, 2) ||
       window.navigator.language.substring(0, 2) ||
-      DEFAULT_LOCALE
+      DEFAULT_LOCALE,
   );
 
   const dispatch = useAppDispatch();

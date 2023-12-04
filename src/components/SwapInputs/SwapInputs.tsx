@@ -1,8 +1,3 @@
-import { FC, FormEvent, useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-import { TokenInfo } from "@airswap/types";
-
 import { AppError } from "../../errors/appError";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import {
@@ -15,6 +10,9 @@ import {
 import getSwitchTokensButtonIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
 import useErrorTranslation from "./hooks/useErrorTranslation";
+import { TokenInfo } from "@airswap/types";
+import { FC, FormEvent, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
@@ -82,7 +80,7 @@ const SwapInputs: FC<{
 
   const maxAmountInfoText = useMemo(
     () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
-    [baseTokenInfo, maxAmount, t]
+    [baseTokenInfo, maxAmount, t],
   );
   const isQuote = !!baseAmount && !!quoteAmount && readOnly;
   const baseAmountErrorText = useErrorTranslation(baseAmountError);
@@ -90,7 +88,7 @@ const SwapInputs: FC<{
 
   const handleTokenAmountChange = (
     e: FormEvent<HTMLInputElement>,
-    callback: Function
+    callback: Function,
   ) => {
     let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {

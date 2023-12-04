@@ -1,7 +1,6 @@
-import React, { Dispatch, FC, useEffect, useState } from "react";
-
 import useDebounce from "../../hooks/useDebounce";
 import useWindowSize from "../../hooks/useWindowSize";
+import React, { Dispatch, FC, useEffect, useState } from "react";
 
 export interface InterfaceContextContextProps {
   isConnecting: boolean;
@@ -43,7 +42,7 @@ const InterfaceProvider: FC = ({ children }) => {
       setPageHeight(windowHeight);
     },
     100,
-    [windowHeight]
+    [windowHeight],
   );
 
   useEffect(() => {

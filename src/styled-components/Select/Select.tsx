@@ -1,9 +1,8 @@
-import styled, { css } from "styled-components/macro";
-
 import {
   InputOrButtonBorderStyleType2,
   TextEllipsis,
 } from "../../style/mixins";
+import styled, { css } from "styled-components/macro";
 
 export const SelectElementStyle = css`
   ${InputOrButtonBorderStyleType2};

@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-
 import { Container } from "./Timer.styles";
+import { useState, useEffect } from "react";
 
 export type TimerProps = {
   /**
@@ -17,7 +16,7 @@ export const Timer = ({
   className,
 }: TimerProps) => {
   const [distance, setDistance] = useState<number>(
-    Math.floor(expiryTime - Date.now() / 1000)
+    Math.floor(expiryTime - Date.now() / 1000),
   );
 
   useEffect(() => {

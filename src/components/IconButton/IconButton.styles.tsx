@@ -1,7 +1,6 @@
+import Icon from "../Icon/Icon";
 import { css } from "styled-components";
 import styled from "styled-components/macro";
-
-import Icon from "../Icon/Icon";
 
 interface StyledIconButtonProps {
   hasText?: boolean;

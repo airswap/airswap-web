@@ -1,8 +1,7 @@
-import { FullOrderERC20 } from "@airswap/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
+import { FullOrderERC20 } from "@airswap/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface MakeOtcState {
   lastUserOrder?: FullOrderERC20;
@@ -20,7 +19,7 @@ export const makeOtcSlice = createSlice({
   reducers: {
     setStatus: (
       state,
-      action: PayloadAction<MakeOtcState["status"]>
+      action: PayloadAction<MakeOtcState["status"]>,
     ): MakeOtcState => {
       return {
         ...state,
@@ -29,7 +28,7 @@ export const makeOtcSlice = createSlice({
     },
     setUserOrder: (
       state,
-      action: PayloadAction<FullOrderERC20>
+      action: PayloadAction<FullOrderERC20>,
     ): MakeOtcState => {
       return {
         ...state,
@@ -44,7 +43,7 @@ export const makeOtcSlice = createSlice({
     },
     setError: (
       state,
-      action: PayloadAction<AppError | undefined>
+      action: PayloadAction<AppError | undefined>,
     ): MakeOtcState => {
       return {
         ...state,

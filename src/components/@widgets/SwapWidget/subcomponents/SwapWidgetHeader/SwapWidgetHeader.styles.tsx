@@ -1,8 +1,7 @@
-import styled, { css } from "styled-components/macro";
-
 import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
 import Icon from "../../../../Icon/Icon";
 import Timer from "../../../../Timer/Timer";
+import styled, { css } from "styled-components/macro";
 
 export const PillStyle = css`
   display: flex;

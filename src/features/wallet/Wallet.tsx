@@ -1,14 +1,3 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import { useBeforeunload } from "react-beforeunload";
-import { useTranslation } from "react-i18next";
-
-import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
-import { Web3Provider } from "@ethersproject/providers";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-
-import { Contract } from "ethers";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import {
@@ -64,6 +53,14 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "./walletSlice";
+import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
+import { Web3Provider } from "@ethersproject/providers";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { Contract } from "ethers";
+import React, { FC, useContext, useEffect, useState } from "react";
+import { useBeforeunload } from "react-beforeunload";
+import { useTranslation } from "react-i18next";
 
 type WalletPropsType = {
   onAirswapButtonClick: () => void;
@@ -173,7 +170,7 @@ export const Wallet: FC<WalletPropsType> = ({
   useEffect(() => {
     if (providerName) {
       const provider = SUPPORTED_WALLET_PROVIDERS.find(
-        (provider) => provider.name === providerName
+        (provider) => provider.name === providerName,
       );
       setProvider(provider);
       setConnector(provider!.getConnector());
@@ -188,7 +185,7 @@ export const Wallet: FC<WalletPropsType> = ({
         setWalletConnected({
           chainId,
           address: account,
-        })
+        }),
       );
       dispatch(fetchProtocolFee({ chainId, provider: library }));
       saveLastAccount(account, provider);
@@ -199,28 +196,28 @@ export const Wallet: FC<WalletPropsType> = ({
         dispatch(
           fetchSupportedTokens({
             provider: library,
-          } as any)
+          } as any),
         ),
       ]).then(() => {
         dispatch(
           requestActiveTokenBalances({
             provider: library,
-          })
+          }),
         );
         dispatch(
           requestActiveTokenAllowancesSwap({
             provider: library,
-          })
+          }),
         );
         dispatch(
           requestActiveTokenAllowancesWrapper({
             provider: library,
-          })
+          }),
         );
         dispatch(
           fetchUnkownTokens({
             provider: library,
-          } as any)
+          } as any),
         );
       });
     } else if (!active) {
@@ -257,7 +254,7 @@ export const Wallet: FC<WalletPropsType> = ({
             actionCreator({
               tokenAddress,
               amount: amount.toString(),
-            })
+            }),
           );
         },
         onApproval: (tokenAddress, spenderAddress, amount) => {
@@ -269,7 +266,7 @@ export const Wallet: FC<WalletPropsType> = ({
             actionCreator({
               tokenAddress,
               amount: amount.toString(),
-            })
+            }),
           );
         },
       });

@@ -1,8 +1,7 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
 import { OrderScopeType } from "../../../../types/orderTypes";
 import { SelectOption } from "../../../Dropdown/Dropdown";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 const useOrderTypeSelectOptions = (): SelectOption[] => {
   const { t } = useTranslation();

@@ -1,7 +1,6 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../../../style/breakpoints";
 import { TooltipStyle } from "../../../../styled-components/Tooltip/Tooltip";
+import styled from "styled-components/macro";
 
 const triangleSize = 14;
 

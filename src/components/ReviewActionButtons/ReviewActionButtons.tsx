@@ -1,11 +1,10 @@
-import React, { FC, ReactElement } from "react";
-import { useTranslation } from "react-i18next";
-
 import {
   BackButton,
   Container,
   SignButton,
 } from "./ReviewActionButtons.styles";
+import React, { FC, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ActionButtonsProps {
   isLoading?: boolean;

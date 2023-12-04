@@ -5,7 +5,7 @@ import { BigNumber } from "bignumber.js";
 
 const toMaxAllowedDecimalsNumberString = (
   value: string,
-  decimals = 18
+  decimals = 18,
 ): string => {
   const firstCharacter = value[0];
   const lastCharacter = value[value.length - 1];

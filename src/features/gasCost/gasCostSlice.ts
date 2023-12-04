@@ -1,13 +1,11 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { BigNumber } from "bignumber.js";
-
 import { RootState } from "../../app/store";
 import { selectQuoteTokenAddress } from "../tradeTerms/tradeTermsSlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { BigNumber } from "bignumber.js";
 
 export interface GasCostState {
   /**
@@ -37,7 +35,7 @@ const gasCostSlice = createSlice({
       action: PayloadAction<{
         tokenAddress: string;
         tokenPriceInWeth: string;
-      }>
+      }>,
     ) => {
       state.tokenPrices[action.payload.tokenAddress.toLowerCase()] =
         action.payload.tokenPriceInWeth;
@@ -55,7 +53,7 @@ export const selectGasPrice = (state: RootState) => state.gasCost.fastGasPrice;
 export const selectQuoteTokenPrice = createSelector(
   (state: RootState) => state.gasCost.tokenPrices,
   selectQuoteTokenAddress,
-  (tokenPrices, quoteTokenAddress) => tokenPrices[quoteTokenAddress]
+  (tokenPrices, quoteTokenAddress) => tokenPrices[quoteTokenAddress],
 );
 
 export const selectGasPriceInQuoteTokens = createSelector(
@@ -66,7 +64,7 @@ export const selectGasPriceInQuoteTokens = createSelector(
     const gasPrice = new BigNumber(_gasPrice);
     const quoteTokenPrice = new BigNumber(_quoteTokenPrice);
     return gasPrice.dividedBy(quoteTokenPrice);
-  }
+  },
 );
 
 export const { setFastGasPrice, setTokenPrice } = gasCostSlice.actions;

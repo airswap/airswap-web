@@ -1,5 +1,3 @@
-import styled from "styled-components/macro";
-
 import breakPoints from "../../style/breakpoints";
 import {
   BorderedPill,
@@ -8,6 +6,7 @@ import {
   InputOrButtonBorderStyleType2,
 } from "../../style/mixins";
 import { IconButtonStyle } from "../IconButton/IconButton.styles";
+import styled from "styled-components/macro";
 
 type ContainerProps = {
   isOpen: boolean;

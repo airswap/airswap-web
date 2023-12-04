@@ -1,3 +1,4 @@
+import { ChainParams } from "../types/chainParams";
 import {
   ChainIds,
   chainNames,
@@ -5,8 +6,6 @@ import {
   chainCurrencies,
   explorerUrls,
 } from "@airswap/constants";
-
-import { ChainParams } from "../types/chainParams";
 
 export const SUPPORTED_NETWORKS: ChainIds[] = [
   ChainIds.MAINNET,

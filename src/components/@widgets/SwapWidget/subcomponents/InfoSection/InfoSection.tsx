@@ -1,10 +1,3 @@
-import { FC, useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
-
-import { BigNumber } from "bignumber.js";
-
 import { SubmittedTransaction } from "../../../../../features/transactions/transactionsSlice";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
@@ -21,6 +14,10 @@ import {
   DoneAllIcon,
   StyledTransactionLink,
 } from "./InfoSection.styles";
+import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
+import { BigNumber } from "bignumber.js";
+import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type InfoSectionProps = {
   failedToFetchAllowances: boolean;
@@ -216,7 +213,7 @@ const InfoSection: FC<InfoSectionProps> = ({
 
   if (bestTradeOption) {
     let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
+      baseAmount,
     );
 
     if (invertPrice) {

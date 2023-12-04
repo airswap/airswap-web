@@ -1,8 +1,3 @@
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-
-import { BigNumber } from "bignumber.js";
-
 import { useAppSelector } from "../../../../../app/hooks";
 import { selectProtocolFee } from "../../../../../features/metadata/metadataSlice";
 import Icon from "../../../../Icon/Icon";
@@ -12,6 +7,9 @@ import {
   Container,
   StyledLargePillButton,
 } from "./InfoButtons.styles";
+import { BigNumber } from "bignumber.js";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 type InfoButtonsProps = {
   isMakerOfSwap: boolean;

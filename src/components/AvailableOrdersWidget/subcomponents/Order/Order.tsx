@@ -1,12 +1,10 @@
-import { FC, PropsWithChildren, useMemo } from "react";
-import { useHistory } from "react-router-dom";
-
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
-import { compressFullOrderERC20 } from "@airswap/utils";
-
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { getTokenAmountWithDecimals } from "../../../@widgets/MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
+import { compressFullOrderERC20 } from "@airswap/utils";
+import { FC, PropsWithChildren, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 
 interface OrderProps {
   order: FullOrderERC20 | OrderERC20;
@@ -37,18 +35,18 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     () =>
       getTokenAmountWithDecimals(
         order.senderAmount,
-        senderTokenInfo?.decimals
+        senderTokenInfo?.decimals,
       ).toString(),
-    [order, senderTokenInfo]
+    [order, senderTokenInfo],
   );
 
   const signerAmount = useMemo(
     () =>
       getTokenAmountWithDecimals(
         order.signerAmount,
-        signerTokenInfo?.decimals
+        signerTokenInfo?.decimals,
       ).toString(),
-    [order, signerTokenInfo]
+    [order, signerTokenInfo],
   );
 
   const displayRate = useMemo(
@@ -57,7 +55,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         parseFloat(invertRate ? signerAmount : senderAmount) /
         parseFloat(invertRate ? senderAmount : signerAmount)
       ).toString(),
-    [invertRate, senderAmount, signerAmount]
+    [invertRate, senderAmount, signerAmount],
   );
 
   function isFullOrder(orderToCheck: any): orderToCheck is FullOrderERC20 {

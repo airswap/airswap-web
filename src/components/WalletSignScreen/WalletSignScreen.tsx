@@ -1,8 +1,7 @@
-import React, { FC, ReactElement } from "react";
-import { useTranslation } from "react-i18next";
-
 import { Title } from "../Typography/Typography";
 import { Container, StyledWidgetHeader, Text } from "./WalletSignScreen.styles";
+import React, { FC, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 interface WalletConfirmScreenProps {
   className?: string;

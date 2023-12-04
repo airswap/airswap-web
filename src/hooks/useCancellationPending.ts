@@ -1,7 +1,6 @@
-import { useMemo } from "react";
-
 import { useAppSelector } from "../app/hooks";
 import { selectPendingCancellations } from "../features/transactions/transactionsSlice";
+import { useMemo } from "react";
 
 const useCancellationPending = (nonce: string | null): boolean => {
   const pendingCancellations = useAppSelector(selectPendingCancellations);

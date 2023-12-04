@@ -1,7 +1,3 @@
-import React, { FC, useRef, useState, useEffect } from "react";
-
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
-
 import useWindowSize from "../../../../hooks/useWindowSize";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { AvailableOrdersSortType } from "../../AvailableOrdersWidget";
@@ -14,6 +10,8 @@ import {
   HelperText,
   CutoffTooltip,
 } from "./AvailableOrdersList.styles";
+import { FullOrderERC20, OrderERC20 } from "@airswap/types";
+import React, { FC, useRef, useState, useEffect } from "react";
 
 interface MyOrdersListProps {
   orders?: (FullOrderERC20 | OrderERC20)[];
@@ -58,7 +56,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const handleMouseEnter = (
     target: HTMLDivElement,
     index: number,
-    shift: number
+    shift: number,
   ) => {
     if (target.offsetWidth < target.scrollWidth) {
       setTooltipIndex(index);
@@ -77,12 +75,12 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   useEffect(() => {
     containerRef.current?.addEventListener(
       "scroll",
-      handleOnContainerScroll.bind(this)
+      handleOnContainerScroll.bind(this),
     );
 
     return containerRef.current?.removeEventListener(
       "scroll",
-      handleOnContainerScroll.bind(this)
+      handleOnContainerScroll.bind(this),
     );
   }, [containerRef]);
 

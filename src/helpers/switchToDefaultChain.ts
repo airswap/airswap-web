@@ -1,7 +1,6 @@
-import { ChainIds } from "@airswap/constants";
-
 import { SUPPORTED_NETWORKS } from "../constants/supportedNetworks";
 import switchToChain from "./switchToChain";
+import { ChainIds } from "@airswap/constants";
 
 const switchToDefaultChain = () => {
   try {
