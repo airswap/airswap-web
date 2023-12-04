@@ -5,6 +5,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import metamaskLogo from "../assets/wallet-provider-logos/metamask.svg";
 import walletconnectLogo from "../assets/wallet-provider-logos/walletconnect.svg";
+import rpcUrls from "./rpcUrls";
 
 declare let window: any;
 
@@ -41,12 +42,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     getConnector: () => {
       if (!cachedConnectors.WalletConnect) {
         cachedConnectors.WalletConnect = new WalletConnectConnector({
-          rpc: {
-            1: process.env.REACT_APP_RPC_URL_1 || "",
-            5: process.env.REACT_APP_RPC_URL_5 || "",
-            59140: process.env.REACT_APP_RPC_URL_59140 || "",
-            59144: process.env.REACT_APP_RPC_URL_59144 || "",
-          },
+          rpc: rpcUrls,
         });
       }
       return cachedConnectors.WalletConnect;

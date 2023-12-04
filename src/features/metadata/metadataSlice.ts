@@ -57,7 +57,11 @@ export const fetchAllTokens = createAsyncThunk<
     state: RootState;
   }
 >("metadata/getKnownTokens", async (chainId, thunkApi) => {
-  return (await getKnownTokens(chainId)).tokens;
+  const res = await getKnownTokens(chainId);
+  if (res.errors.length) {
+    console.log("Errors fetching metadata", res.errors);
+    return [];
+  } else return res.tokens;
 });
 
 export const fetchUnkownTokens = createAsyncThunk<
