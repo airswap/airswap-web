@@ -4,7 +4,7 @@ import switchToChain from "./switchToChain";
 
 const switchToDefaultChain = () => {
   try {
-    switchToChain(ChainIds.LINEA);
+    switchToChain(ChainIds.MAINNET);
   } catch (e) {
     // unable to switch network, but doesn't matter too much as button
     // looks like a call to action in this case anyway.

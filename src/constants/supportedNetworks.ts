@@ -9,8 +9,15 @@ import { ChainParams } from "../types/chainParams";
 import nativeCurrency from "./nativeCurrency";
 
 export const supportedNetworks: number[] = [
+  ChainIds.MAINNET,
   ChainIds.LINEA,
-  ChainIds.LINEAGOERLI,
+  ChainIds.POLYGON,
+  ChainIds.ARBITRUM,
+  ChainIds.AVALANCHE,
+  ChainIds.BASE,
+  ChainIds.TELOS,
+  ChainIds.BSC,
+  ChainIds.RSK,
 ];
 
 const chainParams: { [key: number]: ChainParams } = {};
