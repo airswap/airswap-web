@@ -1,4 +1,4 @@
-import { rpcUrls } from "../constants/rpcUrls";
+import rpcUrls from "../constants/rpcUrls";
 
 export const getRpcUrl = (chainId: number): string | undefined => {
   const rpcUrl = rpcUrls[chainId];
