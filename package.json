@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@airswap/libraries": "4.1.13",
-    "@airswap/metadata": "4.1.11",
+    "@airswap/metadata": "4.1.12",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",
@@ -99,11 +99,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(axios)/)"
     ]
   },
   "resolutions": {
