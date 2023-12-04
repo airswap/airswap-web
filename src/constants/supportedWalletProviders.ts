@@ -28,7 +28,7 @@ const SUPPORTED_WALLET_PROVIDERS: WalletProvider[] = [
     getConnector: () => {
       if (!cachedConnectors.MetaMask) {
         cachedConnectors.MetaMask = new InjectedConnector({
-          supportedChainIds: [ChainIds.TELOS, ChainIds.TELOSTESTNET],
+          supportedChainIds: [ChainIds.LINEA, ChainIds.LINEAGOERLI],
         });
       }
       return cachedConnectors.MetaMask;
