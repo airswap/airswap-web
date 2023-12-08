@@ -93,7 +93,7 @@ const getThunk: (
           ADDRESS_ZERO,
         ];
         if (state.takeOtc.activeOrder) {
-          activeTokensAddresses.push(state.takeOtc.activeOrder.senderToken)
+          activeTokensAddresses.push(state.takeOtc.activeOrder.senderToken);
         }
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
