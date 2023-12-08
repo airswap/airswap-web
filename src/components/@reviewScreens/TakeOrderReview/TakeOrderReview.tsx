@@ -77,20 +77,20 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
           {t("common.review")}
         </Title>
       </StyledWidgetHeader>
-      {signerToken && (
-        <OrderReviewToken
-          amount={signerAmount}
-          label={t("common.send")}
-          tokenSymbol={justifiedSignerToken?.symbol || "?"}
-          tokenUri={justifiedSignerToken?.logoURI}
-        />
-      )}
       {senderToken && (
         <OrderReviewToken
           amount={senderAmount}
-          label={t("common.receive")}
+          label={t("common.send")}
           tokenSymbol={justifiedSenderToken?.symbol || "?"}
           tokenUri={justifiedSenderToken?.logoURI}
+        />
+      )}
+      {signerToken && (
+        <OrderReviewToken
+          amount={signerAmount}
+          label={t("common.receive")}
+          tokenSymbol={justifiedSignerToken?.symbol || "?"}
+          tokenUri={justifiedSignerToken?.logoURI}
         />
       )}
       <ReviewList>

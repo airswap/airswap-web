@@ -139,7 +139,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <Container className={className}>
         <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
         <SignButton disabled intent="neutral">
-          {t("orders.insufficientBalance")}
+          {t("orders.insufficientBalance", { symbol: senderTokenSymbol })}
         </SignButton>
       </Container>
     );
