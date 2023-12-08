@@ -2,7 +2,7 @@
   "name": "airswap-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://linea.airswap.eth.limo/",
+  "homepage": "https://swap.eth.limo/",
   "scripts": {
     "start": "craco start",
     "build": "craco build",
