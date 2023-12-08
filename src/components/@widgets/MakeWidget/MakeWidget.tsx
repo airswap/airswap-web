@@ -129,10 +129,9 @@ const MakeWidget: FC = () => {
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
-  const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
-    userTokens.tokenFrom || defaultTokenFromAddress || null
+    userTokens.tokenFrom || null
   );
   const takerTokenInfo = useTokenInfo(
     userTokens.tokenTo || defaultTokenToAddress || null
@@ -222,7 +221,7 @@ const MakeWidget: FC = () => {
       type,
       value,
       userTokens.tokenTo || defaultTokenToAddress || undefined,
-      userTokens.tokenFrom || defaultTokenFromAddress || undefined
+      userTokens.tokenFrom || undefined
     );
 
     dispatch(
