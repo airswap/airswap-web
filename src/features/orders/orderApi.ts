@@ -211,7 +211,7 @@ export async function check(
     : errors;
 
   if (filteredErrors.length) {
-    console.error('check returned errors', errors);
+    console.error("check returned errors", errors);
   }
 
   return filteredErrors.map((error) => transformSwapErrorToAppError(error));

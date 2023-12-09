@@ -335,12 +335,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onSignButtonClick={takeOrder}
         />
         <Overlay
-        title={t("validatorErrors.unableSwap")}
-        subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
-        isHidden={!errors.length}
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onCloseButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
+          isHidden={!errors.length}
         >
           <ErrorList
             errors={errors}
