@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
+import { ChainIds } from "@airswap/constants";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { ChainIds } from '@airswap/constants';
 
 const useEnsAddress = (address?: string): string | undefined => {
   const { library } = useWeb3React<Web3Provider>();
@@ -15,7 +15,6 @@ const useEnsAddress = (address?: string): string | undefined => {
     } else {
       setLookedUpAddress(value);
     }
-
   };
 
   useEffect(() => {

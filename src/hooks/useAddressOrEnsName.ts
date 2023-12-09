@@ -1,8 +1,8 @@
 import { useState, useLayoutEffect } from "react";
 
+import { ChainIds } from "@airswap/constants";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { ChainIds } from '@airswap/constants';
 
 import truncateEthAddress from "truncate-eth-address";
 
@@ -36,21 +36,20 @@ const useAddressOrEnsName = (
     } else {
       if (library.network?.chainId === ChainIds.MAINNET) {
         library
-        .lookupAddress(address)
-        .then((name) => {
-          ensCachedResponses[chainId] = {
-            ...ensCachedResponses[chainId],
-            [address]: name,
-          };
-          setResult(name || fallback);
-        })
-        .catch(() => {
-          setResult(fallback);
-        });
+          .lookupAddress(address)
+          .then((name) => {
+            ensCachedResponses[chainId] = {
+              ...ensCachedResponses[chainId],
+              [address]: name,
+            };
+            setResult(name || fallback);
+          })
+          .catch(() => {
+            setResult(fallback);
+          });
       } else {
         setResult(fallback);
       }
-
     }
   }, [library, address, chainId, fallback]);
 
