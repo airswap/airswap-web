@@ -107,7 +107,7 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
         <ReviewListItem>
           <ReviewListItemLabel>{t("orders.total")}</ReviewListItemLabel>
           <ReviewListItemValue>
-            {senderAmount} {justifiedSignerToken?.symbol}
+            {senderAmount} {justifiedSenderToken?.symbol}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
