@@ -2,6 +2,7 @@ import { useState, useLayoutEffect } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
+import { ChainIds } from '@airswap/constants';
 
 import truncateEthAddress from "truncate-eth-address";
 
@@ -33,7 +34,8 @@ const useAddressOrEnsName = (
     if (cached !== undefined) {
       setResult(cached || fallback);
     } else {
-      library
+      if (library.network?.chainId === ChainIds.MAINNET) {
+        library
         .lookupAddress(address)
         .then((name) => {
           ensCachedResponses[chainId] = {
@@ -45,6 +47,10 @@ const useAddressOrEnsName = (
         .catch(() => {
           setResult(fallback);
         });
+      } else {
+        setResult(fallback);
+      }
+
     }
   }, [library, address, chainId, fallback]);
 
