@@ -209,11 +209,13 @@ const SwapWidget: FC = () => {
 
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
+  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     baseTokenInfo,
     baseAmount
   );
+  const shouldApprove = !hasSufficientAllowance && swapType !== 'wrapOrUnwrap';
 
   const hasApprovalPending = useApprovalPending(baseToken);
   const maxAmount = useMaxAmount(baseToken);
@@ -270,7 +272,6 @@ const SwapWidget: FC = () => {
     );
   }, [allowances.swap.status, allowances.wrapper.status]);
 
-  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const quoteAmount =
     swapType === "wrapOrUnwrap"
       ? baseAmount
@@ -790,7 +791,7 @@ const SwapWidget: FC = () => {
     );
   }
 
-  if (state === SwapWidgetState.review && !hasSufficientAllowance) {
+  if (state === SwapWidgetState.review && shouldApprove) {
     return (
       <Container>
         <ApproveReview
@@ -858,7 +859,7 @@ const SwapWidget: FC = () => {
             orderCompleted={
               showOrderSubmitted && activeTransaction?.status === "succeeded"
             }
-            requiresApproval={bestRfqOrder && !hasSufficientAllowance}
+            requiresApproval={bestRfqOrder && shouldApprove}
             showViewAllQuotes={indexerOrders.length > 0}
             // @ts-ignore
             bestTradeOption={bestTradeOption}
@@ -889,7 +890,7 @@ const SwapWidget: FC = () => {
                 !isRequestingQuotes && (!!bestTradeOption || isWrapping)
               }
               hasSufficientBalance={!insufficientBalance}
-              needsApproval={!!baseToken && !hasSufficientAllowance}
+              needsApproval={!!baseToken && shouldApprove}
               pairUnavailable={pairUnavailable}
               onButtonClicked={(action) => handleActionButtonClick(action)}
               isLoading={
