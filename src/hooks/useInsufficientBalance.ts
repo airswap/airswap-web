@@ -6,15 +6,19 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
 import { selectBalances } from "../features/balances/balancesSlice";
+import useMaxAmount from "./useMaxAmount";
 
 const useInsufficientBalance = (
   tokenInfo: TokenInfo | null,
-  amount: string
+  amount: string,
+  deductProtocolFee = false
 ): boolean => {
   const balances = useAppSelector(selectBalances);
 
+  const maxAmount = useMaxAmount(tokenInfo?.address || null, deductProtocolFee);
+
   return useMemo(() => {
-    if (!tokenInfo || !amount) {
+    if (!tokenInfo || !amount || !maxAmount) {
       return false;
     }
 
@@ -22,13 +26,7 @@ const useInsufficientBalance = (
       return false;
     }
 
-    if (!tokenInfo.decimals) {
-      return false;
-    }
-
-    return new BigNumber(balances.values[tokenInfo.address] || "0").lt(
-      new BigNumber(amount).multipliedBy(10 ** tokenInfo.decimals)
-    );
+    return new BigNumber(maxAmount).lt(new BigNumber(amount));
   }, [balances, tokenInfo, amount]);
 };
 
