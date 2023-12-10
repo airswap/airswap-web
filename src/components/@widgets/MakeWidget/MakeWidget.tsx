@@ -54,7 +54,6 @@ import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
 import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTokenAmount";
-import useTokenAddress from "../../../hooks/useTokenAddress";
 import useTokenInfo from "../../../hooks/useTokenInfo";
 import useValidAddress from "../../../hooks/useValidAddress";
 import { AppRoutes } from "../../../routes";
@@ -147,7 +146,8 @@ const MakeWidget: FC = () => {
   );
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
-    makerAmount
+    makerAmount,
+    true
   );
   const hasMissingMakerAmount =
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
