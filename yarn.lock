@@ -21,10 +21,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@4.1.13":
-  version "4.1.13"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.1.13.tgz#0f9587f4ae7bb301b7ed8e770e689001f6c9d755"
-  integrity sha512-+M0akobOym0SHp11jI9DHssGABAQUYXfBrh9DgHTir63fi+OqPzk7UxuV8z+Wn5Z+E9UztTD1VLLAxvjD/9xwg==
+"@airswap/libraries@4.1.14":
+  version "4.1.14"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.1.14.tgz#18d2dc7c3483245bc44692d589057b1b2f4cd1d6"
+  integrity sha512-XddTFOZvoEd9V7Za/Z52bpqM1Zx7y2oGQxwWY9pkB9lJROLH4ZTJDEfmY7wmfbz3veNVh2sFSs7rFcSQFG3nGQ==
   dependencies:
     "@airswap/balances" "4.0.4"
     "@airswap/constants" "4.1.6"
@@ -35,7 +35,7 @@
     "@airswap/swap" "4.1.2"
     "@airswap/swap-erc20" "4.1.6"
     "@airswap/types" "4.1.1"
-    "@airswap/utils" "4.1.8"
+    "@airswap/utils" "4.1.9"
     "@airswap/wrapper" "4.1.5"
     browser-or-node "^2.1.1"
     ethers "^5.6.9"
@@ -98,10 +98,10 @@
   dependencies:
     "@uniswap/token-lists" "^1.0.0-beta.31"
 
-"@airswap/utils@4.1.8":
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-4.1.8.tgz#c4c0752077eb5385c31c6b2e47a8b3eca9307273"
-  integrity sha512-kv7pJ/0CKlJT5shljMBA/vLajtLTwGW1Q+k1QyL6OMtUUbq+Q4rihqaqw3QEWBmJWGqFmD2y6xlQ7DpZDm8lXA==
+"@airswap/utils@4.1.9":
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-4.1.9.tgz#ec3a1b316a03a99612ea0f2353a5c5fad6354c41"
+  integrity sha512-bjyDhWc1dIAGOZwiTa9yTntnSQgefxjpnnt32rjFziUWYLNCy7aPhF7zorppVWm7NoKIjFMA08SpavL1zBUCZw==
   dependencies:
     "@airswap/constants" "4.1.6"
     "@airswap/types" "4.1.1"
