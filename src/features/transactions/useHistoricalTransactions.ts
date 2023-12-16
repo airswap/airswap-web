@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useCustomCompareEffect } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
@@ -10,6 +10,7 @@ import Weth9 from "../../constants/Weth9";
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
+  getTransactionsLocalStorageKey,
   SwapEventArgs,
 } from "./transactionUtils";
 import {
@@ -23,12 +24,13 @@ import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 const useHistoricalTransactions = () => {
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
-  const transactions = useAppSelector(selectTransactions);
   const {
     transactions: localStorageTransactions,
     setTransactions: setLocalStorageTransactions,
   } = useTransactionsFromLocalStorage();
   const dispatch = useAppDispatch();
+
+  const [activeLocalStorageKey, setActiveLocalStorageKey] = useState<string>();
 
   useCustomCompareEffect(
     () => {
@@ -170,8 +172,20 @@ const useHistoricalTransactions = () => {
   );
 
   useEffect(() => {
-    setLocalStorageTransactions({ all: transactions });
-  }, [transactions]);
+    if (!chainId || !account) {
+      return;
+    }
+
+    const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
+
+    if (localStorageKey === activeLocalStorageKey) {
+      return;
+    }
+
+    setActiveLocalStorageKey(localStorageKey);
+
+    dispatch(setTransactions(localStorageTransactions?.all || []));
+  }, [localStorageTransactions]);
 };
 
 export default useHistoricalTransactions;
