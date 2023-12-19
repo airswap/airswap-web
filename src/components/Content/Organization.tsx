@@ -13,9 +13,7 @@ const Organization = () => {
           <br />
           More content will be displayed here soon.
         </Paragraph>
-        <Link href="https://dao.airswap.eth.limo/">
-          Stake your tokens →
-        </Link>
+        <Link href="https://dao.airswap.eth.limo/">Stake your tokens →</Link>
       </Container>
     </>
   );
