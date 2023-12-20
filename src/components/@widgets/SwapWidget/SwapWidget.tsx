@@ -215,7 +215,7 @@ const SwapWidget: FC = () => {
     baseTokenInfo,
     baseAmount
   );
-  const shouldApprove = !hasSufficientAllowance && swapType !== 'wrapOrUnwrap';
+  const shouldApprove = !hasSufficientAllowance && swapType !== "wrapOrUnwrap";
 
   const hasApprovalPending = useApprovalPending(baseToken);
   const maxAmount = useMaxAmount(baseToken);
