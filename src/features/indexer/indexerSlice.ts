@@ -65,9 +65,13 @@ export const getFilteredOrders = createAsyncThunk<
 
     const orderPromises = servers.map(async (indexer, i) => {
       try {
-        const orderResponse = await indexer.getOrdersERC20({
-          ...filter,
-        }, 0, 100);
+        const orderResponse = await indexer.getOrdersERC20(
+          {
+            ...filter,
+          },
+          0,
+          100
+        );
         const ordersToAdd = orderResponse.orders;
         orders = { ...orders, ...ordersToAdd };
       } catch (e) {
