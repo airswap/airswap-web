@@ -171,8 +171,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [senderToken.address],
-            signerTokens: [signerToken.address],
+            senderToken: senderToken.address,
+            signerToken: signerToken.address,
           },
         })
       );

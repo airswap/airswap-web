@@ -306,8 +306,8 @@ const SwapWidget: FC = () => {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [baseTokenInfo.address],
-            signerTokens: [quoteTokenInfo.address],
+            senderToken: baseTokenInfo.address,
+            signerToken: quoteTokenInfo.address,
           },
         })
       );
