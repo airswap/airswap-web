@@ -93,10 +93,17 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       ) {
         transactionCache[wallet.address!][wallet.chainId!] =
           mostRecentTransactions;
+
+        // Filter out processing transactions to prevent them being stuck perpetually, we should enable this again once we have a better solution
+        // TODO: https://github.com/airswap/airswap-web/issues/876
+        const updatedLocalStorageTransactions = mostRecentTransactions.filter(
+          (tx) => tx.status !== "processing"
+        );
+
         localStorage.setItem(
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
           JSON.stringify({
-            all: mostRecentTransactions,
+            all: updatedLocalStorageTransactions,
           })
         );
       }
