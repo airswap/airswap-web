@@ -6,6 +6,7 @@ import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogograph
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyle,
+  TextEllipsis,
 } from "../../style/mixins";
 import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
@@ -167,6 +168,7 @@ export const StyledSelectItem = styled(SelectItem)`
   text-align: left;
   line-height: 1;
   gap: 0.375rem;
+  max-width: 7rem;
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.white
@@ -260,7 +262,11 @@ const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
   opacity: ${(props) => (props.$invisible ? 0 : 1)};
 `;
 
-export const StyledSelectButtonContent = styled.span``;
+export const StyledSelectButtonContent = styled.span`
+  ${TextEllipsis};
+
+  width: calc(100% - 1.125rem);
+`;
 
 export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
