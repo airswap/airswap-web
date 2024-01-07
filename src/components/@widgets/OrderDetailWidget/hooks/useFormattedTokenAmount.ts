@@ -7,7 +7,7 @@ const useFormattedTokenAmount = (
   decimals?: number
 ): string | undefined => {
   return useMemo(() => {
-    if (!amount || !decimals) {
+    if (!amount || decimals === undefined) {
       return undefined;
     }
 
