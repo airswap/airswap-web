@@ -1,5 +1,7 @@
 import styled from "styled-components/macro";
 
+import { TextEllipsis } from "../../style/mixins";
+
 export const ReviewListItem = styled.li`
   display: flex;
   justify-content: space-between;
@@ -17,6 +19,8 @@ export const ReviewListItemLabel = styled.div`
 `;
 
 export const ReviewListItemValue = styled.div`
+  ${TextEllipsis};
+
   display: flex;
   align-items: center;
   color: ${(props) => props.theme.colors.white};

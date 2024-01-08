@@ -11,6 +11,7 @@ export const Container = styled.div`
 
 export const StyledWidgetHeader = styled(WidgetHeader)`
   margin-bottom: 0.75rem;
+  overflow: hidden;
 `;
 
 export const StyledActionButtons = styled(ReviewActionButtons)`

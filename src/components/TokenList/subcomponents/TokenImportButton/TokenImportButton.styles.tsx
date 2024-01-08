@@ -3,13 +3,11 @@ import styled from "styled-components/macro";
 import { Metadata } from "../../../Typography/Typography";
 
 export const Container = styled.div`
+  display: flex;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding: 1rem;
-  display: grid;
-  grid-auto-flow: column;
+  gap: 1rem;
   cursor: pointer;
-  grid-template-columns: auto minmax(auto, 1fr) 6.25rem;
-  grid-gap: 1rem;
   align-items: center;
 
   &:not(:last-of-type) {
@@ -25,6 +23,9 @@ export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-grow: 1;
+  max-width: calc(100% - 10rem);
+  overflow: hidden;
 `;
 
 export const Symbol = styled.h3`
@@ -36,7 +37,7 @@ export const Symbol = styled.h3`
 export const TokenName = styled.h3`
   font-size: 0.8rem;
   font-weight: 500;
-  color: #9e9e9e;
+  color: ${(props) => props.theme.colors.darkSubText};
   line-height: 1rem;
 `;
 
