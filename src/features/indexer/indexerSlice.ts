@@ -44,7 +44,7 @@ export const fetchIndexerUrls = createAsyncThunk<
 
 export const getFilteredOrders = createAsyncThunk<
   FullOrderERC20[],
-  { filter: Pick<OrderFilter, "senderTokens" | "signerTokens"> },
+  { filter: Pick<OrderFilter, "senderToken" | "signerToken"> },
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -65,11 +65,13 @@ export const getFilteredOrders = createAsyncThunk<
 
     const orderPromises = servers.map(async (indexer, i) => {
       try {
-        const orderResponse = await indexer.getOrdersERC20({
-          ...filter,
-          offset: 0,
-          limit: 100,
-        });
+        const orderResponse = await indexer.getOrdersERC20(
+          {
+            ...filter,
+          },
+          0,
+          100
+        );
         const ordersToAdd = orderResponse.orders;
         orders = { ...orders, ...ordersToAdd };
       } catch (e) {

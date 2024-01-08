@@ -1,5 +1,6 @@
 import { useState, useLayoutEffect } from "react";
 
+import { ChainIds } from "@airswap/constants";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -33,18 +34,22 @@ const useAddressOrEnsName = (
     if (cached !== undefined) {
       setResult(cached || fallback);
     } else {
-      library
-        .lookupAddress(address)
-        .then((name) => {
-          ensCachedResponses[chainId] = {
-            ...ensCachedResponses[chainId],
-            [address]: name,
-          };
-          setResult(name || fallback);
-        })
-        .catch(() => {
-          setResult(fallback);
-        });
+      if (library.network?.chainId === ChainIds.MAINNET) {
+        library
+          .lookupAddress(address)
+          .then((name) => {
+            ensCachedResponses[chainId] = {
+              ...ensCachedResponses[chainId],
+              [address]: name,
+            };
+            setResult(name || fallback);
+          })
+          .catch(() => {
+            setResult(fallback);
+          });
+      } else {
+        setResult(fallback);
+      }
     }
   }, [library, address, chainId, fallback]);
 

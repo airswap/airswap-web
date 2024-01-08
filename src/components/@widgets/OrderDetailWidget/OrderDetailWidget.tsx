@@ -171,8 +171,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [senderToken.address],
-            signerTokens: [signerToken.address],
+            senderToken: senderToken.address,
+            signerToken: signerToken.address,
           },
         })
       );
@@ -334,6 +334,21 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onEditButtonClick={handleEditButtonClick}
           onSignButtonClick={takeOrder}
         />
+        <Overlay
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onCloseButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
+          isHidden={!errors.length}
+        >
+          <ErrorList
+            errors={errors}
+            onBackButtonClick={() =>
+              handleActionButtonClick(ButtonActions.restart)
+            }
+          />
+        </Overlay>
       </Container>
     );
   }

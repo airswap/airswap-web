@@ -1,4 +1,6 @@
-import { apiUrls, explorerUrls } from "@airswap/constants";
+import { apiUrls, chainNames, explorerUrls } from "@airswap/constants";
+
+import nativeCurrency from "../constants/nativeCurrency";
 
 // https://eips.ethereum.org/EIPS/eip-3085
 
@@ -9,7 +11,9 @@ const addChain = (chainId: number): Promise<null> => {
       {
         chainId: `0x${chainId.toString(16)}`,
         rpcUrls: [apiUrls[chainId]],
-        chainName: [explorerUrls[chainId]],
+        blockExplorerUrls: [explorerUrls[chainId]],
+        chainName: chainNames[chainId],
+        nativeCurrency: nativeCurrency[chainId],
       },
     ],
   });

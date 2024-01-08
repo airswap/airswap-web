@@ -10,6 +10,6 @@ export const getIndexerUrls = async (
   return await Registry.getServerURLs(
     provider,
     chainId,
-    Protocols.StorageERC20
+    Protocols.IndexingERC20
   );
 };
