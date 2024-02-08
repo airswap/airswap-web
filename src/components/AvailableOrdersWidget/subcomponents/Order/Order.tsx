@@ -1,7 +1,11 @@
 import { FC, PropsWithChildren, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { compressFullOrderERC20, FullOrderERC20, OrderERC20 } from "@airswap/utils";
+import {
+  compressFullOrderERC20,
+  FullOrderERC20,
+  OrderERC20,
+} from "@airswap/utils";
 
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { getTokenAmountWithDecimals } from "../../../@widgets/MyOrdersWidget/helpers";

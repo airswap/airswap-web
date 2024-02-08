@@ -1,9 +1,5 @@
 import { Server } from "@airswap/libraries";
-import {
-  FullOrderERC20,
-  OrderFilter,
-  OrderERC20,
-} from "@airswap/utils";
+import { FullOrderERC20, OrderFilter, OrderERC20 } from "@airswap/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 

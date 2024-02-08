@@ -1,9 +1,4 @@
-import {
-  ChainIds,
-  chainNames,
-  apiUrls,
-  explorerUrls,
-} from "@airswap/utils";
+import { ChainIds, chainNames, apiUrls, explorerUrls } from "@airswap/utils";
 
 import { ChainParams } from "../types/chainParams";
 import nativeCurrency from "./nativeCurrency";

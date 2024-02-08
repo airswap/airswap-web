@@ -1,7 +1,7 @@
 import {
   compressFullOrderERC20,
   decompressFullOrderERC20,
-  FullOrderERC20
+  FullOrderERC20,
 } from "@airswap/utils";
 
 export const getUserOtcOrdersLocalStorageKey: (

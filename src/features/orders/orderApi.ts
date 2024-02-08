@@ -1,5 +1,12 @@
 import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
-import { toAtomicString, parseCheckResult, orderERC20ToParams, FullOrderERC20, OrderERC20, ADDRESS_ZERO } from "@airswap/utils";
+import {
+  toAtomicString,
+  parseCheckResult,
+  orderERC20ToParams,
+  FullOrderERC20,
+  OrderERC20,
+  ADDRESS_ZERO,
+} from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";

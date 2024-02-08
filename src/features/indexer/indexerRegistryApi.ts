@@ -1,5 +1,5 @@
-import { ProtocolIds } from "@airswap/utils";
 import { Registry } from "@airswap/libraries";
+import { ProtocolIds } from "@airswap/utils";
 
 import { providers } from "ethers";
 

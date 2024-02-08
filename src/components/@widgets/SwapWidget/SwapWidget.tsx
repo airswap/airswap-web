@@ -9,8 +9,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { OrderERC20, Pricing, ProtocolIds, ADDRESS_ZERO } from "@airswap/utils";
 import { Registry, Server, Wrapper } from "@airswap/libraries";
+import { OrderERC20, Pricing, ProtocolIds, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
