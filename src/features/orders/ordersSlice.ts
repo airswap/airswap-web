@@ -1,6 +1,5 @@
-import { Server, WETH } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20, Levels, TokenInfo } from "@airswap/types";
-import { toAtomicString } from "@airswap/utils";
+import { Server } from "@airswap/libraries";
+import { toAtomicString, FullOrderERC20, OrderERC20, Levels, TokenInfo } from "@airswap/utils";
 import {
   createAsyncThunk,
   createSelector,

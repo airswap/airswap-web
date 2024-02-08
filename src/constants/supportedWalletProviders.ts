@@ -1,4 +1,4 @@
-import { mainnets, testnets } from "@airswap/constants";
+import { mainnets, testnets } from "@airswap/utils";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";

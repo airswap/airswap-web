@@ -3,7 +3,7 @@ import {
   chainNames,
   apiUrls,
   explorerUrls,
-} from "@airswap/constants";
+} from "@airswap/utils";
 
 import { ChainParams } from "../types/chainParams";
 import nativeCurrency from "./nativeCurrency";

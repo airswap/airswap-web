@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
+import { ADDRESS_ZERO } from "@airswap/utils";
 import { WETH } from "@airswap/libraries";
 import {
   AsyncThunk,

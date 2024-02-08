@@ -1,8 +1,8 @@
 import { SwapERC20 } from "@airswap/libraries";
-import { FullOrderERC20 } from "@airswap/types";
 import {
   decompressFullOrderERC20,
   isValidFullOrderERC20,
+  FullOrderERC20,
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

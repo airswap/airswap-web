@@ -1,5 +1,4 @@
-import { Formula, Levels, Pricing } from "@airswap/types";
-import { calculateCostFromLevels } from "@airswap/utils";
+import { calculateCostFromLevels, Formula, Levels, Pricing } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 

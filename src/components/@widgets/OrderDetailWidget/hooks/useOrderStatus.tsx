@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 
 import { useAppSelector } from "../../../../app/hooks";
 import { getNonceUsed } from "../../../../features/orders/orderApi";

@@ -1,7 +1,6 @@
 import React, { FC, PropsWithChildren, useMemo } from "react";
 
-import { FullOrderERC20 } from "@airswap/types";
-import { compressFullOrderERC20 } from "@airswap/utils";
+import { compressFullOrderERC20, FullOrderERC20 } from "@airswap/utils";
 
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";

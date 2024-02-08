@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
+import { OrderERC20, Levels, TokenInfo } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 

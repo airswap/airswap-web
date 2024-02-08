@@ -1,4 +1,4 @@
-import { apiUrls, chainNames, explorerUrls } from "@airswap/constants";
+import { apiUrls, chainNames, explorerUrls } from "@airswap/utils";
 
 import nativeCurrency from "../constants/nativeCurrency";
 

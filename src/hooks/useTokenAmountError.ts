@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { AppError, isAppError } from "../errors/appError";
 import toAtomicString from "../helpers/toAtomicString";

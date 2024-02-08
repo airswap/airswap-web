@@ -9,9 +9,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { Protocols, ADDRESS_ZERO } from "@airswap/constants";
+import { OrderERC20, Pricing, ProtocolIds, ADDRESS_ZERO } from "@airswap/utils";
 import { Registry, Server, Wrapper } from "@airswap/libraries";
-import { OrderERC20, Pricing } from "@airswap/types";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -388,7 +387,7 @@ const SwapWidget: FC = () => {
           rfqServers = await Registry.getServers(
             library,
             chainId,
-            Protocols.RequestForQuoteERC20,
+            ProtocolIds.RequestForQuoteERC20,
             _quoteToken,
             _baseToken,
             {
@@ -398,7 +397,7 @@ const SwapWidget: FC = () => {
           lastLookServers = await Registry.getServers(
             library,
             chainId,
-            Protocols.LastLookERC20,
+            ProtocolIds.LastLookERC20,
             _quoteToken,
             _baseToken,
             {

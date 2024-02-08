@@ -1,5 +1,4 @@
-import { Signature, UnsignedOrderERC20 } from "@airswap/types";
-import { createOrderERC20Signature as airSwapCreateSwapSignature } from "@airswap/utils";
+import { createOrderERC20Signature as airSwapCreateSwapSignature, Signature, UnsignedOrderERC20 } from "@airswap/utils";
 import { JsonRpcSigner } from "@ethersproject/providers/src.ts/json-rpc-provider";
 
 import { AppError } from "../errors/appError";

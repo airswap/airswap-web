@@ -1,10 +1,7 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { chainCurrencies, chainNames } from "@airswap/constants";
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
-import { getAccountUrl } from "@airswap/utils";
+import { getAccountUrl, chainCurrencies, chainNames, TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 

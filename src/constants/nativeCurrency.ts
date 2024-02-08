@@ -3,8 +3,8 @@ import {
   chainCurrencies,
   currencyIcons,
   ADDRESS_ZERO,
-} from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
+  TokenInfo
+} from "@airswap/utils";
 
 export const nativeCurrencyDecimals = 18;
 

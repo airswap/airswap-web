@@ -1,5 +1,4 @@
-import { getKnownTokens } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo, getKnownTokens } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import {
   createAsyncThunk,

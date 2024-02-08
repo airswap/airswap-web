@@ -1,4 +1,4 @@
-import { ChainIds } from "@airswap/constants";
+import { ChainIds } from "@airswap/utils";
 
 import switchToChain from "./switchToChain";
 

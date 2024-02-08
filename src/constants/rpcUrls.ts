@@ -1,4 +1,4 @@
-import { apiUrls, mainnets, testnets } from "@airswap/constants";
+import { apiUrls, mainnets, testnets } from "@airswap/utils";
 
 const rpcUrls: Record<number, string> = {};
 mainnets.concat(testnets).map((chainId) => {

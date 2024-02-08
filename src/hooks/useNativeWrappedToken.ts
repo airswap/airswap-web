@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { WETH } from "@airswap/libraries";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
