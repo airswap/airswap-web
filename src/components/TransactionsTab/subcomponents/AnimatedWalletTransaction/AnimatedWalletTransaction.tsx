@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { useReducedMotion } from "framer-motion";
 import { useTheme } from "styled-components";

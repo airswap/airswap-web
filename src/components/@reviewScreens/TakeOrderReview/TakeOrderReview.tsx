@@ -1,8 +1,7 @@
 import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
+import { ADDRESS_ZERO, TokenInfo } from "@airswap/utils";
 import { useToggle } from "@react-hookz/web";
 
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";

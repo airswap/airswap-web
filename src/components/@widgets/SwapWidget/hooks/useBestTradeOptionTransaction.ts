@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../../../../app/hooks";
 import { isTransactionWithOrder } from "../../../../features/transactions/transactionUtils";

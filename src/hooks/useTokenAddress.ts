@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { findTokensBySymbol } from "@airswap/metadata";
+import { findTokensBySymbol } from "@airswap/utils";
 
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";

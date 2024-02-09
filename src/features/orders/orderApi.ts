@@ -1,8 +1,12 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
 import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
-import { checkResultToErrors, orderERC20ToParams } from "@airswap/utils";
-import { toAtomicString } from "@airswap/utils";
+import {
+  toAtomicString,
+  parseCheckResult,
+  orderERC20ToParams,
+  FullOrderERC20,
+  OrderERC20,
+  ADDRESS_ZERO,
+} from "@airswap/utils";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";
@@ -195,11 +199,11 @@ export async function check(
   provider: ethers.providers.Web3Provider,
   isSwapWithWrap?: boolean
 ): Promise<AppError[]> {
-  const [strings, count] = await (
+  const strings = await (
     await SwapERC20.getContract(provider, chainId)
   ).check(senderWallet, ...orderERC20ToParams(order));
 
-  const errors = checkResultToErrors(strings, count) as SwapError[];
+  const errors = parseCheckResult(strings) as SwapError[];
 
   // If swapping with wrapper then ignore sender errors.
   const filteredErrors = isSwapWithWrap

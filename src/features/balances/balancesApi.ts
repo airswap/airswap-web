@@ -1,4 +1,4 @@
-import { SwapERC20, Wrapper, Balances } from "@airswap/libraries";
+import { SwapERC20, Wrapper, BatchCall } from "@airswap/libraries";
 
 import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, EventFilter, Event } from "ethers";
@@ -43,7 +43,7 @@ const fetchBalancesOrAllowances: (
   spenderAddressType,
   { chainId, provider, tokenAddresses, walletAddress }
 ) => {
-  const contract = Balances.getContract(provider, chainId);
+  const contract = BatchCall.getContract(provider, chainId);
   const args =
     method === "walletBalances"
       ? [walletAddress, tokenAddresses]

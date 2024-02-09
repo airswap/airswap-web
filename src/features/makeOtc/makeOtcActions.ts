@@ -1,6 +1,11 @@
 import { SwapERC20 } from "@airswap/libraries";
-import { FullOrderERC20, UnsignedOrderERC20, TokenInfo } from "@airswap/types";
-import { createOrderERC20, toAtomicString } from "@airswap/utils";
+import {
+  createOrderERC20,
+  toAtomicString,
+  FullOrderERC20,
+  UnsignedOrderERC20,
+  TokenInfo,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

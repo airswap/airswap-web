@@ -1,6 +1,4 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { WETH } from "@airswap/libraries";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";

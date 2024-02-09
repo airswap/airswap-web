@@ -13,8 +13,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/libraries": "4.1.16",
-    "@airswap/metadata": "4.1.15",
+    "@airswap/libraries": "4.2.8",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",
@@ -105,9 +104,6 @@
     "styled-components": "^5"
   },
   "engines": {
-    "node": "16.15.1"
-  },
-  "volta": {
-    "node": "16.15.1"
+    "node": "18.19.0"
   }
 }

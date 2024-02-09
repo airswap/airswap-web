@@ -1,5 +1,5 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
 import { WETH } from "@airswap/libraries";
+import { ADDRESS_ZERO } from "@airswap/utils";
 import {
   AsyncThunk,
   combineReducers,

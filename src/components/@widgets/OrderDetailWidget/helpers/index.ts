@@ -1,4 +1,4 @@
-import { chainNames } from "@airswap/constants";
+import { chainNames } from "@airswap/utils";
 
 import i18n from "i18next";
 

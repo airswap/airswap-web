@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 
-import { findTokenByAddress } from "@airswap/metadata";
-import { FullOrderERC20, TokenInfo } from "@airswap/types";
+import { findTokenByAddress, FullOrderERC20, TokenInfo } from "@airswap/utils";
 
 import i18n from "i18next";
 

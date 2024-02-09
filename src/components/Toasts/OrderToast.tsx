@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { HiX } from "react-icons/hi";
 import { MdBeenhere } from "react-icons/md";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 
 import { InfoHeading } from "../Typography/Typography";
 import {

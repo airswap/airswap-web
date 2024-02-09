@@ -1,6 +1,6 @@
 import React, { FC, useRef, useState, useEffect } from "react";
 
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
+import { FullOrderERC20, OrderERC20 } from "@airswap/utils";
 
 import useWindowSize from "../../../../hooks/useWindowSize";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";

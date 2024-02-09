@@ -1,4 +1,4 @@
-import { FullOrderERC20, OrderERC20 } from "@airswap/types";
+import { FullOrderERC20, OrderERC20 } from "@airswap/utils";
 
 import { AvailableOrdersSortType } from "../AvailableOrdersWidget";
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 
-import { chainNames } from "@airswap/constants";
+import { chainNames } from "@airswap/utils";
 
 import nativeCurrency from "../../constants/nativeCurrency";
 import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";

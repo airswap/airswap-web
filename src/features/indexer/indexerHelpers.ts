@@ -1,5 +1,5 @@
 import { Server } from "@airswap/libraries";
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 
 export const sendOrderToIndexers = async (
   order: FullOrderERC20,

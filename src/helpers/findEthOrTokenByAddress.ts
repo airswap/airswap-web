@@ -1,6 +1,4 @@
-import { ADDRESS_ZERO } from "@airswap/constants";
-import { findTokenByAddress } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { findTokenByAddress, TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
 
 import nativeCurrency from "../constants/nativeCurrency";
 
