@@ -389,20 +389,14 @@ const SwapWidget: FC = () => {
             chainId,
             ProtocolIds.RequestForQuoteERC20,
             _quoteToken,
-            _baseToken,
-            {
-              initializeTimeout: 10 * 1000,
-            }
+            _baseToken
           );
           lastLookServers = await Registry.getServers(
             library,
             chainId,
             ProtocolIds.LastLookERC20,
             _quoteToken,
-            _baseToken,
-            {
-              initializeTimeout: 10 * 1000,
-            }
+            _baseToken
           );
         }
       } catch (e) {

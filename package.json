@@ -13,13 +13,12 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/libraries": "4.2.8",
+    "@airswap/libraries": "4.2.10",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",
     "@react-hookz/web": "^14.2.2",
     "@reduxjs/toolkit": "~1.5.1",
-    "@sentry/react": "^7.57.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.2.1",
