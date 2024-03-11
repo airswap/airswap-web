@@ -65,7 +65,7 @@ export const createOtcOrder = createAsyncThunk(
         signerWallet: signerWallet,
         signerToken: params.signerToken,
         senderToken: params.senderToken,
-        protocolFee: "7",
+        protocolFee: params.protocolFee,
         signerAmount,
         senderAmount,
         chainId: params.chainId,
