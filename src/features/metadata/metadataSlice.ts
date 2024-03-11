@@ -91,7 +91,9 @@ export const fetchProtocolFee = createAsyncThunk<
     provider: Web3Provider;
     chainId: number;
   }
->("metadata/fetchProtocolFee", async ({ provider, chainId }) => getProtocolFee(chainId, provider));
+>("metadata/fetchProtocolFee", async ({ provider, chainId }) =>
+  getProtocolFee(chainId, provider)
+);
 
 export const metadataSlice = createSlice({
   name: "metadata",
