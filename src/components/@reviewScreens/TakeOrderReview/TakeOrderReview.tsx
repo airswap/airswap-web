@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ADDRESS_ZERO, TokenInfo } from "@airswap/utils";
 import { useToggle } from "@react-hookz/web";
 
+import { AppError } from "../../../errors/appError";
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
 import {
@@ -12,7 +13,9 @@ import {
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
 import { getTokenPairTranslation } from "../../@widgets/MakeWidget/helpers";
+import { ErrorList } from "../../ErrorList/ErrorList";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
+import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import {
@@ -22,6 +25,7 @@ import {
 } from "./TakeOrderReview.styles";
 
 interface TakeOrderReviewProps {
+  errors: AppError[];
   expiry: number;
   senderAmount: string;
   senderToken: TokenInfo | null;
@@ -29,11 +33,13 @@ interface TakeOrderReviewProps {
   signerToken: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick: () => void;
+  onRestartButtonClick: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
 const MakeOrderReview: FC<TakeOrderReviewProps> = ({
+  errors,
   expiry,
   senderAmount,
   senderToken,
@@ -41,6 +47,7 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
   signerToken,
   wrappedNativeToken,
   onEditButtonClick,
+  onRestartButtonClick,
   onSignButtonClick,
   className = "",
 }): ReactElement => {
@@ -121,6 +128,15 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
         isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo()}
       />
+
+      <Overlay
+        title={t("validatorErrors.unableSwap")}
+        subTitle={t("validatorErrors.swapFail")}
+        onCloseButtonClick={onRestartButtonClick}
+        isHidden={!errors.length}
+      >
+        <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
+      </Overlay>
     </Container>
   );
 };
