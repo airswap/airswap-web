@@ -295,9 +295,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         <WrapReview
           isLoading={hasDepositPending}
           amount={senderAmount || "0"}
+          errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
       </Container>

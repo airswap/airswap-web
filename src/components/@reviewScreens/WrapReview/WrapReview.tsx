@@ -6,6 +6,7 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
+import { AppError } from "../../../errors/appError";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useShouldDepositNativeTokenAmountInfo from "../../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -14,7 +15,9 @@ import {
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
+import { ErrorList } from "../../ErrorList/ErrorList";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
+import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
@@ -29,9 +32,11 @@ interface WrapReviewProps {
   amount: string;
   amountPlusFee?: string;
   backButtonText?: string;
+  errors?: AppError[];
   wrappedNativeToken: TokenInfo | null;
   shouldDepositNativeTokenAmount: string;
   onEditButtonClick: () => void;
+  onRestartButtonClick?: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
@@ -41,9 +46,11 @@ const ApproveReview: FC<WrapReviewProps> = ({
   amount,
   amountPlusFee,
   backButtonText,
+  errors = [],
   shouldDepositNativeTokenAmount,
   wrappedNativeToken,
   onEditButtonClick,
+  onRestartButtonClick,
   onSignButtonClick,
   className = "",
 }): ReactElement => {
@@ -139,6 +146,17 @@ const ApproveReview: FC<WrapReviewProps> = ({
         isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo()}
       />
+
+      {onRestartButtonClick && (
+        <Overlay
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onCloseButtonClick={onRestartButtonClick}
+          isHidden={!errors.length}
+        >
+          <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
+        </Overlay>
+      )}
     </Container>
   );
 };
