@@ -13,6 +13,7 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { AppErrorType } from "../../../errors/appError";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
   getFilteredOrders,
@@ -33,7 +34,6 @@ import {
   selectTakeOtcErrors,
   setErrors,
 } from "../../../features/takeOtc/takeOtcSlice";
-import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import useAllowance from "../../../hooks/useAllowance";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
@@ -295,9 +295,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         <WrapReview
           isLoading={hasDepositPending}
           amount={senderAmount || "0"}
+          errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
       </Container>
@@ -310,10 +312,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         <ApproveReview
           isLoading={hasApprovalPending}
           amount={senderAmount || "0"}
+          errors={errors}
           readableAllowance={"0"}
           token={senderToken}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -324,6 +328,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     return (
       <Container>
         <TakeOrderReview
+          errors={errors}
           expiry={+order.expiry}
           senderAmount={senderAmount || "0"}
           senderToken={senderToken}
@@ -331,23 +336,9 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           signerToken={signerToken}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={takeOrder}
         />
-        <Overlay
-          title={t("validatorErrors.unableSwap")}
-          subTitle={t("validatorErrors.swapFail")}
-          onCloseButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-          isHidden={!errors.length}
-        >
-          <ErrorList
-            errors={errors}
-            onBackButtonClick={() =>
-              handleActionButtonClick(ButtonActions.restart)
-            }
-          />
-        </Overlay>
       </Container>
     );
   }
@@ -438,17 +429,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
+        onCloseButtonClick={restart}
         isHidden={!errors.length}
       >
-        <ErrorList
-          errors={errors}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
+        <ErrorList errors={errors} onBackButtonClick={restart} />
       </Overlay>
       {signerToken && senderToken && (
         <Overlay

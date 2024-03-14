@@ -790,10 +790,14 @@ const SwapWidget: FC = () => {
         <ApproveReview
           isLoading={hasApprovalPending}
           amount={baseAmount || "0"}
+          errors={ordersErrors}
           readableAllowance={readableAllowance}
           token={baseTokenInfo}
           wrappedNativeToken={wrappedNativeTokenInfo}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
           onSignButtonClick={approveToken}
         />
       </Container>
