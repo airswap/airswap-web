@@ -27,6 +27,7 @@ import {
 } from "./ApproveReview.styles";
 
 interface ApproveReviewProps {
+  hasEditButton?: boolean;
   isLoading: boolean;
   amount: string;
   amountPlusFee?: string;
@@ -35,17 +36,17 @@ interface ApproveReviewProps {
   readableAllowance: string;
   token: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
-  onEditButtonClick: () => void;
+  onEditButtonClick?: () => void;
   onRestartButtonClick?: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
 const ApproveReview: FC<ApproveReviewProps> = ({
+  hasEditButton,
   isLoading,
   amount,
   amountPlusFee,
-  backButtonText,
   errors = [],
   readableAllowance,
   token,
@@ -77,6 +78,16 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 
     return toRoundedNumberString(amountPlusFee, justifiedToken?.decimals);
   }, [amountPlusFee, justifiedToken]);
+
+  const handleEditOrBackButtonClick = () => {
+    if (!isLoading && hasEditButton && onEditButtonClick) {
+      onEditButtonClick();
+    }
+
+    if (onRestartButtonClick) {
+      onRestartButtonClick();
+    }
+  };
 
   return (
     <Container className={className}>
@@ -133,8 +144,10 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 
       <StyledActionButtons
         isLoading={isLoading}
-        backButtonText={backButtonText || t("common.back")}
-        onEditButtonClick={onEditButtonClick}
+        backButtonText={
+          hasEditButton && !isLoading ? t("common.edit") : t("common.back")
+        }
+        onEditButtonClick={handleEditOrBackButtonClick}
         onSignButtonClick={onSignButtonClick}
       />
 

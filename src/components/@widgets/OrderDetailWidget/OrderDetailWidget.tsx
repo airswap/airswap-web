@@ -255,7 +255,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     dispatch(reset());
   };
 
-  const handleEditButtonClick = () => {
+  const backToOverview = () => {
     setState(OrderDetailWidgetState.overview);
   };
 
@@ -298,8 +298,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={restart}
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={depositNativeToken}
         />
       </Container>
@@ -316,8 +315,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           readableAllowance={"0"}
           token={senderToken}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={restart}
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -335,7 +333,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           signerAmount={signerAmount || "0"}
           signerToken={signerToken}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
+          onEditButtonClick={backToOverview}
           onRestartButtonClick={restart}
           onSignButtonClick={takeOrder}
         />
