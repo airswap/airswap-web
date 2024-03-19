@@ -1,10 +1,12 @@
 import { createAction } from "@reduxjs/toolkit";
 
+import { AppDispatch, RootState } from "../../app/store";
 import {
-  SubmittedTransaction,
-  SubmittedApproval,
   ProtocolType,
-} from "./transactionsSlice";
+  SubmittedApproval,
+  SubmittedTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { setTransactions } from "./transactionsSlice";
 
 const submitTransaction = createAction<
   SubmittedTransaction | SubmittedApproval
@@ -37,10 +39,34 @@ const expireTransaction = createAction<{
   nonce: string;
 }>("transactions/expireTransaction");
 
+const updateTransactions = createAction<SubmittedTransaction[]>(
+  "transactions/updateTransactions"
+);
+
+const updateTransaction =
+  (updatedTransaction: SubmittedTransaction) =>
+  async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
+    const transactions = getState().transactions.all;
+    const transactionIndex = transactions.findIndex(
+      (transaction) => transaction.hash === updatedTransaction.hash
+    );
+
+    if (transactionIndex === -1) {
+      return;
+    }
+
+    const updatedTransactions = [...transactions];
+    updatedTransactions.splice(transactionIndex, 1, updatedTransaction);
+
+    dispatch(updateTransactions(updatedTransactions));
+  };
+
 export {
   submitTransaction,
   declineTransaction,
   mineTransaction,
   revertTransaction,
   expireTransaction,
+  updateTransaction,
+  updateTransactions,
 };

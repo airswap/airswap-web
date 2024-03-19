@@ -1,11 +1,9 @@
 import { TokenInfo } from "@airswap/utils";
 
 import { store } from "../../app/store";
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getTransactionsLocalStorageKey } from "../transactions/transactionUtils";
-import {
-  SubmittedTransaction,
-  TransactionsState,
-} from "../transactions/transactionsSlice";
+import { TransactionsState } from "../transactions/transactionsSlice";
 import {
   getActiveTokensLocalStorageKey,
   getAllTokensLocalStorageKey,
@@ -96,14 +94,16 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
 
         // Filter out processing transactions to prevent them being stuck perpetually, we should enable this again once we have a better solution
         // TODO: https://github.com/airswap/airswap-web/issues/876
-        const updatedLocalStorageTransactions = mostRecentTransactions.filter(
-          (tx) => tx.status !== "processing"
-        );
+        // const updatedLocalStorageTransactions = mostRecentTransactions.filter(
+        //   (tx) => tx.status !== "processing"
+        // );
+
+        console.log(mostRecentTransactions);
 
         localStorage.setItem(
           getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
           JSON.stringify({
-            all: updatedLocalStorageTransactions,
+            all: mostRecentTransactions,
           })
         );
       }

@@ -11,7 +11,7 @@ import {
   SubmittedRFQOrder,
   SubmittedTransaction,
   TransactionType,
-} from "../../features/transactions/transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,

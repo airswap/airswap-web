@@ -9,9 +9,9 @@ import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
+import { LastLookTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { mineTransaction } from "./transactionActions";
 import { getSenderWalletForWrapperSwapLog } from "./transactionUtils";
-import { LastLookTransaction } from "./transactionsSlice";
 
 const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi);
 const tokenInterface = new ethers.utils.Interface(erc20Abi);
@@ -52,6 +52,8 @@ export default function subscribeToSwapEvents(params: {
           // Ignore events that don't involve us.
           return;
         }
+
+        console.log(swapEvent);
 
         dispatch(
           mineTransaction({

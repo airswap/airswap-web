@@ -15,13 +15,11 @@ import BigNumber from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
+import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { selectProtocolFee } from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
-import {
-  SubmittedTransactionWithOrder,
-  submitTransactionWithExpiry,
-} from "../../features/transactions/transactionsSlice";
+import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;

@@ -9,7 +9,7 @@ import {
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
   TransactionType,
-} from "../../features/transactions/transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import ConfirmationToast from "./ConfirmationToast";
 import CopyToast from "./CopyToast";

@@ -4,11 +4,11 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { Contract } from "ethers";
 
 import { store } from "../../app/store";
+import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   decrementBalanceBy,
   incrementBalanceBy,
 } from "../balances/balancesSlice";
-import { SubmittedTransactionWithOrder } from "./transactionsSlice";
 
 const handleWrapEvent = (data: any, dispatch: any) => {
   const transactions = store.getState().transactions;

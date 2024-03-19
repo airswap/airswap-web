@@ -7,17 +7,14 @@ import { Event } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
+import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
   getTransactionsLocalStorageKey,
   SwapEventArgs,
 } from "./transactionUtils";
-import {
-  selectTransactions,
-  setTransactions,
-  SubmittedTransactionWithOrder,
-} from "./transactionsSlice";
+import { selectTransactions, setTransactions } from "./transactionsSlice";
 import useSwapLogs from "./useSwapLogs";
 import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 

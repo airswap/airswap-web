@@ -14,8 +14,8 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";

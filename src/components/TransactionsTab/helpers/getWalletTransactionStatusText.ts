@@ -1,6 +1,6 @@
 import { TFunction } from "react-i18next";
 
-import { StatusType } from "../../../features/transactions/transactionsSlice";
+import { StatusType } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 
 export default function getWalletTransactionStatusText(
   status: StatusType,

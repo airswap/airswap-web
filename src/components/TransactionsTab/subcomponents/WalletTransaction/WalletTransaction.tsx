@@ -10,9 +10,9 @@ import { HTMLMotionProps } from "framer-motion";
 import {
   SubmittedApproval,
   SubmittedCancellation,
-  SubmittedTransactionWithOrder,
   SubmittedTransaction,
-} from "../../../../features/transactions/transactionsSlice";
+  SubmittedTransactionWithOrder,
+} from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";

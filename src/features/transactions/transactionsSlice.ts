@@ -1,13 +1,21 @@
-import { OrderERC20 } from "@airswap/utils";
 import {
-  createSlice,
-  createSelector,
   createAsyncThunk,
+  createSelector,
+  createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
+import {
+  ProtocolType,
+  StatusType,
+  SubmittedApproval,
+  SubmittedCancellation,
+  SubmittedDepositOrder,
+  SubmittedLastLookOrder,
+  SubmittedTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
   setWalletConnected,
@@ -19,70 +27,9 @@ import {
   mineTransaction,
   revertTransaction,
   submitTransaction,
+  updateTransactions,
 } from "./transactionActions";
 import { filterTransactionByDate } from "./transactionUtils";
-
-export interface DepositOrWithdrawOrder {
-  signerToken: string;
-  signerAmount: string;
-  senderToken: string;
-  senderAmount: string;
-}
-
-export type TransactionType =
-  | "Approval"
-  | "Order"
-  | "Deposit"
-  | "Withdraw"
-  | "Cancel";
-
-export type StatusType =
-  | "processing"
-  | "succeeded"
-  | "reverted"
-  | "declined"
-  | "expired";
-
-export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
-
-export interface SubmittedTransaction {
-  type: TransactionType;
-  hash?: string; // LL orders doesn't have hash
-  status: StatusType;
-  nonce?: string;
-  expiry?: string;
-  timestamp: number;
-  protocol?: ProtocolType;
-}
-
-export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  order: OrderERC20;
-}
-
-export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}
-
-export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {}
-
-export interface LastLookTransaction
-  extends SubmittedTransaction,
-    SubmittedLastLookOrder {}
-export interface RfqTransaction
-  extends SubmittedTransaction,
-    SubmittedRFQOrder {}
-
-export interface SubmittedApproval extends SubmittedTransaction {
-  tokenAddress: string;
-}
-
-export interface SubmittedCancellation extends SubmittedTransaction {}
-
-export interface SubmittedDepositOrder extends SubmittedTransaction {
-  order: DepositOrWithdrawOrder;
-}
-
-export interface SubmittedWithdrawOrder extends SubmittedTransaction {
-  order: DepositOrWithdrawOrder;
-}
 
 export interface TransactionsState {
   all: SubmittedTransaction[];
@@ -253,6 +200,12 @@ export const transactionsSlice = createSlice({
         protocol: action.payload.protocol,
       });
     });
+    builder.addCase(updateTransactions, (state, action) => {
+      return {
+        ...state,
+        transactions: action.payload,
+      };
+    });
     builder.addCase(setWalletConnected, () => initialState);
     builder.addCase(setWalletDisconnected, () => initialState);
   },
@@ -261,7 +214,8 @@ export const transactionsSlice = createSlice({
 export const { clear, setFilter, setFilters, setTransactions } =
   transactionsSlice.actions;
 
-export const selectTransactions = (state: RootState) => state.transactions.all;
+export const selectTransactions = (state: RootState): SubmittedTransaction[] =>
+  state.transactions.all;
 
 export const selectFilteredTransactions = (state: RootState) => {
   const { all, filter } = state.transactions;

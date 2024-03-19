@@ -2,7 +2,7 @@ import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../../../../constants/configParams";
-import { ProtocolType } from "../../../../../features/transactions/transactionsSlice";
+import { ProtocolType } from "../../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
 import { Title } from "../../../../Typography/Typography";
 import {

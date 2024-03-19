@@ -27,6 +27,12 @@ import {
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
 import nativeCurrency from "../../constants/nativeCurrency";
+import {
+  SubmittedApproval,
+  SubmittedDepositOrder,
+  SubmittedRFQOrder,
+  SubmittedWithdrawOrder,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import getWethAddress from "../../helpers/getWethAddress";
@@ -48,13 +54,7 @@ import {
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionActions";
-import {
-  SubmittedApproval,
-  SubmittedDepositOrder,
-  SubmittedRFQOrder,
-  SubmittedWithdrawOrder,
-  submitTransactionWithExpiry,
-} from "../transactions/transactionsSlice";
+import { submitTransactionWithExpiry } from "../transactions/transactionsSlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -591,8 +591,12 @@ export const selectBestOption = createSelector(
       quoteAmount: string;
     } | null;
 
-    if (!bestRfqOrder && !pricing) return null;
+    // TODO: Delete this
+    // Temp disable bestRfqOrder
+    // @ts-ignore
+    // bestRfqOrder = null;
 
+    if (!bestRfqOrder && !pricing) return null;
     let lastLookOrder;
     if (pricing) {
       lastLookOrder = {

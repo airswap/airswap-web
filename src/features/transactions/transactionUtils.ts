@@ -1,17 +1,27 @@
 import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
 import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
 import { Interface } from "@ethersproject/abi";
+import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 import { Web3Provider } from "@ethersproject/providers";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
 import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
-import { mineTransaction, revertTransaction } from "./transactionActions";
+import { AppDispatch } from "../../app/store";
 import {
   StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
-} from "./transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  isLastLookOrderTransaction,
+  isRfqOrderTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import {
+  mineTransaction,
+  revertTransaction,
+  updateTransaction,
+} from "./transactionActions";
 
 const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
@@ -208,6 +218,69 @@ export const filterTransactionByDate = (
 
   return transaction.timestamp > timestamp;
   // return transaction.timestamp + 7170349144 > timestamp;
+};
+
+export const handleTransactionReceipt = (
+  status: number,
+  transaction: SubmittedTransaction,
+  dispatch: AppDispatch
+): void => {
+  dispatch(
+    updateTransaction({
+      ...transaction,
+      status: status === 1 ? "succeeded" : "declined",
+    })
+  );
+};
+
+const getTransactionReceipt = async (
+  hash: string,
+  library: BaseProvider
+): Promise<TransactionReceipt | undefined> => {
+  try {
+    const receipt = await library.getTransactionReceipt(hash);
+    console.log(receipt);
+    if (receipt?.status !== undefined) {
+      return receipt;
+    }
+
+    return undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+export const listenForTransactionReceipt = async (
+  transaction: SubmittedTransaction,
+  library: BaseProvider,
+  dispatch: AppDispatch
+): Promise<void> => {
+  let hash = transaction.hash;
+
+  if (
+    isRfqOrderTransaction(transaction) ||
+    isLastLookOrderTransaction(transaction)
+  ) {
+    hash = transaction.order.nonce;
+  }
+
+  if (!hash) {
+    return;
+  }
+
+  const receipt = await getTransactionReceipt(hash, library);
+
+  if (receipt?.status !== undefined) {
+    handleTransactionReceipt(receipt.status, transaction, dispatch);
+  }
+
+  library.once(hash, async () => {
+    const receipt = await getTransactionReceipt(hash as string, library);
+
+    if (receipt?.status !== undefined) {
+      handleTransactionReceipt(receipt.status, transaction, dispatch);
+    }
+  });
 };
 
 export {

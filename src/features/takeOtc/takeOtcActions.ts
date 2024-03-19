@@ -13,6 +13,7 @@ import {
   notifyError,
   notifyConfirmation,
 } from "../../components/Toasts/ToastController";
+import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import i18n from "../../i18n/i18n";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/orderApi";
@@ -21,7 +22,6 @@ import {
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionActions";
-import { SubmittedCancellation } from "../transactions/transactionsSlice";
 import {
   reset,
   setActiveOrder,

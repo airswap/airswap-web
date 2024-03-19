@@ -30,6 +30,7 @@ import nativeCurrency, {
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { LastLookContext } from "../../../contexts/lastLook/LastLook";
+import { ProtocolType } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { AppErrorType } from "../../../errors/appError";
 import transformUnknownErrorToAppError from "../../../errors/transformUnknownErrorToAppError";
 import {
@@ -73,7 +74,6 @@ import {
   declineTransaction,
   revertTransaction,
 } from "../../../features/transactions/transactionActions";
-import { ProtocolType } from "../../../features/transactions/transactionsSlice";
 import {
   selectCustomServerUrl,
   setCustomServerUrl,

@@ -1,8 +1,8 @@
 import { useLocalStorageValue } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getTransactionsLocalStorageKey } from "./transactionUtils";
-import { SubmittedTransaction } from "./transactionsSlice";
 
 const useTransactionsFromLocalStorage = () => {
   const { account, chainId } = useWeb3React();
