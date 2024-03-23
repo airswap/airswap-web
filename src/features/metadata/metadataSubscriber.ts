@@ -76,6 +76,11 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       ) || { all: [] };
 
       const mostRecentTransactions = transactions.all;
+      console.log(
+        localStorage.getItem(
+          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
+        )
+      );
 
       if (transactionCache[wallet.address!] === undefined) {
         transactionCache[wallet.address!] = {};

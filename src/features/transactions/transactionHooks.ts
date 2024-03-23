@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { selectAllTokenInfo } from "../metadata/metadataSlice";
 import {
   getTransactionsLocalStorageKey,
   listenForTransactionReceipt,
@@ -14,6 +15,7 @@ export const useTransactions = (): void => {
   const dispatch = useAppDispatch();
 
   const { account, library, chainId } = useWeb3React();
+  const tokens = useAppSelector(selectAllTokenInfo);
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 
@@ -22,17 +24,20 @@ export const useTransactions = (): void => {
   );
 
   useEffect(() => {
-    if (!account || !chainId || !library) {
+    if (!account || !chainId || !library || !tokens.length) {
       return;
     }
 
-    const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
-    localStorage.setItem(localStorageKey, JSON.stringify(transactions));
+    // const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
+    // localStorage.setItem(localStorageKey, JSON.stringify(transactions));
+
+    console.log(transactions);
+    console.log(tokens);
 
     const newListenerHashes = transactions
       .filter(
         (transaction) =>
-          transaction.status !== "processing" &&
+          transaction.status === "processing" &&
           transaction.hash &&
           !activeListenerHashes.includes(transaction.hash)
       )
@@ -44,7 +49,7 @@ export const useTransactions = (): void => {
       .filter(Boolean) as string[];
 
     setActiveListenerHashes([...activeListenerHashes, ...newListenerHashes]);
-  }, [transactions]);
+  }, [transactions, tokens]);
 
   useEffect(() => {
     if (!account || !chainId) {

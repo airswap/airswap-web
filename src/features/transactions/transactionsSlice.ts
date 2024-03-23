@@ -10,9 +10,9 @@ import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configPar
 import {
   ProtocolType,
   StatusType,
-  SubmittedApproval,
+  SubmittedApprovalTransaction,
   SubmittedCancellation,
-  SubmittedDepositOrder,
+  SubmittedDepositTransaction,
   SubmittedLastLookOrder,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -251,15 +251,15 @@ export const selectOrderTransactions = createSelector(
 
 export const selectPendingDeposits = (
   state: RootState
-): SubmittedDepositOrder[] =>
+): SubmittedDepositTransaction[] =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Deposit"
-  ) as SubmittedDepositOrder[];
+  ) as SubmittedDepositTransaction[];
 
 export const selectPendingApprovals = (state: RootState) =>
   state.transactions.all.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"
-  ) as SubmittedApproval[];
+  ) as SubmittedApprovalTransaction[];
 
 export const selectCancellations = (state: RootState) =>
   state.transactions.all.filter(

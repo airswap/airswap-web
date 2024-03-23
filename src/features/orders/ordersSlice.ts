@@ -15,42 +15,34 @@ import {
 } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
-import { Transaction, providers } from "ethers";
+import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import {
-  notifyRejectedByUserError,
-  notifyTransaction,
-} from "../../components/Toasts/ToastController";
+import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
 import {
   RFQ_EXPIRY_BUFFER_MS,
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
-  SubmittedApproval,
-  SubmittedDepositOrder,
   SubmittedRFQOrder,
-  SubmittedWithdrawOrder,
+  SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  transformToSubmittedApprovalTransaction,
+  transformToSubmittedDepositTransaction,
+  transformToSubmittedWithdrawTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import getWethAddress from "../../helpers/getWethAddress";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
-import {
-  allowancesSwapActions,
-  allowancesWrapperActions,
-} from "../balances/balancesSlice";
 import { gasUsedPerSwap } from "../gasCost/gasCostApi";
 import { selectGasPriceInQuoteTokens } from "../gasCost/gasCostSlice";
 import { selectBestPricing } from "../pricing/pricingSlice";
-import {
-  clearTradeTerms,
-  selectTradeTerms,
-} from "../tradeTerms/tradeTermsSlice";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   declineTransaction,
-  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionActions";
@@ -66,7 +58,7 @@ import {
   requestOrders,
   takeOrder,
   withdrawETH,
-} from "./orderApi";
+} from "./ordersApi";
 
 export interface OrdersState {
   orders: OrderERC20[];
@@ -113,72 +105,38 @@ export const deposit = createAsyncThunk(
     params: {
       chainId: number;
       senderAmount: string;
-      senderTokenDecimals: number;
+      senderToken: TokenInfo;
       provider: providers.Web3Provider;
     },
-    { getState, dispatch }
+    { dispatch }
   ) => {
-    let tx: Transaction;
     try {
-      tx = await depositETH(
+      const tx = await depositETH(
         params.chainId,
         params.senderAmount,
-        params.senderTokenDecimals,
+        params.senderToken.decimals,
         params.provider
       );
-      if (tx.hash) {
-        const senderAmount = toAtomicString(
-          params.senderAmount,
-          params.senderTokenDecimals
-        );
-        // Since this is a Deposit, senderAmount === signerAmount
-        const transaction: SubmittedDepositOrder = {
-          type: "Deposit",
-          order: {
-            signerToken: getWethAddress(params.chainId),
-            signerAmount: senderAmount,
-            senderToken: nativeCurrency[params.chainId].address,
-            senderAmount: senderAmount,
-          },
-          hash: tx.hash,
-          status: "processing",
-          timestamp: Date.now(),
-        };
-        dispatch(submitTransaction(transaction));
-        params.provider.once(tx.hash, async () => {
-          const receipt = await params.provider.getTransactionReceipt(tx.hash!);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(
-              mineTransaction({
-                hash: receipt.transactionHash,
-              })
-            );
-            notifyTransaction(
-              "Deposit",
-              transaction,
-              tokens,
-              false,
-              params.chainId
-            );
-          } else {
-            dispatch(
-              revertTransaction({
-                hash: receipt.transactionHash,
-                reason: "Transaction reverted",
-              })
-            );
-            notifyTransaction(
-              "Deposit",
-              transaction,
-              tokens,
-              true,
-              params.chainId
-            );
-          }
-        });
+
+      if (!tx.hash) {
+        console.error("Approval transaction hash is missing.");
+
+        return;
       }
+
+      const amount = toAtomicString(
+        params.senderAmount,
+        params.senderToken.decimals
+      );
+
+      const transaction = transformToSubmittedDepositTransaction(
+        tx.hash,
+        params.senderToken,
+        nativeCurrency[params.chainId],
+        amount
+      );
+
+      dispatch(submitTransaction(transaction));
     } catch (e: any) {
       handleOrderError(dispatch, e);
       throw e;
@@ -200,68 +158,38 @@ export const withdraw = createAsyncThunk(
     params: {
       chainId: number;
       senderAmount: string;
-      senderTokenDecimals: number;
+      senderToken: TokenInfo;
       provider: any;
     },
     { getState, dispatch }
   ) => {
-    let tx: Transaction;
     try {
-      tx = await withdrawETH(
+      const tx = await withdrawETH(
         params.chainId,
         params.senderAmount,
-        params.senderTokenDecimals,
+        params.senderToken.decimals,
         params.provider
       );
-      if (tx.hash) {
-        const transaction: SubmittedWithdrawOrder = {
-          type: "Withdraw",
-          order: {
-            signerToken: nativeCurrency[params.chainId].address,
-            signerAmount: toAtomicString(
-              params.senderAmount,
-              params.senderTokenDecimals
-            ),
-            senderToken: getWethAddress(params.chainId),
-            senderAmount: toAtomicString(
-              params.senderAmount,
-              params.senderTokenDecimals
-            ),
-          },
-          hash: tx.hash,
-          status: "processing",
-          timestamp: Date.now(),
-        };
-        dispatch(submitTransaction(transaction));
-        params.provider.once(tx.hash, async () => {
-          const receipt = await params.provider.getTransactionReceipt(tx.hash);
-          const state: RootState = getState() as RootState;
-          const tokens = Object.values(state.metadata.tokens.all);
-          if (receipt.status === 1) {
-            dispatch(
-              mineTransaction({
-                hash: receipt.transactionHash,
-              })
-            );
-            notifyTransaction(
-              "Withdraw",
-              transaction,
-              tokens,
-              false,
-              params.chainId
-            );
-          } else {
-            dispatch(revertTransaction(receipt.transactionHash));
-            notifyTransaction(
-              "Withdraw",
-              transaction,
-              tokens,
-              true,
-              params.chainId
-            );
-          }
-        });
+
+      if (!tx.hash) {
+        console.error("Approval transaction hash is missing.");
+
+        return;
       }
+
+      const amount = toAtomicString(
+        params.senderAmount,
+        params.senderToken.decimals
+      );
+
+      const transaction = transformToSubmittedWithdrawTransaction(
+        tx.hash,
+        nativeCurrency[params.chainId],
+        params.senderToken,
+        amount
+      );
+
+      dispatch(submitTransaction(transaction));
     } catch (e: any) {
       handleOrderError(dispatch, e);
       throw e;
@@ -333,73 +261,29 @@ export const approve = createAsyncThunk<
     state: RootState;
   }
 >("orders/approve", async (params, { getState, dispatch }) => {
-  let tx: Transaction;
   try {
     const { token, contractType, amount } = params;
     const approveAmount = toRoundedAtomicString(amount, token.decimals);
 
-    tx = await approveToken(
+    const tx = await approveToken(
       token.address,
       params.library,
       contractType,
       approveAmount
     );
-    if (tx.hash) {
-      const transaction: SubmittedApproval = {
-        type: "Approval",
-        hash: tx.hash,
-        status: "processing",
-        tokenAddress: token.address,
-        timestamp: Date.now(),
-      };
-      dispatch(submitTransaction(transaction));
-      params.library.once(tx.hash, async () => {
-        const receipt = await params.library.getTransactionReceipt(tx.hash);
-        const state: RootState = getState() as RootState;
-        const tokens = Object.values(state.metadata.tokens.all);
-        if (receipt.status === 1) {
-          dispatch(
-            mineTransaction({
-              hash: receipt.transactionHash,
-            })
-          );
-          // Optimistically update allowance (this is not really optimistic,
-          // but it preempts receiving the event)
-          if (params.contractType === "Swap") {
-            dispatch(
-              allowancesSwapActions.set({
-                tokenAddress: token.address,
-                amount: approveAmount,
-              })
-            );
-          } else if (params.contractType === "Wrapper") {
-            dispatch(
-              allowancesWrapperActions.set({
-                tokenAddress: token.address,
-                amount: approveAmount,
-              })
-            );
-          }
 
-          notifyTransaction(
-            "Approval",
-            transaction,
-            tokens,
-            false,
-            params.chainId
-          );
-        } else {
-          dispatch(revertTransaction(receipt.transactionHash));
-          notifyTransaction(
-            "Approval",
-            transaction,
-            tokens,
-            true,
-            params.chainId
-          );
-        }
-      });
+    if (!tx.hash) {
+      console.error("Approval transaction hash is missing.");
+
+      return;
     }
+
+    const transaction = transformToSubmittedApprovalTransaction(
+      tx.hash,
+      token,
+      approveAmount
+    );
+    dispatch(submitTransaction(transaction));
   } catch (e: any) {
     handleOrderError(dispatch, e);
     throw e;

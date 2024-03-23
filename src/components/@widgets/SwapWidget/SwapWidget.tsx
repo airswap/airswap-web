@@ -47,7 +47,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../../features/metadata/metadataSlice";
-import { check } from "../../../features/orders/orderApi";
+import { check } from "../../../features/orders/ordersApi";
 import {
   approve,
   clear,
@@ -677,7 +677,7 @@ const SwapWidget: FC = () => {
         method({
           chainId: chainId!,
           senderAmount: baseAmount,
-          senderTokenDecimals: baseTokenInfo!.decimals,
+          senderToken: baseTokenInfo!,
           provider: library!,
         })
       );

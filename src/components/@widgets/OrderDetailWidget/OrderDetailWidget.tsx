@@ -20,7 +20,7 @@ import {
   fetchIndexerUrls,
 } from "../../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
-import { check } from "../../../features/orders/orderApi";
+import { check } from "../../../features/orders/ordersApi";
 import {
   approve,
   clear,
@@ -242,7 +242,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       deposit({
         chainId: chainId!,
         senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: senderToken!.decimals,
+        senderToken: senderToken!,
         provider: library!,
       })
     );

@@ -14,9 +14,17 @@ import {
   SubmittedTransactionWithOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
+  isApprovalTransaction,
+  isDepositTransaction,
   isLastLookOrderTransaction,
   isRfqOrderTransaction,
+  isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import {
+  handleApproveTransaction,
+  handleSubmittedDepositOrder,
+  handleSubmittedWithdrawOrder,
+} from "../orders/ordersActions";
 import {
   mineTransaction,
   revertTransaction,
@@ -221,16 +229,28 @@ export const filterTransactionByDate = (
 };
 
 export const handleTransactionReceipt = (
-  status: number,
+  receipt: TransactionReceipt,
   transaction: SubmittedTransaction,
   dispatch: AppDispatch
 ): void => {
   dispatch(
     updateTransaction({
       ...transaction,
-      status: status === 1 ? "succeeded" : "declined",
+      status: receipt.status === 1 ? "succeeded" : "declined",
     })
   );
+
+  if (isApprovalTransaction(transaction)) {
+    handleApproveTransaction(transaction, receipt, dispatch);
+  }
+
+  if (isDepositTransaction(transaction)) {
+    handleSubmittedDepositOrder(transaction, receipt, dispatch);
+  }
+
+  if (isWithdrawTransaction(transaction)) {
+    handleSubmittedWithdrawOrder(transaction, receipt, dispatch);
+  }
 };
 
 const getTransactionReceipt = async (
@@ -239,7 +259,6 @@ const getTransactionReceipt = async (
 ): Promise<TransactionReceipt | undefined> => {
   try {
     const receipt = await library.getTransactionReceipt(hash);
-    console.log(receipt);
     if (receipt?.status !== undefined) {
       return receipt;
     }
@@ -269,16 +288,19 @@ export const listenForTransactionReceipt = async (
   }
 
   const receipt = await getTransactionReceipt(hash, library);
+  console.log(receipt);
 
   if (receipt?.status !== undefined) {
-    handleTransactionReceipt(receipt.status, transaction, dispatch);
+    handleTransactionReceipt(receipt, transaction, dispatch);
+
+    return;
   }
 
   library.once(hash, async () => {
     const receipt = await getTransactionReceipt(hash as string, library);
 
     if (receipt?.status !== undefined) {
-      handleTransactionReceipt(receipt.status, transaction, dispatch);
+      handleTransactionReceipt(receipt, transaction, dispatch);
     }
   });
 };

@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
 import { HTMLMotionProps } from "framer-motion";
 
 import {
-  SubmittedApproval,
+  SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
@@ -56,7 +56,8 @@ const WalletTransaction = ({
   }, [transaction.status, t]);
 
   if (transaction.type === "Approval") {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
+    const tx: SubmittedApprovalTransaction =
+      transaction as SubmittedApprovalTransaction;
     const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
     return (
       <Container transition={transition} animate={animate} initial={initial}>

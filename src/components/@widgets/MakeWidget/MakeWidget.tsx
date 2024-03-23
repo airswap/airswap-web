@@ -327,7 +327,7 @@ const MakeWidget: FC = () => {
       deposit({
         chainId: chainId!,
         senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: makerTokenInfo!.decimals,
+        senderToken: makerTokenInfo!,
         provider: library!,
       })
     );

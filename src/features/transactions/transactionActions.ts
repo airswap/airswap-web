@@ -3,13 +3,13 @@ import { createAction } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../app/store";
 import {
   ProtocolType,
-  SubmittedApproval,
+  SubmittedApprovalTransaction,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { setTransactions } from "./transactionsSlice";
 
 const submitTransaction = createAction<
-  SubmittedTransaction | SubmittedApproval
+  SubmittedTransaction | SubmittedApprovalTransaction
 >("transaction/submitTransaction");
 
 const declineTransaction = createAction<{
