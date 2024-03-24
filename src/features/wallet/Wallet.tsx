@@ -41,11 +41,13 @@ import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
+} from "../metadata/metadataActions";
+import {
   selectActiveTokens,
   selectAllTokenInfo,
   selectMetaDataReducer,
 } from "../metadata/metadataSlice";
-import { fetchSupportedTokens } from "../registry/registrySlice";
+import { fetchSupportedTokens } from "../registry/registryActions";
 import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
 import {
   selectFilteredTransactions,

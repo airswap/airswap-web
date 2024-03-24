@@ -14,7 +14,7 @@ const handleWrapEvent = (data: any, dispatch: any) => {
   const transactions = store.getState().transactions;
 
   const transaction: SubmittedTransactionWithOrder | null =
-    (transactions.all.find(
+    (transactions.transactions.find(
       (t: any) => t.hash === data[2].transactionHash
     ) as SubmittedTransactionWithOrder) || null;
 

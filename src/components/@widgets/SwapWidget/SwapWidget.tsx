@@ -41,26 +41,28 @@ import {
 import {
   fetchIndexerUrls,
   getFilteredOrders,
-  selectIndexerReducer,
-} from "../../../features/indexer/indexerSlice";
+} from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../../features/metadata/metadataSlice";
-import { check } from "../../../features/orders/ordersApi";
 import {
   approve,
-  clear,
   deposit,
   request,
   resetOrders,
+  take,
+  withdraw,
+} from "../../../features/orders/ordersActions";
+import { check } from "../../../features/orders/ordersApi";
+import {
+  clear,
   selectBestOption,
   selectBestOrder,
   selectOrdersErrors,
   selectOrdersStatus,
   setErrors,
-  take,
-  withdraw,
 } from "../../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
@@ -73,7 +75,7 @@ import {
 import {
   declineTransaction,
   revertTransaction,
-} from "../../../features/transactions/transactionActions";
+} from "../../../features/transactions/transactionsActions";
 import {
   selectCustomServerUrl,
   setCustomServerUrl,
@@ -540,6 +542,8 @@ const SwapWidget: FC = () => {
       const result = await dispatch(
         take({
           order: bestTradeOption!.order!,
+          signerToken: quoteTokenInfo!,
+          senderToken: baseTokenInfo!,
           library,
           contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
           onExpired: () => {

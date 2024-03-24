@@ -1,10 +1,13 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
 import {
+  ProtocolType,
   StatusType,
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
+  SubmittedLastLookOrder,
   SubmittedRFQOrder,
+  SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -70,16 +73,39 @@ export const transformToSubmittedWithdrawTransaction = (
 export const transformToSubmittedRFQOrder = (
   hash: string,
   order: OrderERC20,
+  signerToken: TokenInfo,
+  senderToken: TokenInfo,
   status: StatusType = "processing"
 ): SubmittedRFQOrder => {
   return {
     type: "Order",
+    expiry: order.expiry,
+    hash: hash,
+    nonce: order.nonce,
     order,
     protocol: "request-for-quote-erc20",
-    hash: hash,
+    senderToken,
+    signerToken,
     status,
     timestamp: Date.now(),
-    nonce: order.nonce,
+  };
+};
+
+export const transformToSubmittedLastLookOrder = (
+  order: OrderERC20,
+  signerToken: TokenInfo,
+  senderToken: TokenInfo,
+  status: StatusType = "processing"
+): SubmittedLastLookOrder => {
+  return {
+    type: "Order",
     expiry: order.expiry,
+    nonce: order.nonce,
+    order,
+    protocol: "last-look-erc20",
+    senderToken,
+    signerToken,
+    status,
+    timestamp: Date.now(),
   };
 };

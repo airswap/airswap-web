@@ -2,8 +2,8 @@ import { TokenInfo } from "@airswap/utils";
 
 import { store } from "../../app/store";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { getTransactionsLocalStorageKey } from "../transactions/transactionUtils";
 import { TransactionsState } from "../transactions/transactionsSlice";
+import { getTransactionsLocalStorageKey } from "../transactions/transactionsUtils";
 import {
   getActiveTokensLocalStorageKey,
   getAllTokensLocalStorageKey,
@@ -44,75 +44,10 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const activeTokensCache: TokensCache = {};
   const customTokensCache: TokensCache = {};
   const allTokensCache: AllTokensCache = {};
-  const transactionCache: {
-    [address: string]: {
-      [chainId: number]: SubmittedTransaction[];
-    };
-  } = {};
-
-  let currentChainId: number;
-  let currentTransaction: TransactionsState;
 
   store.subscribe(() => {
     const { wallet, metadata, transactions } = store.getState();
     if (!wallet.connected) return;
-
-    let previousChainId = currentChainId;
-    currentChainId = wallet.chainId!;
-
-    let previousTransaction = currentTransaction;
-    currentTransaction = transactions;
-
-    if (
-      previousTransaction !== currentTransaction ||
-      previousChainId !== currentChainId
-    ) {
-      // handles change in transactions and persists all transactions to localStorage
-      // Store only the top 10 transactions
-      const txs: TransactionsState = JSON.parse(
-        localStorage.getItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
-        )!
-      ) || { all: [] };
-
-      const mostRecentTransactions = transactions.all;
-      console.log(
-        localStorage.getItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
-        )
-      );
-
-      if (transactionCache[wallet.address!] === undefined) {
-        transactionCache[wallet.address!] = {};
-        transactionCache[wallet.address!][wallet.chainId!] = txs.all.slice(
-          0,
-          10
-        );
-      }
-      if (
-        previousChainId === currentChainId &&
-        transactions.all.length &&
-        transactionCache[wallet.address!][wallet.chainId!] !== transactions.all
-      ) {
-        transactionCache[wallet.address!][wallet.chainId!] =
-          mostRecentTransactions;
-
-        // Filter out processing transactions to prevent them being stuck perpetually, we should enable this again once we have a better solution
-        // TODO: https://github.com/airswap/airswap-web/issues/876
-        // const updatedLocalStorageTransactions = mostRecentTransactions.filter(
-        //   (tx) => tx.status !== "processing"
-        // );
-
-        console.log(mostRecentTransactions);
-
-        localStorage.setItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
-          JSON.stringify({
-            all: mostRecentTransactions,
-          })
-        );
-      }
-    }
 
     // All tokens
     if (!allTokensCache[wallet.chainId!]) {

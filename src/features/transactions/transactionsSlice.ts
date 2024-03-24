@@ -28,11 +28,11 @@ import {
   revertTransaction,
   submitTransaction,
   updateTransactions,
-} from "./transactionActions";
-import { filterTransactionByDate } from "./transactionUtils";
+} from "./transactionsActions";
+import { filterTransactionByDate } from "./transactionsUtils";
 
 export interface TransactionsState {
-  all: SubmittedTransaction[];
+  transactions: SubmittedTransaction[];
   filter: {
     [ClearOrderType.failed]?: number;
     [ClearOrderType.all]?: number;
@@ -40,7 +40,7 @@ export interface TransactionsState {
 }
 
 const initialState: TransactionsState = {
-  all: [],
+  transactions: [],
   filter: {},
 };
 
@@ -54,7 +54,7 @@ function updateTransaction(params: {
 }): void {
   const { state, nonce, hash, signerWallet, status } = params;
   if (!!signerWallet && !!nonce) {
-    const swap = state.all.find(
+    const swap = state.transactions.find(
       (s) =>
         s.nonce === nonce &&
         (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
@@ -66,7 +66,7 @@ function updateTransaction(params: {
       swap.hash = hash;
     }
   } else if (hash) {
-    const swap = state.all.find((s) => s.hash === hash);
+    const swap = state.transactions.find((s) => s.hash === hash);
     if (swap) {
       swap.status = status;
     }
@@ -138,7 +138,7 @@ export const transactionsSlice = createSlice({
   initialState,
   reducers: {
     clear: (state) => {
-      state.all = [];
+      state.transactions = [];
     },
     setFilter: (state, action: PayloadAction<ClearOrderType>) => {
       state.filter = {
@@ -150,15 +150,14 @@ export const transactionsSlice = createSlice({
       state.filter = action.payload;
     },
     setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
-      state.all = action.payload;
+      state.transactions = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
-      state.all.unshift(action.payload);
+      state.transactions.unshift(action.payload);
     });
     builder.addCase(declineTransaction, (state, action) => {
-      console.error(action.payload);
       clearExpiry(action.payload.signerWallet, action.payload.nonce);
       updateTransaction({
         state,
@@ -200,7 +199,7 @@ export const transactionsSlice = createSlice({
         protocol: action.payload.protocol,
       });
     });
-    builder.addCase(updateTransactions, (state, action) => {
+    builder.addCase(updateTransactions, (state, action): TransactionsState => {
       return {
         ...state,
         transactions: action.payload,
@@ -215,14 +214,14 @@ export const { clear, setFilter, setFilters, setTransactions } =
   transactionsSlice.actions;
 
 export const selectTransactions = (state: RootState): SubmittedTransaction[] =>
-  state.transactions.all;
+  state.transactions.transactions;
 
 export const selectFilteredTransactions = (state: RootState) => {
-  const { all, filter } = state.transactions;
+  const { transactions, filter } = state.transactions;
   const clearAllOrdersDate = filter[ClearOrderType.all];
   const clearFailedOrdersDate = filter[ClearOrderType.failed];
 
-  return all
+  return transactions
     .filter(
       (transaction) =>
         !clearAllOrdersDate ||
@@ -252,22 +251,22 @@ export const selectOrderTransactions = createSelector(
 export const selectPendingDeposits = (
   state: RootState
 ): SubmittedDepositTransaction[] =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Deposit"
   ) as SubmittedDepositTransaction[];
 
 export const selectPendingApprovals = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"
   ) as SubmittedApprovalTransaction[];
 
 export const selectCancellations = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "succeeded" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
 
 export const selectPendingCancellations = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
 

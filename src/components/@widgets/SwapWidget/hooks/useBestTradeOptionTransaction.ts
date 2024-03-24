@@ -4,8 +4,8 @@ import { TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../../../../app/hooks";
 import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
-import { isTransactionWithOrder } from "../../../../features/transactions/transactionUtils";
 import { selectOrderTransactions } from "../../../../features/transactions/transactionsSlice";
+import { isTransactionWithOrder } from "../../../../features/transactions/transactionsUtils";
 import toAtomicString from "../../../../helpers/toAtomicString";
 
 const useBestTradeOptionTransaction = (

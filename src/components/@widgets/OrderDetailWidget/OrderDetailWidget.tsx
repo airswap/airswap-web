@@ -14,20 +14,18 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppErrorType } from "../../../errors/appError";
-import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
-  getFilteredOrders,
   fetchIndexerUrls,
-} from "../../../features/indexer/indexerSlice";
+  getFilteredOrders,
+} from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
+import { approve, deposit, take } from "../../../features/orders/ordersActions";
 import { check } from "../../../features/orders/ordersApi";
 import {
-  approve,
   clear,
-  deposit,
   selectOrdersErrors,
   selectOrdersStatus,
-  take,
 } from "../../../features/orders/ordersSlice";
 import {
   reset,
@@ -200,12 +198,14 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const takeOrder = async () => {
     if (!library) return;
+
     const errors = await check(
       order,
       order.senderWallet,
       order.chainId,
       library
     );
+
     if (errors.length) {
       dispatch(setErrors(errors));
       return;
@@ -214,6 +214,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     await dispatch(
       take({
         order,
+        signerToken: signerToken!,
+        senderToken: senderToken!,
         library: library,
         contractType: "Swap",
         onExpired: () => {},

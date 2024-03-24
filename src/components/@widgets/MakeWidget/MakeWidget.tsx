@@ -17,10 +17,8 @@ import nativeCurrency, {
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppErrorType } from "../../../errors/appError";
 import { selectBalances } from "../../../features/balances/balancesSlice";
-import {
-  fetchIndexerUrls,
-  selectIndexerReducer,
-} from "../../../features/indexer/indexerSlice";
+import { fetchIndexerUrls } from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { createOtcOrder } from "../../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
@@ -33,11 +31,8 @@ import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../../features/metadata/metadataSlice";
-import {
-  approve,
-  deposit,
-  selectOrdersStatus,
-} from "../../../features/orders/ordersSlice";
+import { approve, deposit } from "../../../features/orders/ordersActions";
+import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
   selectUserTokens,
   setUserTokens,

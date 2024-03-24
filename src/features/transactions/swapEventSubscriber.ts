@@ -1,20 +1,14 @@
 import { Wrapper } from "@airswap/libraries";
-import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
 import { getFullSwapERC20 } from "@airswap/utils";
 import { Dispatch } from "@reduxjs/toolkit";
 
-import erc20Abi from "erc-20-abi";
-import { ethers } from "ethers";
 import { BigNumber, Contract, Event as EthersEvent } from "ethers";
 
 import { store } from "../../app/store";
 import { notifyTransaction } from "../../components/Toasts/ToastController";
-import { LastLookTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { mineTransaction } from "./transactionActions";
-import { getSenderWalletForWrapperSwapLog } from "./transactionUtils";
-
-const swapInterface = new ethers.utils.Interface(SwapERC20__factory.abi);
-const tokenInterface = new ethers.utils.Interface(erc20Abi);
+import { SubmittedLastLookOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { mineTransaction } from "./transactionsActions";
+import { getSenderWalletForWrapperSwapLog } from "./transactionsUtils";
 
 export default function subscribeToSwapEvents(params: {
   swapContract: Contract;
@@ -69,10 +63,10 @@ export default function subscribeToSwapEvents(params: {
 
         const transactions = store.getState().transactions;
 
-        const matchingTransaction = transactions.all.find((tx) => {
+        const matchingTransaction = transactions.transactions.find((tx) => {
           if (tx.protocol === "last-look-erc20") {
             // Last look transactions don't have a nonce, but the
-            const llTransaction = tx as LastLookTransaction;
+            const llTransaction = tx as SubmittedLastLookOrder;
             return (
               llTransaction.order.nonce === nonce.toString() &&
               llTransaction.order.signerWallet.toLowerCase() === _account

@@ -5,17 +5,17 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { selectAllTokenInfo } from "../metadata/metadataSlice";
-import {
-  getTransactionsLocalStorageKey,
-  listenForTransactionReceipt,
-} from "./transactionUtils";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
+import {
+  getLocalStorageTransactions,
+  getTransactionsV2LocalStorageKey,
+  listenForTransactionReceipt,
+} from "./transactionsUtils";
 
 export const useTransactions = (): void => {
   const dispatch = useAppDispatch();
 
   const { account, library, chainId } = useWeb3React();
-  const tokens = useAppSelector(selectAllTokenInfo);
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 
@@ -24,15 +24,14 @@ export const useTransactions = (): void => {
   );
 
   useEffect(() => {
-    if (!account || !chainId || !library || !tokens.length) {
+    if (!account || !chainId || !library) {
       return;
     }
 
-    // const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
-    // localStorage.setItem(localStorageKey, JSON.stringify(transactions));
+    const localStorageKey = getTransactionsV2LocalStorageKey(account, chainId);
+    localStorage.setItem(localStorageKey, JSON.stringify(transactions));
 
     console.log(transactions);
-    console.log(tokens);
 
     const newListenerHashes = transactions
       .filter(
@@ -49,13 +48,13 @@ export const useTransactions = (): void => {
       .filter(Boolean) as string[];
 
     setActiveListenerHashes([...activeListenerHashes, ...newListenerHashes]);
-  }, [transactions, tokens]);
+  }, [transactions]);
 
   useEffect(() => {
     if (!account || !chainId) {
       return;
     }
 
-    // dispatch(setTransactions(getLocalStorageTransactions(account, chainId)));
+    dispatch(setTransactions(getLocalStorageTransactions(account, chainId)));
   }, [account, chainId]);
 };

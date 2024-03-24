@@ -8,13 +8,13 @@ import { Event } from "ethers";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
   getTransactionsLocalStorageKey,
   SwapEventArgs,
-} from "./transactionUtils";
-import { selectTransactions, setTransactions } from "./transactionsSlice";
+} from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
 import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 
@@ -98,6 +98,9 @@ const useHistoricalTransactions = () => {
                 // We don't have a record of this transaction, so we need to create it.
                 // const newTransaction:
                 const blockTimestamp = (await swapLog.getBlock()).timestamp;
+
+                // TODO: Fix this
+                // @ts-ignore
                 const newTx: SubmittedTransactionWithOrder = {
                   protocol,
                   status: "succeeded",

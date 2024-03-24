@@ -20,16 +20,15 @@ import {
   isRfqOrderTransaction,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { parseJsonArray } from "../../helpers/array";
 import {
   handleApproveTransaction,
   handleSubmittedDepositOrder,
+  handleSubmittedRFQOrder,
   handleSubmittedWithdrawOrder,
 } from "../orders/ordersActions";
-import {
-  mineTransaction,
-  revertTransaction,
-  updateTransaction,
-} from "./transactionActions";
+import { mineTransaction, revertTransaction } from "./transactionsActions";
+import { updateTransaction } from "./transactionsHelpers";
 
 const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
@@ -215,6 +214,22 @@ export const getTransactionsLocalStorageKey: (
 ) => string = (walletAddress, chainId) =>
   `airswap/transactions/${walletAddress}/${chainId}`;
 
+export const getTransactionsV2LocalStorageKey: (
+  walletAddress: string,
+  chainId: number
+) => string = (walletAddress, chainId) =>
+  `airswap/transactions-v2/${walletAddress}/${chainId}`;
+
+export const getLocalStorageTransactions = (
+  account: string,
+  chainId: number
+): SubmittedTransaction[] => {
+  const key = getTransactionsV2LocalStorageKey(account, chainId);
+  const value = localStorage.getItem(key);
+
+  return value ? parseJsonArray<SubmittedTransaction>(value) : [];
+};
+
 export const filterTransactionByDate = (
   transaction: SubmittedTransaction,
   timestamp: number,
@@ -233,6 +248,7 @@ export const handleTransactionReceipt = (
   transaction: SubmittedTransaction,
   dispatch: AppDispatch
 ): void => {
+  console.log(transaction);
   dispatch(
     updateTransaction({
       ...transaction,
@@ -251,6 +267,13 @@ export const handleTransactionReceipt = (
   if (isWithdrawTransaction(transaction)) {
     handleSubmittedWithdrawOrder(transaction, receipt, dispatch);
   }
+
+  if (
+    isRfqOrderTransaction(transaction) ||
+    isLastLookOrderTransaction(transaction)
+  ) {
+    handleSubmittedRFQOrder(transaction, receipt, dispatch);
+  }
 };
 
 const getTransactionReceipt = async (
@@ -259,6 +282,7 @@ const getTransactionReceipt = async (
 ): Promise<TransactionReceipt | undefined> => {
   try {
     const receipt = await library.getTransactionReceipt(hash);
+    console.log(receipt);
     if (receipt?.status !== undefined) {
       return receipt;
     }
@@ -276,12 +300,11 @@ export const listenForTransactionReceipt = async (
 ): Promise<void> => {
   let hash = transaction.hash;
 
-  if (
-    isRfqOrderTransaction(transaction) ||
-    isLastLookOrderTransaction(transaction)
-  ) {
+  if (isLastLookOrderTransaction(transaction)) {
     hash = transaction.order.nonce;
   }
+
+  console.log(hash);
 
   if (!hash) {
     return;
@@ -298,6 +321,7 @@ export const listenForTransactionReceipt = async (
 
   library.once(hash, async () => {
     const receipt = await getTransactionReceipt(hash as string, library);
+    console.log(receipt);
 
     if (receipt?.status !== undefined) {
       handleTransactionReceipt(receipt, transaction, dispatch);

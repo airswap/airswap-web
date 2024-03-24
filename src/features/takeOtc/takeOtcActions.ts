@@ -21,7 +21,7 @@ import {
   mineTransaction,
   revertTransaction,
   submitTransaction,
-} from "../transactions/transactionActions";
+} from "../transactions/transactionsActions";
 import {
   reset,
   setActiveOrder,

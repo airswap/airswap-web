@@ -36,13 +36,17 @@ export interface SubmittedTransaction {
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
   type: "Order";
   order: OrderERC20;
+  senderToken: TokenInfo;
+  signerToken: TokenInfo;
 }
 
 export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {
   protocol: "request-for-quote-erc20";
 }
 
-export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {}
+export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
+  protocol: "last-look-erc20";
+}
 
 export interface LastLookTransaction extends SubmittedLastLookOrder {}
 

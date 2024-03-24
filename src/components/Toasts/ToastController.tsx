@@ -146,8 +146,8 @@ export const notifyOrder = (transaction: SubmittedTransactionWithOrder) => {
         onClose={() => toast.dismiss(t.id)}
         type="Order"
         transaction={transaction}
-        // senderToken={transaction.order.senderToken}
-        // signerToken={transaction.order.signerToken}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
       />
     ),
     {
