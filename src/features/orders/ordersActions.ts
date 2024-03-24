@@ -61,13 +61,9 @@ import {
   takeOrder,
   withdrawETH,
 } from "./ordersApi";
+import { clear, setErrors, setReRequestTimerId } from "./ordersSlice";
 
-// import {
-//   clear,
-//   setErrors,
-//   setReRequestTimerId,
-//   setResetStatus,
-// } from "./ordersSlice";
+// TODO: Imports can not be done because of circular dependencies
 
 const failTransaction = (
   hash: string,
@@ -260,14 +256,6 @@ export const deposit = createAsyncThunk(
       handleOrderError(dispatch, e);
       throw e;
     }
-  }
-);
-
-export const resetOrders = createAsyncThunk(
-  "orders/reset",
-  async (params: undefined, { getState, dispatch }) => {
-    // await dispatch(setResetStatus());
-    // dispatch(clear());
   }
 );
 

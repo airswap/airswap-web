@@ -51,7 +51,6 @@ import {
   approve,
   deposit,
   request,
-  resetOrders,
   take,
   withdraw,
 } from "../../../features/orders/ordersActions";
@@ -63,6 +62,7 @@ import {
   selectOrdersErrors,
   selectOrdersStatus,
   setErrors,
+  setResetStatus,
 } from "../../../features/orders/ordersSlice";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
@@ -262,7 +262,8 @@ const SwapWidget: FC = () => {
   // Reset when the chainId changes.
   useEffect(() => {
     if (chainId) {
-      dispatch(resetOrders());
+      dispatch(clear());
+      dispatch(setResetStatus());
     }
   }, [chainId]);
 
