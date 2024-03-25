@@ -40,7 +40,7 @@ export interface MetadataState {
 
 const initialState: MetadataState = {
   isFetchingAllTokens: false,
-  protocolFee: 7,
+  protocolFee: 0,
   tokens: {
     all: {},
     active: [],
@@ -88,14 +88,9 @@ export const fetchProtocolFee = createAsyncThunk<
     provider: Web3Provider;
     chainId: number;
   }
->("metadata/fetchProtocolFee", async ({ provider, chainId }) => {
-  try {
-    return getProtocolFee(chainId, provider);
-  } catch {
-    console.error("Error getting protocol fee from contract, defaulting to 7.");
-    return 7;
-  }
-});
+>("metadata/fetchProtocolFee", async ({ provider, chainId }) =>
+  getProtocolFee(chainId, provider)
+);
 
 export const metadataSlice = createSlice({
   name: "metadata",
