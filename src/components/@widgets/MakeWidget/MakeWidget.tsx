@@ -306,15 +306,7 @@ const MakeWidget: FC = () => {
         ? wrappedNativeToken
         : makerTokenInfo;
 
-    dispatch(
-      approve({
-        token: justifiedToken!,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: makerAmountPlusFee,
-      })
-    );
+    dispatch(approve(makerAmountPlusFee, justifiedToken!, library!, "Swap"));
   };
 
   const depositNativeToken = async () => {

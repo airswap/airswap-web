@@ -360,51 +360,47 @@ export const request =
     }
   };
 
-export const approve = createAsyncThunk<
-  // Return type of the payload creator
-  void,
-  // Params
-  {
-    token: TokenInfo;
-    library: any;
-    contractType: "Wrapper" | "Swap";
-    chainId: number;
-    amount: string;
-  },
-  // Types for ThunkAPI
-  {
-    // thunkApi
-    dispatch: AppDispatch;
-  }
->("orders/approve", async (params, { dispatch }) => {
-  try {
-    const { token, contractType, amount } = params;
-    const approveAmount = toRoundedAtomicString(amount, token.decimals);
+export const approve =
+  (
+    amount: string,
+    token: TokenInfo,
+    library: Web3Provider,
+    contractType: "Wrapper" | "Swap"
+  ) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setStatus("signing"));
 
-    const tx = await approveToken(
-      token.address,
-      params.library,
-      contractType,
-      approveAmount
-    );
+    try {
+      const approveAmount = toRoundedAtomicString(amount, token.decimals);
 
-    if (!tx.hash) {
-      console.error("Approval transaction hash is missing.");
+      const tx = await approveToken(
+        token.address,
+        library,
+        contractType,
+        approveAmount
+      );
 
-      return;
+      if (!tx.hash) {
+        console.error("Approval transaction hash is missing.");
+
+        dispatch(setStatus("failed"));
+
+        return;
+      }
+
+      const transaction = transformToSubmittedApprovalTransaction(
+        tx.hash,
+        token,
+        approveAmount
+      );
+
+      dispatch(submitTransaction(transaction));
+      dispatch(setStatus("idle"));
+    } catch (e: any) {
+      dispatch(setStatus("failed"));
+      handleOrderError(dispatch, e);
     }
-
-    const transaction = transformToSubmittedApprovalTransaction(
-      tx.hash,
-      token,
-      approveAmount
-    );
-    dispatch(submitTransaction(transaction));
-  } catch (e: any) {
-    handleOrderError(dispatch, e);
-    throw e;
-  }
-});
+  };
 
 export const take = createAsyncThunk<
   void,

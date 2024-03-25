@@ -55,7 +55,7 @@ export const ordersSlice = createSlice({
         state.reRequestTimerId = null;
       }
     },
-    setReRequestTimerId: (state, action: PayloadAction<number>) => {
+    setReRequestTimerId: (state, action: PayloadAction<number | null>) => {
       state.reRequestTimerId = action.payload;
     },
   },
@@ -72,15 +72,6 @@ export const ordersSlice = createSlice({
         }
       })
       .addCase(take.rejected, (state, action) => {
-        state.status = "failed";
-      })
-      .addCase(approve.pending, (state) => {
-        state.status = "signing";
-      })
-      .addCase(approve.fulfilled, (state) => {
-        state.status = "idle";
-      })
-      .addCase(approve.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(setWalletConnected, (state) => {

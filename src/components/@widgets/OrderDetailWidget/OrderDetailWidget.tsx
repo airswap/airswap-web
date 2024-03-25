@@ -224,19 +224,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const approveToken = () => {
-    if (!senderToken || !senderAmount) {
+    if (!senderToken || !senderAmount || !library) {
       return;
     }
 
-    dispatch(
-      approve({
-        token: senderToken,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: senderAmount,
-      })
-    );
+    dispatch(approve(senderAmount, senderToken, library, "Swap"));
   };
 
   const depositNativeToken = async () => {

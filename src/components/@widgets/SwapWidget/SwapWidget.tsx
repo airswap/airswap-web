@@ -746,13 +746,12 @@ const SwapWidget: FC = () => {
     setIsApproving(true);
 
     await dispatch(
-      approve({
-        token: baseTokenInfo!,
-        library,
-        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-        chainId: chainId!,
-        amount: baseAmount,
-      })
+      approve(
+        baseAmount,
+        baseTokenInfo!,
+        library!,
+        swapType === "swapWithWrap" ? "Wrapper" : "Swap"
+      )
     );
     setIsApproving(false);
   };
