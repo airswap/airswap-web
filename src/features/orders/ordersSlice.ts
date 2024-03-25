@@ -34,6 +34,12 @@ export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
+    setOrders: (state, action: PayloadAction<OrderERC20[]>) => {
+      state.orders = action.payload;
+    },
+    setStatus: (state, action: PayloadAction<OrdersState["status"]>) => {
+      state.status = action.payload;
+    },
     setResetStatus: (state) => {
       state.status = "reset";
     },
@@ -55,22 +61,6 @@ export const ordersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(request.pending, (state) => {
-        state.status = "requesting";
-      })
-      .addCase(request.fulfilled, (state, action) => {
-        // Only update the orders if we were requesting them. This prevents a
-        // very slow request influencing the state if we have since moved away
-        // from it.
-        if (state.status === "requesting") {
-          state.status = "idle";
-          state.orders = action.payload!;
-        }
-      })
-      .addCase(request.rejected, (state, action) => {
-        state.status = "failed";
-        state.orders = [];
-      })
       .addCase(take.pending, (state) => {
         state.status = "signing";
       })
@@ -93,15 +83,6 @@ export const ordersSlice = createSlice({
       .addCase(approve.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(deposit.pending, (state) => {
-        state.status = "signing";
-      })
-      .addCase(deposit.fulfilled, (state) => {
-        state.status = "idle";
-      })
-      .addCase(deposit.rejected, (state) => {
-        state.status = "failed";
-      })
       .addCase(setWalletConnected, (state) => {
         state.status = "idle";
         state.orders = [];
@@ -113,8 +94,14 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const { clear, setErrors, setResetStatus, setReRequestTimerId } =
-  ordersSlice.actions;
+export const {
+  clear,
+  setErrors,
+  setOrders,
+  setResetStatus,
+  setReRequestTimerId,
+  setStatus,
+} = ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.

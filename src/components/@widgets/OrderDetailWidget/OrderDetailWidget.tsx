@@ -240,15 +240,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderToken: senderToken!,
-        provider: library!,
-      })
-    );
-    await unwrapResult(result);
+    deposit(shouldDepositNativeTokenAmount!, senderToken!, chainId!, library!);
   };
 
   const restart = () => {

@@ -415,7 +415,7 @@ const SwapWidget: FC = () => {
           ? Wrapper.getAddress(chainId!)
           : account!;
         if (senderWallet) {
-          let rfqDispatchResult = dispatch(
+          dispatch(
             request({
               servers: rfqServers,
               senderToken: _baseToken,
@@ -426,14 +426,6 @@ const SwapWidget: FC = () => {
               proxyingFor: usesWrapper ? account! : undefined,
             })
           );
-          rfqPromise = rfqDispatchResult
-            .then((result) => {
-              return unwrapResult(result);
-            })
-            .then((orders) => {
-              if (!orders.length) throw new Error("no valid orders");
-              return orders;
-            });
         } else {
           console.error(
             "No sender wallet or wrapper for selected chain",
@@ -678,15 +670,7 @@ const SwapWidget: FC = () => {
       baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
     try {
-      const result = await dispatch(
-        method({
-          chainId: chainId!,
-          senderAmount: baseAmount,
-          senderToken: baseTokenInfo!,
-          provider: library!,
-        })
-      );
-      await unwrapResult(result);
+      await dispatch(method(baseAmount, baseTokenInfo!, chainId!, library!));
       setIsSwapping(false);
       setIsWrapping(false);
       setShowOrderSubmitted(true);

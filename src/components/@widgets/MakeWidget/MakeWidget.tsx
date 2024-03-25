@@ -318,15 +318,14 @@ const MakeWidget: FC = () => {
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderToken: makerTokenInfo!,
-        provider: library!,
-      })
+    dispatch(
+      deposit(
+        shouldDepositNativeTokenAmount!,
+        makerTokenInfo!,
+        chainId!,
+        library!
+      )
     );
-    await unwrapResult(result);
   };
 
   const handleEditButtonClick = () => {

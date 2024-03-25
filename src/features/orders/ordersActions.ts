@@ -5,10 +5,8 @@ import {
   toAtomicString,
   TokenInfo,
 } from "@airswap/utils";
-import { TransactionReceipt } from "@ethersproject/providers";
+import { Web3Provider, TransactionReceipt } from "@ethersproject/providers";
 import { createAsyncThunk, Dispatch } from "@reduxjs/toolkit";
-
-import { providers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import {
@@ -61,7 +59,12 @@ import {
   takeOrder,
   withdrawETH,
 } from "./ordersApi";
-import { clear, setErrors, setReRequestTimerId } from "./ordersSlice";
+import {
+  setErrors,
+  setOrders,
+  setReRequestTimerId,
+  setStatus,
+} from "./ordersSlice";
 
 // TODO: Imports can not be done because of circular dependencies
 
@@ -214,127 +217,130 @@ export const handleOrderError = (dispatch: Dispatch, error: any) => {
   }
 };
 
-export const deposit = createAsyncThunk(
-  "orders/deposit",
-  async (
-    params: {
-      chainId: number;
-      senderAmount: string;
-      senderToken: TokenInfo;
-      provider: providers.Web3Provider;
-    },
-    { dispatch }
-  ) => {
+export const deposit =
+  (
+    senderAmount: string,
+    senderToken: TokenInfo,
+    chainId: number,
+    provider: Web3Provider
+  ) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setStatus("signing"));
+
     try {
       const tx = await depositETH(
-        params.chainId,
-        params.senderAmount,
-        params.senderToken.decimals,
-        params.provider
+        chainId,
+        senderAmount,
+        senderToken.decimals,
+        provider
       );
 
       if (!tx.hash) {
         console.error("Approval transaction hash is missing.");
 
+        dispatch(setStatus("failed"));
+
         return;
       }
 
-      const amount = toAtomicString(
-        params.senderAmount,
-        params.senderToken.decimals
-      );
+      const amount = toAtomicString(senderAmount, senderToken.decimals);
 
       const transaction = transformToSubmittedDepositTransaction(
         tx.hash,
-        params.senderToken,
-        nativeCurrency[params.chainId],
+        senderToken,
+        nativeCurrency[chainId],
         amount
       );
 
+      dispatch(setStatus("idle"));
       dispatch(submitTransaction(transaction));
     } catch (e: any) {
+      dispatch(setStatus("failed"));
       handleOrderError(dispatch, e);
-      throw e;
     }
-  }
-);
+  };
 
-export const withdraw = createAsyncThunk(
-  "orders/withdraw",
-  async (
-    params: {
-      chainId: number;
-      senderAmount: string;
-      senderToken: TokenInfo;
-      provider: any;
-    },
-    { getState, dispatch }
-  ) => {
+export const withdraw =
+  (
+    senderAmount: string,
+    senderToken: TokenInfo,
+    chainId: number,
+    provider: Web3Provider
+  ) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setStatus("signing"));
+
     try {
       const tx = await withdrawETH(
-        params.chainId,
-        params.senderAmount,
-        params.senderToken.decimals,
-        params.provider
+        chainId,
+        senderAmount,
+        senderToken.decimals,
+        provider
       );
 
       if (!tx.hash) {
         console.error("Approval transaction hash is missing.");
 
+        dispatch(setStatus("failed"));
+
         return;
       }
 
-      const amount = toAtomicString(
-        params.senderAmount,
-        params.senderToken.decimals
-      );
+      const amount = toAtomicString(senderAmount, senderToken.decimals);
 
       const transaction = transformToSubmittedWithdrawTransaction(
         tx.hash,
-        nativeCurrency[params.chainId],
-        params.senderToken,
+        nativeCurrency[chainId],
+        senderToken,
         amount
       );
 
+      dispatch(setStatus("idle"));
       dispatch(submitTransaction(transaction));
     } catch (e: any) {
+      dispatch(setStatus("failed"));
       handleOrderError(dispatch, e);
-      throw e;
     }
-  }
-);
+  };
 
-export const request = createAsyncThunk(
-  "orders/request",
-  async (
-    params: {
-      servers: Server[];
-      signerToken: string;
-      senderToken: string;
-      senderAmount: string;
-      senderTokenDecimals: number;
-      senderWallet: string;
-      proxyingFor?: string;
-    },
-    { dispatch }
-  ) => {
-    const orders = await requestOrders(
-      params.servers,
-      params.signerToken,
-      params.senderToken,
-      params.senderAmount,
-      params.senderTokenDecimals,
-      params.senderWallet,
-      params.proxyingFor
-    );
-    if (orders.length) {
+interface RequestParams {
+  servers: Server[];
+  signerToken: string;
+  senderToken: string;
+  senderAmount: string;
+  senderTokenDecimals: number;
+  senderWallet: string;
+  proxyingFor?: string;
+}
+
+export const request =
+  (params: RequestParams) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setStatus("requesting"));
+
+    try {
+      const orders = await requestOrders(
+        params.servers,
+        params.signerToken,
+        params.senderToken,
+        params.senderAmount,
+        params.senderTokenDecimals,
+        params.senderWallet,
+        params.proxyingFor
+      );
+
       const bestOrder = [...orders].sort(orderSortingFunction)[0];
       const now = Date.now();
       const expiry = parseInt(bestOrder.expiry) * 1000;
       // Due to the sorting in orderSorting function, these orders will be at
       // the bottom of the list, so if the best one has a very short expiry
       // so do all the others. Return an empty order array as none are viable.
-      if (expiry - now < RFQ_EXPIRY_BUFFER_MS) return [];
+      if (expiry - now < RFQ_EXPIRY_BUFFER_MS) {
+        dispatch(setStatus("idle"));
+        dispatch(setOrders([]));
+
+        return;
+      }
 
       const timeTilReRequest = Math.max(
         expiry - now - RFQ_EXPIRY_BUFFER_MS,
@@ -344,11 +350,15 @@ export const request = createAsyncThunk(
         () => dispatch(request(params)),
         timeTilReRequest
       );
-      // dispatch(setReRequestTimerId(reRequestTimerId));
+
+      dispatch(setReRequestTimerId(reRequestTimerId));
+      dispatch(setOrders(orders));
+      dispatch(setStatus("idle"));
+    } catch {
+      dispatch(setOrders([]));
+      dispatch(setStatus("failed"));
     }
-    return orders;
-  }
-);
+  };
 
 export const approve = createAsyncThunk<
   // Return type of the payload creator
@@ -365,9 +375,8 @@ export const approve = createAsyncThunk<
   {
     // thunkApi
     dispatch: AppDispatch;
-    state: RootState;
   }
->("orders/approve", async (params, { getState, dispatch }) => {
+>("orders/approve", async (params, { dispatch }) => {
   try {
     const { token, contractType, amount } = params;
     const approveAmount = toRoundedAtomicString(amount, token.decimals);
@@ -409,7 +418,6 @@ export const take = createAsyncThunk<
   },
   {
     dispatch: AppDispatch;
-    state: RootState;
   }
 >(
   "orders/take",
@@ -435,7 +443,7 @@ export const take = createAsyncThunk<
       }
 
       if (appError.error && "message" in appError.error) {
-        // dispatch(declineTransaction(appError.error.message));
+        dispatch(declineTransaction(appError.error.message));
       }
 
       throw appError;
