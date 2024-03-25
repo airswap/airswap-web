@@ -13,7 +13,6 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { approve, deposit, request, take } from "./ordersActions";
 import { orderSortingFunction } from "./ordersApi";
 
 export interface OrdersState {
@@ -56,24 +55,15 @@ export const ordersSlice = createSlice({
       }
     },
     setReRequestTimerId: (state, action: PayloadAction<number | null>) => {
+      if (state.reRequestTimerId) {
+        clearTimeout(state.reRequestTimerId);
+      }
+
       state.reRequestTimerId = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(take.pending, (state) => {
-        state.status = "signing";
-      })
-      .addCase(take.fulfilled, (state, action) => {
-        state.status = "idle";
-        if (state.reRequestTimerId) {
-          clearTimeout(state.reRequestTimerId);
-          state.reRequestTimerId = null;
-        }
-      })
-      .addCase(take.rejected, (state, action) => {
-        state.status = "failed";
-      })
       .addCase(setWalletConnected, (state) => {
         state.status = "idle";
         state.orders = [];

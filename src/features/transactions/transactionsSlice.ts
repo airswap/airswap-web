@@ -98,7 +98,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
   {
     transaction: SubmittedTransaction;
     signerWallet: string;
-    onExpired: () => void;
+    onExpired?: () => void;
   },
   // Types for ThunkAPI
   {
@@ -128,7 +128,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
           nonce: transaction.nonce!,
         })
       );
-      onExpired();
+      onExpired && onExpired();
     }, timeToExpiryNotification);
   }
 );

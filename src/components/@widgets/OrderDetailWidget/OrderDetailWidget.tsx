@@ -211,16 +211,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       return;
     }
 
-    await dispatch(
-      take({
-        order,
-        signerToken: signerToken!,
-        senderToken: senderToken!,
-        library: library,
-        contractType: "Swap",
-        onExpired: () => {},
-      })
-    );
+    await dispatch(take(order, signerToken!, senderToken!, library, "Swap"));
   };
 
   const approveToken = () => {

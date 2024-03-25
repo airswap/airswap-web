@@ -351,6 +351,8 @@ export const request =
         timeTilReRequest
       );
 
+      console.log(orders);
+
       dispatch(setReRequestTimerId(reRequestTimerId));
       dispatch(setOrders(orders));
       dispatch(setStatus("idle"));
@@ -402,29 +404,23 @@ export const approve =
     }
   };
 
-export const take = createAsyncThunk<
-  void,
-  {
-    order: OrderERC20 | FullOrderERC20;
-    senderToken: TokenInfo;
-    signerToken: TokenInfo;
-    library: any;
-    contractType: "Swap" | "Wrapper";
-    onExpired: () => void;
-  },
-  {
-    dispatch: AppDispatch;
-  }
->(
-  "orders/take",
-  async (
-    { order, senderToken, signerToken, library, contractType, onExpired },
-    { dispatch }
-  ) => {
+export const take =
+  (
+    order: OrderERC20 | FullOrderERC20,
+    senderToken: TokenInfo,
+    signerToken: TokenInfo,
+    library: Web3Provider,
+    contractType: "Swap" | "Wrapper",
+    onExpired?: () => void
+  ) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setStatus("signing"));
+
     const tx = await takeOrder(order, library, contractType);
 
     if (isAppError(tx)) {
       const appError = tx;
+
       if (appError.type === AppErrorType.rejectedByUser) {
         notifyRejectedByUserError();
         dispatch(
@@ -435,18 +431,22 @@ export const take = createAsyncThunk<
           })
         );
       } else {
-        // dispatch(setErrors([appError]));
+        dispatch(setErrors([appError]));
       }
 
       if (appError.error && "message" in appError.error) {
         dispatch(declineTransaction(appError.error.message));
       }
 
-      throw appError;
+      dispatch(setStatus("failed"));
+
+      return;
     }
 
     if (!tx.hash) {
       console.error("Approval transaction hash is missing.");
+
+      dispatch(setStatus("failed"));
 
       return;
     }
@@ -469,8 +469,8 @@ export const take = createAsyncThunk<
       submitTransactionWithExpiry({
         transaction,
         signerWallet: order.signerWallet,
-        onExpired: onExpired,
+        onExpired,
       })
     );
-  }
-);
+    dispatch(setStatus("idle"));
+  };

@@ -192,12 +192,6 @@ const LastLookProvider: FC = ({ children }) => {
         submitTransactionWithExpiry({
           transaction,
           signerWallet: unsignedOrder.signerWallet,
-          onExpired: () => {
-            notifyError({
-              heading: t("orders.swapExpired"),
-              cta: t("orders.swapExpiredCallToAction"),
-            });
-          },
         })
       );
 

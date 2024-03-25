@@ -415,7 +415,7 @@ const SwapWidget: FC = () => {
           ? Wrapper.getAddress(chainId!)
           : account!;
         if (senderWallet) {
-          dispatch(
+          await dispatch(
             request({
               servers: rfqServers,
               senderToken: _baseToken,
@@ -532,23 +532,16 @@ const SwapWidget: FC = () => {
       }
       LastLook.unsubscribeAllServers();
 
-      const result = await dispatch(
-        take({
-          order: bestTradeOption!.order!,
-          signerToken: quoteTokenInfo!,
-          senderToken: baseTokenInfo!,
+      dispatch(
+        take(
+          bestTradeOption!.order!,
+          quoteTokenInfo!,
+          baseTokenInfo!,
           library,
-          contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-          onExpired: () => {
-            notifyError({
-              heading: t("orders.swapExpired"),
-              cta: t("orders.swapExpiredCallToAction"),
-            });
-          },
-        })
+          swapType === "swapWithWrap" ? "Wrapper" : "Swap"
+        )
       );
       setIsSwapping(false);
-      await unwrapResult(result);
       setShowOrderSubmitted(true);
     } catch (e) {
       console.error("Error taking order:", e);
