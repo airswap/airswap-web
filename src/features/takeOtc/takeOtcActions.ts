@@ -16,7 +16,7 @@ import {
 import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import i18n from "../../i18n/i18n";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
-import { getNonceUsed } from "../orders/ordersApi";
+import { getNonceUsed } from "../orders/ordersHelpers";
 import {
   mineTransaction,
   revertTransaction,

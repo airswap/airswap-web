@@ -54,7 +54,7 @@ import {
   take,
   withdraw,
 } from "../../../features/orders/ordersActions";
-import { check } from "../../../features/orders/ordersApi";
+import { check } from "../../../features/orders/ordersHelpers";
 import {
   clear,
   selectBestOption,

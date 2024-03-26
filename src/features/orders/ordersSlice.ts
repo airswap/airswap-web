@@ -13,7 +13,7 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
-import { orderSortingFunction } from "./ordersApi";
+import { orderSortingFunction } from "./ordersHelpers";
 
 export interface OrdersState {
   orders: OrderERC20[];

@@ -1,7 +1,7 @@
 import { RootState } from "../../app/store";
 import ordersReducer, { OrdersState, selectBestOrder } from "./ordersSlice";
 
-xdescribe.only("orders reducer", () => {
+describe.only("orders reducer", () => {
   const initialState: OrdersState = {
     errors: [],
     orders: [],

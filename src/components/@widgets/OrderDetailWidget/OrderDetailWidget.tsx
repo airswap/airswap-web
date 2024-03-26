@@ -21,7 +21,7 @@ import {
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
 import { approve, deposit, take } from "../../../features/orders/ordersActions";
-import { check } from "../../../features/orders/ordersApi";
+import { check } from "../../../features/orders/ordersHelpers";
 import {
   clear,
   selectOrdersErrors,
