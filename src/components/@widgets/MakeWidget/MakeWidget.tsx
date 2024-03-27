@@ -338,6 +338,11 @@ const MakeWidget: FC = () => {
     setState(MakeWidgetState.list);
   };
 
+  const restart = () => {
+    setState(MakeWidgetState.list);
+    dispatch(reset());
+  };
+
   const handleActionButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -352,13 +357,13 @@ const MakeWidget: FC = () => {
     }
 
     if (action === ButtonActions.restart) {
-      dispatch(reset());
+      restart();
     }
   };
 
   const handleBackButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.restart) {
-      dispatch(reset());
+      restart();
     }
 
     if (action === ButtonActions.goBack) {
@@ -385,13 +390,14 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <WrapReview
+          hasEditButton
           isLoading={hasDepositPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
-          backButtonText={t("common.edit")}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
       </Container>
@@ -402,14 +408,15 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <ApproveReview
+          hasEditButton
           isLoading={hasApprovalPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
-          backButtonText={t("common.edit")}
           readableAllowance={readableAllowance}
           token={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -509,7 +516,6 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        isLoading={hasApprovalPending || hasDepositPending}
         isNetworkUnsupported={
           !!web3Error && web3Error instanceof UnsupportedChainIdError
         }

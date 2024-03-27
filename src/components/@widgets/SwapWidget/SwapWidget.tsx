@@ -776,6 +776,10 @@ const SwapWidget: FC = () => {
     dispatch(setCustomServerUrl(null));
   };
 
+  const backToOverview = () => {
+    handleActionButtonClick(ButtonActions.restart);
+  };
+
   if (ordersStatus === "signing") {
     return (
       <Container>
@@ -795,9 +799,7 @@ const SwapWidget: FC = () => {
           token={baseTokenInfo}
           wrappedNativeToken={wrappedNativeTokenInfo}
           onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -890,9 +892,7 @@ const SwapWidget: FC = () => {
               needsApproval={!!baseToken && shouldApprove}
               pairUnavailable={pairUnavailable}
               onButtonClicked={(action) => handleActionButtonClick(action)}
-              isLoading={
-                isConnecting || isRequestingQuotes || hasApprovalPending
-              }
+              isLoading={isConnecting || isRequestingQuotes}
               transactionsTabOpen={transactionsTabIsOpen}
             />
           )}
@@ -919,17 +919,10 @@ const SwapWidget: FC = () => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
+        onCloseButtonClick={backToOverview}
         isHidden={!ordersErrors.length}
       >
-        <ErrorList
-          errors={ordersErrors}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
+        <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
       </Overlay>
       <Overlay
         title={t("information.gasFreeSwaps.title")}
