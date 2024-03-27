@@ -5,30 +5,29 @@ import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
 
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { selectTransactions } from "./transactionsSlice";
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
   SwapEventArgs,
 } from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
-import {selectTransactions} from "./transactionsSlice";
 
 const useHistoricalTransactions = () => {
   // TODO: This is currently broken because of https://github.com/airswap/airswap-web/issues/888
+  // TODO: Clean up and make everything work with new transactions store
 
   const dispatch = useAppDispatch();
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
 
-  const [activeLocalStorageKey] = useState<string>();
-
-  const transactions = useAppSelector(selectTransactions);
+  const transactions: SubmittedTransaction[] = []; // useAppSelector(selectTransactions);
 
   useCustomCompareEffect(
     () => {
@@ -65,18 +64,16 @@ const useHistoricalTransactions = () => {
                 ? await getSwapArgsFromWrappedSwapForLog(swapLog)
                 : (swapLog.args as unknown as SwapEventArgs);
 
-              const matchedTxFromStorage = transactions.find(
-                (tx) => {
-                  if (protocol !== tx.protocol) return false;
+              const matchedTxFromStorage = transactions.find((tx) => {
+                if (protocol !== tx.protocol) return false;
 
-                  const order = (tx as SubmittedTransactionWithOrder).order;
-                  return (
-                    order.nonce === args.nonce.toString() &&
-                    order.signerWallet.toLowerCase() ===
-                      args.signerWallet.toLowerCase()
-                  );
-                }
-              );
+                const order = (tx as SubmittedTransactionWithOrder).order;
+                return (
+                  order.nonce === args.nonce.toString() &&
+                  order.signerWallet.toLowerCase() ===
+                    args.signerWallet.toLowerCase()
+                );
+              });
 
               console.log(matchedTxFromStorage);
               if (matchedTxFromStorage) {

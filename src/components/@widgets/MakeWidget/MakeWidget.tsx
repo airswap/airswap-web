@@ -314,6 +314,7 @@ const MakeWidget: FC = () => {
       deposit(
         shouldDepositNativeTokenAmount!,
         makerTokenInfo!,
+        wrappedNativeToken!,
         chainId!,
         library!
       )

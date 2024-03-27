@@ -223,7 +223,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const depositNativeToken = async () => {
-    deposit(shouldDepositNativeTokenAmount!, senderToken!, chainId!, library!);
+    deposit(
+      shouldDepositNativeTokenAmount!,
+      senderToken!,
+      wrappedNativeToken!,
+      chainId!,
+      library!
+    );
   };
 
   const restart = () => {

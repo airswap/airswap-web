@@ -1,8 +1,10 @@
 import {
   SubmittedApprovalTransaction,
+  SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedRFQOrder,
   SubmittedTransaction,
+  SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -10,6 +12,10 @@ export const isApprovalTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedApprovalTransaction =>
   transaction.type === "Approval";
+
+export const isCancelTransaction = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedCancellation => transaction.type === "Cancel";
 
 export const isDepositTransaction = (
   transaction: SubmittedTransaction
@@ -30,3 +36,12 @@ export const isLastLookOrderTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedRFQOrder =>
   transaction.type === "Order" && transaction.protocol === "last-look-erc20";
+
+export const isOrderTransaction = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedTransactionWithOrder => {
+  return (
+    isRfqOrderTransaction(transaction) ||
+    isLastLookOrderTransaction(transaction)
+  );
+};

@@ -89,6 +89,7 @@ import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
+import useNativeToken from "../../../hooks/useNativeToken";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
 import useReferencePriceSubscriber from "../../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../../hooks/useSwapType";
@@ -211,6 +212,7 @@ const SwapWidget: FC = () => {
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
+  const nativeTokenInfo = useNativeToken(chainId);
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     baseTokenInfo,
@@ -663,7 +665,15 @@ const SwapWidget: FC = () => {
       baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
     setIsSwapping(true);
     try {
-      await dispatch(method(baseAmount, baseTokenInfo!, chainId!, library!));
+      await dispatch(
+        method(
+          baseAmount,
+          nativeTokenInfo,
+          wrappedNativeTokenInfo!,
+          chainId!,
+          library!
+        )
+      );
       setIsSwapping(false);
       setIsWrapping(false);
       setShowOrderSubmitted(true);

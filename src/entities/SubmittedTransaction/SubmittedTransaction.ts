@@ -1,9 +1,9 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
 export interface DepositOrWithdrawOrder {
-  signerToken: TokenInfo;
+  signerToken: string;
   signerAmount: string;
-  senderToken: TokenInfo;
+  senderToken: string;
   senderAmount: string;
 }
 
@@ -48,25 +48,30 @@ export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
   protocol: "last-look-erc20";
 }
 
-export interface LastLookTransaction extends SubmittedLastLookOrder {}
-
-export interface RfqTransaction extends SubmittedRFQOrder {}
-
 export interface SubmittedApprovalTransaction extends SubmittedTransaction {
   type: "Approval";
+  hash: string;
   amount: string;
   token: TokenInfo;
   tokenAddress: string;
 }
 
-export interface SubmittedCancellation extends SubmittedTransaction {}
+export interface SubmittedCancellation extends SubmittedTransaction {
+  hash: string;
+}
 
 export interface SubmittedDepositTransaction extends SubmittedTransaction {
   type: "Deposit";
+  hash: string;
   order: DepositOrWithdrawOrder;
+  senderToken: TokenInfo;
+  signerToken: TokenInfo;
 }
 
 export interface SubmittedWithdrawTransaction extends SubmittedTransaction {
   type: "Withdraw";
+  hash: string;
   order: DepositOrWithdrawOrder;
+  senderToken: TokenInfo;
+  signerToken: TokenInfo;
 }

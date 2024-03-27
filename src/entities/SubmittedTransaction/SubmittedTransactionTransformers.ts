@@ -39,12 +39,14 @@ export const transformToSubmittedDepositTransaction = (
     type: "Deposit",
     order: {
       signerAmount: amount,
-      signerToken: nativeToken,
+      signerToken: nativeToken.address,
       senderAmount: amount,
-      senderToken: wrappedToken,
+      senderToken: wrappedToken.address,
     },
     hash,
     status,
+    signerToken: nativeToken,
+    senderToken: wrappedToken,
     timestamp: Date.now(),
   };
 };
@@ -60,13 +62,15 @@ export const transformToSubmittedWithdrawTransaction = (
     type: "Withdraw",
     order: {
       signerAmount: amount,
-      signerToken: wrappedToken,
+      signerToken: wrappedToken.address,
       senderAmount: amount,
-      senderToken: nativeToken,
+      senderToken: nativeToken.address,
     },
     hash,
     status,
     timestamp: Date.now(),
+    signerToken: wrappedToken,
+    senderToken: nativeToken,
   };
 };
 

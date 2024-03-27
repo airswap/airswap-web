@@ -6,9 +6,9 @@ import {
   TokenInfo,
 } from "@airswap/utils";
 import { Web3Provider, TransactionReceipt } from "@ethersproject/providers";
-import { createAsyncThunk, Dispatch } from "@reduxjs/toolkit";
+import { Dispatch } from "@reduxjs/toolkit";
 
-import { AppDispatch, RootState } from "../../app/store";
+import { AppDispatch } from "../../app/store";
 import {
   notifyApproval,
   notifyDeposit,
@@ -65,8 +65,6 @@ import {
   setReRequestTimerId,
   setStatus,
 } from "./ordersSlice";
-
-// TODO: Imports can not be done because of circular dependencies
 
 const failTransaction = (
   hash: string,
@@ -127,16 +125,21 @@ export const handleSubmittedDepositOrder = (
     return;
   }
 
-  const amount = toRoundedAtomicString(
-    transaction.order.senderAmount,
-    transaction.order.senderToken.decimals
-  );
-
   dispatch(mineTransaction({ hash: transaction.hash }));
+
+  // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
+
   dispatch(
     incrementBalanceBy({
-      tokenAddress: transaction.order.senderToken.address,
-      amount: amount,
+      tokenAddress: transaction.signerToken.address,
+      amount: transaction.order.signerAmount,
+    })
+  );
+
+  dispatch(
+    decrementBalanceBy({
+      tokenAddress: transaction.senderToken.address,
+      amount: transaction.order.senderAmount,
     })
   );
 
@@ -158,16 +161,21 @@ export const handleSubmittedWithdrawOrder = (
     return;
   }
 
-  const amount = toRoundedAtomicString(
-    transaction.order.senderAmount,
-    transaction.order.senderToken.decimals
+  dispatch(mineTransaction({ hash: transaction.hash }));
+
+  // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
+
+  dispatch(
+    incrementBalanceBy({
+      tokenAddress: transaction.signerToken.address,
+      amount: transaction.order.signerAmount,
+    })
   );
 
-  dispatch(mineTransaction({ hash: transaction.hash }));
   dispatch(
     decrementBalanceBy({
-      tokenAddress: transaction.order.senderToken.address,
-      amount: amount,
+      tokenAddress: transaction.senderToken.address,
+      amount: transaction.order.senderAmount,
     })
   );
 
@@ -219,8 +227,9 @@ export const handleOrderError = (dispatch: Dispatch, error: any) => {
 
 export const deposit =
   (
-    senderAmount: string,
-    senderToken: TokenInfo,
+    amount: string,
+    nativeToken: TokenInfo,
+    wrappedNativeToken: TokenInfo,
     chainId: number,
     provider: Web3Provider
   ) =>
@@ -230,26 +239,24 @@ export const deposit =
     try {
       const tx = await depositETH(
         chainId,
-        senderAmount,
-        senderToken.decimals,
+        amount,
+        nativeToken.decimals,
         provider
       );
 
       if (!tx.hash) {
-        console.error("Approval transaction hash is missing.");
+        console.error("Deposit transaction hash is missing.");
 
         dispatch(setStatus("failed"));
 
         return;
       }
 
-      const amount = toAtomicString(senderAmount, senderToken.decimals);
-
       const transaction = transformToSubmittedDepositTransaction(
         tx.hash,
-        senderToken,
-        nativeCurrency[chainId],
-        amount
+        nativeToken,
+        wrappedNativeToken,
+        toAtomicString(amount, nativeToken.decimals)
       );
 
       dispatch(setStatus("idle"));
@@ -262,37 +269,37 @@ export const deposit =
 
 export const withdraw =
   (
-    senderAmount: string,
-    senderToken: TokenInfo,
+    amount: string,
+    nativeToken: TokenInfo,
+    wrappedNativeToken: TokenInfo,
     chainId: number,
     provider: Web3Provider
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
+    console.log(nativeToken, wrappedNativeToken);
     dispatch(setStatus("signing"));
 
     try {
       const tx = await withdrawETH(
         chainId,
-        senderAmount,
-        senderToken.decimals,
+        amount,
+        wrappedNativeToken.decimals,
         provider
       );
 
       if (!tx.hash) {
-        console.error("Approval transaction hash is missing.");
+        console.error("Withdraw transaction hash is missing.");
 
         dispatch(setStatus("failed"));
 
         return;
       }
 
-      const amount = toAtomicString(senderAmount, senderToken.decimals);
-
       const transaction = transformToSubmittedWithdrawTransaction(
         tx.hash,
-        nativeCurrency[chainId],
-        senderToken,
-        amount
+        nativeToken,
+        wrappedNativeToken,
+        toAtomicString(amount, wrappedNativeToken.decimals)
       );
 
       dispatch(setStatus("idle"));

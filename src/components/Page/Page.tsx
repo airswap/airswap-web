@@ -46,7 +46,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   } = useContext(InterfaceContext);
 
   useTransactions();
-  useHistoricalTransactions();
+  // useHistoricalTransactions();
   useTransactionsFilterFromLocalStorage();
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);

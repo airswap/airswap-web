@@ -76,7 +76,6 @@ const AnimatedWalletTransaction = ({
           duration: borderAnimationDuration,
         }}
         transaction={transaction}
-        tokens={tokens}
         chainId={chainId}
       />
     </Container>

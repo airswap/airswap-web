@@ -112,8 +112,8 @@ export const notifyDeposit = (transaction: SubmittedDepositTransaction) => {
         onClose={() => toast.dismiss(t.id)}
         type="Deposit"
         transaction={transaction}
-        senderToken={transaction.order.senderToken}
-        signerToken={transaction.order.signerToken}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
       />
     ),
     {
@@ -129,8 +129,8 @@ export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
         onClose={() => toast.dismiss(t.id)}
         type="Deposit"
         transaction={transaction}
-        senderToken={transaction.order.senderToken}
-        signerToken={transaction.order.signerToken}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
       />
     ),
     {
