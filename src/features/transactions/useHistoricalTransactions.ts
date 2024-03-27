@@ -14,7 +14,6 @@ import {
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
-  getTransactionsLocalStorageKey,
   SwapEventArgs,
 } from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
@@ -175,11 +174,11 @@ const useHistoricalTransactions = () => {
       return;
     }
 
-    const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
-
-    if (localStorageKey === activeLocalStorageKey) {
-      return;
-    }
+    // const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
+    //
+    // if (localStorageKey === activeLocalStorageKey) {
+    //   return;
+    // }
 
     // setActiveLocalStorageKey(localStorageKey);
 

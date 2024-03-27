@@ -4,12 +4,11 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { selectAllTokenInfo } from "../metadata/metadataSlice";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
   getLocalStorageTransactions,
-  getTransactionsV2LocalStorageKey,
   listenForTransactionReceipt,
+  setLocalStorageTransactions,
 } from "./transactionsUtils";
 
 export const useTransactions = (): void => {
@@ -28,8 +27,7 @@ export const useTransactions = (): void => {
       return;
     }
 
-    const localStorageKey = getTransactionsV2LocalStorageKey(account, chainId);
-    localStorage.setItem(localStorageKey, JSON.stringify(transactions));
+    setLocalStorageTransactions(account, chainId, transactions);
 
     console.log(transactions);
 

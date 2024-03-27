@@ -1,9 +1,6 @@
 import { TokenInfo } from "@airswap/utils";
 
 import { store } from "../../app/store";
-import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { TransactionsState } from "../transactions/transactionsSlice";
-import { getTransactionsLocalStorageKey } from "../transactions/transactionsUtils";
 import {
   getActiveTokensLocalStorageKey,
   getAllTokensLocalStorageKey,

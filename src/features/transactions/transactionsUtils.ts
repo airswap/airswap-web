@@ -30,7 +30,6 @@ import {
 import { mineTransaction, revertTransaction } from "./transactionsActions";
 import { updateTransaction } from "./transactionsHelpers";
 
-const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
 
 // Event from interface for reference.
@@ -55,36 +54,6 @@ export type SwapEventArgs = {
   senderWallet: string;
   senderToken: string;
   senderAmount: EthersBigNumber;
-};
-
-/**
- * When swapping using the wrapper (i.e. when making a swap to/from ETH and not
- * WETH), the `senderWallet` will be the address of the wrapper contract. This
- * function finds the `WrappedSwapFor` log which is also emitted and contains
- * the 'true' sender.
- * @param log The `Swap` log with wrapper as senderWallet
- * @returns Promise<String> The original senderWallet
- */
-const getSenderWalletForWrapperSwapLog: (
-  log: EthersEvent
-) => Promise<string> = async (log) => {
-  const receipt = await log.getTransactionReceipt();
-  // Find the `WrappedSwapFor` log that must have been emitted too.
-  for (let i = 0; i < receipt.logs.length; i++) {
-    try {
-      const parsedLog = wrapperInterface.parseLog(receipt.logs[i]);
-      if (parsedLog.name === "WrappedSwapFor") {
-        return parsedLog.args.senderWallet.toLowerCase();
-      }
-    } catch (e) {
-      // Most likely trying to decode logs from other contract, e.g. ERC20
-      // We can ignore the error and check the next log.
-      continue;
-    }
-  }
-  throw new Error(
-    `Could not find WrappedSwapFor event in tx with hash: ${log.transactionHash}`
-  );
 };
 
 const getSwapArgsFromWrappedSwapForLog: (
@@ -212,22 +181,27 @@ export const getTransactionsLocalStorageKey: (
   walletAddress: string,
   chainId: number
 ) => string = (walletAddress, chainId) =>
-  `airswap/transactions/${walletAddress}/${chainId}`;
-
-export const getTransactionsV2LocalStorageKey: (
-  walletAddress: string,
-  chainId: number
-) => string = (walletAddress, chainId) =>
   `airswap/transactions-v2/${walletAddress}/${chainId}`;
 
 export const getLocalStorageTransactions = (
   account: string,
   chainId: number
 ): SubmittedTransaction[] => {
-  const key = getTransactionsV2LocalStorageKey(account, chainId);
+  const key = getTransactionsLocalStorageKey(account, chainId);
   const value = localStorage.getItem(key);
 
   return value ? parseJsonArray<SubmittedTransaction>(value) : [];
+};
+
+export const setLocalStorageTransactions = (
+  account: string,
+  chainId: number,
+  transactions: SubmittedTransaction[]
+): void => {
+  const key = getTransactionsLocalStorageKey(account, chainId);
+  const prunedTransactions = transactions.slice(0, 20);
+
+  localStorage.setItem(key, JSON.stringify(prunedTransactions));
 };
 
 export const filterTransactionByDate = (
@@ -240,7 +214,6 @@ export const filterTransactionByDate = (
   }
 
   return transaction.timestamp > timestamp;
-  // return transaction.timestamp + 7170349144 > timestamp;
 };
 
 export const handleTransactionReceipt = (
@@ -248,7 +221,10 @@ export const handleTransactionReceipt = (
   transaction: SubmittedTransaction,
   dispatch: AppDispatch
 ): void => {
+  console.log("---New Transaction---");
+  console.log(receipt);
   console.log(transaction);
+
   dispatch(
     updateTransaction({
       ...transaction,
@@ -282,13 +258,14 @@ const getTransactionReceipt = async (
 ): Promise<TransactionReceipt | undefined> => {
   try {
     const receipt = await library.getTransactionReceipt(hash);
-    console.log(receipt);
     if (receipt?.status !== undefined) {
       return receipt;
     }
 
     return undefined;
   } catch {
+    console.error("Error while fetching transaction receipt");
+
     return undefined;
   }
 };
@@ -304,14 +281,13 @@ export const listenForTransactionReceipt = async (
     hash = transaction.order.nonce;
   }
 
-  console.log(hash);
-
   if (!hash) {
+    console.error("Transaction hash is not found");
+
     return;
   }
 
   const receipt = await getTransactionReceipt(hash, library);
-  console.log(receipt);
 
   if (receipt?.status !== undefined) {
     handleTransactionReceipt(receipt, transaction, dispatch);
@@ -321,7 +297,6 @@ export const listenForTransactionReceipt = async (
 
   library.once(hash, async () => {
     const receipt = await getTransactionReceipt(hash as string, library);
-    console.log(receipt);
 
     if (receipt?.status !== undefined) {
       handleTransactionReceipt(receipt, transaction, dispatch);
@@ -330,7 +305,6 @@ export const listenForTransactionReceipt = async (
 };
 
 export {
-  getSenderWalletForWrapperSwapLog,
   getSwapArgsFromWrappedSwapForLog,
   checkPendingTransactionState,
   isTransactionWithOrder,
