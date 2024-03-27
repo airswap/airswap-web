@@ -183,6 +183,7 @@ const LastLookProvider: FC = ({ children }) => {
       const senderToken = tokens.find((t) => t.address === order.senderToken);
 
       const transaction = transformToSubmittedLastLookOrder(
+        undefined,
         order,
         signerToken!,
         senderToken!

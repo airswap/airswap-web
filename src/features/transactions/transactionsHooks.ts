@@ -4,6 +4,9 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { sortSubmittedTransactionsByExpiry } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { getUniqueArrayChildren } from "../../helpers/array";
+import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
   getLocalStorageTransactions,
@@ -14,12 +17,16 @@ import {
 export const useTransactions = (): void => {
   const dispatch = useAppDispatch();
 
-  const { account, library, chainId } = useWeb3React();
+  const { chainId, account, library } = useWeb3React();
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 
   const [activeListenerHashes, setActiveListenerHashes] = useState<string[]>(
     []
+  );
+  const [historicalTransactions] = useHistoricalTransactions(
+    chainId,
+    account || undefined
   );
 
   useEffect(() => {
@@ -53,4 +60,30 @@ export const useTransactions = (): void => {
 
     dispatch(setTransactions(getLocalStorageTransactions(account, chainId)));
   }, [account, chainId]);
+
+  useEffect(() => {
+    if (!historicalTransactions) {
+      return;
+    }
+
+    if (
+      historicalTransactions.chainId === chainId &&
+      historicalTransactions.account === account
+    ) {
+      const updatedTransactions = [
+        ...historicalTransactions.transactions,
+        ...transactions,
+      ];
+      // Remove duplicates, in favour of store transactions.
+      const uniqueTransactions = getUniqueArrayChildren<SubmittedTransaction>(
+        updatedTransactions,
+        "hash"
+      );
+      const sortedTransactions = uniqueTransactions.sort(
+        sortSubmittedTransactionsByExpiry
+      );
+
+      dispatch(setTransactions(sortedTransactions));
+    }
+  }, [historicalTransactions]);
 };
