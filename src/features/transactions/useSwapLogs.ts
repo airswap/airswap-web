@@ -14,26 +14,28 @@ const useSwapLogs = () => {
       wrapperContract: Contract,
       account: string
     ) => {
+      // TODO: https://github.com/airswap/airswap-web/issues/888
+
       const signerSwapFilter = swapContract.filters.SwapERC20(
-        null, // nonce
-        account, // signerWallet
-        null, // signerToken
-        null, // signerAmount,
-        null, // protocol fee
-        null, // senderWallet
-        null, // senderToken
-        null // senderAmount
+          null, // nonce
+          account, // signerWallet
+          // null, // signerToken
+          // null, // signerAmount,
+          // null, // protocol fee
+          // null, // senderWallet
+          // null, // senderToken
+          // null // senderAmount
       );
 
       const senderSwapFilter = swapContract.filters.SwapERC20(
         null, // nonce
-        null, // signerWallet
-        null, // signerToken
-        null, // signerAmount,cd
-        null, // protocol fee
-        account, // senderWallet
-        null, // senderToken
-        null // senderAmount
+          null, // signerWallet
+          // null, // signerToken
+          // null, // signerAmount,cd
+          // null, // protocol fee
+          // account, // senderWallet
+          // null, // senderToken
+          // null // senderAmount
       );
 
       const wrapperSwapFilter = wrapperContract.filters.WrappedSwapFor(

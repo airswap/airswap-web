@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
 
-import { useAppDispatch } from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
   SubmittedTransaction,
@@ -17,15 +17,18 @@ import {
   SwapEventArgs,
 } from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
+import {selectTransactions} from "./transactionsSlice";
 
 const useHistoricalTransactions = () => {
+  // TODO: This is currently broken because of https://github.com/airswap/airswap-web/issues/888
+
   const dispatch = useAppDispatch();
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
 
   const [activeLocalStorageKey] = useState<string>();
 
-  const localStorageTransactions: { all: SubmittedTransaction[] } = { all: [] };
+  const transactions = useAppSelector(selectTransactions);
 
   useCustomCompareEffect(
     () => {
@@ -38,7 +41,7 @@ const useHistoricalTransactions = () => {
       )
         return;
 
-      const localTransactionsCopy = { all: [...localStorageTransactions.all] };
+      const localTransactionsCopy = [...transactions];
 
       const updateStorage: () => void = async () => {
         let lastLookSwapLogs: Event[] = [],
@@ -62,7 +65,7 @@ const useHistoricalTransactions = () => {
                 ? await getSwapArgsFromWrappedSwapForLog(swapLog)
                 : (swapLog.args as unknown as SwapEventArgs);
 
-              const matchedTxFromStorage = localStorageTransactions.all.find(
+              const matchedTxFromStorage = transactions.find(
                 (tx) => {
                   if (protocol !== tx.protocol) return false;
 
@@ -74,6 +77,8 @@ const useHistoricalTransactions = () => {
                   );
                 }
               );
+
+              console.log(matchedTxFromStorage);
               if (matchedTxFromStorage) {
                 // We already knew this one had succeeded.
                 if (matchedTxFromStorage.status === "succeeded") return;
@@ -119,7 +124,7 @@ const useHistoricalTransactions = () => {
                     s: "-",
                   },
                 };
-                localTransactionsCopy.all.push(newTx);
+                localTransactionsCopy.push(newTx);
               }
             })
           );
@@ -134,11 +139,11 @@ const useHistoricalTransactions = () => {
         // setLocalStorageTransactions(localTransactionsCopy);
         // dispatch(setTransactions(localTransactionsCopy?.all || []));
 
-        localTransactionsCopy.all
-          .filter((tx) => tx.status === "processing")
-          .forEach((tx) => {
-            checkPendingTransactionState(tx, dispatch, library);
-          });
+        // localTransactionsCopy.all
+        //   .filter((tx) => tx.status === "processing")
+        //   .forEach((tx) => {
+        //     checkPendingTransactionState(tx, dispatch, library);
+        //   });
       };
 
       updateStorage();
@@ -148,7 +153,7 @@ const useHistoricalTransactions = () => {
       chainId,
       swapLogs,
       swapLogStatus,
-      localStorageTransactions,
+      transactions,
       // setLocalStorageTransactions,
       // dispatch,
       library,
@@ -168,22 +173,6 @@ const useHistoricalTransactions = () => {
       );
     }
   );
-
-  useEffect(() => {
-    if (!chainId || !account) {
-      return;
-    }
-
-    // const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
-    //
-    // if (localStorageKey === activeLocalStorageKey) {
-    //   return;
-    // }
-
-    // setActiveLocalStorageKey(localStorageKey);
-
-    // dispatch(setTransactions(localStorageTransactions?.all || []));
-  }, [localStorageTransactions]);
 };
 
 export default useHistoricalTransactions;
