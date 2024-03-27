@@ -17,7 +17,5 @@ export const updateTransaction =
     const updatedTransactions = [...transactions];
     updatedTransactions.splice(transactionIndex, 1, updatedTransaction);
 
-    console.log(updatedTransactions);
-
     dispatch(setTransactions(updatedTransactions));
   };

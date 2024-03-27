@@ -221,10 +221,6 @@ export const handleTransactionReceipt = (
   transaction: SubmittedTransaction,
   dispatch: AppDispatch
 ): void => {
-  console.log("---New Transaction---");
-  console.log(receipt);
-  console.log(transaction);
-
   dispatch(
     updateTransaction({
       ...transaction,

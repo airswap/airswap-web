@@ -208,7 +208,6 @@ const LastLookProvider: FC = ({ children }) => {
       const { locator, order } = params;
       const server = connectedServers[locator];
       try {
-        console.log(order);
         return server.considerOrderERC20(order);
       } catch (e) {
         console.error("Server unable to consider order: ", e);

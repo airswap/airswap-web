@@ -29,8 +29,6 @@ export const useTransactions = (): void => {
 
     setLocalStorageTransactions(account, chainId, transactions);
 
-    console.log(transactions);
-
     const newListenerHashes = transactions
       .filter(
         (transaction) =>

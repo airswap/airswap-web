@@ -87,6 +87,7 @@ import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import useAllowance from "../../../hooks/useAllowance";
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
+import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
 import useNativeToken from "../../../hooks/useNativeToken";
@@ -94,6 +95,7 @@ import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
 import useReferencePriceSubscriber from "../../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../../hooks/useSwapType";
 import useTokenInfo from "../../../hooks/useTokenInfo";
+import useWithdrawalPending from "../../../hooks/useWithdrawalPending";
 import { AppRoutes } from "../../../routes";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
@@ -221,6 +223,10 @@ const SwapWidget: FC = () => {
   const shouldApprove = !hasSufficientAllowance && swapType !== "wrapOrUnwrap";
 
   const hasApprovalPending = useApprovalPending(baseToken);
+  const hasDepositPending = useDepositPending();
+  const hasWithdrawalPending = useWithdrawalPending();
+  const hasDepositOrWithdrawalPending =
+    hasDepositPending || hasWithdrawalPending;
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
@@ -251,7 +257,6 @@ const SwapWidget: FC = () => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
       setIsSwapping(false);
-      setIsWrapping(false);
       setIsRequestingQuotes(false);
       setAllowanceFetchFailed(false);
       setPairUnavailable(false);
@@ -324,6 +329,20 @@ const SwapWidget: FC = () => {
       requestQuotes();
     }
   }, []);
+
+  useEffect(() => {
+    if (hasDepositOrWithdrawalPending) {
+      setShowOrderSubmitted(true);
+      setIsWrapping(false);
+    }
+  }, [hasDepositOrWithdrawalPending]);
+
+  useEffect(() => {
+    if (activeTransaction?.status === "processing") {
+      setShowOrderSubmitted(true);
+      setIsSwapping(false);
+    }
+  }, [activeTransaction]);
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     const baseRoute = AppRoutes.swap;
@@ -534,7 +553,7 @@ const SwapWidget: FC = () => {
       }
       LastLook.unsubscribeAllServers();
 
-      dispatch(
+      await dispatch(
         take(
           bestTradeOption!.order!,
           quoteTokenInfo!,
@@ -543,8 +562,6 @@ const SwapWidget: FC = () => {
           swapType === "swapWithWrap" ? "Wrapper" : "Swap"
         )
       );
-      setIsSwapping(false);
-      setShowOrderSubmitted(true);
     } catch (e) {
       console.error("Error taking order:", e);
     }
@@ -663,31 +680,21 @@ const SwapWidget: FC = () => {
   const doWrap = async () => {
     const method =
       baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
-    setIsSwapping(true);
-    try {
-      await dispatch(
-        method(
-          baseAmount,
-          nativeTokenInfo,
-          wrappedNativeTokenInfo!,
-          chainId!,
-          library!
-        )
-      );
-      setIsSwapping(false);
-      setIsWrapping(false);
-      setShowOrderSubmitted(true);
-    } catch (e) {
-      // user cancelled metamask dialog
-      setIsSwapping(false);
-      setIsWrapping(false);
-    }
+
+    dispatch(
+      method(
+        baseAmount,
+        nativeTokenInfo,
+        wrappedNativeTokenInfo!,
+        chainId!,
+        library!
+      )
+    );
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
-        setIsWrapping(false);
         setPairUnavailable(false);
         dispatch(clearTradeTerms());
         dispatch(clear());

@@ -221,7 +221,7 @@ export const handleOrderError = (dispatch: Dispatch, error: any) => {
   if (appError.type === AppErrorType.rejectedByUser) {
     notifyRejectedByUserError();
   } else {
-    // dispatch(setErrors([appError]));
+    dispatch(setErrors([appError]));
   }
 };
 
@@ -276,7 +276,6 @@ export const withdraw =
     provider: Web3Provider
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
-    console.log(nativeToken, wrappedNativeToken);
     dispatch(setStatus("signing"));
 
     try {
@@ -357,8 +356,6 @@ export const request =
         () => dispatch(request(params)),
         timeTilReRequest
       );
-
-      console.log(orders);
 
       dispatch(setReRequestTimerId(reRequestTimerId));
       dispatch(setOrders(orders));

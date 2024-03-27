@@ -6,14 +6,12 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { AppErrorType } from "../../../errors/appError";
 import {
   fetchIndexerUrls,
   getFilteredOrders,

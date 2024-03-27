@@ -75,7 +75,6 @@ const useHistoricalTransactions = () => {
                 );
               });
 
-              console.log(matchedTxFromStorage);
               if (matchedTxFromStorage) {
                 // We already knew this one had succeeded.
                 if (matchedTxFromStorage.status === "succeeded") return;
