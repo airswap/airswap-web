@@ -5,10 +5,12 @@ import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
-import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { selectTransactions, setTransactions } from "./transactionsSlice";
+import {
+  SubmittedTransaction,
+  SubmittedTransactionWithOrder,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
@@ -16,18 +18,15 @@ import {
   SwapEventArgs,
 } from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
-import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 
 const useHistoricalTransactions = () => {
+  const dispatch = useAppDispatch();
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
-  const {
-    transactions: localStorageTransactions,
-    setTransactions: setLocalStorageTransactions,
-  } = useTransactionsFromLocalStorage();
-  const dispatch = useAppDispatch();
 
-  const [activeLocalStorageKey, setActiveLocalStorageKey] = useState<string>();
+  const [activeLocalStorageKey] = useState<string>();
+
+  const localStorageTransactions: { all: SubmittedTransaction[] } = { all: [] };
 
   useCustomCompareEffect(
     () => {
@@ -133,8 +132,8 @@ const useHistoricalTransactions = () => {
           reconcileLogs("request-for-quote-erc20", wrappedSwapLogs, true),
         ]);
 
-        setLocalStorageTransactions(localTransactionsCopy);
-        dispatch(setTransactions(localTransactionsCopy?.all || []));
+        // setLocalStorageTransactions(localTransactionsCopy);
+        // dispatch(setTransactions(localTransactionsCopy?.all || []));
 
         localTransactionsCopy.all
           .filter((tx) => tx.status === "processing")
@@ -151,8 +150,8 @@ const useHistoricalTransactions = () => {
       swapLogs,
       swapLogStatus,
       localStorageTransactions,
-      setLocalStorageTransactions,
-      dispatch,
+      // setLocalStorageTransactions,
+      // dispatch,
       library,
     ],
     (
@@ -182,9 +181,9 @@ const useHistoricalTransactions = () => {
       return;
     }
 
-    setActiveLocalStorageKey(localStorageKey);
+    // setActiveLocalStorageKey(localStorageKey);
 
-    dispatch(setTransactions(localStorageTransactions?.all || []));
+    // dispatch(setTransactions(localStorageTransactions?.all || []));
   }, [localStorageTransactions]);
 };
 
