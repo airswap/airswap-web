@@ -5,7 +5,7 @@ import { OrderERC20, Levels, TokenInfo } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
-import { SubmittedTransaction } from "../../../../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
 import { InfoSubHeading } from "../../../../Typography/Typography";

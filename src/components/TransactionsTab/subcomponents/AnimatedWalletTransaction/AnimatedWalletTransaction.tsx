@@ -5,7 +5,7 @@ import { TokenInfo } from "@airswap/utils";
 import { useReducedMotion } from "framer-motion";
 import { useTheme } from "styled-components";
 
-import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import WalletTransaction from "../WalletTransaction/WalletTransaction";
 import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.styles";
 import { Container } from "./AnimatedWalletTransaction.styles";
@@ -76,7 +76,6 @@ const AnimatedWalletTransaction = ({
           duration: borderAnimationDuration,
         }}
         transaction={transaction}
-        tokens={tokens}
         chainId={chainId}
       />
     </Container>

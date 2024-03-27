@@ -8,7 +8,8 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch } from "../../app/hooks";
 import { WalletProvider } from "../../constants/supportedWalletProviders";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { resetOrders } from "../../features/orders/ordersSlice";
+import { clear, setResetStatus } from "../../features/orders/ordersSlice";
+import { useTransactions } from "../../features/transactions/transactionsHooks";
 import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
 import useTransactionsFilterFromLocalStorage from "../../features/transactions/useTransactionsFilterFromLocalStorage";
 import { Wallet } from "../../features/wallet/Wallet";
@@ -44,14 +45,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     setShowWalletList,
   } = useContext(InterfaceContext);
 
-  useHistoricalTransactions();
+  useTransactions();
+  // useHistoricalTransactions();
   useTransactionsFilterFromLocalStorage();
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
   const reset = () => {
     setShowMobileToolbar(false);
-    dispatch(resetOrders());
+    dispatch(clear());
+    dispatch(setResetStatus());
   };
 
   const handleAirswapButtonClick = () => {

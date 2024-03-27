@@ -4,12 +4,15 @@ import { findTokenByAddress, FullOrderERC20, TokenInfo } from "@airswap/utils";
 
 import i18n from "i18next";
 
+import nativeCurrency from "../../constants/nativeCurrency";
 import {
-  SubmittedApproval,
+  SubmittedApprovalTransaction,
+  SubmittedDepositTransaction,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
+  SubmittedWithdrawTransaction,
   TransactionType,
-} from "../../features/transactions/transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import ConfirmationToast from "./ConfirmationToast";
 import CopyToast from "./CopyToast";
@@ -66,7 +69,8 @@ export const notifyTransaction = (
       );
     }
   } else {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
+    const tx: SubmittedApprovalTransaction =
+      transaction as SubmittedApprovalTransaction;
     token = findTokenByAddress(tx.tokenAddress, tokens);
     toast(
       (t) => (
@@ -83,6 +87,73 @@ export const notifyTransaction = (
       }
     );
   }
+};
+
+export const notifyApproval = (transaction: SubmittedApprovalTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type="Approval"
+        transaction={transaction}
+        approvalToken={transaction.token}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyDeposit = (transaction: SubmittedDepositTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type="Deposit"
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type="Deposit"
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyOrder = (transaction: SubmittedTransactionWithOrder) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type="Order"
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
 };
 
 export const notifyError = (props: { heading: string; cta: string }) => {

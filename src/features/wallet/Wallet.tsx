@@ -1,13 +1,10 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-import { useBeforeunload } from "react-beforeunload";
 import { useTranslation } from "react-i18next";
 
 import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-
-import { Contract } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
@@ -41,19 +38,18 @@ import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
+} from "../metadata/metadataActions";
+import {
   selectActiveTokens,
   selectAllTokenInfo,
   selectMetaDataReducer,
 } from "../metadata/metadataSlice";
-import { fetchSupportedTokens } from "../registry/registrySlice";
-import subscribeToSwapEvents from "../transactions/swapEventSubscriber";
+import { fetchSupportedTokens } from "../registry/registryActions";
 import {
   selectFilteredTransactions,
   selectPendingTransactions,
-  selectTransactions,
   setFilter,
 } from "../transactions/transactionsSlice";
-import subscribeToWrapEvents from "../transactions/wrapEventSubscriber";
 import {
   clearLastAccount,
   loadLastAccount,
@@ -100,55 +96,10 @@ export const Wallet: FC<WalletPropsType> = ({
   const [connector, setConnector] = useState<AbstractConnector>();
   const [provider, setProvider] = useState<WalletProvider>();
   const [activated, setActivated] = useState(false);
-  const [swapContract, setSwapContract] = useState<Contract>();
-  const [wrapContract, setWrapContract] = useState<Contract>();
 
   const handleClearTransactionsChange = (type: ClearOrderType) => {
     dispatch(setFilter(type));
   };
-
-  useBeforeunload(() => {
-    if (swapContract) {
-      swapContract.removeAllListeners("SwapERC20");
-    }
-    if (wrapContract) {
-      wrapContract.removeAllListeners("Withdrawal");
-      wrapContract.removeAllListeners("Deposit");
-    }
-  });
-
-  useEffect(() => {
-    if (library && chainId && account && swapContract && wrapContract) {
-      subscribeToSwapEvents({
-        account: account!,
-        swapContract,
-        library,
-        chainId,
-        dispatch,
-      });
-      subscribeToWrapEvents({
-        wrapContract,
-        library,
-        dispatch,
-      });
-      return () => {
-        if (swapContract) {
-          swapContract.removeAllListeners("SwapERC20");
-        }
-        if (wrapContract) {
-          wrapContract.removeAllListeners("Withdrawal");
-          wrapContract.removeAllListeners("Deposit");
-        }
-      };
-    }
-  }, [dispatch, library, chainId, account, swapContract, wrapContract]);
-
-  useEffect(() => {
-    if (chainId && account && library) {
-      setSwapContract(SwapERC20.getContract(library, chainId));
-      setWrapContract(WETH.getContract(library, chainId));
-    }
-  }, [library, chainId, account]);
 
   // Auto-activate if user has connected before on (first render)
   useEffect(() => {

@@ -1,19 +1,35 @@
 import { SwapERC20__factory } from "@airswap/swap-erc20/typechain/factories/contracts";
 import { Wrapper__factory } from "@airswap/wrapper/typechain/factories/contracts";
 import { Interface } from "@ethersproject/abi";
+import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 import { Web3Provider } from "@ethersproject/providers";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
 import { Event as EthersEvent, BigNumber as EthersBigNumber } from "ethers";
 
-import { mineTransaction, revertTransaction } from "./transactionActions";
+import { AppDispatch } from "../../app/store";
 import {
   StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
-} from "./transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  isApprovalTransaction,
+  isDepositTransaction,
+  isLastLookOrderTransaction,
+  isRfqOrderTransaction,
+  isWithdrawTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { parseJsonArray } from "../../helpers/array";
+import {
+  handleApproveTransaction,
+  handleSubmittedDepositOrder,
+  handleSubmittedRFQOrder,
+  handleSubmittedWithdrawOrder,
+} from "../orders/ordersActions";
+import { mineTransaction, revertTransaction } from "./transactionsActions";
+import { updateTransaction } from "./transactionsHelpers";
 
-const wrapperInterface = new Interface(Wrapper__factory.abi);
 const swapInterface = new Interface(SwapERC20__factory.abi);
 
 // Event from interface for reference.
@@ -38,36 +54,6 @@ export type SwapEventArgs = {
   senderWallet: string;
   senderToken: string;
   senderAmount: EthersBigNumber;
-};
-
-/**
- * When swapping using the wrapper (i.e. when making a swap to/from ETH and not
- * WETH), the `senderWallet` will be the address of the wrapper contract. This
- * function finds the `WrappedSwapFor` log which is also emitted and contains
- * the 'true' sender.
- * @param log The `Swap` log with wrapper as senderWallet
- * @returns Promise<String> The original senderWallet
- */
-const getSenderWalletForWrapperSwapLog: (
-  log: EthersEvent
-) => Promise<string> = async (log) => {
-  const receipt = await log.getTransactionReceipt();
-  // Find the `WrappedSwapFor` log that must have been emitted too.
-  for (let i = 0; i < receipt.logs.length; i++) {
-    try {
-      const parsedLog = wrapperInterface.parseLog(receipt.logs[i]);
-      if (parsedLog.name === "WrappedSwapFor") {
-        return parsedLog.args.senderWallet.toLowerCase();
-      }
-    } catch (e) {
-      // Most likely trying to decode logs from other contract, e.g. ERC20
-      // We can ignore the error and check the next log.
-      continue;
-    }
-  }
-  throw new Error(
-    `Could not find WrappedSwapFor event in tx with hash: ${log.transactionHash}`
-  );
 };
 
 const getSwapArgsFromWrappedSwapForLog: (
@@ -195,7 +181,28 @@ export const getTransactionsLocalStorageKey: (
   walletAddress: string,
   chainId: number
 ) => string = (walletAddress, chainId) =>
-  `airswap/transactions/${walletAddress}/${chainId}`;
+  `airswap/transactions-v2/${walletAddress}/${chainId}`;
+
+export const getLocalStorageTransactions = (
+  account: string,
+  chainId: number
+): SubmittedTransaction[] => {
+  const key = getTransactionsLocalStorageKey(account, chainId);
+  const value = localStorage.getItem(key);
+
+  return value ? parseJsonArray<SubmittedTransaction>(value) : [];
+};
+
+export const setLocalStorageTransactions = (
+  account: string,
+  chainId: number,
+  transactions: SubmittedTransaction[]
+): void => {
+  const key = getTransactionsLocalStorageKey(account, chainId);
+  const prunedTransactions = transactions.slice(0, 20);
+
+  localStorage.setItem(key, JSON.stringify(prunedTransactions));
+};
 
 export const filterTransactionByDate = (
   transaction: SubmittedTransaction,
@@ -207,11 +214,93 @@ export const filterTransactionByDate = (
   }
 
   return transaction.timestamp > timestamp;
-  // return transaction.timestamp + 7170349144 > timestamp;
+};
+
+export const handleTransactionReceipt = (
+  receipt: TransactionReceipt,
+  transaction: SubmittedTransaction,
+  dispatch: AppDispatch
+): void => {
+  dispatch(
+    updateTransaction({
+      ...transaction,
+      status: receipt.status === 1 ? "succeeded" : "declined",
+    })
+  );
+
+  if (isApprovalTransaction(transaction)) {
+    handleApproveTransaction(transaction, receipt, dispatch);
+  }
+
+  if (isDepositTransaction(transaction)) {
+    handleSubmittedDepositOrder(transaction, receipt, dispatch);
+  }
+
+  if (isWithdrawTransaction(transaction)) {
+    handleSubmittedWithdrawOrder(transaction, receipt, dispatch);
+  }
+
+  if (
+    isRfqOrderTransaction(transaction) ||
+    isLastLookOrderTransaction(transaction)
+  ) {
+    handleSubmittedRFQOrder(transaction, receipt, dispatch);
+  }
+};
+
+const getTransactionReceipt = async (
+  hash: string,
+  library: BaseProvider
+): Promise<TransactionReceipt | undefined> => {
+  try {
+    const receipt = await library.getTransactionReceipt(hash);
+    if (receipt?.status !== undefined) {
+      return receipt;
+    }
+
+    return undefined;
+  } catch {
+    console.error("Error while fetching transaction receipt");
+
+    return undefined;
+  }
+};
+
+export const listenForTransactionReceipt = async (
+  transaction: SubmittedTransaction,
+  library: BaseProvider,
+  dispatch: AppDispatch
+): Promise<void> => {
+  let hash = transaction.hash;
+
+  if (isLastLookOrderTransaction(transaction)) {
+    hash = transaction.order.nonce;
+  }
+
+  if (!hash) {
+    console.error("Transaction hash is not found");
+
+    return;
+  }
+
+  const receipt = await getTransactionReceipt(hash, library);
+
+  if (receipt?.status !== undefined) {
+    handleTransactionReceipt(receipt, transaction, dispatch);
+
+    return;
+  }
+
+  library.once(hash, async () => {
+    const receipt = await getTransactionReceipt(hash as string, library);
+
+    if (receipt?.status !== undefined) {
+      handleTransactionReceipt(receipt, transaction, dispatch);
+    }
+  });
 };
 
 export {
-  getSenderWalletForWrapperSwapLog,
   getSwapArgsFromWrappedSwapForLog,
   checkPendingTransactionState,
   isTransactionWithOrder,

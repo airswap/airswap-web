@@ -17,10 +17,8 @@ import nativeCurrency, {
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppErrorType } from "../../../errors/appError";
 import { selectBalances } from "../../../features/balances/balancesSlice";
-import {
-  fetchIndexerUrls,
-  selectIndexerReducer,
-} from "../../../features/indexer/indexerSlice";
+import { fetchIndexerUrls } from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { createOtcOrder } from "../../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
@@ -33,11 +31,8 @@ import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../../features/metadata/metadataSlice";
-import {
-  approve,
-  deposit,
-  selectOrdersStatus,
-} from "../../../features/orders/ordersSlice";
+import { approve, deposit } from "../../../features/orders/ordersActions";
+import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
   selectUserTokens,
   setUserTokens,
@@ -311,27 +306,19 @@ const MakeWidget: FC = () => {
         ? wrappedNativeToken
         : makerTokenInfo;
 
-    dispatch(
-      approve({
-        token: justifiedToken!,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: makerAmountPlusFee,
-      })
-    );
+    dispatch(approve(makerAmountPlusFee, justifiedToken!, library!, "Swap"));
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: makerTokenInfo!.decimals,
-        provider: library!,
-      })
+    dispatch(
+      deposit(
+        shouldDepositNativeTokenAmount!,
+        makerTokenInfo!,
+        wrappedNativeToken!,
+        chainId!,
+        library!
+      )
     );
-    await unwrapResult(result);
   };
 
   const handleEditButtonClick = () => {

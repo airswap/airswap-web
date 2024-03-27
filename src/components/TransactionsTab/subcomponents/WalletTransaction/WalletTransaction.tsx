@@ -1,19 +1,19 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
 import { formatUnits } from "@ethersproject/units";
 
 import BigNumber from "bignumber.js";
 import { HTMLMotionProps } from "framer-motion";
 
+import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
-  SubmittedApproval,
-  SubmittedCancellation,
-  SubmittedTransactionWithOrder,
-  SubmittedTransaction,
-} from "../../../../features/transactions/transactionsSlice";
-import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
+  isApprovalTransaction,
+  isCancelTransaction,
+  isDepositTransaction,
+  isOrderTransaction,
+  isWithdrawTransaction,
+} from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
@@ -32,10 +32,6 @@ interface WalletTransactionProps extends HTMLMotionProps<"div"> {
    */
   transaction: SubmittedTransaction;
   /**
-   * All token metadata
-   */
-  tokens: TokenInfo[];
-  /**
    * chainId of current Ethereum net
    */
   chainId: number;
@@ -43,7 +39,6 @@ interface WalletTransactionProps extends HTMLMotionProps<"div"> {
 
 const WalletTransaction = ({
   transaction,
-  tokens,
   chainId,
   animate,
   initial,
@@ -55,25 +50,37 @@ const WalletTransaction = ({
     return getWalletTransactionStatusText(transaction.status, t);
   }, [transaction.status, t]);
 
-  if (transaction.type === "Approval") {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+  if (isApprovalTransaction(transaction)) {
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
+
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
           <SpanTitle>{t("wallet.approve")}</SpanTitle>
+
           <SpanSubtitle>
             {statusText} · {timeBetween}
           </SpanSubtitle>
         </TextContainer>
-        {tx.hash && (
-          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
-        )}
+
+        <StyledTransactionLink
+          hideLabel
+          chainId={chainId}
+          hash={transaction.hash}
+        />
       </Container>
     );
-  } else if (transaction.type === "Cancel") {
-    const tx: SubmittedCancellation = transaction as SubmittedCancellation;
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+  }
+
+  if (isCancelTransaction(transaction)) {
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
+
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
@@ -82,60 +89,64 @@ const WalletTransaction = ({
             {statusText} · {timeBetween}
           </SpanSubtitle>
         </TextContainer>
-        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+
+        <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
       </Container>
     );
-  } else {
-    const tx: SubmittedTransactionWithOrder =
-      transaction as SubmittedTransactionWithOrder;
-    const senderToken = findEthOrTokenByAddress(
-      tx.order.senderToken,
-      tokens,
-      chainId
-    );
-    const signerToken = findEthOrTokenByAddress(
-      tx.order.signerToken,
-      tokens,
-      chainId
-    );
-    const hasExpiry = !!tx.expiry;
+  }
+
+  if (
+    isOrderTransaction(transaction) ||
+    isWithdrawTransaction(transaction) ||
+    isDepositTransaction(transaction)
+  ) {
+    const { signerToken, senderToken } = transaction;
+    const hasExpiry = !!transaction.expiry;
 
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
     let signerAmountWithFee: string | null = null;
-    if (tx.protocol === "last-look-erc20") {
-      signerAmountWithFee = new BigNumber(tx.order.signerAmount)
+    if (transaction.protocol === "last-look-erc20") {
+      signerAmountWithFee = new BigNumber(transaction.order.signerAmount)
         .multipliedBy(1.0007)
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
     }
-    //@ts-ignore
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>
-        {tx.status === "processing" && (
+        {transaction.status === "processing" && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
         <TextContainer>
-          {tx && senderToken && signerToken && (
+          {transaction && senderToken && signerToken && (
             <>
-              <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
+              <SpanTitle
+                hasProgress={hasExpiry && transaction.status === "processing"}
+              >
                 {t(
-                  tx.protocol === "last-look-erc20"
+                  transaction.protocol === "last-look-erc20"
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {
                     senderAmount: parseFloat(
                       Number(
-                        formatUnits(tx.order.senderAmount, senderToken.decimals)
+                        formatUnits(
+                          transaction.order.senderAmount,
+                          senderToken.decimals
+                        )
                       ).toFixed(5)
                     ),
                     senderToken: senderToken.symbol,
                     signerAmount: parseFloat(
                       Number(
                         formatUnits(
-                          signerAmountWithFee || tx.order.signerAmount,
+                          signerAmountWithFee || transaction.order.signerAmount,
                           signerToken.decimals
                         )
                       ).toFixed(5)
@@ -144,10 +155,10 @@ const WalletTransaction = ({
                   }
                 )}
               </SpanTitle>
-              {hasExpiry && tx.status === "processing" ? (
+              {hasExpiry && transaction.status === "processing" ? (
                 <ProgressBar
-                  startTime={tx.timestamp}
-                  endTime={parseInt(tx.expiry!) * 1000}
+                  startTime={transaction.timestamp}
+                  endTime={parseInt(transaction.expiry!) * 1000}
                 />
               ) : (
                 <SpanSubtitle>
@@ -157,12 +168,19 @@ const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        {tx.hash && (
-          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+
+        {transaction.hash && (
+          <StyledTransactionLink
+            hideLabel
+            chainId={chainId}
+            hash={transaction.hash}
+          />
         )}
       </Container>
     );
   }
+
+  return null;
 };
 
 export default WalletTransaction;

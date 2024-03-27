@@ -118,6 +118,8 @@ export const selectBestPricing = createSelector(
         // calculateQuoteAmount will throw if the amount exceeds the maximum or
         // is less than the minimum - we can ignore these makers for the purpose
         // of this quote.
+        // TODO: Show a warning to the user that the amount is too high or too low
+        console.error(e);
         return;
       }
     });

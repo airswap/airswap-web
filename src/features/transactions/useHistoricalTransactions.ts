@@ -8,29 +8,26 @@ import { Event } from "ethers";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Weth9 from "../../constants/Weth9";
 import {
+  SubmittedTransaction,
+  SubmittedTransactionWithOrder,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { selectTransactions } from "./transactionsSlice";
+import {
   checkPendingTransactionState,
   getSwapArgsFromWrappedSwapForLog,
-  getTransactionsLocalStorageKey,
   SwapEventArgs,
-} from "./transactionUtils";
-import {
-  selectTransactions,
-  setTransactions,
-  SubmittedTransactionWithOrder,
-} from "./transactionsSlice";
+} from "./transactionsUtils";
 import useSwapLogs from "./useSwapLogs";
-import useTransactionsFromLocalStorage from "./useTransactionsFromLocalStorage";
 
 const useHistoricalTransactions = () => {
+  // TODO: This is currently broken because of https://github.com/airswap/airswap-web/issues/888
+  // TODO: Clean up and make everything work with new transactions store
+
+  const dispatch = useAppDispatch();
   const { chainId, library, account } = useWeb3React();
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs();
-  const {
-    transactions: localStorageTransactions,
-    setTransactions: setLocalStorageTransactions,
-  } = useTransactionsFromLocalStorage();
-  const dispatch = useAppDispatch();
 
-  const [activeLocalStorageKey, setActiveLocalStorageKey] = useState<string>();
+  const transactions: SubmittedTransaction[] = []; // useAppSelector(selectTransactions);
 
   useCustomCompareEffect(
     () => {
@@ -43,7 +40,7 @@ const useHistoricalTransactions = () => {
       )
         return;
 
-      const localTransactionsCopy = { all: [...localStorageTransactions.all] };
+      const localTransactionsCopy = [...transactions];
 
       const updateStorage: () => void = async () => {
         let lastLookSwapLogs: Event[] = [],
@@ -67,18 +64,17 @@ const useHistoricalTransactions = () => {
                 ? await getSwapArgsFromWrappedSwapForLog(swapLog)
                 : (swapLog.args as unknown as SwapEventArgs);
 
-              const matchedTxFromStorage = localStorageTransactions.all.find(
-                (tx) => {
-                  if (protocol !== tx.protocol) return false;
+              const matchedTxFromStorage = transactions.find((tx) => {
+                if (protocol !== tx.protocol) return false;
 
-                  const order = (tx as SubmittedTransactionWithOrder).order;
-                  return (
-                    order.nonce === args.nonce.toString() &&
-                    order.signerWallet.toLowerCase() ===
-                      args.signerWallet.toLowerCase()
-                  );
-                }
-              );
+                const order = (tx as SubmittedTransactionWithOrder).order;
+                return (
+                  order.nonce === args.nonce.toString() &&
+                  order.signerWallet.toLowerCase() ===
+                    args.signerWallet.toLowerCase()
+                );
+              });
+
               if (matchedTxFromStorage) {
                 // We already knew this one had succeeded.
                 if (matchedTxFromStorage.status === "succeeded") return;
@@ -101,6 +97,9 @@ const useHistoricalTransactions = () => {
                 // We don't have a record of this transaction, so we need to create it.
                 // const newTransaction:
                 const blockTimestamp = (await swapLog.getBlock()).timestamp;
+
+                // TODO: Fix this
+                // @ts-ignore
                 const newTx: SubmittedTransactionWithOrder = {
                   protocol,
                   status: "succeeded",
@@ -121,7 +120,7 @@ const useHistoricalTransactions = () => {
                     s: "-",
                   },
                 };
-                localTransactionsCopy.all.push(newTx);
+                localTransactionsCopy.push(newTx);
               }
             })
           );
@@ -133,14 +132,14 @@ const useHistoricalTransactions = () => {
           reconcileLogs("request-for-quote-erc20", wrappedSwapLogs, true),
         ]);
 
-        setLocalStorageTransactions(localTransactionsCopy);
-        dispatch(setTransactions(localTransactionsCopy?.all || []));
+        // setLocalStorageTransactions(localTransactionsCopy);
+        // dispatch(setTransactions(localTransactionsCopy?.all || []));
 
-        localTransactionsCopy.all
-          .filter((tx) => tx.status === "processing")
-          .forEach((tx) => {
-            checkPendingTransactionState(tx, dispatch, library);
-          });
+        // localTransactionsCopy.all
+        //   .filter((tx) => tx.status === "processing")
+        //   .forEach((tx) => {
+        //     checkPendingTransactionState(tx, dispatch, library);
+        //   });
       };
 
       updateStorage();
@@ -150,9 +149,9 @@ const useHistoricalTransactions = () => {
       chainId,
       swapLogs,
       swapLogStatus,
-      localStorageTransactions,
-      setLocalStorageTransactions,
-      dispatch,
+      transactions,
+      // setLocalStorageTransactions,
+      // dispatch,
       library,
     ],
     (
@@ -170,22 +169,6 @@ const useHistoricalTransactions = () => {
       );
     }
   );
-
-  useEffect(() => {
-    if (!chainId || !account) {
-      return;
-    }
-
-    const localStorageKey = getTransactionsLocalStorageKey(account, chainId);
-
-    if (localStorageKey === activeLocalStorageKey) {
-      return;
-    }
-
-    setActiveLocalStorageKey(localStorageKey);
-
-    dispatch(setTransactions(localStorageTransactions?.all || []));
-  }, [localStorageTransactions]);
 };
 
 export default useHistoricalTransactions;

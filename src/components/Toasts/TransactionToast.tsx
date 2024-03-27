@@ -11,7 +11,7 @@ import {
   SubmittedRFQOrder,
   SubmittedTransaction,
   TransactionType,
-} from "../../features/transactions/transactionsSlice";
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -29,7 +29,7 @@ export type TransactionToastProps = {
   /**
    * Error affects whether the icon colors show up as blue or red;
    */
-  error: boolean;
+  error?: boolean;
   /**
    * The parent object of SubmittedOrder and SubmittedApproval
    */
@@ -54,7 +54,7 @@ export type TransactionToastProps = {
 
 const TransactionToast = ({
   onClose,
-  error,
+  error = false,
   transaction,
   type,
   senderToken,
