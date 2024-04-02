@@ -321,7 +321,7 @@ interface RequestParams {
 
 export const request =
   (params: RequestParams) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (dispatch: AppDispatch): Promise<OrderERC20[]> => {
     dispatch(setStatus("requesting"));
 
     try {
@@ -345,7 +345,7 @@ export const request =
         dispatch(setStatus("idle"));
         dispatch(setOrders([]));
 
-        return;
+        return [];
       }
 
       const timeTilReRequest = Math.max(
@@ -360,9 +360,13 @@ export const request =
       dispatch(setReRequestTimerId(reRequestTimerId));
       dispatch(setOrders(orders));
       dispatch(setStatus("idle"));
+
+      return orders;
     } catch {
       dispatch(setOrders([]));
       dispatch(setStatus("failed"));
+
+      return [];
     }
   };
 

@@ -79,37 +79,41 @@ export const transformToSubmittedRFQOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing"
+  status: StatusType = "processing",
+  timestamp = Date.now()
 ): SubmittedRFQOrder => {
   return {
     type: "Order",
     expiry: order.expiry,
-    hash: hash,
+    hash,
     nonce: order.nonce,
     order,
     protocol: "request-for-quote-erc20",
     senderToken,
     signerToken,
     status,
-    timestamp: Date.now(),
+    timestamp,
   };
 };
 
 export const transformToSubmittedLastLookOrder = (
+  hash: string | undefined,
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing"
+  status: StatusType = "processing",
+  timestamp = Date.now()
 ): SubmittedLastLookOrder => {
   return {
     type: "Order",
     expiry: order.expiry,
+    hash,
     nonce: order.nonce,
     order,
     protocol: "last-look-erc20",
     senderToken,
     signerToken,
     status,
-    timestamp: Date.now(),
+    timestamp,
   };
 };

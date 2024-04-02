@@ -150,7 +150,7 @@ export const transactionsSlice = createSlice({
       state.filter = action.payload;
     },
     setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
-      state.transactions = action.payload;
+      state.transactions = action.payload.slice(0, 20);
     },
   },
   extraReducers: (builder) => {

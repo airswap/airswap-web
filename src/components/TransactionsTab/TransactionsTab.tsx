@@ -238,7 +238,7 @@ const TransactionsTab = ({
             </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>
-                {completedTransactions.slice(0, 10).map((transaction) => (
+                {completedTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
                     key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
                     transaction={transaction}

@@ -45,3 +45,10 @@ export const isOrderTransaction = (
     isLastLookOrderTransaction(transaction)
   );
 };
+
+export const sortSubmittedTransactionsByExpiry = (
+  a: SubmittedTransaction,
+  b: SubmittedTransaction
+) => {
+  return b.timestamp - a.timestamp;
+};

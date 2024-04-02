@@ -436,7 +436,7 @@ const SwapWidget: FC = () => {
           ? Wrapper.getAddress(chainId!)
           : account!;
         if (senderWallet) {
-          await dispatch(
+          rfqPromise = dispatch(
             request({
               servers: rfqServers,
               senderToken: _baseToken,
