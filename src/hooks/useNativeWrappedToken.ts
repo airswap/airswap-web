@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { WETH } from "@airswap/libraries";
 import { TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../app/hooks";

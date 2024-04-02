@@ -1,7 +1,5 @@
-import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction } from "@reduxjs/toolkit";
 
-import { AppDispatch, RootState } from "../../app/store";
-import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
 import {
   ProtocolType,
   SubmittedApprovalTransaction,

@@ -20,7 +20,7 @@ interface SwapLogs {
 
 const useSwapLogs = (
   chainId?: number,
-  account?: string
+  account?: string | null
 ): IAsyncState<SwapLogs | null> => {
   const { library: provider } = useWeb3React<providers.Provider>();
 

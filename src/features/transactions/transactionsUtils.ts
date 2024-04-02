@@ -147,11 +147,11 @@ export const listenForTransactionReceipt = async (
     return;
   }
 
-  library.once(hash, async () => {
-    const receipt = await getTransactionReceipt(hash as string, library);
-
-    if (receipt?.status !== undefined) {
-      handleTransactionReceipt(receipt, transaction, dispatch);
-    }
-  });
+  // library.once(hash, async () => {
+  //   const receipt = await getTransactionReceipt(hash as string, library);
+  //
+  //   if (receipt?.status !== undefined) {
+  //     handleTransactionReceipt(receipt, transaction, dispatch);
+  //   }
+  // });
 };

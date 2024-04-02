@@ -234,19 +234,26 @@ export const selectFilteredTransactions = (state: RootState) => {
     );
 };
 
-export const selectPendingTransactions = createSelector(
-  selectTransactions,
-  (transactions) => {
-    return transactions.filter((tx) => tx.status === "processing");
-  }
-);
-
 export const selectOrderTransactions = createSelector(
   selectTransactions,
   (transactions) => {
     return transactions.filter((tx) => tx.type === "Order");
   }
 );
+
+export const selectPendingTransactions = (
+  state: RootState
+): SubmittedTransaction[] =>
+  state.transactions.transactions.filter(
+    (tx) => tx.status === "processing"
+  ) as SubmittedTransaction[];
+
+export const selectSuccessfulTransactions = (
+  state: RootState
+): SubmittedTransaction[] =>
+  state.transactions.transactions.filter(
+    (tx) => tx.status === "succeeded"
+  ) as SubmittedTransaction[];
 
 export const selectPendingDeposits = (
   state: RootState

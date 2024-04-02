@@ -6,6 +6,7 @@ import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTr
 import { transformToSubmittedRFQOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
 import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
+import { compareAddresses } from "../../../helpers/string";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 import useSwapLogs from "./useSwapLogs";
 
@@ -17,7 +18,7 @@ interface HistoricalTransactionsCollection {
 
 const useHistoricalTransactions = (
   chainId?: number,
-  account?: string
+  account?: string | null
 ): [HistoricalTransactionsCollection | undefined, boolean] => {
   const tokens = useAppSelector(selectAllTokenInfo);
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs(
@@ -52,8 +53,8 @@ const useHistoricalTransactions = (
       const rfqSubmittedTransactions = rfqOrders
         .filter(
           (order) =>
-            order.params.signerWallet.toLowerCase() === account.toLowerCase() ||
-            order.senderWallet.toLowerCase() === account.toLowerCase()
+            compareAddresses(order.params.signerWallet, account) ||
+            compareAddresses(order.senderWallet, account)
         )
         .map((order) => {
           const signerToken = tokens.find(

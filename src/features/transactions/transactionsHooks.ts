@@ -7,6 +7,14 @@ import { SubmittedTransaction } from "../../entities/SubmittedTransaction/Submit
 import { sortSubmittedTransactionsByExpiry } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getUniqueArrayChildren } from "../../helpers/array";
 import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
+import useLatestApproveFromEvents from "./hooks/useLatestApproveFromEvents";
+import useLatestDepositOrWithdrawFromEvents from "./hooks/useLatestDepositOrWithdrawFromEvents";
+import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
+import useLatestSwapFromEvents from "./hooks/useLatestSwapFromEvents";
+import {
+  handleTransactionEvent,
+  updateTransaction,
+} from "./transactionsHelpers";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
   getLocalStorageTransactions,
@@ -24,10 +32,14 @@ export const useTransactions = (): void => {
   const [activeListenerHashes, setActiveListenerHashes] = useState<string[]>(
     []
   );
-  const [historicalTransactions] = useHistoricalTransactions(
+  const [historicalTransactions] = useHistoricalTransactions(chainId, account);
+  const latestSwap = useLatestSwapFromEvents(chainId, account);
+  const latestApprove = useLatestApproveFromEvents(chainId, account);
+  const latestDepositOrWithdraw = useLatestDepositOrWithdrawFromEvents(
     chainId,
-    account || undefined
+    account
   );
+  const latestSuccessfulTransaction = useLatestSucceededTransaction();
 
   useEffect(() => {
     if (!account || !chainId || !library) {
@@ -86,4 +98,29 @@ export const useTransactions = (): void => {
       dispatch(setTransactions(sortedTransactions));
     }
   }, [historicalTransactions]);
+
+  useEffect(() => {
+    if (latestSwap) {
+      dispatch(handleTransactionEvent(latestSwap));
+    }
+  }, [latestSwap]);
+
+  useEffect(() => {
+    if (latestApprove) {
+      dispatch(handleTransactionEvent(latestApprove));
+    }
+  }, [latestApprove]);
+
+  useEffect(() => {
+    if (latestDepositOrWithdraw) {
+      dispatch(handleTransactionEvent(latestDepositOrWithdraw));
+    }
+  }, [latestDepositOrWithdraw]);
+
+  useEffect(() => {
+    if (latestSuccessfulTransaction) {
+      console.log("hop");
+      console.log(latestSuccessfulTransaction);
+    }
+  }, [latestSuccessfulTransaction]);
 };
