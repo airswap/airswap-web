@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useAppSelector } from "../../../../app/hooks";
-import {
-  selectOrderTransactions,
-  SubmittedTransaction,
-} from "../../../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { selectOrderTransactions } from "../../../../features/transactions/transactionsSlice";
 
 // This hook is very similar to useOrderTransaction but it will only return transactions that have been added since the component was mounted.
 

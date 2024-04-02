@@ -15,7 +15,7 @@ import {
   selectMyOrdersReducer,
   setActiveSortType,
 } from "../../../features/myOrders/myOrdersSlice";
-import { getNonceUsed } from "../../../features/orders/orderApi";
+import { getNonceUsed } from "../../../features/orders/ordersHelpers";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import { AppRoutes } from "../../../routes";

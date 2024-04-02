@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FullOrderERC20 } from "@airswap/utils";
 
 import { useAppSelector } from "../../../../app/hooks";
-import { getNonceUsed } from "../../../../features/orders/orderApi";
+import { getNonceUsed } from "../../../../features/orders/ordersHelpers";
 import { selectPendingTransactions } from "../../../../features/transactions/transactionsSlice";
 import useCancellationSuccess from "../../../../hooks/useCancellationSuccess";
 import useDefaultLibrary from "../../../../hooks/useDefaultLibrary";

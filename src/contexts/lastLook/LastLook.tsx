@@ -15,13 +15,19 @@ import BigNumber from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import { selectProtocolFee } from "../../features/metadata/metadataSlice";
+import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+// import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
+import {
+  transformToSubmittedLastLookOrder,
+  transformToSubmittedRFQOrder,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import {
+  selectAllTokenInfo,
+  selectProtocolFee,
+} from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
-import {
-  SubmittedTransactionWithOrder,
-  submitTransactionWithExpiry,
-} from "../../features/transactions/transactionsSlice";
+import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
 
 type Pair = {
   baseToken: string;
@@ -58,6 +64,7 @@ export const LastLookContext = createContext<{
 const connectedServers: Record<string, Server> = {};
 const LastLookProvider: FC = ({ children }) => {
   const { account, library, chainId } = useWeb3React();
+  const tokens = useAppSelector(selectAllTokenInfo);
 
   const { t } = useTranslation();
 
@@ -153,12 +160,14 @@ const LastLookProvider: FC = ({ children }) => {
         signerAmount: isSell ? baseAmountAtomic : quoteAmountAtomic,
         senderAmount: !isSell ? baseAmountAtomic : quoteAmountAtomic,
       });
+
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         library.getSigner(),
         SwapERC20.getAddress(chainId!) || "",
         chainId!
       );
+
       const order: OrderERC20 = {
         expiry: unsignedOrder.expiry,
         nonce: unsignedOrder.nonce,
@@ -170,25 +179,20 @@ const LastLookProvider: FC = ({ children }) => {
         ...signature,
       };
 
-      const transaction: SubmittedTransactionWithOrder = {
-        type: "Order",
-        order: order,
-        nonce: order.nonce,
-        status: "processing",
-        protocol: "last-look-erc20",
-        expiry: unsignedOrder.expiry,
-        timestamp: Date.now(),
-      };
+      const signerToken = tokens.find((t) => t.address === order.signerToken);
+      const senderToken = tokens.find((t) => t.address === order.senderToken);
+
+      const transaction = transformToSubmittedLastLookOrder(
+        undefined,
+        order,
+        signerToken!,
+        senderToken!
+      );
+
       dispatch(
         submitTransactionWithExpiry({
           transaction,
           signerWallet: unsignedOrder.signerWallet,
-          onExpired: () => {
-            notifyError({
-              heading: t("orders.swapExpired"),
-              cta: t("orders.swapExpiredCallToAction"),
-            });
-          },
         })
       );
 

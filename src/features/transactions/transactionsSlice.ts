@@ -1,13 +1,21 @@
-import { OrderERC20 } from "@airswap/utils";
 import {
-  createSlice,
-  createSelector,
   createAsyncThunk,
+  createSelector,
+  createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
+import {
+  ProtocolType,
+  StatusType,
+  SubmittedApprovalTransaction,
+  SubmittedCancellation,
+  SubmittedDepositTransaction,
+  SubmittedLastLookOrder,
+  SubmittedTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
   setWalletConnected,
@@ -19,73 +27,12 @@ import {
   mineTransaction,
   revertTransaction,
   submitTransaction,
-} from "./transactionActions";
-import { filterTransactionByDate } from "./transactionUtils";
-
-export interface DepositOrWithdrawOrder {
-  signerToken: string;
-  signerAmount: string;
-  senderToken: string;
-  senderAmount: string;
-}
-
-export type TransactionType =
-  | "Approval"
-  | "Order"
-  | "Deposit"
-  | "Withdraw"
-  | "Cancel";
-
-export type StatusType =
-  | "processing"
-  | "succeeded"
-  | "reverted"
-  | "declined"
-  | "expired";
-
-export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
-
-export interface SubmittedTransaction {
-  type: TransactionType;
-  hash?: string; // LL orders doesn't have hash
-  status: StatusType;
-  nonce?: string;
-  expiry?: string;
-  timestamp: number;
-  protocol?: ProtocolType;
-}
-
-export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  order: OrderERC20;
-}
-
-export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {}
-
-export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {}
-
-export interface LastLookTransaction
-  extends SubmittedTransaction,
-    SubmittedLastLookOrder {}
-export interface RfqTransaction
-  extends SubmittedTransaction,
-    SubmittedRFQOrder {}
-
-export interface SubmittedApproval extends SubmittedTransaction {
-  tokenAddress: string;
-}
-
-export interface SubmittedCancellation extends SubmittedTransaction {}
-
-export interface SubmittedDepositOrder extends SubmittedTransaction {
-  order: DepositOrWithdrawOrder;
-}
-
-export interface SubmittedWithdrawOrder extends SubmittedTransaction {
-  order: DepositOrWithdrawOrder;
-}
+  updateTransactions,
+} from "./transactionsActions";
+import { filterTransactionByDate } from "./transactionsUtils";
 
 export interface TransactionsState {
-  all: SubmittedTransaction[];
+  transactions: SubmittedTransaction[];
   filter: {
     [ClearOrderType.failed]?: number;
     [ClearOrderType.all]?: number;
@@ -93,7 +40,7 @@ export interface TransactionsState {
 }
 
 const initialState: TransactionsState = {
-  all: [],
+  transactions: [],
   filter: {},
 };
 
@@ -107,7 +54,7 @@ function updateTransaction(params: {
 }): void {
   const { state, nonce, hash, signerWallet, status } = params;
   if (!!signerWallet && !!nonce) {
-    const swap = state.all.find(
+    const swap = state.transactions.find(
       (s) =>
         s.nonce === nonce &&
         (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
@@ -119,7 +66,7 @@ function updateTransaction(params: {
       swap.hash = hash;
     }
   } else if (hash) {
-    const swap = state.all.find((s) => s.hash === hash);
+    const swap = state.transactions.find((s) => s.hash === hash);
     if (swap) {
       swap.status = status;
     }
@@ -151,7 +98,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
   {
     transaction: SubmittedTransaction;
     signerWallet: string;
-    onExpired: () => void;
+    onExpired?: () => void;
   },
   // Types for ThunkAPI
   {
@@ -181,7 +128,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
           nonce: transaction.nonce!,
         })
       );
-      onExpired();
+      onExpired && onExpired();
     }, timeToExpiryNotification);
   }
 );
@@ -191,7 +138,7 @@ export const transactionsSlice = createSlice({
   initialState,
   reducers: {
     clear: (state) => {
-      state.all = [];
+      state.transactions = [];
     },
     setFilter: (state, action: PayloadAction<ClearOrderType>) => {
       state.filter = {
@@ -203,15 +150,14 @@ export const transactionsSlice = createSlice({
       state.filter = action.payload;
     },
     setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
-      state.all = action.payload;
+      state.transactions = action.payload.slice(0, 20);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
-      state.all.unshift(action.payload);
+      state.transactions.unshift(action.payload);
     });
     builder.addCase(declineTransaction, (state, action) => {
-      console.error(action.payload);
       clearExpiry(action.payload.signerWallet, action.payload.nonce);
       updateTransaction({
         state,
@@ -253,6 +199,12 @@ export const transactionsSlice = createSlice({
         protocol: action.payload.protocol,
       });
     });
+    builder.addCase(updateTransactions, (state, action): TransactionsState => {
+      return {
+        ...state,
+        transactions: action.payload,
+      };
+    });
     builder.addCase(setWalletConnected, () => initialState);
     builder.addCase(setWalletDisconnected, () => initialState);
   },
@@ -261,14 +213,15 @@ export const transactionsSlice = createSlice({
 export const { clear, setFilter, setFilters, setTransactions } =
   transactionsSlice.actions;
 
-export const selectTransactions = (state: RootState) => state.transactions.all;
+export const selectTransactions = (state: RootState): SubmittedTransaction[] =>
+  state.transactions.transactions;
 
 export const selectFilteredTransactions = (state: RootState) => {
-  const { all, filter } = state.transactions;
+  const { transactions, filter } = state.transactions;
   const clearAllOrdersDate = filter[ClearOrderType.all];
   const clearFailedOrdersDate = filter[ClearOrderType.failed];
 
-  return all
+  return transactions
     .filter(
       (transaction) =>
         !clearAllOrdersDate ||
@@ -297,23 +250,30 @@ export const selectOrderTransactions = createSelector(
 
 export const selectPendingDeposits = (
   state: RootState
-): SubmittedDepositOrder[] =>
-  state.transactions.all.filter(
+): SubmittedDepositTransaction[] =>
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Deposit"
-  ) as SubmittedDepositOrder[];
+  ) as SubmittedDepositTransaction[];
+
+export const selectPendingWithdrawals = (
+  state: RootState
+): SubmittedDepositTransaction[] =>
+  state.transactions.transactions.filter(
+    (tx) => tx.status === "processing" && tx.type === "Withdraw"
+  ) as SubmittedDepositTransaction[];
 
 export const selectPendingApprovals = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Approval"
-  ) as SubmittedApproval[];
+  ) as SubmittedApprovalTransaction[];
 
 export const selectCancellations = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "succeeded" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
 
 export const selectPendingCancellations = (state: RootState) =>
-  state.transactions.all.filter(
+  state.transactions.transactions.filter(
     (tx) => tx.status === "processing" && tx.type === "Cancel"
   ) as SubmittedCancellation[];
 

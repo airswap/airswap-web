@@ -3,13 +3,13 @@ import { useEffect } from "react";
 import { useLocalStorageValue } from "@react-hookz/web/esm";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getTransactionsFilterLocalStorageKey } from "./transactionUtils";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   selectTransactionsFilter,
   setFilters,
   TransactionsState,
-} from "./transactionsSlice";
+} from "../transactionsSlice";
+import { getTransactionsFilterLocalStorageKey } from "../transactionsUtils";
 
 const useTransactionsFilterFromLocalStorage = () => {
   const dispatch = useAppDispatch();

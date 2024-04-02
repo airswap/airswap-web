@@ -6,28 +6,24 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { AppErrorType } from "../../../errors/appError";
-import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
-  getFilteredOrders,
   fetchIndexerUrls,
-} from "../../../features/indexer/indexerSlice";
+  getFilteredOrders,
+} from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
-import { check } from "../../../features/orders/orderApi";
+import { approve, deposit, take } from "../../../features/orders/ordersActions";
+import { check } from "../../../features/orders/ordersHelpers";
 import {
-  approve,
   clear,
-  deposit,
   selectOrdersErrors,
   selectOrdersStatus,
-  take,
 } from "../../../features/orders/ordersSlice";
 import {
   reset,
@@ -200,53 +196,38 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const takeOrder = async () => {
     if (!library) return;
+
     const errors = await check(
       order,
       order.senderWallet,
       order.chainId,
       library
     );
+
     if (errors.length) {
       dispatch(setErrors(errors));
       return;
     }
 
-    await dispatch(
-      take({
-        order,
-        library: library,
-        contractType: "Swap",
-        onExpired: () => {},
-      })
-    );
+    await dispatch(take(order, signerToken!, senderToken!, library, "Swap"));
   };
 
   const approveToken = () => {
-    if (!senderToken || !senderAmount) {
+    if (!senderToken || !senderAmount || !library) {
       return;
     }
 
-    dispatch(
-      approve({
-        token: senderToken,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: senderAmount,
-      })
-    );
+    dispatch(approve(senderAmount, senderToken, library, "Swap"));
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: senderToken!.decimals,
-        provider: library!,
-      })
+    deposit(
+      shouldDepositNativeTokenAmount!,
+      senderToken!,
+      wrappedNativeToken!,
+      chainId!,
+      library!
     );
-    await unwrapResult(result);
   };
 
   const restart = () => {
