@@ -6,19 +6,21 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getUniqueArrayChildren } from "../../helpers/array";
+import { TransactionStatusType } from "../../types/transactionType";
 import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
 import useLatestApproveFromEvents from "./hooks/useLatestApproveFromEvents";
 import useLatestDepositOrWithdrawFromEvents from "./hooks/useLatestDepositOrWithdrawFromEvents";
 import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
 import useLatestSwapFromEvents from "./hooks/useLatestSwapFromEvents";
+import { updateTransactionWithReceipt } from "./transactionsActions";
 import {
-  handleTransactionComplete,
+  handleTransactionResolved,
   handleTransactionEvent,
 } from "./transactionsHelpers";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
   getLocalStorageTransactions,
-  listenForTransactionReceipt,
+  getTransactionReceipt,
   setLocalStorageTransactions,
 } from "./transactionsUtils";
 
@@ -48,18 +50,27 @@ export const useTransactions = (): void => {
 
     setLocalStorageTransactions(account, chainId, transactions);
 
-    const newListenerHashes = transactions
-      .filter(
-        (transaction) =>
-          transaction.status === "processing" &&
-          transaction.hash &&
-          !activeListenerHashes.includes(transaction.hash)
-      )
-      .map((transaction) => {
-        listenForTransactionReceipt(transaction, library, dispatch);
+    const listenForTransactionReceipt = async (
+      transaction: SubmittedTransaction
+    ) => {
+      const receipt = await getTransactionReceipt(transaction, library);
 
-        return transaction.hash;
-      })
+      if (receipt) {
+        dispatch(updateTransactionWithReceipt(transaction, receipt));
+      }
+    };
+
+    const newProcessingTransactions = transactions.filter(
+      (transaction) =>
+        transaction.status === TransactionStatusType.processing &&
+        transaction.hash &&
+        !activeListenerHashes.includes(transaction.hash)
+    );
+
+    newProcessingTransactions.forEach(listenForTransactionReceipt);
+
+    const newListenerHashes = newProcessingTransactions
+      .map((transaction) => transaction.hash)
       .filter(Boolean) as string[];
 
     setActiveListenerHashes([...activeListenerHashes, ...newListenerHashes]);
@@ -119,10 +130,9 @@ export const useTransactions = (): void => {
 
   useEffect(() => {
     if (latestSuccessfulTransaction) {
-      console.log("hop");
       console.log(latestSuccessfulTransaction);
 
-      dispatch(handleTransactionComplete(latestSuccessfulTransaction));
+      dispatch(handleTransactionResolved(latestSuccessfulTransaction));
     }
   }, [latestSuccessfulTransaction]);
 };

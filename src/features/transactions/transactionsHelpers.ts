@@ -4,12 +4,21 @@ import {
   findMatchingApprovalTransaction,
   isApproveEvent,
 } from "../../entities/ApproveEvent/ApproveEventHelpers";
-import { FullSwapERC20Event } from "../../entities/ExtendedFullSwapERC20/FullSwapERC20Event";
-import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { FullSwapERC20Event } from "../../entities/FullSwapERC20Event/FullSwapERC20Event";
+import {
+  findMatchingOrderTransaction,
+  isFullSwapERC20Event,
+} from "../../entities/FullSwapERC20Event/FullSwapERC20EventHelpers";
+import {
+  SubmittedDepositTransaction,
+  SubmittedTransaction,
+  SubmittedWithdrawTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   isApprovalTransaction,
   isDepositTransaction,
   isLastLookOrderTransaction,
+  isOrderTransaction,
   isRfqOrderTransaction,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
@@ -19,6 +28,7 @@ import {
   isWETHEvent,
 } from "../../entities/WETHEvent/WETHEventHelpers";
 import { TransactionStatusType } from "../../types/transactionType";
+import { WethEventType } from "../../types/wethEventType";
 import {
   handleApproveTransaction,
   handleSubmittedDepositOrder,
@@ -62,18 +72,26 @@ const getMatchingTransaction = (
   }
 
   if (isWETHEvent(event)) {
-    return (
-      transactions
-        .filter(isDepositTransaction)
-        .find((transaction) =>
-          findMatchingDepositOrWithdrawTransaction(transaction, event)
-        ) ||
-      transactions
-        .filter(isWithdrawTransaction)
-        .find((transaction) =>
-          findMatchingDepositOrWithdrawTransaction(transaction, event)
+    return transactions
+      .filter(
+        event.type === WethEventType.deposit
+          ? isDepositTransaction
+          : isWithdrawTransaction
+      )
+      .find((transaction) =>
+        findMatchingDepositOrWithdrawTransaction(
+          transaction as
+            | SubmittedWithdrawTransaction
+            | SubmittedDepositTransaction,
+          event
         )
-    );
+      );
+  }
+
+  if (isFullSwapERC20Event(event)) {
+    return transactions
+      .filter(isOrderTransaction)
+      .find((transaction) => findMatchingOrderTransaction(transaction, event));
   }
 
   return undefined;
@@ -84,12 +102,14 @@ export const handleTransactionEvent =
   (dispatch: AppDispatch, getState: () => RootState): void => {
     const transactions = getState().transactions.transactions;
     const pendingTransactions = transactions.filter(
-      (transaction) => transaction.status === "processing"
+      (transaction) => transaction.status === TransactionStatusType.processing
     );
     const matchingTransaction = getMatchingTransaction(
       event,
       pendingTransactions
     );
+
+    console.log(matchingTransaction);
 
     if (!matchingTransaction) {
       return;
@@ -110,7 +130,7 @@ export const handleTransactionEvent =
     );
   };
 
-export const handleTransactionComplete =
+export const handleTransactionResolved =
   (transaction: SubmittedTransaction) =>
   (dispatch: AppDispatch): void => {
     if (isApprovalTransaction(transaction)) {

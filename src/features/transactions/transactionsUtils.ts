@@ -72,7 +72,7 @@ export const filterTransactionByDate = (
   return transaction.timestamp > timestamp;
 };
 
-const getTransactionReceipt = async (
+const getTransactionReceiptHelper = async (
   hash: string,
   library: BaseProvider
 ): Promise<TransactionReceipt | undefined> => {
@@ -90,11 +90,10 @@ const getTransactionReceipt = async (
   }
 };
 
-export const listenForTransactionReceipt = async (
+export const getTransactionReceipt = async (
   transaction: SubmittedTransaction,
-  library: BaseProvider,
-  dispatch: AppDispatch
-): Promise<void> => {
+  library: BaseProvider
+): Promise<TransactionReceipt | undefined> => {
   let hash = transaction.hash;
 
   if (isLastLookOrderTransaction(transaction)) {
@@ -107,21 +106,5 @@ export const listenForTransactionReceipt = async (
     return;
   }
 
-  const receipt = await getTransactionReceipt(hash, library);
-
-  if (receipt?.status === undefined) {
-    return;
-  }
-
-  const status =
-    receipt.status === 1
-      ? TransactionStatusType.succeeded
-      : TransactionStatusType.failed;
-
-  dispatch(
-    updateTransaction({
-      ...transaction,
-      status,
-    })
-  );
+  return getTransactionReceiptHelper(hash, library);
 };

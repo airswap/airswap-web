@@ -1,6 +1,9 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
-import { TransactionStatusType } from "../../types/transactionType";
+import {
+  TransactionStatusType,
+  TransactionType,
+} from "../../types/transactionType";
 import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
@@ -16,7 +19,7 @@ export const transformToSubmittedApprovalTransaction = (
   status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedApprovalTransaction => {
   return {
-    type: "Approval",
+    type: TransactionType.approval,
     hash: hash,
     status,
     token,
@@ -34,7 +37,7 @@ export const transformToSubmittedDepositTransaction = (
   status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedDepositTransaction => {
   return {
-    type: "Deposit",
+    type: TransactionType.deposit,
     order: {
       signerAmount: amount,
       signerToken: nativeToken.address,
@@ -57,7 +60,7 @@ export const transformToSubmittedWithdrawTransaction = (
   status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedWithdrawTransaction => {
   return {
-    type: "Withdraw",
+    type: TransactionType.withdraw,
     order: {
       signerAmount: amount,
       signerToken: wrappedToken.address,
@@ -81,7 +84,7 @@ export const transformToSubmittedRFQOrder = (
   timestamp = Date.now()
 ): SubmittedRFQOrder => {
   return {
-    type: "Order",
+    type: TransactionType.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,
@@ -103,7 +106,7 @@ export const transformToSubmittedLastLookOrder = (
   timestamp = Date.now()
 ): SubmittedLastLookOrder => {
   return {
-    type: "Order",
+    type: TransactionType.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,

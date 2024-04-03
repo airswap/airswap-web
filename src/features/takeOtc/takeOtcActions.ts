@@ -15,7 +15,10 @@ import {
 } from "../../components/Toasts/ToastController";
 import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import i18n from "../../i18n/i18n";
-import { TransactionStatusType } from "../../types/transactionType";
+import {
+  TransactionStatusType,
+  TransactionType,
+} from "../../types/transactionType";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/ordersHelpers";
 import {
@@ -96,7 +99,7 @@ export const cancelOrder = createAsyncThunk(
     dispatch(setStatus("open"));
 
     const transaction: SubmittedCancellation = {
-      type: "Cancel",
+      type: TransactionType.cancel,
       status: TransactionStatusType.processing,
       hash: tx.hash,
       nonce: params.order.nonce,

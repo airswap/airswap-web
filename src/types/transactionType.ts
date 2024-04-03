@@ -1,9 +1,9 @@
 export enum TransactionType {
-  approval = "Approval",
-  order = "Order",
-  deposit = "Deposit",
-  withdraw = "Withdraw",
-  cancel = "Cancel",
+  approval = "approval",
+  order = "order",
+  deposit = "deposit",
+  withdraw = "withdraw",
+  cancel = "cancel",
 }
 
 export enum TransactionStatusType {

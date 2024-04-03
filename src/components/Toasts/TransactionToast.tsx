@@ -10,8 +10,8 @@ import {
   SubmittedLastLookOrder,
   SubmittedRFQOrder,
   SubmittedTransaction,
-  TransactionType,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { TransactionType } from "../../types/transactionType";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -74,7 +74,9 @@ const TransactionToast = ({
       </IconContainer>
       <TextContainer>
         <InfoHeading>
-          {type === "Order" || type === "Deposit" || type === "Withdraw"
+          {type === TransactionType.order ||
+          type === TransactionType.deposit ||
+          type === TransactionType.withdraw
             ? error
               ? t("toast.swapFail")
               : t("toast.swapComplete")
@@ -84,7 +86,11 @@ const TransactionToast = ({
         </InfoHeading>
         <SwapAmounts>
           {(() => {
-            if (type === "Order" || type === "Deposit" || type === "Withdraw") {
+            if (
+              type === TransactionType.order ||
+              type === TransactionType.deposit ||
+              type === TransactionType.withdraw
+            ) {
               if (transaction && senderToken && signerToken) {
                 const tx =
                   transaction.protocol === "last-look-erc20"

@@ -16,7 +16,10 @@ import {
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { ClearOrderType } from "../../types/clearOrderType";
-import { TransactionStatusType } from "../../types/transactionType";
+import {
+  TransactionStatusType,
+  TransactionType,
+} from "../../types/transactionType";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -241,7 +244,7 @@ export const selectFilteredTransactions = (state: RootState) => {
 export const selectOrderTransactions = createSelector(
   selectTransactions,
   (transactions) => {
-    return transactions.filter((tx) => tx.type === "Order");
+    return transactions.filter((tx) => tx.type === TransactionType.order);
   }
 );
 
@@ -249,43 +252,53 @@ export const selectPendingTransactions = (
   state: RootState
 ): SubmittedTransaction[] =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "processing"
+    (tx) => tx.status === TransactionStatusType.processing
   ) as SubmittedTransaction[];
 
 export const selectSuccessfulTransactions = (
   state: RootState
 ): SubmittedTransaction[] =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "succeeded"
+    (tx) => tx.status === TransactionStatusType.succeeded
   ) as SubmittedTransaction[];
 
 export const selectPendingDeposits = (
   state: RootState
 ): SubmittedDepositTransaction[] =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "processing" && tx.type === "Deposit"
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionType.deposit
   ) as SubmittedDepositTransaction[];
 
 export const selectPendingWithdrawals = (
   state: RootState
 ): SubmittedDepositTransaction[] =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "processing" && tx.type === "Withdraw"
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionType.withdraw
   ) as SubmittedDepositTransaction[];
 
 export const selectPendingApprovals = (state: RootState) =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "processing" && tx.type === "Approval"
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionType.approval
   ) as SubmittedApprovalTransaction[];
 
 export const selectCancellations = (state: RootState) =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "succeeded" && tx.type === "Cancel"
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionType.cancel
   ) as SubmittedCancellation[];
 
 export const selectPendingCancellations = (state: RootState) =>
   state.transactions.transactions.filter(
-    (tx) => tx.status === "processing" && tx.type === "Cancel"
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionType.cancel
   ) as SubmittedCancellation[];
 
 export const selectTransactionsFilter = (state: RootState) => {

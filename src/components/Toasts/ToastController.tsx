@@ -4,16 +4,15 @@ import { findTokenByAddress, FullOrderERC20, TokenInfo } from "@airswap/utils";
 
 import i18n from "i18next";
 
-import nativeCurrency from "../../constants/nativeCurrency";
 import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
-  TransactionType,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import { TransactionType } from "../../types/transactionType";
 import ConfirmationToast from "./ConfirmationToast";
 import CopyToast from "./CopyToast";
 import ErrorToast from "./ErrorToast";
@@ -30,7 +29,9 @@ export const notifyTransaction = (
   let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
   if (
-    (type === "Order" || type === "Deposit" || type === "Withdraw") &&
+    (type === TransactionType.order ||
+      type === TransactionType.deposit ||
+      type === TransactionType.withdraw) &&
     chainId
   ) {
     const tx: SubmittedTransactionWithOrder =
@@ -94,7 +95,7 @@ export const notifyApproval = (transaction: SubmittedApprovalTransaction) => {
     (t) => (
       <TransactionToast
         onClose={() => toast.dismiss(t.id)}
-        type="Approval"
+        type={TransactionType.approval}
         transaction={transaction}
         approvalToken={transaction.token}
       />
@@ -110,7 +111,7 @@ export const notifyDeposit = (transaction: SubmittedDepositTransaction) => {
     (t) => (
       <TransactionToast
         onClose={() => toast.dismiss(t.id)}
-        type="Deposit"
+        type={TransactionType.deposit}
         transaction={transaction}
         senderToken={transaction.senderToken}
         signerToken={transaction.signerToken}
@@ -127,7 +128,7 @@ export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
     (t) => (
       <TransactionToast
         onClose={() => toast.dismiss(t.id)}
-        type="Deposit"
+        type={TransactionType.withdraw}
         transaction={transaction}
         senderToken={transaction.senderToken}
         signerToken={transaction.signerToken}
@@ -144,7 +145,7 @@ export const notifyOrder = (transaction: SubmittedTransactionWithOrder) => {
     (t) => (
       <TransactionToast
         onClose={() => toast.dismiss(t.id)}
-        type="Order"
+        type={TransactionType.order}
         transaction={transaction}
         senderToken={transaction.senderToken}
         signerToken={transaction.signerToken}

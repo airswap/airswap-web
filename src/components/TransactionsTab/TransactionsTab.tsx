@@ -22,6 +22,7 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import { ClearOrderType } from "../../types/clearOrderType";
+import { TransactionStatusType } from "../../types/transactionType";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -145,13 +146,15 @@ const TransactionsTab = ({
 
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
-      (transaction) => transaction.status === "processing"
+      (transaction) => transaction.status === TransactionStatusType.processing
     );
   }, [transactions]);
 
   const completedTransactions = useMemo(() => {
     return transactions
-      .filter((transaction) => transaction.status !== "processing")
+      .filter(
+        (transaction) => transaction.status !== TransactionStatusType.processing
+      )
       .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 

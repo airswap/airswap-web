@@ -1,6 +1,9 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
-import { TransactionStatusType } from "../../types/transactionType";
+import {
+  TransactionStatusType,
+  TransactionType,
+} from "../../types/transactionType";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;
@@ -8,13 +11,6 @@ export interface DepositOrWithdrawOrder {
   senderToken: string;
   senderAmount: string;
 }
-
-export type TransactionType =
-  | "Approval"
-  | "Order"
-  | "Deposit"
-  | "Withdraw"
-  | "Cancel";
 
 export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
 
@@ -29,7 +25,7 @@ export interface SubmittedTransaction {
 }
 
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  type: "Order";
+  type: TransactionType.order;
   order: OrderERC20;
   senderToken: TokenInfo;
   signerToken: TokenInfo;
@@ -44,7 +40,7 @@ export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
 }
 
 export interface SubmittedApprovalTransaction extends SubmittedTransaction {
-  type: "Approval";
+  type: TransactionType.approval;
   hash: string;
   amount: string;
   token: TokenInfo;
@@ -56,7 +52,7 @@ export interface SubmittedCancellation extends SubmittedTransaction {
 }
 
 export interface SubmittedDepositTransaction extends SubmittedTransaction {
-  type: "Deposit";
+  type: TransactionType.deposit;
   hash: string;
   order: DepositOrWithdrawOrder;
   senderToken: TokenInfo;
@@ -64,7 +60,7 @@ export interface SubmittedDepositTransaction extends SubmittedTransaction {
 }
 
 export interface SubmittedWithdrawTransaction extends SubmittedTransaction {
-  type: "Withdraw";
+  type: TransactionType.withdraw;
   hash: string;
   order: DepositOrWithdrawOrder;
   senderToken: TokenInfo;

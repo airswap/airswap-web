@@ -6,8 +6,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, providers, Event } from "ethers";
 
-import { FullSwapERC20Event } from "../../../entities/ExtendedFullSwapERC20/FullSwapERC20Event";
-import { transformToFullSwapERC20Event } from "../../../entities/ExtendedFullSwapERC20/FullSwapERC20EventTransformers";
+import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
+import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
 import useDebounce from "../../../hooks/useDebounce";
 
 const useLatestSwapFromEvents = (
