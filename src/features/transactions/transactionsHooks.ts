@@ -12,8 +12,8 @@ import useLatestDepositOrWithdrawFromEvents from "./hooks/useLatestDepositOrWith
 import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
 import useLatestSwapFromEvents from "./hooks/useLatestSwapFromEvents";
 import {
+  handleTransactionComplete,
   handleTransactionEvent,
-  updateTransaction,
 } from "./transactionsHelpers";
 import { selectTransactions, setTransactions } from "./transactionsSlice";
 import {
@@ -121,6 +121,8 @@ export const useTransactions = (): void => {
     if (latestSuccessfulTransaction) {
       console.log("hop");
       console.log(latestSuccessfulTransaction);
+
+      dispatch(handleTransactionComplete(latestSuccessfulTransaction));
     }
   }, [latestSuccessfulTransaction]);
 };

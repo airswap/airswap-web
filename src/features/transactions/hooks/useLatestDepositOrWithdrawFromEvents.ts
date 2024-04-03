@@ -40,7 +40,6 @@ const useLatestDepositOrWithdrawFromEvents = (
     if (account === accountState && chainId === chainIdState) return;
 
     const wethContract = WETH.getContract(provider, chainId);
-    console.log(wethContract);
     const depositEvent = "Deposit";
     const withdrawEvent = "Withdrawal";
 

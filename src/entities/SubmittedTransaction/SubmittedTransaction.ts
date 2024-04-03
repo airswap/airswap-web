@@ -1,5 +1,7 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
+import { TransactionStatusType } from "../../types/transactionType";
+
 export interface DepositOrWithdrawOrder {
   signerToken: string;
   signerAmount: string;
@@ -14,19 +16,12 @@ export type TransactionType =
   | "Withdraw"
   | "Cancel";
 
-export type StatusType =
-  | "processing"
-  | "succeeded"
-  | "reverted"
-  | "declined"
-  | "expired";
-
 export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
 
 export interface SubmittedTransaction {
   type: TransactionType;
   hash?: string; // LL orders doesn't have hash
-  status: StatusType;
+  status: TransactionStatusType;
   nonce?: string;
   expiry?: string;
   timestamp: number;

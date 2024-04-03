@@ -1,14 +1,14 @@
 import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 
-import { ExtendedFullSwapERC20 } from "./ExtendedFullSwapERC20";
+import { FullSwapERC20Event } from "./FullSwapERC20Event";
 
-export const transformToExtendedFullSwapERC20 = (
+export const transformToFullSwapERC20Event = (
   swap: FullSwapERC20,
   hash: string,
   senderWallet: string,
   timestamp: number,
   status?: number
-): ExtendedFullSwapERC20 => {
+): FullSwapERC20Event => {
   return {
     hash,
     senderWallet,

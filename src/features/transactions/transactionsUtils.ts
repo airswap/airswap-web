@@ -2,7 +2,6 @@ import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 
 import { AppDispatch } from "../../app/store";
 import {
-  StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -14,6 +13,7 @@ import {
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { parseJsonArray } from "../../helpers/array";
+import { TransactionStatusType } from "../../types/transactionType";
 import {
   handleApproveTransaction,
   handleSubmittedDepositOrder,
@@ -63,45 +63,13 @@ export const setLocalStorageTransactions = (
 export const filterTransactionByDate = (
   transaction: SubmittedTransaction,
   timestamp: number,
-  status?: StatusType
+  status?: TransactionStatusType
 ) => {
   if (status && transaction.status !== status) {
     return true;
   }
 
   return transaction.timestamp > timestamp;
-};
-
-export const handleTransactionReceipt = (
-  receipt: TransactionReceipt,
-  transaction: SubmittedTransaction,
-  dispatch: AppDispatch
-): void => {
-  dispatch(
-    updateTransaction({
-      ...transaction,
-      status: receipt.status === 1 ? "succeeded" : "declined",
-    })
-  );
-
-  if (isApprovalTransaction(transaction)) {
-    handleApproveTransaction(transaction, receipt, dispatch);
-  }
-
-  if (isDepositTransaction(transaction)) {
-    handleSubmittedDepositOrder(transaction, receipt, dispatch);
-  }
-
-  if (isWithdrawTransaction(transaction)) {
-    handleSubmittedWithdrawOrder(transaction, receipt, dispatch);
-  }
-
-  if (
-    isRfqOrderTransaction(transaction) ||
-    isLastLookOrderTransaction(transaction)
-  ) {
-    handleSubmittedRFQOrder(transaction, receipt, dispatch);
-  }
 };
 
 const getTransactionReceipt = async (
@@ -141,17 +109,19 @@ export const listenForTransactionReceipt = async (
 
   const receipt = await getTransactionReceipt(hash, library);
 
-  if (receipt?.status !== undefined) {
-    handleTransactionReceipt(receipt, transaction, dispatch);
-
+  if (receipt?.status === undefined) {
     return;
   }
 
-  // library.once(hash, async () => {
-  //   const receipt = await getTransactionReceipt(hash as string, library);
-  //
-  //   if (receipt?.status !== undefined) {
-  //     handleTransactionReceipt(receipt, transaction, dispatch);
-  //   }
-  // });
+  const status =
+    receipt.status === 1
+      ? TransactionStatusType.succeeded
+      : TransactionStatusType.failed;
+
+  dispatch(
+    updateTransaction({
+      ...transaction,
+      status,
+    })
+  );
 };

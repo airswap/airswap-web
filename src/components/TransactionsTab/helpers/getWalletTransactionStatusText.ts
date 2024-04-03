@@ -1,21 +1,21 @@
 import { TFunction } from "react-i18next";
 
-import { StatusType } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { TransactionStatusType } from "../../../types/transactionType";
 
 export default function getWalletTransactionStatusText(
-  status: StatusType,
+  status: TransactionStatusType,
   t: TFunction
 ): string {
   switch (status) {
-    case "succeeded":
+    case TransactionStatusType.succeeded:
       return t("common.success");
-    case "processing":
+    case TransactionStatusType.processing:
       return t("common.processing");
-    case "expired":
+    case TransactionStatusType.expired:
       return t("common.expired");
-    case "reverted":
+    case TransactionStatusType.reverted:
       return t("common.failed");
-    case "declined":
+    case TransactionStatusType.declined:
       return t("orders.swapRejected");
     default:
       return t("common.unknown");

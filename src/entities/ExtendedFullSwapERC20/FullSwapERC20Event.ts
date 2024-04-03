@@ -1,6 +1,6 @@
 import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 
-export interface ExtendedFullSwapERC20 {
+export interface FullSwapERC20Event {
   hash: string;
   senderWallet: string;
   status?: number;

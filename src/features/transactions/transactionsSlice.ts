@@ -9,7 +9,6 @@ import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
 import {
   ProtocolType,
-  StatusType,
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
@@ -17,6 +16,7 @@ import {
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { ClearOrderType } from "../../types/clearOrderType";
+import { TransactionStatusType } from "../../types/transactionType";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -49,7 +49,7 @@ function updateTransaction(params: {
   nonce?: string;
   hash?: string;
   signerWallet?: string;
-  status: StatusType;
+  status: TransactionStatusType;
   protocol?: ProtocolType;
 }): void {
   const { state, nonce, hash, signerWallet, status } = params;
@@ -164,7 +164,7 @@ export const transactionsSlice = createSlice({
         hash: action.payload.hash,
         nonce: action.payload.nonce,
         signerWallet: action.payload.signerWallet,
-        status: "declined",
+        status: TransactionStatusType.declined,
         protocol: action.payload.protocol,
       });
     });
@@ -175,7 +175,7 @@ export const transactionsSlice = createSlice({
         signerWallet: action.payload.signerWallet,
         nonce: action.payload.nonce,
         hash: action.payload.hash,
-        status: "reverted",
+        status: TransactionStatusType.reverted,
       });
     });
     builder.addCase(expireTransaction, (state, action) => {
@@ -185,7 +185,7 @@ export const transactionsSlice = createSlice({
         state,
         signerWallet,
         nonce,
-        status: "expired",
+        status: TransactionStatusType.expired,
       });
     });
     builder.addCase(mineTransaction, (state, action) => {
@@ -195,7 +195,7 @@ export const transactionsSlice = createSlice({
         hash: action.payload.hash,
         nonce: action.payload.nonce,
         signerWallet: action.payload.signerWallet,
-        status: "succeeded",
+        status: TransactionStatusType.succeeded,
         protocol: action.payload.protocol,
       });
     });
@@ -230,7 +230,11 @@ export const selectFilteredTransactions = (state: RootState) => {
     .filter(
       (transaction) =>
         !clearFailedOrdersDate ||
-        filterTransactionByDate(transaction, clearFailedOrdersDate, "declined")
+        filterTransactionByDate(
+          transaction,
+          clearFailedOrdersDate,
+          TransactionStatusType.declined
+        )
     );
 };
 

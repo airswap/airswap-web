@@ -1,13 +1,11 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
+import { TransactionStatusType } from "../../types/transactionType";
 import {
-  ProtocolType,
-  StatusType,
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
   SubmittedRFQOrder,
-  SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -15,7 +13,7 @@ export const transformToSubmittedApprovalTransaction = (
   hash: string,
   token: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedApprovalTransaction => {
   return {
     type: "Approval",
@@ -33,7 +31,7 @@ export const transformToSubmittedDepositTransaction = (
   wrappedToken: TokenInfo,
   nativeToken: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedDepositTransaction => {
   return {
     type: "Deposit",
@@ -56,7 +54,7 @@ export const transformToSubmittedWithdrawTransaction = (
   wrappedToken: TokenInfo,
   nativeToken: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedWithdrawTransaction => {
   return {
     type: "Withdraw",
@@ -79,7 +77,7 @@ export const transformToSubmittedRFQOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing",
+  status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
 ): SubmittedRFQOrder => {
   return {
@@ -101,7 +99,7 @@ export const transformToSubmittedLastLookOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing",
+  status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
 ): SubmittedLastLookOrder => {
   return {

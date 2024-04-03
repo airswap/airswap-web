@@ -7,6 +7,7 @@ import { transformToSubmittedRFQOrder } from "../../../entities/SubmittedTransac
 import { getUniqueArrayChildren } from "../../../helpers/array";
 import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
 import { compareAddresses } from "../../../helpers/string";
+import { TransactionStatusType } from "../../../types/transactionType";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 import useSwapLogs from "./useSwapLogs";
 
@@ -71,7 +72,7 @@ const useHistoricalTransactions = (
             order.params,
             signerToken,
             senderToken,
-            "succeeded",
+            TransactionStatusType.succeeded,
             order.timestamp
           );
         });

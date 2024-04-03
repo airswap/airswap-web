@@ -6,21 +6,21 @@ import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, providers, Event } from "ethers";
 
-import { ExtendedFullSwapERC20 } from "../../../entities/ExtendedFullSwapERC20/ExtendedFullSwapERC20";
-import { transformToExtendedFullSwapERC20 } from "../../../entities/ExtendedFullSwapERC20/ExtendedFullSwapERC20Transformers";
+import { FullSwapERC20Event } from "../../../entities/ExtendedFullSwapERC20/FullSwapERC20Event";
+import { transformToFullSwapERC20Event } from "../../../entities/ExtendedFullSwapERC20/FullSwapERC20EventTransformers";
 import useDebounce from "../../../hooks/useDebounce";
 
 const useLatestSwapFromEvents = (
   chainId?: number,
   account?: string | null
-): ExtendedFullSwapERC20 | undefined => {
+): FullSwapERC20Event | undefined => {
   const { library: provider } = useWeb3React<providers.Provider>();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
-  const [latestSwap, setLatestSwap] = useState<ExtendedFullSwapERC20>();
+  const [latestSwap, setLatestSwap] = useState<FullSwapERC20Event>();
   const [debouncedLatestSwap, setDebouncedLatestSwap] =
-    useState<ExtendedFullSwapERC20>();
+    useState<FullSwapERC20Event>();
 
   useDebounce(
     () => {
@@ -57,7 +57,7 @@ const useLatestSwapFromEvents = (
           swap.senderWallet.toLowerCase() === account.toLowerCase()
         ) {
           setLatestSwap(
-            transformToExtendedFullSwapERC20(
+            transformToFullSwapERC20Event(
               swap,
               swapEvent.transactionHash,
               signerWallet,

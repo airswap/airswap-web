@@ -4,11 +4,13 @@ import {
   findMatchingApprovalTransaction,
   isApproveEvent,
 } from "../../entities/ApproveEvent/ApproveEventHelpers";
-import { ExtendedFullSwapERC20 } from "../../entities/ExtendedFullSwapERC20/ExtendedFullSwapERC20";
+import { FullSwapERC20Event } from "../../entities/ExtendedFullSwapERC20/FullSwapERC20Event";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   isApprovalTransaction,
   isDepositTransaction,
+  isLastLookOrderTransaction,
+  isRfqOrderTransaction,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { WETHEvent } from "../../entities/WETHEvent/WETHEvent";
@@ -16,6 +18,13 @@ import {
   findMatchingDepositOrWithdrawTransaction,
   isWETHEvent,
 } from "../../entities/WETHEvent/WETHEventHelpers";
+import { TransactionStatusType } from "../../types/transactionType";
+import {
+  handleApproveTransaction,
+  handleSubmittedDepositOrder,
+  handleSubmittedRFQOrder,
+  handleSubmittedWithdrawOrder,
+} from "../orders/ordersActions";
 import { setTransactions } from "./transactionsSlice";
 
 export const updateTransaction =
@@ -38,7 +47,7 @@ export const updateTransaction =
     dispatch(setTransactions(updatedTransactions));
   };
 
-type TransactionEvent = ApproveEvent | ExtendedFullSwapERC20 | WETHEvent;
+type TransactionEvent = ApproveEvent | FullSwapERC20Event | WETHEvent;
 
 const getMatchingTransaction = (
   event: TransactionEvent,
@@ -91,9 +100,35 @@ export const handleTransactionEvent =
         {
           ...matchingTransaction,
           hash: event.hash,
-          status: event.status === 1 ? "succeeded" : "declined",
+          status:
+            event.status === 1
+              ? TransactionStatusType.succeeded
+              : TransactionStatusType.declined,
         },
         matchingTransaction.hash
       )
     );
+  };
+
+export const handleTransactionComplete =
+  (transaction: SubmittedTransaction) =>
+  (dispatch: AppDispatch): void => {
+    if (isApprovalTransaction(transaction)) {
+      handleApproveTransaction(transaction, transaction.status, dispatch);
+    }
+
+    if (isDepositTransaction(transaction)) {
+      handleSubmittedDepositOrder(transaction, transaction.status, dispatch);
+    }
+
+    if (isWithdrawTransaction(transaction)) {
+      handleSubmittedWithdrawOrder(transaction, transaction.status, dispatch);
+    }
+
+    if (
+      isRfqOrderTransaction(transaction) ||
+      isLastLookOrderTransaction(transaction)
+    ) {
+      handleSubmittedRFQOrder(transaction, transaction.status);
+    }
   };

@@ -1,20 +1,21 @@
 import { SwapERC20 } from "@airswap/libraries";
 import {
   decompressFullOrderERC20,
-  isValidFullOrderERC20,
   FullOrderERC20,
+  isValidFullOrderERC20,
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
 
 import {
-  notifyRejectedByUserError,
-  notifyError,
   notifyConfirmation,
+  notifyError,
+  notifyRejectedByUserError,
 } from "../../components/Toasts/ToastController";
 import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import i18n from "../../i18n/i18n";
+import { TransactionStatusType } from "../../types/transactionType";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/ordersHelpers";
 import {
@@ -96,7 +97,7 @@ export const cancelOrder = createAsyncThunk(
 
     const transaction: SubmittedCancellation = {
       type: "Cancel",
-      status: "processing",
+      status: TransactionStatusType.processing,
       hash: tx.hash,
       nonce: params.order.nonce,
       timestamp: Date.now(),
