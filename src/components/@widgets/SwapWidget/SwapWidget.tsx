@@ -98,7 +98,7 @@ import useTokenInfo from "../../../hooks/useTokenInfo";
 import useWithdrawalPending from "../../../hooks/useWithdrawalPending";
 import { AppRoutes } from "../../../routes";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
-import { TransactionStatusType } from "../../../types/transactionType";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";

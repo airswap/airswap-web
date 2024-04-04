@@ -11,7 +11,7 @@ import {
   SubmittedRFQOrder,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { TransactionType } from "../../types/transactionType";
+import { TransactionTypes } from "../../types/transactionTypes";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -37,7 +37,7 @@ export type TransactionToastProps = {
   /**
    * Type of transaction the toast will display;
    */
-  type: TransactionType;
+  type: TransactionTypes;
   /**
    * Token Info of sender token
    */
@@ -74,9 +74,9 @@ const TransactionToast = ({
       </IconContainer>
       <TextContainer>
         <InfoHeading>
-          {type === TransactionType.order ||
-          type === TransactionType.deposit ||
-          type === TransactionType.withdraw
+          {type === TransactionTypes.order ||
+          type === TransactionTypes.deposit ||
+          type === TransactionTypes.withdraw
             ? error
               ? t("toast.swapFail")
               : t("toast.swapComplete")
@@ -87,9 +87,9 @@ const TransactionToast = ({
         <SwapAmounts>
           {(() => {
             if (
-              type === TransactionType.order ||
-              type === TransactionType.deposit ||
-              type === TransactionType.withdraw
+              type === TransactionTypes.order ||
+              type === TransactionTypes.deposit ||
+              type === TransactionTypes.withdraw
             ) {
               if (transaction && senderToken && signerToken) {
                 const tx =

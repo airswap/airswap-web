@@ -13,7 +13,7 @@ import {
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { parseJsonArray } from "../../helpers/array";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import {
   handleApproveTransaction,
   handleSubmittedDepositOrder,

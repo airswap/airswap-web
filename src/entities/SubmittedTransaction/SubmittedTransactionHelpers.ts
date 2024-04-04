@@ -1,4 +1,4 @@
-import { TransactionType } from "../../types/transactionType";
+import { TransactionTypes } from "../../types/transactionTypes";
 import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
@@ -13,33 +13,33 @@ import {
 export const isApprovalTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedApprovalTransaction =>
-  transaction.type === TransactionType.approval;
+  transaction.type === TransactionTypes.approval;
 
 export const isCancelTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedCancellation =>
-  transaction.type === TransactionType.cancel;
+  transaction.type === TransactionTypes.cancel;
 
 export const isDepositTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedDepositTransaction =>
-  transaction.type === TransactionType.deposit;
+  transaction.type === TransactionTypes.deposit;
 
 export const isWithdrawTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedWithdrawTransaction =>
-  transaction.type === TransactionType.withdraw;
+  transaction.type === TransactionTypes.withdraw;
 
 export const isRfqOrderTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedRFQOrder =>
-  transaction.type === TransactionType.order &&
+  transaction.type === TransactionTypes.order &&
   transaction.protocol === "request-for-quote-erc20";
 
 export const isLastLookOrderTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedLastLookOrder =>
-  transaction.type === TransactionType.order &&
+  transaction.type === TransactionTypes.order &&
   transaction.protocol === "last-look-erc20";
 
 export const isOrderTransaction = (

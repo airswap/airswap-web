@@ -22,7 +22,7 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import { ClearOrderType } from "../../types/clearOrderType";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import Icon from "../Icon/Icon";
 import {
   Container,

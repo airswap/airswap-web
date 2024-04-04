@@ -1,13 +1,13 @@
 import { TransactionReceipt } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
 
-import { AppDispatch, RootState } from "../../app/store";
+import { AppDispatch } from "../../app/store";
 import {
   ProtocolType,
   SubmittedApprovalTransaction,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import { updateTransaction } from "./transactionsHelpers";
 
 export const submitTransaction = createAction<
@@ -44,23 +44,3 @@ export const expireTransaction = createAction<{
 export const updateTransactions = createAction<SubmittedTransaction[]>(
   "transactions/updateTransactions"
 );
-
-export const updateTransactionWithReceipt =
-  (transaction: SubmittedTransaction, receipt: TransactionReceipt) =>
-  (dispatch: AppDispatch): void => {
-    if (receipt?.status === undefined) {
-      return;
-    }
-
-    const status =
-      receipt.status === 1
-        ? TransactionStatusType.succeeded
-        : TransactionStatusType.failed;
-
-    dispatch(
-      updateTransaction({
-        ...transaction,
-        status,
-      })
-    );
-  };

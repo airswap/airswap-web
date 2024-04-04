@@ -1,4 +1,4 @@
-import { TransactionStatusType } from "../../../../types/transactionType";
+import { TransactionStatusType } from "../../../../types/transactionTypes";
 import {
   FailedIcon,
   IconContainer,

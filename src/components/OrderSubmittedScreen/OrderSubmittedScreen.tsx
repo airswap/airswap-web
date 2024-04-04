@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import { InfoSubHeading } from "../Typography/Typography";
 import {
   Container,

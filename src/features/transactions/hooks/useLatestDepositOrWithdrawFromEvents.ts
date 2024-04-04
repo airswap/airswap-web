@@ -80,6 +80,8 @@ const useLatestDepositOrWithdrawFromEvents = (
       handleEvent(WethEventType.withdrawal, from, value, depositEvent);
     };
 
+    wethContract.off(depositEvent, handleDepositEvent);
+    wethContract.off(withdrawEvent, handleWithdrawEvent);
     wethContract.on(depositEvent, handleDepositEvent);
     wethContract.on(withdrawEvent, handleWithdrawEvent);
 

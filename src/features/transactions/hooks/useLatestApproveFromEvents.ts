@@ -11,7 +11,6 @@ import { useAppSelector } from "../../../app/hooks";
 import { ApproveEvent } from "../../../entities/ApproveEvent/ApproveEvent";
 import { transformToApproveEvent } from "../../../entities/ApproveEvent/ApproveEventTransformers";
 import { compareAddresses } from "../../../helpers/string";
-import useDebounce from "../../../hooks/useDebounce";
 import { selectActiveTokens } from "../../metadata/metadataSlice";
 
 const erc20Interface = new ethers.utils.Interface(erc20Abi);
@@ -26,21 +25,21 @@ const useLatestApproveFromEvents = (
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
   const [latestApprove, setLatestApprove] = useState<ApproveEvent>();
-  const [debouncedLatestApprove, setDebouncedLatestApprove] =
-    useState<ApproveEvent>();
-
-  useDebounce(
-    () => {
-      setDebouncedLatestApprove(latestApprove);
-    },
-    1000,
-    [latestApprove]
-  );
 
   useEffect(() => {
-    if (!chainId || !account || !provider) return;
+    let shouldCleanup = true;
 
-    if (account === accountState && chainId === chainIdState) return;
+    if (!chainId || !account || !provider || !tokens.length) {
+      shouldCleanup = false;
+
+      return;
+    }
+
+    if (account === accountState && chainId === chainIdState) {
+      shouldCleanup = false;
+
+      return;
+    }
 
     const filter: EventFilter = {
       topics: [
@@ -50,7 +49,9 @@ const useLatestApproveFromEvents = (
     };
 
     const handleEvent = async (event: Event) => {
-      const transaction = await event.getTransactionReceipt();
+      const receipt = await provider.getTransactionReceipt(
+        event.transactionHash
+      );
       const tokenAddress = event.address;
       const parsedEvent = erc20Interface.parseLog(event);
       const spenderAddress = parsedEvent.args[1];
@@ -60,7 +61,7 @@ const useLatestApproveFromEvents = (
       if (!isApproval) return;
 
       if (
-        !tokens.some((token) => compareAddresses(token.address, tokenAddress))
+        tokens.every((token) => !compareAddresses(token.address, tokenAddress))
       )
         return;
 
@@ -72,10 +73,10 @@ const useLatestApproveFromEvents = (
       setLatestApprove(
         transformToApproveEvent(
           amount.toString(),
-          transaction.transactionHash,
+          receipt.transactionHash,
           spenderAddress,
           tokenAddress,
-          transaction.status
+          receipt.status
         )
       );
     };
@@ -86,11 +87,13 @@ const useLatestApproveFromEvents = (
     provider.on(filter, handleEvent);
 
     return () => {
+      if (!shouldCleanup) return;
+
       provider.off(filter, handleEvent);
     };
-  }, [chainId, account, provider]);
+  }, [chainId, account, provider, tokens.length]);
 
-  return debouncedLatestApprove;
+  return latestApprove;
 };
 
 export default useLatestApproveFromEvents;

@@ -39,7 +39,7 @@ import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorT
 import getWethAddress from "../../helpers/getWethAddress";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import i18n from "../../i18n/i18n";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import {
   allowancesSwapActions,
   decrementBalanceBy,

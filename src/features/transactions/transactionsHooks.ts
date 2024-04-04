@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useWeb3React } from "@web3-react/core";
 
@@ -6,13 +6,11 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getUniqueArrayChildren } from "../../helpers/array";
-import { TransactionStatusType } from "../../types/transactionType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
-import useLatestApproveFromEvents from "./hooks/useLatestApproveFromEvents";
-import useLatestDepositOrWithdrawFromEvents from "./hooks/useLatestDepositOrWithdrawFromEvents";
 import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
-import useLatestSwapFromEvents from "./hooks/useLatestSwapFromEvents";
-import { updateTransactionWithReceipt } from "./transactionsActions";
+import useLatestTransactionEvent from "./hooks/useLatestTransactionEvent";
+import { updateTransactionWithReceipt } from "./transactionsHelpers";
 import {
   handleTransactionResolved,
   handleTransactionEvent,
@@ -31,26 +29,33 @@ export const useTransactions = (): void => {
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 
-  const [activeListenerHashes, setActiveListenerHashes] = useState<string[]>(
-    []
-  );
-  const [historicalTransactions] = useHistoricalTransactions(chainId, account);
-  const latestSwap = useLatestSwapFromEvents(chainId, account);
-  const latestApprove = useLatestApproveFromEvents(chainId, account);
-  const latestDepositOrWithdraw = useLatestDepositOrWithdrawFromEvents(
-    chainId,
-    account
-  );
+  const [historicalTransactions] = useHistoricalTransactions();
+  const latestTransactionEvent = useLatestTransactionEvent();
+  // TODO: Right now only succeeded transactions are handled, we should also handle failed and expired transactions.
   const latestSuccessfulTransaction = useLatestSucceededTransaction();
 
+  // When the transactions change, we want to save them to local storage.
   useEffect(() => {
     if (!account || !chainId || !library) {
       return;
     }
 
     setLocalStorageTransactions(account, chainId, transactions);
+  }, [transactions]);
 
-    const listenForTransactionReceipt = async (
+  // When the account or chainId changes, we want to load the transactions from local storage and update the store.
+  // If there were any processing transactions, we want to try to get the receipt for them.
+  useEffect(() => {
+    if (!account || !chainId) {
+      return;
+    }
+
+    const localStorageTransactions = getLocalStorageTransactions(
+      account,
+      chainId
+    );
+
+    const getTransactionReceiptAndUpdateTransaction = async (
       transaction: SubmittedTransaction
     ) => {
       const receipt = await getTransactionReceipt(transaction, library);
@@ -60,30 +65,16 @@ export const useTransactions = (): void => {
       }
     };
 
-    const newProcessingTransactions = transactions.filter(
-      (transaction) =>
-        transaction.status === TransactionStatusType.processing &&
-        transaction.hash &&
-        !activeListenerHashes.includes(transaction.hash)
+    const processingTransactions = transactions.filter(
+      (transaction) => transaction.status === TransactionStatusType.processing
     );
 
-    newProcessingTransactions.forEach(listenForTransactionReceipt);
+    processingTransactions.forEach(getTransactionReceiptAndUpdateTransaction);
 
-    const newListenerHashes = newProcessingTransactions
-      .map((transaction) => transaction.hash)
-      .filter(Boolean) as string[];
-
-    setActiveListenerHashes([...activeListenerHashes, ...newListenerHashes]);
-  }, [transactions]);
-
-  useEffect(() => {
-    if (!account || !chainId) {
-      return;
-    }
-
-    dispatch(setTransactions(getLocalStorageTransactions(account, chainId)));
+    dispatch(setTransactions(localStorageTransactions));
   }, [account, chainId]);
 
+  // Historical transactions are loaded from the contract logs and merged into the transaction store if needed.
   useEffect(() => {
     if (!historicalTransactions) {
       return;
@@ -110,28 +101,16 @@ export const useTransactions = (): void => {
     }
   }, [historicalTransactions]);
 
+  // If any transaction event is detected like a swap, approve, wrap, unwrap, we want to handle it here.
   useEffect(() => {
-    if (latestSwap) {
-      dispatch(handleTransactionEvent(latestSwap));
+    if (latestTransactionEvent) {
+      dispatch(handleTransactionEvent(latestTransactionEvent));
     }
-  }, [latestSwap]);
+  }, [latestTransactionEvent]);
 
-  useEffect(() => {
-    if (latestApprove) {
-      dispatch(handleTransactionEvent(latestApprove));
-    }
-  }, [latestApprove]);
-
-  useEffect(() => {
-    if (latestDepositOrWithdraw) {
-      dispatch(handleTransactionEvent(latestDepositOrWithdraw));
-    }
-  }, [latestDepositOrWithdraw]);
-
+  // If a transaction is successful, we want to handle it here.
   useEffect(() => {
     if (latestSuccessfulTransaction) {
-      console.log(latestSuccessfulTransaction);
-
       dispatch(handleTransactionResolved(latestSuccessfulTransaction));
     }
   }, [latestSuccessfulTransaction]);

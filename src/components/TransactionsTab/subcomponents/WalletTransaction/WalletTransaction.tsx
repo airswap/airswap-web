@@ -14,7 +14,7 @@ import {
   isOrderTransaction,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { TransactionStatusType } from "../../../../types/transactionType";
+import { TransactionStatusType } from "../../../../types/transactionTypes";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";

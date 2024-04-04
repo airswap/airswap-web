@@ -17,8 +17,8 @@ import { SubmittedCancellation } from "../../entities/SubmittedTransaction/Submi
 import i18n from "../../i18n/i18n";
 import {
   TransactionStatusType,
-  TransactionType,
-} from "../../types/transactionType";
+  TransactionTypes,
+} from "../../types/transactionTypes";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/ordersHelpers";
 import {
@@ -99,7 +99,7 @@ export const cancelOrder = createAsyncThunk(
     dispatch(setStatus("open"));
 
     const transaction: SubmittedCancellation = {
-      type: TransactionType.cancel,
+      type: TransactionTypes.cancel,
       status: TransactionStatusType.processing,
       hash: tx.hash,
       nonce: params.order.nonce,

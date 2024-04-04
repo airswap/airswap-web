@@ -18,17 +18,7 @@ const useLatestSwapFromEvents = (
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
-  const [latestSwap, setLatestSwap] = useState<FullSwapERC20Event>();
-  const [debouncedLatestSwap, setDebouncedLatestSwap] =
-    useState<FullSwapERC20Event>();
-
-  useDebounce(
-    () => {
-      setDebouncedLatestSwap(latestSwap);
-    },
-    1000,
-    [latestSwap]
-  );
+  const [latestSwapEvent, setLatestSwapEvent] = useState<FullSwapERC20Event>();
 
   useEffect(() => {
     if (!chainId || !account || !provider) return;
@@ -56,7 +46,7 @@ const useLatestSwapFromEvents = (
           swap.signerWallet.toLowerCase() === account.toLowerCase() ||
           swap.senderWallet.toLowerCase() === account.toLowerCase()
         ) {
-          setLatestSwap(
+          setLatestSwapEvent(
             transformToFullSwapERC20Event(
               swap,
               swapEvent.transactionHash,
@@ -68,6 +58,7 @@ const useLatestSwapFromEvents = (
         }
       };
 
+      swapContract.off(swapEvent, handleSwapEvent);
       swapContract.on(swapEvent, handleSwapEvent);
 
       return () => {
@@ -83,7 +74,7 @@ const useLatestSwapFromEvents = (
     };
   }, [chainId, account, provider]);
 
-  return debouncedLatestSwap;
+  return latestSwapEvent;
 };
 
 export default useLatestSwapFromEvents;

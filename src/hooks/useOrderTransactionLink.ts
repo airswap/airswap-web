@@ -7,7 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector } from "../app/hooks";
 import { SubmittedTransaction } from "../entities/SubmittedTransaction/SubmittedTransaction";
 import { selectTransactions } from "../features/transactions/transactionsSlice";
-import { TransactionStatusType } from "../types/transactionType";
+import { TransactionStatusType } from "../types/transactionTypes";
 
 const useOrderTransactionLink = (nonce: string): string | undefined => {
   const { chainId } = useWeb3React<Web3Provider>();

@@ -1,3 +1,5 @@
+import { TransactionReceipt } from "@ethersproject/providers";
+
 import { AppDispatch, RootState } from "../../app/store";
 import { ApproveEvent } from "../../entities/ApproveEvent/ApproveEvent";
 import {
@@ -27,7 +29,10 @@ import {
   findMatchingDepositOrWithdrawTransaction,
   isWETHEvent,
 } from "../../entities/WETHEvent/WETHEventHelpers";
-import { TransactionStatusType } from "../../types/transactionType";
+import {
+  TransactionEvent,
+  TransactionStatusType,
+} from "../../types/transactionTypes";
 import { WethEventType } from "../../types/wethEventType";
 import {
   handleApproveTransaction,
@@ -56,8 +61,6 @@ export const updateTransaction =
 
     dispatch(setTransactions(updatedTransactions));
   };
-
-type TransactionEvent = ApproveEvent | FullSwapERC20Event | WETHEvent;
 
 const getMatchingTransaction = (
   event: TransactionEvent,
@@ -109,8 +112,6 @@ export const handleTransactionEvent =
       pendingTransactions
     );
 
-    console.log(matchingTransaction);
-
     if (!matchingTransaction) {
       return;
     }
@@ -151,4 +152,24 @@ export const handleTransactionResolved =
     ) {
       handleSubmittedRFQOrder(transaction, transaction.status);
     }
+  };
+
+export const updateTransactionWithReceipt =
+  (transaction: SubmittedTransaction, receipt: TransactionReceipt) =>
+  (dispatch: AppDispatch): void => {
+    if (receipt?.status === undefined) {
+      return;
+    }
+
+    const status =
+      receipt.status === 1
+        ? TransactionStatusType.succeeded
+        : TransactionStatusType.failed;
+
+    dispatch(
+      updateTransaction({
+        ...transaction,
+        status,
+      })
+    );
   };
