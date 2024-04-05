@@ -32,7 +32,7 @@ export const useTransactions = (): void => {
 
   const [historicalTransactions] = useHistoricalTransactions();
   const latestTransactionEvent = useLatestTransactionEvent();
-  // TODO: Right now only succeeded transactions are handled, we should also handle expired transactions here.
+  // TODO: Right now only succeeded transactions are handled, we should also handle expired transactions here. https://github.com/airswap/airswap-web/issues/891
   const latestSuccessfulTransaction = useLatestSucceededTransaction();
   useTransactionsFilterFromLocalStorage();
 
