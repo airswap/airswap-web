@@ -91,7 +91,11 @@ const WalletTransaction = ({
           </SpanSubtitle>
         </TextContainer>
 
-        <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
+        <StyledTransactionLink
+          hideLabel
+          chainId={chainId}
+          hash={transaction.hash}
+        />
       </Container>
     );
   }
