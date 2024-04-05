@@ -10,6 +10,7 @@ import { TransactionStatusType } from "../../types/transactionTypes";
 import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
 import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
 import useLatestTransactionEvent from "./hooks/useLatestTransactionEvent";
+import useTransactionsFilterFromLocalStorage from "./hooks/useTransactionsFilterFromLocalStorage";
 import { updateTransactionWithReceipt } from "./transactionsHelpers";
 import {
   handleTransactionResolved,
@@ -31,8 +32,9 @@ export const useTransactions = (): void => {
 
   const [historicalTransactions] = useHistoricalTransactions();
   const latestTransactionEvent = useLatestTransactionEvent();
-  // TODO: Right now only succeeded transactions are handled, we should also handle failed and expired transactions.
+  // TODO: Right now only succeeded transactions are handled, we should also handle expired transactions here.
   const latestSuccessfulTransaction = useLatestSucceededTransaction();
+  useTransactionsFilterFromLocalStorage();
 
   // When the transactions change, we want to save them to local storage.
   useEffect(() => {
@@ -65,7 +67,7 @@ export const useTransactions = (): void => {
       }
     };
 
-    const processingTransactions = transactions.filter(
+    const processingTransactions = localStorageTransactions.filter(
       (transaction) => transaction.status === TransactionStatusType.processing
     );
 

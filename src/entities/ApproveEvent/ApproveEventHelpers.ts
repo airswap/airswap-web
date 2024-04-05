@@ -1,12 +1,11 @@
+import { TransactionEvent } from "../../types/transactionTypes";
 import { SubmittedApprovalTransaction } from "../SubmittedTransaction/SubmittedTransaction";
 import { ApproveEvent } from "./ApproveEvent";
 
-export const isApproveEvent = (event: any): event is ApproveEvent =>
-  typeof event === "object" &&
-  "amount" in event &&
-  "hash" in event &&
-  "spenderAddress" in event &&
-  "tokenAddress" in event;
+export const isApproveEvent = (
+  event: TransactionEvent
+): event is ApproveEvent =>
+  typeof event === "object" && "name" in event && event.name === "Approve";
 
 export const findMatchingApprovalTransaction = (
   transaction: SubmittedApprovalTransaction,

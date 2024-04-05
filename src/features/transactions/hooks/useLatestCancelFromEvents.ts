@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 
 import { SwapERC20 } from "@airswap/libraries";
-import { getFullSwapERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, providers, Event } from "ethers";
 
+import { CancelEvent } from "../../../entities/CancelEvent/CancelEvent";
+import { transformToCancelEvent } from "../../../entities/CancelEvent/CancelEventTransformers";
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
-import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
 import { compareAddresses } from "../../../helpers/string";
-import useDebounce from "../../../hooks/useDebounce";
 
-const useLatestSwapFromEvents = (
+const useLatestCancelFromEvents = (
   chainId?: number,
   account?: string | null
-): FullSwapERC20Event | undefined => {
+): CancelEvent | undefined => {
   const { library: provider } = useWeb3React<providers.Provider>();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
-  const [latestSwapEvent, setLatestSwapEvent] = useState<FullSwapERC20Event>();
+  const [latestCancelEvent, setLatestCancelEvent] = useState<CancelEvent>();
 
   useEffect(() => {
     if (!chainId || !account || !provider) return;
@@ -27,45 +26,35 @@ const useLatestSwapFromEvents = (
     if (account === accountState && chainId === chainIdState) return;
 
     const swapContract = SwapERC20.getContract(provider, chainId);
-    const swapEvent = "SwapERC20";
+    const cancelEvent = "Cancel";
 
-    swapContract.protocolFeeWallet().then((feeReceiver: string) => {
-      const handleSwapEvent = async (
+    swapContract.protocolFeeWallet().then(() => {
+      const handleCancelEvent = async (
         nonce: BigNumber,
         signerAddress: string,
         swapEvent: Event
       ) => {
         const receipt = await swapEvent.getTransactionReceipt();
-        const swap = await getFullSwapERC20(
-          nonce.toString(),
-          signerAddress,
-          feeReceiver,
-          receipt.logs
-        );
 
-        if (
-          !compareAddresses(swap.signerWallet, account) &&
-          !compareAddresses(swap.senderWallet, account)
-        ) {
+        if (!compareAddresses(signerAddress, account)) {
           return;
         }
 
-        setLatestSwapEvent(
-          transformToFullSwapERC20Event(
-            swap,
-            swapEvent.transactionHash,
+        setLatestCancelEvent(
+          transformToCancelEvent(
+            receipt.transactionHash,
+            nonce.toString(),
             signerAddress,
-            swapEvent.blockNumber,
             receipt.status
           )
         );
       };
 
-      swapContract.off(swapEvent, handleSwapEvent);
-      swapContract.on(swapEvent, handleSwapEvent);
+      swapContract.off(cancelEvent, handleCancelEvent);
+      swapContract.on(cancelEvent, handleCancelEvent);
 
       return () => {
-        swapContract.off(swapEvent, handleSwapEvent);
+        swapContract.off(cancelEvent, handleCancelEvent);
       };
     });
 
@@ -73,11 +62,11 @@ const useLatestSwapFromEvents = (
     setChainIdState(chainId);
 
     return () => {
-      swapContract.off(swapEvent, () => {});
+      swapContract.off(cancelEvent, () => {});
     };
   }, [chainId, account, provider]);
 
-  return latestSwapEvent;
+  return latestCancelEvent;
 };
 
-export default useLatestSwapFromEvents;
+export default useLatestCancelFromEvents;

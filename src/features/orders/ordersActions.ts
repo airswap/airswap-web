@@ -11,6 +11,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../app/store";
 import {
   notifyApproval,
+  notifyConfirmation,
   notifyDeposit,
   notifyError,
   notifyOrder,
@@ -24,6 +25,7 @@ import {
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
   SubmittedApprovalTransaction,
+  SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
@@ -176,6 +178,21 @@ export const handleSubmittedRFQOrder = (
   }
 
   notifyOrder(transaction);
+};
+
+export const handleSubmittedCancelOrder = (
+  status: TransactionStatusType
+): void => {
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.cancelFailed"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
+
+    return;
+  }
+
+  notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
 };
 
 // replaces WETH to ETH on Wrapper orders

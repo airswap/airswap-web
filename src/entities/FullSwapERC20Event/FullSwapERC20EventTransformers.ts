@@ -10,6 +10,7 @@ export const transformToFullSwapERC20Event = (
   status?: number
 ): FullSwapERC20Event => {
   return {
+    name: "Swap",
     hash,
     senderWallet,
     swap,

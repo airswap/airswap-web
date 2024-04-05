@@ -1,14 +1,10 @@
-import { TransactionReceipt } from "@ethersproject/providers";
 import { createAction } from "@reduxjs/toolkit";
 
-import { AppDispatch } from "../../app/store";
 import {
   ProtocolType,
   SubmittedApprovalTransaction,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { TransactionStatusType } from "../../types/transactionTypes";
-import { updateTransaction } from "./transactionsHelpers";
 
 export const submitTransaction = createAction<
   SubmittedTransaction | SubmittedApprovalTransaction

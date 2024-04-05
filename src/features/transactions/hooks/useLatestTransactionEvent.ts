@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { TransactionEvent } from "../../../types/transactionTypes";
 import useLatestApproveFromEvents from "./useLatestApproveFromEvents";
+import useLatestCancelFromEvents from "./useLatestCancelFromEvents";
 import useLatestDepositOrWithdrawFromEvents from "./useLatestDepositOrWithdrawFromEvents";
 import useLatestSwapFromEvents from "./useLatestSwapFromEvents";
 
@@ -16,6 +17,7 @@ const useLatestTransactionEvent = () => {
     chainId,
     account
   );
+  const latestCancelEvent = useLatestCancelFromEvents(chainId, account);
 
   const [latestEvent, setLatestEvent] = useState<TransactionEvent>();
 
@@ -36,6 +38,12 @@ const useLatestTransactionEvent = () => {
       setLatestEvent(latestDepositOrWithdrawEvent);
     }
   }, [latestDepositOrWithdrawEvent]);
+
+  useEffect(() => {
+    if (latestCancelEvent) {
+      setLatestEvent(latestCancelEvent);
+    }
+  }, [latestCancelEvent]);
 
   return latestEvent;
 };

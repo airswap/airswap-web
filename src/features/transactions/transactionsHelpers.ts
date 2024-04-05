@@ -6,6 +6,10 @@ import {
   findMatchingApprovalTransaction,
   isApproveEvent,
 } from "../../entities/ApproveEvent/ApproveEventHelpers";
+import {
+  findMatchingCancelTransaction,
+  isCancelEvent,
+} from "../../entities/CancelEvent/CancelEventHelpers";
 import { FullSwapERC20Event } from "../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import {
   findMatchingOrderTransaction,
@@ -18,6 +22,7 @@ import {
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   isApprovalTransaction,
+  isCancelTransaction,
   isDepositTransaction,
   isLastLookOrderTransaction,
   isOrderTransaction,
@@ -36,6 +41,7 @@ import {
 import { WethEventType } from "../../types/wethEventType";
 import {
   handleApproveTransaction,
+  handleSubmittedCancelOrder,
   handleSubmittedDepositOrder,
   handleSubmittedRFQOrder,
   handleSubmittedWithdrawOrder,
@@ -97,6 +103,12 @@ const getMatchingTransaction = (
       .find((transaction) => findMatchingOrderTransaction(transaction, event));
   }
 
+  if (isCancelEvent(event)) {
+    return transactions
+      .filter(isCancelTransaction)
+      .find((transaction) => findMatchingCancelTransaction(transaction, event));
+  }
+
   return undefined;
 };
 
@@ -151,6 +163,10 @@ export const handleTransactionResolved =
       isLastLookOrderTransaction(transaction)
     ) {
       handleSubmittedRFQOrder(transaction, transaction.status);
+    }
+
+    if (isCancelTransaction(transaction)) {
+      handleSubmittedCancelOrder(transaction.status);
     }
   };
 

@@ -22,16 +22,10 @@ import {
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/ordersHelpers";
 import {
-  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionsActions";
-import {
-  reset,
-  setActiveOrder,
-  setIsCancelSuccessFull,
-  setStatus,
-} from "./takeOtcSlice";
+import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -105,22 +99,7 @@ export const cancelOrder = createAsyncThunk(
       nonce: params.order.nonce,
       timestamp: Date.now(),
     };
+
     dispatch(submitTransaction(transaction));
-
-    await tx.wait();
-
-    // post-cancel clean up
-    const isCancelled = await getNonceUsed(params.order, params.library);
-    dispatch(mineTransaction(tx));
-
-    if (isCancelled) {
-      dispatch(setIsCancelSuccessFull(true));
-      notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
-    } else {
-      notifyError({
-        heading: i18n.t("toast.cancelFailed"),
-        cta: i18n.t("validatorErrors.unknownError"),
-      });
-    }
   }
 );

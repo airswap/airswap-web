@@ -1,8 +1,13 @@
 import { ApproveEvent } from "../entities/ApproveEvent/ApproveEvent";
+import { CancelEvent } from "../entities/CancelEvent/CancelEvent";
 import { FullSwapERC20Event } from "../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { WETHEvent } from "../entities/WETHEvent/WETHEvent";
 
-export type TransactionEvent = FullSwapERC20Event | ApproveEvent | WETHEvent;
+export type TransactionEvent =
+  | FullSwapERC20Event
+  | ApproveEvent
+  | WETHEvent
+  | CancelEvent;
 
 export enum TransactionTypes {
   approval = "approval",

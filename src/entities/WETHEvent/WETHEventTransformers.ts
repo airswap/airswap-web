@@ -10,6 +10,7 @@ export const transformToDepositOrWithdrawEvent = (
   return {
     type,
     amount,
+    name: type === WethEventType.deposit ? "Deposit" : "Withdrawal",
     hash,
     status,
   };

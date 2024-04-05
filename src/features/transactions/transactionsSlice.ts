@@ -289,9 +289,7 @@ export const selectPendingApprovals = (state: RootState) =>
 
 export const selectCancellations = (state: RootState) =>
   state.transactions.transactions.filter(
-    (tx) =>
-      tx.status === TransactionStatusType.processing &&
-      tx.type === TransactionTypes.cancel
+    (tx) => tx.type === TransactionTypes.cancel
   ) as SubmittedCancellation[];
 
 export const selectPendingCancellations = (state: RootState) =>

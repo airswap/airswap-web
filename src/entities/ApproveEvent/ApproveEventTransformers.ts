@@ -9,6 +9,7 @@ export const transformToApproveEvent = (
 ): ApproveEvent => {
   return {
     amount,
+    name: "Approve",
     hash,
     spenderAddress,
     tokenAddress,
