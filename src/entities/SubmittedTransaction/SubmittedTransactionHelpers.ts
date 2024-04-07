@@ -4,10 +4,10 @@ import {
   SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
-  SubmittedRFQOrder,
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
+  SubmittedOrderUnderConsideration,
 } from "./SubmittedTransaction";
 
 export const isApprovalTransaction = (
@@ -30,16 +30,26 @@ export const isWithdrawTransaction = (
 ): transaction is SubmittedWithdrawTransaction =>
   transaction.type === TransactionTypes.withdraw;
 
-export const isOrderTransaction = (
+export const isSubmittedOrder = (
   transaction: SubmittedTransaction
-): transaction is SubmittedTransactionWithOrder => {
-  return transaction.type === TransactionTypes.order;
+): transaction is SubmittedOrder => {
+  return transaction.type === TransactionTypes.order && !!transaction.hash;
+};
+
+export const isSubmittedOrderUnderConsideration = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedOrderUnderConsideration => {
+  return transaction.type === TransactionTypes.order && !transaction.hash;
 };
 
 export const isLastLookOrderTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedLastLookOrder => {
-  return isOrderTransaction(transaction) && !!transaction.isLastLook;
+  return (
+    isSubmittedOrder(transaction) &&
+    !!transaction.hash &&
+    !!transaction.isLastLook
+  );
 };
 
 export const sortSubmittedTransactionsByExpiry = (

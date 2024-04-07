@@ -2,14 +2,14 @@ import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 
 import {
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { parseJsonArray } from "../../helpers/array";
 import { TransactionStatusType } from "../../types/transactionTypes";
 
 export const isTransactionWithOrder = (
   transaction: SubmittedTransaction
-): transaction is SubmittedTransactionWithOrder => {
+): transaction is SubmittedOrder => {
   return "order" in transaction;
 };
 

@@ -8,7 +8,7 @@ import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
@@ -34,8 +34,7 @@ export const notifyTransaction = (
       type === TransactionTypes.withdraw) &&
     chainId
   ) {
-    const tx: SubmittedTransactionWithOrder =
-      transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedOrder = transaction as SubmittedOrder;
     /*  TODO: fix toaster for multiple tabs or apps
         now that we have a listener, you can have multiple
         tabs open that receives the same order event. Only one redux
@@ -140,7 +139,7 @@ export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
   );
 };
 
-export const notifyOrder = (transaction: SubmittedTransactionWithOrder) => {
+export const notifyOrder = (transaction: SubmittedOrder) => {
   toast(
     (t) => (
       <TransactionToast

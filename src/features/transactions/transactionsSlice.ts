@@ -13,6 +13,7 @@ import {
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
   SubmittedTransaction,
+  SubmittedOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
@@ -57,7 +58,7 @@ function updateTransaction(params: {
     const swap = state.transactions.find(
       (s) =>
         s.nonce === nonce &&
-        (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
+        (s as SubmittedOrder).order.signerWallet.toLowerCase() ===
           signerWallet!.toLowerCase()
     );
     if (swap) {

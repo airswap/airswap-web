@@ -27,13 +27,13 @@ import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   transformToSubmittedApprovalTransaction,
   transformToSubmittedDepositTransaction,
-  transformToSubmittedRFQOrder,
+  transformToSubmittedTransactionWithOrder,
   transformToSubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { AppErrorType, isAppError } from "../../errors/appError";
@@ -164,7 +164,7 @@ export const handleSubmittedWithdrawOrder = (
 };
 
 export const handleSubmittedRFQOrder = (
-  transaction: SubmittedTransactionWithOrder,
+  transaction: SubmittedOrder,
   status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
@@ -460,7 +460,7 @@ export const take =
         ? order
         : refactorOrder(order, library._network.chainId);
 
-    const transaction = transformToSubmittedRFQOrder(
+    const transaction = transformToSubmittedTransactionWithOrder(
       tx.hash,
       updatedOrder,
       signerToken,

@@ -21,7 +21,7 @@ export interface SubmittedTransaction {
   timestamp: number;
 }
 
-export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
+export interface SubmittedOrder extends SubmittedTransaction {
   isLastLook?: boolean;
   type: TransactionTypes.order;
   order: OrderERC20;
@@ -29,16 +29,12 @@ export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
   signerToken: TokenInfo;
 }
 
-export interface SubmittedTransactionWithOrderUnderConsideration
-  extends Omit<SubmittedTransactionWithOrder, "hash"> {
+export interface SubmittedOrderUnderConsideration
+  extends Omit<SubmittedOrder, "hash"> {
   isLastLook: true;
 }
 
-export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {
-  protocol: "request-for-quote-erc20";
-}
-
-export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
+export interface SubmittedLastLookOrder extends SubmittedOrder {
   isLastLook: true;
 }
 

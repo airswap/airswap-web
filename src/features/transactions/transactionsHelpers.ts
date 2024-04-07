@@ -22,7 +22,7 @@ import {
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
-  isOrderTransaction,
+  isSubmittedOrder,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import {
@@ -94,7 +94,7 @@ const getMatchingTransaction = (
 
   if (isFullSwapERC20Event(event)) {
     return transactions
-      .filter(isOrderTransaction)
+      .filter(isSubmittedOrder)
       .find((transaction) => findMatchingOrderTransaction(transaction, event));
   }
 
@@ -153,7 +153,7 @@ export const handleTransactionResolved =
       handleSubmittedWithdrawOrder(transaction, transaction.status, dispatch);
     }
 
-    if (isOrderTransaction(transaction)) {
+    if (isSubmittedOrder(transaction)) {
       handleSubmittedRFQOrder(transaction, transaction.status);
     }
 

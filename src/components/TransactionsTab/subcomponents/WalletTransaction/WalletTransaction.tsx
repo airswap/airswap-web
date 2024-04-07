@@ -12,7 +12,7 @@ import {
   isCancelTransaction,
   isDepositTransaction,
   isLastLookOrderTransaction,
-  isOrderTransaction,
+  isSubmittedOrder,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { TransactionStatusType } from "../../../../types/transactionTypes";
@@ -102,7 +102,7 @@ const WalletTransaction = ({
   }
 
   if (
-    isOrderTransaction(transaction) ||
+    isSubmittedOrder(transaction) ||
     isWithdrawTransaction(transaction) ||
     isDepositTransaction(transaction)
   ) {
@@ -139,7 +139,7 @@ const WalletTransaction = ({
                 }
               >
                 {t(
-                  isOrderTransaction(transaction) && transaction.isLastLook
+                  isSubmittedOrder(transaction) && transaction.isLastLook
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {

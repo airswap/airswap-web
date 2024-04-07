@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector } from "../../../app/hooks";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { transformToSubmittedRFQOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
 import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
 import { compareAddresses } from "../../../helpers/string";
@@ -75,7 +75,7 @@ const useHistoricalTransactions = (): [
 
           if (!signerToken || !senderToken) return;
 
-          return transformToSubmittedRFQOrder(
+          return transformToSubmittedTransactionWithOrder(
             order.hash,
             order.params,
             signerToken,

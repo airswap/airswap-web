@@ -1,5 +1,5 @@
 import { TransactionEvent } from "../../types/transactionTypes";
-import { SubmittedTransactionWithOrder } from "../SubmittedTransaction/SubmittedTransaction";
+import { SubmittedOrder } from "../SubmittedTransaction/SubmittedTransaction";
 import { FullSwapERC20Event } from "./FullSwapERC20Event";
 
 export const isFullSwapERC20Event = (
@@ -8,7 +8,7 @@ export const isFullSwapERC20Event = (
   typeof event === "object" && "name" in event && event.name === "Swap";
 
 export const findMatchingOrderTransaction = (
-  transaction: SubmittedTransactionWithOrder,
+  transaction: SubmittedOrder,
   event: FullSwapERC20Event
 ): boolean => {
   if (transaction.hash === event.hash) {

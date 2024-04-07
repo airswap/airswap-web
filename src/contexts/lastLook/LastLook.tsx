@@ -14,7 +14,7 @@ import BigNumber from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import { transformToSubmittedLastLookOrder } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import { transformToSubmittedTransactionWithOrderUnderConsideration } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import {
   selectAllTokenInfo,
   selectProtocolFee,
@@ -176,14 +176,12 @@ const LastLookProvider: FC = ({ children }) => {
       const signerToken = tokens.find((t) => t.address === order.signerToken);
       const senderToken = tokens.find((t) => t.address === order.senderToken);
 
-      const transaction = transformToSubmittedLastLookOrder(
-        undefined,
-        order,
-        signerToken!,
-        senderToken!
-      );
-
-      console.log(transaction);
+      const transaction =
+        transformToSubmittedTransactionWithOrderUnderConsideration(
+          order,
+          signerToken!,
+          senderToken!
+        );
 
       dispatch(
         submitTransactionWithExpiry({

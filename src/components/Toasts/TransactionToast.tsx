@@ -6,12 +6,14 @@ import { TokenInfo } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
-  SubmittedLastLookOrder,
-  SubmittedRFQOrder,
-  SubmittedTransaction,
-} from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { isLastLookOrderTransaction } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+  isApprovalTransaction,
+  isDepositTransaction,
+  isLastLookOrderTransaction,
+  isSubmittedOrder,
+  isWithdrawTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { TransactionTypes } from "../../types/transactionTypes";
 import { InfoHeading } from "../Typography/Typography";
 import {
@@ -63,6 +65,13 @@ const TransactionToast = ({
   approvalToken,
 }: TransactionToastProps) => {
   const { t } = useTranslation();
+  const order =
+    isSubmittedOrder(transaction) ||
+    isWithdrawTransaction(transaction) ||
+    isDepositTransaction(transaction)
+      ? transaction.order
+      : undefined;
+  const isApproval = isApprovalTransaction(transaction);
 
   return (
     <Container>
@@ -75,9 +84,7 @@ const TransactionToast = ({
       </IconContainer>
       <TextContainer>
         <InfoHeading>
-          {type === TransactionTypes.order ||
-          type === TransactionTypes.deposit ||
-          type === TransactionTypes.withdraw
+          {!isApproval
             ? error
               ? t("toast.swapFail")
               : t("toast.swapComplete")
@@ -87,36 +94,29 @@ const TransactionToast = ({
         </InfoHeading>
         <SwapAmounts>
           {(() => {
-            if (
-              type === TransactionTypes.order ||
-              type === TransactionTypes.deposit ||
-              type === TransactionTypes.withdraw
-            ) {
-              if (transaction && senderToken && signerToken) {
-                const tx = isLastLookOrderTransaction(transaction)
-                  ? (transaction as SubmittedLastLookOrder)
-                  : (transaction as SubmittedRFQOrder);
-                let translationKey = "wallet.transaction";
-                if (tx.isLastLook) {
-                  translationKey = "wallet.lastLookTransaction";
-                }
-                // @ts-ignore dynamic translation key
-                return t(translationKey, {
-                  senderAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.senderAmount, senderToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  senderToken: senderToken.symbol,
-                  signerAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.signerAmount, signerToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  signerToken: signerToken.symbol,
-                });
+            if (order && senderToken && signerToken) {
+              let translationKey = "wallet.transaction";
+              if (isLastLookOrderTransaction(transaction)) {
+                translationKey = "wallet.lastLookTransaction";
               }
+
+              // @ts-ignore dynamic translation key
+              return t(translationKey, {
+                senderAmount: parseFloat(
+                  Number(
+                    formatUnits(order.senderAmount, senderToken.decimals)
+                  ).toFixed(5)
+                ),
+                senderToken: senderToken.symbol,
+                signerAmount: parseFloat(
+                  Number(
+                    formatUnits(order.signerAmount, signerToken.decimals)
+                  ).toFixed(5)
+                ),
+                signerToken: signerToken.symbol,
+              });
             }
+
             return t("toast.approve", { symbol: approvalToken?.symbol });
           })()}
         </SwapAmounts>
