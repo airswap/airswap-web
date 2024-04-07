@@ -8,7 +8,6 @@ import {
 import { AppDispatch, RootState } from "../../app/store";
 import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
 import {
-  ProtocolType,
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
@@ -52,7 +51,6 @@ function updateTransaction(params: {
   hash?: string;
   signerWallet?: string;
   status: TransactionStatusType;
-  protocol?: ProtocolType;
 }): void {
   const { state, nonce, hash, signerWallet, status } = params;
   if (!!signerWallet && !!nonce) {
@@ -167,7 +165,6 @@ export const transactionsSlice = createSlice({
         nonce: action.payload.nonce,
         signerWallet: action.payload.signerWallet,
         status: TransactionStatusType.declined,
-        protocol: action.payload.protocol,
       });
     });
     builder.addCase(revertTransaction, (state, action) => {

@@ -1,7 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 
 import {
-  ProtocolType,
   SubmittedApprovalTransaction,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -15,7 +14,6 @@ export const declineTransaction = createAction<{
   signerWallet?: string;
   nonce?: string;
   reason?: string;
-  protocol?: ProtocolType;
 }>("transactions/declineTransaction");
 
 export const revertTransaction = createAction<{

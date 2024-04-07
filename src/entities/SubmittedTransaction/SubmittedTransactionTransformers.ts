@@ -8,7 +8,7 @@ import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
-  SubmittedRFQOrder,
+  SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -82,14 +82,13 @@ export const transformToSubmittedRFQOrder = (
   senderToken: TokenInfo,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
-): SubmittedRFQOrder => {
+): SubmittedTransactionWithOrder => {
   return {
     type: TransactionTypes.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,
     order,
-    protocol: "request-for-quote-erc20",
     senderToken,
     signerToken,
     status,
@@ -106,12 +105,12 @@ export const transformToSubmittedLastLookOrder = (
   timestamp = Date.now()
 ): SubmittedLastLookOrder => {
   return {
+    isLastLook: true,
     type: TransactionTypes.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,
     order,
-    protocol: "last-look-erc20",
     senderToken,
     signerToken,
     status,

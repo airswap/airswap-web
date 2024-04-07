@@ -12,8 +12,6 @@ export interface DepositOrWithdrawOrder {
   senderAmount: string;
 }
 
-export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
-
 export interface SubmittedTransaction {
   type: TransactionTypes;
   hash?: string; // LL orders doesn't have hash
@@ -21,14 +19,19 @@ export interface SubmittedTransaction {
   nonce?: string;
   expiry?: string;
   timestamp: number;
-  protocol?: ProtocolType;
 }
 
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
+  isLastLook?: boolean;
   type: TransactionTypes.order;
   order: OrderERC20;
   senderToken: TokenInfo;
   signerToken: TokenInfo;
+}
+
+export interface SubmittedTransactionWithOrderUnderConsideration
+  extends Omit<SubmittedTransactionWithOrder, "hash"> {
+  isLastLook: true;
 }
 
 export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {
@@ -36,7 +39,7 @@ export interface SubmittedRFQOrder extends SubmittedTransactionWithOrder {
 }
 
 export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
-  protocol: "last-look-erc20";
+  isLastLook: true;
 }
 
 export interface SubmittedApprovalTransaction extends SubmittedTransaction {

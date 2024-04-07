@@ -1,7 +1,6 @@
 import { TransactionReceipt } from "@ethersproject/providers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { ApproveEvent } from "../../entities/ApproveEvent/ApproveEvent";
 import {
   findMatchingApprovalTransaction,
   isApproveEvent,
@@ -10,7 +9,6 @@ import {
   findMatchingCancelTransaction,
   isCancelEvent,
 } from "../../entities/CancelEvent/CancelEventHelpers";
-import { FullSwapERC20Event } from "../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import {
   findMatchingOrderTransaction,
   isFullSwapERC20Event,
@@ -24,12 +22,9 @@ import {
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
-  isLastLookOrderTransaction,
   isOrderTransaction,
-  isRfqOrderTransaction,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { WETHEvent } from "../../entities/WETHEvent/WETHEvent";
 import {
   findMatchingDepositOrWithdrawTransaction,
   isWETHEvent,
@@ -158,10 +153,7 @@ export const handleTransactionResolved =
       handleSubmittedWithdrawOrder(transaction, transaction.status, dispatch);
     }
 
-    if (
-      isRfqOrderTransaction(transaction) ||
-      isLastLookOrderTransaction(transaction)
-    ) {
+    if (isOrderTransaction(transaction)) {
       handleSubmittedRFQOrder(transaction, transaction.status);
     }
 

@@ -30,25 +30,16 @@ export const isWithdrawTransaction = (
 ): transaction is SubmittedWithdrawTransaction =>
   transaction.type === TransactionTypes.withdraw;
 
-export const isRfqOrderTransaction = (
-  transaction: SubmittedTransaction
-): transaction is SubmittedRFQOrder =>
-  transaction.type === TransactionTypes.order &&
-  transaction.protocol === "request-for-quote-erc20";
-
-export const isLastLookOrderTransaction = (
-  transaction: SubmittedTransaction
-): transaction is SubmittedLastLookOrder =>
-  transaction.type === TransactionTypes.order &&
-  transaction.protocol === "last-look-erc20";
-
 export const isOrderTransaction = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedTransactionWithOrder => {
-  return (
-    isRfqOrderTransaction(transaction) ||
-    isLastLookOrderTransaction(transaction)
-  );
+  return transaction.type === TransactionTypes.order;
+};
+
+export const isLastLookOrderTransaction = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedLastLookOrder => {
+  return isOrderTransaction(transaction) && !!transaction.isLastLook;
 };
 
 export const sortSubmittedTransactionsByExpiry = (

@@ -11,6 +11,7 @@ import {
   SubmittedRFQOrder,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { isLastLookOrderTransaction } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { TransactionTypes } from "../../types/transactionTypes";
 import { InfoHeading } from "../Typography/Typography";
 import {
@@ -92,12 +93,11 @@ const TransactionToast = ({
               type === TransactionTypes.withdraw
             ) {
               if (transaction && senderToken && signerToken) {
-                const tx =
-                  transaction.protocol === "last-look-erc20"
-                    ? (transaction as SubmittedLastLookOrder)
-                    : (transaction as SubmittedRFQOrder);
+                const tx = isLastLookOrderTransaction(transaction)
+                  ? (transaction as SubmittedLastLookOrder)
+                  : (transaction as SubmittedRFQOrder);
                 let translationKey = "wallet.transaction";
-                if (tx.protocol === "last-look-erc20") {
+                if (tx.isLastLook) {
                   translationKey = "wallet.lastLookTransaction";
                 }
                 // @ts-ignore dynamic translation key

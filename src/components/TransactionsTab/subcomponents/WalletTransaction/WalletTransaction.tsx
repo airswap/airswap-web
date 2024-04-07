@@ -11,6 +11,7 @@ import {
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
+  isLastLookOrderTransaction,
   isOrderTransaction,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
@@ -111,7 +112,7 @@ const WalletTransaction = ({
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
     let signerAmountWithFee: string | null = null;
-    if (transaction.protocol === "last-look-erc20") {
+    if (isLastLookOrderTransaction(transaction)) {
       signerAmountWithFee = new BigNumber(transaction.order.signerAmount)
         .multipliedBy(1.0007)
         .integerValue(BigNumber.ROUND_FLOOR)
@@ -138,7 +139,7 @@ const WalletTransaction = ({
                 }
               >
                 {t(
-                  transaction.protocol === "last-look-erc20"
+                  isOrderTransaction(transaction) && transaction.isLastLook
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {
