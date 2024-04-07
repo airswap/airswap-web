@@ -58,3 +58,13 @@ export const sortSubmittedTransactionsByExpiry = (
 ) => {
   return b.timestamp - a.timestamp;
 };
+
+export const getSubmittedTransactionKey = (
+  transaction: SubmittedTransaction
+) => {
+  if (isSubmittedOrderUnderConsideration(transaction)) {
+    return `${transaction.order.nonce}-${transaction.timestamp}`;
+  }
+
+  return `${transaction.hash}-${transaction.timestamp}`;
+};

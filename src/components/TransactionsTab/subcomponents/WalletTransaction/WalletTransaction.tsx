@@ -107,7 +107,9 @@ const WalletTransaction = ({
     isDepositTransaction(transaction)
   ) {
     const { signerToken, senderToken } = transaction;
-    const hasExpiry = !!transaction.expiry;
+    const expiry = isSubmittedOrder(transaction)
+      ? transaction.order.expiry
+      : undefined;
 
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
@@ -134,7 +136,7 @@ const WalletTransaction = ({
             <>
               <SpanTitle
                 hasProgress={
-                  hasExpiry &&
+                  !!expiry &&
                   transaction.status === TransactionStatusType.processing
                 }
               >
@@ -164,11 +166,11 @@ const WalletTransaction = ({
                   }
                 )}
               </SpanTitle>
-              {hasExpiry &&
+              {!!expiry &&
               transaction.status === TransactionStatusType.processing ? (
                 <ProgressBar
                   startTime={transaction.timestamp}
-                  endTime={parseInt(transaction.expiry!) * 1000}
+                  endTime={+expiry * 1000}
                 />
               ) : (
                 <SpanSubtitle>

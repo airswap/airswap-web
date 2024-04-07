@@ -14,7 +14,10 @@ import {
   SubmittedLastLookOrder,
   SubmittedTransaction,
   SubmittedOrder,
+  SubmittedOrderUnderConsideration,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { isSubmittedOrder } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { compareAddresses } from "../../helpers/string";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
   TransactionStatusType,
@@ -57,9 +60,9 @@ function updateTransaction(params: {
   if (!!signerWallet && !!nonce) {
     const swap = state.transactions.find(
       (s) =>
-        s.nonce === nonce &&
-        (s as SubmittedOrder).order.signerWallet.toLowerCase() ===
-          signerWallet!.toLowerCase()
+        isSubmittedOrder(s) &&
+        s.order.nonce === nonce &&
+        compareAddresses(s.order.signerWallet, signerWallet)
     );
     if (swap) {
       swap.timestamp = Date.now();
@@ -97,7 +100,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
   void,
   // Params
   {
-    transaction: SubmittedTransaction;
+    transaction: SubmittedOrder | SubmittedOrderUnderConsideration;
     signerWallet: string;
     onExpired?: () => void;
   },
@@ -108,25 +111,25 @@ export const submitTransactionWithExpiry = createAsyncThunk<
   }
 >(
   "orders/submitTransactionWithExpiry",
-  async ({ transaction, signerWallet, onExpired }, { getState, dispatch }) => {
+  async ({ transaction, signerWallet, onExpired }, { dispatch }) => {
     dispatch(submitTransaction(transaction));
-    if (!transaction.expiry) {
+    if (!transaction.order.expiry) {
       console.warn(
         "submitTransactionWithExpiry called with transaction that has no expiry"
       );
       return;
     }
 
-    const expiresAtMs = parseInt(transaction.expiry) * 1000;
+    const expiresAtMs = +transaction.order.expiry * 1000;
     const timeToExpiryNotification =
       expiresAtMs - Date.now() + ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS;
-    const uniqueTransactionKey = `${signerWallet}/${transaction.nonce}`;
+    const uniqueTransactionKey = `${signerWallet}/${transaction.order.nonce}`;
 
     expiryTimeouts[uniqueTransactionKey] = window.setTimeout(() => {
       dispatch(
         expireTransaction({
           signerWallet,
-          nonce: transaction.nonce!,
+          nonce: transaction.order.nonce,
         })
       );
       onExpired && onExpired();

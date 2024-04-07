@@ -15,5 +15,5 @@ export const findMatchingOrderTransaction = (
     return true;
   }
 
-  return transaction.nonce === event.swap.nonce;
+  return transaction.order.nonce === event.swap.nonce;
 };

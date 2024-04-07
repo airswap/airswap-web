@@ -16,8 +16,6 @@ export interface SubmittedTransaction {
   type: TransactionTypes;
   hash?: string; // LL orders doesn't have hash
   status: TransactionStatusType;
-  nonce?: string;
-  expiry?: string;
   timestamp: number;
 }
 
@@ -48,6 +46,7 @@ export interface SubmittedApprovalTransaction extends SubmittedTransaction {
 
 export interface SubmittedCancellation extends SubmittedTransaction {
   hash: string;
+  nonce: string;
 }
 
 export interface SubmittedDepositTransaction extends SubmittedTransaction {

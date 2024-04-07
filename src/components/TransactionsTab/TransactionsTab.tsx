@@ -15,6 +15,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
@@ -225,7 +226,7 @@ const TransactionsTab = ({
               <AnimatePresence initial={false}>
                 {pendingTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}-pending`}
+                    key={getSubmittedTransactionKey(transaction)}
                     transaction={transaction}
                     tokens={tokens}
                     chainId={chainId!}
@@ -243,7 +244,7 @@ const TransactionsTab = ({
               <AnimatePresence initial={false}>
                 {completedTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
+                    key={getSubmittedTransactionKey(transaction)}
                     transaction={transaction}
                     tokens={tokens}
                     chainId={chainId!}

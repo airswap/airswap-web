@@ -85,9 +85,7 @@ export const transformToSubmittedTransactionWithOrder = (
   timestamp = Date.now()
 ): SubmittedOrder => ({
   type: TransactionTypes.order,
-  expiry: order.expiry,
   hash,
-  nonce: order.nonce,
   order,
   senderToken,
   signerToken,
@@ -104,8 +102,6 @@ export const transformToSubmittedTransactionWithOrderUnderConsideration = (
 ): SubmittedOrderUnderConsideration => ({
   isLastLook: true,
   type: TransactionTypes.order,
-  expiry: order.expiry,
-  nonce: order.nonce,
   order,
   senderToken,
   signerToken,
