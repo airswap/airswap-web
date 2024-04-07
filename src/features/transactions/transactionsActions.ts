@@ -18,13 +18,6 @@ export const declineTransaction = createAction<{
   protocol?: ProtocolType;
 }>("transactions/declineTransaction");
 
-export const mineTransaction = createAction<{
-  protocol?: ProtocolType;
-  signerWallet?: string;
-  hash?: string;
-  nonce?: string;
-}>("transaction/mineTransaction");
-
 export const revertTransaction = createAction<{
   hash?: string;
   signerWallet?: string;

@@ -27,7 +27,6 @@ import {
 import {
   declineTransaction,
   expireTransaction,
-  mineTransaction,
   revertTransaction,
   submitTransaction,
   updateTransactions,
@@ -109,7 +108,7 @@ export const submitTransactionWithExpiry = createAsyncThunk<
     state: RootState;
   }
 >(
-  "orders/approve",
+  "orders/submitTransactionWithExpiry",
   async ({ transaction, signerWallet, onExpired }, { getState, dispatch }) => {
     dispatch(submitTransaction(transaction));
     if (!transaction.expiry) {
@@ -189,17 +188,6 @@ export const transactionsSlice = createSlice({
         signerWallet,
         nonce,
         status: TransactionStatusType.expired,
-      });
-    });
-    builder.addCase(mineTransaction, (state, action) => {
-      clearExpiry(action.payload.signerWallet, action.payload.nonce);
-      updateTransaction({
-        state,
-        hash: action.payload.hash,
-        nonce: action.payload.nonce,
-        signerWallet: action.payload.signerWallet,
-        status: TransactionStatusType.succeeded,
-        protocol: action.payload.protocol,
       });
     });
     builder.addCase(updateTransactions, (state, action): TransactionsState => {

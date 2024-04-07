@@ -13,14 +13,8 @@ import { useWeb3React } from "@web3-react/core";
 import BigNumber from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-// import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
-import {
-  transformToSubmittedLastLookOrder,
-  transformToSubmittedRFQOrder,
-} from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import { transformToSubmittedLastLookOrder } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import {
   selectAllTokenInfo,
   selectProtocolFee,
@@ -188,6 +182,8 @@ const LastLookProvider: FC = ({ children }) => {
         signerToken!,
         senderToken!
       );
+
+      console.log(transaction);
 
       dispatch(
         submitTransactionWithExpiry({

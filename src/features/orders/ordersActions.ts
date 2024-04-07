@@ -49,7 +49,6 @@ import {
 } from "../balances/balancesSlice";
 import {
   declineTransaction,
-  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionsActions";
