@@ -63,8 +63,8 @@ export const getSubmittedTransactionKey = (
   transaction: SubmittedTransaction
 ) => {
   if (isSubmittedOrderUnderConsideration(transaction)) {
-    return `${transaction.order.nonce}-${transaction.timestamp}`;
+    return `${transaction.order.signerWallet}-${transaction.order.nonce}-${transaction.timestamp}`;
   }
 
-  return `${transaction.hash}-${transaction.timestamp}`;
+  return transaction.hash;
 };

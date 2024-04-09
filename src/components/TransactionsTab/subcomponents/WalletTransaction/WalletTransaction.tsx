@@ -13,6 +13,7 @@ import {
   isDepositTransaction,
   isLastLookOrderTransaction,
   isSubmittedOrder,
+  isSubmittedOrderUnderConsideration,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { TransactionStatusType } from "../../../../types/transactionTypes";
@@ -61,7 +62,9 @@ const WalletTransaction = ({
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <SpanTitle>{t("wallet.approve")}</SpanTitle>
+          <SpanTitle>
+            {t("wallet.approve", { symbol: transaction.token.symbol })}
+          </SpanTitle>
 
           <SpanSubtitle>
             {statusText} · {timeBetween}
@@ -103,6 +106,7 @@ const WalletTransaction = ({
 
   if (
     isSubmittedOrder(transaction) ||
+    isSubmittedOrderUnderConsideration(transaction) ||
     isWithdrawTransaction(transaction) ||
     isDepositTransaction(transaction)
   ) {
@@ -181,7 +185,7 @@ const WalletTransaction = ({
           )}
         </TextContainer>
 
-        {transaction.hash && (
+        {!isSubmittedOrderUnderConsideration(transaction) && (
           <StyledTransactionLink
             hideLabel
             chainId={chainId}

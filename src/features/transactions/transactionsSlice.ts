@@ -11,7 +11,6 @@ import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
-  SubmittedLastLookOrder,
   SubmittedTransaction,
   SubmittedOrder,
   SubmittedOrderUnderConsideration,

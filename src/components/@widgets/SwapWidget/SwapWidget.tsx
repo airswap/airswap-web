@@ -591,28 +591,15 @@ const SwapWidget: FC = () => {
         setIsSwapping(false);
         return;
       }
-      const accepted = await LastLook.sendOrderForConsideration({
-        locator: bestTradeOption!.pricing!.locator,
-        order: order,
-      });
-      setIsSwapping(false);
-      if (accepted) {
-        setShowOrderSubmitted(true);
-        LastLook.unsubscribeAllServers();
-      } else {
-        notifyError({
-          heading: t("orders.swapRejected"),
-          cta: t("orders.swapRejectedCallToAction"),
-        });
 
-        dispatch(
-          declineTransaction({
-            signerWallet: order.signerWallet,
-            nonce: order.nonce,
-            reason: "Pricing expired",
-          })
-        );
-      }
+      // LastLook.sendOrderForConsideration({
+      //   locator: bestTradeOption!.pricing!.locator,
+      //   order: order,
+      // });
+
+      setIsSwapping(false);
+      setShowOrderSubmitted(true);
+      LastLook.unsubscribeAllServers();
     } catch (e: any) {
       setIsSwapping(false);
       dispatch(clearTradeTermsQuoteAmount());

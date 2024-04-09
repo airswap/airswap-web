@@ -137,7 +137,7 @@ export const selectBestOption = createSelector(
     // TODO: Delete this
     // Temp disable bestRfqOrder
     // @ts-ignore
-    bestRfqOrder = null;
+    // bestRfqOrder = null;
 
     if (!bestRfqOrder && !pricing) return undefined;
     let lastLookOrder;

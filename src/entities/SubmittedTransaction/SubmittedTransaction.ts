@@ -14,12 +14,16 @@ export interface DepositOrWithdrawOrder {
 
 export interface SubmittedTransaction {
   type: TransactionTypes;
-  hash?: string; // LL orders doesn't have hash
+  hash?: string;
   status: TransactionStatusType;
   timestamp: number;
 }
 
-export interface SubmittedOrder extends SubmittedTransaction {
+export interface SubmittedTransactionWithHash extends SubmittedTransaction {
+  hash: string;
+}
+
+export interface SubmittedOrder extends SubmittedTransactionWithHash {
   isLastLook?: boolean;
   type: TransactionTypes.order;
   order: OrderERC20;
@@ -36,7 +40,8 @@ export interface SubmittedLastLookOrder extends SubmittedOrder {
   isLastLook: true;
 }
 
-export interface SubmittedApprovalTransaction extends SubmittedTransaction {
+export interface SubmittedApprovalTransaction
+  extends SubmittedTransactionWithHash {
   type: TransactionTypes.approval;
   hash: string;
   amount: string;
@@ -44,12 +49,13 @@ export interface SubmittedApprovalTransaction extends SubmittedTransaction {
   tokenAddress: string;
 }
 
-export interface SubmittedCancellation extends SubmittedTransaction {
+export interface SubmittedCancellation extends SubmittedTransactionWithHash {
   hash: string;
   nonce: string;
 }
 
-export interface SubmittedDepositTransaction extends SubmittedTransaction {
+export interface SubmittedDepositTransaction
+  extends SubmittedTransactionWithHash {
   type: TransactionTypes.deposit;
   hash: string;
   order: DepositOrWithdrawOrder;
@@ -57,7 +63,8 @@ export interface SubmittedDepositTransaction extends SubmittedTransaction {
   signerToken: TokenInfo;
 }
 
-export interface SubmittedWithdrawTransaction extends SubmittedTransaction {
+export interface SubmittedWithdrawTransaction
+  extends SubmittedTransactionWithHash {
   type: TransactionTypes.withdraw;
   hash: string;
   order: DepositOrWithdrawOrder;

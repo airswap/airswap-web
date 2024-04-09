@@ -10,6 +10,7 @@ import {
   SubmittedTransaction,
   SubmittedOrder,
   SubmittedWithdrawTransaction,
+  SubmittedOrderUnderConsideration,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { TransactionTypes } from "../../types/transactionTypes";
@@ -193,6 +194,13 @@ export const notifyOrderCreated = (order: FullOrderERC20) => {
       duration: 3000,
     }
   );
+};
+
+export const notifyOrderExpiry = (order: SubmittedOrderUnderConsideration) => {
+  notifyError({
+    heading: i18n.t("orders.swapRejected"),
+    cta: i18n.t("orders.swapRejectedCallToAction"),
+  });
 };
 
 export const notifyCopySuccess = () => {

@@ -15,6 +15,7 @@ import {
 } from "../../entities/FullSwapERC20Event/FullSwapERC20EventHelpers";
 import {
   SubmittedDepositTransaction,
+  SubmittedOrderUnderConsideration,
   SubmittedTransaction,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -23,6 +24,7 @@ import {
   isCancelTransaction,
   isDepositTransaction,
   isSubmittedOrder,
+  isSubmittedOrderUnderConsideration,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import {
@@ -52,6 +54,27 @@ export const updateTransaction =
         transaction.hash === updatedTransaction.hash ||
         transaction.hash === previousHash
     );
+
+    if (transactionIndex === -1) {
+      return;
+    }
+
+    const updatedTransactions = [...transactions];
+    updatedTransactions.splice(transactionIndex, 1, updatedTransaction);
+
+    dispatch(setTransactions(updatedTransactions));
+  };
+
+export const updateExpiredTransaction =
+  (updatedTransaction: SubmittedOrderUnderConsideration) =>
+  async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
+    const transactions = getState().transactions.transactions;
+    const transactionIndex = transactions
+      .filter(isSubmittedOrderUnderConsideration)
+      .findIndex(
+        (transaction) =>
+          transaction.order.nonce === updatedTransaction.order.nonce
+      );
 
     if (transactionIndex === -1) {
       return;

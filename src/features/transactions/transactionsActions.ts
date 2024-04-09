@@ -1,12 +1,12 @@
 import { createAction } from "@reduxjs/toolkit";
 
 import {
-  SubmittedApprovalTransaction,
+  SubmittedOrderUnderConsideration,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 
 export const submitTransaction = createAction<
-  SubmittedTransaction | SubmittedApprovalTransaction
+  SubmittedTransaction | SubmittedOrderUnderConsideration
 >("transaction/submitTransaction");
 
 export const declineTransaction = createAction<{

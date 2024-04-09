@@ -3,15 +3,21 @@ import { useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { notifyOrderExpiry } from "../../components/Toasts/ToastController";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getUniqueArrayChildren } from "../../helpers/array";
 import { TransactionStatusType } from "../../types/transactionTypes";
 import useHistoricalTransactions from "./hooks/useHistoricalTransactions";
+import useLatestExpiredTransaction from "./hooks/useLatestExpiredTransaction";
 import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction";
 import useLatestTransactionEvent from "./hooks/useLatestTransactionEvent";
 import useTransactionsFilterFromLocalStorage from "./hooks/useTransactionsFilterFromLocalStorage";
-import { updateTransactionWithReceipt } from "./transactionsHelpers";
+import {
+  updateExpiredTransaction,
+  updateTransaction,
+  updateTransactionWithReceipt,
+} from "./transactionsHelpers";
 import {
   handleTransactionResolved,
   handleTransactionEvent,
@@ -32,8 +38,8 @@ export const useTransactions = (): void => {
 
   const [historicalTransactions] = useHistoricalTransactions();
   const latestTransactionEvent = useLatestTransactionEvent();
-  // TODO: Right now only succeeded transactions are handled, we should also handle expired transactions here. https://github.com/airswap/airswap-web/issues/891
   const latestSuccessfulTransaction = useLatestSucceededTransaction();
+  const latestExpiredTransaction = useLatestExpiredTransaction();
   useTransactionsFilterFromLocalStorage();
 
   // When the transactions change, we want to save them to local storage.
@@ -41,7 +47,7 @@ export const useTransactions = (): void => {
     if (!account || !chainId || !library) {
       return;
     }
-
+    console.log(transactions);
     setLocalStorageTransactions(account, chainId, transactions);
   }, [transactions]);
 
@@ -73,6 +79,8 @@ export const useTransactions = (): void => {
 
     processingTransactions.forEach(getTransactionReceiptAndUpdateTransaction);
 
+    console.log(localStorageTransactions);
+
     dispatch(setTransactions(localStorageTransactions));
   }, [account, chainId]);
 
@@ -93,6 +101,7 @@ export const useTransactions = (): void => {
       // Remove duplicates, in favour of store transactions.
       const uniqueTransactions = getUniqueArrayChildren<SubmittedTransaction>(
         updatedTransactions,
+        // TODO: LastLook orders could not have a hash, so we need to add an id prop
         "hash"
       );
       const sortedTransactions = uniqueTransactions.sort(
@@ -109,6 +118,19 @@ export const useTransactions = (): void => {
       dispatch(handleTransactionEvent(latestTransactionEvent));
     }
   }, [latestTransactionEvent]);
+
+  // If a LastLook transaction was not taken in time after it was sent for consideration then it should be expired.
+  useEffect(() => {
+    if (latestExpiredTransaction) {
+      dispatch(
+        updateExpiredTransaction({
+          ...latestExpiredTransaction,
+          status: TransactionStatusType.expired,
+        })
+      );
+      notifyOrderExpiry(latestExpiredTransaction);
+    }
+  }, [latestExpiredTransaction]);
 
   // If a transaction is successful, we want to handle it here.
   useEffect(() => {
