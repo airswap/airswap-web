@@ -21,7 +21,7 @@ import {
 } from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
-import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
+import { submitTransaction } from "../../features/transactions/transactionsActions";
 
 type Pair = {
   baseToken: string;
@@ -135,7 +135,7 @@ const LastLookProvider: FC = ({ children }) => {
         .multipliedBy(10 ** terms.baseToken.decimals)
         // Note that we remove the signer fee from the amount that we send.
         // This was already done to determine quoteAmount.
-        .dividedBy(terms.side === "sell" ? 1.0007 : 1)
+        .dividedBy(terms.side === "sell" ? 1 + protocolFee / 10000 : 1)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString();
       const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
@@ -183,12 +183,7 @@ const LastLookProvider: FC = ({ children }) => {
           senderToken!
         );
 
-      dispatch(
-        submitTransactionWithExpiry({
-          transaction,
-          signerWallet: unsignedOrder.signerWallet,
-        })
-      );
+      dispatch(submitTransaction(transaction));
 
       return {
         order,

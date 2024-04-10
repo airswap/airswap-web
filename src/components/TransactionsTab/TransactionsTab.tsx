@@ -54,6 +54,7 @@ type TransactionsTabType = {
   address: string;
   chainId: number;
   open: boolean;
+  protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
   /**
@@ -61,7 +62,6 @@ type TransactionsTabType = {
    */
   onDisconnectWalletClicked: () => void;
   transactions: SubmittedTransaction[];
-  tokens: TokenInfo[];
   balances: BalancesState;
   isUnsupportedNetwork?: boolean;
 };
@@ -70,11 +70,11 @@ const TransactionsTab = ({
   address = "",
   chainId,
   open,
+  protocolFee,
   setTransactionsTabOpen,
   onClearTransactionsChange,
   onDisconnectWalletClicked,
   transactions = [],
-  tokens = [],
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
@@ -227,8 +227,8 @@ const TransactionsTab = ({
                 {pendingTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
                     key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
                   />
                 ))}
@@ -245,8 +245,8 @@ const TransactionsTab = ({
                 {completedTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
                     key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
                   />
                 ))}

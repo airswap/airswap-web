@@ -592,10 +592,10 @@ const SwapWidget: FC = () => {
         return;
       }
 
-      // LastLook.sendOrderForConsideration({
-      //   locator: bestTradeOption!.pricing!.locator,
-      //   order: order,
-      // });
+      LastLook.sendOrderForConsideration({
+        locator: bestTradeOption!.pricing!.locator,
+        order: order,
+      });
 
       setIsSwapping(false);
       setShowOrderSubmitted(true);
@@ -795,7 +795,7 @@ const SwapWidget: FC = () => {
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
-          isLastLook={!!bestTradeOption?.isLastLook}
+          isLastLook={!!(bestTradeOption && bestTradeOption.isLastLook)}
           title={isApproving ? t("orders.approve") : t("common.rfq")}
           isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}

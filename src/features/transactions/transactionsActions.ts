@@ -23,11 +23,6 @@ export const revertTransaction = createAction<{
   reason?: string;
 }>("transactions/revertTransaction");
 
-export const expireTransaction = createAction<{
-  signerWallet: string;
-  nonce: string;
-}>("transactions/expireTransaction");
-
 export const updateTransactions = createAction<SubmittedTransaction[]>(
   "transactions/updateTransactions"
 );

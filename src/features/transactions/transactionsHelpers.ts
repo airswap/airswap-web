@@ -15,11 +15,13 @@ import {
 } from "../../entities/FullSwapERC20Event/FullSwapERC20EventHelpers";
 import {
   SubmittedDepositTransaction,
+  SubmittedOrder,
   SubmittedOrderUnderConsideration,
   SubmittedTransaction,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
+  doesTransactionsMatch,
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
@@ -49,32 +51,9 @@ export const updateTransaction =
   (updatedTransaction: SubmittedTransaction, previousHash?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
     const transactions = getState().transactions.transactions;
-    const transactionIndex = transactions.findIndex(
-      (transaction) =>
-        transaction.hash === updatedTransaction.hash ||
-        transaction.hash === previousHash
+    const transactionIndex = transactions.findIndex((transaction) =>
+      doesTransactionsMatch(transaction, updatedTransaction, previousHash)
     );
-
-    if (transactionIndex === -1) {
-      return;
-    }
-
-    const updatedTransactions = [...transactions];
-    updatedTransactions.splice(transactionIndex, 1, updatedTransaction);
-
-    dispatch(setTransactions(updatedTransactions));
-  };
-
-export const updateExpiredTransaction =
-  (updatedTransaction: SubmittedOrderUnderConsideration) =>
-  async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
-    const transactions = getState().transactions.transactions;
-    const transactionIndex = transactions
-      .filter(isSubmittedOrderUnderConsideration)
-      .findIndex(
-        (transaction) =>
-          transaction.order.nonce === updatedTransaction.order.nonce
-      );
 
     if (transactionIndex === -1) {
       return;
@@ -116,9 +95,14 @@ const getMatchingTransaction = (
   }
 
   if (isFullSwapERC20Event(event)) {
-    return transactions
-      .filter(isSubmittedOrder)
-      .find((transaction) => findMatchingOrderTransaction(transaction, event));
+    const orderUnderConsiderationTransactions = transactions.filter(
+      isSubmittedOrderUnderConsideration
+    );
+    const orderTransactions = transactions.filter(isSubmittedOrder);
+
+    return [...orderTransactions, ...orderUnderConsiderationTransactions].find(
+      (transaction) => findMatchingOrderTransaction(transaction, event)
+    );
   }
 
   if (isCancelEvent(event)) {
@@ -141,6 +125,8 @@ export const handleTransactionEvent =
       event,
       pendingTransactions
     );
+
+    console.log(matchingTransaction, event);
 
     if (!matchingTransaction) {
       return;

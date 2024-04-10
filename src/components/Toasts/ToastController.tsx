@@ -196,7 +196,7 @@ export const notifyOrderCreated = (order: FullOrderERC20) => {
   );
 };
 
-export const notifyOrderExpiry = (order: SubmittedOrderUnderConsideration) => {
+export const notifyOrderExpiry = () => {
   notifyError({
     heading: i18n.t("orders.swapRejected"),
     cta: i18n.t("orders.swapRejectedCallToAction"),

@@ -55,11 +55,9 @@ const useHistoricalTransactions = (): [
     setTransactions(undefined);
 
     const getTransactionsFromLogs = async () => {
-      const rfqOrders = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
-      // TODO: Add support for lastLook orders https://github.com/airswap/airswap-web/issues/891
-      // const lastLookOrders = await getOrdersFromLogs(swapLogs.swapLogs);
+      const orders = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
 
-      const rfqSubmittedTransactions = rfqOrders
+      const submittedTransactions = orders
         .filter(
           (order) =>
             compareAddresses(order.params.signerWallet, account) ||
@@ -85,12 +83,12 @@ const useHistoricalTransactions = (): [
           );
         });
 
-      const transactions = rfqSubmittedTransactions.filter(
+      const transactions = submittedTransactions.filter(
         (order) => !!order
       ) as SubmittedTransaction[];
       const uniqueTransactions = getUniqueArrayChildren<SubmittedTransaction>(
         transactions,
-        "nonce"
+        "hash"
       );
 
       const sortedTransactions = uniqueTransactions.sort(

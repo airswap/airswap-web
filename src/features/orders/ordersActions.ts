@@ -52,7 +52,6 @@ import {
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionsActions";
-import { submitTransactionWithExpiry } from "../transactions/transactionsSlice";
 import {
   approveToken,
   depositETH,
@@ -409,11 +408,10 @@ export const approve =
 export const take =
   (
     order: OrderERC20 | FullOrderERC20,
-    senderToken: TokenInfo,
     signerToken: TokenInfo,
+    senderToken: TokenInfo,
     library: Web3Provider,
-    contractType: "Swap" | "Wrapper",
-    onExpired?: () => void
+    contractType: "Swap" | "Wrapper"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     dispatch(setStatus("signing"));
@@ -467,12 +465,6 @@ export const take =
       senderToken
     );
 
-    dispatch(
-      submitTransactionWithExpiry({
-        transaction,
-        signerWallet: order.signerWallet,
-        onExpired,
-      })
-    );
+    dispatch(submitTransaction(transaction));
     dispatch(setStatus("idle"));
   };

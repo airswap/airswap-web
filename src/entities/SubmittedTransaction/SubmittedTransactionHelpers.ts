@@ -68,3 +68,18 @@ export const getSubmittedTransactionKey = (
 
   return transaction.hash;
 };
+
+export const doesTransactionsMatch = (
+  transaction: SubmittedTransaction,
+  match: SubmittedTransaction,
+  hash?: string
+): boolean => {
+  if (
+    isSubmittedOrderUnderConsideration(transaction) &&
+    isSubmittedOrderUnderConsideration(match)
+  ) {
+    return transaction.order.nonce === match.order.nonce;
+  }
+
+  return transaction.hash === match.hash || transaction.hash === hash;
+};

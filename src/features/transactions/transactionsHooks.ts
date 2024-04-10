@@ -14,7 +14,6 @@ import useLatestSucceededTransaction from "./hooks/useLatestSucceededTransaction
 import useLatestTransactionEvent from "./hooks/useLatestTransactionEvent";
 import useTransactionsFilterFromLocalStorage from "./hooks/useTransactionsFilterFromLocalStorage";
 import {
-  updateExpiredTransaction,
   updateTransaction,
   updateTransactionWithReceipt,
 } from "./transactionsHelpers";
@@ -47,7 +46,7 @@ export const useTransactions = (): void => {
     if (!account || !chainId || !library) {
       return;
     }
-    console.log(transactions);
+
     setLocalStorageTransactions(account, chainId, transactions);
   }, [transactions]);
 
@@ -79,8 +78,6 @@ export const useTransactions = (): void => {
 
     processingTransactions.forEach(getTransactionReceiptAndUpdateTransaction);
 
-    console.log(localStorageTransactions);
-
     dispatch(setTransactions(localStorageTransactions));
   }, [account, chainId]);
 
@@ -101,7 +98,6 @@ export const useTransactions = (): void => {
       // Remove duplicates, in favour of store transactions.
       const uniqueTransactions = getUniqueArrayChildren<SubmittedTransaction>(
         updatedTransactions,
-        // TODO: LastLook orders could not have a hash, so we need to add an id prop
         "hash"
       );
       const sortedTransactions = uniqueTransactions.sort(
@@ -119,16 +115,16 @@ export const useTransactions = (): void => {
     }
   }, [latestTransactionEvent]);
 
-  // If a LastLook transaction was not taken in time after it was sent for consideration then it should be expired.
+  // If a transaction was not taken in time then it should be expired.
   useEffect(() => {
     if (latestExpiredTransaction) {
       dispatch(
-        updateExpiredTransaction({
+        updateTransaction({
           ...latestExpiredTransaction,
           status: TransactionStatusType.expired,
         })
       );
-      notifyOrderExpiry(latestExpiredTransaction);
+      notifyOrderExpiry();
     }
   }, [latestExpiredTransaction]);
 

@@ -46,7 +46,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
         </Button>
       )}
 
-      {!isLastLook && isQuote && (
+      {!isLastLook && isQuote && expiryTime && (
         <Quote>
           <NewQuoteText>{t("orders.newQuoteIn")}</NewQuoteText>
           {expiryTime && <StyledTimer expiryTime={expiryTime} />}

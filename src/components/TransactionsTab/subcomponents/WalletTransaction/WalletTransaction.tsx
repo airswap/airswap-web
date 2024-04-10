@@ -30,17 +30,13 @@ import {
 } from "./WalletTransaction.styles";
 
 interface WalletTransactionProps extends HTMLMotionProps<"div"> {
-  /**
-   * The parent object of SubmittedOrder and SubmittedApproval
-   */
+  protocolFee: number;
   transaction: SubmittedTransaction;
-  /**
-   * chainId of current Ethereum net
-   */
   chainId: number;
 }
 
 const WalletTransaction = ({
+  protocolFee,
   transaction,
   chainId,
   animate,
@@ -120,7 +116,7 @@ const WalletTransaction = ({
     let signerAmountWithFee: string | null = null;
     if (isLastLookOrderTransaction(transaction)) {
       signerAmountWithFee = new BigNumber(transaction.order.signerAmount)
-        .multipliedBy(1.0007)
+        .multipliedBy(1 + protocolFee / 10000)
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
     }
