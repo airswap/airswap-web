@@ -27,7 +27,7 @@ export const LAST_LOOK_ORDER_EXPIRY_SEC = 2 * 60;
 /**
  * Time to wait after a swap has expired
  */
-export const ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS = 20 * 1000;
+export const ASSUMED_EXPIRY_NOTIFICATION_BUFFER_SEC = 20;
 
 /**
  * Time to wait for quotes before presenting "no peers" message.

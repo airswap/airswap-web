@@ -4,7 +4,7 @@ import { useInterval } from "usehooks-ts";
 
 import { useAppSelector } from "../../../app/hooks";
 import {
-  ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS,
+  ASSUMED_EXPIRY_NOTIFICATION_BUFFER_SEC,
   LAST_LOOK_ORDER_EXPIRY_SEC,
 } from "../../../constants/configParams";
 import {
@@ -46,7 +46,7 @@ const useLatestExpiredTransaction = ():
     return transactions.filter(isSubmittedOrder).find((transaction) => {
       return (
         transaction.status === TransactionStatusType.processing &&
-        +transaction.order.expiry + ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS <
+        +transaction.order.expiry + ASSUMED_EXPIRY_NOTIFICATION_BUFFER_SEC <
           currentTime
       );
     });
