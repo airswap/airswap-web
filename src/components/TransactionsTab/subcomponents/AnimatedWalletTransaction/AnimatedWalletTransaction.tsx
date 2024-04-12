@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { TokenInfo } from "@airswap/utils";
-
 import { useReducedMotion } from "framer-motion";
 import { useTheme } from "styled-components";
 
@@ -14,12 +12,14 @@ interface AnimatedWalletTransactionProps {
   protocolFee: number;
   transaction: SubmittedTransaction;
   chainId: number;
+  account: string;
 }
 
 const AnimatedWalletTransaction = ({
   protocolFee,
   transaction,
   chainId,
+  account,
 }: AnimatedWalletTransactionProps) => {
   const theme = useTheme();
   const shouldReduceMotion = useReducedMotion();
@@ -69,6 +69,7 @@ const AnimatedWalletTransaction = ({
         }}
         transaction={transaction}
         chainId={chainId}
+        account={account}
       />
     </Container>
   );

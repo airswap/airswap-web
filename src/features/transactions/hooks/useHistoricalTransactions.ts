@@ -55,31 +55,32 @@ const useHistoricalTransactions = (): [
     setTransactions(undefined);
 
     const getTransactionsFromLogs = async () => {
-      const orders = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
+      const logs = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
 
-      const submittedTransactions = orders
+      const submittedTransactions = logs
         .filter(
           (order) =>
-            compareAddresses(order.params.signerWallet, account) ||
-            compareAddresses(order.senderWallet, account)
+            compareAddresses(order.order.signerWallet, account) ||
+            compareAddresses(order.swap.senderWallet, account)
         )
-        .map((order) => {
+        .map((log) => {
           const signerToken = tokens.find(
-            (token) => token.address === order.params.signerToken
+            (token) => token.address === log.order.signerToken
           );
           const senderToken = tokens.find(
-            (token) => token.address === order.params.senderToken
+            (token) => token.address === log.order.senderToken
           );
 
           if (!signerToken || !senderToken) return;
 
           return transformToSubmittedTransactionWithOrder(
-            order.hash,
-            order.params,
+            log.hash,
+            log.order,
             signerToken,
             senderToken,
+            log.swap,
             TransactionStatusType.succeeded,
-            order.timestamp
+            log.timestamp
           );
         });
 

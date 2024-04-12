@@ -162,7 +162,7 @@ export const handleSubmittedWithdrawOrder = (
   notifyWithdrawal(transaction);
 };
 
-export const handleSubmittedRFQOrder = (
+export const handleSubmittedOrder = (
   transaction: SubmittedOrder,
   status: TransactionStatusType
 ): void => {

@@ -33,7 +33,7 @@ export const isWithdrawTransaction = (
 export const isSubmittedOrder = (
   transaction: SubmittedTransaction
 ): transaction is SubmittedOrder => {
-  return transaction.type === TransactionTypes.order && !!transaction.hash;
+  return transaction.type === TransactionTypes.order;
 };
 
 export const isSubmittedOrderUnderConsideration = (
@@ -69,7 +69,7 @@ export const getSubmittedTransactionKey = (
   return transaction.hash;
 };
 
-export const doesTransactionsMatch = (
+export const doTransactionsMatch = (
   transaction: SubmittedTransaction,
   match: SubmittedTransaction,
   hash?: string

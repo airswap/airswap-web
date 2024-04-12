@@ -21,7 +21,7 @@ import {
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
-  doesTransactionsMatch,
+  doTransactionsMatch,
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
@@ -42,7 +42,7 @@ import {
   handleApproveTransaction,
   handleSubmittedCancelOrder,
   handleSubmittedDepositOrder,
-  handleSubmittedRFQOrder,
+  handleSubmittedOrder,
   handleSubmittedWithdrawOrder,
 } from "../orders/ordersActions";
 import { setTransactions } from "./transactionsSlice";
@@ -52,7 +52,7 @@ export const updateTransaction =
   async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
     const transactions = getState().transactions.transactions;
     const transactionIndex = transactions.findIndex((transaction) =>
-      doesTransactionsMatch(transaction, updatedTransaction, previousHash)
+      doTransactionsMatch(transaction, updatedTransaction, previousHash)
     );
 
     if (transactionIndex === -1) {
@@ -126,25 +126,24 @@ export const handleTransactionEvent =
       pendingTransactions
     );
 
-    console.log(matchingTransaction, event);
-
     if (!matchingTransaction) {
       return;
     }
 
-    dispatch(
-      updateTransaction(
-        {
-          ...matchingTransaction,
-          hash: event.hash,
-          status:
-            event.status === 1
-              ? TransactionStatusType.succeeded
-              : TransactionStatusType.declined,
-        },
-        matchingTransaction.hash
-      )
-    );
+    let updatedTransaction: SubmittedTransaction = {
+      ...matchingTransaction,
+      hash: event.hash,
+      status:
+        event.status === 1
+          ? TransactionStatusType.succeeded
+          : TransactionStatusType.declined,
+    };
+
+    if (isFullSwapERC20Event(event) && isSubmittedOrder(updatedTransaction)) {
+      updatedTransaction.swap = event.swap;
+    }
+
+    dispatch(updateTransaction(updatedTransaction, matchingTransaction.hash));
   };
 
 export const handleTransactionResolved =
@@ -163,7 +162,7 @@ export const handleTransactionResolved =
     }
 
     if (isSubmittedOrder(transaction)) {
-      handleSubmittedRFQOrder(transaction, transaction.status);
+      handleSubmittedOrder(transaction, transaction.status);
     }
 
     if (isCancelTransaction(transaction)) {

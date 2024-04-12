@@ -1,4 +1,4 @@
-import { OrderERC20, TokenInfo } from "@airswap/utils";
+import { FullSwapERC20, OrderERC20, TokenInfo } from "@airswap/utils";
 
 import {
   TransactionStatusType,
@@ -27,6 +27,7 @@ export interface SubmittedOrder extends SubmittedTransactionWithHash {
   isLastLook?: boolean;
   type: TransactionTypes.order;
   order: OrderERC20;
+  swap?: FullSwapERC20;
   senderToken: TokenInfo;
   signerToken: TokenInfo;
 }

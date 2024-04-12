@@ -283,7 +283,7 @@ export const Wallet: FC<WalletPropsType> = ({
         />
       </TopBar>
       <TransactionsTab
-        address={account!}
+        account={account!}
         chainId={chainId!}
         open={transactionsTabIsOpen}
         protocolFee={protocolFee}
