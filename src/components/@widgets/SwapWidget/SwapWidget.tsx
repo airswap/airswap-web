@@ -13,7 +13,6 @@ import { Registry, Server, Wrapper } from "@airswap/libraries";
 import { OrderERC20, Pricing, ProtocolIds, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
