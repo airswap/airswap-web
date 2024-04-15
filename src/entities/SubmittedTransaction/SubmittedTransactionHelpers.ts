@@ -96,10 +96,22 @@ export const getDepositOrWithdrawalTransactionLabel = (
   signerToken: TokenInfo,
   senderToken: TokenInfo
 ): string => {
+  const signerAmount = parseFloat(
+    Number(
+      formatUnits(transaction.order.signerAmount, signerToken.decimals)
+    ).toFixed(5)
+  );
+
+  const senderAmount = parseFloat(
+    Number(
+      formatUnits(transaction.order.senderAmount, senderToken.decimals)
+    ).toFixed(5)
+  );
+
   return i18n.t("wallet.transaction", {
-    signerAmount: transaction.order.signerAmount,
+    signerAmount,
     signerToken: signerToken.symbol,
-    senderAmount: transaction.order.signerAmount,
+    senderAmount,
     senderToken: senderToken.symbol,
   });
 };
