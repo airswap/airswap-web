@@ -232,22 +232,6 @@ export const allowancesWrapperSlice = getSlice(
   requestActiveTokenAllowancesWrapper
 );
 
-export const {
-  incrementBy: incrementBalanceBy,
-  decrementBy: decrementBalanceBy,
-  set: setBalance,
-} = balancesSlice.actions;
-export const {
-  incrementBy: incrementAllowanceSwapBy,
-  decrementBy: decrementAllowanceSwapBy,
-  set: setAllowanceSwap,
-} = allowancesSwapSlice.actions;
-export const {
-  incrementBy: incrementAllowanceWrapperBy,
-  decrementBy: decreementAllowanceWrapperBy,
-  set: setAllowanceWrapper,
-} = allowancesWrapperSlice.actions;
-
 export const balancesActions = balancesSlice.actions;
 export const allowancesSwapActions = allowancesSwapSlice.actions;
 export const allowancesWrapperActions = allowancesWrapperSlice.actions;

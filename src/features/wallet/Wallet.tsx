@@ -1,7 +1,6 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { SwapERC20, WETH, Wrapper } from "@airswap/libraries";
 import { Web3Provider } from "@ethersproject/providers";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -23,25 +22,9 @@ import {
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
 import { ClearOrderType } from "../../types/clearOrderType";
-import { subscribeToTransfersAndApprovals } from "../balances/balancesApi";
+import { selectBalances } from "../balances/balancesSlice";
+import { fetchAllTokens, fetchProtocolFee } from "../metadata/metadataActions";
 import {
-  decrementBalanceBy,
-  incrementBalanceBy,
-  requestActiveTokenAllowancesSwap,
-  requestActiveTokenAllowancesWrapper,
-  requestActiveTokenBalances,
-  selectBalances,
-  setAllowanceSwap,
-  setAllowanceWrapper,
-} from "../balances/balancesSlice";
-import {
-  fetchAllTokens,
-  fetchProtocolFee,
-  fetchUnkownTokens,
-} from "../metadata/metadataActions";
-import {
-  selectActiveTokens,
-  selectAllTokenInfo,
   selectMetaDataReducer,
   selectProtocolFee,
 } from "../metadata/metadataSlice";
@@ -77,7 +60,6 @@ export const Wallet: FC<WalletPropsType> = ({
 
   // Redux
   const dispatch = useAppDispatch();
-  const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const { providerName } = useAppSelector(selectWallet);
   const transactions = useAppSelector(selectFilteredTransactions);
@@ -153,95 +135,12 @@ export const Wallet: FC<WalletPropsType> = ({
             provider: library,
           } as any)
         ),
-      ]).then(() => {
-        dispatch(
-          requestActiveTokenBalances({
-            provider: library,
-          })
-        );
-        dispatch(
-          requestActiveTokenAllowancesSwap({
-            provider: library,
-          })
-        );
-        dispatch(
-          requestActiveTokenAllowancesWrapper({
-            provider: library,
-          })
-        );
-        dispatch(
-          fetchUnkownTokens({
-            provider: library,
-          } as any)
-        );
-      });
+      ]);
     } else if (!active) {
       dispatch(setWalletDisconnected());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId, active]);
-
-  // Subscribe to changes in balance
-
-  useEffect(() => {
-    if (
-      !library ||
-      !account ||
-      !connector ||
-      chainId === undefined ||
-      !activeTokens.length ||
-      balances.lastFetch === null ||
-      balances.status !== "idle"
-    )
-      return;
-
-    let teardownTransferListener: () => void;
-    if (activeTokens.length) {
-      teardownTransferListener = subscribeToTransfersAndApprovals({
-        activeTokenAddresses: activeTokens.map((t) => t.address),
-        provider: library,
-        walletAddress: account,
-        spenderAddress: SwapERC20.getAddress(chainId) || "",
-        onBalanceChange: (tokenAddress, amount, direction) => {
-          const actionCreator =
-            direction === "in" ? incrementBalanceBy : decrementBalanceBy;
-          dispatch(
-            actionCreator({
-              tokenAddress,
-              amount: amount.toString(),
-            })
-          );
-        },
-        onApproval: (tokenAddress, spenderAddress, amount) => {
-          const actionCreator =
-            spenderAddress === Wrapper.getAddress(chainId)
-              ? setAllowanceWrapper
-              : setAllowanceSwap;
-          dispatch(
-            actionCreator({
-              tokenAddress,
-              amount: amount.toString(),
-            })
-          );
-        },
-      });
-    }
-
-    return () => {
-      if (teardownTransferListener) {
-        teardownTransferListener();
-      }
-    };
-  }, [
-    activeTokens,
-    account,
-    library,
-    connector,
-    dispatch,
-    chainId,
-    balances.lastFetch,
-    balances.status,
-  ]);
 
   return (
     <>

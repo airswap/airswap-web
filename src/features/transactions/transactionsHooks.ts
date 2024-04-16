@@ -131,7 +131,7 @@ export const useTransactions = (): void => {
   // If a transaction is successful, we want to handle it here.
   useEffect(() => {
     if (latestSuccessfulTransaction) {
-      dispatch(handleTransactionResolved(latestSuccessfulTransaction));
+      handleTransactionResolved(latestSuccessfulTransaction);
     }
   }, [latestSuccessfulTransaction]);
 };

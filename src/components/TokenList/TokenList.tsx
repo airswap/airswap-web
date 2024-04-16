@@ -8,12 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
-import {
-  BalancesState,
-  requestActiveTokenAllowancesSwap,
-  requestActiveTokenAllowancesWrapper,
-  requestActiveTokenBalances,
-} from "../../features/balances/balancesSlice";
+import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveToken,
   addCustomToken,
@@ -164,9 +159,6 @@ const TokenList = ({
         dispatch(addCustomToken(address));
       }
       await dispatch(addActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
 
       onAfterAddActiveToken && onAfterAddActiveToken(address);
     }

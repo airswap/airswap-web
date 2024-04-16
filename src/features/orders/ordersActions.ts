@@ -43,11 +43,6 @@ import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import i18n from "../../i18n/i18n";
 import { TransactionStatusType } from "../../types/transactionTypes";
 import {
-  allowancesSwapActions,
-  decrementBalanceBy,
-  incrementBalanceBy,
-} from "../balances/balancesSlice";
-import {
   declineTransaction,
   revertTransaction,
   submitTransaction,
@@ -69,8 +64,7 @@ import {
 
 export const handleApproveTransaction = (
   transaction: SubmittedApprovalTransaction,
-  status: TransactionStatusType,
-  dispatch: AppDispatch
+  status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
     notifyError({
@@ -81,25 +75,12 @@ export const handleApproveTransaction = (
     return;
   }
 
-  const amount = toRoundedAtomicString(
-    transaction.amount,
-    transaction.token.decimals
-  );
-
-  dispatch(
-    allowancesSwapActions.set({
-      tokenAddress: transaction.tokenAddress,
-      amount: amount,
-    })
-  );
-
   notifyApproval(transaction);
 };
 
 export const handleSubmittedDepositOrder = (
   transaction: SubmittedDepositTransaction,
-  status: TransactionStatusType,
-  dispatch: AppDispatch
+  status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
     notifyError({
@@ -109,30 +90,13 @@ export const handleSubmittedDepositOrder = (
 
     return;
   }
-
-  // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
-
-  dispatch(
-    incrementBalanceBy({
-      tokenAddress: transaction.signerToken.address,
-      amount: transaction.order.signerAmount,
-    })
-  );
-
-  dispatch(
-    decrementBalanceBy({
-      tokenAddress: transaction.senderToken.address,
-      amount: transaction.order.senderAmount,
-    })
-  );
 
   notifyDeposit(transaction);
 };
 
 export const handleSubmittedWithdrawOrder = (
   transaction: SubmittedWithdrawTransaction,
-  status: TransactionStatusType,
-  dispatch: AppDispatch
+  status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
     notifyError({
@@ -142,22 +106,6 @@ export const handleSubmittedWithdrawOrder = (
 
     return;
   }
-
-  // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
-
-  dispatch(
-    incrementBalanceBy({
-      tokenAddress: transaction.signerToken.address,
-      amount: transaction.order.signerAmount,
-    })
-  );
-
-  dispatch(
-    decrementBalanceBy({
-      tokenAddress: transaction.senderToken.address,
-      amount: transaction.order.senderAmount,
-    })
-  );
 
   notifyWithdrawal(transaction);
 };
