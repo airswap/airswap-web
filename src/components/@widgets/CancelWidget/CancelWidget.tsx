@@ -8,11 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
-import {
-  selectTakeOtcReducer,
-  selectTakeOtcStatus,
-  setIsCancelSuccessFull,
-} from "../../../features/takeOtc/takeOtcSlice";
+import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../../hooks/useCancellationPending";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { AppRoutes } from "../../../routes";
@@ -43,7 +39,6 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const { chainId } = useWeb3React();
   const dispatch = useAppDispatch();
 
-  const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
   const status = useAppSelector(selectTakeOtcStatus);
 
   const params = useParams<{ compressedOrder: string }>();
@@ -61,14 +56,12 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   };
 
   useEffect(() => {
-    if (isCancelSuccessFull && isCancelSuccess) {
+    if (isCancelSuccess) {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
-
-      dispatch(setIsCancelSuccessFull(false));
     }
-  }, [history, params, isCancelSuccessFull, isCancelSuccess, dispatch]);
+  }, [isCancelSuccess]);
 
   const handleCancelClick = async () => {
     await dispatch(

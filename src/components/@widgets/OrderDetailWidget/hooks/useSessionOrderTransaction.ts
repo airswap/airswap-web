@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "../../../../app/hooks";
 import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { selectOrderTransactions } from "../../../../features/transactions/transactionsSlice";
+import { TransactionStatusType } from "../../../../types/transactionTypes";
 
 // This hook is very similar to useOrderTransaction but it will only return transactions that have been added since the component was mounted.
 
@@ -21,7 +22,7 @@ const useSessionOrderTransaction = (
 
     if (
       transactions[0].nonce === nonce &&
-      transactions[0].status === "processing"
+      transactions[0].status === TransactionStatusType.processing
     ) {
       setProcessingTransactionHash(transactions[0].hash);
     }

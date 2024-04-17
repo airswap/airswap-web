@@ -11,6 +11,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../app/store";
 import {
   notifyApproval,
+  notifyConfirmation,
   notifyDeposit,
   notifyError,
   notifyOrder,
@@ -24,6 +25,7 @@ import {
 import nativeCurrency from "../../constants/nativeCurrency";
 import {
   SubmittedApprovalTransaction,
+  SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
@@ -39,6 +41,7 @@ import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorT
 import getWethAddress from "../../helpers/getWethAddress";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import i18n from "../../i18n/i18n";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import {
   allowancesSwapActions,
   decrementBalanceBy,
@@ -66,30 +69,16 @@ import {
   setStatus,
 } from "./ordersSlice";
 
-const failTransaction = (
-  hash: string,
-  heading: string,
-  dispatch: AppDispatch
-): void => {
-  dispatch(revertTransaction({ hash }));
-
-  notifyError({
-    heading,
-    cta: i18n.t("validatorErrors.unknownError"),
-  });
-};
-
 export const handleApproveTransaction = (
   transaction: SubmittedApprovalTransaction,
-  receipt: TransactionReceipt,
+  status: TransactionStatusType,
   dispatch: AppDispatch
 ): void => {
-  if (receipt.status !== 1) {
-    failTransaction(
-      receipt.transactionHash,
-      i18n.t("toast.approvalFail"),
-      dispatch
-    );
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.approvalFail"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
 
     return;
   }
@@ -99,7 +88,6 @@ export const handleApproveTransaction = (
     transaction.token.decimals
   );
 
-  dispatch(mineTransaction({ hash: transaction.hash }));
   dispatch(
     allowancesSwapActions.set({
       tokenAddress: transaction.tokenAddress,
@@ -112,20 +100,17 @@ export const handleApproveTransaction = (
 
 export const handleSubmittedDepositOrder = (
   transaction: SubmittedDepositTransaction,
-  receipt: TransactionReceipt,
+  status: TransactionStatusType,
   dispatch: AppDispatch
 ): void => {
-  if (receipt.status !== 1) {
-    failTransaction(
-      receipt.transactionHash,
-      i18n.t("toast.swapFail"),
-      dispatch
-    );
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.swapFail"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
 
     return;
   }
-
-  dispatch(mineTransaction({ hash: transaction.hash }));
 
   // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
 
@@ -148,20 +133,17 @@ export const handleSubmittedDepositOrder = (
 
 export const handleSubmittedWithdrawOrder = (
   transaction: SubmittedWithdrawTransaction,
-  receipt: TransactionReceipt,
+  status: TransactionStatusType,
   dispatch: AppDispatch
 ): void => {
-  if (receipt.status !== 1) {
-    failTransaction(
-      receipt.transactionHash,
-      i18n.t("toast.swapFail"),
-      dispatch
-    );
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.swapFail"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
 
     return;
   }
-
-  dispatch(mineTransaction({ hash: transaction.hash }));
 
   // TODO: Balance handling should be done in balancesApi.ts https://github.com/airswap/airswap-web/issues/889
 
@@ -184,20 +166,33 @@ export const handleSubmittedWithdrawOrder = (
 
 export const handleSubmittedRFQOrder = (
   transaction: SubmittedTransactionWithOrder,
-  receipt: TransactionReceipt,
-  dispatch: AppDispatch
+  status: TransactionStatusType
 ): void => {
-  if (receipt.status !== 1) {
-    failTransaction(
-      receipt.transactionHash,
-      i18n.t("toast.swapFail"),
-      dispatch
-    );
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.swapFail"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
 
     return;
   }
 
   notifyOrder(transaction);
+};
+
+export const handleSubmittedCancelOrder = (
+  status: TransactionStatusType
+): void => {
+  if (status === TransactionStatusType.failed) {
+    notifyError({
+      heading: i18n.t("toast.cancelFailed"),
+      cta: i18n.t("validatorErrors.unknownError"),
+    });
+
+    return;
+  }
+
+  notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
 };
 
 // replaces WETH to ETH on Wrapper orders

@@ -1,11 +1,15 @@
 import { useMemo, useState } from "react";
 
+import { useWeb3React } from "@web3-react/core";
+
 import { useAppSelector } from "../../../app/hooks";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { transformToSubmittedRFQOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
 import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
+import { compareAddresses } from "../../../helpers/string";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 import useSwapLogs from "./useSwapLogs";
 
@@ -15,10 +19,16 @@ interface HistoricalTransactionsCollection {
   transactions: SubmittedTransaction[];
 }
 
-const useHistoricalTransactions = (
-  chainId?: number,
-  account?: string
-): [HistoricalTransactionsCollection | undefined, boolean] => {
+// Historical transactions are gathered from contract event logs when a user connects his wallet. This way we can
+// still get transaction history even after the user clears his cache. Or if he somehow missed a transaction it will be
+// merged into the transaction history.
+
+const useHistoricalTransactions = (): [
+  HistoricalTransactionsCollection | undefined,
+  boolean
+] => {
+  const { chainId, account, library } = useWeb3React();
+
   const tokens = useAppSelector(selectAllTokenInfo);
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs(
     chainId,
@@ -52,8 +62,8 @@ const useHistoricalTransactions = (
       const rfqSubmittedTransactions = rfqOrders
         .filter(
           (order) =>
-            order.params.signerWallet.toLowerCase() === account.toLowerCase() ||
-            order.senderWallet.toLowerCase() === account.toLowerCase()
+            compareAddresses(order.params.signerWallet, account) ||
+            compareAddresses(order.senderWallet, account)
         )
         .map((order) => {
           const signerToken = tokens.find(
@@ -70,7 +80,7 @@ const useHistoricalTransactions = (
             order.params,
             signerToken,
             senderToken,
-            "succeeded",
+            TransactionStatusType.succeeded,
             order.timestamp
           );
         });

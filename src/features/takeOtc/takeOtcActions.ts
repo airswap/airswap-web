@@ -1,33 +1,31 @@
 import { SwapERC20 } from "@airswap/libraries";
 import {
   decompressFullOrderERC20,
-  isValidFullOrderERC20,
   FullOrderERC20,
+  isValidFullOrderERC20,
 } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { providers } from "ethers";
 
 import {
-  notifyRejectedByUserError,
-  notifyError,
   notifyConfirmation,
+  notifyError,
+  notifyRejectedByUserError,
 } from "../../components/Toasts/ToastController";
 import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import i18n from "../../i18n/i18n";
+import {
+  TransactionStatusType,
+  TransactionTypes,
+} from "../../types/transactionTypes";
 import { removeUserOrder } from "../myOrders/myOrdersSlice";
 import { getNonceUsed } from "../orders/ordersHelpers";
 import {
-  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionsActions";
-import {
-  reset,
-  setActiveOrder,
-  setIsCancelSuccessFull,
-  setStatus,
-} from "./takeOtcSlice";
+import { reset, setActiveOrder, setStatus } from "./takeOtcSlice";
 
 export const decompressAndSetActiveOrder = createAsyncThunk(
   "take-otc/decompressAndSetActiveOrder",
@@ -95,28 +93,13 @@ export const cancelOrder = createAsyncThunk(
     dispatch(setStatus("open"));
 
     const transaction: SubmittedCancellation = {
-      type: "Cancel",
-      status: "processing",
+      type: TransactionTypes.cancel,
+      status: TransactionStatusType.processing,
       hash: tx.hash,
       nonce: params.order.nonce,
       timestamp: Date.now(),
     };
+
     dispatch(submitTransaction(transaction));
-
-    await tx.wait();
-
-    // post-cancel clean up
-    const isCancelled = await getNonceUsed(params.order, params.library);
-    dispatch(mineTransaction(tx));
-
-    if (isCancelled) {
-      dispatch(setIsCancelSuccessFull(true));
-      notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
-    } else {
-      notifyError({
-        heading: i18n.t("toast.cancelFailed"),
-        cta: i18n.t("validatorErrors.unknownError"),
-      });
-    }
   }
 );

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 
+import { useTransactions } from "../../features/transactions/transactionsHooks";
 import Cancel from "../../pages/Cancel/Cancel";
 import MakePage from "../../pages/Make/Make";
 import MySwapsPage from "../../pages/MyOrders/MyOrders";
@@ -9,6 +10,8 @@ import SwapPage from "../../pages/Swap/Swap";
 import { AppRoutes } from "../../routes";
 
 const Routes: FC = () => {
+  useTransactions();
+
   return (
     <Switch>
       <Route path={`/${AppRoutes.make}`} component={MakePage} key="make" />

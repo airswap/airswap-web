@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import { InfoSubHeading } from "../Typography/Typography";
 import {
   Container,
@@ -31,13 +32,13 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
     <Container className={className}>
       <InfoContainer>
         <DoneAllIcon />
-        {transaction.status === "processing" && (
+        {transaction.status === TransactionStatusType.processing && (
           <>
             <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
             <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
           </>
         )}
-        {transaction.status === "succeeded" && (
+        {transaction.status === TransactionStatusType.succeeded && (
           <>
             <StyledInfoHeading>
               {t("orders.transactionCompleted")}

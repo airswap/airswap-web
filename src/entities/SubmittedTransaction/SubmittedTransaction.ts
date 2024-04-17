@@ -1,5 +1,10 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
+import {
+  TransactionStatusType,
+  TransactionTypes,
+} from "../../types/transactionTypes";
+
 export interface DepositOrWithdrawOrder {
   signerToken: string;
   signerAmount: string;
@@ -7,26 +12,12 @@ export interface DepositOrWithdrawOrder {
   senderAmount: string;
 }
 
-export type TransactionType =
-  | "Approval"
-  | "Order"
-  | "Deposit"
-  | "Withdraw"
-  | "Cancel";
-
-export type StatusType =
-  | "processing"
-  | "succeeded"
-  | "reverted"
-  | "declined"
-  | "expired";
-
 export type ProtocolType = "request-for-quote-erc20" | "last-look-erc20";
 
 export interface SubmittedTransaction {
-  type: TransactionType;
+  type: TransactionTypes;
   hash?: string; // LL orders doesn't have hash
-  status: StatusType;
+  status: TransactionStatusType;
   nonce?: string;
   expiry?: string;
   timestamp: number;
@@ -34,7 +25,7 @@ export interface SubmittedTransaction {
 }
 
 export interface SubmittedTransactionWithOrder extends SubmittedTransaction {
-  type: "Order";
+  type: TransactionTypes.order;
   order: OrderERC20;
   senderToken: TokenInfo;
   signerToken: TokenInfo;
@@ -49,7 +40,7 @@ export interface SubmittedLastLookOrder extends SubmittedTransactionWithOrder {
 }
 
 export interface SubmittedApprovalTransaction extends SubmittedTransaction {
-  type: "Approval";
+  type: TransactionTypes.approval;
   hash: string;
   amount: string;
   token: TokenInfo;
@@ -61,7 +52,7 @@ export interface SubmittedCancellation extends SubmittedTransaction {
 }
 
 export interface SubmittedDepositTransaction extends SubmittedTransaction {
-  type: "Deposit";
+  type: TransactionTypes.deposit;
   hash: string;
   order: DepositOrWithdrawOrder;
   senderToken: TokenInfo;
@@ -69,7 +60,7 @@ export interface SubmittedDepositTransaction extends SubmittedTransaction {
 }
 
 export interface SubmittedWithdrawTransaction extends SubmittedTransaction {
-  type: "Withdraw";
+  type: TransactionTypes.withdraw;
   hash: string;
   order: DepositOrWithdrawOrder;
   senderToken: TokenInfo;

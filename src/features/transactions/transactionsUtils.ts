@@ -2,7 +2,6 @@ import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 
 import { AppDispatch } from "../../app/store";
 import {
-  StatusType,
   SubmittedTransaction,
   SubmittedTransactionWithOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -14,6 +13,7 @@ import {
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { parseJsonArray } from "../../helpers/array";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import {
   handleApproveTransaction,
   handleSubmittedDepositOrder,
@@ -63,7 +63,7 @@ export const setLocalStorageTransactions = (
 export const filterTransactionByDate = (
   transaction: SubmittedTransaction,
   timestamp: number,
-  status?: StatusType
+  status?: TransactionStatusType
 ) => {
   if (status && transaction.status !== status) {
     return true;
@@ -72,39 +72,7 @@ export const filterTransactionByDate = (
   return transaction.timestamp > timestamp;
 };
 
-export const handleTransactionReceipt = (
-  receipt: TransactionReceipt,
-  transaction: SubmittedTransaction,
-  dispatch: AppDispatch
-): void => {
-  dispatch(
-    updateTransaction({
-      ...transaction,
-      status: receipt.status === 1 ? "succeeded" : "declined",
-    })
-  );
-
-  if (isApprovalTransaction(transaction)) {
-    handleApproveTransaction(transaction, receipt, dispatch);
-  }
-
-  if (isDepositTransaction(transaction)) {
-    handleSubmittedDepositOrder(transaction, receipt, dispatch);
-  }
-
-  if (isWithdrawTransaction(transaction)) {
-    handleSubmittedWithdrawOrder(transaction, receipt, dispatch);
-  }
-
-  if (
-    isRfqOrderTransaction(transaction) ||
-    isLastLookOrderTransaction(transaction)
-  ) {
-    handleSubmittedRFQOrder(transaction, receipt, dispatch);
-  }
-};
-
-const getTransactionReceipt = async (
+const getTransactionReceiptHelper = async (
   hash: string,
   library: BaseProvider
 ): Promise<TransactionReceipt | undefined> => {
@@ -122,11 +90,10 @@ const getTransactionReceipt = async (
   }
 };
 
-export const listenForTransactionReceipt = async (
+export const getTransactionReceipt = async (
   transaction: SubmittedTransaction,
-  library: BaseProvider,
-  dispatch: AppDispatch
-): Promise<void> => {
+  library: BaseProvider
+): Promise<TransactionReceipt | undefined> => {
   let hash = transaction.hash;
 
   if (isLastLookOrderTransaction(transaction)) {
@@ -139,19 +106,5 @@ export const listenForTransactionReceipt = async (
     return;
   }
 
-  const receipt = await getTransactionReceipt(hash, library);
-
-  if (receipt?.status !== undefined) {
-    handleTransactionReceipt(receipt, transaction, dispatch);
-
-    return;
-  }
-
-  library.once(hash, async () => {
-    const receipt = await getTransactionReceipt(hash as string, library);
-
-    if (receipt?.status !== undefined) {
-      handleTransactionReceipt(receipt, transaction, dispatch);
-    }
-  });
+  return getTransactionReceiptHelper(hash, library);
 };

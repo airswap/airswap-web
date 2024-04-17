@@ -14,6 +14,7 @@ import {
   isOrderTransaction,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { TransactionStatusType } from "../../../../types/transactionTypes";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
@@ -90,7 +91,11 @@ const WalletTransaction = ({
           </SpanSubtitle>
         </TextContainer>
 
-        <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
+        <StyledTransactionLink
+          hideLabel
+          chainId={chainId}
+          hash={transaction.hash}
+        />
       </Container>
     );
   }
@@ -120,14 +125,17 @@ const WalletTransaction = ({
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>
-        {transaction.status === "processing" && (
+        {transaction.status === TransactionStatusType.processing && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
         <TextContainer>
           {transaction && senderToken && signerToken && (
             <>
               <SpanTitle
-                hasProgress={hasExpiry && transaction.status === "processing"}
+                hasProgress={
+                  hasExpiry &&
+                  transaction.status === TransactionStatusType.processing
+                }
               >
                 {t(
                   transaction.protocol === "last-look-erc20"
@@ -155,7 +163,8 @@ const WalletTransaction = ({
                   }
                 )}
               </SpanTitle>
-              {hasExpiry && transaction.status === "processing" ? (
+              {hasExpiry &&
+              transaction.status === TransactionStatusType.processing ? (
                 <ProgressBar
                   startTime={transaction.timestamp}
                   endTime={parseInt(transaction.expiry!) * 1000}

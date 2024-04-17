@@ -98,6 +98,7 @@ import useTokenInfo from "../../../hooks/useTokenInfo";
 import useWithdrawalPending from "../../../hooks/useWithdrawalPending";
 import { AppRoutes } from "../../../routes";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
@@ -338,7 +339,7 @@ const SwapWidget: FC = () => {
   }, [hasDepositOrWithdrawalPending]);
 
   useEffect(() => {
-    if (activeTransaction?.status === "processing") {
+    if (activeTransaction?.status === TransactionStatusType.processing) {
       setShowOrderSubmitted(true);
       setIsSwapping(false);
     }
@@ -854,7 +855,8 @@ const SwapWidget: FC = () => {
             isWrapping={isWrapping}
             orderSubmitted={showOrderSubmitted}
             orderCompleted={
-              showOrderSubmitted && activeTransaction?.status === "succeeded"
+              showOrderSubmitted &&
+              activeTransaction?.status === TransactionStatusType.succeeded
             }
             requiresApproval={bestRfqOrder && shouldApprove}
             showViewAllQuotes={indexerOrders.length > 0}

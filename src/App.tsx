@@ -13,6 +13,8 @@ import PageLoader from "./components/PageLoader/PageLoader";
 import Routes from "./components/Routes/Routes";
 import InterfaceProvider from "./contexts/interface/Interface";
 import LastLookProvider from "./contexts/lastLook/LastLook";
+import useTransactionsFilterFromLocalStorage from "./features/transactions/hooks/useTransactionsFilterFromLocalStorage";
+import { useTransactions } from "./features/transactions/transactionsHooks";
 import { selectTheme } from "./features/userSettings/userSettingsSlice";
 import useCustomServer from "./hooks/useCustomServer";
 import useSystemTheme from "./hooks/useSystemTheme";

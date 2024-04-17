@@ -1,13 +1,14 @@
 import { OrderERC20, TokenInfo } from "@airswap/utils";
 
 import {
-  ProtocolType,
-  StatusType,
+  TransactionStatusType,
+  TransactionTypes,
+} from "../../types/transactionTypes";
+import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
   SubmittedRFQOrder,
-  SubmittedTransactionWithOrder,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -15,10 +16,10 @@ export const transformToSubmittedApprovalTransaction = (
   hash: string,
   token: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedApprovalTransaction => {
   return {
-    type: "Approval",
+    type: TransactionTypes.approval,
     hash: hash,
     status,
     token,
@@ -33,10 +34,10 @@ export const transformToSubmittedDepositTransaction = (
   wrappedToken: TokenInfo,
   nativeToken: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedDepositTransaction => {
   return {
-    type: "Deposit",
+    type: TransactionTypes.deposit,
     order: {
       signerAmount: amount,
       signerToken: nativeToken.address,
@@ -56,10 +57,10 @@ export const transformToSubmittedWithdrawTransaction = (
   wrappedToken: TokenInfo,
   nativeToken: TokenInfo,
   amount: string,
-  status: StatusType = "processing"
+  status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedWithdrawTransaction => {
   return {
-    type: "Withdraw",
+    type: TransactionTypes.withdraw,
     order: {
       signerAmount: amount,
       signerToken: wrappedToken.address,
@@ -79,11 +80,11 @@ export const transformToSubmittedRFQOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing",
+  status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
 ): SubmittedRFQOrder => {
   return {
-    type: "Order",
+    type: TransactionTypes.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,
@@ -101,11 +102,11 @@ export const transformToSubmittedLastLookOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
-  status: StatusType = "processing",
+  status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
 ): SubmittedLastLookOrder => {
   return {
-    type: "Order",
+    type: TransactionTypes.order,
     expiry: order.expiry,
     hash,
     nonce: order.nonce,
