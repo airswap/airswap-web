@@ -97,36 +97,49 @@ export const selectSortedOrders = (state: RootState) =>
 
 export const selectFirstOrder = (state: RootState) => state.orders.orders[0];
 
+interface BestTradeOption {
+  quoteAmount: string;
+  isLastLook?: boolean;
+  pricing?: {
+    pricing: Levels;
+    locator: string;
+    quoteAmount: string;
+  };
+  order?: OrderERC20;
+}
+
 export const selectBestOption = createSelector(
   selectTradeTerms,
   selectBestOrder,
   selectBestPricing,
   selectGasPriceInQuoteTokens,
-  (terms, bestRfqOrder, bestPricing, gasPriceInQuoteTokens) => {
-    if (!terms) return null;
+  (
+    terms,
+    bestRfqOrder,
+    bestPricing,
+    gasPriceInQuoteTokens
+  ): BestTradeOption | undefined => {
+    if (!terms) return undefined;
 
     if (terms.side === "buy") {
       console.error(`Buy orders not implemented yet`);
-      return null;
+      return undefined;
     }
 
-    let pricing = bestPricing as unknown as {
-      pricing: Levels;
-      locator: string;
-      quoteAmount: string;
-    } | null;
+    let pricing = bestPricing as unknown as
+      | {
+          pricing: Levels;
+          locator: string;
+          quoteAmount: string;
+        }
+      | undefined;
 
-    // TODO: Delete this
-    // Temp disable bestRfqOrder
-    // @ts-ignore
-    // bestRfqOrder = null;
-
-    if (!bestRfqOrder && !pricing) return null;
+    if (!bestRfqOrder && !pricing) return undefined;
     let lastLookOrder;
     if (pricing) {
       lastLookOrder = {
+        isLastLook: true,
         quoteAmount: pricing!.quoteAmount,
-        protocol: "last-look-erc20",
         pricing: pricing!,
       };
       if (!bestRfqOrder) return lastLookOrder;
@@ -140,7 +153,6 @@ export const selectBestOption = createSelector(
       );
       rfqOrder = {
         quoteAmount: bestRFQQuoteTokens.toString(),
-        protocol: "request-for-quote-erc20",
         order: bestRfqOrder,
       };
       if (!lastLookOrder) return rfqOrder;

@@ -1,13 +1,12 @@
 import { createAction } from "@reduxjs/toolkit";
 
 import {
-  ProtocolType,
-  SubmittedApprovalTransaction,
+  SubmittedOrderUnderConsideration,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 
 export const submitTransaction = createAction<
-  SubmittedTransaction | SubmittedApprovalTransaction
+  SubmittedTransaction | SubmittedOrderUnderConsideration
 >("transaction/submitTransaction");
 
 export const declineTransaction = createAction<{
@@ -15,15 +14,7 @@ export const declineTransaction = createAction<{
   signerWallet?: string;
   nonce?: string;
   reason?: string;
-  protocol?: ProtocolType;
 }>("transactions/declineTransaction");
-
-export const mineTransaction = createAction<{
-  protocol?: ProtocolType;
-  signerWallet?: string;
-  hash?: string;
-  nonce?: string;
-}>("transaction/mineTransaction");
 
 export const revertTransaction = createAction<{
   hash?: string;
@@ -31,11 +22,6 @@ export const revertTransaction = createAction<{
   nonce?: string;
   reason?: string;
 }>("transactions/revertTransaction");
-
-export const expireTransaction = createAction<{
-  signerWallet: string;
-  nonce: string;
-}>("transactions/expireTransaction");
 
 export const updateTransactions = createAction<SubmittedTransaction[]>(
   "transactions/updateTransactions"

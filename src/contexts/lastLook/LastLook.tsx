@@ -13,21 +13,15 @@ import { useWeb3React } from "@web3-react/core";
 import BigNumber from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { notifyError } from "../../components/Toasts/ToastController";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import { SubmittedTransactionWithOrder } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-// import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
-import {
-  transformToSubmittedLastLookOrder,
-  transformToSubmittedRFQOrder,
-} from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import { transformToSubmittedTransactionWithOrderUnderConsideration } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../features/metadata/metadataSlice";
 import { updatePricing } from "../../features/pricing/pricingSlice";
 import { TradeTerms } from "../../features/tradeTerms/tradeTermsSlice";
-import { submitTransactionWithExpiry } from "../../features/transactions/transactionsSlice";
+import { submitTransaction } from "../../features/transactions/transactionsActions";
 
 type Pair = {
   baseToken: string;
@@ -141,7 +135,7 @@ const LastLookProvider: FC = ({ children }) => {
         .multipliedBy(10 ** terms.baseToken.decimals)
         // Note that we remove the signer fee from the amount that we send.
         // This was already done to determine quoteAmount.
-        .dividedBy(terms.side === "sell" ? 1.0007 : 1)
+        .dividedBy(terms.side === "sell" ? 1 + protocolFee / 10000 : 1)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString();
       const quoteAmountAtomic = new BigNumber(terms.quoteAmount!)
@@ -182,19 +176,14 @@ const LastLookProvider: FC = ({ children }) => {
       const signerToken = tokens.find((t) => t.address === order.signerToken);
       const senderToken = tokens.find((t) => t.address === order.senderToken);
 
-      const transaction = transformToSubmittedLastLookOrder(
-        undefined,
-        order,
-        signerToken!,
-        senderToken!
-      );
+      const transaction =
+        transformToSubmittedTransactionWithOrderUnderConsideration(
+          order,
+          signerToken!,
+          senderToken!
+        );
 
-      dispatch(
-        submitTransactionWithExpiry({
-          transaction,
-          signerWallet: unsignedOrder.signerWallet,
-        })
-      );
+      dispatch(submitTransaction(transaction));
 
       return {
         order,

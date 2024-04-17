@@ -1,30 +1,15 @@
 import { BaseProvider, TransactionReceipt } from "@ethersproject/providers";
 
-import { AppDispatch } from "../../app/store";
 import {
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import {
-  isApprovalTransaction,
-  isDepositTransaction,
-  isLastLookOrderTransaction,
-  isRfqOrderTransaction,
-  isWithdrawTransaction,
-} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { parseJsonArray } from "../../helpers/array";
 import { TransactionStatusType } from "../../types/transactionTypes";
-import {
-  handleApproveTransaction,
-  handleSubmittedDepositOrder,
-  handleSubmittedRFQOrder,
-  handleSubmittedWithdrawOrder,
-} from "../orders/ordersActions";
-import { updateTransaction } from "./transactionsHelpers";
 
 export const isTransactionWithOrder = (
   transaction: SubmittedTransaction
-): transaction is SubmittedTransactionWithOrder => {
+): transaction is SubmittedOrder => {
   return "order" in transaction;
 };
 
@@ -95,10 +80,6 @@ export const getTransactionReceipt = async (
   library: BaseProvider
 ): Promise<TransactionReceipt | undefined> => {
   let hash = transaction.hash;
-
-  if (isLastLookOrderTransaction(transaction)) {
-    hash = transaction.order.nonce;
-  }
 
   if (!hash) {
     console.error("Transaction hash is not found");

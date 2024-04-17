@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useAppSelector } from "../../../../app/hooks";
 import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { isSubmittedOrder } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { selectOrderTransactions } from "../../../../features/transactions/transactionsSlice";
 import { TransactionStatusType } from "../../../../types/transactionTypes";
 
@@ -21,7 +22,8 @@ const useSessionOrderTransaction = (
     }
 
     if (
-      transactions[0].nonce === nonce &&
+      isSubmittedOrder(transactions[0]) &&
+      transactions[0].order.nonce === nonce &&
       transactions[0].status === TransactionStatusType.processing
     ) {
       setProcessingTransactionHash(transactions[0].hash);

@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../app/hooks";
 import { SubmittedTransaction } from "../entities/SubmittedTransaction/SubmittedTransaction";
+import { isSubmittedOrder } from "../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { selectTransactions } from "../features/transactions/transactionsSlice";
 import { TransactionStatusType } from "../types/transactionTypes";
 
@@ -17,7 +18,8 @@ const useOrderTransactionLink = (nonce: string): string | undefined => {
   return useMemo(() => {
     const succeededTransaction = transactions.find(
       (transaction) =>
-        transaction.nonce === nonce &&
+        isSubmittedOrder(transaction) &&
+        transaction.order.nonce === nonce &&
         transaction.status === TransactionStatusType.succeeded
     );
 

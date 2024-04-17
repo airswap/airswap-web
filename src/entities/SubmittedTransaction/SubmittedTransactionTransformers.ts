@@ -8,7 +8,8 @@ import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
-  SubmittedRFQOrder,
+  SubmittedOrder,
+  SubmittedOrderUnderConsideration,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
@@ -75,46 +76,35 @@ export const transformToSubmittedWithdrawTransaction = (
   };
 };
 
-export const transformToSubmittedRFQOrder = (
+export const transformToSubmittedTransactionWithOrder = (
   hash: string,
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
-): SubmittedRFQOrder => {
-  return {
-    type: TransactionTypes.order,
-    expiry: order.expiry,
-    hash,
-    nonce: order.nonce,
-    order,
-    protocol: "request-for-quote-erc20",
-    senderToken,
-    signerToken,
-    status,
-    timestamp,
-  };
-};
+): SubmittedOrder => ({
+  type: TransactionTypes.order,
+  hash,
+  order,
+  senderToken,
+  signerToken,
+  status,
+  timestamp,
+});
 
-export const transformToSubmittedLastLookOrder = (
-  hash: string | undefined,
+export const transformToSubmittedTransactionWithOrderUnderConsideration = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
-): SubmittedLastLookOrder => {
-  return {
-    type: TransactionTypes.order,
-    expiry: order.expiry,
-    hash,
-    nonce: order.nonce,
-    order,
-    protocol: "last-look-erc20",
-    senderToken,
-    signerToken,
-    status,
-    timestamp,
-  };
-};
+): SubmittedOrderUnderConsideration => ({
+  isLastLook: true,
+  type: TransactionTypes.order,
+  order,
+  senderToken,
+  signerToken,
+  status,
+  timestamp,
+});

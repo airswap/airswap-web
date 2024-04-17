@@ -1,20 +1,14 @@
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { AppDispatch, RootState } from "../../app/store";
-import { ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS } from "../../constants/configParams";
+import { RootState } from "../../app/store";
 import {
-  ProtocolType,
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
-  SubmittedLastLookOrder,
   SubmittedTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { isSubmittedOrder } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { compareAddresses } from "../../helpers/string";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
   TransactionStatusType,
@@ -26,8 +20,6 @@ import {
 } from "../wallet/walletSlice";
 import {
   declineTransaction,
-  expireTransaction,
-  mineTransaction,
   revertTransaction,
   submitTransaction,
   updateTransactions,
@@ -53,15 +45,14 @@ function updateTransaction(params: {
   hash?: string;
   signerWallet?: string;
   status: TransactionStatusType;
-  protocol?: ProtocolType;
 }): void {
   const { state, nonce, hash, signerWallet, status } = params;
   if (!!signerWallet && !!nonce) {
     const swap = state.transactions.find(
       (s) =>
-        s.nonce === nonce &&
-        (s as SubmittedLastLookOrder).order.signerWallet.toLowerCase() ===
-          signerWallet!.toLowerCase()
+        isSubmittedOrder(s) &&
+        s.order.nonce === nonce &&
+        compareAddresses(s.order.signerWallet, signerWallet)
     );
     if (swap) {
       swap.timestamp = Date.now();
@@ -82,59 +73,6 @@ function updateTransaction(params: {
     );
   }
 }
-
-const expiryTimeouts: Record<string, number> = {};
-
-const clearExpiry = (signerWallet?: string, nonce?: string) => {
-  const uniqueKey = `${signerWallet}/${nonce}`;
-
-  if (expiryTimeouts[uniqueKey]) {
-    clearTimeout(expiryTimeouts[uniqueKey]);
-    delete expiryTimeouts[uniqueKey];
-  }
-};
-
-export const submitTransactionWithExpiry = createAsyncThunk<
-  // Return type of the payload creator
-  void,
-  // Params
-  {
-    transaction: SubmittedTransaction;
-    signerWallet: string;
-    onExpired?: () => void;
-  },
-  // Types for ThunkAPI
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->(
-  "orders/approve",
-  async ({ transaction, signerWallet, onExpired }, { getState, dispatch }) => {
-    dispatch(submitTransaction(transaction));
-    if (!transaction.expiry) {
-      console.warn(
-        "submitTransactionWithExpiry called with transaction that has no expiry"
-      );
-      return;
-    }
-
-    const expiresAtMs = parseInt(transaction.expiry) * 1000;
-    const timeToExpiryNotification =
-      expiresAtMs - Date.now() + ASSUMED_EXPIRY_NOTIFICATION_BUFFER_MS;
-    const uniqueTransactionKey = `${signerWallet}/${transaction.nonce}`;
-
-    expiryTimeouts[uniqueTransactionKey] = window.setTimeout(() => {
-      dispatch(
-        expireTransaction({
-          signerWallet,
-          nonce: transaction.nonce!,
-        })
-      );
-      onExpired && onExpired();
-    }, timeToExpiryNotification);
-  }
-);
 
 export const transactionsSlice = createSlice({
   name: "transactions",
@@ -161,45 +99,21 @@ export const transactionsSlice = createSlice({
       state.transactions.unshift(action.payload);
     });
     builder.addCase(declineTransaction, (state, action) => {
-      clearExpiry(action.payload.signerWallet, action.payload.nonce);
       updateTransaction({
         state,
         hash: action.payload.hash,
         nonce: action.payload.nonce,
         signerWallet: action.payload.signerWallet,
         status: TransactionStatusType.declined,
-        protocol: action.payload.protocol,
       });
     });
     builder.addCase(revertTransaction, (state, action) => {
-      clearExpiry(action.payload.signerWallet, action.payload.nonce);
       updateTransaction({
         state,
         signerWallet: action.payload.signerWallet,
         nonce: action.payload.nonce,
         hash: action.payload.hash,
         status: TransactionStatusType.reverted,
-      });
-    });
-    builder.addCase(expireTransaction, (state, action) => {
-      const { signerWallet, nonce } = action.payload;
-      clearExpiry(signerWallet, nonce);
-      updateTransaction({
-        state,
-        signerWallet,
-        nonce,
-        status: TransactionStatusType.expired,
-      });
-    });
-    builder.addCase(mineTransaction, (state, action) => {
-      clearExpiry(action.payload.signerWallet, action.payload.nonce);
-      updateTransaction({
-        state,
-        hash: action.payload.hash,
-        nonce: action.payload.nonce,
-        signerWallet: action.payload.signerWallet,
-        status: TransactionStatusType.succeeded,
-        protocol: action.payload.protocol,
       });
     });
     builder.addCase(updateTransactions, (state, action): TransactionsState => {

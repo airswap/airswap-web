@@ -4,10 +4,10 @@ import {
   SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedLastLookOrder,
-  SubmittedRFQOrder,
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
+  SubmittedOrderUnderConsideration,
 } from "./SubmittedTransaction";
 
 export const isApprovalTransaction = (
@@ -30,24 +30,25 @@ export const isWithdrawTransaction = (
 ): transaction is SubmittedWithdrawTransaction =>
   transaction.type === TransactionTypes.withdraw;
 
-export const isRfqOrderTransaction = (
+export const isSubmittedOrder = (
   transaction: SubmittedTransaction
-): transaction is SubmittedRFQOrder =>
-  transaction.type === TransactionTypes.order &&
-  transaction.protocol === "request-for-quote-erc20";
+): transaction is SubmittedOrder => {
+  return transaction.type === TransactionTypes.order && !!transaction.hash;
+};
+
+export const isSubmittedOrderUnderConsideration = (
+  transaction: SubmittedTransaction
+): transaction is SubmittedOrderUnderConsideration => {
+  return transaction.type === TransactionTypes.order && !transaction.hash;
+};
 
 export const isLastLookOrderTransaction = (
   transaction: SubmittedTransaction
-): transaction is SubmittedLastLookOrder =>
-  transaction.type === TransactionTypes.order &&
-  transaction.protocol === "last-look-erc20";
-
-export const isOrderTransaction = (
-  transaction: SubmittedTransaction
-): transaction is SubmittedTransactionWithOrder => {
+): transaction is SubmittedLastLookOrder => {
   return (
-    isRfqOrderTransaction(transaction) ||
-    isLastLookOrderTransaction(transaction)
+    isSubmittedOrder(transaction) &&
+    !!transaction.hash &&
+    !!transaction.isLastLook
   );
 };
 
@@ -56,4 +57,29 @@ export const sortSubmittedTransactionsByExpiry = (
   b: SubmittedTransaction
 ) => {
   return b.timestamp - a.timestamp;
+};
+
+export const getSubmittedTransactionKey = (
+  transaction: SubmittedTransaction
+) => {
+  if (isSubmittedOrderUnderConsideration(transaction)) {
+    return `${transaction.order.signerWallet}-${transaction.order.nonce}-${transaction.timestamp}`;
+  }
+
+  return transaction.hash;
+};
+
+export const doesTransactionsMatch = (
+  transaction: SubmittedTransaction,
+  match: SubmittedTransaction,
+  hash?: string
+): boolean => {
+  if (
+    isSubmittedOrderUnderConsideration(transaction) &&
+    isSubmittedOrderUnderConsideration(match)
+  ) {
+    return transaction.order.nonce === match.order.nonce;
+  }
+
+  return transaction.hash === match.hash || transaction.hash === hash;
 };

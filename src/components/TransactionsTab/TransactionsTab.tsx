@@ -15,6 +15,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
@@ -53,6 +54,7 @@ type TransactionsTabType = {
   address: string;
   chainId: number;
   open: boolean;
+  protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
   /**
@@ -60,7 +62,6 @@ type TransactionsTabType = {
    */
   onDisconnectWalletClicked: () => void;
   transactions: SubmittedTransaction[];
-  tokens: TokenInfo[];
   balances: BalancesState;
   isUnsupportedNetwork?: boolean;
 };
@@ -69,11 +70,11 @@ const TransactionsTab = ({
   address = "",
   chainId,
   open,
+  protocolFee,
   setTransactionsTabOpen,
   onClearTransactionsChange,
   onDisconnectWalletClicked,
   transactions = [],
-  tokens = [],
   balances,
   isUnsupportedNetwork = false,
 }: TransactionsTabType) => {
@@ -225,9 +226,9 @@ const TransactionsTab = ({
               <AnimatePresence initial={false}>
                 {pendingTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}-pending`}
+                    key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
                   />
                 ))}
@@ -243,9 +244,9 @@ const TransactionsTab = ({
               <AnimatePresence initial={false}>
                 {completedTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
+                    key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
                   />
                 ))}

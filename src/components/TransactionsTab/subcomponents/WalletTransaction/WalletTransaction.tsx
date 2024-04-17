@@ -11,7 +11,9 @@ import {
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
-  isOrderTransaction,
+  isLastLookOrderTransaction,
+  isSubmittedOrder,
+  isSubmittedOrderUnderConsideration,
   isWithdrawTransaction,
 } from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { TransactionStatusType } from "../../../../types/transactionTypes";
@@ -28,17 +30,13 @@ import {
 } from "./WalletTransaction.styles";
 
 interface WalletTransactionProps extends HTMLMotionProps<"div"> {
-  /**
-   * The parent object of SubmittedOrder and SubmittedApproval
-   */
+  protocolFee: number;
   transaction: SubmittedTransaction;
-  /**
-   * chainId of current Ethereum net
-   */
   chainId: number;
 }
 
 const WalletTransaction = ({
+  protocolFee,
   transaction,
   chainId,
   animate,
@@ -60,7 +58,9 @@ const WalletTransaction = ({
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <SpanTitle>{t("wallet.approve")}</SpanTitle>
+          <SpanTitle>
+            {t("wallet.approve", { symbol: transaction.token.symbol })}
+          </SpanTitle>
 
           <SpanSubtitle>
             {statusText} · {timeBetween}
@@ -101,19 +101,22 @@ const WalletTransaction = ({
   }
 
   if (
-    isOrderTransaction(transaction) ||
+    isSubmittedOrder(transaction) ||
+    isSubmittedOrderUnderConsideration(transaction) ||
     isWithdrawTransaction(transaction) ||
     isDepositTransaction(transaction)
   ) {
     const { signerToken, senderToken } = transaction;
-    const hasExpiry = !!transaction.expiry;
+    const expiry = isSubmittedOrder(transaction)
+      ? transaction.order.expiry
+      : undefined;
 
     // For last look transactions, the user has sent the signer amount plus
     // the fee:
     let signerAmountWithFee: string | null = null;
-    if (transaction.protocol === "last-look-erc20") {
+    if (isLastLookOrderTransaction(transaction)) {
       signerAmountWithFee = new BigNumber(transaction.order.signerAmount)
-        .multipliedBy(1.0007)
+        .multipliedBy(1 + protocolFee / 10000)
         .integerValue(BigNumber.ROUND_FLOOR)
         .toString();
     }
@@ -133,12 +136,12 @@ const WalletTransaction = ({
             <>
               <SpanTitle
                 hasProgress={
-                  hasExpiry &&
+                  !!expiry &&
                   transaction.status === TransactionStatusType.processing
                 }
               >
                 {t(
-                  transaction.protocol === "last-look-erc20"
+                  isSubmittedOrder(transaction) && transaction.isLastLook
                     ? "wallet.lastLookTransaction"
                     : "wallet.transaction",
                   {
@@ -163,11 +166,11 @@ const WalletTransaction = ({
                   }
                 )}
               </SpanTitle>
-              {hasExpiry &&
+              {!!expiry &&
               transaction.status === TransactionStatusType.processing ? (
                 <ProgressBar
                   startTime={transaction.timestamp}
-                  endTime={parseInt(transaction.expiry!) * 1000}
+                  endTime={+expiry * 1000}
                 />
               ) : (
                 <SpanSubtitle>
@@ -178,7 +181,7 @@ const WalletTransaction = ({
           )}
         </TextContainer>
 
-        {transaction.hash && (
+        {!isSubmittedOrderUnderConsideration(transaction) && (
           <StyledTransactionLink
             hideLabel
             chainId={chainId}

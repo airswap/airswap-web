@@ -43,6 +43,7 @@ import {
   selectActiveTokens,
   selectAllTokenInfo,
   selectMetaDataReducer,
+  selectProtocolFee,
 } from "../metadata/metadataSlice";
 import { fetchSupportedTokens } from "../registry/registryActions";
 import {
@@ -81,8 +82,8 @@ export const Wallet: FC<WalletPropsType> = ({
   const { providerName } = useAppSelector(selectWallet);
   const transactions = useAppSelector(selectFilteredTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
+  const protocolFee = useAppSelector(selectProtocolFee);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
-  const allTokens = useAppSelector(selectAllTokenInfo);
 
   // Interface context
   const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
@@ -285,6 +286,7 @@ export const Wallet: FC<WalletPropsType> = ({
         address={account!}
         chainId={chainId!}
         open={transactionsTabIsOpen}
+        protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
         onClearTransactionsChange={handleClearTransactionsChange}
         onDisconnectWalletClicked={() => {
@@ -296,7 +298,6 @@ export const Wallet: FC<WalletPropsType> = ({
           setTransactionsTabIsOpen(false);
         }}
         transactions={transactions}
-        tokens={allTokens}
         balances={balances!}
         isUnsupportedNetwork={error && error instanceof UnsupportedChainIdError}
       />

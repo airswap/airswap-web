@@ -8,8 +8,9 @@ import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
+  SubmittedOrderUnderConsideration,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { TransactionTypes } from "../../types/transactionTypes";
@@ -34,8 +35,7 @@ export const notifyTransaction = (
       type === TransactionTypes.withdraw) &&
     chainId
   ) {
-    const tx: SubmittedTransactionWithOrder =
-      transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedOrder = transaction as SubmittedOrder;
     /*  TODO: fix toaster for multiple tabs or apps
         now that we have a listener, you can have multiple
         tabs open that receives the same order event. Only one redux
@@ -140,7 +140,7 @@ export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
   );
 };
 
-export const notifyOrder = (transaction: SubmittedTransactionWithOrder) => {
+export const notifyOrder = (transaction: SubmittedOrder) => {
   toast(
     (t) => (
       <TransactionToast
@@ -194,6 +194,13 @@ export const notifyOrderCreated = (order: FullOrderERC20) => {
       duration: 3000,
     }
   );
+};
+
+export const notifyOrderExpiry = () => {
+  notifyError({
+    heading: i18n.t("orders.swapRejected"),
+    cta: i18n.t("orders.swapRejectedCallToAction"),
+  });
 };
 
 export const notifyCopySuccess = () => {

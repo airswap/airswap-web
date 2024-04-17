@@ -30,7 +30,6 @@ import nativeCurrency, {
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { LastLookContext } from "../../../contexts/lastLook/LastLook";
-import { ProtocolType } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { AppErrorType } from "../../../errors/appError";
 import transformUnknownErrorToAppError from "../../../errors/transformUnknownErrorToAppError";
 import {
@@ -592,28 +591,15 @@ const SwapWidget: FC = () => {
         setIsSwapping(false);
         return;
       }
-      const accepted = await LastLook.sendOrderForConsideration({
+
+      LastLook.sendOrderForConsideration({
         locator: bestTradeOption!.pricing!.locator,
         order: order,
       });
-      setIsSwapping(false);
-      if (accepted) {
-        setShowOrderSubmitted(true);
-        LastLook.unsubscribeAllServers();
-      } else {
-        notifyError({
-          heading: t("orders.swapRejected"),
-          cta: t("orders.swapRejectedCallToAction"),
-        });
 
-        dispatch(
-          declineTransaction({
-            signerWallet: order.signerWallet,
-            nonce: order.nonce,
-            reason: "Pricing expired",
-          })
-        );
-      }
+      setIsSwapping(false);
+      setShowOrderSubmitted(true);
+      LastLook.unsubscribeAllServers();
     } catch (e: any) {
       setIsSwapping(false);
       dispatch(clearTradeTermsQuoteAmount());
@@ -671,10 +657,10 @@ const SwapWidget: FC = () => {
   ]);
 
   const takeBestOption = async () => {
-    if (bestTradeOption!.protocol === "request-for-quote-erc20") {
-      await swapWithRequestForQuote();
-    } else {
+    if (bestTradeOption?.isLastLook) {
       await swapWithLastLook();
+    } else {
+      await swapWithRequestForQuote();
     }
   };
 
@@ -809,10 +795,10 @@ const SwapWidget: FC = () => {
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
+          isLastLook={!!(bestTradeOption && bestTradeOption.isLastLook)}
           title={isApproving ? t("orders.approve") : t("common.rfq")}
           isQuote={!isRequestingQuotes && !showOrderSubmitted}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
-          protocol={bestTradeOption?.protocol as ProtocolType}
           expiry={bestTradeOption?.order?.expiry}
         />
         {!isApproving && !isSwapping && !showOrderSubmitted && (

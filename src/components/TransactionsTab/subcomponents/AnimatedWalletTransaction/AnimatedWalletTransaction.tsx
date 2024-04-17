@@ -11,23 +11,14 @@ import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.
 import { Container } from "./AnimatedWalletTransaction.styles";
 
 interface AnimatedWalletTransactionProps {
-  /**
-   * The parent object of SubmittedOrder and SubmittedApproval
-   */
+  protocolFee: number;
   transaction: SubmittedTransaction;
-  /**
-   * All token metadata
-   */
-  tokens: TokenInfo[];
-  /**
-   * chainId of current Ethereum net
-   */
   chainId: number;
 }
 
 const AnimatedWalletTransaction = ({
+  protocolFee,
   transaction,
-  tokens,
   chainId,
 }: AnimatedWalletTransactionProps) => {
   const theme = useTheme();
@@ -71,6 +62,7 @@ const AnimatedWalletTransaction = ({
       <WalletTransaction
         animate={{ borderColor: theme.colors.borderGrey }}
         initial={!transactionTooOld && { borderColor: theme.colors.white }}
+        protocolFee={protocolFee}
         transition={{
           delay: heightAnimationDuration,
           duration: borderAnimationDuration,

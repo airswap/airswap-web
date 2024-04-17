@@ -1,7 +1,6 @@
 import { TransactionReceipt } from "@ethersproject/providers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { ApproveEvent } from "../../entities/ApproveEvent/ApproveEvent";
 import {
   findMatchingApprovalTransaction,
   isApproveEvent,
@@ -10,26 +9,26 @@ import {
   findMatchingCancelTransaction,
   isCancelEvent,
 } from "../../entities/CancelEvent/CancelEventHelpers";
-import { FullSwapERC20Event } from "../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import {
   findMatchingOrderTransaction,
   isFullSwapERC20Event,
 } from "../../entities/FullSwapERC20Event/FullSwapERC20EventHelpers";
 import {
   SubmittedDepositTransaction,
+  SubmittedOrder,
+  SubmittedOrderUnderConsideration,
   SubmittedTransaction,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
+  doesTransactionsMatch,
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
-  isLastLookOrderTransaction,
-  isOrderTransaction,
-  isRfqOrderTransaction,
+  isSubmittedOrder,
+  isSubmittedOrderUnderConsideration,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { WETHEvent } from "../../entities/WETHEvent/WETHEvent";
 import {
   findMatchingDepositOrWithdrawTransaction,
   isWETHEvent,
@@ -52,10 +51,8 @@ export const updateTransaction =
   (updatedTransaction: SubmittedTransaction, previousHash?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
     const transactions = getState().transactions.transactions;
-    const transactionIndex = transactions.findIndex(
-      (transaction) =>
-        transaction.hash === updatedTransaction.hash ||
-        transaction.hash === previousHash
+    const transactionIndex = transactions.findIndex((transaction) =>
+      doesTransactionsMatch(transaction, updatedTransaction, previousHash)
     );
 
     if (transactionIndex === -1) {
@@ -98,9 +95,14 @@ const getMatchingTransaction = (
   }
 
   if (isFullSwapERC20Event(event)) {
-    return transactions
-      .filter(isOrderTransaction)
-      .find((transaction) => findMatchingOrderTransaction(transaction, event));
+    const orderUnderConsiderationTransactions = transactions.filter(
+      isSubmittedOrderUnderConsideration
+    );
+    const orderTransactions = transactions.filter(isSubmittedOrder);
+
+    return [...orderTransactions, ...orderUnderConsiderationTransactions].find(
+      (transaction) => findMatchingOrderTransaction(transaction, event)
+    );
   }
 
   if (isCancelEvent(event)) {
@@ -123,6 +125,8 @@ export const handleTransactionEvent =
       event,
       pendingTransactions
     );
+
+    console.log(matchingTransaction, event);
 
     if (!matchingTransaction) {
       return;
@@ -158,10 +162,7 @@ export const handleTransactionResolved =
       handleSubmittedWithdrawOrder(transaction, transaction.status, dispatch);
     }
 
-    if (
-      isRfqOrderTransaction(transaction) ||
-      isLastLookOrderTransaction(transaction)
-    ) {
+    if (isSubmittedOrder(transaction)) {
       handleSubmittedRFQOrder(transaction, transaction.status);
     }
 

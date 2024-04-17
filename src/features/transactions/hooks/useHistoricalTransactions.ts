@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppSelector } from "../../../app/hooks";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { transformToSubmittedRFQOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
+import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
 import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
 import { compareAddresses } from "../../../helpers/string";
@@ -55,11 +55,9 @@ const useHistoricalTransactions = (): [
     setTransactions(undefined);
 
     const getTransactionsFromLogs = async () => {
-      const rfqOrders = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
-      // TODO: Add support for lastLook orders https://github.com/airswap/airswap-web/issues/891
-      // const lastLookOrders = await getOrdersFromLogs(swapLogs.swapLogs);
+      const orders = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
 
-      const rfqSubmittedTransactions = rfqOrders
+      const submittedTransactions = orders
         .filter(
           (order) =>
             compareAddresses(order.params.signerWallet, account) ||
@@ -75,7 +73,7 @@ const useHistoricalTransactions = (): [
 
           if (!signerToken || !senderToken) return;
 
-          return transformToSubmittedRFQOrder(
+          return transformToSubmittedTransactionWithOrder(
             order.hash,
             order.params,
             signerToken,
@@ -85,12 +83,12 @@ const useHistoricalTransactions = (): [
           );
         });
 
-      const transactions = rfqSubmittedTransactions.filter(
+      const transactions = submittedTransactions.filter(
         (order) => !!order
       ) as SubmittedTransaction[];
       const uniqueTransactions = getUniqueArrayChildren<SubmittedTransaction>(
         transactions,
-        "nonce"
+        "hash"
       );
 
       const sortedTransactions = uniqueTransactions.sort(

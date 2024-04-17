@@ -27,13 +27,13 @@ import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
-  SubmittedTransactionWithOrder,
+  SubmittedOrder,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   transformToSubmittedApprovalTransaction,
   transformToSubmittedDepositTransaction,
-  transformToSubmittedRFQOrder,
+  transformToSubmittedTransactionWithOrder,
   transformToSubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { AppErrorType, isAppError } from "../../errors/appError";
@@ -49,11 +49,9 @@ import {
 } from "../balances/balancesSlice";
 import {
   declineTransaction,
-  mineTransaction,
   revertTransaction,
   submitTransaction,
 } from "../transactions/transactionsActions";
-import { submitTransactionWithExpiry } from "../transactions/transactionsSlice";
 import {
   approveToken,
   depositETH,
@@ -165,7 +163,7 @@ export const handleSubmittedWithdrawOrder = (
 };
 
 export const handleSubmittedRFQOrder = (
-  transaction: SubmittedTransactionWithOrder,
+  transaction: SubmittedOrder,
   status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
@@ -410,11 +408,10 @@ export const approve =
 export const take =
   (
     order: OrderERC20 | FullOrderERC20,
-    senderToken: TokenInfo,
     signerToken: TokenInfo,
+    senderToken: TokenInfo,
     library: Web3Provider,
-    contractType: "Swap" | "Wrapper",
-    onExpired?: () => void
+    contractType: "Swap" | "Wrapper"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     dispatch(setStatus("signing"));
@@ -461,19 +458,13 @@ export const take =
         ? order
         : refactorOrder(order, library._network.chainId);
 
-    const transaction = transformToSubmittedRFQOrder(
+    const transaction = transformToSubmittedTransactionWithOrder(
       tx.hash,
       updatedOrder,
       signerToken,
       senderToken
     );
 
-    dispatch(
-      submitTransactionWithExpiry({
-        transaction,
-        signerWallet: order.signerWallet,
-        onExpired,
-      })
-    );
+    dispatch(submitTransaction(transaction));
     dispatch(setStatus("idle"));
   };
