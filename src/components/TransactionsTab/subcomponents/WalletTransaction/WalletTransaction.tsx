@@ -19,6 +19,7 @@ import {
 import { TransactionStatusType } from "../../../../types/transactionTypes";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
+import getWalletTransactionOrderText from "../../helpers/getWalletTransactionOrderText";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
   Container,
@@ -33,6 +34,7 @@ interface WalletTransactionProps extends HTMLMotionProps<"div"> {
   protocolFee: number;
   transaction: SubmittedTransaction;
   chainId: number;
+  account: string;
 }
 
 const WalletTransaction = ({
@@ -42,6 +44,7 @@ const WalletTransaction = ({
   animate,
   initial,
   transition,
+  account,
 }: WalletTransactionProps) => {
   const { t } = useTranslation();
 
@@ -102,7 +105,6 @@ const WalletTransaction = ({
 
   if (
     isSubmittedOrder(transaction) ||
-    isSubmittedOrderUnderConsideration(transaction) ||
     isWithdrawTransaction(transaction) ||
     isDepositTransaction(transaction)
   ) {
@@ -110,16 +112,6 @@ const WalletTransaction = ({
     const expiry = isSubmittedOrder(transaction)
       ? transaction.order.expiry
       : undefined;
-
-    // For last look transactions, the user has sent the signer amount plus
-    // the fee:
-    let signerAmountWithFee: string | null = null;
-    if (isLastLookOrderTransaction(transaction)) {
-      signerAmountWithFee = new BigNumber(transaction.order.signerAmount)
-        .multipliedBy(1 + protocolFee / 10000)
-        .integerValue(BigNumber.ROUND_FLOOR)
-        .toString();
-    }
 
     const timeBetween = getTimeAgoTranslation(
       new Date(transaction.timestamp),
@@ -140,30 +132,12 @@ const WalletTransaction = ({
                   transaction.status === TransactionStatusType.processing
                 }
               >
-                {t(
-                  isSubmittedOrder(transaction) && transaction.isLastLook
-                    ? "wallet.lastLookTransaction"
-                    : "wallet.transaction",
-                  {
-                    senderAmount: parseFloat(
-                      Number(
-                        formatUnits(
-                          transaction.order.senderAmount,
-                          senderToken.decimals
-                        )
-                      ).toFixed(5)
-                    ),
-                    senderToken: senderToken.symbol,
-                    signerAmount: parseFloat(
-                      Number(
-                        formatUnits(
-                          signerAmountWithFee || transaction.order.signerAmount,
-                          signerToken.decimals
-                        )
-                      ).toFixed(5)
-                    ),
-                    signerToken: signerToken.symbol,
-                  }
+                {getWalletTransactionOrderText(
+                  transaction,
+                  signerToken,
+                  senderToken,
+                  account,
+                  protocolFee
                 )}
               </SpanTitle>
               {!!expiry &&

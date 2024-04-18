@@ -51,7 +51,7 @@ import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
 type TransactionsTabType = {
-  address: string;
+  account: string;
   chainId: number;
   open: boolean;
   protocolFee: number;
@@ -67,7 +67,7 @@ type TransactionsTabType = {
 };
 
 const TransactionsTab = ({
-  address = "",
+  account = "",
   chainId,
   open,
   protocolFee,
@@ -92,7 +92,7 @@ const TransactionsTab = ({
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const addressOrName = useAddressOrEnsName(address);
+  const addressOrName = useAddressOrEnsName(account);
   const walletInfoText = useMemo(() => {
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
@@ -101,8 +101,8 @@ const TransactionsTab = ({
       : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
-    () => getAccountUrl(chainId, address),
-    [chainId, address]
+    () => getAccountUrl(chainId, account),
+    [chainId, account]
   );
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
@@ -205,7 +205,7 @@ const TransactionsTab = ({
             {showMobileMenu && (
               <StyledWalletMobileMenu
                 walletUrl={walletUrl}
-                address={address}
+                address={account}
                 onDisconnectButtonClick={onDisconnectWalletClicked}
               />
             )}
@@ -230,6 +230,7 @@ const TransactionsTab = ({
                     protocolFee={protocolFee}
                     transaction={transaction}
                     chainId={chainId!}
+                    account={account}
                   />
                 ))}
               </AnimatePresence>
@@ -248,6 +249,7 @@ const TransactionsTab = ({
                     protocolFee={protocolFee}
                     transaction={transaction}
                     chainId={chainId!}
+                    account={account}
                   />
                 ))}
               </AnimatePresence>

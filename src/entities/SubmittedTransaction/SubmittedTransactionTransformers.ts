@@ -1,4 +1,4 @@
-import { OrderERC20, TokenInfo } from "@airswap/utils";
+import { FullSwapERC20, OrderERC20, TokenInfo } from "@airswap/utils";
 
 import {
   TransactionStatusType,
@@ -7,7 +7,6 @@ import {
 import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
-  SubmittedLastLookOrder,
   SubmittedOrder,
   SubmittedOrderUnderConsideration,
   SubmittedWithdrawTransaction,
@@ -81,6 +80,7 @@ export const transformToSubmittedTransactionWithOrder = (
   order: OrderERC20,
   signerToken: TokenInfo,
   senderToken: TokenInfo,
+  swap?: FullSwapERC20,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
 ): SubmittedOrder => ({
@@ -90,6 +90,7 @@ export const transformToSubmittedTransactionWithOrder = (
   senderToken,
   signerToken,
   status,
+  swap,
   timestamp,
 });
 

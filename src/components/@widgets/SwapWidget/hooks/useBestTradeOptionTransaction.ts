@@ -27,10 +27,9 @@ const useBestTradeOptionTransaction = (
 
       const senderAmount = toAtomicString(quoteAmount, tokenInfo.decimals);
 
-      return (
-        transaction.order.nonce === nonce ||
-        transaction.order.senderAmount === senderAmount
-      );
+      return transaction.order.nonce
+        ? transaction.order.nonce === nonce
+        : transaction.order.senderAmount === senderAmount;
     });
   }, [transactions, nonce, quoteAmount]);
 };
