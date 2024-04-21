@@ -1,11 +1,12 @@
 import { Registry } from "@airswap/libraries";
-import { Pricing, ProtocolIds } from "@airswap/utils";
+import { OrderERC20, Pricing, ProtocolIds } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 import { providers } from "ethers";
 
-import { AppDispatch, RootState } from "../../app/store";
+import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import {
   getPricingQuoteAmount,
   isExtendedPricing,
@@ -14,11 +15,13 @@ import {
   getExtendedPricingERC20,
   subscribeExtendedPricingERC20,
 } from "../../entities/ExtendedPricing/ExtendedPricingService";
+import { requestRfqOrders } from "../../entities/OrderERC20/OrderERC20Service";
 import { PricingErrorType } from "../../errors/pricingError";
 import { isPromiseFulfilledResult } from "../../helpers/promise";
 import { compareAddresses } from "../../helpers/string";
+import { orderSortingFunction } from "../orders/ordersHelpers";
 
-interface FetchQuotesParams {
+interface FetchBestPricingParams {
   provider: providers.BaseProvider;
   chainId: number;
   baseToken: string;
@@ -27,12 +30,11 @@ interface FetchQuotesParams {
   protocolFee: number;
 }
 
-export const fetchQuotes = createAsyncThunk<
-  Pricing | PricingErrorType,
-  FetchQuotesParams,
-  { dispatch: AppDispatch; state: RootState }
+export const fetchBestPricing = createAsyncThunk<
+  ExtendedPricing | PricingErrorType,
+  FetchBestPricingParams
 >(
-  "quotes/fetchQuotes",
+  "quotes/fetchBestPricing",
   async ({
     provider,
     chainId,
@@ -85,7 +87,7 @@ export const fetchQuotes = createAsyncThunk<
 
     const responses = await Promise.allSettled(pricingPromises);
     const pricings = responses
-      .filter((response): response is PromiseFulfilledResult<unknown[]> =>
+      .filter((response): response is PromiseFulfilledResult<unknown> =>
         isPromiseFulfilledResult<unknown>(response)
       )
       .filter((response) => Array.isArray(response.value))
@@ -97,14 +99,11 @@ export const fetchQuotes = createAsyncThunk<
           compareAddresses(pricing.quoteToken, quoteToken)
       );
 
-    console.log(pricings);
-
     const quoteAmounts = pricings.map((pricing) =>
       getPricingQuoteAmount(pricing, baseTokenAmount, protocolFee)
     );
 
-    console.log(quoteAmounts);
-
+    // If all pricings are errors, return the first error
     if (quoteAmounts.every((quoteAmount) => quoteAmount in PricingErrorType)) {
       return quoteAmounts.find(
         (quoteAmount) => quoteAmount in PricingErrorType
@@ -123,5 +122,67 @@ export const fetchQuotes = createAsyncThunk<
       );
 
     return pricings[highestQuoteIndex];
+  }
+);
+
+interface FetchBestOrderParams {
+  provider: providers.BaseProvider;
+  baseTokenAmount: string;
+  baseTokenDecimals: number;
+  chainId: number;
+  pricing: Pricing;
+  senderWallet: string;
+}
+
+const getBestOrder = (orders: OrderERC20[]): OrderERC20 | PricingErrorType => {
+  if (!orders.length) {
+    return PricingErrorType.noOrdersFound;
+  }
+
+  const sortedOrders = orders.sort(orderSortingFunction);
+  const bestOrder = sortedOrders[0];
+  const expiry = parseInt(bestOrder.expiry) * 1000;
+
+  // Due to the sorting in orderSorting function, these orders will be at
+  // the bottom of the list, so if the best one has a very short expiry
+  // so do all the others. Return an empty order array as none are viable.
+  if (expiry - Date.now() < RFQ_EXPIRY_BUFFER_MS) {
+    return PricingErrorType.ordersExpired;
+  }
+
+  return bestOrder;
+};
+
+export const fetchBestRfqOrder = createAsyncThunk<
+  OrderERC20 | PricingErrorType,
+  FetchBestOrderParams
+>(
+  "quotes/fetchBestRfqOrder",
+  async ({
+    provider,
+    baseTokenAmount,
+    baseTokenDecimals,
+    chainId,
+    pricing,
+    senderWallet,
+  }) => {
+    const servers = await Registry.getServers(
+      provider,
+      chainId,
+      ProtocolIds.RequestForQuoteERC20,
+      pricing.quoteToken,
+      pricing.baseToken
+    );
+
+    const orders = await requestRfqOrders(
+      servers,
+      pricing.quoteToken,
+      pricing.baseToken,
+      baseTokenAmount,
+      baseTokenDecimals,
+      senderWallet
+    );
+
+    return getBestOrder(orders);
   }
 );

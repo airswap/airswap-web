@@ -1,14 +1,16 @@
-import { Pricing } from "@airswap/utils";
+import { OrderERC20, Pricing } from "@airswap/utils";
 import { createSlice } from "@reduxjs/toolkit";
 
+import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { isExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
 import { PricingErrorType } from "../../errors/pricingError";
-import { fetchQuotes } from "./quotesApi";
+import { fetchBestPricing } from "./quotesApi";
 
 interface QuotesState {
   isFailed: boolean;
   isLoading: boolean;
-  bestQuote?: Pricing;
+  bestPricing?: ExtendedPricing;
+  bestOrder?: OrderERC20;
   error?: PricingErrorType;
 }
 
@@ -23,7 +25,7 @@ const quotesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(
-      fetchQuotes.pending,
+      fetchBestPricing.pending,
       (): QuotesState => ({
         isFailed: false,
         isLoading: true,
@@ -31,17 +33,19 @@ const quotesSlice = createSlice({
     );
 
     builder.addCase(
-      fetchQuotes.fulfilled,
+      fetchBestPricing.fulfilled,
       (state, action): QuotesState => ({
         ...state,
         isLoading: false,
-        ...(isExtendedPricing(action.payload) && { bestQuote: action.payload }),
+        ...(isExtendedPricing(action.payload) && {
+          bestPricing: action.payload,
+        }),
         ...(!isExtendedPricing(action.payload) && { error: action.payload }),
       })
     );
 
     builder.addCase(
-      fetchQuotes.rejected,
+      fetchBestPricing.rejected,
       (state, action): QuotesState => ({
         ...state,
         isFailed: true,

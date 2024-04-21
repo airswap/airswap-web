@@ -9,8 +9,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { Registry, Server, Wrapper } from "@airswap/libraries";
-import { OrderERC20, Pricing, ProtocolIds, ADDRESS_ZERO } from "@airswap/utils";
+import { Wrapper } from "@airswap/libraries";
+import { OrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
@@ -20,10 +20,6 @@ import {
   transformAddressAliasToAddress,
   transformAddressToAddressAlias,
 } from "../../../constants/addressAliases";
-import {
-  ADDITIONAL_QUOTE_BUFFER,
-  RECEIVE_QUOTE_TIMEOUT_MS,
-} from "../../../constants/configParams";
 import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
@@ -48,7 +44,6 @@ import {
 import {
   approve,
   deposit,
-  request,
   take,
   withdraw,
 } from "../../../features/orders/ordersActions";
@@ -62,7 +57,8 @@ import {
   setErrors,
   setResetStatus,
 } from "../../../features/orders/ordersSlice";
-import { fetchQuotes } from "../../../features/quotes/quotesApi";
+import { fetchBestPricing } from "../../../features/quotes/quotesApi";
+import useQuotes from "../../../features/quotes/quotesHooks";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
   clearTradeTerms,
@@ -80,7 +76,6 @@ import {
   setCustomServerUrl,
   setUserTokens,
 } from "../../../features/userSettings/userSettingsSlice";
-import getWethAddress from "../../../helpers/getWethAddress";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import useAllowance from "../../../hooks/useAllowance";
@@ -105,10 +100,7 @@ import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwap
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../../Overlay/Overlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
-import {
-  notifyError,
-  notifyRejectedByUserError,
-} from "../../Toasts/ToastController";
+import { notifyRejectedByUserError } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
@@ -127,6 +119,7 @@ import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader"
 
 export enum SwapWidgetState {
   overview = "overview",
+  requestPrices = "requestPrices",
   review = "review",
 }
 
@@ -172,6 +165,12 @@ const SwapWidget: FC = () => {
   const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
   // Pricing
+  const { bestOrder, bestPricing } = useQuotes(
+    tradeTerms.baseToken.address,
+    tradeTerms.baseAmount,
+    tradeTerms.quoteToken.address,
+    state === SwapWidgetState.requestPrices
+  );
   const {
     subscribeToTokenPrice,
     unsubscribeFromGasPrice,
@@ -323,12 +322,12 @@ const SwapWidget: FC = () => {
     }
   }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
 
-  useEffect(() => {
-    if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
-      prepareForRequest();
-      requestQuotes();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
+  //     prepareForRequest();
+  //     requestQuotes();
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (hasDepositOrWithdrawalPending) {
@@ -382,155 +381,6 @@ const SwapWidget: FC = () => {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
-
-  const requestQuotes = useCallback(async () => {
-    if (swapType === "wrapOrUnwrap") {
-      // This will re-render with a 1:1 price and a take button.
-      setIsWrapping(true);
-      return;
-    }
-    setIsRequestingQuotes(true);
-
-    const usesWrapper = swapType === "swapWithWrap";
-    const weth = getWethAddress(chainId!);
-    const eth = nativeCurrency[chainId!];
-    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-    const _baseToken = baseToken === eth.address ? weth : baseToken!;
-
-    let rfqServers: Server[] = [];
-    let lastLookServers: Server[] = [];
-    try {
-      try {
-        if (library && customServerUrl) {
-          const serverFromQueryString = await Server.at(customServerUrl, {
-            chainId,
-            initializeTimeout: 10 * 1000,
-          });
-          rfqServers.push(serverFromQueryString);
-        } else if (library && chainId) {
-          rfqServers = await Registry.getServers(
-            library,
-            chainId,
-            ProtocolIds.RequestForQuoteERC20,
-            _quoteToken,
-            _baseToken
-          );
-          lastLookServers = await Registry.getServers(
-            library,
-            chainId,
-            ProtocolIds.LastLookERC20,
-            _quoteToken,
-            _baseToken
-          );
-        }
-      } catch (e) {
-        console.error("Error requesting orders:", e);
-        throw new Error("error requesting orders");
-      }
-
-      let rfqPromise: Promise<OrderERC20[]> | null = null,
-        lastLookPromises: Promise<Pricing>[] | null = null;
-
-      if (rfqServers.length) {
-        const senderWallet = usesWrapper
-          ? Wrapper.getAddress(chainId!)
-          : account!;
-        if (senderWallet) {
-          rfqPromise = dispatch(
-            request({
-              servers: rfqServers,
-              senderToken: _baseToken,
-              senderAmount: baseAmount,
-              signerToken: _quoteToken,
-              senderTokenDecimals: baseTokenInfo!.decimals,
-              senderWallet: senderWallet,
-              proxyingFor: usesWrapper ? account! : undefined,
-            })
-          );
-        } else {
-          console.error(
-            "No sender wallet or wrapper for selected chain",
-            chainId
-          );
-          throw new Error("No sender wallet or wrapper for selected chain");
-        }
-      }
-
-      if (lastLookServers.length) {
-        if (usesWrapper) {
-          lastLookServers.forEach((s) => s.disconnect());
-        } else {
-          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
-            baseToken: baseToken!,
-            quoteToken: quoteToken!,
-          });
-        }
-      }
-
-      let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
-      if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromises) {
-        orderPromises = orderPromises.concat(lastLookPromises);
-      }
-
-      // This promise times out if _no_ orders are received before the timeout
-      // but resolves if _any_ are.
-      const timeoutOnNoOrdersPromise = Promise.race<any>([
-        Promise.any(orderPromises),
-        new Promise((_, reject) =>
-          setTimeout(() => {
-            reject("no valid orders");
-          }, RECEIVE_QUOTE_TIMEOUT_MS)
-        ),
-      ]);
-
-      // This promise resolves either when all orders are received or X seconds
-      // after the first order is received.
-      const waitExtraForAllOrdersPromise = Promise.race<any>([
-        Promise.allSettled(orderPromises),
-        Promise.any(orderPromises).then(
-          () =>
-            new Promise((resolve) =>
-              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
-            )
-        ),
-      ]);
-
-      await Promise.all([
-        waitExtraForAllOrdersPromise,
-        timeoutOnNoOrdersPromise,
-      ]);
-    } catch (e: any) {
-      switch (e.message) {
-        case "error requesting orders": {
-          notifyError({
-            heading: t("orders.errorRequesting"),
-            cta: t("orders.errorRequestingCta"),
-          });
-          break;
-        }
-
-        default: {
-          console.error(e);
-          setPairUnavailable(true);
-        }
-      }
-    } finally {
-      setIsRequestingQuotes(false);
-    }
-  }, [
-    LastLook,
-    account,
-    baseAmount,
-    baseToken,
-    baseTokenInfo,
-    chainId,
-    dispatch,
-    library,
-    quoteToken,
-    swapType,
-    t,
-  ]);
 
   const swapWithRequestForQuote = async () => {
     try {
@@ -716,19 +566,9 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.requestQuotes:
-        dispatch(
-          fetchQuotes({
-            baseToken: baseTokenInfo!.address,
-            baseTokenAmount: baseAmount,
-            quoteToken: quoteTokenInfo!.address,
-            chainId: chainId!,
-            provider: library!,
-            protocolFee: 5,
-          })
-        );
+        setState(SwapWidgetState.requestPrices);
 
         prepareForRequest();
-        await requestQuotes();
 
         break;
 

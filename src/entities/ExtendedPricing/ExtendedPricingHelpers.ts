@@ -4,8 +4,9 @@ import { BigNumber } from "bignumber.js";
 
 import { PricingErrorType } from "../../errors/pricingError";
 import { isLevels } from "../Pricing/PricingHelpers";
+import { ExtendedPricing } from "./ExtendedPricing";
 
-export const isExtendedPricing = (value: any): value is Pricing =>
+export const isExtendedPricing = (value: any): value is ExtendedPricing =>
   typeof value === "object" &&
   "baseToken" in value &&
   "quoteToken" in value &&
@@ -17,7 +18,6 @@ export const getPricingQuoteAmount = (
   protocolFee: number
 ): string | PricingErrorType => {
   const levels = pricing.bid;
-  console.log(levels);
   if (!isLevels(levels)) {
     console.error(
       "[getPricingQuoteAmount] Formulaic pricing not yet supported"
