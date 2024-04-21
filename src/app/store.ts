@@ -12,6 +12,7 @@ import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../featur
 import myOrdersReducer from "../features/myOrders/myOrdersSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import pricingReducer from "../features/pricing/pricingSlice";
+import quotesReducer from "../features/quotes/quotesSlice";
 import registryReducer from "../features/registry/registrySlice";
 import takeOtcReducer from "../features/takeOtc/takeOtcSlice";
 import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";
@@ -36,6 +37,7 @@ export const store = configureStore({
     makeOtc: makeOtcReducer,
     myOrders: myOrdersReducer,
     takeOtc: takeOtcReducer,
+    quotes: quotesReducer,
   },
 });
 

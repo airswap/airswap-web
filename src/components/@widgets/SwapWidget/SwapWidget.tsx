@@ -62,6 +62,7 @@ import {
   setErrors,
   setResetStatus,
 } from "../../../features/orders/ordersSlice";
+import { fetchQuotes } from "../../../features/quotes/quotesApi";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
   clearTradeTerms,
@@ -715,6 +716,17 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.requestQuotes:
+        dispatch(
+          fetchQuotes({
+            baseToken: baseTokenInfo!.address,
+            baseTokenAmount: baseAmount,
+            quoteToken: quoteTokenInfo!.address,
+            chainId: chainId!,
+            provider: library!,
+            protocolFee: 5,
+          })
+        );
+
         prepareForRequest();
         await requestQuotes();
 
