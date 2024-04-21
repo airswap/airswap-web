@@ -3,5 +3,6 @@ export enum PricingErrorType {
   formulaicPricingNotSupported = "formulaicPricingNotSupported",
   noOrdersFound = "noOrdersFound",
   noPricingFound = "noPricingFound",
+  noServerWalletFound = "noServerWalletFound",
   ordersExpired = "ordersExpired",
 }

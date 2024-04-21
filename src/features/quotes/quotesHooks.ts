@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { OrderERC20 } from "@airswap/utils";
+import { OrderERC20, UnsignedOrderERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -8,13 +8,14 @@ import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing"
 import { PricingErrorType } from "../../errors/pricingError";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
+import { createLastLookUnsignedOrder } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 
 interface UseQuotesReturn {
   isLoading: boolean;
   isFailed: boolean;
   bestPricing?: ExtendedPricing;
-  bestOrder?: OrderERC20;
+  bestOrder?: OrderERC20 | UnsignedOrderERC20;
   error?: PricingErrorType;
 }
 
@@ -25,13 +26,15 @@ const useQuotes = (
   isSubmitted: boolean
 ): UseQuotesReturn => {
   const dispatch = useAppDispatch();
+  const { account, chainId, library } = useWeb3React();
 
   const protocolFee = useAppSelector(selectProtocolFee);
   const { isFailed, isLoading, bestPricing, bestOrder } = useAppSelector(
     (state) => state.quotes
   );
-  const { account, chainId, library } = useWeb3React();
+
   const baseTokenInfo = useTokenInfo(baseToken);
+  const quoteTokenInfo = useTokenInfo(quoteToken);
 
   useEffect(() => {
     if (!chainId || !library || !isSubmitted) {
@@ -40,10 +43,10 @@ const useQuotes = (
 
     dispatch(
       fetchBestPricing({
+        provider: library,
         baseToken,
         baseTokenAmount,
         quoteToken,
-        provider: library,
         chainId: chainId,
         protocolFee,
       })
@@ -51,13 +54,18 @@ const useQuotes = (
   }, [isSubmitted]);
 
   useEffect(() => {
-    if (!chainId || !library || !account || !bestPricing || !baseTokenInfo) {
+    if (
+      !chainId ||
+      !library ||
+      !account ||
+      !bestPricing ||
+      !baseTokenInfo ||
+      !quoteTokenInfo
+    ) {
       return;
     }
 
-    console.log(bestPricing);
-
-    if (!bestPricing.isLastLook || bestPricing.isLastLook) {
+    if (!bestPricing.isLastLook) {
       dispatch(
         fetchBestRfqOrder({
           provider: library,
@@ -68,7 +76,20 @@ const useQuotes = (
           senderWallet: account,
         })
       );
+
+      return;
     }
+
+    dispatch(
+      createLastLookUnsignedOrder({
+        account,
+        baseToken: baseTokenInfo,
+        baseAmount: baseTokenAmount,
+        pricing: bestPricing,
+        protocolFee,
+        quoteToken: quoteTokenInfo,
+      })
+    );
   }, [bestPricing]);
 
   useEffect(() => {

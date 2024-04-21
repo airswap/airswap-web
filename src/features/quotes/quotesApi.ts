@@ -60,6 +60,8 @@ export const fetchBestPricing = createAsyncThunk<
       ),
     ]);
 
+    console.log(rfqServers, lastLookServers);
+
     const timeout = 2000;
     const lastLookPromises = lastLookServers.map((server) =>
       Promise.race([
@@ -79,6 +81,8 @@ export const fetchBestPricing = createAsyncThunk<
       ])
     );
 
+    console.log(rfqPromises);
+
     const pricingPromises = [...lastLookPromises, ...rfqPromises];
 
     if (!pricingPromises.length) {
@@ -86,6 +90,9 @@ export const fetchBestPricing = createAsyncThunk<
     }
 
     const responses = await Promise.allSettled(pricingPromises);
+
+    console.log(responses);
+
     const pricings = responses
       .filter((response): response is PromiseFulfilledResult<unknown> =>
         isPromiseFulfilledResult<unknown>(response)

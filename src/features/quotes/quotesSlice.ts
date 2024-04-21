@@ -1,5 +1,5 @@
-import { OrderERC20, Pricing } from "@airswap/utils";
-import { createSlice } from "@reduxjs/toolkit";
+import { OrderERC20, UnsignedOrderERC20 } from "@airswap/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { isExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
@@ -10,7 +10,7 @@ interface QuotesState {
   isFailed: boolean;
   isLoading: boolean;
   bestPricing?: ExtendedPricing;
-  bestOrder?: OrderERC20;
+  bestOrder?: OrderERC20 | UnsignedOrderERC20;
   error?: PricingErrorType;
 }
 
@@ -22,7 +22,15 @@ const initialState: QuotesState = {
 const quotesSlice = createSlice({
   name: "quotes",
   initialState,
-  reducers: {},
+  reducers: {
+    setBestOrder: (
+      state,
+      action: PayloadAction<OrderERC20 | UnsignedOrderERC20>
+    ): QuotesState => ({
+      ...state,
+      bestOrder: action.payload,
+    }),
+  },
   extraReducers: (builder) => {
     builder.addCase(
       fetchBestPricing.pending,
@@ -54,5 +62,7 @@ const quotesSlice = createSlice({
     );
   },
 });
+
+export const { setBestOrder } = quotesSlice.actions;
 
 export default quotesSlice.reducer;
