@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { OrderERC20, UnsignedOrderERC20 } from "@airswap/utils";
+import { OrderERC20, ProtocolIds, UnsignedOrderERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -8,7 +8,10 @@ import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing"
 import { PricingErrorType } from "../../errors/pricingError";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
-import { createLastLookUnsignedOrder } from "./quotesActions";
+import {
+  compareOrdersAndSetBestOrder,
+  createLastLookUnsignedOrder,
+} from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 
 interface UseQuotesReturn {
@@ -16,6 +19,7 @@ interface UseQuotesReturn {
   isFailed: boolean;
   bestPricing?: ExtendedPricing;
   bestOrder?: OrderERC20 | UnsignedOrderERC20;
+  bestOrderType?: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
   error?: PricingErrorType;
 }
 
@@ -29,15 +33,31 @@ const useQuotes = (
   const { account, chainId, library } = useWeb3React();
 
   const protocolFee = useAppSelector(selectProtocolFee);
-  const { isFailed, isLoading, bestPricing, bestOrder } = useAppSelector(
-    (state) => state.quotes
-  );
+  const {
+    isLastLookLoading,
+    isRfqLoading,
+    bestPricing,
+    bestRfqOrder,
+    bestLastLookOrder,
+    bestOrder,
+    bestOrderType,
+    lastLookError,
+    rfqError,
+  } = useAppSelector((state) => state.quotes);
 
+  const isLoading = isLastLookLoading || isRfqLoading;
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
 
   useEffect(() => {
-    if (!chainId || !library || !isSubmitted) {
+    if (
+      !chainId ||
+      !library ||
+      !isSubmitted ||
+      !baseTokenInfo ||
+      !quoteTokenInfo ||
+      !account
+    ) {
       return;
     }
 
@@ -49,6 +69,17 @@ const useQuotes = (
         quoteToken,
         chainId: chainId,
         protocolFee,
+      })
+    );
+
+    dispatch(
+      fetchBestRfqOrder({
+        provider: library,
+        baseTokenAmount,
+        baseToken: baseTokenInfo,
+        chainId,
+        quoteToken: quoteTokenInfo,
+        senderWallet: account,
       })
     );
   }, [isSubmitted]);
@@ -65,21 +96,6 @@ const useQuotes = (
       return;
     }
 
-    if (!bestPricing.isLastLook) {
-      dispatch(
-        fetchBestRfqOrder({
-          provider: library,
-          baseTokenAmount,
-          baseTokenDecimals: baseTokenInfo.decimals,
-          chainId,
-          pricing: bestPricing,
-          senderWallet: account,
-        })
-      );
-
-      return;
-    }
-
     dispatch(
       createLastLookUnsignedOrder({
         account,
@@ -93,14 +109,20 @@ const useQuotes = (
   }, [bestPricing]);
 
   useEffect(() => {
-    console.log(bestOrder);
-  }, [bestOrder]);
+    if (isLoading) {
+      return;
+    }
+
+    dispatch(compareOrdersAndSetBestOrder(bestRfqOrder, bestLastLookOrder));
+  }, [bestRfqOrder, bestLastLookOrder]);
 
   return {
+    isFailed: !isLoading && !!lastLookError && !!rfqError,
+    isLoading: isLastLookLoading || isRfqLoading,
     bestPricing,
     bestOrder,
-    isFailed,
-    isLoading,
+    bestOrderType,
+    error: lastLookError || rfqError,
   };
 };
 

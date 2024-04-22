@@ -16,8 +16,7 @@ export const subscribeExtendedPricingERC20 = async (
     transformToExtendedPricing(
       pricing,
       server.locator,
-      server.getSenderWallet(),
-      true
+      server.getSenderWallet()
     )
   );
 };

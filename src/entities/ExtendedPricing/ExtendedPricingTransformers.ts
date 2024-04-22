@@ -5,11 +5,9 @@ import { ExtendedPricing } from "./ExtendedPricing";
 export const transformToExtendedPricing = (
   pricing: Pricing,
   locator: string,
-  serverWallet: string | null,
-  isLastLook?: boolean
+  serverWallet: string | null
 ): ExtendedPricing => ({
   ...pricing,
-  ...(isLastLook && { isLastLook }),
   serverWallet,
   locator,
 });

@@ -5,4 +5,5 @@ export enum PricingErrorType {
   noPricingFound = "noPricingFound",
   noServerWalletFound = "noServerWalletFound",
   ordersExpired = "ordersExpired",
+  unknown = "unknown",
 }

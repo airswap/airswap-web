@@ -1,5 +1,5 @@
 import { Registry } from "@airswap/libraries";
-import { OrderERC20, Pricing, ProtocolIds } from "@airswap/utils";
+import { OrderERC20, ProtocolIds, TokenInfo } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
@@ -11,10 +11,7 @@ import {
   getPricingQuoteAmount,
   isExtendedPricing,
 } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
-import {
-  getExtendedPricingERC20,
-  subscribeExtendedPricingERC20,
-} from "../../entities/ExtendedPricing/ExtendedPricingService";
+import { getExtendedPricingERC20 } from "../../entities/ExtendedPricing/ExtendedPricingService";
 import { requestRfqOrders } from "../../entities/OrderERC20/OrderERC20Service";
 import { PricingErrorType } from "../../errors/pricingError";
 import { isPromiseFulfilledResult } from "../../helpers/promise";
@@ -43,36 +40,17 @@ export const fetchBestPricing = createAsyncThunk<
     quoteToken,
     protocolFee,
   }) => {
-    const [rfqServers, lastLookServers] = await Promise.all([
-      Registry.getServers(
-        provider,
-        chainId,
-        ProtocolIds.RequestForQuoteERC20,
-        quoteToken,
-        baseToken
-      ),
-      Registry.getServers(
-        provider,
-        chainId,
-        ProtocolIds.LastLookERC20,
-        quoteToken,
-        baseToken
-      ),
-    ]);
-
-    console.log(rfqServers, lastLookServers);
-
-    const timeout = 2000;
-    const lastLookPromises = lastLookServers.map((server) =>
-      Promise.race([
-        subscribeExtendedPricingERC20(server, baseToken, quoteToken),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), timeout)
-        ),
-      ])
+    const servers = await Registry.getServers(
+      provider,
+      chainId,
+      ProtocolIds.LastLookERC20,
+      quoteToken,
+      baseToken
     );
 
-    const rfqPromises = rfqServers.map((server) =>
+    const timeout = 2000;
+
+    const pricingPromises = servers.map((server) =>
       Promise.race([
         getExtendedPricingERC20(server, baseToken, quoteToken),
         new Promise((_, reject) =>
@@ -81,17 +59,11 @@ export const fetchBestPricing = createAsyncThunk<
       ])
     );
 
-    console.log(rfqPromises);
-
-    const pricingPromises = [...lastLookPromises, ...rfqPromises];
-
     if (!pricingPromises.length) {
       return PricingErrorType.noPricingFound;
     }
 
     const responses = await Promise.allSettled(pricingPromises);
-
-    console.log(responses);
 
     const pricings = responses
       .filter((response): response is PromiseFulfilledResult<unknown> =>
@@ -117,7 +89,6 @@ export const fetchBestPricing = createAsyncThunk<
       ) as PricingErrorType;
     }
 
-    // Because LastLook orders are on top of the array they take priority if quoteAmounts are equal
     const highestQuoteIndex = quoteAmounts
       .filter((quoteAmount) => typeof quoteAmount === "string")
       .reduce(
@@ -131,15 +102,6 @@ export const fetchBestPricing = createAsyncThunk<
     return pricings[highestQuoteIndex];
   }
 );
-
-interface FetchBestOrderParams {
-  provider: providers.BaseProvider;
-  baseTokenAmount: string;
-  baseTokenDecimals: number;
-  chainId: number;
-  pricing: Pricing;
-  senderWallet: string;
-}
 
 const getBestOrder = (orders: OrderERC20[]): OrderERC20 | PricingErrorType => {
   if (!orders.length) {
@@ -160,33 +122,42 @@ const getBestOrder = (orders: OrderERC20[]): OrderERC20 | PricingErrorType => {
   return bestOrder;
 };
 
+interface FetchBestOrderParams {
+  baseTokenAmount: string;
+  baseToken: TokenInfo;
+  chainId: number;
+  provider: providers.BaseProvider;
+  quoteToken: TokenInfo;
+  senderWallet: string;
+}
+
 export const fetchBestRfqOrder = createAsyncThunk<
   OrderERC20 | PricingErrorType,
   FetchBestOrderParams
 >(
   "quotes/fetchBestRfqOrder",
   async ({
-    provider,
     baseTokenAmount,
-    baseTokenDecimals,
+    baseToken,
     chainId,
-    pricing,
+    provider,
+    quoteToken,
     senderWallet,
   }) => {
     const servers = await Registry.getServers(
       provider,
       chainId,
       ProtocolIds.RequestForQuoteERC20,
-      pricing.quoteToken,
-      pricing.baseToken
+      quoteToken.address,
+      baseToken.address
     );
 
     const orders = await requestRfqOrders(
       servers,
-      pricing.quoteToken,
-      pricing.baseToken,
+      quoteToken.address,
+      baseToken.address,
       baseTokenAmount,
-      baseTokenDecimals,
+      baseToken.decimals,
       senderWallet
     );
 
