@@ -15,6 +15,7 @@ interface QuotesState {
   bestLastLookOrder?: UnsignedOrderERC20;
   bestOrder?: OrderERC20 | UnsignedOrderERC20;
   bestOrderType?: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
+  bestQuote?: string;
   lastLookError?: PricingErrorType;
   rfqError?: PricingErrorType;
 }
@@ -28,6 +29,7 @@ const quotesSlice = createSlice({
   name: "quotes",
   initialState,
   reducers: {
+    reset: (): QuotesState => initialState,
     setBestLastLookOrder: (
       state,
       action: PayloadAction<UnsignedOrderERC20>
@@ -35,17 +37,18 @@ const quotesSlice = createSlice({
       ...state,
       bestLastLookOrder: action.payload,
     }),
-
     setBestOrder: (
       state,
       action: PayloadAction<{
         order: OrderERC20 | UnsignedOrderERC20;
+        quote: string;
         type: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
       }>
     ): QuotesState => ({
       ...state,
       bestOrder: action.payload.order,
       bestOrderType: action.payload.type,
+      bestQuote: action.payload.quote,
     }),
   },
   extraReducers: (builder) => {
@@ -116,6 +119,7 @@ const quotesSlice = createSlice({
   },
 });
 
-export const { setBestLastLookOrder, setBestOrder } = quotesSlice.actions;
+export const { reset, setBestLastLookOrder, setBestOrder } =
+  quotesSlice.actions;
 
 export default quotesSlice.reducer;

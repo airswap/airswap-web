@@ -13,6 +13,7 @@ import {
   createLastLookUnsignedOrder,
 } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
+import { reset } from "./quotesSlice";
 
 interface UseQuotesReturn {
   isLoading: boolean;
@@ -20,6 +21,7 @@ interface UseQuotesReturn {
   bestPricing?: ExtendedPricing;
   bestOrder?: OrderERC20 | UnsignedOrderERC20;
   bestOrderType?: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
+  bestQuote?: string;
   error?: PricingErrorType;
 }
 
@@ -41,6 +43,7 @@ const useQuotes = (
     bestLastLookOrder,
     bestOrder,
     bestOrderType,
+    bestQuote,
     lastLookError,
     rfqError,
   } = useAppSelector((state) => state.quotes);
@@ -60,6 +63,8 @@ const useQuotes = (
     ) {
       return;
     }
+
+    dispatch(reset());
 
     dispatch(
       fetchBestPricing({
@@ -109,11 +114,17 @@ const useQuotes = (
   }, [bestPricing]);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !quoteTokenInfo) {
       return;
     }
 
-    dispatch(compareOrdersAndSetBestOrder(bestRfqOrder, bestLastLookOrder));
+    dispatch(
+      compareOrdersAndSetBestOrder(
+        quoteTokenInfo,
+        bestRfqOrder,
+        bestLastLookOrder
+      )
+    );
   }, [bestRfqOrder, bestLastLookOrder]);
 
   return {
@@ -122,6 +133,7 @@ const useQuotes = (
     bestPricing,
     bestOrder,
     bestOrderType,
+    bestQuote,
     error: lastLookError || rfqError,
   };
 };

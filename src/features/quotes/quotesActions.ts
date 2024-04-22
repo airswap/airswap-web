@@ -5,6 +5,7 @@ import {
   TokenInfo,
   UnsignedOrderERC20,
 } from "@airswap/utils";
+import { formatUnits } from "@ethersproject/units";
 
 import { BigNumber } from "bignumber.js";
 
@@ -61,8 +62,19 @@ export const createLastLookUnsignedOrder =
   };
 
 export const compareOrdersAndSetBestOrder =
-  (rfqOrder?: OrderERC20, lastLookOrder?: UnsignedOrderERC20) =>
+  (
+    token: TokenInfo,
+    rfqOrder?: OrderERC20,
+    lastLookOrder?: UnsignedOrderERC20
+  ) =>
   async (dispatch: AppDispatch): Promise<void> => {
+    const rfqQuote = rfqOrder
+      ? formatUnits(rfqOrder.signerAmount, token.decimals)
+      : undefined;
+    const lastLookQuote = lastLookOrder
+      ? formatUnits(lastLookOrder.senderAmount, token.decimals)
+      : undefined;
+
     if (!rfqOrder && !lastLookOrder) {
       console.error("[compareOrdersAndSetBestOrder] No orders to compare");
 
@@ -71,7 +83,11 @@ export const compareOrdersAndSetBestOrder =
 
     if (!rfqOrder) {
       dispatch(
-        setBestOrder({ order: lastLookOrder!, type: ProtocolIds.LastLookERC20 })
+        setBestOrder({
+          order: lastLookOrder!,
+          type: ProtocolIds.LastLookERC20,
+          quote: lastLookQuote!,
+        })
       );
 
       return;
@@ -82,6 +98,7 @@ export const compareOrdersAndSetBestOrder =
         setBestOrder({
           order: rfqOrder,
           type: ProtocolIds.RequestForQuoteERC20,
+          quote: rfqQuote!,
         })
       );
 
@@ -94,13 +111,21 @@ export const compareOrdersAndSetBestOrder =
       )
     ) {
       dispatch(
-        setBestOrder({ order: lastLookOrder, type: ProtocolIds.LastLookERC20 })
+        setBestOrder({
+          order: lastLookOrder,
+          type: ProtocolIds.LastLookERC20,
+          quote: lastLookQuote!,
+        })
       );
 
       return;
     }
 
     dispatch(
-      setBestOrder({ order: rfqOrder, type: ProtocolIds.RequestForQuoteERC20 })
+      setBestOrder({
+        order: rfqOrder,
+        type: ProtocolIds.RequestForQuoteERC20,
+        quote: rfqQuote!,
+      })
     );
   };

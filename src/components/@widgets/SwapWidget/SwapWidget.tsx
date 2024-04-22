@@ -165,12 +165,15 @@ const SwapWidget: FC = () => {
   const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
   // Pricing
-  const { bestOrder, bestPricing } = useQuotes(
+  const quote = useQuotes(
     tradeTerms.baseToken.address,
     tradeTerms.baseAmount,
     tradeTerms.quoteToken.address,
     state === SwapWidgetState.requestPrices
   );
+
+  console.log(quote);
+
   const {
     subscribeToTokenPrice,
     unsubscribeFromGasPrice,
