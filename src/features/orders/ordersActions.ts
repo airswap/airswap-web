@@ -1,9 +1,11 @@
-import { Server } from "@airswap/libraries";
+import { Registry, Server, SwapERC20 } from "@airswap/libraries";
 import {
   FullOrderERC20,
   OrderERC20,
+  ProtocolIds,
   toAtomicString,
   TokenInfo,
+  UnsignedOrderERC20,
 } from "@airswap/utils";
 import { Web3Provider, TransactionReceipt } from "@ethersproject/providers";
 import { Dispatch } from "@reduxjs/toolkit";
@@ -23,6 +25,7 @@ import {
   RFQ_MINIMUM_REREQUEST_DELAY_MS,
 } from "../../constants/configParams";
 import nativeCurrency from "../../constants/nativeCurrency";
+import { transformUnsignedOrderERC20ToOrderERC20 } from "../../entities/OrderERC20/OrderERC20Transformers";
 import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
@@ -34,10 +37,12 @@ import {
   transformToSubmittedApprovalTransaction,
   transformToSubmittedDepositTransaction,
   transformToSubmittedTransactionWithOrder,
+  transformToSubmittedTransactionWithOrderUnderConsideration,
   transformToSubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import getWethAddress from "../../helpers/getWethAddress";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import i18n from "../../i18n/i18n";
@@ -250,66 +255,66 @@ export const withdraw =
     }
   };
 
-interface RequestParams {
-  servers: Server[];
-  signerToken: string;
-  senderToken: string;
-  senderAmount: string;
-  senderTokenDecimals: number;
-  senderWallet: string;
-  proxyingFor?: string;
-}
+// interface RequestParams {
+//   servers: Server[];
+//   signerToken: string;
+//   senderToken: string;
+//   senderAmount: string;
+//   senderTokenDecimals: number;
+//   senderWallet: string;
+//   proxyingFor?: string;
+// }
 
-export const request =
-  (params: RequestParams) =>
-  async (dispatch: AppDispatch): Promise<OrderERC20[]> => {
-    dispatch(setStatus("requesting"));
-
-    try {
-      const orders = await requestOrders(
-        params.servers,
-        params.signerToken,
-        params.senderToken,
-        params.senderAmount,
-        params.senderTokenDecimals,
-        params.senderWallet,
-        params.proxyingFor
-      );
-
-      const bestOrder = [...orders].sort(orderSortingFunction)[0];
-      const now = Date.now();
-      const expiry = parseInt(bestOrder.expiry) * 1000;
-      // Due to the sorting in orderSorting function, these orders will be at
-      // the bottom of the list, so if the best one has a very short expiry
-      // so do all the others. Return an empty order array as none are viable.
-      if (expiry - now < RFQ_EXPIRY_BUFFER_MS) {
-        dispatch(setStatus("idle"));
-        dispatch(setOrders([]));
-
-        return [];
-      }
-
-      const timeTilReRequest = Math.max(
-        expiry - now - RFQ_EXPIRY_BUFFER_MS,
-        RFQ_MINIMUM_REREQUEST_DELAY_MS
-      );
-      const reRequestTimerId = window.setTimeout(
-        () => dispatch(request(params)),
-        timeTilReRequest
-      );
-
-      dispatch(setReRequestTimerId(reRequestTimerId));
-      dispatch(setOrders(orders));
-      dispatch(setStatus("idle"));
-
-      return orders;
-    } catch {
-      dispatch(setOrders([]));
-      dispatch(setStatus("failed"));
-
-      return [];
-    }
-  };
+// export const request =
+//   (params: RequestParams) =>
+//   async (dispatch: AppDispatch): Promise<OrderERC20[]> => {
+//     dispatch(setStatus("requesting"));
+//
+//     try {
+//       const orders = await requestOrders(
+//         params.servers,
+//         params.signerToken,
+//         params.senderToken,
+//         params.senderAmount,
+//         params.senderTokenDecimals,
+//         params.senderWallet,
+//         params.proxyingFor
+//       );
+//
+//       const bestOrder = [...orders].sort(orderSortingFunction)[0];
+//       const now = Date.now();
+//       const expiry = parseInt(bestOrder.expiry) * 1000;
+//       // Due to the sorting in orderSorting function, these orders will be at
+//       // the bottom of the list, so if the best one has a very short expiry
+//       // so do all the others. Return an empty order array as none are viable.
+//       if (expiry - now < RFQ_EXPIRY_BUFFER_MS) {
+//         dispatch(setStatus("idle"));
+//         dispatch(setOrders([]));
+//
+//         return [];
+//       }
+//
+//       const timeTilReRequest = Math.max(
+//         expiry - now - RFQ_EXPIRY_BUFFER_MS,
+//         RFQ_MINIMUM_REREQUEST_DELAY_MS
+//       );
+//       const reRequestTimerId = window.setTimeout(
+//         () => dispatch(request(params)),
+//         timeTilReRequest
+//       );
+//
+//       dispatch(setReRequestTimerId(reRequestTimerId));
+//       dispatch(setOrders(orders));
+//       dispatch(setStatus("idle"));
+//
+//       return orders;
+//     } catch {
+//       dispatch(setOrders([]));
+//       dispatch(setStatus("failed"));
+//
+//       return [];
+//     }
+//   };
 
 export const approve =
   (
@@ -414,5 +419,75 @@ export const take =
     );
 
     dispatch(submitTransaction(transaction));
+    dispatch(setStatus("idle"));
+  };
+
+export const takeLastLookOrder =
+  (
+    chainId: number,
+    library: Web3Provider,
+    locator: string,
+    signerToken: TokenInfo,
+    senderToken: TokenInfo,
+    unsignedOrder: UnsignedOrderERC20
+  ) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    const servers = await Registry.getServers(
+      library,
+      chainId,
+      ProtocolIds.LastLookERC20,
+      signerToken.address,
+      senderToken.address
+    );
+
+    console.log(servers);
+    const server = servers.find((server) => server.locator === locator);
+
+    if (!server) {
+      console.error("[takeLastLookOrder] Server not found");
+
+      return;
+    }
+
+    dispatch(setStatus("signing"));
+
+    const signature = await createOrderERC20Signature(
+      unsignedOrder,
+      library.getSigner(),
+      SwapERC20.getAddress(chainId)!,
+      chainId
+    );
+
+    if (isAppError(signature)) {
+      if (signature.type === AppErrorType.rejectedByUser) {
+        notifyRejectedByUserError();
+      }
+      dispatch(setStatus("failed"));
+
+      return;
+    }
+
+    const order = transformUnsignedOrderERC20ToOrderERC20(
+      unsignedOrder,
+      signature
+    );
+    console.log(order);
+
+    try {
+      await server.considerOrderERC20(order);
+    } catch (e) {
+      console.error("[takeLastLookOrder] Error considering order", e);
+    }
+
+    const transaction =
+      transformToSubmittedTransactionWithOrderUnderConsideration(
+        order,
+        signerToken,
+        senderToken
+      );
+    console.log(transaction);
+
+    dispatch(submitTransaction(transaction));
+
     dispatch(setStatus("idle"));
   };

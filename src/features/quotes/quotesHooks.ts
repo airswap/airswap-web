@@ -8,6 +8,7 @@ import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing"
 import { PricingErrorType } from "../../errors/pricingError";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
+import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   compareOrdersAndSetBestOrder,
   createLastLookUnsignedOrder,
@@ -25,15 +26,15 @@ interface UseQuotesReturn {
   error?: PricingErrorType;
 }
 
-const useQuotes = (
-  baseToken: string,
-  baseTokenAmount: string,
-  quoteToken: string,
-  isSubmitted: boolean
-): UseQuotesReturn => {
+const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   const dispatch = useAppDispatch();
   const { account, chainId, library } = useWeb3React();
 
+  const {
+    baseToken,
+    baseAmount: baseTokenAmount,
+    quoteToken,
+  } = useAppSelector(selectTradeTerms);
   const protocolFee = useAppSelector(selectProtocolFee);
   const {
     isLastLookLoading,
@@ -49,8 +50,8 @@ const useQuotes = (
   } = useAppSelector((state) => state.quotes);
 
   const isLoading = isLastLookLoading || isRfqLoading;
-  const baseTokenInfo = useTokenInfo(baseToken);
-  const quoteTokenInfo = useTokenInfo(quoteToken);
+  const baseTokenInfo = useTokenInfo(baseToken.address);
+  const quoteTokenInfo = useTokenInfo(quoteToken.address);
 
   useEffect(() => {
     if (
@@ -64,14 +65,18 @@ const useQuotes = (
       return;
     }
 
-    dispatch(reset());
+    if (!isSubmitted) {
+      dispatch(reset());
+
+      return;
+    }
 
     dispatch(
       fetchBestPricing({
         provider: library,
-        baseToken,
+        baseToken: baseToken.address,
         baseTokenAmount,
-        quoteToken,
+        quoteToken: quoteToken.address,
         chainId: chainId,
         protocolFee,
       })

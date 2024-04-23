@@ -35,18 +35,7 @@ export type InfoSectionProps = {
   orderCompleted: boolean;
   requiresApproval: boolean;
   showViewAllQuotes: boolean;
-  bestTradeOption:
-    | {
-        protocol: "last-look-erc20";
-        quoteAmount: string;
-        pricing: Levels;
-      }
-    | {
-        protocol: "request-for-quote-erc20";
-        quoteAmount: string;
-        order: OrderERC20;
-      }
-    | null;
+  bestQuote?: string;
   chainId: number;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
@@ -71,7 +60,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   orderSubmitted,
   requiresApproval,
   showViewAllQuotes,
-  bestTradeOption,
+  bestQuote,
   baseTokenInfo,
   baseAmount,
   chainId,
@@ -95,11 +84,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (
-    isConnected &&
-    failedToFetchAllowances &&
-    (!!bestTradeOption || isWrapping)
-  ) {
+  if (isConnected && failedToFetchAllowances && (!!bestQuote || isWrapping)) {
     return (
       <>
         <StyledInfoHeading>
@@ -112,11 +97,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (
-    isConnected &&
-    failedToFetchAllowances &&
-    (!!bestTradeOption || isWrapping)
-  ) {
+  if (isConnected && failedToFetchAllowances && (!!bestQuote || isWrapping)) {
     return (
       <>
         <StyledInfoHeading>
@@ -214,10 +195,8 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!bestTradeOption) {
-    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
-    );
+  if (bestQuote) {
+    let price = new BigNumber(bestQuote).dividedBy(baseAmount);
 
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);
