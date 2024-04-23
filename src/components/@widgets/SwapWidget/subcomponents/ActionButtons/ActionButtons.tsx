@@ -73,6 +73,7 @@ const ActionButtons: FC<{
   onButtonClicked,
 }) => {
   const { t } = useTranslation();
+  console.log(pairUnavailable);
 
   // First determine the next action.
   let nextAction: ButtonActions;

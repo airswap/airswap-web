@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -30,10 +23,8 @@ import nativeCurrency, {
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { LastLookContext } from "../../../contexts/lastLook/LastLook";
-import { AppErrorType } from "../../../errors/appError";
-import transformUnknownErrorToAppError from "../../../errors/transformUnknownErrorToAppError";
+import { PricingErrorType } from "../../../errors/pricingError";
 import {
-  requestActiveTokenAllowancesSwap,
   selectAllowances,
   selectBalances,
 } from "../../../features/balances/balancesSlice";
@@ -66,12 +57,9 @@ import { reset as clearQuotes } from "../../../features/quotes/quotesSlice";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
   clearTradeTerms,
-  clearTradeTermsQuoteAmount,
   selectTradeTerms,
   setTradeTerms,
-  setTradeTermsQuoteAmount,
 } from "../../../features/tradeTerms/tradeTermsSlice";
-import { revertTransaction } from "../../../features/transactions/transactionsActions";
 import {
   selectCustomServerUrl,
   setCustomServerUrl,
@@ -100,7 +88,6 @@ import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwap
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import Overlay from "../../Overlay/Overlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
-import { notifyRejectedByUserError } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
@@ -181,7 +168,10 @@ const SwapWidget: FC = () => {
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
 
   // Error states
-  const [pairUnavailable, setPairUnavailable] = useState(false);
+  const pairUnavailable =
+    quote.error === PricingErrorType.noOrdersFound ||
+    quote.error === PricingErrorType.noPricingFound ||
+    quote.error === PricingErrorType.belowMinimumAmount;
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
 
@@ -232,7 +222,6 @@ const SwapWidget: FC = () => {
       setIsSwapping(false);
       setIsRequestingQuotes(false);
       setAllowanceFetchFailed(false);
-      setPairUnavailable(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
       LastLook.unsubscribeAllServers();
@@ -293,13 +282,6 @@ const SwapWidget: FC = () => {
       );
     }
   }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
-
-  // useEffect(() => {
-  //   if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
-  //     prepareForRequest();
-  //     requestQuotes();
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (hasDepositOrWithdrawalPending) {
@@ -390,8 +372,6 @@ const SwapWidget: FC = () => {
   };
 
   const swapWithLastLook = async () => {
-    let order: OrderERC20 | null = null;
-
     if (!quote.bestPricing || !quote.bestQuote) {
       return;
     }
@@ -434,13 +414,19 @@ const SwapWidget: FC = () => {
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
+        setShowOrderSubmitted(false);
+        setState(SwapWidgetState.overview);
+        dispatch(clearQuotes());
+        dispatch(clear());
+        break;
+
       case ButtonActions.restart:
         setShowOrderSubmitted(false);
         setState(SwapWidgetState.overview);
         dispatch(clearTradeTerms());
         dispatch(clearQuotes());
         dispatch(clear());
-        // setBaseAmount("");
+        setBaseAmount("");
         break;
 
       case ButtonActions.reloadPage:
@@ -549,6 +535,8 @@ const SwapWidget: FC = () => {
     );
   }
 
+  console.log(quote);
+
   return (
     <>
       <StyledSwapWidget>
@@ -594,7 +582,7 @@ const SwapWidget: FC = () => {
             isApproving={isApproving}
             isConnected={active}
             isFetchingOrders={isRequestingQuotes}
-            isPairUnavailable={pairUnavailable}
+            isPairUnavailable={quote.error === PricingErrorType.noOrdersFound}
             isSwapping={isSwapping}
             isWrapping={isWrapping}
             orderSubmitted={showOrderSubmitted}
@@ -632,9 +620,9 @@ const SwapWidget: FC = () => {
               hasQuote={!!quote.bestQuote}
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && shouldApprove}
-              pairUnavailable={pairUnavailable}
+              pairUnavailable={quote.error === PricingErrorType.noOrdersFound}
               onButtonClicked={(action) => handleActionButtonClick(action)}
-              isLoading={isConnecting || isRequestingQuotes}
+              isLoading={isConnecting || isRequestingQuotes || quote.isLoading}
               transactionsTabOpen={transactionsTabIsOpen}
             />
           )}

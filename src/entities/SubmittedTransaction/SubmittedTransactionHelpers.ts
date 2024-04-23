@@ -1,4 +1,5 @@
-import { TokenInfo } from "@airswap/utils";
+import { OrderERC20, TokenInfo } from "@airswap/utils";
+import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 import { formatUnits } from "@ethersproject/units";
 
 import { BigNumber } from "bignumber.js";
@@ -127,6 +128,21 @@ const isSenderWalletAccount = (
   return false;
 };
 
+export const getOrderSignerAmount = (
+  order: OrderERC20,
+  protocolFee: number,
+  account: string
+) => {
+  if (compareAddresses(order.signerWallet, account)) {
+    return new BigNumber(order.signerAmount)
+      .multipliedBy(1 + protocolFee / 10000)
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toString();
+  }
+
+  return order.signerAmount;
+};
+
 export const getOrderTransactionLabel = (
   transaction: SubmittedOrder,
   signerToken: TokenInfo,
@@ -136,13 +152,11 @@ export const getOrderTransactionLabel = (
 ) => {
   const { order, swap } = transaction;
 
-  const signerAmountWithFee =
-    !swap && transaction.isLastLook
-      ? new BigNumber(transaction.order.signerAmount)
-          .multipliedBy(1 + protocolFee / 10000)
-          .integerValue(BigNumber.ROUND_FLOOR)
-          .toString()
-      : undefined;
+  const adjustedSignerAmount = getOrderSignerAmount(
+    order,
+    protocolFee,
+    account
+  );
 
   const translation =
     isSubmittedOrder(transaction) && transaction.isLastLook
@@ -150,12 +164,7 @@ export const getOrderTransactionLabel = (
       : "wallet.transaction";
 
   const signerAmount = parseFloat(
-    Number(
-      formatUnits(
-        signerAmountWithFee || (swap || order).signerAmount,
-        signerToken.decimals
-      )
-    ).toFixed(5)
+    Number(formatUnits(adjustedSignerAmount, signerToken.decimals)).toFixed(5)
   );
 
   const senderAmount = parseFloat(

@@ -37,7 +37,7 @@ export const createLastLookUnsignedOrder =
       .multipliedBy(10 ** baseToken.decimals)
       // Note that we remove the signer fee from the amount that we send.
       // This was already done to determine quoteAmount.
-      // .dividedBy(1 + protocolFee / 10000)
+      .dividedBy(1 + protocolFee / 10000)
       .integerValue(BigNumber.ROUND_CEIL)
       .toString();
 
@@ -106,7 +106,7 @@ export const compareOrdersAndSetBestOrder =
     }
 
     if (
-      new BigNumber(lastLookOrder.senderAmount).lte(
+      new BigNumber(lastLookOrder.senderAmount).gte(
         new BigNumber(rfqOrder.signerAmount)
       )
     ) {

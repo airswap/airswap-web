@@ -1,4 +1,4 @@
-import { Registry, Server, SwapERC20 } from "@airswap/libraries";
+import { Registry, SwapERC20 } from "@airswap/libraries";
 import {
   FullOrderERC20,
   OrderERC20,
@@ -7,7 +7,7 @@ import {
   TokenInfo,
   UnsignedOrderERC20,
 } from "@airswap/utils";
-import { Web3Provider, TransactionReceipt } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 import { Dispatch } from "@reduxjs/toolkit";
 
 import { AppDispatch } from "../../app/store";
@@ -20,15 +20,10 @@ import {
   notifyRejectedByUserError,
   notifyWithdrawal,
 } from "../../components/Toasts/ToastController";
-import {
-  RFQ_EXPIRY_BUFFER_MS,
-  RFQ_MINIMUM_REREQUEST_DELAY_MS,
-} from "../../constants/configParams";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { transformUnsignedOrderERC20ToOrderERC20 } from "../../entities/OrderERC20/OrderERC20Transformers";
 import {
   SubmittedApprovalTransaction,
-  SubmittedCancellation,
   SubmittedDepositTransaction,
   SubmittedOrder,
   SubmittedWithdrawTransaction,
@@ -55,17 +50,10 @@ import {
 import {
   approveToken,
   depositETH,
-  orderSortingFunction,
-  requestOrders,
   takeOrder,
   withdrawETH,
 } from "./ordersHelpers";
-import {
-  setErrors,
-  setOrders,
-  setReRequestTimerId,
-  setStatus,
-} from "./ordersSlice";
+import { setErrors, setStatus } from "./ordersSlice";
 
 export const handleApproveTransaction = (
   transaction: SubmittedApprovalTransaction,
@@ -255,67 +243,6 @@ export const withdraw =
     }
   };
 
-// interface RequestParams {
-//   servers: Server[];
-//   signerToken: string;
-//   senderToken: string;
-//   senderAmount: string;
-//   senderTokenDecimals: number;
-//   senderWallet: string;
-//   proxyingFor?: string;
-// }
-
-// export const request =
-//   (params: RequestParams) =>
-//   async (dispatch: AppDispatch): Promise<OrderERC20[]> => {
-//     dispatch(setStatus("requesting"));
-//
-//     try {
-//       const orders = await requestOrders(
-//         params.servers,
-//         params.signerToken,
-//         params.senderToken,
-//         params.senderAmount,
-//         params.senderTokenDecimals,
-//         params.senderWallet,
-//         params.proxyingFor
-//       );
-//
-//       const bestOrder = [...orders].sort(orderSortingFunction)[0];
-//       const now = Date.now();
-//       const expiry = parseInt(bestOrder.expiry) * 1000;
-//       // Due to the sorting in orderSorting function, these orders will be at
-//       // the bottom of the list, so if the best one has a very short expiry
-//       // so do all the others. Return an empty order array as none are viable.
-//       if (expiry - now < RFQ_EXPIRY_BUFFER_MS) {
-//         dispatch(setStatus("idle"));
-//         dispatch(setOrders([]));
-//
-//         return [];
-//       }
-//
-//       const timeTilReRequest = Math.max(
-//         expiry - now - RFQ_EXPIRY_BUFFER_MS,
-//         RFQ_MINIMUM_REREQUEST_DELAY_MS
-//       );
-//       const reRequestTimerId = window.setTimeout(
-//         () => dispatch(request(params)),
-//         timeTilReRequest
-//       );
-//
-//       dispatch(setReRequestTimerId(reRequestTimerId));
-//       dispatch(setOrders(orders));
-//       dispatch(setStatus("idle"));
-//
-//       return orders;
-//     } catch {
-//       dispatch(setOrders([]));
-//       dispatch(setStatus("failed"));
-//
-//       return [];
-//     }
-//   };
-
 export const approve =
   (
     amount: string,
@@ -471,13 +398,14 @@ export const takeLastLookOrder =
       unsignedOrder,
       signature
     );
-    console.log(order);
 
     try {
       await server.considerOrderERC20(order);
     } catch (e) {
       console.error("[takeLastLookOrder] Error considering order", e);
     }
+
+    server.disconnect();
 
     const transaction =
       transformToSubmittedTransactionWithOrderUnderConsideration(

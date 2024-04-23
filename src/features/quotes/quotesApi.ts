@@ -65,6 +65,8 @@ export const fetchBestPricing = createAsyncThunk<
 
     const responses = await Promise.allSettled(pricingPromises);
 
+    servers.forEach((server) => server.disconnect());
+
     const pricings = responses
       .filter((response): response is PromiseFulfilledResult<unknown> =>
         isPromiseFulfilledResult<unknown>(response)

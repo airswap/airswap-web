@@ -100,12 +100,21 @@ const quotesSlice = createSlice({
 
     builder.addCase(
       fetchBestRfqOrder.fulfilled,
-      (state, action): QuotesState => ({
-        ...state,
-        isRfqLoading: false,
-        ...(isOrderERC20(action.payload) && { bestRfqOrder: action.payload }),
-        ...(!isOrderERC20(action.payload) && { error: action.payload }),
-      })
+      (state, action): QuotesState => {
+        if (!isOrderERC20(action.payload)) {
+          return {
+            ...state,
+            isRfqLoading: false,
+            rfqError: action.payload,
+          };
+        }
+
+        return {
+          ...state,
+          isRfqLoading: false,
+          bestRfqOrder: action.payload,
+        };
+      }
     );
 
     builder.addCase(
