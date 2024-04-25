@@ -1,11 +1,14 @@
-import { Registry } from "@airswap/libraries";
+import { Registry, Server } from "@airswap/libraries";
 import { OrderERC20, ProtocolIds, TokenInfo } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import BigNumber from "bignumber.js";
 import { providers } from "ethers";
 
-import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import {
+  RFQ_EXPIRY_BUFFER_MS,
+  SERVER_RESPONSE_TIME_MS,
+} from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import {
   getPricingQuoteAmount,
@@ -13,6 +16,7 @@ import {
 } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
 import { getExtendedPricingERC20 } from "../../entities/ExtendedPricing/ExtendedPricingService";
 import { requestRfqOrders } from "../../entities/OrderERC20/OrderERC20Service";
+import { getRegistryServers } from "../../entities/Server/ServerService";
 import { PricingErrorType } from "../../errors/pricingError";
 import { isPromiseFulfilledResult } from "../../helpers/promise";
 import { compareAddresses } from "../../helpers/string";
@@ -40,7 +44,7 @@ export const fetchBestPricing = createAsyncThunk<
     quoteToken,
     protocolFee,
   }) => {
-    const servers = await Registry.getServers(
+    const servers = await getRegistryServers(
       provider,
       chainId,
       ProtocolIds.LastLookERC20,
@@ -48,13 +52,18 @@ export const fetchBestPricing = createAsyncThunk<
       baseToken
     );
 
-    const timeout = 2000;
+    if (!servers.length) {
+      return PricingErrorType.noServersFound;
+    }
 
     const pricingPromises = servers.map((server) =>
       Promise.race([
         getExtendedPricingERC20(server, baseToken, quoteToken),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), timeout)
+          setTimeout(
+            () => reject(new Error("Timeout")),
+            SERVER_RESPONSE_TIME_MS
+          )
         ),
       ])
     );
@@ -146,13 +155,17 @@ export const fetchBestRfqOrder = createAsyncThunk<
     quoteToken,
     senderWallet,
   }) => {
-    const servers = await Registry.getServers(
-      provider,
-      chainId,
-      ProtocolIds.RequestForQuoteERC20,
-      quoteToken.address,
-      baseToken.address
+    const servers = await getRegistryServers(
+        provider,
+        chainId,
+        ProtocolIds.RequestForQuoteERC20,
+        quoteToken.address,
+        baseToken.address,
     );
+
+    if (!servers.length) {
+      return PricingErrorType.noServersFound;
+    }
 
     const orders = await requestRfqOrders(
       servers,

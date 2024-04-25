@@ -1,26 +1,25 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OrderERC20, Levels, TokenInfo } from "@airswap/utils";
+import { TokenInfo } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { SubmittedTransaction } from "../../../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { PricingErrorType } from "../../../../../errors/pricingError";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
 import { InfoSubHeading } from "../../../../Typography/Typography";
 import ClearServerButton from "../ClearServerButton/ClearServerButton";
 import {
-  StyledInfoHeading,
-  RevertPriceButton,
-  FeeText,
-  InfoButton,
-  FeeTextContainer,
-  ApprovalText,
-  StyledLargePillButton,
   DoneAllIcon,
+  RevertPriceButton,
+  StyledInfoHeading,
+  StyledLargePillButton,
   StyledTransactionLink,
 } from "./InfoSection.styles";
+import PricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
+import pricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
 
 export type InfoSectionProps = {
   failedToFetchAllowances: boolean;
@@ -28,7 +27,6 @@ export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
-  isPairUnavailable: boolean;
   isSwapping: boolean;
   isWrapping: boolean;
   orderSubmitted: boolean;
@@ -37,6 +35,7 @@ export type InfoSectionProps = {
   showViewAllQuotes: boolean;
   bestQuote?: string;
   chainId: number;
+  pricingError?: PricingErrorType;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
@@ -53,7 +52,6 @@ const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
   isFetchingOrders,
-  isPairUnavailable,
   isSwapping,
   isWrapping,
   orderCompleted,
@@ -64,6 +62,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   baseTokenInfo,
   baseAmount,
   chainId,
+  pricingError,
   quoteTokenInfo,
   transaction,
   serverUrl,
@@ -119,13 +118,10 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (isPairUnavailable) {
+  if (pricingError) {
     return (
       <>
-        <StyledInfoHeading>
-          {t("orders.tokenPairUnavailable")}
-        </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+        <PricingErrorInfo pricingError={pricingError} />
         {showViewAllQuotes && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}

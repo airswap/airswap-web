@@ -19,6 +19,10 @@ export const RFQ_MINIMUM_REREQUEST_DELAY_MS = 30 * 1000;
  */
 export const INDEXER_ORDER_RESPONSE_TIME_MS = 4000;
 
+export const REGISTRY_SERVER_RESPONSE_TIME_MS = 2000;
+
+export const SERVER_RESPONSE_TIME_MS = 2000;
+
 /**
  * Time in seconds of last look order expiry duration
  */

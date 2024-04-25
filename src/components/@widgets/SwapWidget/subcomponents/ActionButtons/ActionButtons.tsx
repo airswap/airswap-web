@@ -46,7 +46,7 @@ const ActionButtons: FC<{
   unsupportedNetwork: boolean;
   requiresReload: boolean;
   orderComplete: boolean;
-  pairUnavailable: boolean;
+  hasError: boolean;
   hasQuote: boolean;
   needsApproval: boolean;
   hasAmount: boolean;
@@ -61,7 +61,7 @@ const ActionButtons: FC<{
   unsupportedNetwork,
   requiresReload,
   orderComplete,
-  pairUnavailable,
+  hasError,
   hasQuote,
   needsApproval,
   hasAmount,
@@ -73,14 +73,13 @@ const ActionButtons: FC<{
   onButtonClicked,
 }) => {
   const { t } = useTranslation();
-  console.log(pairUnavailable);
 
   // First determine the next action.
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
   if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
   else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
-  else if (pairUnavailable) nextAction = ButtonActions.goBack;
+  else if (hasError) nextAction = ButtonActions.goBack;
   else if (orderComplete) nextAction = ButtonActions.restart;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;

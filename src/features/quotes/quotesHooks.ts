@@ -52,6 +52,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   const isLoading = isLastLookLoading || isRfqLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address);
   const quoteTokenInfo = useTokenInfo(quoteToken.address);
+  const error =
+    !isLoading && !bestOrder ? lastLookError || rfqError : undefined;
 
   useEffect(() => {
     if (
@@ -133,13 +135,13 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   }, [bestRfqOrder, bestLastLookOrder]);
 
   return {
-    isFailed: !isLoading && !!lastLookError && !!rfqError,
+    isFailed: !isLoading && !!error,
     isLoading: isLastLookLoading || isRfqLoading,
     bestPricing,
     bestOrder,
     bestOrderType,
     bestQuote,
-    error: lastLookError || rfqError,
+    error,
   };
 };
 

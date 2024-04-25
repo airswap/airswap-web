@@ -171,7 +171,9 @@ const SwapWidget: FC = () => {
   const pairUnavailable =
     quote.error === PricingErrorType.noOrdersFound ||
     quote.error === PricingErrorType.noPricingFound ||
-    quote.error === PricingErrorType.belowMinimumAmount;
+    quote.error === PricingErrorType.belowMinimumAmount ||
+    quote.error === PricingErrorType.noServersFound;
+
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
 
@@ -535,8 +537,6 @@ const SwapWidget: FC = () => {
     );
   }
 
-  console.log(quote);
-
   return (
     <>
       <StyledSwapWidget>
@@ -553,7 +553,7 @@ const SwapWidget: FC = () => {
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             side="sell"
-            tradeNotAllowed={pairUnavailable}
+            tradeNotAllowed={!!quote.error}
             isRequestingQuoteAmount={quote.isLoading}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
@@ -561,9 +561,9 @@ const SwapWidget: FC = () => {
             disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
               !!quote.bestQuote ||
+              !!quote.error ||
               isWrapping ||
               isRequestingQuotes ||
-              pairUnavailable ||
               !active
             }
             showMaxButton={showMaxButton}
@@ -582,7 +582,6 @@ const SwapWidget: FC = () => {
             isApproving={isApproving}
             isConnected={active}
             isFetchingOrders={isRequestingQuotes}
-            isPairUnavailable={quote.error === PricingErrorType.noOrdersFound}
             isSwapping={isSwapping}
             isWrapping={isWrapping}
             orderSubmitted={showOrderSubmitted}
@@ -596,6 +595,7 @@ const SwapWidget: FC = () => {
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
             chainId={chainId || 1}
+            pricingError={quote.error}
             serverUrl={customServerUrl}
             quoteTokenInfo={quoteTokenInfo}
             onClearServerUrlButtonClick={handleClearServerUrl}
@@ -620,7 +620,7 @@ const SwapWidget: FC = () => {
               hasQuote={!!quote.bestQuote}
               hasSufficientBalance={!insufficientBalance}
               needsApproval={!!baseToken && shouldApprove}
-              pairUnavailable={quote.error === PricingErrorType.noOrdersFound}
+              hasError={!!quote.error}
               onButtonClicked={(action) => handleActionButtonClick(action)}
               isLoading={isConnecting || isRequestingQuotes || quote.isLoading}
               transactionsTabOpen={transactionsTabIsOpen}
