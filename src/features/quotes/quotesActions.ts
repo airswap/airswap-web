@@ -14,6 +14,7 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getPricingQuoteAmount } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
 import { setBestLastLookOrder, setBestOrder } from "./quotesSlice";
+import {gasUsedPerSwap} from "../gasCost/gasCostApi";
 
 interface CreateLastLookUnsignedOrder {
   account: string;
@@ -104,6 +105,18 @@ export const compareOrdersAndSetBestOrder =
 
       return;
     }
+
+    // TODO: Implement gas price comparison. https://github.com/airswap/airswap-web/issues/900
+    // When comparing prices also consider the gas price. LastLook is gas free.
+
+    // Old code from selectBestPrice in ordersSlice:
+    //   if (
+    //       pricing &&
+    //       bestRFQQuoteTokens &&
+    //       bestRFQQuoteTokens
+    //           .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
+    //           .lte(new BigNumber(pricing.quoteAmount))
+    //   ) {
 
     if (
       new BigNumber(lastLookOrder.senderAmount).gte(

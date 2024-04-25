@@ -156,11 +156,11 @@ export const fetchBestRfqOrder = createAsyncThunk<
     senderWallet,
   }) => {
     const servers = await getRegistryServers(
-        provider,
-        chainId,
-        ProtocolIds.RequestForQuoteERC20,
-        quoteToken.address,
-        baseToken.address,
+      provider,
+      chainId,
+      ProtocolIds.RequestForQuoteERC20,
+      quoteToken.address,
+      baseToken.address
     );
 
     if (!servers.length) {

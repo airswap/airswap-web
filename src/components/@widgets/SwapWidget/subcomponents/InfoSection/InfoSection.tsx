@@ -11,6 +11,8 @@ import stringToSignificantDecimals from "../../../../../helpers/stringToSignific
 import Icon from "../../../../Icon/Icon";
 import { InfoSubHeading } from "../../../../Typography/Typography";
 import ClearServerButton from "../ClearServerButton/ClearServerButton";
+import PricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
+import pricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
 import {
   DoneAllIcon,
   RevertPriceButton,
@@ -18,8 +20,6 @@ import {
   StyledLargePillButton,
   StyledTransactionLink,
 } from "./InfoSection.styles";
-import PricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
-import pricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
 
 export type InfoSectionProps = {
   failedToFetchAllowances: boolean;

@@ -15,6 +15,7 @@ import {
 } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 import { reset } from "./quotesSlice";
+import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 
 interface UseQuotesReturn {
   isLoading: boolean;

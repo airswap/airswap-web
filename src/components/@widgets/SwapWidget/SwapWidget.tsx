@@ -22,7 +22,6 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { LastLookContext } from "../../../contexts/lastLook/LastLook";
 import { PricingErrorType } from "../../../errors/pricingError";
 import {
   selectAllowances,
@@ -132,7 +131,6 @@ const SwapWidget: FC = () => {
   const customServerUrl = useAppSelector(selectCustomServerUrl);
 
   // Contexts
-  const LastLook = useContext(LastLookContext);
   const {
     isConnecting,
     transactionsTabIsOpen,
@@ -226,9 +224,8 @@ const SwapWidget: FC = () => {
       setAllowanceFetchFailed(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
-      LastLook.unsubscribeAllServers();
     }
-  }, [ordersStatus, LastLook, dispatch]);
+  }, [ordersStatus, dispatch]);
 
   // Reset when the chainId changes.
   useEffect(() => {
