@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { PricingErrorType } from "../../errors/pricingError";
+import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -15,7 +16,6 @@ import {
 } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 import { reset } from "./quotesSlice";
-import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 
 interface UseQuotesReturn {
   isLoading: boolean;

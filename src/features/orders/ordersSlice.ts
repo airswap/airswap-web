@@ -59,12 +59,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const {
-  clear,
-  setErrors,
-  setResetStatus,
-  setStatus,
-} = ordersSlice.actions;
+export const { clear, setErrors, setResetStatus, setStatus } =
+  ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.

@@ -13,8 +13,8 @@ import { AppDispatch } from "../../app/store";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getPricingQuoteAmount } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
+import { gasUsedPerSwap } from "../gasCost/gasCostApi";
 import { setBestLastLookOrder, setBestOrder } from "./quotesSlice";
-import {gasUsedPerSwap} from "../gasCost/gasCostApi";
 
 interface CreateLastLookUnsignedOrder {
   account: string;
