@@ -10059,6 +10059,11 @@ react-side-effect@^2.1.0:
   resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
 
+react-use-konami@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-use-konami/-/react-use-konami-1.1.0.tgz#4e519b2749de33e5a9f12d7556c4534bebdf4028"
+  integrity sha512-l8mtrDywhR4CPYVyy13N2a/9rK1w0QtT82hE8lmNa1WBAakSdVToFSLrEWQjHq4LEBdIor/Uge/m+C+2k9R0XA==
+
 react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"

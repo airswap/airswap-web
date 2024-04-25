@@ -367,7 +367,6 @@ export const takeLastLookOrder =
       senderToken.address
     );
 
-    console.log(servers);
     const server = servers.find((server) => server.locator === locator);
 
     if (!server) {
@@ -413,7 +412,6 @@ export const takeLastLookOrder =
         signerToken,
         senderToken
       );
-    console.log(transaction);
 
     dispatch(submitTransaction(transaction));
 

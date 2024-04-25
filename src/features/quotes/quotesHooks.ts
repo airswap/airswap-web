@@ -10,6 +10,7 @@ import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
+import useQuotesDebug from "./hooks/useQuotesDebug";
 import {
   compareOrdersAndSetBestOrder,
   createLastLookUnsignedOrder,
@@ -31,6 +32,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   const dispatch = useAppDispatch();
   const { account, chainId, library } = useWeb3React();
 
+  useQuotesDebug();
+
   const {
     baseToken,
     baseAmount: baseTokenAmount,
@@ -38,6 +41,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   } = useAppSelector(selectTradeTerms);
   const protocolFee = useAppSelector(selectProtocolFee);
   const {
+    disableLastLook,
+    disableRfq,
     isLastLookLoading,
     isRfqLoading,
     bestPricing,
@@ -129,11 +134,18 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
     dispatch(
       compareOrdersAndSetBestOrder(
         quoteTokenInfo,
-        bestRfqOrder,
-        bestLastLookOrder
+        disableLastLook ? undefined : bestLastLookOrder,
+        disableRfq ? undefined : bestRfqOrder
       )
     );
-  }, [bestRfqOrder, bestLastLookOrder]);
+  }, [disableLastLook, disableRfq, bestLastLookOrder, bestRfqOrder]);
+
+  if (!isSubmitted) {
+    return {
+      isFailed: false,
+      isLoading: false,
+    };
+  }
 
   return {
     isFailed: !isLoading && !!error,

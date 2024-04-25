@@ -22,7 +22,6 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { PricingErrorType } from "../../../errors/pricingError";
 import {
   selectAllowances,
   selectBalances,
@@ -93,6 +92,7 @@ import { Container } from "../MakeWidget/MakeWidget.styles";
 import StyledSwapWidget, {
   ButtonContainer,
   InfoContainer,
+  StyledDebugMenu,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
@@ -133,6 +133,7 @@ const SwapWidget: FC = () => {
   // Contexts
   const {
     isConnecting,
+    isDebugMode,
     transactionsTabIsOpen,
     setShowWalletList,
     setTransactionsTabIsOpen,
@@ -164,13 +165,6 @@ const SwapWidget: FC = () => {
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
   const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
-
-  // Error states
-  const pairUnavailable =
-    quote.error === PricingErrorType.noOrdersFound ||
-    quote.error === PricingErrorType.noPricingFound ||
-    quote.error === PricingErrorType.belowMinimumAmount ||
-    quote.error === PricingErrorType.noServersFound;
 
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
@@ -544,6 +538,7 @@ const SwapWidget: FC = () => {
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           expiry={quote.bestOrder?.expiry}
         />
+        {isDebugMode && <StyledDebugMenu />}
         {!isApproving && !isSwapping && !showOrderSubmitted && (
           <SwapInputs
             baseAmount={baseAmount}

@@ -13,8 +13,13 @@ import { AppDispatch } from "../../app/store";
 import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getPricingQuoteAmount } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
-import { gasUsedPerSwap } from "../gasCost/gasCostApi";
-import { setBestLastLookOrder, setBestOrder } from "./quotesSlice";
+import { PricingErrorType } from "../../errors/pricingError";
+import {
+  setBestLastLookOrder,
+  setBestOrder,
+  setLastLookError,
+  setRfqError,
+} from "./quotesSlice";
 
 interface CreateLastLookUnsignedOrder {
   account: string;
@@ -65,8 +70,8 @@ export const createLastLookUnsignedOrder =
 export const compareOrdersAndSetBestOrder =
   (
     token: TokenInfo,
-    rfqOrder?: OrderERC20,
-    lastLookOrder?: UnsignedOrderERC20
+    lastLookOrder?: UnsignedOrderERC20,
+    rfqOrder?: OrderERC20
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     const rfqQuote = rfqOrder
@@ -78,6 +83,10 @@ export const compareOrdersAndSetBestOrder =
 
     if (!rfqOrder && !lastLookOrder) {
       console.error("[compareOrdersAndSetBestOrder] No orders to compare");
+
+      dispatch(setBestOrder(undefined));
+      dispatch(setLastLookError(PricingErrorType.noOrdersFound));
+      dispatch(setRfqError(PricingErrorType.noOrdersFound));
 
       return;
     }

@@ -8,6 +8,8 @@ import { PricingErrorType } from "../../errors/pricingError";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 
 interface QuotesState {
+  disableLastLook: boolean;
+  disableRfq: boolean;
   isLastLookLoading: boolean;
   isRfqLoading: boolean;
   bestPricing?: ExtendedPricing;
@@ -21,6 +23,8 @@ interface QuotesState {
 }
 
 const initialState: QuotesState = {
+  disableLastLook: false,
+  disableRfq: false,
   isLastLookLoading: false,
   isRfqLoading: false,
 };
@@ -39,16 +43,55 @@ const quotesSlice = createSlice({
     }),
     setBestOrder: (
       state,
-      action: PayloadAction<{
-        order: OrderERC20 | UnsignedOrderERC20;
-        quote: string;
-        type: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
-      }>
+      action: PayloadAction<
+        | {
+            order: OrderERC20 | UnsignedOrderERC20;
+            quote: string;
+            type: ProtocolIds.RequestForQuoteERC20 | ProtocolIds.LastLookERC20;
+          }
+        | undefined
+      >
+    ): QuotesState => {
+      if (!action.payload) {
+        return {
+          ...state,
+          bestOrder: undefined,
+          bestOrderType: undefined,
+          bestQuote: undefined,
+        };
+      }
+
+      return {
+        ...state,
+        bestOrder: action.payload.order,
+        bestOrderType: action.payload.type,
+        bestQuote: action.payload.quote,
+      };
+    },
+    setDisableLastLook: (
+      state,
+      action: PayloadAction<boolean>
     ): QuotesState => ({
       ...state,
-      bestOrder: action.payload.order,
-      bestOrderType: action.payload.type,
-      bestQuote: action.payload.quote,
+      disableLastLook: action.payload,
+    }),
+    setDisableRfq: (state, action: PayloadAction<boolean>): QuotesState => ({
+      ...state,
+      disableRfq: action.payload,
+    }),
+    setLastLookError: (
+      state,
+      action: PayloadAction<PricingErrorType>
+    ): QuotesState => ({
+      ...state,
+      lastLookError: action.payload,
+    }),
+    setRfqError: (
+      state,
+      action: PayloadAction<PricingErrorType>
+    ): QuotesState => ({
+      ...state,
+      rfqError: action.payload,
     }),
   },
   extraReducers: (builder) => {
@@ -128,7 +171,14 @@ const quotesSlice = createSlice({
   },
 });
 
-export const { reset, setBestLastLookOrder, setBestOrder } =
-  quotesSlice.actions;
+export const {
+  reset,
+  setBestLastLookOrder,
+  setBestOrder,
+  setDisableLastLook,
+  setDisableRfq,
+  setLastLookError,
+  setRfqError,
+} = quotesSlice.actions;
 
 export default quotesSlice.reducer;
