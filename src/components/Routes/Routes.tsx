@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 
+import useBalances from "../../features/balances/balancesHooks";
 import { useTransactions } from "../../features/transactions/transactionsHooks";
 import Cancel from "../../pages/Cancel/Cancel";
 import MakePage from "../../pages/Make/Make";
@@ -10,6 +11,7 @@ import SwapPage from "../../pages/Swap/Swap";
 import { AppRoutes } from "../../routes";
 
 const Routes: FC = () => {
+  useBalances();
   useTransactions();
 
   return (

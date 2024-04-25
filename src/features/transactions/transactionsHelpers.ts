@@ -147,18 +147,17 @@ export const handleTransactionEvent =
   };
 
 export const handleTransactionResolved =
-  (transaction: SubmittedTransaction) =>
-  (dispatch: AppDispatch): void => {
+  (transaction: SubmittedTransaction) => (): void => {
     if (isApprovalTransaction(transaction)) {
-      handleApproveTransaction(transaction, transaction.status, dispatch);
+      handleApproveTransaction(transaction, transaction.status);
     }
 
     if (isDepositTransaction(transaction)) {
-      handleSubmittedDepositOrder(transaction, transaction.status, dispatch);
+      handleSubmittedDepositOrder(transaction, transaction.status);
     }
 
     if (isWithdrawTransaction(transaction)) {
-      handleSubmittedWithdrawOrder(transaction, transaction.status, dispatch);
+      handleSubmittedWithdrawOrder(transaction, transaction.status);
     }
 
     if (isSubmittedOrder(transaction)) {
