@@ -33,7 +33,11 @@ const quotesSlice = createSlice({
   name: "quotes",
   initialState,
   reducers: {
-    reset: (): QuotesState => initialState,
+    reset: (state): QuotesState => ({
+      ...initialState,
+      disableLastLook: state.disableLastLook,
+      disableRfq: state.disableRfq,
+    }),
     setBestLastLookOrder: (
       state,
       action: PayloadAction<UnsignedOrderERC20>

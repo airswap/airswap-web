@@ -43,7 +43,7 @@ export const StyledWalletProviderList = styled(WalletProviderList)`
 `;
 
 export const StyledDebugMenu = styled(DebugMenu)`
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 export default StyledSwapWidget;

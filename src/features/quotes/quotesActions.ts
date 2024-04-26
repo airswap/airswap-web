@@ -85,8 +85,6 @@ export const compareOrdersAndSetBestOrder =
       console.error("[compareOrdersAndSetBestOrder] No orders to compare");
 
       dispatch(setBestOrder(undefined));
-      dispatch(setLastLookError(PricingErrorType.noOrdersFound));
-      dispatch(setRfqError(PricingErrorType.noOrdersFound));
 
       return;
     }

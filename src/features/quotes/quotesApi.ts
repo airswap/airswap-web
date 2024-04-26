@@ -89,6 +89,10 @@ export const fetchBestPricing = createAsyncThunk<
           compareAddresses(pricing.quoteToken, quoteToken)
       );
 
+    if (!pricings.length) {
+      return PricingErrorType.noPricingFound;
+    }
+
     const quoteAmounts = pricings.map((pricing) =>
       getPricingQuoteAmount(pricing, baseTokenAmount, protocolFee)
     );

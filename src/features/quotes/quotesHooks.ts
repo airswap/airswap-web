@@ -127,7 +127,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   }, [bestPricing]);
 
   useEffect(() => {
-    if (isLoading || !quoteTokenInfo) {
+    if (isLoading || !quoteTokenInfo || !isSubmitted) {
       return;
     }
 
@@ -139,13 +139,6 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
       )
     );
   }, [disableLastLook, disableRfq, bestLastLookOrder, bestRfqOrder]);
-
-  if (!isSubmitted) {
-    return {
-      isFailed: false,
-      isLoading: false,
-    };
-  }
 
   return {
     isFailed: !isLoading && !!error,

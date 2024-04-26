@@ -6,7 +6,6 @@ import {
   setDisableLastLook,
   setDisableRfq,
 } from "../../../../../features/quotes/quotesSlice";
-import CloseButton from "../../../../../styled-components/CloseButton/CloseButton";
 import {
   Container,
   StyledCheckbox,
