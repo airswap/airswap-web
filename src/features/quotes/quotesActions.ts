@@ -5,6 +5,7 @@ import {
   TokenInfo,
   UnsignedOrderERC20,
 } from "@airswap/utils";
+import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
 
 import { BigNumber } from "bignumber.js";
@@ -14,14 +15,76 @@ import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getPricingQuoteAmount } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
 import { PricingErrorType } from "../../errors/pricingError";
+import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 import {
+  reset,
   setBestLastLookOrder,
   setBestOrder,
   setLastLookError,
   setRfqError,
 } from "./quotesSlice";
 
-interface CreateLastLookUnsignedOrder {
+interface FetchBestPricingAndRfqOrder {
+  isSubmitted: boolean;
+  account?: string;
+  baseToken?: TokenInfo;
+  baseTokenAmount: string;
+  chainId?: number;
+  pricing?: ExtendedPricing;
+  protocolFee: number;
+  library?: Web3Provider;
+  quoteToken?: TokenInfo;
+}
+
+export const fetchBestPricingAndRfqOrder =
+  (props: FetchBestPricingAndRfqOrder) =>
+  async (dispatch: AppDispatch): Promise<void> => {
+    const {
+      isSubmitted,
+      account,
+      baseToken,
+      baseTokenAmount,
+      chainId,
+      pricing,
+      protocolFee,
+      library,
+      quoteToken,
+    } = props;
+
+    if (!chainId || !library || !baseToken || !quoteToken || !account) {
+      return;
+    }
+
+    if (!isSubmitted) {
+      dispatch(reset());
+
+      return;
+    }
+
+    dispatch(
+      fetchBestPricing({
+        provider: library,
+        baseToken: baseToken.address,
+        baseTokenAmount,
+        quoteToken: quoteToken.address,
+        chainId: chainId,
+        protocolFee,
+      })
+    );
+
+    dispatch(
+      fetchBestRfqOrder({
+        provider: library,
+        baseTokenAmount,
+        baseToken,
+        chainId,
+        quoteToken,
+        senderWallet: account,
+      })
+    );
+  };
+
+interface CreateLastLookUnsignedOrderProps {
   account: string;
   baseToken: TokenInfo;
   baseAmount: string;
@@ -31,7 +94,7 @@ interface CreateLastLookUnsignedOrder {
 }
 
 export const createLastLookUnsignedOrder =
-  (props: CreateLastLookUnsignedOrder) =>
+  (props: CreateLastLookUnsignedOrderProps) =>
   async (dispatch: AppDispatch): Promise<void> => {
     const { account, baseToken, baseAmount, pricing, protocolFee, quoteToken } =
       props;

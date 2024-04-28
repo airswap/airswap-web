@@ -28,8 +28,11 @@ export const getRegistryServers = async (
     }
 
     return [];
-  } catch {
-    console.error("[getRegistryServers] Error fetching servers from registry");
+  } catch (error) {
+    console.error(
+      "[getRegistryServers] Error fetching servers from registry",
+      error
+    );
 
     return [];
   }

@@ -148,11 +148,7 @@ const SwapWidget: FC = () => {
   );
   const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
-  // Pricing
-  const quote = useQuotes(state === SwapWidgetState.requestPrices);
-
   // Modals
-  const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes | null>(null);
 
@@ -164,7 +160,14 @@ const SwapWidget: FC = () => {
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
-  const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
+  const [activeOrderNonce, setActiveOrderNonce] = useState<
+    string | undefined
+  >();
+
+  // Pricing
+  const quote = useQuotes(
+    !activeOrderNonce && state !== SwapWidgetState.overview
+  );
 
   const [allowanceFetchFailed, setAllowanceFetchFailed] =
     useState<boolean>(false);
@@ -198,6 +201,9 @@ const SwapWidget: FC = () => {
   const hasWithdrawalPending = useWithdrawalPending();
   const hasDepositOrWithdrawalPending =
     hasDepositPending || hasWithdrawalPending;
+  const hasSubmittedTransaction =
+    hasApprovalPending || hasDepositOrWithdrawalPending || !!activeOrderNonce;
+
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
@@ -214,7 +220,6 @@ const SwapWidget: FC = () => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
       setIsSwapping(false);
-      setIsRequestingQuotes(false);
       setAllowanceFetchFailed(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
@@ -243,11 +248,9 @@ const SwapWidget: FC = () => {
     [quoteAmount]
   );
 
-  const transactionOrderNonce =
-    quote?.bestOrder?.nonce || bestIndexerOrder?.nonce;
   const activeTransaction = useBestTradeOptionTransaction(
     baseTokenInfo,
-    transactionOrderNonce,
+    activeOrderNonce,
     quote?.bestQuote
   );
 
@@ -278,14 +281,12 @@ const SwapWidget: FC = () => {
 
   useEffect(() => {
     if (hasDepositOrWithdrawalPending) {
-      setShowOrderSubmitted(true);
       setIsWrapping(false);
     }
   }, [hasDepositOrWithdrawalPending]);
 
   useEffect(() => {
     if (activeTransaction?.status === TransactionStatusType.processing) {
-      setShowOrderSubmitted(true);
       setIsSwapping(false);
     }
   }, [activeTransaction]);
@@ -387,6 +388,8 @@ const SwapWidget: FC = () => {
     } else {
       await swapWithRequestForQuote();
     }
+
+    setActiveOrderNonce(quote?.bestOrder?.nonce);
   };
 
   const doWrap = async () => {
@@ -407,18 +410,18 @@ const SwapWidget: FC = () => {
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
-        setShowOrderSubmitted(false);
         setState(SwapWidgetState.overview);
         dispatch(clearQuotes());
         dispatch(clear());
+        setActiveOrderNonce(undefined);
         break;
 
       case ButtonActions.restart:
-        setShowOrderSubmitted(false);
         setState(SwapWidgetState.overview);
         dispatch(clearTradeTerms());
         dispatch(clearQuotes());
         dispatch(clear());
+        setActiveOrderNonce(undefined);
         setBaseAmount("");
         break;
 
@@ -534,12 +537,12 @@ const SwapWidget: FC = () => {
         <SwapWidgetHeader
           isLastLook={quote.bestOrderType === ProtocolIds.LastLookERC20}
           title={isApproving ? t("orders.approve") : t("common.rfq")}
-          isQuote={!isRequestingQuotes && !showOrderSubmitted}
+          isQuote={!hasSubmittedTransaction}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           expiry={quote.bestOrder?.expiry}
         />
         {isDebugMode && <StyledDebugMenu />}
-        {!isApproving && !isSwapping && !showOrderSubmitted && (
+        {!isApproving && !isSwapping && !hasSubmittedTransaction && (
           <SwapInputs
             baseAmount={baseAmount}
             baseTokenInfo={baseTokenInfo}
@@ -552,11 +555,7 @@ const SwapWidget: FC = () => {
             quoteAmount={formattedQuoteAmount}
             disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
-              !!quote.bestQuote ||
-              !!quote.error ||
-              isWrapping ||
-              isRequestingQuotes ||
-              !active
+              !!quote.bestQuote || !!quote.error || isWrapping || !active
             }
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
@@ -573,12 +572,12 @@ const SwapWidget: FC = () => {
             hasSelectedCustomServer={!!customServerUrl}
             isApproving={isApproving}
             isConnected={active}
-            isFetchingOrders={isRequestingQuotes}
+            isFetchingOrders={quote.isLoading}
             isSwapping={isSwapping}
             isWrapping={isWrapping}
-            orderSubmitted={showOrderSubmitted}
+            orderSubmitted={hasSubmittedTransaction}
             orderCompleted={
-              showOrderSubmitted &&
+              hasSubmittedTransaction &&
               activeTransaction?.status === TransactionStatusType.succeeded
             }
             requiresApproval={!!quote.bestOrder && shouldApprove}
@@ -603,7 +602,7 @@ const SwapWidget: FC = () => {
                 !!web3Error && web3Error instanceof UnsupportedChainIdError
               }
               requiresReload={allowanceFetchFailed}
-              orderComplete={showOrderSubmitted}
+              orderComplete={hasSubmittedTransaction}
               baseTokenInfo={baseTokenInfo}
               quoteTokenInfo={quoteTokenInfo}
               hasAmount={
@@ -614,7 +613,7 @@ const SwapWidget: FC = () => {
               needsApproval={!!baseToken && shouldApprove}
               hasError={!!quote.error}
               onButtonClicked={(action) => handleActionButtonClick(action)}
-              isLoading={isConnecting || isRequestingQuotes || quote.isLoading}
+              isLoading={isConnecting || quote.isLoading}
               transactionsTabOpen={transactionsTabIsOpen}
             />
           )}

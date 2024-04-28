@@ -7,7 +7,7 @@ import { providers } from "ethers";
 
 import {
   RFQ_EXPIRY_BUFFER_MS,
-  SERVER_RESPONSE_TIME_MS,
+  SERVER_PRICING_RESPONSE_TIME_MS,
 } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import {
@@ -62,7 +62,7 @@ export const fetchBestPricing = createAsyncThunk<
         new Promise((_, reject) =>
           setTimeout(
             () => reject(new Error("Timeout")),
-            SERVER_RESPONSE_TIME_MS
+            SERVER_PRICING_RESPONSE_TIME_MS
           )
         ),
       ])

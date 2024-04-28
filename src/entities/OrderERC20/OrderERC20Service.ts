@@ -54,6 +54,8 @@ export async function requestRfqOrders(
 
   const results = await Promise.allSettled(promises);
 
+  servers.forEach((server) => server.disconnect());
+
   return results
     .filter((response): response is PromiseFulfilledResult<unknown> =>
       isPromiseFulfilledResult<unknown>(response)

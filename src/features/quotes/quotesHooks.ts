@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { OrderERC20, ProtocolIds, UnsignedOrderERC20 } from "@airswap/utils";
+import { noop } from "@react-hookz/web/esnext/util/const";
 import { useWeb3React } from "@web3-react/core";
+
+import { useTimeout } from "usehooks-ts";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
+import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { PricingErrorType } from "../../errors/pricingError";
 import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useTokenInfo from "../../hooks/useTokenInfo";
@@ -18,7 +22,7 @@ import {
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 import { reset } from "./quotesSlice";
 
-interface UseQuotesReturn {
+interface UseQuotesValues {
   isLoading: boolean;
   isFailed: boolean;
   bestPricing?: ExtendedPricing;
@@ -28,12 +32,10 @@ interface UseQuotesReturn {
   error?: PricingErrorType;
 }
 
-const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
+const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const dispatch = useAppDispatch();
+
   const { account, chainId, library } = useWeb3React();
-
-  useQuotesDebug();
-
   const {
     baseToken,
     baseAmount: baseTokenAmount,
@@ -61,6 +63,29 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
   const error =
     !isLoading && !bestOrder ? lastLookError || rfqError : undefined;
 
+  const [fetchCount, setFetchCount] = useState(0);
+
+  useQuotesDebug();
+
+  useEffect(() => {
+    setFetchCount(isSubmitted ? 1 : 0);
+  }, [isSubmitted]);
+
+  useEffect(() => {
+    if (!bestOrder) {
+      return noop;
+    }
+
+    const expiry = getOrderExpiryWithBufferInSeconds(bestOrder.expiry);
+    const timeout = expiry * 1000 - Date.now();
+
+    const intervalId = setTimeout(() => {
+      setFetchCount(fetchCount + 1);
+    }, timeout);
+
+    return () => clearInterval(intervalId);
+  }, [bestOrder]);
+
   useEffect(() => {
     if (
       !chainId ||
@@ -73,7 +98,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
       return;
     }
 
-    if (!isSubmitted) {
+    console.log(fetchCount);
+
+    if (!fetchCount) {
       dispatch(reset());
 
       return;
@@ -100,7 +127,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesReturn => {
         senderWallet: account,
       })
     );
-  }, [isSubmitted]);
+  }, [fetchCount]);
 
   useEffect(() => {
     if (

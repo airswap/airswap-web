@@ -49,8 +49,13 @@ export const useBalances = () => {
 
     const { type } = latestSuccessfulTransaction;
 
+    if (type === TransactionTypes.order) {
+      dispatch(requestActiveTokenBalances({ provider: library }));
+      dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+    }
+
     if (
-      type === TransactionTypes.order ||
       type === TransactionTypes.withdraw ||
       type === TransactionTypes.deposit
     ) {
