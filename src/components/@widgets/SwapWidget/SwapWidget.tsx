@@ -426,7 +426,6 @@ const SwapWidget: FC = () => {
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
-        console.log("goback", state);
         setState(SwapWidgetState.overview);
         dispatch(clearQuotes());
         dispatch(clear());
