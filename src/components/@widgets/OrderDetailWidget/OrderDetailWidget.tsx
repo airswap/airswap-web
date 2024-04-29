@@ -115,7 +115,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
-  const hasApprovalPending = useApprovalPending(order.senderToken);
+  const hasApprovalPending = !!useApprovalPending(order.senderToken);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
   const { hasSufficientAllowance } = useAllowance(

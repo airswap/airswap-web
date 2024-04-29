@@ -9,29 +9,17 @@ import { isTransactionWithOrder } from "../../../../features/transactions/transa
 import toAtomicString from "../../../../helpers/toAtomicString";
 
 const useBestTradeOptionTransaction = (
-  tokenInfo: TokenInfo | null,
-  nonce?: string,
-  quoteAmount?: string
+  nonce?: string
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 
   return useMemo(() => {
-    if (!quoteAmount || !tokenInfo) {
-      return undefined;
-    }
-
     return transactions.find((transaction) => {
-      if (!isTransactionWithOrder(transaction)) {
-        return false;
-      }
-
-      const senderAmount = toAtomicString(quoteAmount, tokenInfo.decimals);
-
-      return transaction.order.nonce
-        ? transaction.order.nonce === nonce
-        : transaction.order.senderAmount === senderAmount;
+      return (
+        isTransactionWithOrder(transaction) && transaction.order.nonce === nonce
+      );
     });
-  }, [transactions, nonce, quoteAmount]);
+  }, [transactions, nonce]);
 };
 
 export default useBestTradeOptionTransaction;

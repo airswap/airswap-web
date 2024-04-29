@@ -27,11 +27,9 @@ export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
-  isSwapping: boolean;
   isWrapping: boolean;
   orderSubmitted: boolean;
   orderCompleted: boolean;
-  requiresApproval: boolean;
   showViewAllQuotes: boolean;
   bestQuote?: string;
   chainId: number;
@@ -52,11 +50,9 @@ const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
   isFetchingOrders,
-  isSwapping,
   isWrapping,
   orderCompleted,
   orderSubmitted,
-  requiresApproval,
   showViewAllQuotes,
   bestQuote,
   baseTokenInfo,
@@ -166,15 +162,6 @@ const InfoSection: FC<InfoSectionProps> = ({
           {t("orders.approvePending", { symbol: baseTokenInfo!.symbol })}
         </StyledInfoHeading>
         <InfoSubHeading>{t("orders.approveMessage")}</InfoSubHeading>
-      </>
-    );
-  }
-
-  if (isSwapping) {
-    return (
-      <>
-        <StyledInfoHeading>{t("orders.swapPending")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.swapMessage")}</InfoSubHeading>
       </>
     );
   }

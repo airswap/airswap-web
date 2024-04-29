@@ -11,6 +11,7 @@ import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing"
 import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { PricingErrorType } from "../../errors/pricingError";
 import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
+import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -65,6 +66,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   const [fetchCount, setFetchCount] = useState(0);
 
+  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   useQuotesDebug();
 
   useEffect(() => {
@@ -97,8 +99,6 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     ) {
       return;
     }
-
-    console.log(fetchCount);
 
     if (!fetchCount) {
       dispatch(reset());
@@ -166,6 +166,14 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       )
     );
   }, [disableLastLook, disableRfq, bestLastLookOrder, bestRfqOrder]);
+
+  if (swapType === "wrapOrUnwrap") {
+    return {
+      isFailed: false,
+      isLoading: false,
+      ...(isSubmitted && { bestQuote: baseTokenAmount }),
+    };
+  }
 
   return {
     isFailed: !isLoading && !!error,

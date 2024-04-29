@@ -4,11 +4,18 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../../../app/hooks";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { isSubmittedOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getUniqueSingleDimensionArray } from "../../../helpers/array";
 import {
   selectPendingTransactions,
   selectSuccessfulTransactions,
 } from "../transactionsSlice";
+
+const getTransactionId = (transaction: SubmittedTransaction) => {
+  return isSubmittedOrder(transaction)
+    ? transaction.order.nonce
+    : transaction.hash || "";
+};
 
 const useLatestSucceededTransaction = () => {
   const { chainId, account, library } = useWeb3React();
@@ -16,16 +23,16 @@ const useLatestSucceededTransaction = () => {
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const successfulTransactions = useAppSelector(selectSuccessfulTransactions);
 
-  const [pendingTransactionHashes, setPendingTransactionHashes] = useState<
-    string[]
-  >([]);
+  const [pendingTransactionIds, setPendingTransactionIds] = useState<string[]>(
+    []
+  );
   const [latestSuccessfulTransaction, setLatestSuccessfulTransaction] =
     useState<SubmittedTransaction>();
 
   useEffect(() => {
-    const transaction = successfulTransactions.find((transaction) =>
-      pendingTransactionHashes.includes(transaction.hash || "")
-    );
+    const transaction = successfulTransactions.find((transaction) => {
+      return pendingTransactionIds.includes(getTransactionId(transaction));
+    });
 
     if (transaction) {
       setLatestSuccessfulTransaction(transaction);
@@ -34,27 +41,29 @@ const useLatestSucceededTransaction = () => {
 
   useEffect(() => {
     const newPendingTransactionNonces = [
-      ...pendingTransactions.map((transaction) => transaction.hash || ""),
-      ...pendingTransactionHashes,
+      ...pendingTransactions.map((transaction) =>
+        getTransactionId(transaction)
+      ),
+      ...pendingTransactionIds,
     ]
       .filter(Boolean)
       .filter(getUniqueSingleDimensionArray);
 
-    setPendingTransactionHashes(newPendingTransactionNonces);
+    setPendingTransactionIds(newPendingTransactionNonces);
   }, [pendingTransactions]);
 
   useEffect(() => {
     if (latestSuccessfulTransaction) {
-      setPendingTransactionHashes(
-        pendingTransactionHashes.filter(
-          (hash) => hash !== latestSuccessfulTransaction.hash
+      setPendingTransactionIds(
+        pendingTransactionIds.filter(
+          (id) => id !== getTransactionId(latestSuccessfulTransaction)
         )
       );
     }
   }, [latestSuccessfulTransaction]);
 
   useEffect(() => {
-    setPendingTransactionHashes([]);
+    setPendingTransactionIds([]);
     setLatestSuccessfulTransaction(undefined);
   }, [chainId, account]);
 

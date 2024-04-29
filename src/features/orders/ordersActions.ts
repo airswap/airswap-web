@@ -26,6 +26,7 @@ import {
   SubmittedApprovalTransaction,
   SubmittedDepositTransaction,
   SubmittedOrder,
+  SubmittedOrderUnderConsideration,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
@@ -293,7 +294,7 @@ export const take =
     library: Web3Provider,
     contractType: "Swap" | "Wrapper"
   ) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (dispatch: AppDispatch): Promise<SubmittedOrder | undefined> => {
     dispatch(setStatus("signing"));
 
     const tx = await takeOrder(order, library, contractType);
@@ -347,6 +348,8 @@ export const take =
 
     dispatch(submitTransaction(transaction));
     dispatch(setStatus("idle"));
+
+    return transaction;
   };
 
 export const takeLastLookOrder =
@@ -358,7 +361,9 @@ export const takeLastLookOrder =
     senderToken: TokenInfo,
     unsignedOrder: UnsignedOrderERC20
   ) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (
+    dispatch: AppDispatch
+  ): Promise<SubmittedOrderUnderConsideration | undefined> => {
     const servers = await Registry.getServers(
       library,
       chainId,
@@ -393,6 +398,8 @@ export const takeLastLookOrder =
       return;
     }
 
+    dispatch(setStatus("requesting"));
+
     const order = transformUnsignedOrderERC20ToOrderERC20(
       unsignedOrder,
       signature
@@ -416,4 +423,6 @@ export const takeLastLookOrder =
     dispatch(submitTransaction(transaction));
 
     dispatch(setStatus("idle"));
+
+    return transaction;
   };
