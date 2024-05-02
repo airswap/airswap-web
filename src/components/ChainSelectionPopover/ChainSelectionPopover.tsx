@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import { chainNames } from "@airswap/utils";
 
-import nativeCurrency from "../../constants/nativeCurrency";
 import { supportedNetworks } from "../../constants/supportedNetworks";
 import {
   Container,

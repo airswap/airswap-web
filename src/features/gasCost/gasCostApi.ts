@@ -1,8 +1,14 @@
-import { TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
+import { TokenInfo, ADDRESS_ZERO, ChainIds } from "@airswap/utils";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
 
+import {
+  GasPriceEndpoint,
+  GasPriceEndpointType,
+} from "../../entities/GasPrice/GasPrice";
+import { getGasPriceApiCall } from "../../entities/GasPrice/GasPriceService";
 import getWethAddress from "../../helpers/getWethAddress";
 import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
 import uniswapPairAbi from "../../uniswap/abis/pair.json";
@@ -10,21 +16,47 @@ import uniswapDeploys from "../../uniswap/deployments";
 
 export const gasUsedPerSwap = 185555;
 
-type EthGasWatchApiResponse = {
-  fast: number;
+const endpoints: Partial<Record<ChainIds, GasPriceEndpoint>> = {
+  [ChainIds.MAINNET]: {
+    type: GasPriceEndpointType.defisaver,
+    url: "https://app.defisaver.com/api/gas-price/current",
+  },
+  [ChainIds.SEPOLIA]: {
+    type: GasPriceEndpointType.beaconCha,
+    url: "https://sepolia.beaconcha.in/api/v1/execution/gasnow",
+  },
 };
 
-const getFastGasPrice: () => Promise<BigNumber | null> = async () => {
-  const url = "https://ethgasstation.info/api/ethgasAPI.json";
-  try {
-    const response = await fetch(url);
-    const data: EthGasWatchApiResponse = await response.json();
-    return new BigNumber(data.fast).dividedBy(10 ** 10);
-  } catch (e: any) {
-    console.error("Error getting gas price from ethgas.watch API: ", e.message);
-    return null;
+interface GetGasPriceResponse {
+  gasPrice: string;
+  swapTransactionCost: string;
+}
+
+export const getGasPrice = createAsyncThunk<
+  GetGasPriceResponse,
+  { chainId: ChainIds }
+>("gasPrice/getGasPrice", async ({ chainId }) => {
+  const endpoint = endpoints[chainId];
+
+  if (!endpoint) {
+    return {
+      gasPrice: "0",
+      swapTransactionCost: "0",
+    };
   }
-};
+
+  const gasPrice = await getGasPriceApiCall(endpoint.url, endpoint.type);
+  const swapTransactionCost = new BigNumber(gasPrice).multipliedBy(
+    gasUsedPerSwap
+  );
+
+  console.log(swapTransactionCost.toString());
+
+  return {
+    gasPrice: gasPrice.toString(),
+    swapTransactionCost: swapTransactionCost.toString(),
+  };
+});
 
 const getPriceOfTokenInWethFromUniswap: (
   tokenInfo: TokenInfo,
@@ -70,4 +102,4 @@ const getPriceOfTokenInWethFromUniswap: (
   return wethUnits.dividedBy(tokenUnits);
 };
 
-export { getFastGasPrice, getPriceOfTokenInWethFromUniswap };
+export { getPriceOfTokenInWethFromUniswap };

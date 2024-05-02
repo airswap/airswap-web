@@ -134,7 +134,8 @@ export const compareOrdersAndSetBestOrder =
   (
     token: TokenInfo,
     lastLookOrder?: UnsignedOrderERC20,
-    rfqOrder?: OrderERC20
+    rfqOrder?: OrderERC20,
+    swapTransactionCost: string = "0"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     const rfqQuote = rfqOrder
@@ -176,23 +177,13 @@ export const compareOrdersAndSetBestOrder =
       return;
     }
 
-    // TODO: Implement gas price comparison. https://github.com/airswap/airswap-web/issues/900
-    // When comparing prices also consider the gas price. LastLook is gas free.
+    // When comparing RFQ and LastLook we need to consider that no gas need to be paid for the LastLook transaction
+    const lastLookSenderAmount = new BigNumber(lastLookOrder.senderAmount);
+    const justifiedRfqSignerAmount = new BigNumber(rfqOrder.signerAmount).minus(
+      swapTransactionCost
+    );
 
-    // Old code from selectBestPrice in ordersSlice:
-    //   if (
-    //       pricing &&
-    //       bestRFQQuoteTokens &&
-    //       bestRFQQuoteTokens
-    //           .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
-    //           .lte(new BigNumber(pricing.quoteAmount))
-    //   ) {
-
-    if (
-      new BigNumber(lastLookOrder.senderAmount).gte(
-        new BigNumber(rfqOrder.signerAmount)
-      )
-    ) {
+    if (lastLookSenderAmount.gte(justifiedRfqSignerAmount)) {
       dispatch(
         setBestOrder({
           order: lastLookOrder,

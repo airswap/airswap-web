@@ -30,8 +30,11 @@ const useQuotesDebug = () => {
     lastLookError,
     rfqError,
   } = useAppSelector((state) => state.quotes);
+  const { isLoading: isGasCostLoading, swapTransactionCost } = useAppSelector(
+    (state) => state.gasCost
+  );
 
-  const isLoading = isLastLookLoading || isRfqLoading;
+  const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
 
   useEffect(() => {
     if (isDebugMode) {
@@ -59,9 +62,15 @@ const useQuotesDebug = () => {
 
   useEffect(() => {
     if (isDebugMode && bestLastLookOrder) {
-      console.log("bestRfqOrder:", bestLastLookOrder);
+      console.log("bestLastLookOrder:", bestLastLookOrder);
     }
   }, [bestLastLookOrder]);
+
+  useEffect(() => {
+    if (isDebugMode && swapTransactionCost) {
+      console.log("swapTransactionCost:", swapTransactionCost);
+    }
+  }, [swapTransactionCost]);
 
   useEffect(() => {
     if (isDebugMode && bestOrder) {

@@ -1,7 +1,4 @@
-import { ChainIds, chainNames, apiUrls, explorerUrls } from "@airswap/utils";
-
-import { ChainParams } from "../types/chainParams";
-import nativeCurrency from "./nativeCurrency";
+import { ChainIds } from "@airswap/utils";
 
 export const supportedNetworks: number[] = [
   ChainIds.MAINNET,
@@ -14,14 +11,3 @@ export const supportedNetworks: number[] = [
   ChainIds.BSC,
   ChainIds.RSK,
 ];
-
-const chainParams: { [key: number]: ChainParams } = {};
-export const networkParams = supportedNetworks.map((chainId) => {
-  chainParams[chainId] = {
-    chainId: Number(chainId),
-    chainName: chainNames[chainId],
-    nativeCurrency: nativeCurrency[chainId],
-    rpcUrls: [apiUrls[chainId]],
-    blockExplorerUrls: [explorerUrls[chainId]],
-  };
-});
