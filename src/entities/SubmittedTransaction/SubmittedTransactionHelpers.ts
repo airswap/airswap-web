@@ -1,4 +1,5 @@
-import { TokenInfo } from "@airswap/utils";
+import { OrderERC20, TokenInfo } from "@airswap/utils";
+import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 import { formatUnits } from "@ethersproject/units";
 
 import { BigNumber } from "bignumber.js";
@@ -127,6 +128,21 @@ const isSenderWalletAccount = (
   return false;
 };
 
+export const getAdjustedAmount = (
+  order: OrderERC20,
+  protocolFee: number,
+  account: string
+) => {
+  if (compareAddresses(order.signerWallet, account)) {
+    return new BigNumber(order.signerAmount)
+      .multipliedBy(1 + protocolFee / 10000)
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toString();
+  }
+
+  return order.signerAmount;
+};
+
 export const getOrderTransactionLabel = (
   transaction: SubmittedOrder,
   signerToken: TokenInfo,
@@ -136,49 +152,49 @@ export const getOrderTransactionLabel = (
 ) => {
   const { order, swap } = transaction;
 
-  const signerAmountWithFee =
-    !swap && transaction.isLastLook
-      ? new BigNumber(transaction.order.signerAmount)
-          .multipliedBy(1 + protocolFee / 10000)
-          .integerValue(BigNumber.ROUND_FLOOR)
-          .toString()
-      : undefined;
+  // TODO: Fix signerToken and senderToken sometimes reversed?
+  const adjustedSignerToken = compareAddresses(
+    transaction.order.signerToken,
+    signerToken.address
+  )
+    ? signerToken
+    : senderToken;
+  const adjustedSenderToken = compareAddresses(
+    transaction.order.senderToken,
+    senderToken.address
+  )
+    ? senderToken
+    : signerToken;
 
-  const translation =
-    isSubmittedOrder(transaction) && transaction.isLastLook
-      ? "wallet.lastLookTransaction"
-      : "wallet.transaction";
+  const adjustedSignerAmount = getAdjustedAmount(order, protocolFee, account);
 
   const signerAmount = parseFloat(
     Number(
-      formatUnits(
-        signerAmountWithFee || (swap || order).signerAmount,
-        signerToken.decimals
-      )
+      formatUnits(adjustedSignerAmount, adjustedSignerToken.decimals)
     ).toFixed(5)
   );
 
   const senderAmount = parseFloat(
     Number(
-      formatUnits((swap || order).senderAmount, senderToken.decimals)
+      formatUnits((swap || order).senderAmount, adjustedSenderToken.decimals)
     ).toFixed(5)
   );
 
   const accountIsSender = isSenderWalletAccount(transaction, account);
 
   if (accountIsSender) {
-    return i18n.t(translation, {
+    return i18n.t("wallet.transaction", {
       signerAmount,
-      signerToken: signerToken.symbol,
+      signerToken: adjustedSignerToken.symbol,
       senderAmount,
-      senderToken: senderToken.symbol,
+      senderToken: adjustedSenderToken.symbol,
     });
   }
 
-  return i18n.t(translation, {
+  return i18n.t("wallet.transaction", {
     signerAmount: senderAmount,
-    signerToken: senderToken.symbol,
+    signerToken: adjustedSenderToken.symbol,
     senderAmount: signerAmount,
-    senderToken: signerToken.symbol,
+    senderToken: adjustedSignerToken.symbol,
   });
 };

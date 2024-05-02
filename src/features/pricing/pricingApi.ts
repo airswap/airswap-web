@@ -32,12 +32,10 @@ export const calculateQuoteAmount: (params: {
     }
     const signerAmount = new BigNumber(baseAmount)
       // Get fee amount from protocolFee in metadata store
-      .dividedBy(1.0005);
+      .dividedBy(1 + protocolFee / 10000);
     // .integerValue(BigNumber.ROUND_CEIL)
 
-    // @ts-ignore - TODO: Fix when types updated
     if (pricing.minimum) {
-      // @ts-ignore - TODO: Fix when types updated
       if (signerAmount.isLessThan(pricing.minimum)) {
         throw new Error("Amount too low");
       }

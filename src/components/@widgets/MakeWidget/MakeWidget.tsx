@@ -153,7 +153,7 @@ const MakeWidget: FC = () => {
     !!maxAmount &&
     makerTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
-  const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
+  const hasApprovalPending = !!useApprovalPending(makerTokenInfo?.address);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,

@@ -10,6 +10,9 @@ export const RFQ_EXPIRY_BUFFER_MS = 60 * 1000;
  * we will re-request it closer to the expiry than we would otherwise to prevent
  * constantly re-requesting orders. This gives the user a fair amount of time to
  * evaluate and accept the order.
+ *
+ * (Note: this is not used right now, will evaluate if REGISTRY_SERVER_RESPONSE_TIME_MS
+ * suffices for this purpose)
  */
 export const RFQ_MINIMUM_REREQUEST_DELAY_MS = 30 * 1000;
 
@@ -18,6 +21,18 @@ export const RFQ_MINIMUM_REREQUEST_DELAY_MS = 30 * 1000;
  * indexer node in order for us to use it.
  */
 export const INDEXER_ORDER_RESPONSE_TIME_MS = 4000;
+
+/**
+ * This is the period of time within which we must receive a response from
+ * Registry.getServers before we count it as a timeout.
+ */
+export const REGISTRY_SERVER_RESPONSE_TIME_MS = 3000;
+
+/**
+ * This is the period of time within which we must receive a response from
+ * server.getPricingERC20 before we count it as a timeout.
+ */
+export const SERVER_PRICING_RESPONSE_TIME_MS = 2000;
 
 /**
  * Time in seconds of last look order expiry duration
@@ -31,6 +46,7 @@ export const ASSUMED_EXPIRY_NOTIFICATION_BUFFER_SEC = 20;
 
 /**
  * Time to wait for quotes before presenting "no peers" message.
+ * (Note: this is not used right now, will evaluate if still needed)
  */
 export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
 
@@ -38,6 +54,8 @@ export const RECEIVE_QUOTE_TIMEOUT_MS = 5 * 1000;
  * Time to wait between receiving the first quote from a maker
  * to let other quotes come in from other makers before displaying
  * a price.
+ *
+ * (Note: this is not used right now, will evaluate if still needed)
  */
 export const ADDITIONAL_QUOTE_BUFFER = 2 * 1000;
 

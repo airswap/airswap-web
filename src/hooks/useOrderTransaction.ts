@@ -6,11 +6,15 @@ import { isSubmittedOrder } from "../entities/SubmittedTransaction/SubmittedTran
 import { selectOrderTransactions } from "../features/transactions/transactionsSlice";
 
 const useOrderTransaction = (
-  nonce: string
+  nonce?: string
 ): SubmittedTransaction | undefined => {
   const transactions = useAppSelector(selectOrderTransactions);
 
   return useMemo(() => {
+    if (!nonce) {
+      return;
+    }
+
     return transactions.find(
       (transaction) =>
         isSubmittedOrder(transaction) && transaction.order.nonce === nonce

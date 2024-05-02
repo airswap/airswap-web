@@ -1,7 +1,7 @@
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { RFQ_EXPIRY_BUFFER_MS } from "../../../../../constants/configParams";
+import { getOrderExpiryWithBufferInSeconds } from "../../../../../entities/OrderERC20/OrderERC20Helpers";
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
 import { Title } from "../../../../Typography/Typography";
 import {
@@ -30,7 +30,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   const { t } = useTranslation();
 
   const expiryTime = useMemo(() => {
-    return expiry ? parseInt(expiry) - RFQ_EXPIRY_BUFFER_MS / 1000 : undefined;
+    return expiry ? getOrderExpiryWithBufferInSeconds(expiry) : undefined;
   }, [expiry]);
 
   return (

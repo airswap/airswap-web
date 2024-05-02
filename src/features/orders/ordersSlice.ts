@@ -1,14 +1,8 @@
-import { OrderERC20, Levels } from "@airswap/utils";
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import BigNumber from "bignumber.js";
+import { OrderERC20 } from "@airswap/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
-import { gasUsedPerSwap } from "../gasCost/gasCostApi";
-import { selectGasPriceInQuoteTokens } from "../gasCost/gasCostSlice";
-import { selectBestPricing } from "../pricing/pricingSlice";
-import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import {
   setWalletConnected,
   setWalletDisconnected,
@@ -33,9 +27,6 @@ export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    setOrders: (state, action: PayloadAction<OrderERC20[]>) => {
-      state.orders = action.payload;
-    },
     setStatus: (state, action: PayloadAction<OrdersState["status"]>) => {
       state.status = action.payload;
     },
@@ -54,13 +45,6 @@ export const ordersSlice = createSlice({
         state.reRequestTimerId = null;
       }
     },
-    setReRequestTimerId: (state, action: PayloadAction<number | null>) => {
-      if (state.reRequestTimerId) {
-        clearTimeout(state.reRequestTimerId);
-      }
-
-      state.reRequestTimerId = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -75,14 +59,8 @@ export const ordersSlice = createSlice({
   },
 });
 
-export const {
-  clear,
-  setErrors,
-  setOrders,
-  setResetStatus,
-  setReRequestTimerId,
-  setStatus,
-} = ordersSlice.actions;
+export const { clear, setErrors, setResetStatus, setStatus } =
+  ordersSlice.actions;
 /**
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
@@ -91,86 +69,6 @@ export const selectBestOrder = (state: RootState) =>
   // Note that `.sort` mutates the array, so we need to clone it first to
   // prevent mutating state.
   [...state.orders.orders].sort(orderSortingFunction)[0];
-
-export const selectSortedOrders = (state: RootState) =>
-  [...state.orders.orders].sort(orderSortingFunction);
-
-export const selectFirstOrder = (state: RootState) => state.orders.orders[0];
-
-interface BestTradeOption {
-  quoteAmount: string;
-  isLastLook?: boolean;
-  pricing?: {
-    pricing: Levels;
-    locator: string;
-    quoteAmount: string;
-  };
-  order?: OrderERC20;
-}
-
-export const selectBestOption = createSelector(
-  selectTradeTerms,
-  selectBestOrder,
-  selectBestPricing,
-  selectGasPriceInQuoteTokens,
-  (
-    terms,
-    bestRfqOrder,
-    bestPricing,
-    gasPriceInQuoteTokens
-  ): BestTradeOption | undefined => {
-    if (!terms) return undefined;
-
-    if (terms.side === "buy") {
-      console.error(`Buy orders not implemented yet`);
-      return undefined;
-    }
-
-    let pricing = bestPricing as unknown as
-      | {
-          pricing: Levels;
-          locator: string;
-          quoteAmount: string;
-        }
-      | undefined;
-
-    if (!bestRfqOrder && !pricing) return undefined;
-    let lastLookOrder;
-    if (pricing) {
-      lastLookOrder = {
-        isLastLook: true,
-        quoteAmount: pricing!.quoteAmount,
-        pricing: pricing!,
-      };
-      if (!bestRfqOrder) return lastLookOrder;
-    }
-
-    let rfqOrder;
-    let bestRFQQuoteTokens: BigNumber | undefined;
-    if (bestRfqOrder) {
-      bestRFQQuoteTokens = new BigNumber(bestRfqOrder.signerAmount).div(
-        new BigNumber(10).pow(terms.quoteToken.decimals)
-      );
-      rfqOrder = {
-        quoteAmount: bestRFQQuoteTokens.toString(),
-        order: bestRfqOrder,
-      };
-      if (!lastLookOrder) return rfqOrder;
-    }
-
-    if (
-      pricing &&
-      bestRFQQuoteTokens &&
-      bestRFQQuoteTokens
-        .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
-        .lte(new BigNumber(pricing.quoteAmount))
-    ) {
-      return lastLookOrder;
-    } else {
-      return rfqOrder;
-    }
-  }
-);
 
 export const selectOrdersStatus = (state: RootState) => state.orders.status;
 export const selectOrdersErrors = (state: RootState) => state.orders.errors;

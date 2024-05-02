@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
+import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
 
 export const Header = styled.div`
   display: flex;
@@ -39,6 +40,10 @@ export const StyledWalletProviderList = styled(WalletProviderList)`
   left: 0;
   width: 100%;
   height: 100%;
+`;
+
+export const StyledDebugMenu = styled(DebugMenu)`
+  margin-bottom: 1.5rem;
 `;
 
 export default StyledSwapWidget;

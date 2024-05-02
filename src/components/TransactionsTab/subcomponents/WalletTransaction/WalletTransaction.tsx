@@ -1,9 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { formatUnits } from "@ethersproject/units";
-
-import BigNumber from "bignumber.js";
 import { HTMLMotionProps } from "framer-motion";
 
 import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -11,7 +8,6 @@ import {
   isApprovalTransaction,
   isCancelTransaction,
   isDepositTransaction,
-  isLastLookOrderTransaction,
   isSubmittedOrder,
   isSubmittedOrderUnderConsideration,
   isWithdrawTransaction,
