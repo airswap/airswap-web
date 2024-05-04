@@ -50,8 +50,6 @@ export const getGasPrice = createAsyncThunk<
     gasUsedPerSwap
   );
 
-  console.log(swapTransactionCost.toString());
-
   return {
     gasPrice: gasPrice.toString(),
     swapTransactionCost: swapTransactionCost.toString(),

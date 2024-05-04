@@ -138,6 +138,8 @@ export const compareOrdersAndSetBestOrder =
     swapTransactionCost: string = "0"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setBestOrder(undefined));
+
     const rfqQuote = rfqOrder
       ? formatUnits(rfqOrder.signerAmount, token.decimals)
       : undefined;
@@ -145,10 +147,8 @@ export const compareOrdersAndSetBestOrder =
       ? formatUnits(lastLookOrder.senderAmount, token.decimals)
       : undefined;
 
-    if (!rfqOrder && !lastLookOrder) {
+    if (!rfqQuote && !lastLookQuote) {
       console.error("[compareOrdersAndSetBestOrder] No orders to compare");
-
-      dispatch(setBestOrder(undefined));
 
       return;
     }
@@ -178,8 +178,8 @@ export const compareOrdersAndSetBestOrder =
     }
 
     // When comparing RFQ and LastLook we need to consider that no gas need to be paid for the LastLook transaction
-    const lastLookSenderAmount = new BigNumber(lastLookOrder.senderAmount);
-    const justifiedRfqSignerAmount = new BigNumber(rfqOrder.signerAmount).minus(
+    const lastLookSenderAmount = new BigNumber(lastLookQuote!);
+    const justifiedRfqSignerAmount = new BigNumber(rfqQuote!).minus(
       swapTransactionCost
     );
 

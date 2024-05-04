@@ -2,9 +2,13 @@ import { useContext, useEffect } from "react";
 import useKonami from "react-use-konami";
 
 import { ProtocolIds } from "@airswap/utils";
+import { formatUnits } from "@ethersproject/units";
+
+import BigNumber from "bignumber.js";
 
 import { useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 
 const useQuotesDebug = () => {
   const { isDebugMode, setIsDebugMode } = useContext(InterfaceContext);
@@ -33,6 +37,7 @@ const useQuotesDebug = () => {
   const { isLoading: isGasCostLoading, swapTransactionCost } = useAppSelector(
     (state) => state.gasCost
   );
+  const tokens = useAppSelector(selectAllTokenInfo);
 
   const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
 
@@ -73,6 +78,47 @@ const useQuotesDebug = () => {
   }, [swapTransactionCost]);
 
   useEffect(() => {
+    const senderToken = tokens.find(
+      (token) => token.address === bestLastLookOrder?.senderToken
+    );
+
+    if (
+      isDebugMode &&
+      bestLastLookOrder &&
+      swapTransactionCost &&
+      senderToken
+    ) {
+      const lastLookQuote = formatUnits(
+        bestLastLookOrder.senderAmount,
+        senderToken.decimals
+      );
+      const justifiedLastLookQuote = new BigNumber(lastLookQuote)
+        .plus(swapTransactionCost)
+        .toString();
+
+      console.log(
+        "bestLastLookQuote:",
+        `${lastLookQuote} + ${swapTransactionCost} (potentially saved gas fees) = ${justifiedLastLookQuote}`
+      );
+    }
+  }, [bestLastLookOrder]);
+
+  useEffect(() => {
+    const signerToken = tokens.find(
+      (token) => token.address === bestRfqOrder?.signerToken
+    );
+
+    if (isDebugMode && bestRfqOrder && signerToken) {
+      const lastLookQuote = formatUnits(
+        bestRfqOrder.senderAmount,
+        signerToken.decimals
+      );
+
+      console.log("bestRfqQuote:", lastLookQuote);
+    }
+  }, [bestRfqOrder]);
+
+  useEffect(() => {
     if (isDebugMode && bestOrder) {
       console.log("%cbestOrder:", "color: green; font-size: 16px;", bestOrder);
     }
@@ -101,7 +147,7 @@ const useQuotesDebug = () => {
           : "(Last Look)"
       );
     }
-  }, [bestQuote]);
+  }, [bestOrder]);
 };
 
 export default useQuotesDebug;
