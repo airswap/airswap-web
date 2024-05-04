@@ -242,7 +242,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
-    console.log(action);
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
     }
