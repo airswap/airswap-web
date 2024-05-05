@@ -30,6 +30,7 @@ import {
   selectTakeOtcErrors,
   setErrors,
 } from "../../../features/takeOtc/takeOtcSlice";
+import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
@@ -146,7 +147,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       : OrderType.private;
   const userIsMakerOfSwap = order.signerWallet === account;
   const userIsIntendedRecipient =
-    order.senderWallet.toLowerCase() === account?.toLowerCase() ||
+    compareAddresses(order.senderWallet, account || "") ||
     order.senderWallet === ADDRESS_ZERO;
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
@@ -270,6 +271,16 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     );
   }
 
+  if (orderTransaction) {
+    return (
+      <OrderSubmittedScreen
+        chainId={chainId}
+        transaction={orderTransaction}
+        onMakeNewOrderButtonClick={restart}
+      />
+    );
+  }
+
   if (state === OrderDetailWidgetState.review && shouldDepositNativeToken) {
     return (
       <Container>
@@ -319,16 +330,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onSignButtonClick={takeOrder}
         />
       </Container>
-    );
-  }
-
-  if (orderTransaction) {
-    return (
-      <OrderSubmittedScreen
-        chainId={chainId}
-        transaction={orderTransaction}
-        onMakeNewOrderButtonClick={restart}
-      />
     );
   }
 
