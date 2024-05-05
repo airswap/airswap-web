@@ -1,18 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { OrderERC20, ProtocolIds, UnsignedOrderERC20 } from "@airswap/utils";
 import { noop } from "@react-hookz/web/esnext/util/const";
 import { useWeb3React } from "@web3-react/core";
 
-import { useTimeout } from "usehooks-ts";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { PricingErrorType } from "../../errors/pricingError";
-import useGasPriceSubscriber from "../../hooks/useReferencePriceSubscriber";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import { getGasPrice } from "../gasCost/gasCostApi";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import useQuotesDebug from "./hooks/useQuotesDebug";
@@ -44,6 +42,11 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   } = useAppSelector(selectTradeTerms);
   const protocolFee = useAppSelector(selectProtocolFee);
   const {
+    isLoading: isGasCostLoading,
+    isSuccessful: isGasCostSuccessful,
+    swapTransactionCost,
+  } = useAppSelector((state) => state.gasCost);
+  const {
     disableLastLook,
     disableRfq,
     isLastLookLoading,
@@ -58,7 +61,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     rfqError,
   } = useAppSelector((state) => state.quotes);
 
-  const isLoading = isLastLookLoading || isRfqLoading;
+  const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address);
   const quoteTokenInfo = useTokenInfo(quoteToken.address);
   const error =
@@ -105,6 +108,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
       return;
     }
+
+    dispatch(getGasPrice({ chainId }));
 
     dispatch(
       fetchBestPricing({
@@ -154,7 +159,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   }, [bestPricing]);
 
   useEffect(() => {
-    if (isLoading || !quoteTokenInfo || !isSubmitted) {
+    if (isLoading || !quoteTokenInfo || !isSubmitted || !isGasCostSuccessful) {
       return;
     }
 
@@ -162,10 +167,17 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       compareOrdersAndSetBestOrder(
         quoteTokenInfo,
         disableLastLook ? undefined : bestLastLookOrder,
-        disableRfq ? undefined : bestRfqOrder
+        disableRfq ? undefined : bestRfqOrder,
+        swapTransactionCost
       )
     );
-  }, [disableLastLook, disableRfq, bestLastLookOrder, bestRfqOrder]);
+  }, [
+    isGasCostSuccessful,
+    disableLastLook,
+    disableRfq,
+    bestLastLookOrder,
+    bestRfqOrder,
+  ]);
 
   if (swapType === "wrapOrUnwrap") {
     return {

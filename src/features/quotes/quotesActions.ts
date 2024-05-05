@@ -134,9 +134,12 @@ export const compareOrdersAndSetBestOrder =
   (
     token: TokenInfo,
     lastLookOrder?: UnsignedOrderERC20,
-    rfqOrder?: OrderERC20
+    rfqOrder?: OrderERC20,
+    swapTransactionCost: string = "0"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
+    dispatch(setBestOrder(undefined));
+
     const rfqQuote = rfqOrder
       ? formatUnits(rfqOrder.signerAmount, token.decimals)
       : undefined;
@@ -144,10 +147,8 @@ export const compareOrdersAndSetBestOrder =
       ? formatUnits(lastLookOrder.senderAmount, token.decimals)
       : undefined;
 
-    if (!rfqOrder && !lastLookOrder) {
+    if (!rfqQuote && !lastLookQuote) {
       console.error("[compareOrdersAndSetBestOrder] No orders to compare");
-
-      dispatch(setBestOrder(undefined));
 
       return;
     }
@@ -176,23 +177,13 @@ export const compareOrdersAndSetBestOrder =
       return;
     }
 
-    // TODO: Implement gas price comparison. https://github.com/airswap/airswap-web/issues/900
-    // When comparing prices also consider the gas price. LastLook is gas free.
+    // When comparing RFQ and LastLook we need to consider that no gas need to be paid for the LastLook transaction
+    const lastLookSenderAmount = new BigNumber(lastLookQuote!);
+    const justifiedRfqSignerAmount = new BigNumber(rfqQuote!).minus(
+      swapTransactionCost
+    );
 
-    // Old code from selectBestPrice in ordersSlice:
-    //   if (
-    //       pricing &&
-    //       bestRFQQuoteTokens &&
-    //       bestRFQQuoteTokens
-    //           .minus(gasPriceInQuoteTokens?.multipliedBy(gasUsedPerSwap) || 0)
-    //           .lte(new BigNumber(pricing.quoteAmount))
-    //   ) {
-
-    if (
-      new BigNumber(lastLookOrder.senderAmount).gte(
-        new BigNumber(rfqOrder.signerAmount)
-      )
-    ) {
+    if (lastLookSenderAmount.gte(justifiedRfqSignerAmount)) {
       dispatch(
         setBestOrder({
           order: lastLookOrder,

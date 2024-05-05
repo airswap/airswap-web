@@ -8,12 +8,20 @@ import {
   setWalletConnected,
   setWalletDisconnected,
 } from "../wallet/walletSlice";
+import { getGasPrice } from "./gasCostApi";
 
 export interface GasCostState {
+  isFailed: boolean;
+  isLoading: boolean;
+  isSuccessful: boolean;
   /**
    * "Fast" gas price **in WETH**
    */
-  fastGasPrice: string | null;
+  gasPrice?: string;
+  /**
+   * The estimated transaction of the swap contract **in WETH**
+   */
+  swapTransactionCost?: string;
   /**
    * Reference token prices by address, **in WETH**
    */
@@ -21,7 +29,9 @@ export interface GasCostState {
 }
 
 const initialState: GasCostState = {
-  fastGasPrice: null,
+  isFailed: false,
+  isLoading: false,
+  isSuccessful: false,
   tokenPrices: {},
 };
 
@@ -29,9 +39,6 @@ const gasCostSlice = createSlice({
   name: "gasCost",
   initialState,
   reducers: {
-    setFastGasPrice: (state, action: PayloadAction<string>) => {
-      state.fastGasPrice = action.payload;
-    },
     setTokenPrice: (
       state,
       action: PayloadAction<{
@@ -44,31 +51,41 @@ const gasCostSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(getGasPrice.pending, (state, action): GasCostState => {
+      return {
+        ...state,
+        isFailed: false,
+        isLoading: true,
+        isSuccessful: false,
+        gasPrice: undefined,
+        swapTransactionCost: undefined,
+      };
+    });
+
+    builder.addCase(getGasPrice.rejected, (state, action): GasCostState => {
+      return {
+        ...state,
+        isFailed: true,
+        isLoading: true,
+        gasPrice: "0",
+        swapTransactionCost: "0",
+      };
+    });
+
+    builder.addCase(getGasPrice.fulfilled, (state, action): GasCostState => {
+      return {
+        ...state,
+        isLoading: false,
+        isSuccessful: true,
+        gasPrice: action.payload.gasPrice,
+        swapTransactionCost: action.payload.swapTransactionCost,
+      };
+    });
+
     builder
       .addCase(setWalletDisconnected, () => initialState)
       .addCase(setWalletConnected, () => initialState);
   },
 });
-
-export const selectGasPrice = (state: RootState) => state.gasCost.fastGasPrice;
-
-export const selectQuoteTokenPrice = createSelector(
-  (state: RootState) => state.gasCost.tokenPrices,
-  selectQuoteTokenAddress,
-  (tokenPrices, quoteTokenAddress) => tokenPrices[quoteTokenAddress]
-);
-
-export const selectGasPriceInQuoteTokens = createSelector(
-  selectGasPrice,
-  selectQuoteTokenPrice,
-  (_gasPrice, _quoteTokenPrice) => {
-    if (!_gasPrice || !_quoteTokenPrice) return null;
-    const gasPrice = new BigNumber(_gasPrice);
-    const quoteTokenPrice = new BigNumber(_quoteTokenPrice);
-    return gasPrice.dividedBy(quoteTokenPrice);
-  }
-);
-
-export const { setFastGasPrice, setTokenPrice } = gasCostSlice.actions;
 
 export default gasCostSlice.reducer;
