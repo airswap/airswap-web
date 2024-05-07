@@ -337,15 +337,19 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      if (!library) return;
+      if (!library || !chainId || !account) return;
+
       const senderWallet =
-        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!;
+        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId) : account;
+
       const order = quote.bestOrder as OrderERC20;
+
       if (!senderWallet) return;
+
       const errors = await check(
         order,
         senderWallet,
-        chainId || 1,
+        chainId,
         library,
         swapType === "swapWithWrap"
       );

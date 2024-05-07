@@ -110,7 +110,7 @@ const useQuotesDebug = () => {
 
     if (isDebugMode && bestRfqOrder && signerToken) {
       const lastLookQuote = formatUnits(
-        bestRfqOrder.senderAmount,
+        bestRfqOrder.signerAmount,
         signerToken.decimals
       );
 
