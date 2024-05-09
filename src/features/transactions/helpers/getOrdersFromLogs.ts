@@ -8,9 +8,9 @@ import {
 
 import { BigNumber, Event } from "ethers";
 
-import { transformFullSwapERC20ToOrderERC20 } from "../entities/OrderERC20/OrderERC20Transformers";
+import { transformFullSwapERC20ToOrderERC20 } from "../../../entities/OrderERC20/OrderERC20Transformers";
 
-interface FullSwapErc20Log {
+export interface FullSwapErc20Log {
   hash: string;
   order: OrderERC20;
   swap: FullSwapERC20;

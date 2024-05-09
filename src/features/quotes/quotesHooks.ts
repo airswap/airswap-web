@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { OrderERC20, ProtocolIds, UnsignedOrderERC20 } from "@airswap/utils";
+import { Wrapper } from "@airswap/libraries";
+import {
+  ADDRESS_ZERO,
+  OrderERC20,
+  ProtocolIds,
+  UnsignedOrderERC20,
+} from "@airswap/utils";
 import { noop } from "@react-hookz/web/esnext/util/const";
 import { useWeb3React } from "@web3-react/core";
 
@@ -8,8 +14,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { PricingErrorType } from "../../errors/pricingError";
+import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import { SwapType } from "../../types/swapType";
 import { getGasPrice } from "../gasCost/gasCostApi";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -64,12 +72,21 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address);
   const quoteTokenInfo = useTokenInfo(quoteToken.address);
+  const wrappedTokenInfo = useNativeWrappedToken(chainId);
+
   const error =
     !isLoading && !bestOrder ? lastLookError || rfqError : undefined;
 
   const [fetchCount, setFetchCount] = useState(0);
 
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
+  const justifiedBaseTokenInfo =
+    swapType === SwapType.swapWithWrap ? wrappedTokenInfo : baseTokenInfo;
+  const justifiedQuoteTokenInfo =
+    quoteTokenInfo?.address === ADDRESS_ZERO
+      ? wrappedTokenInfo
+      : quoteTokenInfo;
+
   useQuotesDebug();
 
   useEffect(() => {
@@ -96,8 +113,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       !chainId ||
       !library ||
       !isSubmitted ||
-      !baseTokenInfo ||
-      !quoteTokenInfo ||
+      !justifiedBaseTokenInfo ||
+      !justifiedQuoteTokenInfo ||
       !account
     ) {
       return;
@@ -126,10 +143,13 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       fetchBestRfqOrder({
         provider: library,
         baseTokenAmount,
-        baseToken: baseTokenInfo,
+        baseToken: justifiedBaseTokenInfo,
         chainId,
-        quoteToken: quoteTokenInfo,
-        senderWallet: account,
+        quoteToken: justifiedQuoteTokenInfo,
+        senderWallet:
+          swapType === SwapType.swapWithWrap
+            ? Wrapper.getAddress(chainId)!
+            : account,
       })
     );
   }, [fetchCount]);
@@ -140,8 +160,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       !library ||
       !account ||
       !bestPricing ||
-      !baseTokenInfo ||
-      !quoteTokenInfo
+      !justifiedBaseTokenInfo ||
+      !justifiedQuoteTokenInfo
     ) {
       return;
     }
@@ -149,23 +169,28 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     dispatch(
       createLastLookUnsignedOrder({
         account,
-        baseToken: baseTokenInfo,
+        baseToken: justifiedBaseTokenInfo,
         baseAmount: baseTokenAmount,
         pricing: bestPricing,
         protocolFee,
-        quoteToken: quoteTokenInfo,
+        quoteToken: justifiedQuoteTokenInfo,
       })
     );
   }, [bestPricing]);
 
   useEffect(() => {
-    if (isLoading || !quoteTokenInfo || !isSubmitted || !isGasCostSuccessful) {
+    if (
+      isLoading ||
+      !justifiedQuoteTokenInfo ||
+      !isSubmitted ||
+      !isGasCostSuccessful
+    ) {
       return;
     }
 
     dispatch(
       compareOrdersAndSetBestOrder(
-        quoteTokenInfo,
+        justifiedQuoteTokenInfo,
         disableLastLook ? undefined : bestLastLookOrder,
         disableRfq ? undefined : bestRfqOrder,
         swapTransactionCost
@@ -179,7 +204,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     bestRfqOrder,
   ]);
 
-  if (swapType === "wrapOrUnwrap") {
+  if (swapType === SwapType.wrapOrUnwrap) {
     return {
       isFailed: false,
       isLoading: false,

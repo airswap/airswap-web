@@ -45,7 +45,10 @@ const useLatestSwapFromEvents = (
 
         if (
           !compareAddresses(swap.signerWallet, account) &&
-          !compareAddresses(swap.senderWallet, account)
+          !compareAddresses(swap.senderWallet, account) &&
+          // When the senderWallet is the wrapper contract, we can still use the receipt to lead the transaction back
+          // to the original sender wallet
+          !compareAddresses(receipt.from, account)
         ) {
           return;
         }

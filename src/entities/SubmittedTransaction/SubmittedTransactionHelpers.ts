@@ -1,4 +1,4 @@
-import { OrderERC20, TokenInfo } from "@airswap/utils";
+import { ADDRESS_ZERO, OrderERC20, TokenInfo } from "@airswap/utils";
 import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 import { formatUnits } from "@ethersproject/units";
 
@@ -121,8 +121,17 @@ const isSenderWalletAccount = (
   transaction: SubmittedTransaction,
   account: string
 ) => {
-  if (isSubmittedOrder(transaction) && transaction.swap) {
-    return compareAddresses(transaction.swap.senderWallet, account);
+  // If senderToken is ADDRESS_ZERO, then that means a swapWithWrap transaction has been done.
+  // So the account must be the senderWallet.
+  if (
+    isSubmittedOrder(transaction) &&
+    transaction.order.senderToken === ADDRESS_ZERO
+  ) {
+    return true;
+  }
+
+  if (isSubmittedOrder(transaction)) {
+    return !compareAddresses(transaction.order.signerWallet, account);
   }
 
   return false;
