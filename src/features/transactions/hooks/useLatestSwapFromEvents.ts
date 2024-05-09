@@ -59,7 +59,7 @@ const useLatestSwapFromEvents = (
             swapEvent.transactionHash,
             signerAddress,
             swapEvent.blockNumber,
-            receipt.status,
+            receipt.status
           )
         );
       };

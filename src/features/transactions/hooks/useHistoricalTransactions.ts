@@ -7,14 +7,12 @@ import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/Sub
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
-import {
-  getOrdersFromLogs,
-  getOrdersFromWrappedEventLogs,
-} from "../../../helpers/getOrdersFromLogs";
 import { compareAddresses } from "../../../helpers/string";
 import useNativeToken from "../../../hooks/useNativeToken";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
+import { getOrdersFromLogs } from "../helpers/getOrdersFromLogs";
+import { getOrdersFromWrappedEventLogs } from "../helpers/getOrdersFromWrappedEventLogs";
 import useSwapLogs from "./useSwapLogs";
 
 interface HistoricalTransactionsCollection {

@@ -1,6 +1,5 @@
 import { Pool } from "@airswap/libraries";
 import {
-  ADDRESS_ZERO,
   FullSwapERC20,
   getFullSwapERC20,
   OrderERC20,
@@ -9,9 +8,9 @@ import {
 
 import { BigNumber, Event } from "ethers";
 
-import { transformFullSwapERC20ToOrderERC20 } from "../entities/OrderERC20/OrderERC20Transformers";
+import { transformFullSwapERC20ToOrderERC20 } from "../../../entities/OrderERC20/OrderERC20Transformers";
 
-interface FullSwapErc20Log {
+export interface FullSwapErc20Log {
   hash: string;
   order: OrderERC20;
   swap: FullSwapERC20;
@@ -67,41 +66,4 @@ export const getOrdersFromLogs = async (
   );
 
   return responses.filter((order) => !!order) as FullSwapErc20Log[];
-};
-
-export const getOrdersFromWrappedEventLogs = (
-  logs: FullSwapErc20Log[],
-  wrappedEvents: Event[]
-): FullSwapErc20Log[] => {
-  const filteredLogs = logs.map((log) => {
-    const wrappedEvent = wrappedEvents.find(
-      (event) => event.transactionHash === log.hash
-    );
-
-    if (!wrappedEvent) return;
-
-    const args = wrappedEvent.args || [];
-    const senderWallet = args[0] as string | undefined;
-
-    if (!senderWallet) return;
-
-    const order: OrderERC20 = {
-      ...log.order,
-      senderToken: ADDRESS_ZERO,
-    };
-
-    const swap: FullSwapERC20 = {
-      ...log.swap,
-      senderToken: ADDRESS_ZERO,
-      senderWallet,
-    };
-
-    return {
-      ...log,
-      order,
-      swap,
-    };
-  });
-
-  return filteredLogs.filter(Boolean) as FullSwapErc20Log[];
 };
