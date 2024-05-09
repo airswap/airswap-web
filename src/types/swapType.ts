@@ -1,1 +1,5 @@
-export type SwapType = "swap" | "swapWithWrap" | "wrapOrUnwrap";
+export enum SwapType {
+  swap = "swap",
+  swapWithWrap = "swapWithWrap",
+  wrapOrUnwrap = "wrapOrUnwrap",
+}

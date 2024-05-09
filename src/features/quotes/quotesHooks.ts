@@ -14,10 +14,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { PricingErrorType } from "../../errors/pricingError";
-import useNativeToken from "../../hooks/useNativeToken";
 import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
+import { SwapType } from "../../types/swapType";
 import { getGasPrice } from "../gasCost/gasCostApi";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -81,7 +81,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const justifiedBaseTokenInfo =
-    swapType === "swapWithWrap" ? wrappedTokenInfo : baseTokenInfo;
+    swapType === SwapType.swapWithWrap ? wrappedTokenInfo : baseTokenInfo;
   const justifiedQuoteTokenInfo =
     quoteTokenInfo?.address === ADDRESS_ZERO
       ? wrappedTokenInfo
@@ -147,7 +147,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
         chainId,
         quoteToken: justifiedQuoteTokenInfo,
         senderWallet:
-          swapType === "swapWithWrap" ? Wrapper.getAddress(chainId)! : account,
+          swapType === SwapType.swapWithWrap
+            ? Wrapper.getAddress(chainId)!
+            : account,
       })
     );
   }, [fetchCount]);
@@ -202,7 +204,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     bestRfqOrder,
   ]);
 
-  if (swapType === "wrapOrUnwrap") {
+  if (swapType === SwapType.wrapOrUnwrap) {
     return {
       isFailed: false,
       isLoading: false,
