@@ -7,8 +7,12 @@ import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/Sub
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
 import { getUniqueArrayChildren } from "../../../helpers/array";
-import { getOrdersFromLogs } from "../../../helpers/getOrdersFromLogs";
+import {
+  getOrdersFromLogs,
+  getOrdersFromWrappedEventLogs,
+} from "../../../helpers/getOrdersFromLogs";
 import { compareAddresses } from "../../../helpers/string";
+import useNativeToken from "../../../hooks/useNativeToken";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 import useSwapLogs from "./useSwapLogs";
@@ -30,6 +34,9 @@ const useHistoricalTransactions = (): [
   const { chainId, account, library } = useWeb3React();
 
   const tokens = useAppSelector(selectAllTokenInfo);
+  const nativeToken = useNativeToken(chainId);
+  const allTokens = [nativeToken, ...tokens];
+
   const { result: swapLogs, status: swapLogStatus } = useSwapLogs(
     chainId,
     account
@@ -56,18 +63,22 @@ const useHistoricalTransactions = (): [
 
     const getTransactionsFromLogs = async () => {
       const logs = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
+      const wrappedLogs = getOrdersFromWrappedEventLogs(
+        logs,
+        swapLogs.wrappedSwapLogs
+      );
 
-      const submittedTransactions = logs
+      const submittedTransactions = [...logs, ...wrappedLogs]
         .filter(
           (order) =>
             compareAddresses(order.order.signerWallet, account) ||
             compareAddresses(order.swap.senderWallet, account)
         )
         .map((log) => {
-          const signerToken = tokens.find(
+          const signerToken = allTokens.find(
             (token) => token.address === log.order.signerToken
           );
-          const senderToken = tokens.find(
+          const senderToken = allTokens.find(
             (token) => token.address === log.order.senderToken
           );
 
