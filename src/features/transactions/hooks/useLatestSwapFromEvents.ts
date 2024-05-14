@@ -15,7 +15,7 @@ const useLatestSwapFromEvents = (
   chainId?: number,
   account?: string | null
 ): FullSwapERC20Event | undefined => {
-  const { library: provider } = useWeb3React<providers.Provider>();
+  const { provider } = useWeb3React();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();

@@ -15,7 +15,7 @@ import {
 } from "./balancesSlice";
 
 export const useBalances = () => {
-  const { library, account, chainId } = useWeb3React<Web3Provider>();
+  const { provider: library, account, chainId } = useWeb3React<Web3Provider>();
   const dispatch = useAppDispatch();
 
   const activeTokens = useAppSelector(selectActiveTokens);

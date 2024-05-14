@@ -19,7 +19,7 @@ const useLatestApproveFromEvents = (
   chainId?: number,
   account?: string | null
 ): ApproveEvent | undefined => {
-  const { library: provider } = useWeb3React<providers.Provider>();
+  const { provider } = useWeb3React();
   const tokens = useAppSelector(selectActiveTokens);
 
   const [accountState, setAccountState] = useState<string>();

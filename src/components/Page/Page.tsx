@@ -6,13 +6,12 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch } from "../../app/hooks";
-import { WalletProvider } from "../../constants/supportedWalletProviders";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { clear, setResetStatus } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
-import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { useKeyPress } from "../../hooks/useKeyPress";
+import { WalletProvider } from "../../web3-connectors/walletProviders";
 import { StyledWalletProviderList } from "../@widgets/SwapWidget/SwapWidget.styles";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import Overlay from "../Overlay/Overlay";
@@ -29,8 +28,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { t } = useTranslation();
-  const { activate, active: web3ProviderIsActive } =
-    useWeb3React<Web3Provider>();
+  const { isActive: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
   const {
     setIsConnecting,
@@ -63,14 +61,14 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   };
 
   const handleProviderSelected = (provider: WalletProvider) => {
-    dispatch(setActiveProvider(provider.name));
-    setIsConnecting(true);
-    activate(provider.getConnector()).finally(() => setIsConnecting(false));
+    // Do this in the WalletConnector probably
   };
 
   const handleCloseWalletProviderList = () => {
     setShowWalletList(false);
   };
+
+  console.log("test");
 
   useEffect(() => {
     if (appRouteParams.route === undefined) {

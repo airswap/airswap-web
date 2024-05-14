@@ -22,16 +22,16 @@ export const fetchSupportedTokens = createAsyncThunk<
     state: RootState;
   }
 >("registry/fetchSupportedTokens", async ({ provider }, { getState }) => {
-  const { wallet } = getState();
-  const stakerTokens = await getStakerTokens(wallet.chainId!, provider);
+  const { web3 } = getState();
+  const stakerTokens = await getStakerTokens(web3.chainId!, provider);
   // Combine token lists from all makers and flatten them.
   const allSupportedTokens = uniqBy(
     Object.values(stakerTokens).flat(),
     (i) => i
   );
   const activeTokensLocalStorage = getActiveTokensFromLocalStorage(
-    wallet.address!,
-    wallet.chainId!
+    web3.account!,
+    web3.chainId!
   );
   const activeTokens =
     (activeTokensLocalStorage.length && activeTokensLocalStorage) ||

@@ -5,7 +5,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 const useEnsAddress = (address?: string): string | undefined => {
-  const { library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
   const [lookedUpAddress, setLookedUpAddress] = useState<string | null>(null);
 
   const lookupAddress = async (library: Web3Provider, value: string) => {

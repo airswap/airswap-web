@@ -4,10 +4,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { setUserOrder } from "../makeOtc/makeOtcSlice";
 import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import {
   getUserOrdersFromLocalStorage,
   writeUserOrdersToLocalStorage,
 } from "./myOrdersHelpers";
@@ -82,21 +78,21 @@ export const myOrdersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setWalletConnected, (state, action) => {
-      const userOrders = getUserOrdersFromLocalStorage(
-        action.payload.address,
-        action.payload.chainId
-      );
-
-      return {
-        ...state,
-        userOrders,
-      };
-    });
-
-    builder.addCase(setWalletDisconnected, (state, action) => {
-      return initialState;
-    });
+    // builder.addCase(setWalletConnected, (state, action) => {
+    //   const userOrders = getUserOrdersFromLocalStorage(
+    //     action.payload.address,
+    //     action.payload.chainId
+    //   );
+    //
+    //   return {
+    //     ...state,
+    //     userOrders,
+    //   };
+    // });
+    //
+    // builder.addCase(setWalletDisconnected, (state, action) => {
+    //   return initialState;
+    // });
 
     builder.addCase(setUserOrder, (state, action) => {
       const userOrders = [action.payload, ...state.userOrders];

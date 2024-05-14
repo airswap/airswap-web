@@ -13,7 +13,7 @@ import { InvalidOrder } from "../OrderDetail/subcomponents";
 
 const Cancel: FC = () => {
   const dispatch = useAppDispatch();
-  const { library } = useWeb3React();
+  const { provider: library } = useWeb3React();
 
   const { compressedOrder } = useParams<{ compressedOrder: string }>();
   const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);

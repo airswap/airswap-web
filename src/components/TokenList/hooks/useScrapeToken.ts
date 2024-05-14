@@ -13,7 +13,7 @@ const useScrapeToken = (
   tokens: TokenInfo[]
 ): TokenInfo | undefined => {
   const dispatch = useDispatch();
-  const { library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
 
   const [scrapedToken, setScrapedToken] = useState<TokenInfo | undefined>();
 

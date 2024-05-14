@@ -34,10 +34,11 @@ export const fetchUnkownTokens = createAsyncThunk<
     state: RootState;
   }
 >("metadata/fetchUnknownTokens", async ({ provider }, thunkApi) => {
-  const { registry, metadata, wallet } = thunkApi.getState();
-  if (wallet.chainId === null) return [];
+  const { registry, metadata, web3 } = thunkApi.getState();
+  if (!web3.chainId) return [];
+
   return await getUnknownTokens(
-    wallet.chainId,
+    web3.chainId!,
     registry.allSupportedTokens,
     Object.values(metadata.tokens.all),
     provider

@@ -50,21 +50,18 @@ import {
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
-type TransactionsTabType = {
+interface TransactionsTabProps {
   account: string;
   chainId: number;
   open: boolean;
   protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
-  /**
-   * Callback function for when disconnect button is clicked
-   */
-  onDisconnectWalletClicked: () => void;
+  onDisconnectButtonClick: () => void;
   transactions: SubmittedTransaction[];
   balances: BalancesState;
   isUnsupportedNetwork?: boolean;
-};
+}
 
 const TransactionsTab = ({
   account = "",
@@ -73,17 +70,17 @@ const TransactionsTab = ({
   protocolFee,
   setTransactionsTabOpen,
   onClearTransactionsChange,
-  onDisconnectWalletClicked,
+  onDisconnectButtonClick,
   transactions = [],
   balances,
   isUnsupportedNetwork = false,
-}: TransactionsTabType) => {
+}: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
-  const { active } = useWeb3React<Web3Provider>();
+  const { isActive } = useWeb3React<Web3Provider>();
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -186,7 +183,7 @@ const TransactionsTab = ({
               <NetworkName>
                 {chainNames[chainId] || t("wallet.unsupported")}
               </NetworkName>
-              {active && (
+              {isActive && (
                 <Balances>
                   {formatUnits(balance).substring(0, 4)}{" "}
                   {chainCurrencies[chainId]}
@@ -194,7 +191,7 @@ const TransactionsTab = ({
               )}
             </NetworkInfoContainer>
             <DesktopWalletInfoButton
-              isConnected={active}
+              isConnected={isActive}
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
               {walletInfoText}
@@ -206,7 +203,7 @@ const TransactionsTab = ({
               <StyledWalletMobileMenu
                 walletUrl={walletUrl}
                 address={account}
-                onDisconnectButtonClick={onDisconnectWalletClicked}
+                onDisconnectButtonClick={onDisconnectButtonClick}
               />
             )}
           </WalletHeader>
@@ -266,7 +263,7 @@ const TransactionsTab = ({
           <BottomButtonContainer ref={buttonRef}>
             <DisconnectButton
               aria-label={t("wallet.disconnectWallet")}
-              onClick={onDisconnectWalletClicked}
+              onClick={onDisconnectButtonClick}
             >
               {t("wallet.disconnectWallet")}
             </DisconnectButton>

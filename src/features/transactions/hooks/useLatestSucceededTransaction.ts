@@ -18,7 +18,7 @@ const getTransactionId = (transaction: SubmittedTransaction) => {
 };
 
 const useLatestSucceededTransaction = () => {
-  const { chainId, account, library } = useWeb3React();
+  const { chainId, account, provider: library } = useWeb3React();
 
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const successfulTransactions = useAppSelector(selectSuccessfulTransactions);

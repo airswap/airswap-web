@@ -139,9 +139,9 @@ export const handleSubmittedCancelOrder = (
 const refactorOrder = (order: OrderERC20, chainId: number) => {
   let newOrder = { ...order };
   if (order.senderToken === getWethAddress(chainId)) {
-    newOrder.senderToken = nativeCurrency[chainId].address;
+    newOrder.senderToken = nativeCurrency[chainId].address!;
   } else if (order.signerToken === getWethAddress(chainId)) {
-    newOrder.signerToken = nativeCurrency[chainId].address;
+    newOrder.signerToken = nativeCurrency[chainId].address!;
   }
   return newOrder;
 };

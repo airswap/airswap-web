@@ -43,15 +43,15 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const allTokensCache: AllTokensCache = {};
 
   store.subscribe(() => {
-    const { wallet, metadata, transactions } = store.getState();
-    if (!wallet.connected) return;
+    const { web3, metadata, transactions } = store.getState();
+    if (!web3.isActive) return;
 
     // All tokens
-    if (!allTokensCache[wallet.chainId!]) {
-      allTokensCache[wallet.chainId!] = {};
+    if (!allTokensCache[web3.chainId!]) {
+      allTokensCache[web3.chainId!] = {};
     }
 
-    const cachedAllTokensForChain = allTokensCache[wallet.chainId!];
+    const cachedAllTokensForChain = allTokensCache[web3.chainId!];
 
     if (
       Object.values(metadata.tokens.all).length !==
@@ -59,14 +59,14 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     ) {
       // all tokens have changed, persist to local storage.
 
-      allTokensCache[wallet.chainId!] = metadata.tokens.all;
+      allTokensCache[web3.chainId!] = metadata.tokens.all;
       localStorage.setItem(
-        getAllTokensLocalStorageKey(wallet.chainId!),
+        getAllTokensLocalStorageKey(web3.chainId!),
         JSON.stringify(metadata.tokens.all)
       );
     }
 
-    if (!wallet.address || !wallet.chainId) {
+    if (!web3.account || !web3.chainId) {
       return;
     }
 
@@ -74,18 +74,18 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     compareAndWriteTokensToLocalStorage(
       activeTokensCache,
       metadata.tokens.active,
-      wallet.address,
-      wallet.chainId,
-      getActiveTokensLocalStorageKey(wallet.address, wallet.chainId)
+      web3.account,
+      web3.chainId,
+      getActiveTokensLocalStorageKey(web3.account, web3.chainId)
     );
 
     // Custom tokens
     compareAndWriteTokensToLocalStorage(
       customTokensCache,
       metadata.tokens.custom,
-      wallet.address,
-      wallet.chainId,
-      getCustomTokensLocalStorageKey(wallet.address, wallet.chainId)
+      web3.account,
+      web3.chainId,
+      getCustomTokensLocalStorageKey(web3.account, web3.chainId)
     );
   });
 };

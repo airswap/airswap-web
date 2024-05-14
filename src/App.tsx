@@ -18,6 +18,7 @@ import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
+import { prioritizedConnectors } from "./web3-connectors/connections";
 
 // 1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
@@ -53,7 +54,11 @@ const App = (): JSX.Element => {
         <ThemeProvider
           theme={renderedTheme === "dark" ? darkTheme : lightTheme}
         >
-          <Web3ReactProvider getLibrary={getLibrary}>
+          <Web3ReactProvider
+            connectors={Object.values(prioritizedConnectors).map(
+              (connector) => [connector.connector, connector.hooks]
+            )}
+          >
             {/* Suspense needed here for loading i18n resources */}
             <Suspense fallback={<PageLoader />}>
               <InterfaceProvider>

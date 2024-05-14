@@ -31,7 +31,7 @@ import {
 export const useTransactions = (): void => {
   const dispatch = useAppDispatch();
 
-  const { chainId, account, library } = useWeb3React();
+  const { chainId, account, provider: library } = useWeb3React();
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 
@@ -53,7 +53,7 @@ export const useTransactions = (): void => {
   // When the account or chainId changes, we want to load the transactions from local storage and update the store.
   // If there were any processing transactions, we want to try to get the receipt for them.
   useEffect(() => {
-    if (!account || !chainId) {
+    if (!account || !chainId || !library) {
       return;
     }
 

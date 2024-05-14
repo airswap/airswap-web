@@ -13,10 +13,6 @@ import { BigNumber, ethers } from "ethers";
 import { AppDispatch, RootState } from "../../app/store";
 import getWethAddress from "../../helpers/getWethAddress";
 import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import {
   fetchAllowancesSwap,
   fetchAllowancesWrapper,
   fetchBalances,
@@ -80,7 +76,7 @@ const getThunk: (
     async (params, { getState, dispatch }) => {
       try {
         const state = getState();
-        const { chainId, address } = state.wallet;
+        const { chainId, account } = state.web3;
 
         const wrappedNativeToken = chainId
           ? getWethAddress(chainId)
@@ -100,7 +96,7 @@ const getThunk: (
         const amounts = await methods[type]({
           ...params,
           chainId: chainId!,
-          walletAddress: address!,
+          walletAddress: account!,
           tokenAddresses: activeTokensAddresses,
         });
         return activeTokensAddresses.map((address, i) => ({
@@ -204,9 +200,9 @@ const getSlice = (
         })
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
-        })
-        .addCase(setWalletConnected, () => initialState)
-        .addCase(setWalletDisconnected, () => initialState);
+        });
+      // .addCase(setWalletConnected, () => initialState)
+      // .addCase(setWalletDisconnected, () => initialState);
     },
   });
 };

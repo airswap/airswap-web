@@ -11,7 +11,7 @@ import {
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
@@ -180,9 +180,8 @@ const SwapWidget: FC = () => {
   const {
     chainId,
     account,
-    library,
-    active,
-    error: web3Error,
+    provider: library,
+    isActive,
   } = useWeb3React<Web3Provider>();
 
   const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
@@ -253,10 +252,10 @@ const SwapWidget: FC = () => {
   );
 
   useEffect(() => {
-    if (!active) {
+    if (!isActive) {
       setShowTokenSelectModalFor(null);
     }
-  }, [active]);
+  }, [isActive]);
 
   useEffect(() => {
     if (!indexerUrls && library) {
@@ -570,9 +569,9 @@ const SwapWidget: FC = () => {
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={formattedQuoteAmount}
-            disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
+            disabled={!isActive || (!!quoteAmount && allowanceFetchFailed)}
             readOnly={
-              !!quote.bestQuote || !!quote.error || isWrapping || !active
+              !!quote.bestQuote || !!quote.error || isWrapping || !isActive
             }
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
@@ -588,7 +587,7 @@ const SwapWidget: FC = () => {
             failedToFetchAllowances={allowanceFetchFailed}
             hasSelectedCustomServer={!!customServerUrl}
             isApproving={isApproving}
-            isConnected={active}
+            isConnected={isActive}
             isFetchingOrders={quote.isLoading}
             isWrapping={isWrapping}
             orderSubmitted={hasSubmittedTransaction}
@@ -611,10 +610,8 @@ const SwapWidget: FC = () => {
         </InfoContainer>
         <ButtonContainer>
           <ActionButtons
-            walletIsActive={active}
-            unsupportedNetwork={
-              !!web3Error && web3Error instanceof UnsupportedChainIdError
-            }
+            walletIsActive={isActive}
+            unsupportedNetwork={false}
             requiresReload={allowanceFetchFailed}
             orderComplete={hasSubmittedTransaction}
             baseTokenInfo={baseTokenInfo}

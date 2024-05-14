@@ -4,10 +4,6 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
 import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
@@ -139,16 +135,16 @@ export const metadataSlice = createSlice({
       })
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
         state.protocolFee = action.payload;
-      })
-      .addCase(setWalletConnected, (state, action) => {
-        const { chainId, address } = action.payload;
-        state.tokens.active =
-          getActiveTokensFromLocalStorage(address, chainId) || [];
-        state.tokens.custom =
-          getCustomTokensFromLocalStorage(address, chainId) || [];
-        state.tokens.all = getAllTokensFromLocalStorage(chainId);
-      })
-      .addCase(setWalletDisconnected, () => initialState);
+      });
+    // .addCase(setWalletConnected, (state, action) => {
+    //   const { chainId, address } = action.payload;
+    //   state.tokens.active =
+    //     getActiveTokensFromLocalStorage(address, chainId) || [];
+    //   state.tokens.custom =
+    //     getCustomTokensFromLocalStorage(address, chainId) || [];
+    //   state.tokens.all = getAllTokensFromLocalStorage(chainId);
+    // })
+    // .addCase(setWalletDisconnected, () => initialState);
   },
 });
 

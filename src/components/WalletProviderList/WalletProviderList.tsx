@@ -1,8 +1,8 @@
 import { useReducedMotion } from "framer-motion";
 
-import SUPPORTED_WALLET_PROVIDERS, {
+import walletProviders, {
   WalletProvider,
-} from "../../constants/supportedWalletProviders";
+} from "../../web3-connectors/walletProviders";
 import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
 import { StyledWalletProviderList } from "./WalletProviderList.styles";
 import WalletProviderButton from "./subcomponents/WalletProviderButton/WalletProviderButton";
@@ -32,7 +32,7 @@ const WalletProviderList = ({
 
   return (
     <StyledWalletProviderList className={className}>
-      {SUPPORTED_WALLET_PROVIDERS.map((provider, i) => (
+      {walletProviders.map((provider, i) => (
         <WalletProviderButton
           key={i}
           provider={provider}

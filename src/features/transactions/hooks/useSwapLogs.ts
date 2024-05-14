@@ -22,7 +22,7 @@ const useSwapLogs = (
   chainId?: number,
   account?: string | null
 ): IAsyncState<SwapLogs | null> => {
-  const { library: provider } = useWeb3React<providers.Provider>();
+  const { provider } = useWeb3React();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();

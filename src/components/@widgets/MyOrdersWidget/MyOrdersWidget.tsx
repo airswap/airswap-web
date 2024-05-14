@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
@@ -32,12 +32,7 @@ const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const {
-    active,
-    chainId,
-    library,
-    error: web3Error,
-  } = useWeb3React<Web3Provider>();
+  const { isActive, chainId, provider: library } = useWeb3React<Web3Provider>();
   const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
@@ -113,16 +108,13 @@ const MyOrdersWidget: FC = () => {
         <InfoSectionContainer>
           <InfoSection
             userHasNoOrders={!sortedUserOrders.length}
-            walletIsNotConnected={!active}
+            walletIsNotConnected={!isActive}
           />
         </InfoSectionContainer>
       )}
 
       <ActionButtons
-        networkIsUnsupported={
-          !!web3Error && web3Error instanceof UnsupportedChainIdError
-        }
-        walletIsNotConnected={!active}
+        walletIsNotConnected={!isActive}
         onActionButtonClick={handleActionButtonClick}
       />
     </Container>
