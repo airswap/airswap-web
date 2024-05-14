@@ -223,7 +223,7 @@ export async function check(
 
 export async function getNonceUsed(
   order: FullOrderERC20,
-  provider: ethers.providers.Web3Provider
+  provider: ethers.providers.BaseProvider
 ): Promise<boolean> {
   return (await SwapERC20.getContract(provider, order.chainId)).nonceUsed(
     order.signerWallet,

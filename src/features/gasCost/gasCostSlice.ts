@@ -1,13 +1,5 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BigNumber } from "bignumber.js";
-
-import { RootState } from "../../app/store";
-import { selectQuoteTokenAddress } from "../tradeTerms/tradeTermsSlice";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
 import { getGasPrice } from "./gasCostApi";
 
 export interface GasCostState {
@@ -82,9 +74,9 @@ const gasCostSlice = createSlice({
       };
     });
 
-    builder
-      .addCase(setWalletDisconnected, () => initialState)
-      .addCase(setWalletConnected, () => initialState);
+    // builder
+    //   .addCase(setWalletDisconnected, () => initialState)
+    //   .addCase(setWalletConnected, () => initialState);
   },
 });
 

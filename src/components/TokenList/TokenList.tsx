@@ -80,7 +80,7 @@ const TokenList = ({
   const { t } = useTranslation();
 
   const { width, height } = useWindowSize();
-  const { account, chainId, library } = useWeb3React<Web3Provider>();
+  const { account, chainId, provider: library } = useWeb3React<Web3Provider>();
 
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

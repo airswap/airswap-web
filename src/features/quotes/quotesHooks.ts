@@ -42,7 +42,7 @@ interface UseQuotesValues {
 const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const dispatch = useAppDispatch();
 
-  const { account, chainId, library } = useWeb3React();
+  const { account, chainId, provider: library } = useWeb3React();
   const {
     baseToken,
     baseAmount: baseTokenAmount,

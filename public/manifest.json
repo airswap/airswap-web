@@ -1,6 +1,7 @@
 {
-  "short_name": "AirSwap",
-  "name": "AirSwap",
+  "short_name": "Airswap",
+  "name": "Airswap Web App",
+  "description": "A decentralized exchange by Airswap",
   "icons": [
     {
       "src": "favicon.ico",

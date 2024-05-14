@@ -15,10 +15,6 @@ import {
   TransactionTypes,
 } from "../../types/transactionTypes";
 import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import {
   declineTransaction,
   revertTransaction,
   submitTransaction,
@@ -122,8 +118,8 @@ export const transactionsSlice = createSlice({
         transactions: action.payload,
       };
     });
-    builder.addCase(setWalletConnected, () => initialState);
-    builder.addCase(setWalletDisconnected, () => initialState);
+    // builder.addCase(setWalletConnected, () => initialState);
+    // builder.addCase(setWalletDisconnected, () => initialState);
   },
 });
 

@@ -6,7 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { isAddress } from "ethers/lib/utils";
 
 const useValidAddress = (address: string): boolean => {
-  const { library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
   const { chainId } = useWeb3React<Web3Provider>();
 
   const [isValidAddress, setIsValidAddress] = useState(false);

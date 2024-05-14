@@ -6,7 +6,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
@@ -76,7 +76,7 @@ export enum OrderDetailWidgetState {
 
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
-  const { account, library } = useWeb3React<Web3Provider>();
+  const { account, provider: library } = useWeb3React<Web3Provider>();
   const history = useHistory();
   const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
   const isFromAvailableOrdersWidget =
@@ -84,7 +84,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
-  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
+  const { isActive, chainId } = useWeb3React<Web3Provider>();
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
@@ -378,7 +378,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
-        isNotConnected={!active}
+        isNotConnected={!isActive}
         orderChainId={orderChainId}
       />
       <StyledActionButtons
@@ -390,10 +390,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
-        isNotConnected={!active}
-        isNetworkUnsupported={
-          !!web3Error && web3Error instanceof UnsupportedChainIdError
-        }
+        isNotConnected={!isActive}
+        isNetworkUnsupported={true}
         shouldDepositNativeToken={shouldDepositNativeToken}
         senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}

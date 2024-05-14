@@ -15,7 +15,7 @@ const useAddressOrEnsName = (
   address: string | null,
   truncate: boolean = true
 ) => {
-  const { library, chainId } = useWeb3React<Web3Provider>();
+  const { provider: library, chainId } = useWeb3React<Web3Provider>();
 
   const fallback = truncate
     ? address

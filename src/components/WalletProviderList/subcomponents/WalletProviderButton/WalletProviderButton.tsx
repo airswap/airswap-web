@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { WalletProvider } from "../../../../constants/supportedWalletProviders";
+import { WalletProvider } from "../../../../web3-connectors/walletProviders";
 import {
   ButtonIcon,
   ButtonIconContainer,

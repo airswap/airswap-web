@@ -9,7 +9,7 @@ import useLatestDepositOrWithdrawFromEvents from "./useLatestDepositOrWithdrawFr
 import useLatestSwapFromEvents from "./useLatestSwapFromEvents";
 
 const useLatestTransactionEvent = () => {
-  const { chainId, account, library } = useWeb3React();
+  const { chainId, account, provider: library } = useWeb3React();
 
   const latestSwapEvent = useLatestSwapFromEvents(chainId, account);
   const latestApproveEvent = useLatestApproveFromEvents(chainId, account);

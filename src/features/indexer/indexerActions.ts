@@ -13,9 +13,9 @@ export const fetchIndexerUrls = createAsyncThunk<
   { provider: providers.Provider },
   { dispatch: AppDispatch; state: RootState }
 >("indexer/fetchIndexerUrls", async ({ provider }, { getState }) => {
-  const { wallet } = getState();
+  const { web3 } = getState();
   // First get a list of indexer nodes from the contract
-  return await getIndexerUrls(wallet.chainId!, provider);
+  return await getIndexerUrls(web3.chainId!, provider);
 });
 export const getFilteredOrders = createAsyncThunk<
   FullOrderERC20[],

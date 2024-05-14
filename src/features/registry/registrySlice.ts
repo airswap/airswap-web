@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
 import { fetchSupportedTokens } from "./registryActions";
 
 export interface RegistryState {
@@ -48,10 +44,10 @@ export const registrySlice = createSlice({
       })
       .addCase(fetchSupportedTokens.rejected, (state) => {
         state.status = "failed";
-      })
-      // Reset on wallet connect or disconnect
-      .addCase(setWalletConnected, () => initialState)
-      .addCase(setWalletDisconnected, () => initialState);
+      });
+    // Reset on wallet connect or disconnect
+    // .addCase(setWalletConnected, () => initialState)
+    // .addCase(setWalletDisconnected, () => initialState);
   },
 });
 

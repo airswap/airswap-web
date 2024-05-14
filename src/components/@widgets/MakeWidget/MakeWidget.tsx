@@ -5,8 +5,7 @@ import { useHistory } from "react-router-dom";
 import { compressFullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
@@ -101,11 +100,10 @@ const MakeWidget: FC = () => {
   } = useAppSelector(selectMakeOtcReducer);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const {
-    active,
+    isActive,
     chainId,
     account,
-    library,
-    error: web3Error,
+    provider: library,
   } = useWeb3React<Web3Provider>();
 
   // Input options
@@ -198,10 +196,10 @@ const MakeWidget: FC = () => {
   }, [lastUserOrder, history, dispatch]);
 
   useEffect(() => {
-    if (!active) {
+    if (!isActive) {
       setShowTokenSelectModal(null);
     }
-  }, [active]);
+  }, [isActive]);
 
   // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -439,8 +437,8 @@ const MakeWidget: FC = () => {
       />
       <SwapInputs
         canSetQuoteAmount
-        disabled={!active}
-        readOnly={!active}
+        disabled={!isActive}
+        readOnly={!isActive}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
@@ -503,11 +501,9 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        isNetworkUnsupported={
-          !!web3Error && web3Error instanceof UnsupportedChainIdError
-        }
+        isNetworkUnsupported={false}
         shouldDepositNativeToken={shouldDepositNativeToken}
-        walletIsNotConnected={!active}
+        walletIsNotConnected={!isActive}
         makerTokenSymbol={makerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}

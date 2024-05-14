@@ -1,4 +1,3 @@
-import { setWalletConnected } from "../wallet/walletSlice";
 import {
   balancesReducer,
   allowancesSwapReducer,
@@ -21,29 +20,6 @@ describe("balances and allowances reducers", () => {
     "%s should return initial state given an unknown action",
     (name, reducer) => {
       expect(reducer(undefined, { type: "unknown" })).toEqual(initialState);
-    }
-  );
-  test.each(reducers)(
-    "%s should reset to initial state after wallet connected",
-    (name, reducer) => {
-      const dirtyState: BalancesState = {
-        inFlightFetchTokens: ["123", "456"],
-        lastFetch: 12354,
-        status: "fetching",
-        values: {
-          "0x1": "100",
-          "0x2": "101",
-        },
-      };
-      expect(
-        reducer(
-          dirtyState,
-          setWalletConnected({
-            address: "0x123",
-            chainId: 1,
-          })
-        )
-      ).toEqual(initialState);
     }
   );
   test.each(reducers)(
