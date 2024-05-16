@@ -9,8 +9,7 @@ import {
 export interface Web3State {
   isActive: boolean;
   isInitialized: boolean;
-  showConnectModal: boolean;
-  userHasClosedConnectModal: boolean;
+  isUnsupportedChain: boolean;
   account?: string;
   chainId?: number;
   libraries: Record<number, boolean>;
@@ -22,9 +21,8 @@ export interface Web3State {
 const initialState: Web3State = {
   isActive: false,
   isInitialized: false,
+  isUnsupportedChain: false,
   libraries: {},
-  showConnectModal: false,
-  userHasClosedConnectModal: false,
 };
 
 export const web3Slice = createSlice({
@@ -65,10 +63,6 @@ export const web3Slice = createSlice({
       ...state,
       showConnectModal: action.payload,
     }),
-    setUserHasClosedConnectModal: (state, action: PayloadAction<boolean>) => ({
-      ...state,
-      userHasClosedConnectModal: action.payload,
-    }),
     setError: (state, action: PayloadAction<Error | undefined>) => ({
       ...state,
       error: action.payload,
@@ -81,8 +75,6 @@ export const {
   setError,
   setIsInitialized,
   setLibraries,
-  setShowConnectModal,
-  setUserHasClosedConnectModal,
   setWeb3Data,
 } = web3Slice.actions;
 

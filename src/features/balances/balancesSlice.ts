@@ -12,6 +12,8 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import getWethAddress from "../../helpers/getWethAddress";
+import { walletDisconnected } from "../metadata/metadataActions";
+import { setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllowancesSwap,
   fetchAllowancesWrapper,
@@ -200,9 +202,10 @@ const getSlice = (
         })
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
+        })
+        .addCase(walletDisconnected, () => {
+          return initialState;
         });
-      // .addCase(setWalletConnected, () => initialState)
-      // .addCase(setWalletDisconnected, () => initialState);
     },
   });
 };

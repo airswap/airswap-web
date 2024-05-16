@@ -48,9 +48,7 @@ export const Wallet: FC<WalletProps> = ({
     isActive,
     provider: library,
   } = useWeb3React<Web3Provider>();
-  const { isInitialized, showConnectModal, connectionType } = useAppSelector(
-    (state) => state.web3
-  );
+  const { connectionType } = useAppSelector((state) => state.web3);
 
   // Redux
   const dispatch = useAppDispatch();

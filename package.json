@@ -66,6 +66,7 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-use": "^17.5.0",
     "react-use-konami": "^1.1.0",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.1",
