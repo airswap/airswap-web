@@ -23,16 +23,6 @@ import { prioritizedConnectors } from "./web3-connectors/connections";
 // 1e+9 is the highest possible number
 BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
-let cachedLibrary: Record<string, Web3Provider> = {};
-
-function getLibrary(provider: any): Web3Provider {
-  if (!cachedLibrary[provider.chainId]) {
-    cachedLibrary[provider.chainId] = new Web3Provider(provider);
-    cachedLibrary[provider.chainId].pollingInterval = 12000;
-  }
-  return cachedLibrary[provider.chainId];
-}
-
 const App = (): JSX.Element => {
   const theme = useAppSelector(selectTheme);
   const systemTheme = useSystemTheme();

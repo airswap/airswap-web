@@ -13,6 +13,7 @@ import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import { WalletProvider } from "../../web3-connectors/walletProviders";
 import { StyledWalletProviderList } from "../@widgets/SwapWidget/SwapWidget.styles";
+import WalletConnector from "../@widgets/WalletConnector/WalletConnector";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import Overlay from "../Overlay/Overlay";
 import Toaster from "../Toasts/Toaster";
@@ -31,13 +32,10 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const { isActive: web3ProviderIsActive } = useWeb3React<Web3Provider>();
   const appRouteParams = useAppRouteParams();
   const {
-    setIsConnecting,
     showMobileToolbar,
-    showWalletList,
     transactionsTabIsOpen,
     pageHeight,
     setShowMobileToolbar,
-    setShowWalletList,
   } = useContext(InterfaceContext);
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
@@ -60,28 +58,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     setShowMobileToolbar(true);
   };
 
-  const handleProviderSelected = (provider: WalletProvider) => {
-    // Do this in the WalletConnector probably
-  };
-
-  const handleCloseWalletProviderList = () => {
-    setShowWalletList(false);
-  };
-
-  console.log("test");
-
   useEffect(() => {
     if (appRouteParams.route === undefined) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appRouteParams.route]);
 
   useEffect(() => {
     if (showMobileToolbar) {
       setShowMobileToolbar(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -105,16 +91,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         >
           {children}
 
-          <Overlay
-            title={t("wallet.selectWallet")}
-            onCloseButtonClick={handleCloseWalletProviderList}
-            isHidden={!showWalletList}
-          >
-            <StyledWalletProviderList
-              onClose={handleCloseWalletProviderList}
-              onProviderSelected={handleProviderSelected}
-            />
-          </Overlay>
+          <WalletConnector />
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

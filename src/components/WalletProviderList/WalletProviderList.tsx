@@ -8,13 +8,13 @@ import { StyledWalletProviderList } from "./WalletProviderList.styles";
 import WalletProviderButton from "./subcomponents/WalletProviderButton/WalletProviderButton";
 
 export type WalletProviderListProps = {
-  onProviderSelected: (provider: WalletProvider) => void;
+  onWalletProviderButtonClick: (provider: WalletProvider) => void;
   onClose: () => void;
   className?: string;
 };
 
 const WalletProviderList = ({
-  onProviderSelected,
+  onWalletProviderButtonClick,
   onClose,
   className,
 }: WalletProviderListProps) => {
@@ -24,7 +24,7 @@ const WalletProviderList = ({
 
     setTimeout(
       () => {
-        onProviderSelected(provider);
+        onWalletProviderButtonClick(provider);
       },
       shouldReduceMotion ? 0 : overlayShowHideAnimationDuration * 1000
     );

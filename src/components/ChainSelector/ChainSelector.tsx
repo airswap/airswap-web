@@ -3,8 +3,6 @@ import { GoChevronDown } from "react-icons/go";
 
 import { chainNames } from "@airswap/utils";
 
-import nativeCurrency from "../../constants/nativeCurrency";
-import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
 import {
   Container,
   ChainSelectButton,

@@ -3,10 +3,12 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
+import { setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
+  walletDisconnected,
 } from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,
@@ -66,6 +68,12 @@ export const metadataSlice = createSlice({
       state.tokens.custom = state.tokens.active.filter(
         (tokenAddress) => tokenAddress !== action.payload
       );
+    },
+    setTokens: (state, action: PayloadAction<MetadataTokens>) => {
+      return {
+        ...state,
+        tokens: action.payload,
+      };
     },
   },
   extraReducers: async (builder) => {
@@ -135,16 +143,10 @@ export const metadataSlice = createSlice({
       })
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
         state.protocolFee = action.payload;
+      })
+      .addCase(walletDisconnected, () => {
+        return initialState;
       });
-    // .addCase(setWalletConnected, (state, action) => {
-    //   const { chainId, address } = action.payload;
-    //   state.tokens.active =
-    //     getActiveTokensFromLocalStorage(address, chainId) || [];
-    //   state.tokens.custom =
-    //     getCustomTokensFromLocalStorage(address, chainId) || [];
-    //   state.tokens.all = getAllTokensFromLocalStorage(chainId);
-    // })
-    // .addCase(setWalletDisconnected, () => initialState);
   },
 });
 
@@ -154,6 +156,7 @@ export const {
   addTokenInfo,
   removeActiveToken,
   removeCustomToken,
+  setTokens,
 } = metadataSlice.actions;
 
 const selectActiveTokenAddresses = (state: RootState) =>

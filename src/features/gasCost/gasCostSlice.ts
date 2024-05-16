@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { walletDisconnected } from "../metadata/metadataActions";
 import { getGasPrice } from "./gasCostApi";
 
 export interface GasCostState {
@@ -74,9 +75,9 @@ const gasCostSlice = createSlice({
       };
     });
 
-    // builder
-    //   .addCase(setWalletDisconnected, () => initialState)
-    //   .addCase(setWalletConnected, () => initialState);
+    builder.addCase(walletDisconnected, (): GasCostState => {
+      return initialState;
+    });
   },
 });
 
