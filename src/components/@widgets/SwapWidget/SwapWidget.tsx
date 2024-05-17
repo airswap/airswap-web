@@ -177,12 +177,8 @@ const SwapWidget: FC = () => {
 
   const { t } = useTranslation();
 
-  const {
-    chainId,
-    account,
-    provider: library,
-    isActive,
-  } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
 
   const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
   const quoteToken = useTokenOrFallback(tokenFrom, tokenTo);

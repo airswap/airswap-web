@@ -32,7 +32,8 @@ const MyOrdersWidget: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { isActive, chainId, provider: library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, chainId } = useAppSelector((state) => state.web3);
   const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(

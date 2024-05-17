@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
 
+import { useAppSelector } from "../../../app/hooks";
 import { TransactionEvent } from "../../../types/transactionTypes";
 import useLatestApproveFromEvents from "./useLatestApproveFromEvents";
 import useLatestCancelFromEvents from "./useLatestCancelFromEvents";
@@ -9,7 +10,7 @@ import useLatestDepositOrWithdrawFromEvents from "./useLatestDepositOrWithdrawFr
 import useLatestSwapFromEvents from "./useLatestSwapFromEvents";
 
 const useLatestTransactionEvent = () => {
-  const { chainId, account, provider: library } = useWeb3React();
+  const { account, chainId } = useAppSelector((state) => state.web3);
 
   const latestSwapEvent = useLatestSwapFromEvents(chainId, account);
   const latestApproveEvent = useLatestApproveFromEvents(chainId, account);

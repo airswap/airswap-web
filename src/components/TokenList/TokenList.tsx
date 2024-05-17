@@ -6,7 +6,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
@@ -80,7 +80,8 @@ const TokenList = ({
   const { t } = useTranslation();
 
   const { width, height } = useWindowSize();
-  const { account, chainId, provider: library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { account, chainId } = useAppSelector((state) => state.web3);
 
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

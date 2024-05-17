@@ -12,7 +12,8 @@ import getWethAddress from "../helpers/getWethAddress";
 const useApprovalPending = (
   tokenAddress?: string | null
 ): SubmittedApprovalTransaction | undefined => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
+
   const pendingApprovals = useAppSelector(selectPendingApprovals);
 
   return useMemo(() => {

@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
+import { walletDisconnected } from "../metadata/metadataActions";
 import { orderSortingFunction } from "./ordersHelpers";
 
 export interface OrdersState {
@@ -43,15 +44,9 @@ export const ordersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // builder
-    //   .addCase(setWalletConnected, (state) => {
-    //     state.status = "idle";
-    //     state.orders = [];
-    //   })
-    //   .addCase(setWalletDisconnected, (state) => {
-    //     state.status = "idle";
-    //     state.orders = [];
-    //   });
+    builder.addCase(walletDisconnected, (): OrdersState => {
+      return initialState;
+    });
   },
 });
 

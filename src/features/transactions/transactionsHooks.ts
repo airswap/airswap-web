@@ -31,7 +31,8 @@ import {
 export const useTransactions = (): void => {
   const dispatch = useAppDispatch();
 
-  const { chainId, account, provider: library } = useWeb3React();
+  const { provider: library } = useWeb3React();
+  const { account, chainId } = useAppSelector((state) => state.web3);
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 

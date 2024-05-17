@@ -24,7 +24,7 @@ const useShouldDepositNativeTokenAmount = (
   const balances = useAppSelector(selectBalances);
   const protocolFee = useAppSelector(selectProtocolFee);
 
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const wrappedNativeToken = useNativeWrappedToken(chainId);
 

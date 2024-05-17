@@ -144,7 +144,7 @@ export const metadataSlice = createSlice({
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
         state.protocolFee = action.payload;
       })
-      .addCase(walletDisconnected, () => {
+      .addCase(walletDisconnected, (): MetadataState => {
         return initialState;
       });
   },

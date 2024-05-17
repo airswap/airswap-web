@@ -19,7 +19,7 @@ const useTokenOrFallback = (
 ): string | null => {
   const userTokens = useAppSelector(selectUserTokens);
   const customTokens = useAppSelector(selectCustomTokenAddresses);
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const defaultBaseTokenAddress = useTokenAddress("USDT");
   const defaultQuoteTokenAddress = nativeCurrency[chainId || 1]?.address;
