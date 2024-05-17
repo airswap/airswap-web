@@ -4,6 +4,7 @@ import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import { useAppSelector } from "../app/hooks";
 import nativeCurrency from "../constants/nativeCurrency";
 import getWethAddress from "../helpers/getWethAddress";
 import { SwapType } from "../types/swapType";
@@ -12,7 +13,7 @@ const useSwapType = (
   token1: TokenInfo | null,
   token2: TokenInfo | null
 ): SwapType => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   return useMemo(() => {
     if (!chainId || !token1 || !token2) {

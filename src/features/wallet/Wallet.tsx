@@ -19,12 +19,7 @@ import { ClearOrderType } from "../../types/clearOrderType";
 import { getConnection } from "../../web3-connectors/connections";
 import { tryDeactivateConnector } from "../../web3-connectors/helpers";
 import { selectBalances } from "../balances/balancesSlice";
-// import { fetchAllTokens, fetchProtocolFee } from "../metadata/metadataActions";
-import {
-  selectMetaDataReducer,
-  selectProtocolFee,
-} from "../metadata/metadataSlice";
-// import { fetchSupportedTokens } from "../registry/registryActions";
+import { selectProtocolFee } from "../metadata/metadataSlice";
 import {
   selectFilteredTransactions,
   selectPendingTransactions,
@@ -56,7 +51,6 @@ export const Wallet: FC<WalletProps> = ({
   const transactions = useAppSelector(selectFilteredTransactions);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
   const protocolFee = useAppSelector(selectProtocolFee);
-  const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
 
   // Interface context
   const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
@@ -69,64 +63,6 @@ export const Wallet: FC<WalletProps> = ({
   const handleClearTransactionsChange = (type: ClearOrderType) => {
     dispatch(setFilter(type));
   };
-
-  // Auto-activate if user has connected before on (first render)
-  // useEffect(() => {
-  //     const lastConnectedAccount = loadLastAccount();
-  //     if (lastConnectedAccount?.address) {
-  //         setIsActivating(true);
-  //         const connector = lastConnectedAccount.provider.getConnector();
-  //         setConnector(connector);
-  //         setProvider(lastConnectedAccount.provider);
-  //         activate(connector)
-  //             .then(() => {
-  //                 setActivated(true);
-  //             })
-  //             .finally(() => {
-  //                 setIsActivating(false);
-  //             });
-  //     }
-  // }, [activate, activated]);
-
-  // Side effects for connecting a wallet from SwapWidget
-
-  // useEffect(() => {
-  //     if (providerName) {
-  //         const provider = SUPPORTED_WALLET_PROVIDERS.find(
-  //             (provider) => provider.name === providerName
-  //         );
-  //         setProvider(provider);
-  //         setConnector(provider!.getConnector());
-  //     }
-  // }, [providerName]);
-
-  // Trigger request for balances and allowances once account is connected
-  // useEffect(() => {
-  //     if (isActive && account && chainId && library && connector && provider) {
-  //         // Dispatch a general action to indicate wallet has changed
-  //         dispatch(
-  //             setWalletConnected({
-  //                 chainId,
-  //                 address: account,
-  //             })
-  //         );
-  //         dispatch(fetchProtocolFee({ chainId, provider: library }));
-  //         saveLastAccount(account, provider);
-  //         Promise.all([
-  //             ...(!isFetchingAllTokens
-  //                 ? [dispatch(fetchAllTokens(chainId) as any)]
-  //                 : []),
-  //             dispatch(
-  //                 fetchSupportedTokens({
-  //                     provider: library,
-  //                 } as any)
-  //             ),
-  //         ]);
-  //     } else if (!isActive) {
-  //         dispatch(setWalletDisconnected());
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [account, chainId, isActive]);
 
   const handleDisconnectWalletClicked = () => {
     if (!connectionType) {

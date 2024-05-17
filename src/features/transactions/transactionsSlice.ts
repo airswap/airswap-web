@@ -14,6 +14,7 @@ import {
   TransactionStatusType,
   TransactionTypes,
 } from "../../types/transactionTypes";
+import { walletDisconnected } from "../metadata/metadataActions";
 import {
   declineTransaction,
   revertTransaction,
@@ -118,8 +119,7 @@ export const transactionsSlice = createSlice({
         transactions: action.payload,
       };
     });
-    // builder.addCase(setWalletConnected, () => initialState);
-    // builder.addCase(setWalletDisconnected, () => initialState);
+    builder.addCase(walletDisconnected, () => initialState);
   },
 });
 

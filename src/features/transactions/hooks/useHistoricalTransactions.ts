@@ -29,7 +29,7 @@ const useHistoricalTransactions = (): [
   HistoricalTransactionsCollection | undefined,
   boolean
 ] => {
-  const { chainId, account } = useWeb3React();
+  const { account, chainId } = useAppSelector((state) => state.web3);
 
   const tokens = useAppSelector(selectAllTokenInfo);
   const nativeToken = useNativeToken(chainId);

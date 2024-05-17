@@ -203,7 +203,7 @@ const getSlice = (
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
         })
-        .addCase(walletDisconnected, () => {
+        .addCase(walletDisconnected, (): BalancesState => {
           return initialState;
         });
     },

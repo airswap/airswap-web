@@ -6,6 +6,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import truncateEthAddress from "truncate-eth-address";
 
+import { useAppSelector } from "../app/hooks";
+
 // This is an in-memory cache that will be lost when we refresh the page, as
 // ENS records may change, but we probably only need to check once between
 // refreshes. Format: { [chainId]: { [address]: name | null }}
@@ -15,7 +17,8 @@ const useAddressOrEnsName = (
   address: string | null,
   truncate: boolean = true
 ) => {
-  const { provider: library, chainId } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const fallback = truncate
     ? address

@@ -13,7 +13,8 @@ import { getTransactionsFilterLocalStorageKey } from "../transactionsUtils";
 
 const useTransactionsFilterFromLocalStorage = () => {
   const dispatch = useAppDispatch();
-  const { account, chainId } = useWeb3React();
+  const { account, chainId } = useAppSelector((state) => state.web3);
+
   const filterFromStore = useAppSelector(selectTransactionsFilter);
 
   const [filter, setFilter] = useLocalStorageValue<TransactionsState["filter"]>(

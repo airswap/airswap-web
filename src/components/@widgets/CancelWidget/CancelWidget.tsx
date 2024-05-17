@@ -36,7 +36,7 @@ interface CancelWidgetProps {
 export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { chainId } = useWeb3React();
+  const { chainId } = useAppSelector((state) => state.web3);
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(selectTakeOtcStatus);

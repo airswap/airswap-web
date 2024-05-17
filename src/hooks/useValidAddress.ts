@@ -5,9 +5,11 @@ import { useWeb3React } from "@web3-react/core";
 
 import { isAddress } from "ethers/lib/utils";
 
+import { useAppSelector } from "../app/hooks";
+
 const useValidAddress = (address: string): boolean => {
   const { provider: library } = useWeb3React<Web3Provider>();
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const [isValidAddress, setIsValidAddress] = useState(false);
 

@@ -10,7 +10,7 @@ import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 
 const useTokenInfo = (token: string | null): TokenInfo | null => {
   const activeTokens = useAppSelector(selectAllTokenInfo);
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   return useMemo(() => {
     if (!token || !chainId) {

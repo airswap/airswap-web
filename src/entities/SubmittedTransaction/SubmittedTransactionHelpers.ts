@@ -162,18 +162,8 @@ export const getOrderTransactionLabel = (
   const { order, swap } = transaction;
 
   // TODO: Fix signerToken and senderToken sometimes reversed?
-  const adjustedSignerToken = compareAddresses(
-    transaction.order.signerToken,
-    signerToken.address
-  )
-    ? signerToken
-    : senderToken;
-  const adjustedSenderToken = compareAddresses(
-    transaction.order.senderToken,
-    senderToken.address
-  )
-    ? senderToken
-    : signerToken;
+  const adjustedSignerToken = signerToken;
+  const adjustedSenderToken = senderToken;
 
   const adjustedSignerAmount = getAdjustedAmount(order, protocolFee, account);
 

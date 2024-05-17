@@ -24,7 +24,7 @@ const useShouldDepositNativeTokenAmountInfo =
     const allTokens = useAppSelector(selectAllTokenInfo);
     const balances = useAppSelector(selectBalances);
 
-    const { chainId } = useWeb3React<Web3Provider>();
+    const { chainId } = useAppSelector((state) => state.web3);
 
     const [nativeTokenSymbol, setNativeTokenSymbol] = useState("");
     const [wrappedNativeTokenSymbol, setWrappedNativeTokenSymbol] =

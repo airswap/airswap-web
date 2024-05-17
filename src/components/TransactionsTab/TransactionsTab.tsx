@@ -14,6 +14,7 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { BalancesState } from "../../features/balances/balancesSlice";
@@ -80,7 +81,7 @@ const TransactionsTab = ({
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
-  const { isActive } = useWeb3React<Web3Provider>();
+  const { isActive } = useAppSelector((state) => state.web3);
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);

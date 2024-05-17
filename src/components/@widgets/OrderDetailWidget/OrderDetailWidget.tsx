@@ -76,7 +76,8 @@ export enum OrderDetailWidgetState {
 
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
-  const { account, provider: library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
   const history = useHistory();
   const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
   const isFromAvailableOrdersWidget =
@@ -84,7 +85,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList } = useContext(InterfaceContext);
-  const { isActive, chainId } = useWeb3React<Web3Provider>();
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
@@ -391,7 +391,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!isActive}
-        isNetworkUnsupported={true}
+        isNetworkUnsupported={false}
         shouldDepositNativeToken={shouldDepositNativeToken}
         senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}

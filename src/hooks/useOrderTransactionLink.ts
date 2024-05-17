@@ -11,7 +11,7 @@ import { selectTransactions } from "../features/transactions/transactionsSlice";
 import { TransactionStatusType } from "../types/transactionTypes";
 
 const useOrderTransactionLink = (nonce: string): string | undefined => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
   const transactions: SubmittedTransaction[] =
     useAppSelector(selectTransactions);
 

@@ -21,7 +21,7 @@ const useAllowance = (
   allowance: string;
   readableAllowance: string;
 } => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const allowances = useAppSelector(selectAllowances);
 

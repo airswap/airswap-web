@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { clear, setResetStatus } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
@@ -29,7 +29,10 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { t } = useTranslation();
-  const { isActive: web3ProviderIsActive } = useWeb3React<Web3Provider>();
+  const { isActive: web3ProviderIsActive } = useAppSelector(
+    (state) => state.web3
+  );
+
   const appRouteParams = useAppRouteParams();
   const {
     showMobileToolbar,

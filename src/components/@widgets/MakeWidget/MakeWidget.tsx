@@ -99,12 +99,8 @@ const MakeWidget: FC = () => {
     lastUserOrder,
   } = useAppSelector(selectMakeOtcReducer);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const {
-    isActive,
-    chainId,
-    account,
-    provider: library,
-  } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, chainId, account } = useAppSelector((state) => state.web3);
 
   // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
