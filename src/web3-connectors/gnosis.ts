@@ -9,10 +9,11 @@ export function buildGnosisSafeConnector() {
       new GnosisSafe({
         actions,
         options: {
-          debug: true,
+          debug: false,
         },
       })
   );
+
   const gnosisSafeConnection: Connection = {
     connector: gnosisSafe,
     hooks: gnosisSafeHooks,

@@ -1,3 +1,4 @@
+import { compareAddresses } from "../../helpers/string";
 import { TransactionEvent } from "../../types/transactionTypes";
 import { SubmittedApprovalTransaction } from "../SubmittedTransaction/SubmittedTransaction";
 import { ApproveEvent } from "./ApproveEvent";
@@ -18,7 +19,7 @@ export const findMatchingApprovalTransaction = (
   // If hash doesn't match, check if the token address and amount match, it's safely to assume
   // the transaction was replaced
   return (
-    transaction.tokenAddress === event.tokenAddress &&
+    compareAddresses(transaction.tokenAddress, event.tokenAddress) &&
     transaction.amount === event.amount
   );
 };
