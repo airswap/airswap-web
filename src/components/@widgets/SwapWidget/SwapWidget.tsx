@@ -465,6 +465,8 @@ const SwapWidget: FC = () => {
         } else if (swapType === SwapType.wrapOrUnwrap) {
           await doWrap();
         }
+
+        setState(SwapWidgetState.overview);
         break;
 
       case ButtonActions.trackTransaction:
