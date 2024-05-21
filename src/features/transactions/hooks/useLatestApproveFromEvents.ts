@@ -4,14 +4,17 @@ import { SwapERC20 } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
 import erc20Abi from "erc-20-abi";
-import { BigNumber, providers, Event, EventFilter, ethers } from "ethers";
+import { BigNumber, Event, EventFilter, ethers } from "ethers";
 import { hexZeroPad, id } from "ethers/lib/utils";
 
 import { useAppSelector } from "../../../app/hooks";
 import { ApproveEvent } from "../../../entities/ApproveEvent/ApproveEvent";
 import { transformToApproveEvent } from "../../../entities/ApproveEvent/ApproveEventTransformers";
+import { isApprovalTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { getTransactionReceiptMined } from "../../../helpers/ethers";
 import { compareAddresses } from "../../../helpers/string";
 import { selectActiveTokens } from "../../metadata/metadataSlice";
+import useLatestPendingTransaction from "./useLatestPendingTransaction";
 
 const erc20Interface = new ethers.utils.Interface(erc20Abi);
 
@@ -21,6 +24,7 @@ const useLatestApproveFromEvents = (
 ): ApproveEvent | undefined => {
   const { provider } = useWeb3React();
   const tokens = useAppSelector(selectActiveTokens);
+  const latestPendingTransaction = useLatestPendingTransaction();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
@@ -92,6 +96,36 @@ const useLatestApproveFromEvents = (
       provider.off(filter, handleEvent);
     };
   }, [chainId, account, provider, tokens.length]);
+
+  // Normally the useEffect above should suffice, but gnosis safe has a bug where the event is not triggered.
+  // This may also happen for other providers I have not tested. So this "backup" useEffect is a solution for this issue.
+
+  useEffect(() => {
+    if (!latestPendingTransaction || !provider) return;
+
+    if (!isApprovalTransaction(latestPendingTransaction)) return;
+
+    const handleTransaction = async () => {
+      const receipt = await getTransactionReceiptMined(
+        latestPendingTransaction.hash,
+        provider
+      );
+
+      if (!receipt) return;
+
+      setLatestApprove(
+        transformToApproveEvent(
+          latestPendingTransaction.amount,
+          receipt.transactionHash,
+          receipt.contractAddress,
+          latestPendingTransaction.tokenAddress,
+          receipt.status
+        )
+      );
+    };
+
+    handleTransaction();
+  }, [latestPendingTransaction]);
 
   return latestApprove;
 };

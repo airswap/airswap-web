@@ -1,4 +1,4 @@
-import { Web3Provider } from "@ethersproject/providers";
+import { TransactionReceipt, Web3Provider } from "@ethersproject/providers";
 
 import { rpcUrls } from "../constants/rpc";
 import { SupportedChain } from "../constants/supportedChains";
@@ -19,9 +19,6 @@ export const clearedCachedLibrary = (): void => {
   cachedLibrary = {};
 };
 
-export const getLibrary = (chainId: number): Web3Provider =>
-  cachedLibrary[chainId];
-
 export const getRpcUrl = (chainId: number): string | undefined => {
   const rpcUrl = rpcUrls[chainId as SupportedChain] as string;
 
@@ -34,4 +31,20 @@ export const getRpcUrl = (chainId: number): string | undefined => {
   }
 
   return rpcUrl;
+};
+
+export const getTransactionReceiptMined = (
+  transactionHash: string,
+  provider: Web3Provider
+): Promise<TransactionReceipt | undefined> => {
+  return new Promise((resolve) => {
+    const interval = setInterval(async () => {
+      const receipt = await provider.getTransactionReceipt(transactionHash);
+
+      if (receipt?.blockNumber) {
+        clearInterval(interval);
+        resolve(receipt);
+      }
+    }, 1000);
+  });
 };
