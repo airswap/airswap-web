@@ -50,12 +50,6 @@ const useWeb3 = (): void => {
     100,
     [library]
   );
-
-  useEffect(() => {
-    if (isInitialized && !isActive) {
-      console.log("disconnected");
-    }
-  }, [isInitialized, isActive]);
 };
 
 export default useWeb3;
