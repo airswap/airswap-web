@@ -4,12 +4,11 @@ import { SwapERC20 } from "@airswap/libraries";
 import { getFullSwapERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
-import { BigNumber, providers, Event } from "ethers";
+import { BigNumber, Event } from "ethers";
 
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
 import { compareAddresses } from "../../../helpers/string";
-import useDebounce from "../../../hooks/useDebounce";
 
 const useLatestSwapFromEvents = (
   chainId?: number,

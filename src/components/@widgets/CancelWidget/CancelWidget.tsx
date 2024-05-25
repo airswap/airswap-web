@@ -4,7 +4,6 @@ import { useHistory, useParams } from "react-router-dom";
 
 import { FullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";

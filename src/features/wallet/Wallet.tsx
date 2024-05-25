@@ -1,9 +1,6 @@
 import React, { FC, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import { InterfaceContext } from "../../contexts/interface/Interface";
@@ -37,13 +34,9 @@ export const Wallet: FC<WalletProps> = ({
   onMobileMenuButtonClick,
 }) => {
   const { t } = useTranslation();
-  const {
-    chainId,
-    account,
-    isActive,
-    provider: library,
-  } = useWeb3React<Web3Provider>();
-  const { connectionType } = useAppSelector((state) => state.web3);
+  const { isActive, account, chainId, connectionType } = useAppSelector(
+    (state) => state.web3
+  );
 
   // Redux
   const dispatch = useAppDispatch();

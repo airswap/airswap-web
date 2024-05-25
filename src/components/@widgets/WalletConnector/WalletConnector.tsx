@@ -83,7 +83,7 @@ const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
   useEffect(() => {
     const type = getLastProviderFromLocalStorage();
 
-    if (!type) {
+    if (!type || isInitialized) {
       dispatch(setIsInitialized(true));
 
       return;
@@ -94,6 +94,10 @@ const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
 
   useEffect(() => {
     const gnosisSafe = buildGnosisSafeConnector();
+
+    if (isInitialized) {
+      return;
+    }
 
     try {
       activateWalletEagerly(gnosisSafe.connector, gnosisSafe.type);

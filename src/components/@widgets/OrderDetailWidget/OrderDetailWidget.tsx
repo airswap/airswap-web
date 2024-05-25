@@ -84,7 +84,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
-  const { setShowWalletList } = useContext(InterfaceContext);
+  const { setShowWalletList, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
@@ -213,6 +214,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     await dispatch(take(order, signerToken!, senderToken!, library, "Swap"));
   };
 
+  const openTransactionsTab = () => {
+    setTransactionsTabIsOpen(true);
+  };
+
   const approveToken = () => {
     if (!senderToken || !senderAmount || !library) {
       return;
@@ -277,6 +282,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         chainId={chainId}
         transaction={orderTransaction}
         onMakeNewOrderButtonClick={restart}
+        onTrackTransactionButtonClick={openTransactionsTab}
       />
     );
   }

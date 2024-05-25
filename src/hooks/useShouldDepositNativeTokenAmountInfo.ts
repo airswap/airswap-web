@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { ADDRESS_ZERO } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 

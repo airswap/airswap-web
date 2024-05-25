@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useDebounce } from "react-use";
 
 import { useWeb3React } from "@web3-react/core";
@@ -10,7 +9,7 @@ import { setLibraries, setWeb3Data } from "./web3Slice";
 const useWeb3 = (): void => {
   const dispatch = useAppDispatch();
 
-  const { isInitialized, libraries } = useAppSelector((state) => state.web3);
+  const { libraries } = useAppSelector((state) => state.web3);
 
   const { account, isActive, chainId, provider: library } = useWeb3React();
 
