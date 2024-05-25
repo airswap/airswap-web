@@ -86,6 +86,7 @@ import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWi
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
 import Overlay from "../../Overlay/Overlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import TokenList from "../../TokenList/TokenList";
@@ -160,12 +161,10 @@ const SwapWidget: FC = () => {
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
-  const [activeApprovalHash, setActiveApprovalHash] = useState<
-    string | undefined
-  >();
-  const [activeOrderNonce, setActiveOrderNonce] = useState<
-    string | undefined
-  >();
+  const [activeApprovalHash, setActiveApprovalHash] = useState<string>();
+  const [activeWrapOrUnwrapHash, setActiveWrapOrUnwrapHash] =
+    useState<string>();
+  const [activeOrderNonce, setActiveOrderNonce] = useState<string>();
 
   // Pricing
   const quote = useQuotes(
@@ -195,7 +194,10 @@ const SwapWidget: FC = () => {
   const shouldApprove =
     !hasSufficientAllowance && swapType !== SwapType.wrapOrUnwrap;
 
-  const activeOrderTransaction = useOrderTransaction(activeOrderNonce);
+  const activeOrderTransaction = useOrderTransaction(
+    activeOrderNonce,
+    activeWrapOrUnwrapHash
+  );
   const approvalTransaction = useApprovalPending(baseToken);
   const hasApprovalPending = !!approvalTransaction;
   const hasApprovalSuccess = useApprovalSuccess(activeApprovalHash);
@@ -204,7 +206,7 @@ const SwapWidget: FC = () => {
   const hasDepositOrWithdrawalPending =
     hasDepositPending || hasWithdrawalPending;
   const hasSubmittedTransaction =
-    hasApprovalPending || hasDepositOrWithdrawalPending || !!activeOrderNonce;
+    hasApprovalPending || !!activeWrapOrUnwrapHash || !!activeOrderNonce;
 
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
@@ -399,11 +401,24 @@ const SwapWidget: FC = () => {
   };
 
   const doWrap = async () => {
-    const method =
-      baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
+    if (baseTokenInfo === nativeCurrency[chainId!]) {
+      const transaction = await dispatch(
+        deposit(
+          baseAmount,
+          nativeTokenInfo,
+          wrappedNativeTokenInfo!,
+          chainId!,
+          library!
+        )
+      );
 
-    dispatch(
-      method(
+      setActiveWrapOrUnwrapHash(transaction?.hash);
+
+      return;
+    }
+
+    const transaction = await dispatch(
+      withdraw(
         baseAmount,
         nativeTokenInfo,
         wrappedNativeTokenInfo!,
@@ -411,6 +426,8 @@ const SwapWidget: FC = () => {
         library!
       )
     );
+
+    setActiveWrapOrUnwrapHash(transaction?.hash);
   };
 
   const restart = () => {
@@ -419,6 +436,7 @@ const SwapWidget: FC = () => {
     dispatch(clearQuotes());
     dispatch(clear());
     setActiveApprovalHash(undefined);
+    setActiveWrapOrUnwrapHash(undefined);
     setActiveOrderNonce(undefined);
     setBaseAmount("");
   };
@@ -527,6 +545,27 @@ const SwapWidget: FC = () => {
     );
   }
 
+  if (activeOrderTransaction) {
+    return (
+      <Container>
+        <OrderSubmittedScreen
+          showTrackTransactionButton={
+            activeOrderTransaction.status ===
+              TransactionStatusType.processing && !transactionsTabIsOpen
+          }
+          chainId={chainId}
+          transaction={activeOrderTransaction}
+          onMakeNewOrderButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
+          onTrackTransactionButtonClick={() =>
+            handleActionButtonClick(ButtonActions.trackTransaction)
+          }
+        />
+      </Container>
+    );
+  }
+
   if (state === SwapWidgetState.review && shouldApprove) {
     return (
       <Container>
@@ -588,21 +627,14 @@ const SwapWidget: FC = () => {
             isConnected={isActive}
             isFetchingOrders={quote.isLoading}
             isWrapping={isWrapping}
-            orderSubmitted={hasSubmittedTransaction}
-            orderCompleted={
-              hasSubmittedTransaction &&
-              activeOrderTransaction?.status === TransactionStatusType.succeeded
-            }
             showViewAllQuotes={indexerOrders.length > 0}
             bestQuote={quote.bestQuote}
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
-            chainId={chainId || 1}
             pricingError={quote.error}
             serverUrl={customServerUrl}
             quoteTokenInfo={quoteTokenInfo}
             onClearServerUrlButtonClick={handleClearServerUrl}
-            onFeeButtonClick={() => setProtocolFeeInfo(true)}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
           />
         </InfoContainer>
@@ -611,7 +643,6 @@ const SwapWidget: FC = () => {
             walletIsActive={isActive}
             unsupportedNetwork={false}
             requiresReload={allowanceFetchFailed}
-            orderComplete={hasSubmittedTransaction}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             hasAmount={
@@ -625,7 +656,6 @@ const SwapWidget: FC = () => {
             isLoading={
               isConnecting || quote.isLoading || ordersStatus === "requesting"
             }
-            transactionsTabOpen={transactionsTabIsOpen}
           />
         </ButtonContainer>
       </StyledSwapWidget>

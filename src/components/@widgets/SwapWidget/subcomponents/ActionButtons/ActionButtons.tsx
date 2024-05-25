@@ -45,7 +45,6 @@ const ActionButtons: FC<{
   walletIsActive: boolean;
   unsupportedNetwork: boolean;
   requiresReload: boolean;
-  orderComplete: boolean;
   hasError: boolean;
   hasQuote: boolean;
   needsApproval: boolean;
@@ -54,13 +53,11 @@ const ActionButtons: FC<{
   quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
   isLoading: boolean;
-  transactionsTabOpen: boolean;
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
   unsupportedNetwork,
   requiresReload,
-  orderComplete,
   hasError,
   hasQuote,
   needsApproval,
@@ -69,7 +66,6 @@ const ActionButtons: FC<{
   quoteTokenInfo,
   hasSufficientBalance,
   isLoading,
-  transactionsTabOpen,
   onButtonClicked,
 }) => {
   const { t } = useTranslation();
@@ -80,16 +76,10 @@ const ActionButtons: FC<{
   if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
   else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (hasError) nextAction = ButtonActions.goBack;
-  else if (orderComplete) nextAction = ButtonActions.restart;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
   else if (hasQuote) nextAction = ButtonActions.takeQuote;
   else nextAction = ButtonActions.requestQuotes;
-
-  // If a secondary action is defined, a secondary button will be displayed.
-  let secondaryAction: ButtonActions | null = null;
-  if (orderComplete && !transactionsTabOpen)
-    secondaryAction = ButtonActions.trackTransaction;
 
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
@@ -102,11 +92,6 @@ const ActionButtons: FC<{
     !isDisabled &&
     (nextAction === ButtonActions.takeQuote ||
       nextAction === ButtonActions.approve);
-
-  if (orderComplete) {
-    isDisabled = false;
-    nextAction = ButtonActions.restart;
-  }
 
   // The text depends on the next action, unless the button is disabled, when
   // it depends on the reason for being disabled instead.
@@ -124,27 +109,12 @@ const ActionButtons: FC<{
     mainButtonText = t(buttonTextMapping[nextAction]);
   }
 
-  //@ts-ignore
-  let secondaryButtonText: string | null = !!secondaryAction
-    ? // @ts-ignore dynamic translation key.
-      t(buttonTextMapping[secondaryAction])
-    : null;
-
   return (
     <>
       {hasBackButton && (
         <BackButton onClick={onButtonClicked.bind(null, ButtonActions.goBack)}>
           {t("common.back")}
         </BackButton>
-      )}
-      {secondaryAction && (
-        // Note MainButton used to ensure secondary button is same size as main
-        <MainButton
-          intent="neutral"
-          onClick={onButtonClicked.bind(null, secondaryAction)}
-        >
-          {secondaryButtonText}
-        </MainButton>
       )}
       <MainButton
         intent={nextAction === ButtonActions.goBack ? "neutral" : "primary"}

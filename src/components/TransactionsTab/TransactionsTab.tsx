@@ -5,11 +5,8 @@ import {
   getAccountUrl,
   chainCurrencies,
   chainNames,
-  TokenInfo,
   ADDRESS_ZERO,
 } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";

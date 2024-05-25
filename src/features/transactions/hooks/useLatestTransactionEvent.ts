@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../../../app/hooks";
 import { TransactionEvent } from "../../../types/transactionTypes";
 import useLatestApproveFromEvents from "./useLatestApproveFromEvents";

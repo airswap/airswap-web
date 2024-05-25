@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../../../app/hooks";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";

@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import { SwapERC20 } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
-import { BigNumber, providers, Event } from "ethers";
+import { BigNumber, Event } from "ethers";
 
 import { CancelEvent } from "../../../entities/CancelEvent/CancelEvent";
 import { transformToCancelEvent } from "../../../entities/CancelEvent/CancelEventTransformers";
-import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { compareAddresses } from "../../../helpers/string";
 
 const useLatestCancelFromEvents = (

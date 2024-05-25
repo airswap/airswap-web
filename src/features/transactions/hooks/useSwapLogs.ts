@@ -7,7 +7,6 @@ import { IAsyncState } from "@react-hookz/web/esm/useAsync/useAsync";
 import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
-import { providers } from "ethers";
 
 import getContractEvents from "../../../helpers/getContractEvents";
 

@@ -39,6 +39,16 @@ export const DoneAllIcon = styled(MdDoneAll)`
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 `;
 
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+
 export const MakeNewOrderButton = styled(Button)`
+  width: 100%;
+`;
+
+export const TrackTransactionButton = styled(Button)`
   width: 100%;
 `;

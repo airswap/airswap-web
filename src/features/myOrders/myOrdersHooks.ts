@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUserOrdersFromLocalStorage } from "./myOrdersHelpers";
 import { setUserOrders } from "./myOrdersSlice";

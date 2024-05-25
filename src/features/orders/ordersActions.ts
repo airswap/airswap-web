@@ -168,7 +168,9 @@ export const deposit =
     chainId: number,
     provider: Web3Provider
   ) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (
+    dispatch: AppDispatch
+  ): Promise<SubmittedDepositTransaction | undefined> => {
     dispatch(setStatus("signing"));
 
     try {
@@ -196,9 +198,13 @@ export const deposit =
 
       dispatch(setStatus("idle"));
       dispatch(submitTransaction(transaction));
+
+      return transaction;
     } catch (e: any) {
       dispatch(setStatus("failed"));
       handleOrderError(dispatch, e);
+
+      return;
     }
   };
 
@@ -210,7 +216,9 @@ export const withdraw =
     chainId: number,
     provider: Web3Provider
   ) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (
+    dispatch: AppDispatch
+  ): Promise<SubmittedWithdrawTransaction | undefined> => {
     dispatch(setStatus("signing"));
 
     try {
@@ -238,9 +246,13 @@ export const withdraw =
 
       dispatch(setStatus("idle"));
       dispatch(submitTransaction(transaction));
+
+      return transaction;
     } catch (e: any) {
       dispatch(setStatus("failed"));
       handleOrderError(dispatch, e);
+
+      return;
     }
   };
 

@@ -5,25 +5,31 @@ import { SubmittedTransaction } from "../../entities/SubmittedTransaction/Submit
 import { TransactionStatusType } from "../../types/transactionTypes";
 import { InfoSubHeading } from "../Typography/Typography";
 import {
+  ButtonsContainer,
   Container,
   DoneAllIcon,
   InfoContainer,
   MakeNewOrderButton,
   StyledInfoHeading,
   StyledTransactionLink,
+  TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
 
 interface OrderSubmittedInfoProps {
+  showTrackTransactionButton?: boolean;
   chainId?: number;
   transaction: SubmittedTransaction;
   onMakeNewOrderButtonClick: () => void;
+  onTrackTransactionButtonClick?: () => void;
   className?: string;
 }
 
 const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
+  showTrackTransactionButton,
   chainId,
   transaction,
   onMakeNewOrderButtonClick,
+  onTrackTransactionButtonClick,
   className = "",
 }) => {
   const { t } = useTranslation();
@@ -49,9 +55,23 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
           <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
         )}
       </InfoContainer>
-      <MakeNewOrderButton intent="primary" onClick={onMakeNewOrderButtonClick}>
-        {t("orders.makeNewOrder")}
-      </MakeNewOrderButton>
+      <ButtonsContainer>
+        <MakeNewOrderButton
+          intent="primary"
+          onClick={onMakeNewOrderButtonClick}
+        >
+          {t("orders.makeNewOrder")}
+        </MakeNewOrderButton>
+
+        {showTrackTransactionButton && (
+          <TrackTransactionButton
+            intent="neutral"
+            onClick={onTrackTransactionButtonClick}
+          >
+            {t("orders.track")}
+          </TrackTransactionButton>
+        )}
+      </ButtonsContainer>
     </Container>
   );
 };

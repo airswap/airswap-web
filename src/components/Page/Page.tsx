@@ -2,20 +2,14 @@ import React, { FC, ReactElement, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { clear, setResetStatus } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { useKeyPress } from "../../hooks/useKeyPress";
-import { WalletProvider } from "../../web3-connectors/walletProviders";
-import { StyledWalletProviderList } from "../@widgets/SwapWidget/SwapWidget.styles";
 import WalletConnector from "../@widgets/WalletConnector/WalletConnector";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
-import Overlay from "../Overlay/Overlay";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";

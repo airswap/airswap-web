@@ -28,19 +28,14 @@ export type InfoSectionProps = {
   isConnected: boolean;
   isFetchingOrders: boolean;
   isWrapping: boolean;
-  orderSubmitted: boolean;
-  orderCompleted: boolean;
   showViewAllQuotes: boolean;
   bestQuote?: string;
-  chainId: number;
   pricingError?: PricingErrorType;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
   serverUrl: string | null;
   onClearServerUrlButtonClick: () => void;
-  onFeeButtonClick: () => void;
-  transaction?: SubmittedTransaction;
   onViewAllQuotesButtonClick: () => void;
 };
 
@@ -51,19 +46,14 @@ const InfoSection: FC<InfoSectionProps> = ({
   isConnected,
   isFetchingOrders,
   isWrapping,
-  orderCompleted,
-  orderSubmitted,
   showViewAllQuotes,
   bestQuote,
   baseTokenInfo,
   baseAmount,
-  chainId,
   pricingError,
   quoteTokenInfo,
-  transaction,
   serverUrl,
   onClearServerUrlButtonClick,
-  onFeeButtonClick,
   onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -123,33 +113,6 @@ const InfoSection: FC<InfoSectionProps> = ({
             {t("orders.viewAllQuotes")}
             <Icon name="chevron-down" />
           </StyledLargePillButton>
-        )}
-      </>
-    );
-  }
-
-  if (orderCompleted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>
-          {t("orders.transactionCompleted")}
-        </StyledInfoHeading>
-        {transaction?.hash && (
-          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
-        )}
-      </>
-    );
-  }
-
-  if (orderSubmitted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        {transaction?.hash && (
-          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
         )}
       </>
     );

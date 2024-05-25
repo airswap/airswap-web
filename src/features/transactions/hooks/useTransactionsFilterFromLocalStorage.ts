@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import { useLocalStorageValue } from "@react-hookz/web/esm";
-import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
