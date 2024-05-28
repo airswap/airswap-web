@@ -23,7 +23,7 @@ export const getActionButtonTranslation = (
   }
 
   if (networkIsUnsupported) {
-    return i18n.t("wallet.unsupportedNetwork");
+    return i18n.t("wallet.switchNetwork");
   }
 
   if (shouldRefresh) {

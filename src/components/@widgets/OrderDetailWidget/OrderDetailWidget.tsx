@@ -13,10 +13,6 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import {
-  selectAllowances,
-  selectBalances,
-} from "../../../features/balances/balancesSlice";
-import {
   fetchIndexerUrls,
   getFilteredOrders,
 } from "../../../features/indexer/indexerActions";
@@ -406,7 +402,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!isActive}
-        isNetworkUnsupported={false}
         requiresReload={isAllowancesOrBalancesFailed}
         shouldDepositNativeToken={shouldDepositNativeToken}
         senderTokenSymbol={senderTokenSymbol}

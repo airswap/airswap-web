@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { WETH } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
-import { BigNumber, providers, Event } from "ethers";
+import { BigNumber, Event } from "ethers";
 
 import { WETHEvent } from "../../../entities/WETHEvent/WETHEvent";
 import { transformToDepositOrWithdrawEvent } from "../../../entities/WETHEvent/WETHEventTransformers";
 import { compareAddresses } from "../../../helpers/string";
 import useDebounce from "../../../hooks/useDebounce";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 import { WethEventType } from "../../../types/wethEventType";
 
 const useLatestDepositOrWithdrawFromEvents = (
@@ -16,6 +17,7 @@ const useLatestDepositOrWithdrawFromEvents = (
   account?: string | null
 ): WETHEvent | undefined => {
   const { provider } = useWeb3React();
+  const isNetworkSupported = useNetworkSupported();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
@@ -35,7 +37,7 @@ const useLatestDepositOrWithdrawFromEvents = (
   );
 
   useEffect(() => {
-    if (!chainId || !account || !provider) return;
+    if (!chainId || !account || !provider || !isNetworkSupported) return;
 
     if (account === accountState && chainId === chainIdState) return;
 
@@ -92,7 +94,7 @@ const useLatestDepositOrWithdrawFromEvents = (
       wethContract.off(depositEvent, handleDepositEvent);
       wethContract.off(withdrawEvent, handleWithdrawEvent);
     };
-  }, [chainId, account, provider]);
+  }, [chainId, account, provider, isNetworkSupported]);
 
   return debouncedLatestDepositOrWithdraw;
 };

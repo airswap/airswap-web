@@ -28,7 +28,6 @@ type ActionButtonsProps = {
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
   isMakerOfSwap: boolean;
-  isNetworkUnsupported: boolean;
   isNotConnected: boolean;
   requiresReload: boolean;
   shouldDepositNativeToken: boolean;
@@ -48,7 +47,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isIntendedRecipient,
   isMakerOfSwap,
   isNotConnected,
-  isNetworkUnsupported,
   requiresReload,
   shouldDepositNativeToken,
   senderTokenSymbol,
@@ -72,7 +70,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     );
   }
 
-  if (isNetworkUnsupported || isDifferentChainId) {
+  if (isDifferentChainId) {
     return (
       <Container className={className}>
         <SignButton
