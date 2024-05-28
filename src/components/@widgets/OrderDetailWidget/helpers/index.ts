@@ -2,28 +2,47 @@ import { chainNames } from "@airswap/utils";
 
 import i18n from "i18next";
 
+interface FullOrderErc20WarningTranslation {
+  heading: string;
+  subHeading?: string;
+}
+
 export const getFullOrderERC20WarningTranslation = (
+  isAllowancesFailed: boolean,
   isDifferentChainId: boolean,
   isExpired: boolean,
   isIntendedRecipient: boolean,
   isMakerOfSwap: boolean,
   isNotConnected: boolean,
   orderChainId: number
-): string | undefined => {
+): FullOrderErc20WarningTranslation | undefined => {
   const orderIsNotForConnectedWallet =
     !isIntendedRecipient && !isMakerOfSwap && !isNotConnected;
 
+  if (isAllowancesFailed) {
+    return {
+      heading: i18n.t("balances.failedToFetchAllowances"),
+      subHeading: i18n.t("balances.failedToFetchAllowancesCta"),
+    };
+  }
+
   if (isDifferentChainId) {
     const chainName = chainNames[orderChainId] || i18n.t("common.unknown");
-    return i18n.t("orders.thisOrderIsForAnotherChain", { chainName });
+    return {
+      heading: i18n.t("orders.thisOrderIsForAnotherChain", { chainName }),
+    };
   }
 
   if (orderIsNotForConnectedWallet && isExpired) {
-    return i18n.t("orders.thisOrderWasForADifferentTaker");
+    return {
+      heading: i18n.t("orders.thisOrderWasForADifferentTaker"),
+    };
   }
 
   if (orderIsNotForConnectedWallet && !isExpired) {
-    return i18n.t("orders.thisOrderIsForADifferentTaker");
+    return {
+      heading: i18n.t("orders.thisOrderIsForADifferentTaker"),
+    };
   }
 
   return undefined;

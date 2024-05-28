@@ -30,6 +30,7 @@ type ActionButtonsProps = {
   isMakerOfSwap: boolean;
   isNetworkUnsupported: boolean;
   isNotConnected: boolean;
+  requiresReload: boolean;
   shouldDepositNativeToken: boolean;
   senderTokenSymbol?: string;
   onBackButtonClick: () => void;
@@ -48,6 +49,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isMakerOfSwap,
   isNotConnected,
   isNetworkUnsupported,
+  requiresReload,
   shouldDepositNativeToken,
   senderTokenSymbol,
   onBackButtonClick,
@@ -79,6 +81,19 @@ const ActionButtons: FC<ActionButtonsProps> = ({
           onClick={() => onActionButtonClick(ButtonActions.switchNetwork)}
         >
           {t("wallet.switchNetwork")}
+        </SignButton>
+      </Container>
+    );
+  }
+
+  if (requiresReload) {
+    return (
+      <Container className={className}>
+        <SignButton
+          intent="primary"
+          onClick={() => onActionButtonClick(ButtonActions.reloadPage)}
+        >
+          {t("common.reloadPage")}
         </SignButton>
       </Container>
     );

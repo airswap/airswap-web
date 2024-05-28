@@ -13,6 +13,10 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import {
+  selectAllowances,
+  selectBalances,
+} from "../../../features/balances/balancesSlice";
+import {
   fetchIndexerUrls,
   getFilteredOrders,
 } from "../../../features/indexer/indexerActions";
@@ -32,6 +36,7 @@ import {
 } from "../../../features/takeOtc/takeOtcSlice";
 import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
@@ -86,11 +91,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList, setTransactionsTabIsOpen } =
     useContext(InterfaceContext);
+
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
+
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [state, setState] = useState<OrderDetailWidgetState>(
@@ -135,6 +142,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     senderToken?.address,
     senderAmount
   );
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
@@ -380,6 +388,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onFeeButtonClick={toggleShowFeeInfo}
       />
       <StyledInfoSection
+        isAllowancesFailed={isAllowancesOrBalancesFailed}
         isExpired={orderStatus === OrderStatus.expired}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
@@ -398,6 +407,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isMakerOfSwap={userIsMakerOfSwap}
         isNotConnected={!isActive}
         isNetworkUnsupported={false}
+        requiresReload={isAllowancesOrBalancesFailed}
         shouldDepositNativeToken={shouldDepositNativeToken}
         senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}

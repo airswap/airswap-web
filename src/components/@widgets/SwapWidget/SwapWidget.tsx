@@ -65,6 +65,7 @@ import {
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useApprovalSuccess from "../../../hooks/useApprovalSuccess";
@@ -118,7 +119,6 @@ const SwapWidget: FC = () => {
   const location = useLocation<{ isFromOrderDetailPage?: true }>();
   const isFromOrderDetailPage = !!location.state?.isFromOrderDetailPage;
   const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const activeTokens = useAppSelector(selectActiveTokens);
@@ -171,9 +171,6 @@ const SwapWidget: FC = () => {
     !activeOrderNonce && state === SwapWidgetState.requestPrices
   );
 
-  const [allowanceFetchFailed, setAllowanceFetchFailed] =
-    useState<boolean>(false);
-
   const { t } = useTranslation();
 
   const { provider: library } = useWeb3React<Web3Provider>();
@@ -207,6 +204,7 @@ const SwapWidget: FC = () => {
     hasDepositPending || hasWithdrawalPending;
   const hasSubmittedTransaction =
     hasApprovalPending || !!activeWrapOrUnwrapHash || !!activeOrderNonce;
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
 
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
@@ -223,7 +221,6 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
-      setAllowanceFetchFailed(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
     }
@@ -234,13 +231,6 @@ const SwapWidget: FC = () => {
       restart();
     }
   }, [chainId]);
-
-  useEffect(() => {
-    setAllowanceFetchFailed(
-      allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
-    );
-  }, [allowances.swap.status, allowances.wrapper.status]);
 
   const quoteAmount =
     swapType === SwapType.wrapOrUnwrap ? baseAmount : quote?.bestQuote || "";
@@ -606,7 +596,7 @@ const SwapWidget: FC = () => {
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={formattedQuoteAmount}
-            disabled={!isActive || (!!quoteAmount && allowanceFetchFailed)}
+            disabled={!isActive || isAllowancesOrBalancesFailed}
             readOnly={
               !!quote.bestQuote || !!quote.error || isWrapping || !isActive
             }
@@ -621,7 +611,7 @@ const SwapWidget: FC = () => {
         )}
         <InfoContainer>
           <InfoSection
-            failedToFetchAllowances={allowanceFetchFailed}
+            failedToFetchAllowances={isAllowancesOrBalancesFailed}
             hasSelectedCustomServer={!!customServerUrl}
             isApproving={isApproving}
             isConnected={isActive}
@@ -642,7 +632,7 @@ const SwapWidget: FC = () => {
           <ActionButtons
             walletIsActive={isActive}
             unsupportedNetwork={false}
-            requiresReload={allowanceFetchFailed}
+            requiresReload={isAllowancesOrBalancesFailed}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             hasAmount={
