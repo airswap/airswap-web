@@ -41,6 +41,7 @@ import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../../helpers/toMaxAllowedDecimalsNumberString";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
@@ -67,6 +68,7 @@ import {
   OrderTypeSelectorAndRateFieldWrapper,
   StyledActionButtons,
   StyledAddressInput,
+  StyledInfoSection,
   StyledOrderTypeSelector,
   StyledRateField,
   StyledTooltip,
@@ -156,6 +158,7 @@ const MakeWidget: FC = () => {
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
   const isValidAddress = useValidAddress(takerAddress);
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -433,7 +436,7 @@ const MakeWidget: FC = () => {
       />
       <SwapInputs
         canSetQuoteAmount
-        disabled={!isActive}
+        disabled={!isActive || isAllowancesOrBalancesFailed}
         readOnly={!isActive}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
@@ -487,6 +490,8 @@ const MakeWidget: FC = () => {
         </TooltipContainer>
       )}
 
+      <StyledInfoSection isAllowancesFailed={isAllowancesOrBalancesFailed} />
+
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
         hasInsufficientAllowance={!hasSufficientAllowance}
@@ -499,6 +504,7 @@ const MakeWidget: FC = () => {
         hasMissingTakerToken={!takerTokenInfo}
         isNetworkUnsupported={false}
         shouldDepositNativeToken={shouldDepositNativeToken}
+        shouldRefresh={isAllowancesOrBalancesFailed}
         walletIsNotConnected={!isActive}
         makerTokenSymbol={makerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}

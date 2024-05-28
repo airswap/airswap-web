@@ -69,7 +69,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (isConnected && failedToFetchAllowances && (!!bestQuote || isWrapping)) {
+  if (failedToFetchAllowances) {
     return (
       <>
         <StyledInfoHeading>

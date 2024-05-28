@@ -5,6 +5,7 @@ import { SelectLabel } from "../../../styled-components/Select/Select";
 import Tooltip from "../../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
+import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import InputSection from "./subcomponents/InputSection/InputSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 import { RateField } from "./subcomponents/RateField/RateField";
@@ -63,6 +64,14 @@ export const StyledAddressInput = styled(AddressInput)`
 `;
 
 export const StyledActionButtons = styled(ActionButtons)``;
+
+export const StyledInfoSection = styled(InfoSection)`
+  flex-grow: 1;
+
+  & + ${StyledActionButtons} {
+    margin-top: 1rem;
+  }
+`;
 
 export const StyledTooltip = styled(Tooltip)`
   position: absolute;
