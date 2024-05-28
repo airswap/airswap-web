@@ -43,7 +43,7 @@ const buttonTextMapping: Record<ButtonActions, string> = {
  */
 const ActionButtons: FC<{
   walletIsActive: boolean;
-  unsupportedNetwork: boolean;
+  isNetworkUnsupported: boolean;
   requiresReload: boolean;
   hasError: boolean;
   hasQuote: boolean;
@@ -56,7 +56,7 @@ const ActionButtons: FC<{
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
-  unsupportedNetwork,
+  isNetworkUnsupported,
   requiresReload,
   hasError,
   hasQuote,
@@ -73,7 +73,7 @@ const ActionButtons: FC<{
   // First determine the next action.
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
-  if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
+  if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
   else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
   else if (hasError) nextAction = ButtonActions.goBack;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
@@ -86,6 +86,7 @@ const ActionButtons: FC<{
   let isDisabled =
     walletIsActive &&
     !requiresReload &&
+    !isNetworkUnsupported &&
     (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);
 
   // Some actions require an additional back button

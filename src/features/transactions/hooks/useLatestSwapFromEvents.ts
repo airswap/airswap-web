@@ -9,19 +9,21 @@ import { BigNumber, Event } from "ethers";
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
 import { compareAddresses } from "../../../helpers/string";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 const useLatestSwapFromEvents = (
   chainId?: number,
   account?: string | null
 ): FullSwapERC20Event | undefined => {
   const { provider } = useWeb3React();
+  const isNetworkSupported = useNetworkSupported();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
   const [latestSwapEvent, setLatestSwapEvent] = useState<FullSwapERC20Event>();
 
   useEffect(() => {
-    if (!chainId || !account || !provider) return;
+    if (!chainId || !account || !provider || !isNetworkSupported) return;
 
     if (account === accountState && chainId === chainIdState) return;
 
@@ -77,7 +79,7 @@ const useLatestSwapFromEvents = (
     return () => {
       swapContract.off(swapEvent, () => {});
     };
-  }, [chainId, account, provider]);
+  }, [chainId, account, provider, isNetworkSupported]);
 
   return latestSwapEvent;
 };

@@ -74,6 +74,7 @@ import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
 import useNativeToken from "../../../hooks/useNativeToken";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 import useOrderTransaction from "../../../hooks/useOrderTransaction";
 import useSwapType from "../../../hooks/useSwapType";
 import useTokenInfo from "../../../hooks/useTokenInfo";
@@ -204,6 +205,7 @@ const SwapWidget: FC = () => {
     hasDepositPending || hasWithdrawalPending;
   const hasSubmittedTransaction =
     hasApprovalPending || !!activeWrapOrUnwrapHash || !!activeOrderNonce;
+  const isNetworkSupported = useNetworkSupported();
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
 
   const maxAmount = useMaxAmount(baseToken);
@@ -616,6 +618,7 @@ const SwapWidget: FC = () => {
             isApproving={isApproving}
             isConnected={isActive}
             isFetchingOrders={quote.isLoading}
+            isNetworkUnsupported={!isNetworkSupported}
             isWrapping={isWrapping}
             showViewAllQuotes={indexerOrders.length > 0}
             bestQuote={quote.bestQuote}
@@ -631,7 +634,7 @@ const SwapWidget: FC = () => {
         <ButtonContainer>
           <ActionButtons
             walletIsActive={isActive}
-            unsupportedNetwork={false}
+            isNetworkUnsupported={!isNetworkSupported}
             requiresReload={isAllowancesOrBalancesFailed}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}

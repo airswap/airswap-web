@@ -9,14 +9,24 @@ import { Container } from "./InfoSection.styles";
 
 type ActionButtonsProps = {
   isAllowancesFailed: boolean;
+  isNetworkUnsupported: boolean;
   className?: string;
 };
 
 const InfoSection: FC<ActionButtonsProps> = ({
   isAllowancesFailed,
+  isNetworkUnsupported,
   className,
 }) => {
   const { t } = useTranslation();
+
+  if (isNetworkUnsupported) {
+    return (
+      <Container className={className}>
+        <StyledInfoHeading>{t("wallet.unsupportedNetwork")}</StyledInfoHeading>
+      </Container>
+    );
+  }
 
   if (isAllowancesFailed) {
     return (

@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { Event } from "ethers";
 
 import getContractEvents from "../../../helpers/getContractEvents";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 interface SwapLogs {
   swapLogs: Event[];
@@ -22,6 +23,7 @@ const useSwapLogs = (
   account?: string | null
 ): IAsyncState<SwapLogs | null> => {
   const { provider } = useWeb3React();
+  const isNetworkSupported = useNetworkSupported();
 
   const [accountState, setAccountState] = useState<string>();
   const [chainIdState, setChainIdState] = useState<number>();
@@ -73,7 +75,7 @@ const useSwapLogs = (
   );
 
   useEffect(() => {
-    if (!chainId || !account || !provider) return;
+    if (!chainId || !account || !provider || !isNetworkSupported) return;
 
     if (account === accountState && chainId === chainIdState) return;
 
@@ -83,7 +85,7 @@ const useSwapLogs = (
 
     setAccountState(account);
     setChainIdState(chainId);
-  }, [chainId, account, provider, actions]);
+  }, [chainId, account, provider, actions, isNetworkSupported]);
 
   return state;
 };

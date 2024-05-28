@@ -27,6 +27,7 @@ export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
+  isNetworkUnsupported: boolean;
   isWrapping: boolean;
   showViewAllQuotes: boolean;
   bestQuote?: string;
@@ -45,6 +46,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
   isFetchingOrders,
+  isNetworkUnsupported,
   isWrapping,
   showViewAllQuotes,
   bestQuote,
@@ -66,6 +68,12 @@ const InfoSection: FC<InfoSectionProps> = ({
         <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
         <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
       </>
+    );
+  }
+
+  if (isNetworkUnsupported) {
+    return (
+      <StyledInfoHeading>{t("wallet.unsupportedNetwork")}</StyledInfoHeading>
     );
   }
 

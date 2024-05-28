@@ -47,6 +47,7 @@ import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTokenAmount";
 import useTokenInfo from "../../../hooks/useTokenInfo";
 import useValidAddress from "../../../hooks/useValidAddress";
@@ -159,6 +160,7 @@ const MakeWidget: FC = () => {
   const hasDepositPending = useDepositPending();
   const isValidAddress = useValidAddress(takerAddress);
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
+  const isNetworkSupported = useNetworkSupported();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -490,7 +492,10 @@ const MakeWidget: FC = () => {
         </TooltipContainer>
       )}
 
-      <StyledInfoSection isAllowancesFailed={isAllowancesOrBalancesFailed} />
+      <StyledInfoSection
+        isAllowancesFailed={isAllowancesOrBalancesFailed}
+        isNetworkUnsupported={!isNetworkSupported}
+      />
 
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
@@ -502,7 +507,7 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        isNetworkUnsupported={false}
+        isNetworkUnsupported={!isNetworkSupported}
         shouldDepositNativeToken={shouldDepositNativeToken}
         shouldRefresh={isAllowancesOrBalancesFailed}
         walletIsNotConnected={!isActive}
