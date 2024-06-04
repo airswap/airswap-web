@@ -600,7 +600,11 @@ const SwapWidget: FC = () => {
             quoteAmount={formattedQuoteAmount}
             disabled={!isActive || isAllowancesOrBalancesFailed}
             readOnly={
-              !!quote.bestQuote || !!quote.error || isWrapping || !isActive
+              !!quote.bestQuote ||
+              !!quote.error ||
+              isWrapping ||
+              !isActive ||
+              !isNetworkSupported
             }
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
