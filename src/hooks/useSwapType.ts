@@ -6,15 +6,17 @@ import { useAppSelector } from "../app/hooks";
 import nativeCurrency from "../constants/nativeCurrency";
 import getWethAddress from "../helpers/getWethAddress";
 import { SwapType } from "../types/swapType";
+import useNetworkSupported from "./useNetworkSupported";
 
 const useSwapType = (
   token1: TokenInfo | null,
   token2: TokenInfo | null
 ): SwapType => {
   const { chainId } = useAppSelector((state) => state.web3);
+  const isNetworkSupported = useNetworkSupported();
 
   return useMemo(() => {
-    if (!chainId || !token1 || !token2) {
+    if (!chainId || !token1 || !token2 || !isNetworkSupported) {
       return SwapType.swap;
     }
 
@@ -33,7 +35,7 @@ const useSwapType = (
     }
 
     return SwapType.swap;
-  }, [chainId, token1, token2]);
+  }, [chainId, token1, token2, isNetworkSupported]);
 };
 
 export default useSwapType;
