@@ -439,7 +439,7 @@ const MakeWidget: FC = () => {
       <SwapInputs
         canSetQuoteAmount
         disabled={!isActive || isAllowancesOrBalancesFailed}
-        readOnly={!isActive}
+        readOnly={!isActive || !isNetworkSupported}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
