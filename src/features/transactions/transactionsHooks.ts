@@ -73,7 +73,9 @@ export const useTransactions = (): void => {
     };
 
     const processingTransactions = localStorageTransactions.filter(
-      (transaction) => transaction.status === TransactionStatusType.processing
+      (transaction) =>
+        transaction.status === TransactionStatusType.processing ||
+        transaction.status === TransactionStatusType.expired
     );
 
     processingTransactions.forEach(getTransactionReceiptAndUpdateTransaction);

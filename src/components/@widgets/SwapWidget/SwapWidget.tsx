@@ -48,7 +48,6 @@ import {
   selectOrdersErrors,
   selectOrdersStatus,
   setErrors,
-  setResetStatus,
 } from "../../../features/orders/ordersSlice";
 import useQuotes from "../../../features/quotes/quotesHooks";
 import { reset as clearQuotes } from "../../../features/quotes/quotesSlice";
@@ -58,7 +57,6 @@ import {
   selectTradeTerms,
   setTradeTerms,
 } from "../../../features/tradeTerms/tradeTermsSlice";
-import useLatestSucceededTransaction from "../../../features/transactions/hooks/useLatestSucceededTransaction";
 import {
   selectCustomServerUrl,
   setCustomServerUrl,
@@ -80,6 +78,7 @@ import useSwapType from "../../../hooks/useSwapType";
 import useTokenInfo from "../../../hooks/useTokenInfo";
 import useWithdrawalPending from "../../../hooks/useWithdrawalPending";
 import { AppRoutes } from "../../../routes";
+import { SwapType } from "../../../types/swapType";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
@@ -98,7 +97,6 @@ import StyledSwapWidget, {
   StyledDebugMenu,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
-import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
@@ -199,7 +197,8 @@ const SwapWidget: FC = () => {
     baseTokenInfo,
     baseAmount
   );
-  const shouldApprove = !hasSufficientAllowance && swapType !== "wrapOrUnwrap";
+  const shouldApprove =
+    !hasSufficientAllowance && swapType !== SwapType.wrapOrUnwrap;
 
   const activeOrderTransaction = useOrderTransaction(activeOrderNonce);
   const approvalTransaction = useApprovalPending(baseToken);
@@ -247,7 +246,7 @@ const SwapWidget: FC = () => {
   }, [allowances.swap.status, allowances.wrapper.status]);
 
   const quoteAmount =
-    swapType === "wrapOrUnwrap" ? baseAmount : quote?.bestQuote || "";
+    swapType === SwapType.wrapOrUnwrap ? baseAmount : quote?.bestQuote || "";
   const formattedQuoteAmount = useMemo(
     () => stringToSignificantDecimals(quoteAmount),
     [quoteAmount]
@@ -337,17 +336,23 @@ const SwapWidget: FC = () => {
 
   const swapWithRequestForQuote = async () => {
     try {
-      if (!library) return;
+      if (!library || !chainId || !account) return;
+
       const senderWallet =
-        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!;
+        swapType === SwapType.swapWithWrap
+          ? Wrapper.getAddress(chainId)
+          : account;
+
       const order = quote.bestOrder as OrderERC20;
+
       if (!senderWallet) return;
+
       const errors = await check(
         order,
         senderWallet,
-        chainId || 1,
+        chainId,
         library,
-        swapType === "swapWithWrap"
+        swapType === SwapType.swapWithWrap
       );
 
       if (errors.length) {
@@ -361,7 +366,7 @@ const SwapWidget: FC = () => {
           quoteTokenInfo!,
           baseTokenInfo!,
           library,
-          swapType === "swapWithWrap" ? "Wrapper" : "Swap"
+          swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
         )
       );
 
@@ -460,9 +465,9 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.takeQuote:
-        if (["swap", "swapWithWrap"].includes(swapType)) {
+        if ([SwapType.swap, SwapType.swapWithWrap].includes(swapType)) {
           await takeBestOption();
-        } else if (swapType === "wrapOrUnwrap") {
+        } else if (swapType === SwapType.wrapOrUnwrap) {
           await doWrap();
         }
         break;
@@ -499,7 +504,7 @@ const SwapWidget: FC = () => {
         baseAmount,
         baseTokenInfo!,
         library!,
-        swapType === "swapWithWrap" ? "Wrapper" : "Swap"
+        swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
       )
     );
     setIsApproving(false);

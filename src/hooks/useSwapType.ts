@@ -16,7 +16,7 @@ const useSwapType = (
 
   return useMemo(() => {
     if (!chainId || !token1 || !token2) {
-      return "swap";
+      return SwapType.swap;
     }
 
     const eth = nativeCurrency[chainId].address;
@@ -26,14 +26,14 @@ const useSwapType = (
       [weth, eth].includes(token1.address) &&
       [weth, eth].includes(token2.address)
     ) {
-      return "wrapOrUnwrap";
+      return SwapType.wrapOrUnwrap;
     }
 
     if ([token1.address].includes(eth)) {
-      return "swapWithWrap";
+      return SwapType.swapWithWrap;
     }
 
-    return "swap";
+    return SwapType.swap;
   }, [chainId, token1, token2]);
 };
 
