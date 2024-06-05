@@ -1,15 +1,10 @@
-import { SwapERC20 } from "@airswap/libraries";
 import { TokenInfo, getTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import * as ethers from "ethers";
-import uniqBy from "lodash.uniqby";
 
+import { getSwapErc20Contract } from "../../helpers/swapErc20";
 import { MetadataTokens } from "./metadataSlice";
-
-const tokensCache: {
-  [chainId: number]: TokenInfo[];
-} = {};
 
 export const getActiveTokensLocalStorageKey: (
   account: string,
@@ -94,6 +89,6 @@ export const getProtocolFee = async (
   provider: Web3Provider
 ): Promise<number> => {
   return (
-    await SwapERC20.getContract(provider, chainId).protocolFee()
+    await getSwapErc20Contract(provider, chainId).protocolFee()
   ).toNumber();
 };

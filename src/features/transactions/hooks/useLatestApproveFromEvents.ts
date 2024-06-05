@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { SwapERC20 } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
 import erc20Abi from "erc-20-abi";
@@ -13,6 +12,7 @@ import { transformToApproveEvent } from "../../../entities/ApproveEvent/ApproveE
 import { isApprovalTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getTransactionReceiptMined } from "../../../helpers/ethers";
 import { compareAddresses } from "../../../helpers/string";
+import { getSwapErc20Address } from "../../../helpers/swapErc20";
 import { selectActiveTokens } from "../../metadata/metadataSlice";
 import useLatestPendingTransaction from "./useLatestPendingTransaction";
 
@@ -69,9 +69,7 @@ const useLatestApproveFromEvents = (
       )
         return;
 
-      if (
-        !compareAddresses(spenderAddress, SwapERC20.getAddress(chainId) || "")
-      )
+      if (!compareAddresses(spenderAddress, getSwapErc20Address(chainId) || ""))
         return;
 
       setLatestApprove(

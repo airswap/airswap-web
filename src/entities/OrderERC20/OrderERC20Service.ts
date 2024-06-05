@@ -1,22 +1,13 @@
-import { Server, SwapERC20 } from "@airswap/libraries";
-import {
-  createOrderERC20,
-  OrderERC20,
-  Pricing,
-  toAtomicString,
-  TokenInfo,
-  UnsignedOrderERC20,
-} from "@airswap/utils";
+import { Server } from "@airswap/libraries";
+import { OrderERC20, toAtomicString, UnsignedOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import { BigNumber } from "bignumber.js";
 
-import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
-import { AppError, isAppError } from "../../errors/appError";
+import { isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import { isPromiseFulfilledResult } from "../../helpers/promise";
-import { ExtendedPricing } from "../ExtendedPricing/ExtendedPricing";
-import { getPricingQuoteAmount } from "../ExtendedPricing/ExtendedPricingHelpers";
+import { getSwapErc20Address } from "../../helpers/swapErc20";
 import { isOrderERC20 } from "./OrderERC20Helpers";
 import { transformUnsignedOrderERC20ToOrderERC20 } from "./OrderERC20Transformers";
 
@@ -74,7 +65,7 @@ export const signOrderERC20AndSendForConsideration = async (
   const signature = await createOrderERC20Signature(
     unsignedOrder,
     library.getSigner(),
-    SwapERC20.getAddress(chainId)!,
+    getSwapErc20Address(chainId)!,
     chainId
   );
 

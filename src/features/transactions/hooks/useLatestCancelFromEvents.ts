@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { SwapERC20 } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, Event } from "ethers";
@@ -8,6 +7,7 @@ import { BigNumber, Event } from "ethers";
 import { CancelEvent } from "../../../entities/CancelEvent/CancelEvent";
 import { transformToCancelEvent } from "../../../entities/CancelEvent/CancelEventTransformers";
 import { compareAddresses } from "../../../helpers/string";
+import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 const useLatestCancelFromEvents = (
@@ -26,7 +26,7 @@ const useLatestCancelFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const swapContract = SwapERC20.getContract(provider, chainId);
+    const swapContract = getSwapErc20Contract(provider, chainId);
     const cancelEvent = "Cancel";
 
     swapContract.protocolFeeWallet().then(() => {

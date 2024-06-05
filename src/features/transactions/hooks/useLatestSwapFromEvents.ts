@@ -9,6 +9,7 @@ import { BigNumber, Event } from "ethers";
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
 import { compareAddresses } from "../../../helpers/string";
+import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 const useLatestSwapFromEvents = (
@@ -27,7 +28,7 @@ const useLatestSwapFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const swapContract = SwapERC20.getContract(provider, chainId);
+    const swapContract = getSwapErc20Contract(provider, chainId);
     const swapEvent = "SwapERC20";
 
     swapContract.protocolFeeWallet().then((feeReceiver: string) => {
