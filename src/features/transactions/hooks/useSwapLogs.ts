@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { Event } from "ethers";
 
 import getContractEvents from "../../../helpers/getContractEvents";
+import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 interface SwapLogs {
@@ -79,7 +80,7 @@ const useSwapLogs = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const swapContract = SwapERC20.getContract(provider, chainId);
+    const swapContract = getSwapErc20Contract(provider, chainId);
     const wrapperContract = Wrapper.getContract(provider, chainId);
     actions.execute(swapContract, wrapperContract, account);
 

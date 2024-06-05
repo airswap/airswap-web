@@ -1,4 +1,3 @@
-import { SwapERC20 } from "@airswap/libraries";
 import {
   decompressFullOrderERC20,
   FullOrderERC20,
@@ -9,11 +8,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { providers } from "ethers";
 
 import {
-  notifyConfirmation,
   notifyError,
   notifyRejectedByUserError,
 } from "../../components/Toasts/ToastController";
 import { SubmittedCancellation } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { getSwapErc20Contract } from "../../helpers/swapErc20";
 import i18n from "../../i18n/i18n";
 import {
   TransactionStatusType,
@@ -73,7 +72,7 @@ export const cancelOrder = createAsyncThunk(
 
     dispatch(setStatus("signing"));
 
-    const tx = await SwapERC20.getContract(
+    const tx = await getSwapErc20Contract(
       params.library.getSigner(),
       params.chainId
     )

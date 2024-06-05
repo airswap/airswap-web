@@ -1,4 +1,4 @@
-import { Registry, SwapERC20 } from "@airswap/libraries";
+import { Registry } from "@airswap/libraries";
 import {
   FullOrderERC20,
   OrderERC20,
@@ -40,6 +40,7 @@ import { AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import getWethAddress from "../../helpers/getWethAddress";
+import { getSwapErc20Address } from "../../helpers/swapErc20";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import i18n from "../../i18n/i18n";
 import { TransactionStatusType } from "../../types/transactionTypes";
@@ -397,7 +398,7 @@ export const takeLastLookOrder =
     const signature = await createOrderERC20Signature(
       unsignedOrder,
       library.getSigner(),
-      SwapERC20.getAddress(chainId)!,
+      getSwapErc20Address(chainId)!,
       chainId
     );
 

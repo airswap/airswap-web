@@ -1,8 +1,8 @@
-import { SwapERC20, Wrapper, BatchCall } from "@airswap/libraries";
+import { Wrapper, BatchCall } from "@airswap/libraries";
 
-import erc20Abi from "erc-20-abi";
-import { BigNumber, ethers, EventFilter, Event } from "ethers";
-import { hexZeroPad, id } from "ethers/lib/utils";
+import { BigNumber, ethers } from "ethers";
+
+import { getSwapErc20Address } from "../../helpers/swapErc20";
 
 interface WalletParams {
   chainId: number;
@@ -30,7 +30,7 @@ const fetchBalancesOrAllowances: (
       ? [walletAddress, tokenAddresses]
       : spenderAddressType === "Swap"
       ? // sender, spender, tokens.
-        [walletAddress, SwapERC20.getAddress(chainId), tokenAddresses]
+        [walletAddress, getSwapErc20Address(chainId), tokenAddresses]
       : [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());

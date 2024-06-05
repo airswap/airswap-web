@@ -1,4 +1,3 @@
-import { SwapERC20 } from "@airswap/libraries";
 import {
   createOrderERC20,
   toAtomicString,
@@ -17,6 +16,7 @@ import {
 } from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
+import { getSwapErc20Address } from "../../helpers/swapErc20";
 import { sendOrderToIndexers } from "../indexer/indexerHelpers";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
 
@@ -76,7 +76,7 @@ export const createOtcOrder = createAsyncThunk(
       const signature = await createOrderERC20Signature(
         unsignedOrder,
         params.library.getSigner(),
-        SwapERC20.getAddress(params.chainId) || "",
+        getSwapErc20Address(params.chainId) || "",
         params.chainId
       );
 
@@ -95,7 +95,7 @@ export const createOtcOrder = createAsyncThunk(
         ...unsignedOrder,
         ...signature,
         chainId: params.chainId,
-        swapContract: SwapERC20.getAddress(params.chainId) || "",
+        swapContract: getSwapErc20Address(params.chainId) || "",
       };
 
       dispatch(setUserOrder(fullOrder));
