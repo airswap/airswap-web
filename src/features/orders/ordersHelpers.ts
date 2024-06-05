@@ -1,4 +1,4 @@
-import { Server, SwapERC20, Wrapper, WETH } from "@airswap/libraries";
+import { Server, Wrapper, WETH } from "@airswap/libraries";
 import {
   toAtomicString,
   parseCheckResult,
@@ -12,12 +12,16 @@ import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
-import { AppError, AppErrorType } from "../../errors/appError";
+import { AppError } from "../../errors/appError";
 import {
   SwapError,
   transformSwapErrorToAppError,
 } from "../../errors/swapError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import {
+  getSwapErc20Address,
+  getSwapErc20Contract,
+} from "../../helpers/swapErc20";
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
@@ -28,7 +32,7 @@ async function swap(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20 | FullOrderERC20
 ) {
-  let contract = await SwapERC20.getContract(provider.getSigner(), chainId);
+  let contract = await getSwapErc20Contract(provider.getSigner(), chainId);
   if ("senderWallet" in order && order.senderWallet === ADDRESS_ZERO) {
     return contract.swapAnySender(
       await (await provider.getSigner()).getAddress(),
@@ -97,7 +101,7 @@ export async function approveToken(
 ) {
   const spender =
     contractType === "Swap"
-      ? SwapERC20.getAddress(provider.network.chainId)
+      ? getSwapErc20Address(provider.network.chainId)
       : Wrapper.getAddress(provider.network.chainId);
   const erc20Contract = new ethers.Contract(
     baseToken,
@@ -200,7 +204,7 @@ export async function check(
   isSwapWithWrap?: boolean
 ): Promise<AppError[]> {
   const strings = await (
-    await SwapERC20.getContract(provider, chainId)
+    await getSwapErc20Contract(provider, chainId)
   ).check(senderWallet, ...orderERC20ToParams(order));
 
   const errors = parseCheckResult(strings) as SwapError[];
@@ -225,7 +229,7 @@ export async function getNonceUsed(
   order: FullOrderERC20,
   provider: ethers.providers.BaseProvider
 ): Promise<boolean> {
-  return (await SwapERC20.getContract(provider, order.chainId)).nonceUsed(
+  return (await getSwapErc20Contract(provider, order.chainId)).nonceUsed(
     order.signerWallet,
     order.nonce
   );
