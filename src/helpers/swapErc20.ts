@@ -573,7 +573,7 @@ export const getSwapErc20Contract = (
   providerOrSigner: ethers.providers.Provider | ethers.Signer,
   chainId: number
 ): ethers.Contract => {
-  if (!shouldOverride) {
+  if (!shouldOverride || chainId !== 1) {
     return SwapERC20.getContract(providerOrSigner, chainId);
   }
 
@@ -584,7 +584,7 @@ export const getSwapErc20Contract = (
 };
 
 export const getSwapErc20Address = (chainId: number): string | undefined => {
-  if (!shouldOverride) {
+  if (!shouldOverride || chainId !== 1) {
     return SwapERC20.getAddress(chainId) || undefined;
   }
 
