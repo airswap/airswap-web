@@ -1,6 +1,6 @@
 import { AddEthereumChainParameter, Connector } from "@web3-react/types";
 
-import { SupportedChain } from "../constants/supportedChains";
+import { SupportedNetwork } from "../constants/supportedNetworks";
 import { chainInfo } from "./chainInfo";
 import { ConnectionType, getConnection } from "./connections";
 
@@ -32,7 +32,7 @@ export const switchNetwork = async (
     return;
   }
 
-  const info = chainInfo[chainId as SupportedChain];
+  const info = chainInfo[chainId as SupportedNetwork];
   const addChainParameter: AddEthereumChainParameter = {
     chainId,
     chainName: info.nativeCurrency.name,

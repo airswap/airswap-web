@@ -12,3 +12,5 @@ export const supportedNetworks: number[] = [
   ChainIds.BSC,
   ChainIds.RSK,
 ];
+
+export type SupportedNetwork = typeof supportedNetworks[number];

@@ -12,6 +12,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { useAppSelector } from "../../app/hooks";
+import { supportedNetworks } from "../../constants/supportedNetworks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { BalancesState } from "../../features/balances/balancesSlice";
@@ -179,7 +180,9 @@ const TransactionsTab = ({
           <WalletHeader>
             <NetworkInfoContainer>
               <NetworkName>
-                {chainNames[chainId] || t("wallet.unsupported")}
+                {isActive &&
+                  !supportedNetworks.includes(chainId) &&
+                  t("wallet.unsupported")}
               </NetworkName>
               {isActive && (
                 <Balances>
