@@ -3,7 +3,7 @@ import { AddEthereumChainParameter } from "@web3-react/types";
 
 import nativeCurrency from "../constants/nativeCurrency";
 import { rpcUrls } from "../constants/rpc";
-import { SupportedChain } from "../constants/supportedChains";
+import { SupportedNetwork } from "../constants/supportedNetworks";
 
 interface NativeCurrencyTokenInfo extends TokenInfo {
   decimals: 18;
@@ -16,7 +16,7 @@ interface ChainInfo extends Partial<AddEthereumChainParameter> {
   rpcUrl: string;
 }
 
-export const chainInfo: Record<SupportedChain, ChainInfo> = {
+export const chainInfo: Record<SupportedNetwork, ChainInfo> = {
   [ChainIds.MAINNET]: {
     explorer: "https://etherscan.io/",
     label: "Ethereum",

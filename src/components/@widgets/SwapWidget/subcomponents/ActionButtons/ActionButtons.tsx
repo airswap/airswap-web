@@ -73,8 +73,8 @@ const ActionButtons: FC<{
   // First determine the next action.
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
-  if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
-  else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
+  if (!walletIsActive) nextAction = ButtonActions.connectWallet;
+  else if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
   else if (hasError) nextAction = ButtonActions.goBack;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
