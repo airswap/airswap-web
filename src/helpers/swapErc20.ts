@@ -1,4 +1,5 @@
 import { SwapERC20 } from "@airswap/libraries";
+import { mainnets } from "@airswap/utils";
 
 import { ethers } from "ethers";
 
@@ -573,7 +574,7 @@ export const getSwapErc20Contract = (
   providerOrSigner: ethers.providers.Provider | ethers.Signer,
   chainId: number
 ): ethers.Contract => {
-  if (!shouldOverride || chainId !== 1) {
+  if (!shouldOverride || !mainnets.includes(chainId)) {
     return SwapERC20.getContract(providerOrSigner, chainId);
   }
 
