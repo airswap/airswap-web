@@ -7,7 +7,7 @@ import { setUserOrders } from "./myOrdersSlice";
 const useMyOrders = () => {
   const dispatch = useAppDispatch();
 
-  const { account, chainId } = useAppSelector((state) => state.web3);
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
 
   const [activeAccount, setActiveAccount] = useState<string>();
   const [activeChainId, setActiveChainId] = useState<number>();
@@ -28,4 +28,13 @@ const useMyOrders = () => {
 
     dispatch(setUserOrders(userOrders));
   }, [account, chainId]);
+
+  useEffect(() => {
+    if (!isActive) {
+      setActiveAccount(undefined);
+      setActiveChainId(undefined);
+    }
+  }, [isActive]);
 };
+
+export default useMyOrders;

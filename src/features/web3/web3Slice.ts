@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { ConnectionType } from "../../web3-connectors/connections";
+import { walletDisconnected } from "./web3Actions";
 import {
   clearLastProviderFromLocalStorage,
   saveLastProviderToLocalStorage,
@@ -67,6 +68,14 @@ export const web3Slice = createSlice({
       ...state,
       error: action.payload,
     }),
+  },
+  extraReducers: (builder) => {
+    builder.addCase(walletDisconnected, () => {
+      return {
+        ...initialState,
+        isInitialized: false,
+      };
+    });
   },
 });
 

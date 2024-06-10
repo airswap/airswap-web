@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { setUserOrder } from "../makeOtc/makeOtcSlice";
-import { walletDisconnected } from "../metadata/metadataActions";
+import { walletChanged, walletDisconnected } from "../web3/web3Actions";
 import { writeUserOrdersToLocalStorage } from "./myOrdersHelpers";
 
 export type OrdersSortType =
@@ -85,9 +85,8 @@ export const myOrdersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(walletDisconnected, (): MyOrdersState => {
-      return initialState;
-    });
+    builder.addCase(walletDisconnected, (): MyOrdersState => initialState);
+    builder.addCase(walletChanged, (): MyOrdersState => initialState);
 
     builder.addCase(setUserOrder, (state, action) => {
       const userOrders = [action.payload, ...state.userOrders];

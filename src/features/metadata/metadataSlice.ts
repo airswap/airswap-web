@@ -3,12 +3,12 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
+import { walletDisconnected } from "../web3/web3Actions";
 import { setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
-  walletDisconnected,
 } from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,

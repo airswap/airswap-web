@@ -1,6 +1,6 @@
 import { getKnownTokens, TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import * as ethers from "ethers";
 
@@ -53,5 +53,3 @@ export const fetchProtocolFee = createAsyncThunk<
 >("metadata/fetchProtocolFee", async ({ provider, chainId }) =>
   getProtocolFee(chainId, provider)
 );
-
-export const walletDisconnected = createAction("metadata/walletDisconnected");
