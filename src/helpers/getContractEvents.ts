@@ -1,9 +1,40 @@
 import { Contract, Event, EventFilter } from "ethers";
 
-const getBlockLimitFromErrorMessage = (message: string): number | false => {
-  const match = message.match(/\d+/);
+export interface BlockLimitError {
+  code: -32005;
+  message: string;
+  data: {
+    from: string;
+    limit: number;
+    to: string;
+  };
+}
 
-  return match ? parseInt(match[0]) : false;
+export interface BlockLimitErrorVariant {
+  code: number;
+  data: {
+    message: string;
+  };
+}
+
+export const getBlockLimitFromError = (
+  error: BlockLimitError | BlockLimitErrorVariant
+): number | undefined => {
+  if (!error.data) {
+    return;
+  }
+
+  if ("limit" in error.data) {
+    return error.data.limit;
+  }
+
+  if (!error.data?.message) {
+    return;
+  }
+
+  const match = error.data.message.match(/\d+/);
+
+  return match ? parseInt(match[0]) : undefined;
 };
 
 const getContractQueryFilterInIncrements = async (
@@ -43,10 +74,7 @@ export const getContractEvents = (
         resolve(events);
       })
       .catch(async (error) => {
-        const message = error?.data?.message;
-        const blockLimit = message
-          ? getBlockLimitFromErrorMessage(message)
-          : false;
+        const blockLimit = error ? getBlockLimitFromError(error) : false;
 
         if (!blockLimit) {
           console.error(
