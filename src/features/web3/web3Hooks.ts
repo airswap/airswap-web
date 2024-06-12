@@ -64,7 +64,6 @@ const useWeb3 = (): void => {
 
   useEffect(() => {
     if (isInitialized && isActive && account) {
-      console.log("wallet changed");
       dispatch(walletChanged());
     }
   }, [account]);

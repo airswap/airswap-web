@@ -163,6 +163,8 @@ export const DisconnectButton = styled(Button)`
   }
 `;
 
+export const ConnectButton = styled(DisconnectButton)``;
+
 export const MobileBackButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
   display: none;
