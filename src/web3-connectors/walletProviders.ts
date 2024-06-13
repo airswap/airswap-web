@@ -57,7 +57,7 @@ const walletProviders: WalletProvider[] = [
     type: ConnectionType.coinbase,
   },
   {
-    name: "BitKeep",
+    name: "Bitget",
     logo: "logos/bitkeep.png",
     isInstalled: isBitKeepInstalled,
     url: "https://web3.bitget.com/",
