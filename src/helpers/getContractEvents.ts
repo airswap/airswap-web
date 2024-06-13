@@ -18,21 +18,19 @@ export interface BlockLimitErrorVariant {
 }
 
 export const getBlockLimitFromError = (
-  error: BlockLimitError | BlockLimitErrorVariant
+  error: BlockLimitError | BlockLimitErrorVariant | Error
 ): number | undefined => {
-  if (!error.data) {
-    return;
-  }
-
-  if ("limit" in error.data) {
+  if ("data" in error && "limit" in error.data) {
     return error.data.limit;
   }
 
-  if (!error.data?.message) {
+  const message = "message" in error ? error.message : error.data?.message;
+
+  if (!message) {
     return;
   }
 
-  const match = error.data.message.match(/\d+/);
+  const match = message.match(/\d+/);
 
   return match ? parseInt(match[0]) : undefined;
 };

@@ -25,11 +25,15 @@ describe("getBlockLimitFromError", () => {
       },
     };
 
+    const error3 = new Error("Message: ‘exceed maximum block range: 50000’");
+
     const result1 = getBlockLimitFromError(error);
     const result2 = getBlockLimitFromError(error2);
+    const result3 = getBlockLimitFromError(error3);
 
     expect(result1).toBe(10000);
     expect(result2).toBe(1000);
+    expect(result3).toBe(50000);
   });
 
   it("should return undefined if no limit number in error", () => {
