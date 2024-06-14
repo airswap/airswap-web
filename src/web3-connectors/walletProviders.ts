@@ -1,5 +1,6 @@
 import { ConnectionType } from "./connections";
 import {
+  getHasBitKeepExtensionInstalled,
   getHasMetaMaskExtensionInstalled,
   getHasRabbyExtensionInstalled,
 } from "./helpers";
@@ -13,6 +14,7 @@ export type WalletProvider = {
 };
 
 const walletConnectProjectId = process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID;
+const isBitKeepInstalled = getHasBitKeepExtensionInstalled();
 const isMetamaskInstalled = getHasMetaMaskExtensionInstalled();
 const isRabbyInstalled = getHasRabbyExtensionInstalled();
 
@@ -53,6 +55,13 @@ const walletProviders: WalletProvider[] = [
     isInstalled: true,
     url: "https://www.coinbase.com/wallet",
     type: ConnectionType.coinbase,
+  },
+  {
+    name: "BitKeep",
+    logo: "logos/bitkeep.png",
+    isInstalled: isBitKeepInstalled,
+    url: "https://web3.bitget.com/",
+    type: ConnectionType.bitKeep,
   },
 ];
 

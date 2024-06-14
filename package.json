@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@airswap/libraries": "4.3.5",
+    "@akkafinance/web3-react-bitkeep": "^1.0.0",
     "@coinbase/wallet-sdk": "^3.7.2",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
@@ -112,8 +113,5 @@
   },
   "resolutions": {
     "styled-components": "^5"
-  },
-  "engines": {
-    "node": "18.19.0"
   }
 }
