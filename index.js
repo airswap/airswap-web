@@ -4,7 +4,6 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: 'https://app.safe.global',
   methods: 'GET',
   allowedHeaders: 'X-Requested-With, content-type, Authorization',
   credentials: true
