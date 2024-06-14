@@ -19,7 +19,7 @@ export function buildCoinbaseWalletConnector() {
         new CoinbaseWallet({
           actions,
           options: {
-            appName: "Airswap webapp",
+            appName: "AirSwap webapp",
             url: rpcUrl || "",
             overrideIsCoinbaseWallet: true,
           } as CoinbaseWalletConstructorArgs["options"],

@@ -18,7 +18,7 @@ export function buildBitKeepWalletConnector() {
         new BitKeep({
           actions,
           options: {
-            appName: "Airswap webapp",
+            appName: "AirSwap webapp",
             url: rpcUrl || "",
           } as BitKeepConstructorArgs["options"],
           onError: onConnectionError,

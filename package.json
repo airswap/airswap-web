@@ -113,5 +113,8 @@
   },
   "resolutions": {
     "styled-components": "^5"
+  },
+  "engines": {
+    "node": "18.19.0"
   }
 }
