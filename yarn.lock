@@ -19,10 +19,10 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.3.4.tgz#3f56e7ef01842934be44b9f97f93e248c8b159b2"
-  integrity sha512-MCEBn7yZa1vSALSABUWsPUOcNH+fSc1uRQKK3CGBH29y1ZaaMVdrekeYZXckjjEpJvIaUx3tX/bHE2hrQR89Iw==
+"@airswap/libraries@4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-4.3.5.tgz#854ede69d2ab35dc2f49d0ae1cefb27c5c671cc6"
+  integrity sha512-I6z9fStc9C3/d9xxp8XNdTuKtH+gxM5/jLSZOW7CsknzP+8PeYADu5AS9PimS90lYbw286gaxzXkjUSQ0zqtyw==
   dependencies:
     "@airswap/batch-call" "4.2.3"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
@@ -31,7 +31,7 @@
     "@airswap/staking" "4.2.2"
     "@airswap/swap" "4.2.2"
     "@airswap/swap-erc20" "4.3.1"
-    "@airswap/utils" "4.3.2"
+    "@airswap/utils" "4.3.3"
     "@airswap/wrapper" "4.2.3"
     browser-or-node "^2.1.1"
     ethers "^5.7.2"
@@ -64,10 +64,10 @@
   resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-4.2.2.tgz#6587f437980f5cf1715d5135039141ff66f491e3"
   integrity sha512-EIx0btHqx4aq8J4hnYe1fignNIuQwlnPnQWK7qgONpEnV++GfUwwbTso62jb7gmmU/pQAdl4Qm1TZfljvfoDdg==
 
-"@airswap/utils@4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-4.3.2.tgz#2c3c1419a3acee7a156ef484c68c6f75bee226a3"
-  integrity sha512-Dr1ZEnjzcNSq8KyM8efnnzRI9rOW3kfulbzagwzN6idQdfPWNoNczHCgY6TzglqwSKeIm+uuFNF5pbxCd0r7Mw==
+"@airswap/utils@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-4.3.3.tgz#f42e5db25a8808d8fba97634f7e751e87530d29c"
+  integrity sha512-J5tAMeRwlnFoXNGLCN5Gn4pARBS0ACVCawbuq7BMCNOPlFCNMU4y6SkIz3R79MQ5Vd9AAKXCPedBFe1jUJG3KA==
   dependencies:
     "@metamask/eth-sig-util" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
