@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { walletDisconnected } from "../metadata/metadataActions";
+import { walletDisconnected } from "../web3/web3Actions";
 import { fetchSupportedTokens } from "./registryActions";
 
 export interface RegistryState {

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { walletDisconnected } from "../metadata/metadataActions";
+import { walletDisconnected } from "../web3/web3Actions";
 import { getGasPrice } from "./gasCostApi";
 
 export interface GasCostState {

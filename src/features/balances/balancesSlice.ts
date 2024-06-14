@@ -12,7 +12,7 @@ import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import getWethAddress from "../../helpers/getWethAddress";
-import { walletDisconnected } from "../metadata/metadataActions";
+import { walletChanged, walletDisconnected } from "../web3/web3Actions";
 import { setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllowancesSwap,
@@ -205,6 +205,17 @@ const getSlice = (
         })
         .addCase(walletDisconnected, (): BalancesState => {
           return initialState;
+        })
+        .addCase(walletChanged, (state): BalancesState => {
+          const keys = Object.keys(state.values);
+          const values = keys.reduce((acc, key) => {
+            return { ...acc, [key]: "0" };
+          }, {});
+
+          return {
+            ...state,
+            values,
+          };
         });
     },
   });

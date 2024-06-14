@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import { InterfaceContext } from "../../contexts/interface/Interface";
+import useNetworkSupported from "../../hooks/useNetworkSupported";
 import {
   StyledAirswapButton,
   StyledChainSelector,
@@ -53,6 +54,8 @@ export const Wallet: FC<WalletProps> = ({
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
+  const isUnsupportedNetwork = useNetworkSupported();
+
   const handleClearTransactionsChange = (type: ClearOrderType) => {
     dispatch(setFilter(type));
   };
@@ -64,6 +67,10 @@ export const Wallet: FC<WalletProps> = ({
 
     tryDeactivateConnector(getConnection(connectionType).connector);
     clearLastProviderFromLocalStorage();
+  };
+
+  const handleConnectWalletClicked = () => {
+    setShowWalletList(true);
   };
 
   return (
@@ -110,10 +117,11 @@ export const Wallet: FC<WalletProps> = ({
         protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
         onClearTransactionsChange={handleClearTransactionsChange}
+        onConnectButtonClick={handleConnectWalletClicked}
         onDisconnectButtonClick={handleDisconnectWalletClicked}
         transactions={transactions}
         balances={balances!}
-        isUnsupportedNetwork={false}
+        isUnsupportedNetwork={isUnsupportedNetwork}
       />
     </>
   );

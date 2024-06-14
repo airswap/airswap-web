@@ -45,6 +45,7 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
+  ConnectButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
@@ -56,6 +57,7 @@ interface TransactionsTabProps {
   protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
+  onConnectButtonClick: () => void;
   onDisconnectButtonClick: () => void;
   transactions: SubmittedTransaction[];
   balances: BalancesState;
@@ -69,6 +71,7 @@ const TransactionsTab = ({
   protocolFee,
   setTransactionsTabOpen,
   onClearTransactionsChange,
+  onConnectButtonClick,
   onDisconnectButtonClick,
   transactions = [],
   balances,
@@ -262,12 +265,15 @@ const TransactionsTab = ({
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
-            <DisconnectButton
-              aria-label={t("wallet.disconnectWallet")}
-              onClick={onDisconnectButtonClick}
-            >
-              {t("wallet.disconnectWallet")}
-            </DisconnectButton>
+            {isActive ? (
+              <DisconnectButton onClick={onDisconnectButtonClick}>
+                {t("wallet.disconnectWallet")}
+              </DisconnectButton>
+            ) : (
+              <ConnectButton onClick={onConnectButtonClick}>
+                {t("wallet.connectWallet")}
+              </ConnectButton>
+            )}
             <MobileBackButton
               aria-label={t("common.back")}
               onClick={() => setTransactionsTabOpen(false)}

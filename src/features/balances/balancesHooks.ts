@@ -16,7 +16,7 @@ import {
 
 export const useBalances = () => {
   const { provider: library } = useWeb3React<Web3Provider>();
-  const { account, chainId } = useAppSelector((state) => state.web3);
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
   const dispatch = useAppDispatch();
 
   const activeTokens = useAppSelector(selectActiveTokens);
@@ -42,6 +42,13 @@ export const useBalances = () => {
     dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
     dispatch(fetchUnkownTokens({ provider: library }));
   }, [account, chainId, library, activeTokens]);
+
+  useEffect(() => {
+    if (!isActive) {
+      setActiveAccount(undefined);
+      setActiveChainId(undefined);
+    }
+  }, [isActive]);
 
   useEffect(() => {
     if (!latestSuccessfulTransaction || !library) {
