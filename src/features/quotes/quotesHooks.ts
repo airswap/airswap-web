@@ -18,6 +18,7 @@ import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useSwapType from "../../hooks/useSwapType";
 import useTokenInfo from "../../hooks/useTokenInfo";
 import { SwapType } from "../../types/swapType";
+import { ConnectionType } from "../../web3-connectors/connections";
 import { getGasPrice } from "../gasCost/gasCostApi";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
@@ -27,7 +28,7 @@ import {
   createLastLookUnsignedOrder,
 } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
-import { reset } from "./quotesSlice";
+import { reset, setDisableLastLook } from "./quotesSlice";
 
 interface UseQuotesValues {
   isLoading: boolean;
@@ -43,7 +44,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const dispatch = useAppDispatch();
 
   const { provider: library } = useWeb3React();
-  const { account, chainId } = useAppSelector((state) => state.web3);
+  const { account, chainId, connectionType } = useAppSelector(
+    (state) => state.web3
+  );
   const {
     baseToken,
     baseAmount: baseTokenAmount,
@@ -204,6 +207,13 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     bestLastLookOrder,
     bestRfqOrder,
   ]);
+
+  useEffect(() => {
+    // LastLook not working for gnosis provider, I have not been able to find the root cause.
+    if (connectionType === ConnectionType.gnosis) {
+      dispatch(setDisableLastLook(true));
+    }
+  }, [connectionType]);
 
   if (swapType === SwapType.wrapOrUnwrap) {
     return {
