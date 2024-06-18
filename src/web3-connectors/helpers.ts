@@ -12,6 +12,9 @@ export const getHasMetaMaskExtensionInstalled = (): boolean =>
 export const getHasRabbyExtensionInstalled = (): boolean =>
   !!window.ethereum?.isRabby;
 
+export const getHasBitKeepExtensionInstalled = (): boolean =>
+  "bitkeep" in window;
+
 export const onConnectionError = (error: Error) => {
   console.error(`web3-react error: ${error}`);
 };

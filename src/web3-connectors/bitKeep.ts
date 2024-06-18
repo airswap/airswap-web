@@ -1,7 +1,7 @@
 import {
-  CoinbaseWallet,
-  CoinbaseWalletConstructorArgs,
-} from "@web3-react/coinbase-wallet";
+  BitKeep,
+  BitKeepConstructorArgs,
+} from "@akkafinance/web3-react-bitkeep";
 import { initializeConnector } from "@web3-react/core";
 
 import { getRpcUrl } from "../helpers/ethers";
@@ -11,24 +11,22 @@ import { onConnectionError } from "./helpers";
 const chainId = +(process.env.REACT_APP_CHAIN_ID || "1");
 const rpcUrl = getRpcUrl(chainId);
 
-export function buildCoinbaseWalletConnector() {
-  // @ts-ignore
-  const [web3CoinbaseWallet, web3CoinbaseWalletHooks] =
-    initializeConnector<CoinbaseWallet>(
+export function buildBitKeepWalletConnector() {
+  const [web3BitKeepWallet, web3BitKeepWalletHooks] =
+    initializeConnector<BitKeep>(
       (actions) =>
-        new CoinbaseWallet({
+        new BitKeep({
           actions,
           options: {
             appName: "AirSwap webapp",
             url: rpcUrl || "",
-            overrideIsCoinbaseWallet: true,
-          } as CoinbaseWalletConstructorArgs["options"],
+          } as BitKeepConstructorArgs["options"],
           onError: onConnectionError,
         })
     );
   const coinbaseWalletConnection: Connection = {
-    connector: web3CoinbaseWallet,
-    hooks: web3CoinbaseWalletHooks,
+    connector: web3BitKeepWallet,
+    hooks: web3BitKeepWalletHooks,
     type: ConnectionType.coinbase,
   };
 
