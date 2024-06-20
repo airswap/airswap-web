@@ -22,10 +22,7 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import {
-  selectAllowances,
-  selectBalances,
-} from "../../../features/balances/balancesSlice";
+import { selectBalances } from "../../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
   getFilteredOrders,

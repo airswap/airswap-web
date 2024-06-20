@@ -54,7 +54,7 @@ export const Wallet: FC<WalletProps> = ({
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
-  const isUnsupportedNetwork = useNetworkSupported();
+  const isSupportedNetwork = useNetworkSupported();
 
   const handleClearTransactionsChange = (type: ClearOrderType) => {
     dispatch(setFilter(type));
@@ -121,7 +121,7 @@ export const Wallet: FC<WalletProps> = ({
         onDisconnectButtonClick={handleDisconnectWalletClicked}
         transactions={transactions}
         balances={balances!}
-        isUnsupportedNetwork={isUnsupportedNetwork}
+        isUnsupportedNetwork={!isSupportedNetwork}
       />
     </>
   );
