@@ -24,7 +24,7 @@ export const INDEXER_ORDER_RESPONSE_TIME_MS = 4000;
 
 /**
  * This is the period of time within which we must receive a response from
- * Registry.getServers before we count it as a timeout.
+ * RegistryV3.getServers before we count it as a timeout.
  */
 export const REGISTRY_SERVER_RESPONSE_TIME_MS = 3000;
 

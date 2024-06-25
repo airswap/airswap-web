@@ -1,13 +1,13 @@
-import { Registry } from "@airswap/libraries";
+import { RegistryV3 } from "@airswap/libraries";
 
 import { providers, Event } from "ethers";
 
 async function getStakerTokens(chainId: number, provider: providers.Provider) {
-  const registryContract = Registry.getContract(provider, chainId);
+  const registryContract = RegistryV3.getContract(provider, chainId);
 
   const firstTxRegistryContract =
     chainId &&
-    Registry.deployedBlocks[chainId as keyof typeof Registry.deployedBlocks];
+    RegistryV3.deployedBlocks[chainId as keyof typeof RegistryV3.deployedBlocks];
   const currentBlock = await provider?.getBlockNumber();
 
   const addTokensEventFilter = registryContract.filters.AddTokens();

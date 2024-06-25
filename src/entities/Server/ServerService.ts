@@ -1,4 +1,4 @@
-import { Registry, Server } from "@airswap/libraries";
+import { RegistryV3, Server } from "@airswap/libraries";
 import { ProtocolIds } from "@airswap/utils";
 import { BaseProvider } from "@ethersproject/providers";
 
@@ -14,7 +14,7 @@ export const getRegistryServers = async (
 ): Promise<Server[]> => {
   try {
     const response = await Promise.race([
-      Registry.getServers(provider, chainId, protocol, quoteToken, baseToken),
+      RegistryV3.getServers(provider, chainId, quoteToken, baseToken),
       new Promise((_, reject) =>
         setTimeout(
           () => reject(new Error("Timeout")),

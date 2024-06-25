@@ -1,4 +1,4 @@
-import { Registry, Server } from "@airswap/libraries";
+import { RegistryV3, Server } from "@airswap/libraries";
 import { OrderERC20, ProtocolIds, TokenInfo } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

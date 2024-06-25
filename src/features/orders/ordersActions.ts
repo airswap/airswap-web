@@ -1,4 +1,4 @@
-import { Registry } from "@airswap/libraries";
+import { RegistryV3 } from "@airswap/libraries";
 import {
   FullOrderERC20,
   OrderERC20,
@@ -377,7 +377,7 @@ export const takeLastLookOrder =
   async (
     dispatch: AppDispatch
   ): Promise<SubmittedOrderUnderConsideration | undefined> => {
-    const servers = await Registry.getServers(
+    const servers = await RegistryV3.getServers(
       library,
       chainId,
       ProtocolIds.LastLookERC20,
