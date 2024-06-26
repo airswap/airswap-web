@@ -1,9 +1,29 @@
-import { Registry, Server } from "@airswap/libraries";
-import { ProtocolIds } from "@airswap/utils";
+import { Server, RegistryV3, Registry } from "@airswap/libraries";
+import { ChainIds, mainnets, ProtocolIds } from "@airswap/utils";
 import { BaseProvider } from "@ethersproject/providers";
 
 import { REGISTRY_SERVER_RESPONSE_TIME_MS } from "../../constants/configParams";
 import { isServer } from "./ServerHelpers";
+
+export const getVersionedRegistryServers = (
+  provider: BaseProvider,
+  chainId: number,
+  protocol: ProtocolIds,
+  quoteToken: string,
+  baseToken: string
+): Promise<Server[]> => {
+  if (RegistryV3.addresses[chainId]) {
+    return RegistryV3.getServers(provider, chainId, quoteToken, baseToken);
+  }
+
+  return Registry.getServers(
+    provider,
+    chainId,
+    protocol,
+    quoteToken,
+    baseToken
+  );
+};
 
 export const getRegistryServers = async (
   provider: BaseProvider,
@@ -14,7 +34,13 @@ export const getRegistryServers = async (
 ): Promise<Server[]> => {
   try {
     const response = await Promise.race([
-      Registry.getServers(provider, chainId, protocol, quoteToken, baseToken),
+      getVersionedRegistryServers(
+        provider,
+        chainId,
+        protocol,
+        quoteToken,
+        baseToken
+      ),
       new Promise((_, reject) =>
         setTimeout(
           () => reject(new Error("Timeout")),
