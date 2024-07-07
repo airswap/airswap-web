@@ -1,5 +1,5 @@
 import { Server, RegistryV3, Registry } from "@airswap/libraries";
-import { ChainIds, mainnets, ProtocolIds } from "@airswap/utils";
+import { ProtocolIds } from "@airswap/utils";
 import { BaseProvider } from "@ethersproject/providers";
 
 import { REGISTRY_SERVER_RESPONSE_TIME_MS } from "../../constants/configParams";

@@ -98,11 +98,11 @@ export const createOtcOrder = createAsyncThunk(
         swapContract: getSwapErc20Address(params.chainId) || "",
       };
 
-      dispatch(setUserOrder(fullOrder));
       if (params.shouldSendToIndexers && params.activeIndexers) {
         sendOrderToIndexers(fullOrder, params.activeIndexers);
       }
-      notifyOrderCreated(fullOrder);
+
+      dispatch(setUserOrder(fullOrder));
     } catch (error) {
       console.error(error);
       dispatch(setStatus("failed"));
