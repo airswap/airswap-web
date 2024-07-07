@@ -62,6 +62,7 @@ import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesMod
 import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
+import { notifyOrderCreated } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
@@ -193,6 +194,8 @@ const MakeWidget: FC = () => {
       const compressedOrder = compressFullOrderERC20(lastUserOrder);
       dispatch(clearLastUserOrder());
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
+
+      notifyOrderCreated(lastUserOrder);
     }
   }, [lastUserOrder, history, dispatch]);
 
