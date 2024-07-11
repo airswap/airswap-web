@@ -24,18 +24,24 @@ export const useBalances = () => {
 
   const [activeAccount, setActiveAccount] = useState<string>();
   const [activeChainId, setActiveChainId] = useState<number>();
+  const [activeTokensLength, setActiveTokensLength] = useState<number>(0);
 
   useEffect(() => {
     if (!library || !activeTokens.length || !account) {
       return;
     }
 
-    if (activeAccount === account && activeChainId === chainId) {
+    if (
+      activeAccount === account &&
+      activeChainId === chainId &&
+      activeTokens.length === activeTokensLength
+    ) {
       return;
     }
 
     setActiveAccount(account);
     setActiveChainId(chainId);
+    setActiveTokensLength(activeTokens.length);
 
     dispatch(requestActiveTokenBalances({ provider: library }));
     dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
@@ -47,6 +53,7 @@ export const useBalances = () => {
     if (!isActive) {
       setActiveAccount(undefined);
       setActiveChainId(undefined);
+      setActiveTokensLength(0);
     }
   }, [isActive]);
 
