@@ -4,7 +4,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
 import { walletDisconnected } from "../web3/web3Actions";
-import { setWeb3Data } from "../web3/web3Slice";
+import { selectChainId, setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllTokens,
   fetchProtocolFee,
@@ -78,13 +78,13 @@ export const metadataSlice = createSlice({
   },
   extraReducers: async (builder) => {
     builder
-      .addCase(fetchAllTokens.pending, (state) => {
+      .addCase(fetchAllTokens.pending, (state): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: true,
         };
       })
-      .addCase(fetchAllTokens.fulfilled, (state, action) => {
+      .addCase(fetchAllTokens.fulfilled, (state, action): MetadataState => {
         const { payload: tokenInfo } = action;
         const newAllTokens = tokenInfo.reduce(
           (allTokens: MetadataTokens["all"], token) => {
@@ -124,9 +124,7 @@ export const metadataSlice = createSlice({
           tokens,
         };
       })
-      .addCase(fetchAllTokens.rejected, (state) => {
-        // TODO: handle failure?
-        // perhaps rejected state can be for when errors.length === known.length ?
+      .addCase(fetchAllTokens.rejected, (state, action): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: false,
@@ -163,9 +161,15 @@ const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
 export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;
-export const selectAllTokenInfo = (state: RootState) => [
+export const selectAllTokens = (state: RootState) => [
   ...Object.values(state.metadata.tokens.all),
 ];
+export const selectAllTokenInfo = createSelector(
+  [selectAllTokens, selectChainId],
+  (allTokenInfo, chainId) => {
+    return allTokenInfo.filter((tokenInfo) => tokenInfo.chainId === chainId);
+  }
+);
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {

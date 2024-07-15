@@ -44,7 +44,7 @@ const useMetadata = () => {
   }, [account, chainId, provider]);
 
   useEffect(() => {
-    if (!chainId || !provider) {
+    if (!chainId || !provider || !account) {
       return;
     }
 
@@ -55,8 +55,8 @@ const useMetadata = () => {
     setActiveChainId(chainId);
 
     dispatch(fetchAllTokens(chainId));
-    dispatch(fetchSupportedTokens({ provider }));
-    dispatch(fetchProtocolFee({ chainId, provider: provider! }));
+    dispatch(fetchSupportedTokens({ account, chainId, provider }));
+    dispatch(fetchProtocolFee({ chainId, provider }));
   }, [chainId, provider]);
 
   useEffect(() => {

@@ -16,11 +16,15 @@ export const fetchAllTokens = createAsyncThunk<
     state: RootState;
   }
 >("metadata/getKnownTokens", async (chainId, thunkApi) => {
-  const res = await getKnownTokens(chainId);
-  if (res.errors.length) {
-    console.log("Errors fetching metadata", res.errors);
+  const response = await getKnownTokens(chainId);
+
+  if (response.errors.length) {
+    console.log("Errors fetching metadata", response.errors);
+
     return [];
-  } else return res.tokens;
+  }
+
+  return response.tokens;
 });
 export const fetchUnkownTokens = createAsyncThunk<
   TokenInfo[], // Return type
