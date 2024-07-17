@@ -1,7 +1,6 @@
 import { Pool } from "@airswap/libraries";
 import {
   FullSwapERC20,
-  getFullSwapERC20,
   OrderERC20,
   protocolFeeReceiverAddresses,
 } from "@airswap/utils";
@@ -9,6 +8,7 @@ import {
 import { BigNumber, Event } from "ethers";
 
 import { transformFullSwapERC20ToOrderERC20 } from "../../../entities/OrderERC20/OrderERC20Transformers";
+import { getFullSwapERC20 } from "../../../helpers/getFullSwapERC20";
 
 export interface FullSwapErc20Log {
   hash: string;
@@ -53,6 +53,8 @@ export const getOrdersFromLogs = async (
         feeReceiver,
         receipt.logs
       );
+
+      if (!swap) return;
 
       const order = transformFullSwapERC20ToOrderERC20(swap, nonce.toString());
 
