@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { RootState } from "../../app/store";
 import { ConnectionType } from "../../web3-connectors/connections";
 import { walletDisconnected } from "./web3Actions";
 import {
@@ -78,6 +79,8 @@ export const web3Slice = createSlice({
     });
   },
 });
+
+export const selectChainId = (state: RootState) => state.web3.chainId;
 
 export const {
   setConnectionType,

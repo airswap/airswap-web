@@ -197,28 +197,27 @@ const TokenList = ({
               <LegendItem>{t("balances.balance")}</LegendItem>
             </Legend>
 
-            {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
-              <TokenContainer>
-                {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
-                  (token) => (
-                    <TokenButton
-                      showDeleteButton={
-                        editMode &&
-                        token.address !== nativeCurrency[chainId || 1].address
-                      }
-                      token={token}
-                      balance={formatUnits(
-                        balances.values[token.address] || 0,
-                        token.decimals
-                      )}
-                      setToken={onSelectToken}
-                      removeActiveToken={handleRemoveActiveToken}
-                      key={token.address}
-                    />
-                  )
-                )}
-              </TokenContainer>
-            )}
+            <TokenContainer>
+              {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
+                (token) => (
+                  <TokenButton
+                    showDeleteButton={
+                      editMode &&
+                      token.address !== nativeCurrency[chainId || 1].address
+                    }
+                    token={token}
+                    balance={formatUnits(
+                      balances.values[token.address] || 0,
+                      token.decimals
+                    )}
+                    setToken={onSelectToken}
+                    removeActiveToken={handleRemoveActiveToken}
+                    key={token.address}
+                  />
+                )
+              )}
+            </TokenContainer>
+
             {inactiveTokens.length !== 0 && (
               <InactiveTokensList
                 inactiveTokens={inactiveTokens}
