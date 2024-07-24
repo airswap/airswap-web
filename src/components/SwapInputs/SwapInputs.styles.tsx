@@ -22,23 +22,22 @@ export const Container = styled.div<{ $disabled: boolean }>`
 `;
 
 export const SwitchTokensButton = styled.button`
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyle};
 
   position: absolute;
-  right: calc(50% - 0.75rem);
-  top: calc(50% - 0.75rem);
+  right: calc(50% - 1rem);
+  top: calc(50% - 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
-      ? props.theme.colors.lightGrey
+      ? props.theme.colors.primary
       : props.theme.colors.darkGrey};
-  background-color: ${(props) => props.theme.colors.black};
-  font-size: 1.25rem;
+  background-color: ${(props) => props.theme.colors.white};
   z-index: 1;
 
   &:disabled {

@@ -8,6 +8,7 @@ import {
   InputOrButtonBorderStyle,
   TextEllipsis,
 } from "../../style/mixins";
+import { fontWide } from "../../style/themes";
 import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
@@ -45,7 +46,7 @@ export const ContainingButton = styled.button`
   display: flex;
   flex-direction: row;
   width: 40%;
-  height: 2.5rem;
+  height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
 
@@ -136,9 +137,10 @@ export const AmountInput = styled(FormInput)<{
 `;
 
 export const PlaceHolderBar = styled.div`
-  width: 100%;
-  height: 1.5rem;
-  background-image: ${(props) => props.theme.colors.placeholderGradient};
+  border-radius: 0.25rem;
+  width: 50%;
+  height: 1.75rem;
+  background: ${(props) => props.theme.colors.placeholder};
   animation: ${fadeOut} 0.35s ease-in-out infinite alternate;
 `;
 
@@ -167,6 +169,8 @@ export const StyledSelectItem = styled(SelectItem)`
   align-items: center;
   text-align: left;
   line-height: 1;
+  font-family: ${fontWide};
+  font-weight: 700;
   gap: 0.375rem;
   max-width: 7rem;
   color: ${(props) =>
@@ -178,7 +182,6 @@ export const StyledSelectItem = styled(SelectItem)`
 export const StyledLabel = styled(FormLabel)`
   ${fontTransition};
   text-align: left;
-  text-transform: uppercase;
 `;
 
 export const SubText = styled.div`
@@ -202,10 +205,10 @@ export const TokenSelectContainer = styled.div<{
   align-items: center;
   position: relative;
   width: 100%;
-  height: 4.5rem;
-  padding: 1rem;
+  height: 6.25rem;
+  padding-inline: 1.5rem 1rem;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2px;
+  border-radius: 0.75rem;
   background-color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.darkGrey
@@ -213,7 +216,7 @@ export const TokenSelectContainer = styled.div<{
   overflow: hidden;
 
   &:first-of-type {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   ${PlaceHolderBar} {
@@ -248,11 +251,11 @@ export const TokenSelectContainer = styled.div<{
   }
 
   ${StyledLabel} {
-    font-size: ${(props) => (props.$isQuote ? "0.625rem" : "0.75rem")};
+    font-size: ${(props) => (props.$isQuote ? "0.75rem" : "1rem")};
   }
 
   ${StyledSelectItem} {
-    font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
+    font-size: ${(props) => (props.$isQuote ? "1rem" : "1.5rem")};
   }
 `;
 
@@ -271,12 +274,15 @@ export const StyledSelectButtonContent = styled.span`
 export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
 }>`
-  ${fadeOutWhenInvisible}
+  ${fadeOutWhenInvisible};
+
+  translate: 0 3px;
 `;
 
 export const PlaceholderContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   justify-content: center;
   width: 50%;
 

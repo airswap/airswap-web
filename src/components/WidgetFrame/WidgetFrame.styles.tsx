@@ -13,8 +13,6 @@ export const WidgetFrameWrapper = styled.div`
   height: fit-content;
   min-height: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
-  background: ${(props) => props.theme.colors.black};
-  box-shadow: ${(props) => props.theme.shadows.widgetGlow};
   transition: box-shadow 0.3s ease-in-out;
   will-change: transform;
 
@@ -43,13 +41,6 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   width: 100%;
   height: 100%;
   min-height: ${sizes.widgetSize};
-
-  ${WidgetFrameWrapper} {
-    box-shadow: ${(props) =>
-      props.$isConnected
-        ? props.theme.shadows.widgetGlow
-        : props.theme.shadows.widgetGlowOff};
-  }
 
   @media ${breakPoints.tabletPortraitUp} {
     transition: transform 0.3s ease-in-out;

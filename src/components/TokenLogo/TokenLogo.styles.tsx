@@ -11,7 +11,7 @@ const remSizes: Record<sizes, string> = {
   tiny: "1.125rem",
   small: "1.5rem",
   medium: "2rem",
-  large: "2.5rem",
+  large: "3.125rem",
 };
 
 const StyledTokenLogo = styled.div<StyledTokenLogoProps>`

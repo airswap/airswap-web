@@ -1,5 +1,6 @@
 import styled, { css, DefaultTheme } from "styled-components/macro";
 
+import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
 
@@ -76,16 +77,16 @@ export const ButtonStyle = css<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.justifyContent || "center"};
-  width: 100%;
+  width: fit-content;
   height: 3rem;
-  padding: 0 1rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  padding: 0 2rem;
+  font-family: ${fontWide};
+  font-size: 1.25rem;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-radius: 2px;
+  border-radius: 0.5rem;
   border-style: "solid";
   border-width: 1px;
   border-color: ${(props) =>

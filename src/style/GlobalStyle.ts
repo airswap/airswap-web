@@ -17,9 +17,9 @@ const GlobalStyle = createGlobalStyle`
     color: ${(props) => props.theme.colors.alwaysWhite};
     background: ${(props) =>
       props.theme.name === "dark"
-        ? props.theme.colors.black
+        ? "conic-gradient(from 180deg at 0% 0%, #2B71FF 0deg, #060607 360deg)"
         : props.theme.colors.primary};
-    -webkit-font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   

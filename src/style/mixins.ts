@@ -100,7 +100,7 @@ export const BorderedPill = css`
   align-items: center;
   justify-content: center;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 24rem;
+  border-radius: 0.75rem;
   height: 3rem;
   padding: 0 1.25rem;
 

@@ -1,6 +1,5 @@
-import React, { Dispatch, FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
-import Icon from "../Icon/Icon";
 import {
   Option,
   Wrapper,
@@ -13,6 +12,7 @@ import {
   NativeSelectWrapper,
   NativeSelectIcon,
   DropdownButtonText,
+  StyledIcon,
 } from "./Dropdown.styles";
 
 export type SelectOption = {
@@ -87,7 +87,7 @@ const Dropdown: FC<DropdownProps> = ({
         <SelectButtonText width={selectWidth}>
           {selectedOption.label}
         </SelectButtonText>
-        <Icon name={"chevron-up-down"} iconSize={1.5} />
+        <StyledIcon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
       <SelectOptions
         activeIndex={isMenuOpen ? 0 : activeOptionIndex}

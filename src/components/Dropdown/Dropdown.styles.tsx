@@ -2,6 +2,7 @@ import styled, { css } from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyle, TextEllipsis } from "../../style/mixins";
+import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 
 const ButtonStyle = css`
@@ -12,16 +13,16 @@ const ButtonStyle = css`
   justify-content: space-between;
   position: relative;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+  border-inline-start: unset;
   width: 100%;
   height: var(--dropdown-button-height);
   padding: 0 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-family: ${fontWide};
+  font-weight: 500;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
-  background: ${({ theme }) => theme.colors.black};
+  background: ${({ theme }) => theme.colors.darkGrey};
 
   @supports (-moz-appearance: none) {
     padding-top: 0.125rem;
@@ -87,6 +88,7 @@ export const SelectButtonText = styled.div<{ width?: number }>`
 
   width: ${(props) => `${props.width}px` || "auto"};
   text-align: left;
+  color: ${({ theme }) => theme.colors.carteBlanche};
 `;
 
 export const DropdownButtonText = styled.div`
@@ -163,7 +165,7 @@ export const NativeSelect = styled.select`
 export const Wrapper = styled.div`
   position: relative;
 
-  --dropdown-button-height: 2rem;
+  --dropdown-button-height: 3.75rem;
   --dropdown-options-wrapper-padding: 0.5rem;
 
   ${NativeSelectWrapper} {
@@ -191,4 +193,8 @@ export const Sizer = styled.div`
   padding: 0;
   pointer-events: none;
   opacity: 0;
+`;
+
+export const StyledIcon = styled(Icon)`
+  translate: 0 0.125rem;
 `;

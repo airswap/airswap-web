@@ -87,7 +87,6 @@ import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwap
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
 import Overlay from "../../Overlay/Overlay";
-import SwapInputs from "../../SwapInputs/SwapInputs";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
@@ -95,6 +94,8 @@ import StyledSwapWidget, {
   ButtonContainer,
   InfoContainer,
   StyledDebugMenu,
+  StyledHeader,
+  StyledSwapInputs,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
@@ -102,7 +103,6 @@ import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
-import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 export enum SwapWidgetState {
   overview = "overview",
@@ -576,7 +576,7 @@ const SwapWidget: FC = () => {
   return (
     <>
       <StyledSwapWidget>
-        <SwapWidgetHeader
+        <StyledHeader
           isLastLook={quote.bestOrderType === ProtocolIds.LastLookERC20}
           title={isApproving ? t("orders.approve") : t("common.rfq")}
           isQuote={!hasSubmittedTransaction}
@@ -585,7 +585,7 @@ const SwapWidget: FC = () => {
         />
         {isDebugMode && <StyledDebugMenu />}
         {!isApproving && !hasSubmittedTransaction && (
-          <SwapInputs
+          <StyledSwapInputs
             baseAmount={baseAmount}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}

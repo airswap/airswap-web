@@ -18,6 +18,7 @@ interface SwapWidgetHeaderProps {
   isQuote: boolean;
   onGasFreeTradeButtonClick: () => void;
   expiry?: string;
+  className?: string;
 }
 
 const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
@@ -26,6 +27,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   isQuote,
   onGasFreeTradeButtonClick,
   expiry,
+  className,
 }) => {
   const { t } = useTranslation();
 
@@ -34,7 +36,7 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
   }, [expiry]);
 
   return (
-    <WidgetHeader>
+    <WidgetHeader className={className}>
       <Title type="h2" as="h1">
         {title}
       </Title>

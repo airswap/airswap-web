@@ -1,12 +1,12 @@
 import styled from "styled-components/macro";
 
+import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
+import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
-export const Header = styled.div`
-  display: flex;
-  margin-bottom: 2rem;
-  width: 100%;
+export const StyledHeader = styled(SwapWidgetHeader)`
+  order: -2;
 `;
 
 export const InfoContainer = styled.div`
@@ -14,17 +14,21 @@ export const InfoContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 2;
-  margin: 1rem 0;
-  max-height: 16rem;
+  gap: 0.25rem;
+  margin-block-start: 1rem;
   text-align: center;
+  order: -1;
+`;
+
+export const StyledSwapInputs = styled(SwapInputs)`
+  margin-block-start: 2rem;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
-  margin-top: auto;
-  justify-self: flex-end;
+  justify-content: center;
   gap: 1.25rem;
+  margin-top: 1.5rem;
 `;
 
 export const StyledSwapWidget = styled.div`

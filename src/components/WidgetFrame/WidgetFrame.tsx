@@ -13,6 +13,8 @@ const WidgetFrame: FC<WidgetFrameType> = ({
   isOpen,
   isConnected,
 }): ReactElement => {
+  console.log(isOpen);
+
   return (
     <StyledWidgetFrame $isOpen={isOpen} $isConnected={isConnected}>
       <WidgetFrameWrapper>{children}</WidgetFrameWrapper>
