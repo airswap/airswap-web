@@ -129,7 +129,7 @@ const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
     <Overlay
       isHidden={!showWalletList}
       title={t("wallet.selectWallet")}
-      onCloseButtonClick={handleCloseButtonClick}
+      onClose={handleCloseButtonClick}
       className={className}
     >
       <StyledWalletProviderList

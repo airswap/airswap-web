@@ -1,8 +1,9 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
@@ -18,7 +19,7 @@ export type OverlayProps = {
   /**
    * Function to close component
    */
-  onCloseButtonClick: () => void;
+  onClose: () => void;
   /**
    * Title shown on top
    */
@@ -38,7 +39,7 @@ export type OverlayProps = {
 export const overlayShowHideAnimationDuration = 0.3;
 
 const Overlay: FC<OverlayProps> = ({
-  onCloseButtonClick,
+  onClose,
   title = "",
   isHidden = true,
   subTitle = "",
@@ -51,11 +52,17 @@ const Overlay: FC<OverlayProps> = ({
   const [initialized, setInitialized] = useState(false);
   const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
 
-  useKeyPress(onCloseButtonClick, ["Escape"]);
+  const { setShowOverlay } = useContext(InterfaceContext);
+
+  useKeyPress(onClose, ["Escape"]);
 
   useEffect(() => {
     setInitialized(true);
   }, []);
+
+  useEffect(() => {
+    setShowOverlay(!isHidden);
+  }, [isHidden]);
 
   return (
     <Container hasTitle={!!title} isHidden={isHidden} className={className}>
@@ -69,11 +76,11 @@ const Overlay: FC<OverlayProps> = ({
           )}
         </TitleSubContainer>
         <CloseButton
-          icon="chevron-down"
+          icon="exit-modal"
           ariaLabel={t("common.back")}
           iconSize={1}
           tabIndex={isHidden ? -1 : 0}
-          onClick={onCloseButtonClick}
+          onClick={onClose}
         />
       </TitleContainer>
       <AnimatePresence>

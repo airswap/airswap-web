@@ -5,10 +5,8 @@ import breakPoints from "./breakpoints";
 
 export const ScrollBarStyle = css`
   &::-webkit-scrollbar {
-    border-radius: 0.5rem;
-    width: 0.5rem;
-    background: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.darkGrey : theme.colors.borderGrey};
+    width: 0.375rem;
+    background: none;
   }
 
   &::-webkit-scrollbar-thumb {

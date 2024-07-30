@@ -3,6 +3,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
+import breakPoints from "../../style/breakpoints";
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyle,
@@ -52,6 +53,10 @@ export const ContainingButton = styled.button`
 
   &:focus {
     outline: 0;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    height: 2.75rem;
   }
 `;
 
@@ -146,10 +151,20 @@ export const PlaceHolderBar = styled.div`
 
 export const TokenLogoLeft = styled(TokenLogo)`
   ${quoteTransition};
+
+  min-width: 3.125rem;
+  aspect-ratio: 1;
+
+  @media ${breakPoints.phoneOnly} {
+    min-width: 2.5rem;
+  }
 `;
 
 export const TokenLogoRight = styled(TokenLogo)`
   ${quoteTransition};
+
+  min-width: 2rem;
+  aspect-ratio: 1;
 `;
 
 export const StyledSelector = styled.div`
@@ -157,7 +172,7 @@ export const StyledSelector = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: -0.125rem;
+  gap: 0.125rem;
   margin-left: 0.9375rem;
   height: 100%;
 `;
@@ -172,11 +187,15 @@ export const StyledSelectItem = styled(SelectItem)`
   font-family: ${fontWide};
   font-weight: 700;
   gap: 0.375rem;
-  max-width: 7rem;
+  max-width: 9rem;
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.white
       : props.theme.colors.primary};
+
+  @media ${breakPoints.phoneOnly} {
+    max-width: 7rem;
+  }
 `;
 
 export const StyledLabel = styled(FormLabel)`
@@ -219,6 +238,14 @@ export const TokenSelectContainer = styled.div<{
     margin-bottom: 0.75rem;
   }
 
+  @media ${breakPoints.phoneOnly} {
+    height: 5.75rem;
+
+    &:first-of-type {
+      margin-bottom: 0.625rem;
+    }
+  }
+
   ${PlaceHolderBar} {
     ${(props) => (!props.$isLoading ? "animation: none" : "")};
   }
@@ -251,11 +278,11 @@ export const TokenSelectContainer = styled.div<{
   }
 
   ${StyledLabel} {
-    font-size: ${(props) => (props.$isQuote ? "0.75rem" : "1rem")};
+    font-size: ${(props) => (props.$isQuote ? "0.75rem" : "")};
   }
 
   ${StyledSelectItem} {
-    font-size: ${(props) => (props.$isQuote ? "1rem" : "1.5rem")};
+    font-size: ${(props) => (props.$isQuote ? "1rem" : "")};
   }
 `;
 

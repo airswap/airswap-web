@@ -4,14 +4,16 @@ import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogograph
 import breakPoints from "../../style/breakpoints";
 import { InputTextStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
+import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
-import { Title } from "../Typography/Typography";
 
 export const StyledScrollContainer = styled(ScrollContainer)`
-  max-height: calc(100% - 7rem);
+  position: relative;
+  margin-block-start: 0.75rem;
+  max-height: calc(100% - 9.5rem);
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 `;
 
@@ -19,7 +21,6 @@ export const ContentContainer = styled.div`
   position: relative;
   height: 100%;
   padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
-  background-color: ${(props) => props.theme.colors.black};
 
   @media ${breakPoints.phoneOnly} {
     padding: 0 1.5rem ${sizes.tradeContainerMobilePadding};
@@ -41,23 +42,13 @@ export const Container = styled.div`
   height: 100%;
 `;
 
-export const StyledTitle = styled(Title)`
-  visibility: hidden;
-`;
-
-export const StyledLabel = styled.label`
-  font-size: 1rem;
-`;
-
 export const SearchInput = styled(TextInput)`
-  margin-bottom: 1.25rem;
   width: 100%;
-  background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
     ${InputTextStyle};
 
-    border-radius: 2px;
+    border-radius: 0.75rem;
     background: transparent;
   }
 `;
@@ -68,23 +59,21 @@ export const Legend = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.25rem;
   min-height: 1.5rem;
+  margin-block-start: 1rem;
+  padding-inline: 0.875rem 1.5rem;
+
+  @media ${breakPoints.phoneOnly} {
+    padding-inline-end: 1.75rem;
+  }
 `;
 
 export const LegendItem = styled.div`
   word-break: keep-all;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.625rem")};
+  font-family: ${fontWide};
+  font-weight: 500;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "1rem")};
   color: ${(props) => props.theme.colors.lightGrey};
-`;
-
-export const LegendDivider = styled.div`
-  margin: 0 1rem;
-  width: 100%;
-  height: 1px;
-  background: ${({ theme }) => theme.colors.borderGrey};
 `;
 
 export const InactiveTitleContainer = styled.div`

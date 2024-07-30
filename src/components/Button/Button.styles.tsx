@@ -1,5 +1,6 @@
 import styled, { css, DefaultTheme } from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
@@ -14,7 +15,7 @@ function getButtonBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.black;
+      return theme.colors.darkGrey;
     default:
       return theme.colors.primary;
   }
@@ -43,12 +44,6 @@ function getButtonBorderColor(
 ) {
   if (disabled) {
     return theme.colors.darkGrey;
-  }
-
-  if (intent === "neutral") {
-    return theme.name === "dark"
-      ? theme.colors.lightGrey
-      : theme.colors.borderGrey;
   }
 
   return theme.colors.borderGrey;
@@ -116,6 +111,10 @@ export const ButtonStyle = css<StyledButtonProps>`
 
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    font-size: 1.125rem;
   }
 
   @supports (-moz-appearance: none) {

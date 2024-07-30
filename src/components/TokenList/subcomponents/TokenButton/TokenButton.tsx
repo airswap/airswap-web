@@ -14,6 +14,7 @@ import {
   TokenSymbolAndName,
   StyledIcon,
   Tooltip,
+  StyledTokenLogo,
 } from "./TokenButton.styles";
 
 export type TokenRowProps = {
@@ -70,7 +71,7 @@ const TokenButton = ({
       disabled={disabled}
       showDeleteButton={showDeleteButton}
     >
-      <TokenLogo logoURI={token.logoURI} size="small" />
+      <StyledTokenLogo logoURI={token.logoURI} />
 
       <TokenSymbolAndName>
         <Symbol>{token.symbol}</Symbol>

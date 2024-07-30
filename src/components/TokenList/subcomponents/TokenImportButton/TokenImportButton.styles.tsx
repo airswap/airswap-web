@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import TokenLogo from "../../../TokenLogo/TokenLogo";
 import { Metadata } from "../../../Typography/Typography";
 
 export const Container = styled.div`
@@ -17,6 +18,11 @@ export const Container = styled.div`
   & + & {
     border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
   }
+`;
+
+export const StyledTokenLogo = styled(TokenLogo)`
+  min-width: 2rem;
+  aspect-ratio: 1;
 `;
 
 export const TextContainer = styled.div`

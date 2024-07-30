@@ -24,7 +24,6 @@ import {
   TokenContainer,
   Legend,
   LegendItem,
-  LegendDivider,
   StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
@@ -190,13 +189,12 @@ const TokenList = ({
             }}
           />
 
-          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
-            <Legend>
-              <LegendItem>{t("common.token")}</LegendItem>
-              <LegendDivider />
-              <LegendItem>{t("balances.balance")}</LegendItem>
-            </Legend>
+          <Legend>
+            <LegendItem>{t("common.token")}</LegendItem>
+            <LegendItem>{t("balances.balance")}</LegendItem>
+          </Legend>
 
+          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
             <TokenContainer>
               {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
                 (token) => (
@@ -235,7 +233,7 @@ const TokenList = ({
             )}
           </StyledScrollContainer>
           <OverlayActionButton
-            intent="primary"
+            intent="neutral"
             ref={buttonRef}
             onClick={() => setEditMode(!editMode)}
           >

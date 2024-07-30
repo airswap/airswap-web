@@ -59,15 +59,6 @@ export const WalletHeader = styled.div`
   }
 `;
 
-export const StyledTransactionLink = styled(TransactionLink)`
-  justify-self: flex-end;
-  margin-left: auto;
-
-  &:hover {
-    color: ${(props) => props.theme.colors.alwaysWhite};
-  }
-`;
-
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
   display: flex;
@@ -157,6 +148,8 @@ export const BottomButtonContainer = styled.div`
 
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
+
+  width: 100%;
 
   @media ${breakPoints.phoneOnly} {
     display: none;

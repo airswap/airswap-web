@@ -61,14 +61,8 @@ const InfoSection: FC<InfoSectionProps> = ({
   const { t } = useTranslation();
   const [invertPrice, setInvertPrice] = useState<boolean>(false);
 
-  // Wallet not connected.
   if (!isConnected) {
-    return (
-      <>
-        <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
-        <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
-      </>
-    );
+    return null;
   }
 
   if (isNetworkUnsupported) {
@@ -192,13 +186,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  // No order & not fetching, but wallet connected.
-  return (
-    <>
-      <StyledInfoHeading>{t("marketing.welcomeHeading")}</StyledInfoHeading>
-      <InfoSubHeading>{t("marketing.welcomeMessage")}</InfoSubHeading>
-    </>
-  );
+  return null;
 };
 
 export default InfoSection;

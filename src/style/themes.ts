@@ -29,9 +29,9 @@ const typography: DefaultTheme["typography"] = {
   title3: {
     desktop: {
       isWide: true,
-      fontSize: "1.25rem",
+      fontSize: "2rem",
       lineHeight: 1.25,
-      fontWeight: 400,
+      fontWeight: 700,
     },
   },
   title4: {
@@ -77,6 +77,11 @@ const typography: DefaultTheme["typography"] = {
       lineHeight: 1,
       fontWeight: 500,
     },
+    mobile: {
+      fontSize: ".875rem",
+      lineHeight: 1,
+      fontWeight: 500,
+    },
   },
   formInput: {
     desktop: {
@@ -105,9 +110,14 @@ const typography: DefaultTheme["typography"] = {
   // Form select inputs
   selectItem: {
     desktop: {
-      fontSize: "1.75rem",
+      fontSize: "1.5rem",
       lineHeight: 1 + 1 / 3,
-      fontWeight: 500,
+      fontWeight: 700,
+    },
+    mobile: {
+      fontSize: "1.25rem",
+      lineHeight: 1 + 1 / 3,
+      fontWeight: 700,
     },
   },
   link: {

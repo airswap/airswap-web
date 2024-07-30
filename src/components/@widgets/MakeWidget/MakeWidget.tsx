@@ -525,7 +525,7 @@ const MakeWidget: FC = () => {
         onActionButtonClick={handleActionButtonClick}
       />
       <Overlay
-        onCloseButtonClick={() => setShowTokenSelectModal(null)}
+        onClose={() => setShowTokenSelectModal(null)}
         isHidden={!showTokenSelectModal}
       >
         <TokenList
@@ -541,7 +541,7 @@ const MakeWidget: FC = () => {
       </Overlay>
       <Overlay
         title={t("information.counterParty.title")}
-        onCloseButtonClick={() => toggleShowOrderTypeInfo(false)}
+        onClose={() => toggleShowOrderTypeInfo(false)}
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />

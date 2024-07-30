@@ -28,7 +28,7 @@ const OrderReviewToken: FC<OrderReviewTokenProps> = ({
       <Label>{label}</Label>
       <Amount>{amount}</Amount>
       <Symbol>{tokenSymbol}</Symbol>
-      <StyledTokenLogo logoURI={tokenUri} size="small" />
+      <StyledTokenLogo logoURI={tokenUri} />
     </Container>
   );
 };

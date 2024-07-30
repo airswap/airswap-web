@@ -57,4 +57,6 @@ export const Symbol = styled.div`
 
 export const StyledTokenLogo = styled(TokenLogo)`
   margin-left: 1rem;
+  min-width: 1.5rem;
+  aspect-ratio: 1;
 `;

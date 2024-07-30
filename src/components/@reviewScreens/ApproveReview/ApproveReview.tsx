@@ -160,7 +160,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         <Overlay
           title={t("validatorErrors.unableSwap")}
           subTitle={t("validatorErrors.swapFail")}
-          onCloseButtonClick={onRestartButtonClick}
+          onClose={onRestartButtonClick}
           isHidden={!errors.length}
         >
           <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />

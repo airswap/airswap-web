@@ -6,6 +6,7 @@ import { BorderlessButtonStyle, TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import AccountLink from "../../../AccountLink/AccountLink";
 import Icon from "../../../Icon/Icon";
+import TokenLogo from "../../../TokenLogo/TokenLogo";
 
 type ContainerProps = {
   disabled: boolean;
@@ -81,26 +82,36 @@ export const TokenSymbolAndName = styled.div`
   }
 `;
 
+export const StyledTokenLogo = styled(TokenLogo)`
+  min-width: 1.875rem;
+  aspect-ratio: 1;
+
+  @media ${breakPoints.phoneOnly} {
+    min-width: 1.5rem;
+  }
+`;
+
 export const Container = styled.button<ContainerProps>`
   ${BorderlessButtonStyle};
 
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: 1.25rem 50% calc(50% - 3.5rem);
-  grid-gap: 1rem;
+  grid-template-columns: 1.25rem 50% calc(50% - 4.25rem);
+  grid-gap: 1.5rem;
   align-items: center;
   position: relative;
   width: 100%;
-  height: 2rem;
-  padding: 0.25rem 0;
+  padding-block: 0.375rem;
+  padding-inline: 0.75rem 0.5rem;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 
-  &:not(:first-of-type) {
-    margin-top: 0.5rem;
-  }
+  &:hover,
+  &:focus-within {
+    border: 1px solid ${(props) => props.theme.colors.borderGrey};
+    border-radius: 0.5rem;
+    background: ${(props) => props.theme.colors.darkGrey};
 
-  &:hover {
     ${TokenName} {
       color: ${({ theme, disabled }) =>
         disabled
@@ -128,8 +139,9 @@ export const Container = styled.button<ContainerProps>`
       props.showDeleteButton
         ? "1.25rem calc(100% - 7.5rem) 4.25rem"
         : "1.25rem calc(50% - 2rem) calc(50% - 1.5rem)"};
+    gap: 1rem;
     align-items: flex-start;
-    height: 2.5rem;
+    height: 3.25rem;
   }
 `;
 

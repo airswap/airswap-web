@@ -1,6 +1,6 @@
 export const breakpointSizes = {
   tinyScreen: "320px",
-  phone: "480px",
+  phone: "560px",
   phoneLandscape: "400px",
   tabletPortrait: "768px",
   tabletLandscape: "1024px",

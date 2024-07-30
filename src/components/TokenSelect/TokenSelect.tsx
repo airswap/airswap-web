@@ -136,7 +136,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
       )}
       {!isRequestingToken ? (
         <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-          <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
+          <TokenLogoLeft logoURI={selectedToken?.logoURI} />
           <StyledSelector>
             <StyledLabel>{label}</StyledLabel>
             <StyledSelectItem>
@@ -188,7 +188,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
               i
             </InfoLabel>
           )}
-          <TokenLogoRight logoURI={selectedToken?.logoURI} size="medium" />
+          <TokenLogoRight logoURI={selectedToken?.logoURI} />
         </InputAndMaxButtonWrapper>
       ) : (
         <PlaceholderContainer>

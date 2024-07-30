@@ -96,6 +96,7 @@ import StyledSwapWidget, {
   StyledDebugMenu,
   StyledHeader,
   StyledSwapInputs,
+  WelcomeMessage,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
@@ -583,6 +584,9 @@ const SwapWidget: FC = () => {
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
           expiry={quote.bestOrder?.expiry}
         />
+
+        <WelcomeMessage>{t("marketing.welcomeMessage")}</WelcomeMessage>
+
         {isDebugMode && <StyledDebugMenu />}
         {!isApproving && !hasSubmittedTransaction && (
           <StyledSwapInputs
@@ -652,64 +656,66 @@ const SwapWidget: FC = () => {
             }
           />
         </ButtonContainer>
-      </StyledSwapWidget>
-      <Overlay
-        onCloseButtonClick={() => setShowTokenSelectModalFor(null)}
-        isHidden={!showTokenSelectModalFor}
-      >
-        <TokenList
-          onSelectToken={(newTokenAddress) => {
-            // e.g. handleSetToken("base", "0x123")
-            handleSetToken(showTokenSelectModalFor, newTokenAddress);
-            // Close the modal
-            setShowTokenSelectModalFor(null);
-          }}
-          balances={balances}
-          allTokens={allTokens}
-          activeTokens={activeTokens}
-          supportedTokenAddresses={supportedTokens}
-          onAfterRemoveActiveToken={handleRemoveActiveToken}
-        />
-      </Overlay>
-      <Overlay
-        title={t("validatorErrors.unableSwap")}
-        subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={backToOverview}
-        isHidden={!ordersErrors.length}
-      >
-        <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
-      </Overlay>
-      <Overlay
-        title={t("information.gasFreeSwaps.title")}
-        onCloseButtonClick={() => setShowGasFeeInfo(false)}
-        isHidden={!showGasFeeInfo}
-      >
-        <GasFreeSwapsModal
-          onCloseButtonClick={() => setShowGasFeeInfo(false)}
-        />
-      </Overlay>
-      <Overlay
-        title={t("information.protocolFee.title")}
-        onCloseButtonClick={() => setProtocolFeeInfo(false)}
-        isHidden={!protocolFeeInfo}
-      >
-        <ProtocolFeeModal
-          onCloseButtonClick={() => setProtocolFeeInfo(false)}
-        />
-      </Overlay>
-      {baseTokenInfo && quoteTokenInfo && (
+
         <Overlay
-          title={t("orders.availableOrders")}
-          isHidden={!showViewAllQuotes}
-          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+          isHidden={!showTokenSelectModalFor}
+          title={t("common.selectToken")}
+          onClose={() => setShowTokenSelectModalFor(null)}
         >
-          <AvailableOrdersWidget
-            senderToken={baseTokenInfo}
-            signerToken={quoteTokenInfo}
-            onSwapLinkClick={() => toggleShowViewAllQuotes()}
+          <TokenList
+            onSelectToken={(newTokenAddress) => {
+              // e.g. handleSetToken("base", "0x123")
+              handleSetToken(showTokenSelectModalFor, newTokenAddress);
+              // Close the modal
+              setShowTokenSelectModalFor(null);
+            }}
+            balances={balances}
+            allTokens={allTokens}
+            activeTokens={activeTokens}
+            supportedTokenAddresses={supportedTokens}
+            onAfterRemoveActiveToken={handleRemoveActiveToken}
           />
         </Overlay>
-      )}
+        <Overlay
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onClose={backToOverview}
+          isHidden={!ordersErrors.length}
+        >
+          <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
+        </Overlay>
+        <Overlay
+          title={t("information.gasFreeSwaps.title")}
+          onClose={() => setShowGasFeeInfo(false)}
+          isHidden={!showGasFeeInfo}
+        >
+          <GasFreeSwapsModal
+            onCloseButtonClick={() => setShowGasFeeInfo(false)}
+          />
+        </Overlay>
+        <Overlay
+          title={t("information.protocolFee.title")}
+          onClose={() => setProtocolFeeInfo(false)}
+          isHidden={!protocolFeeInfo}
+        >
+          <ProtocolFeeModal
+            onCloseButtonClick={() => setProtocolFeeInfo(false)}
+          />
+        </Overlay>
+        {baseTokenInfo && quoteTokenInfo && (
+          <Overlay
+            title={t("orders.availableOrders")}
+            isHidden={!showViewAllQuotes}
+            onClose={() => toggleShowViewAllQuotes()}
+          >
+            <AvailableOrdersWidget
+              senderToken={baseTokenInfo}
+              signerToken={quoteTokenInfo}
+              onSwapLinkClick={() => toggleShowViewAllQuotes()}
+            />
+          </Overlay>
+        )}
+      </StyledSwapWidget>
     </>
   );
 };

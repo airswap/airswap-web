@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { fontWide } from "../../../style/themes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
@@ -7,6 +8,13 @@ import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader"
 
 export const StyledHeader = styled(SwapWidgetHeader)`
   order: -2;
+`;
+
+export const WelcomeMessage = styled.h2`
+  margin-block-start: 1rem;
+  text-align: center;
+  font-family: ${fontWide};
+  font-size: 1.125rem;
 `;
 
 export const InfoContainer = styled.div`
@@ -17,7 +25,6 @@ export const InfoContainer = styled.div`
   gap: 0.25rem;
   margin-block-start: 1rem;
   text-align: center;
-  order: -1;
 `;
 
 export const StyledSwapInputs = styled(SwapInputs)`

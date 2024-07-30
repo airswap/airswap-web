@@ -31,7 +31,7 @@ export const SwitchTokensButton = styled.button`
   align-items: center;
   justify-content: center;
   width: 2rem;
-  height: 2rem;
+  aspect-ratio: 1;
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
@@ -42,6 +42,12 @@ export const SwitchTokensButton = styled.button`
 
   &:disabled {
     pointer-events: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    right: calc(50% - 0.875rem);
+    top: calc(50% - 0.875rem);
+    width: 1.75rem;
   }
 `;
 
