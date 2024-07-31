@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { SwapERC20 } from "@airswap/libraries";
-import { getFullSwapERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, Event } from "ethers";
 
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
+import { getFullSwapERC20 } from "../../../helpers/getFullSwapERC20";
 import { compareAddresses } from "../../../helpers/string";
 import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
@@ -44,6 +43,8 @@ const useLatestSwapFromEvents = (
           feeReceiver,
           receipt.logs
         );
+
+        if (!swap) return;
 
         if (
           !compareAddresses(swap.signerWallet, account) &&
