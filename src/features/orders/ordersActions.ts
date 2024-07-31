@@ -277,6 +277,19 @@ export const approve =
         approveAmount
       );
 
+      if (isAppError(tx)) {
+        const appError = tx;
+        dispatch(setErrors([appError]));
+
+        if (appError.error && "message" in appError.error) {
+          dispatch(declineTransaction(appError.error.message));
+        }
+
+        dispatch(setStatus("failed"));
+
+        return;
+      }
+
       if (!tx.hash) {
         console.error("Approval transaction hash is missing.");
 
