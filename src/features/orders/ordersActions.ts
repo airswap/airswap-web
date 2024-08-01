@@ -278,15 +278,8 @@ export const approve =
       );
 
       if (isAppError(tx)) {
-        const appError = tx;
-        dispatch(setErrors([appError]));
-
-        if (appError.error && "message" in appError.error) {
-          dispatch(declineTransaction(appError.error.message));
-        }
-
         dispatch(setStatus("failed"));
-
+        handleOrderError(dispatch, tx);
         return;
       }
 
