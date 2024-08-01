@@ -98,19 +98,25 @@ export async function approveToken(
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper",
   amount: string | number
-) {
-  const spender =
-    contractType === "Swap"
-      ? getSwapErc20Address(provider.network.chainId)
-      : Wrapper.getAddress(provider.network.chainId);
-  const erc20Contract = new ethers.Contract(
-    baseToken,
-    erc20Interface,
-    // @ts-ignore
-    provider.getSigner()
-  );
-  const approvalTxHash = await erc20Contract.approve(spender, amount);
-  return approvalTxHash as any as Transaction;
+): Promise<Transaction | AppError> {
+  return new Promise<Transaction | AppError>(async (resolve) => {
+    try {
+      const spender =
+        contractType === "Swap"
+          ? getSwapErc20Address(provider.network.chainId)
+          : Wrapper.getAddress(provider.network.chainId);
+      const erc20Contract = new ethers.Contract(
+        baseToken,
+        erc20Interface,
+        // @ts-ignore
+        provider.getSigner()
+      );
+      const approvalTxHash = erc20Contract.approve(spender, amount);
+      resolve(approvalTxHash);
+    } catch (error: any) {
+      resolve(transformUnknownErrorToAppError(error));
+    }
+  });
 }
 
 export async function takeOrder(
@@ -203,7 +209,7 @@ export async function check(
   provider: ethers.providers.Web3Provider,
   isSwapWithWrap?: boolean
 ): Promise<AppError[]> {
-  const strings = await (
+  const [count, strings] = await (
     await getSwapErc20Contract(provider, chainId)
   ).check(senderWallet, ...orderERC20ToParams(order));
 
