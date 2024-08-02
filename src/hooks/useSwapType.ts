@@ -1,23 +1,23 @@
 import { useMemo } from "react";
 
-import { WETH } from "@airswap/libraries";
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { TokenInfo } from "@airswap/utils";
 
+import { useAppSelector } from "../app/hooks";
 import nativeCurrency from "../constants/nativeCurrency";
 import getWethAddress from "../helpers/getWethAddress";
 import { SwapType } from "../types/swapType";
+import useNetworkSupported from "./useNetworkSupported";
 
 const useSwapType = (
   token1: TokenInfo | null,
   token2: TokenInfo | null
 ): SwapType => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
+  const isNetworkSupported = useNetworkSupported();
 
   return useMemo(() => {
-    if (!chainId || !token1 || !token2) {
-      return "swap";
+    if (!chainId || !token1 || !token2 || !isNetworkSupported) {
+      return SwapType.swap;
     }
 
     const eth = nativeCurrency[chainId].address;
@@ -27,15 +27,15 @@ const useSwapType = (
       [weth, eth].includes(token1.address) &&
       [weth, eth].includes(token2.address)
     ) {
-      return "wrapOrUnwrap";
+      return SwapType.wrapOrUnwrap;
     }
 
-    if ([token1.address].includes(eth)) {
-      return "swapWithWrap";
+    if (eth && [token1.address].includes(eth)) {
+      return SwapType.swapWithWrap;
     }
 
-    return "swap";
-  }, [chainId, token1, token2]);
+    return SwapType.swap;
+  }, [chainId, token1, token2, isNetworkSupported]);
 };
 
 export default useSwapType;

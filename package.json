@@ -2,7 +2,7 @@
   "name": "airswap-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://www.airswap.io/",
+  "homepage": "https://swap.eth.limo/",
   "scripts": {
     "start": "craco start",
     "build": "craco build",
@@ -13,17 +13,14 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@airswap/constants": "4.0.10",
-    "@airswap/libraries": "4.0.19",
-    "@airswap/metadata": "4.0.12",
-    "@airswap/types": "4.0.5",
-    "@airswap/utils": "4.0.8",
+    "@airswap/libraries": "4.3.6",
+    "@akkafinance/web3-react-bitkeep": "^1.0.0",
+    "@coinbase/wallet-sdk": "^3.7.2",
     "@craco/craco": "^6.2.0",
     "@fontsource/dm-mono": "^4.5.0",
     "@greypixel_/nicenumbers": "^0.0.18",
     "@react-hookz/web": "^14.2.2",
     "@reduxjs/toolkit": "~1.5.1",
-    "@sentry/react": "^7.57.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.2.1",
@@ -33,13 +30,20 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-redux": "^7.1.18",
     "@types/styled-components": "^5.1.12",
-    "@web3-react/core": "^6.1.9",
+    "@web3-react/abstract-connector": "^6.0.7",
+    "@web3-react/coinbase-wallet": "^8.2.3",
+    "@web3-react/core": "^8.2.3",
+    "@web3-react/gnosis-safe": "^8.2.4",
     "@web3-react/injected-connector": "^6.0.7",
-    "@web3-react/walletconnect-connector": "^7.0.2-alpha.0",
+    "@web3-react/metamask": "^8.2.4",
+    "@web3-react/store": "^8.2.3",
+    "@web3-react/types": "^8.2.3",
+    "@web3-react/walletconnect-v2": "8.5.1",
     "bignumber.js": "^9.0.1",
     "browserify-url": "^0.0.1",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
+    "cors": "^2.8.5",
     "crypto-browserify": "^3.12.0",
     "date-fns": "^2.28.0",
     "erc-20-abi": "^1.0.0",
@@ -64,11 +68,14 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-use": "^17.5.0",
+    "react-use-konami": "^1.1.0",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.1",
     "tls-browserify": "^0.2.2",
     "truncate-eth-address": "^1.0.2",
     "typescript": "^4.4.3",
+    "usehooks-ts": "^3.1.0",
     "zlib-browserify": "^0.0.3"
   },
   "devDependencies": {
@@ -108,9 +115,6 @@
     "styled-components": "^5"
   },
   "engines": {
-    "node": "16.15.1"
-  },
-  "volta": {
-    "node": "16.15.1"
+    "node": "18.19.0"
   }
 }

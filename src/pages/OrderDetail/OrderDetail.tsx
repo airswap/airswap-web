@@ -4,10 +4,8 @@ import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import OrderDetailWidget from "../../components/@widgets/OrderDetailWidget/OrderDetailWidget";
 import Page from "../../components/Page/Page";
-import {
-  fetchAllTokens,
-  selectMetaDataReducer,
-} from "../../features/metadata/metadataSlice";
+import { fetchAllTokens } from "../../features/metadata/metadataActions";
+import { selectMetaDataReducer } from "../../features/metadata/metadataSlice";
 import { decompressAndSetActiveOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
 import InvalidOrder from "./subcomponents/InvalidOrder/InvalidOrder";

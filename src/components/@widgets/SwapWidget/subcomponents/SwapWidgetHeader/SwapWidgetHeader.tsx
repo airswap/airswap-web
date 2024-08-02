@@ -1,8 +1,7 @@
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { RFQ_EXPIRY_BUFFER_MS } from "../../../../../constants/configParams";
-import { ProtocolType } from "../../../../../features/transactions/transactionsSlice";
+import { getOrderExpiryWithBufferInSeconds } from "../../../../../entities/OrderERC20/OrderERC20Helpers";
 import { WidgetHeader } from "../../../../../styled-components/WidgetHeader/WidgetHeader";
 import { Title } from "../../../../Typography/Typography";
 import {
@@ -14,24 +13,24 @@ import {
 } from "./SwapWidgetHeader.styles";
 
 interface SwapWidgetHeaderProps {
+  isLastLook: boolean;
   title: string;
   isQuote: boolean;
   onGasFreeTradeButtonClick: () => void;
-  protocol?: ProtocolType;
   expiry?: string;
 }
 
 const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
+  isLastLook,
   title,
   isQuote,
   onGasFreeTradeButtonClick,
-  protocol,
   expiry,
 }) => {
   const { t } = useTranslation();
 
   const expiryTime = useMemo(() => {
-    return expiry ? parseInt(expiry) - RFQ_EXPIRY_BUFFER_MS / 1000 : undefined;
+    return expiry ? getOrderExpiryWithBufferInSeconds(expiry) : undefined;
   }, [expiry]);
 
   return (
@@ -40,14 +39,14 @@ const SwapWidgetHeader: FC<SwapWidgetHeaderProps> = ({
         {title}
       </Title>
 
-      {protocol === "last-look-erc20" && isQuote && (
+      {isLastLook && isQuote && (
         <Button onClick={onGasFreeTradeButtonClick}>
           <StyledIcon name="star" iconSize={0.875} />
           {t("orders.gasFreeTrade")}
         </Button>
       )}
 
-      {protocol === "request-for-quote-erc20" && isQuote && (
+      {!isLastLook && isQuote && expiryTime && (
         <Quote>
           <NewQuoteText>{t("orders.newQuoteIn")}</NewQuoteText>
           {expiryTime && <StyledTimer expiryTime={expiryTime} />}

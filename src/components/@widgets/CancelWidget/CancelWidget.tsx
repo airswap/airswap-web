@@ -2,17 +2,12 @@ import { FC, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
-import {
-  selectTakeOtcReducer,
-  selectTakeOtcStatus,
-  setIsCancelSuccessFull,
-} from "../../../features/takeOtc/takeOtcSlice";
+import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../../hooks/useCancellationPending";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { AppRoutes } from "../../../routes";
@@ -40,10 +35,9 @@ interface CancelWidgetProps {
 export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { chainId } = useWeb3React();
+  const { chainId } = useAppSelector((state) => state.web3);
   const dispatch = useAppDispatch();
 
-  const { isCancelSuccessFull } = useAppSelector(selectTakeOtcReducer);
   const status = useAppSelector(selectTakeOtcStatus);
 
   const params = useParams<{ compressedOrder: string }>();
@@ -61,14 +55,12 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   };
 
   useEffect(() => {
-    if (isCancelSuccessFull && isCancelSuccess) {
+    if (isCancelSuccess) {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
-
-      dispatch(setIsCancelSuccessFull(false));
     }
-  }, [history, params, isCancelSuccessFull, isCancelSuccess, dispatch]);
+  }, [isCancelSuccess]);
 
   const handleCancelClick = async () => {
     await dispatch(

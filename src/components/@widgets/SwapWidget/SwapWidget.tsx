@@ -1,120 +1,102 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { Protocols } from "@airswap/constants";
-import { Registry, Server, Wrapper } from "@airswap/libraries";
-import { OrderERC20, Pricing } from "@airswap/types";
+import { Wrapper } from "@airswap/libraries";
+import {
+  ADDRESS_ZERO,
+  OrderERC20,
+  ProtocolIds,
+  UnsignedOrderERC20,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   transformAddressAliasToAddress,
   transformAddressToAddressAlias,
 } from "../../../constants/addressAliases";
-import {
-  ADDITIONAL_QUOTE_BUFFER,
-  RECEIVE_QUOTE_TIMEOUT_MS,
-} from "../../../constants/configParams";
 import nativeCurrency, {
-  nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { LastLookContext } from "../../../contexts/lastLook/LastLook";
-import { AppErrorType } from "../../../errors/appError";
-import transformUnknownErrorToAppError from "../../../errors/transformUnknownErrorToAppError";
-import {
-  requestActiveTokenAllowancesSwap,
-  selectAllowances,
-  selectBalances,
-} from "../../../features/balances/balancesSlice";
+import { selectBalances } from "../../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
   getFilteredOrders,
-  selectIndexerReducer,
-} from "../../../features/indexer/indexerSlice";
+} from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
   selectActiveTokens,
   selectAllTokenInfo,
 } from "../../../features/metadata/metadataSlice";
-import { check } from "../../../features/orders/orderApi";
 import {
   approve,
-  clear,
   deposit,
-  request,
-  resetOrders,
-  selectBestOption,
-  selectBestOrder,
+  take,
+  takeLastLookOrder,
+  withdraw,
+} from "../../../features/orders/ordersActions";
+import { check } from "../../../features/orders/ordersHelpers";
+import {
+  clear,
   selectOrdersErrors,
   selectOrdersStatus,
   setErrors,
-  take,
-  withdraw,
 } from "../../../features/orders/ordersSlice";
+import useQuotes from "../../../features/quotes/quotesHooks";
+import { reset as clearQuotes } from "../../../features/quotes/quotesSlice";
 import { selectAllSupportedTokens } from "../../../features/registry/registrySlice";
 import {
   clearTradeTerms,
-  clearTradeTermsQuoteAmount,
   selectTradeTerms,
   setTradeTerms,
-  setTradeTermsQuoteAmount,
 } from "../../../features/tradeTerms/tradeTermsSlice";
-import {
-  declineTransaction,
-  revertTransaction,
-} from "../../../features/transactions/transactionActions";
-import { ProtocolType } from "../../../features/transactions/transactionsSlice";
 import {
   selectCustomServerUrl,
   setCustomServerUrl,
   setUserTokens,
 } from "../../../features/userSettings/userSettingsSlice";
-import getWethAddress from "../../../helpers/getWethAddress";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
+import useApprovalSuccess from "../../../hooks/useApprovalSuccess";
+import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
+import useNativeToken from "../../../hooks/useNativeToken";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
-import useReferencePriceSubscriber from "../../../hooks/useReferencePriceSubscriber";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
+import useOrderTransaction from "../../../hooks/useOrderTransaction";
 import useSwapType from "../../../hooks/useSwapType";
 import useTokenInfo from "../../../hooks/useTokenInfo";
+import useWithdrawalPending from "../../../hooks/useWithdrawalPending";
 import { AppRoutes } from "../../../routes";
+import { SwapType } from "../../../types/swapType";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
 import Overlay from "../../Overlay/Overlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
-import {
-  notifyError,
-  notifyRejectedByUserError,
-} from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
 import StyledSwapWidget, {
   ButtonContainer,
   InfoContainer,
+  StyledDebugMenu,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
-import useBestTradeOptionTransaction from "./hooks/useBestTradeOptionTransaction";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
 import ActionButtons, {
   ButtonActions,
@@ -124,6 +106,7 @@ import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader"
 
 export enum SwapWidgetState {
   overview = "overview",
+  requestPrices = "requestPrices",
   review = "review",
 }
 
@@ -134,11 +117,8 @@ const SwapWidget: FC = () => {
   const location = useLocation<{ isFromOrderDetailPage?: true }>();
   const isFromOrderDetailPage = !!location.state?.isFromOrderDetailPage;
   const balances = useAppSelector(selectBalances);
-  const allowances = useAppSelector(selectAllowances);
-  const bestRfqOrder = useAppSelector(selectBestOrder);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
-  const bestTradeOption = useAppSelector(selectBestOption);
   const activeTokens = useAppSelector(selectActiveTokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
@@ -151,9 +131,9 @@ const SwapWidget: FC = () => {
   const customServerUrl = useAppSelector(selectCustomServerUrl);
 
   // Contexts
-  const LastLook = useContext(LastLookContext);
   const {
     isConnecting,
+    isDebugMode,
     transactionsTabIsOpen,
     setShowWalletList,
     setTransactionsTabIsOpen,
@@ -168,15 +148,7 @@ const SwapWidget: FC = () => {
   );
   const [state, setState] = useState<SwapWidgetState>(SwapWidgetState.overview);
 
-  // Pricing
-  const {
-    subscribeToTokenPrice,
-    unsubscribeFromGasPrice,
-    unsubscribeFromTokenPrice,
-  } = useReferencePriceSubscriber();
-
   // Modals
-  const [showOrderSubmitted, setShowOrderSubmitted] = useState<boolean>(false);
   const [showTokenSelectModalFor, setShowTokenSelectModalFor] =
     useState<TokenSelectModalTypes | null>(null);
 
@@ -186,57 +158,59 @@ const SwapWidget: FC = () => {
 
   // Loading states
   const [isApproving, setIsApproving] = useState(false);
-  const [isSwapping, setIsSwapping] = useState(false);
   const [isWrapping, setIsWrapping] = useState(false);
-  const [isRequestingQuotes, setIsRequestingQuotes] = useState(false);
+  const [activeApprovalHash, setActiveApprovalHash] = useState<string>();
+  const [activeWrapOrUnwrapHash, setActiveWrapOrUnwrapHash] =
+    useState<string>();
+  const [activeOrderNonce, setActiveOrderNonce] = useState<string>();
 
-  // Error states
-  const [pairUnavailable, setPairUnavailable] = useState(false);
-  const [allowanceFetchFailed, setAllowanceFetchFailed] =
-    useState<boolean>(false);
+  // Pricing
+  const quote = useQuotes(
+    !activeOrderNonce && state === SwapWidgetState.requestPrices
+  );
 
   const { t } = useTranslation();
 
-  const {
-    chainId,
-    account,
-    library,
-    active,
-    error: web3Error,
-  } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
 
   const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
   const quoteToken = useTokenOrFallback(tokenFrom, tokenTo);
 
   const baseTokenInfo = useTokenInfo(baseToken);
   const quoteTokenInfo = useTokenInfo(quoteToken);
+  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
+  const nativeTokenInfo = useNativeToken(chainId);
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     baseTokenInfo,
     baseAmount
   );
+  const shouldApprove =
+    !hasSufficientAllowance && swapType !== SwapType.wrapOrUnwrap;
 
-  const hasApprovalPending = useApprovalPending(baseToken);
+  const activeOrderTransaction = useOrderTransaction(
+    activeOrderNonce,
+    activeWrapOrUnwrapHash
+  );
+  const approvalTransaction = useApprovalPending(baseToken);
+  const hasApprovalPending = !!approvalTransaction;
+  const hasApprovalSuccess = useApprovalSuccess(activeApprovalHash);
+  const hasDepositPending = useDepositPending();
+  const hasWithdrawalPending = useWithdrawalPending();
+  const hasDepositOrWithdrawalPending =
+    hasDepositPending || hasWithdrawalPending;
+  const hasSubmittedTransaction =
+    hasApprovalPending || !!activeWrapOrUnwrapHash || !!activeOrderNonce;
+  const isNetworkSupported = useNetworkSupported();
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
+
   const maxAmount = useMaxAmount(baseToken);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
-    baseTokenInfo?.address === nativeCurrencyAddress &&
+    baseTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
-
-  useEffect(() => {
-    setAllowanceFetchFailed(false);
-    unsubscribeFromGasPrice();
-    unsubscribeFromTokenPrice();
-    dispatch(clear());
-    LastLook.unsubscribeAllServers();
-  }, [
-    chainId,
-    dispatch,
-    LastLook,
-    unsubscribeFromGasPrice,
-    unsubscribeFromTokenPrice,
-  ]);
 
   useEffect(() => {
     setTokenFrom(appRouteParams.tokenFrom);
@@ -246,54 +220,29 @@ const SwapWidget: FC = () => {
   useEffect(() => {
     if (ordersStatus === "reset") {
       setIsApproving(false);
-      setIsSwapping(false);
-      setIsWrapping(false);
-      setIsRequestingQuotes(false);
-      setAllowanceFetchFailed(false);
-      setPairUnavailable(false);
       setProtocolFeeInfo(false);
       setShowGasFeeInfo(false);
-      LastLook.unsubscribeAllServers();
     }
-  }, [ordersStatus, LastLook, dispatch]);
+  }, [ordersStatus]);
 
-  // Reset when the chainId changes.
   useEffect(() => {
     if (chainId) {
-      dispatch(resetOrders());
+      restart();
     }
   }, [chainId]);
 
-  useEffect(() => {
-    setAllowanceFetchFailed(
-      allowances.swap.status === "failed" ||
-        allowances.wrapper.status === "failed"
-    );
-  }, [allowances.swap.status, allowances.wrapper.status]);
-
-  const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const quoteAmount =
-    swapType === "wrapOrUnwrap"
-      ? baseAmount
-      : tradeTerms.quoteAmount || bestTradeOption?.quoteAmount || "";
+    swapType === SwapType.wrapOrUnwrap ? baseAmount : quote?.bestQuote || "";
   const formattedQuoteAmount = useMemo(
     () => stringToSignificantDecimals(quoteAmount),
     [quoteAmount]
   );
 
-  const transactionOrderNonce =
-    bestTradeOption?.order?.nonce || bestIndexerOrder?.nonce;
-  const activeTransaction = useBestTradeOptionTransaction(
-    baseTokenInfo,
-    transactionOrderNonce,
-    bestTradeOption?.quoteAmount
-  );
-
   useEffect(() => {
-    if (!active) {
+    if (!isActive) {
       setShowTokenSelectModalFor(null);
     }
-  }, [active]);
+  }, [isActive]);
 
   useEffect(() => {
     if (!indexerUrls && library) {
@@ -306,8 +255,8 @@ const SwapWidget: FC = () => {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [baseTokenInfo.address],
-            signerTokens: [quoteTokenInfo.address],
+            senderToken: baseTokenInfo.address,
+            signerToken: quoteTokenInfo.address,
           },
         })
       );
@@ -315,11 +264,22 @@ const SwapWidget: FC = () => {
   }, [baseTokenInfo, indexerUrls, quoteTokenInfo]);
 
   useEffect(() => {
-    if (isFromOrderDetailPage && +tradeTerms.baseAmount) {
-      prepareForRequest();
-      requestQuotes();
+    if (hasDepositOrWithdrawalPending) {
+      setIsWrapping(false);
     }
-  }, []);
+  }, [hasDepositOrWithdrawalPending]);
+
+  useEffect(() => {
+    if (hasApprovalSuccess && SwapWidgetState.review) {
+      setState(SwapWidgetState.requestPrices);
+    }
+  }, [hasApprovalSuccess]);
+
+  useEffect(() => {
+    if (approvalTransaction) {
+      setActiveApprovalHash(approvalTransaction.hash);
+    }
+  }, [approvalTransaction]);
 
   const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
     const baseRoute = AppRoutes.swap;
@@ -360,363 +320,128 @@ const SwapWidget: FC = () => {
     }
   };
 
-  const requestQuotes = useCallback(async () => {
-    if (swapType === "wrapOrUnwrap") {
-      // This will re-render with a 1:1 price and a take button.
-      setIsWrapping(true);
-      return;
-    }
-    setIsRequestingQuotes(true);
-
-    const usesWrapper = swapType === "swapWithWrap";
-    const weth = getWethAddress(chainId!);
-    const eth = nativeCurrency[chainId!];
-    const _quoteToken = quoteToken === eth.address ? weth : quoteToken!;
-    const _baseToken = baseToken === eth.address ? weth : baseToken!;
-
-    let rfqServers: Server[] = [];
-    let lastLookServers: Server[] = [];
-    try {
-      try {
-        if (library && customServerUrl) {
-          const serverFromQueryString = await Server.at(customServerUrl, {
-            chainId,
-            initializeTimeout: 10 * 1000,
-          });
-          rfqServers.push(serverFromQueryString);
-        } else if (library && chainId) {
-          const servers = await Registry.getServers(
-            library,
-            chainId,
-            _quoteToken,
-            _baseToken,
-            {
-              initializeTimeout: 10 * 1000,
-            }
-          );
-          rfqServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.RequestForQuoteERC20)
-          );
-          lastLookServers = servers.filter((s) =>
-            s.supportsProtocol(Protocols.LastLookERC20)
-          );
-        }
-      } catch (e) {
-        console.error("Error requesting orders:", e);
-        throw new Error("error requesting orders");
-      }
-
-      let rfqPromise: Promise<OrderERC20[]> | null = null,
-        lastLookPromises: Promise<Pricing>[] | null = null;
-
-      if (rfqServers.length) {
-        const senderWallet = usesWrapper
-          ? Wrapper.getAddress(chainId!)
-          : account!;
-        if (senderWallet) {
-          let rfqDispatchResult = dispatch(
-            request({
-              servers: rfqServers,
-              senderToken: _baseToken,
-              senderAmount: baseAmount,
-              signerToken: _quoteToken,
-              senderTokenDecimals: baseTokenInfo!.decimals,
-              senderWallet: senderWallet,
-              proxyingFor: usesWrapper ? account! : undefined,
-            })
-          );
-          rfqPromise = rfqDispatchResult
-            .then((result) => {
-              return unwrapResult(result);
-            })
-            .then((orders) => {
-              if (!orders.length) throw new Error("no valid orders");
-              return orders;
-            });
-        } else {
-          console.error(
-            "No sender wallet or wrapper for selected chain",
-            chainId
-          );
-          throw new Error("No sender wallet or wrapper for selected chain");
-        }
-      }
-
-      if (lastLookServers.length) {
-        if (usesWrapper) {
-          lastLookServers.forEach((s) => s.disconnect());
-        } else {
-          lastLookPromises = LastLook.subscribeAllServers(lastLookServers, {
-            baseToken: baseToken!,
-            quoteToken: quoteToken!,
-          });
-        }
-      }
-
-      let orderPromises: Promise<OrderERC20[] | Pricing>[] = [];
-      if (rfqPromise) orderPromises.push(rfqPromise);
-      if (lastLookPromises) {
-        orderPromises = orderPromises.concat(lastLookPromises);
-      }
-
-      // This promise times out if _no_ orders are received before the timeout
-      // but resolves if _any_ are.
-      const timeoutOnNoOrdersPromise = Promise.race<any>([
-        Promise.any(orderPromises),
-        new Promise((_, reject) =>
-          setTimeout(() => {
-            reject("no valid orders");
-          }, RECEIVE_QUOTE_TIMEOUT_MS)
-        ),
-      ]);
-
-      // This promise resolves either when all orders are received or X seconds
-      // after the first order is received.
-      const waitExtraForAllOrdersPromise = Promise.race<any>([
-        Promise.allSettled(orderPromises),
-        Promise.any(orderPromises).then(
-          () =>
-            new Promise((resolve) =>
-              setTimeout(resolve, ADDITIONAL_QUOTE_BUFFER)
-            )
-        ),
-      ]);
-
-      await Promise.all([
-        waitExtraForAllOrdersPromise,
-        timeoutOnNoOrdersPromise,
-      ]);
-    } catch (e: any) {
-      switch (e.message) {
-        case "error requesting orders": {
-          notifyError({
-            heading: t("orders.errorRequesting"),
-            cta: t("orders.errorRequestingCta"),
-          });
-          break;
-        }
-
-        default: {
-          console.error(e);
-          setPairUnavailable(true);
-        }
-      }
-    } finally {
-      setIsRequestingQuotes(false);
-    }
-  }, [
-    LastLook,
-    account,
-    baseAmount,
-    baseToken,
-    baseTokenInfo,
-    chainId,
-    dispatch,
-    library,
-    quoteToken,
-    swapType,
-    t,
-  ]);
-
   const swapWithRequestForQuote = async () => {
     try {
-      if (!library) return;
+      if (!library || !chainId || !account) return;
+
       const senderWallet =
-        swapType === "swapWithWrap" ? Wrapper.getAddress(chainId!) : account!;
+        swapType === SwapType.swapWithWrap
+          ? Wrapper.getAddress(chainId)
+          : account;
+
+      const order = quote.bestOrder as OrderERC20;
+
       if (!senderWallet) return;
+
       const errors = await check(
-        bestTradeOption!.order!,
+        order,
         senderWallet,
-        chainId || 1,
+        chainId,
         library,
-        swapType === "swapWithWrap"
+        swapType === SwapType.swapWithWrap
       );
 
       if (errors.length) {
         dispatch(setErrors(errors));
-        setIsSwapping(false);
         return;
       }
-      LastLook.unsubscribeAllServers();
 
-      const result = await dispatch(
-        take({
-          order: bestTradeOption!.order!,
+      const transaction = await dispatch(
+        take(
+          order,
+          quoteTokenInfo!,
+          baseTokenInfo!,
           library,
-          contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-          onExpired: () => {
-            notifyError({
-              heading: t("orders.swapExpired"),
-              cta: t("orders.swapExpiredCallToAction"),
-            });
-          },
-        })
+          swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+        )
       );
-      setIsSwapping(false);
-      await unwrapResult(result);
-      setShowOrderSubmitted(true);
+
+      setActiveOrderNonce(transaction?.order.nonce);
     } catch (e) {
       console.error("Error taking order:", e);
     }
   };
 
   const swapWithLastLook = async () => {
-    let order: OrderERC20 | null = null;
-
-    try {
-      setIsSwapping(true);
-      // Setting quote amount prevents the UI from updating if pricing changes
-      dispatch(setTradeTermsQuoteAmount(bestTradeOption!.quoteAmount));
-      // Last look order.
-      const { order: lastLookOrder, senderWallet } =
-        await LastLook.getSignedOrder({
-          locator: bestTradeOption!.pricing!.locator,
-          terms: { ...tradeTerms, quoteAmount: bestTradeOption!.quoteAmount },
-        });
-      order = lastLookOrder;
-      let errors: any[] = [];
-      if (library) {
-        errors = await check(order, senderWallet, chainId || 1, library);
-      }
-
-      if (errors.length) {
-        dispatch(setErrors(errors));
-        setIsSwapping(false);
-        return;
-      }
-      const accepted = await LastLook.sendOrderForConsideration({
-        locator: bestTradeOption!.pricing!.locator,
-        order: order,
-      });
-      setIsSwapping(false);
-      if (accepted) {
-        setShowOrderSubmitted(true);
-        LastLook.unsubscribeAllServers();
-      } else {
-        notifyError({
-          heading: t("orders.swapRejected"),
-          cta: t("orders.swapRejectedCallToAction"),
-        });
-
-        dispatch(
-          declineTransaction({
-            signerWallet: order.signerWallet,
-            nonce: order.nonce,
-            reason: "Pricing expired",
-          })
-        );
-      }
-    } catch (e: any) {
-      setIsSwapping(false);
-      dispatch(clearTradeTermsQuoteAmount());
-
-      const appError = transformUnknownErrorToAppError(e);
-      if (appError.type === AppErrorType.rejectedByUser) {
-        notifyRejectedByUserError();
-        dispatch(
-          revertTransaction({
-            signerWallet: order?.signerWallet,
-            nonce: order?.nonce,
-            reason: e.message,
-          })
-        );
-      } else {
-        dispatch(setErrors([appError]));
-      }
-
-      console.error("Error taking order:", e);
+    if (!quote.bestPricing || !quote.bestQuote) {
+      return;
     }
+
+    const transaction = await dispatch(
+      takeLastLookOrder(
+        chainId!,
+        library!,
+        quote.bestPricing.locator!,
+        quoteTokenInfo!,
+        baseTokenInfo!,
+        quote.bestOrder as UnsignedOrderERC20
+      )
+    );
+
+    setActiveOrderNonce(transaction?.order.nonce);
   };
 
-  const prepareForRequest = useCallback(() => {
-    dispatch(
-      setTradeTerms({
-        baseToken: {
-          address: baseToken!,
-          decimals: baseTokenInfo!.decimals,
-        },
-        baseAmount: baseAmount,
-        quoteToken: {
-          address: quoteToken!,
-          decimals: quoteTokenInfo!.decimals,
-        },
-        quoteAmount: null,
-        side: "sell",
-      })
-    );
-    // subscribeToGasPrice();
-    subscribeToTokenPrice(
-      quoteTokenInfo!,
-      // @ts-ignore
-      library!,
-      chainId!
-    );
-  }, [
-    baseAmount,
-    baseToken,
-    baseTokenInfo,
-    chainId,
-    customServerUrl,
-    library,
-    quoteToken,
-    quoteTokenInfo,
-  ]);
-
   const takeBestOption = async () => {
-    if (bestTradeOption!.protocol === "request-for-quote-erc20") {
-      await swapWithRequestForQuote();
-    } else {
+    if (quote?.bestOrderType === ProtocolIds.LastLookERC20) {
       await swapWithLastLook();
+    } else {
+      await swapWithRequestForQuote();
     }
   };
 
   const doWrap = async () => {
-    const method =
-      baseTokenInfo === nativeCurrency[chainId!] ? deposit : withdraw;
-    setIsSwapping(true);
-    try {
-      const result = await dispatch(
-        method({
-          chainId: chainId!,
-          senderAmount: baseAmount,
-          senderTokenDecimals: baseTokenInfo!.decimals,
-          provider: library!,
-        })
+    if (baseTokenInfo === nativeCurrency[chainId!]) {
+      const transaction = await dispatch(
+        deposit(
+          baseAmount,
+          nativeTokenInfo,
+          wrappedNativeTokenInfo!,
+          chainId!,
+          library!
+        )
       );
-      await unwrapResult(result);
-      setIsSwapping(false);
-      setIsWrapping(false);
-      setShowOrderSubmitted(true);
-    } catch (e) {
-      // user cancelled metamask dialog
-      setIsSwapping(false);
-      setIsWrapping(false);
+
+      setActiveWrapOrUnwrapHash(transaction?.hash);
+
+      return;
     }
+
+    const transaction = await dispatch(
+      withdraw(
+        baseAmount,
+        nativeTokenInfo,
+        wrappedNativeTokenInfo!,
+        chainId!,
+        library!
+      )
+    );
+
+    setActiveWrapOrUnwrapHash(transaction?.hash);
+  };
+
+  const restart = () => {
+    setState(SwapWidgetState.overview);
+    dispatch(clearTradeTerms());
+    dispatch(clearQuotes());
+    dispatch(clear());
+    setActiveApprovalHash(undefined);
+    setActiveWrapOrUnwrapHash(undefined);
+    setActiveOrderNonce(undefined);
+    setBaseAmount("");
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
     switch (action) {
       case ButtonActions.goBack:
-        setIsWrapping(false);
-        setPairUnavailable(false);
-        dispatch(clearTradeTerms());
+        setState(SwapWidgetState.overview);
+        dispatch(clearQuotes());
         dispatch(clear());
-        unsubscribeFromGasPrice();
-        unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllServers();
+        setActiveApprovalHash(undefined);
+        setActiveOrderNonce(undefined);
         break;
 
       case ButtonActions.restart:
-        setShowOrderSubmitted(false);
-        setState(SwapWidgetState.overview);
-        dispatch(clearTradeTerms());
-        dispatch(clear());
-        unsubscribeFromGasPrice();
-        unsubscribeFromTokenPrice();
-        LastLook.unsubscribeAllServers();
-        setBaseAmount("");
-        library &&
-          dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+        restart();
         break;
 
       case ButtonActions.reloadPage:
@@ -733,7 +458,7 @@ const SwapWidget: FC = () => {
 
       case ButtonActions.requestQuotes:
         prepareForRequest();
-        await requestQuotes();
+        setState(SwapWidgetState.requestPrices);
 
         break;
 
@@ -742,11 +467,13 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.takeQuote:
-        if (["swap", "swapWithWrap"].includes(swapType)) {
+        if ([SwapType.swap, SwapType.swapWithWrap].includes(swapType)) {
           await takeBestOption();
-        } else if (swapType === "wrapOrUnwrap") {
+        } else if (swapType === SwapType.wrapOrUnwrap) {
           await doWrap();
         }
+
+        setState(SwapWidgetState.overview);
         break;
 
       case ButtonActions.trackTransaction:
@@ -755,17 +482,34 @@ const SwapWidget: FC = () => {
     }
   };
 
+  const prepareForRequest = () => {
+    dispatch(
+      setTradeTerms({
+        baseToken: {
+          address: baseToken!,
+          decimals: baseTokenInfo!.decimals,
+        },
+        baseAmount: baseAmount,
+        quoteToken: {
+          address: quoteToken!,
+          decimals: quoteTokenInfo!.decimals,
+        },
+        quoteAmount: null,
+        side: "sell",
+      })
+    );
+  };
+
   const approveToken = async () => {
     setIsApproving(true);
 
     await dispatch(
-      approve({
-        token: baseTokenInfo!,
-        library,
-        contractType: swapType === "swapWithWrap" ? "Wrapper" : "Swap",
-        chainId: chainId!,
-        amount: baseAmount,
-      })
+      approve(
+        baseAmount,
+        baseTokenInfo!,
+        library!,
+        swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+      )
     );
     setIsApproving(false);
   };
@@ -778,6 +522,10 @@ const SwapWidget: FC = () => {
     dispatch(setCustomServerUrl(null));
   };
 
+  const backToOverview = () => {
+    handleActionButtonClick(ButtonActions.restart);
+  };
+
   if (ordersStatus === "signing") {
     return (
       <Container>
@@ -786,16 +534,39 @@ const SwapWidget: FC = () => {
     );
   }
 
-  if (state === SwapWidgetState.review && !hasSufficientAllowance) {
+  if (activeOrderTransaction) {
+    return (
+      <Container>
+        <OrderSubmittedScreen
+          showTrackTransactionButton={
+            activeOrderTransaction.status ===
+              TransactionStatusType.processing && !transactionsTabIsOpen
+          }
+          chainId={chainId}
+          transaction={activeOrderTransaction}
+          onMakeNewOrderButtonClick={() =>
+            handleActionButtonClick(ButtonActions.restart)
+          }
+          onTrackTransactionButtonClick={() =>
+            handleActionButtonClick(ButtonActions.trackTransaction)
+          }
+        />
+      </Container>
+    );
+  }
+
+  if (state === SwapWidgetState.review && shouldApprove) {
     return (
       <Container>
         <ApproveReview
           isLoading={hasApprovalPending}
           amount={baseAmount || "0"}
+          errors={ordersErrors}
           readableAllowance={readableAllowance}
           token={baseTokenInfo}
           wrappedNativeToken={wrappedNativeTokenInfo}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -806,30 +577,31 @@ const SwapWidget: FC = () => {
     <>
       <StyledSwapWidget>
         <SwapWidgetHeader
+          isLastLook={quote.bestOrderType === ProtocolIds.LastLookERC20}
           title={isApproving ? t("orders.approve") : t("common.rfq")}
-          isQuote={!isRequestingQuotes && !showOrderSubmitted}
+          isQuote={!hasSubmittedTransaction}
           onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
-          protocol={bestTradeOption?.protocol as ProtocolType}
-          expiry={bestTradeOption?.order?.expiry}
+          expiry={quote.bestOrder?.expiry}
         />
-        {!isApproving && !isSwapping && !showOrderSubmitted && (
+        {isDebugMode && <StyledDebugMenu />}
+        {!isApproving && !hasSubmittedTransaction && (
           <SwapInputs
             baseAmount={baseAmount}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             side="sell"
-            tradeNotAllowed={pairUnavailable}
-            isRequestingQuoteAmount={isRequestingQuotes}
+            tradeNotAllowed={!!quote.error}
+            isRequestingQuoteAmount={quote.isLoading}
             // Note that using the quoteAmount from tradeTerms will stop this
             // updating when the user clicks the take button.
             quoteAmount={formattedQuoteAmount}
-            disabled={!active || (!!quoteAmount && allowanceFetchFailed)}
+            disabled={!isActive || isAllowancesOrBalancesFailed}
             readOnly={
-              !!bestTradeOption ||
+              !!quote.bestQuote ||
+              !!quote.error ||
               isWrapping ||
-              isRequestingQuotes ||
-              pairUnavailable ||
-              !active
+              !isActive ||
+              !isNetworkSupported
             }
             showMaxButton={showMaxButton}
             showMaxInfoButton={showMaxInfoButton}
@@ -842,58 +614,43 @@ const SwapWidget: FC = () => {
         )}
         <InfoContainer>
           <InfoSection
-            failedToFetchAllowances={allowanceFetchFailed}
+            failedToFetchAllowances={isAllowancesOrBalancesFailed}
             hasSelectedCustomServer={!!customServerUrl}
             isApproving={isApproving}
-            isConnected={active}
-            isFetchingOrders={isRequestingQuotes}
-            isPairUnavailable={pairUnavailable}
-            isSwapping={isSwapping}
+            isConnected={isActive}
+            isFetchingOrders={quote.isLoading}
+            isNetworkUnsupported={!isNetworkSupported}
             isWrapping={isWrapping}
-            orderSubmitted={showOrderSubmitted}
-            orderCompleted={
-              showOrderSubmitted && activeTransaction?.status === "succeeded"
-            }
-            requiresApproval={bestRfqOrder && !hasSufficientAllowance}
             showViewAllQuotes={indexerOrders.length > 0}
-            // @ts-ignore
-            bestTradeOption={bestTradeOption}
+            bestQuote={quote.bestQuote}
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
+            pricingError={quote.error}
             serverUrl={customServerUrl}
             quoteTokenInfo={quoteTokenInfo}
             onClearServerUrlButtonClick={handleClearServerUrl}
-            onFeeButtonClick={() => setProtocolFeeInfo(true)}
             onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
           />
         </InfoContainer>
         <ButtonContainer>
-          {!isApproving && !isSwapping && (
-            <ActionButtons
-              walletIsActive={active}
-              unsupportedNetwork={
-                !!web3Error && web3Error instanceof UnsupportedChainIdError
-              }
-              requiresReload={allowanceFetchFailed}
-              orderComplete={showOrderSubmitted}
-              baseTokenInfo={baseTokenInfo}
-              quoteTokenInfo={quoteTokenInfo}
-              hasAmount={
-                !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
-              }
-              hasQuote={
-                !isRequestingQuotes && (!!bestTradeOption || isWrapping)
-              }
-              hasSufficientBalance={!insufficientBalance}
-              needsApproval={!!baseToken && !hasSufficientAllowance}
-              pairUnavailable={pairUnavailable}
-              onButtonClicked={(action) => handleActionButtonClick(action)}
-              isLoading={
-                isConnecting || isRequestingQuotes || hasApprovalPending
-              }
-              transactionsTabOpen={transactionsTabIsOpen}
-            />
-          )}
+          <ActionButtons
+            walletIsActive={isActive}
+            isNetworkUnsupported={!isNetworkSupported}
+            requiresReload={isAllowancesOrBalancesFailed}
+            baseTokenInfo={baseTokenInfo}
+            quoteTokenInfo={quoteTokenInfo}
+            hasAmount={
+              !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
+            }
+            hasQuote={!!quote.bestQuote}
+            hasSufficientBalance={!insufficientBalance}
+            needsApproval={!!baseToken && shouldApprove}
+            hasError={!!quote.error}
+            onButtonClicked={(action) => handleActionButtonClick(action)}
+            isLoading={
+              isConnecting || quote.isLoading || ordersStatus === "requesting"
+            }
+          />
         </ButtonContainer>
       </StyledSwapWidget>
       <Overlay
@@ -917,17 +674,10 @@ const SwapWidget: FC = () => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
+        onCloseButtonClick={backToOverview}
         isHidden={!ordersErrors.length}
       >
-        <ErrorList
-          errors={ordersErrors}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
+        <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
       </Overlay>
       <Overlay
         title={t("information.gasFreeSwaps.title")}

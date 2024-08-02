@@ -2,22 +2,14 @@ import React, { FC, ReactElement, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
-import { useAppDispatch } from "../../app/hooks";
-import { WalletProvider } from "../../constants/supportedWalletProviders";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import { resetOrders } from "../../features/orders/ordersSlice";
-import useHistoricalTransactions from "../../features/transactions/useHistoricalTransactions";
-import useTransactionsFilterFromLocalStorage from "../../features/transactions/useTransactionsFilterFromLocalStorage";
+import { clear, setResetStatus } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
-import { setActiveProvider } from "../../features/wallet/walletSlice";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { useKeyPress } from "../../hooks/useKeyPress";
-import { StyledWalletProviderList } from "../@widgets/SwapWidget/SwapWidget.styles";
+import WalletConnector from "../@widgets/WalletConnector/WalletConnector";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
-import Overlay from "../Overlay/Overlay";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
@@ -31,27 +23,24 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { t } = useTranslation();
-  const { activate, active: web3ProviderIsActive } =
-    useWeb3React<Web3Provider>();
+  const { isActive: web3ProviderIsActive } = useAppSelector(
+    (state) => state.web3
+  );
+
   const appRouteParams = useAppRouteParams();
   const {
-    setIsConnecting,
     showMobileToolbar,
-    showWalletList,
     transactionsTabIsOpen,
     pageHeight,
     setShowMobileToolbar,
-    setShowWalletList,
   } = useContext(InterfaceContext);
-
-  useHistoricalTransactions();
-  useTransactionsFilterFromLocalStorage();
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
   const reset = () => {
     setShowMobileToolbar(false);
-    dispatch(resetOrders());
+    dispatch(clear());
+    dispatch(setResetStatus());
   };
 
   const handleAirswapButtonClick = () => {
@@ -66,28 +55,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     setShowMobileToolbar(true);
   };
 
-  const handleProviderSelected = (provider: WalletProvider) => {
-    dispatch(setActiveProvider(provider.name));
-    setIsConnecting(true);
-    activate(provider.getConnector()).finally(() => setIsConnecting(false));
-  };
-
-  const handleCloseWalletProviderList = () => {
-    setShowWalletList(false);
-  };
-
   useEffect(() => {
     if (appRouteParams.route === undefined) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appRouteParams.route]);
 
   useEffect(() => {
     if (showMobileToolbar) {
       setShowMobileToolbar(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -111,16 +88,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         >
           {children}
 
-          <Overlay
-            title={t("wallet.selectWallet")}
-            onCloseButtonClick={handleCloseWalletProviderList}
-            isHidden={!showWalletList}
-          >
-            <StyledWalletProviderList
-              onClose={handleCloseWalletProviderList}
-              onProviderSelected={handleProviderSelected}
-            />
-          </Overlay>
+          <WalletConnector />
         </WidgetFrame>
         <StyledSocialButtons />
       </InnerContainer>

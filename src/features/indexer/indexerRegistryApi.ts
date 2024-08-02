@@ -1,5 +1,5 @@
-import { Protocols } from "@airswap/constants";
-import { RegistryV4 } from "@airswap/libraries";
+import { Registry } from "@airswap/libraries";
+import { ProtocolIds } from "@airswap/utils";
 
 import { providers } from "ethers";
 
@@ -7,9 +7,9 @@ export const getIndexerUrls = async (
   chainId: number,
   provider: providers.Provider
 ): Promise<string[]> => {
-  return await RegistryV4.getServerURLs(
+  return await Registry.getServerURLs(
     provider,
     chainId,
-    Protocols.StorageERC20
+    ProtocolIds.IndexingERC20
   );
 };

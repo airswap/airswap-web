@@ -1,5 +1,4 @@
-import { findTokensBySymbol } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { findTokensBySymbol, TokenInfo } from "@airswap/utils";
 
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 

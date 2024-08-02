@@ -3,39 +3,36 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
-import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
-  getFilteredOrders,
   fetchIndexerUrls,
-} from "../../../features/indexer/indexerSlice";
+  getFilteredOrders,
+} from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
-import { check } from "../../../features/orders/orderApi";
+import { approve, deposit, take } from "../../../features/orders/ordersActions";
+import { check } from "../../../features/orders/ordersHelpers";
 import {
-  approve,
   clear,
-  deposit,
   selectOrdersErrors,
   selectOrdersStatus,
-  take,
 } from "../../../features/orders/ordersSlice";
 import {
   reset,
   selectTakeOtcErrors,
   setErrors,
 } from "../../../features/takeOtc/takeOtcSlice";
-import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
@@ -80,20 +77,23 @@ export enum OrderDetailWidgetState {
 
 const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
-  const { account, library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, account, chainId } = useAppSelector((state) => state.web3);
   const history = useHistory();
   const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
   const isFromAvailableOrdersWidget =
     !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
-  const { setShowWalletList } = useContext(InterfaceContext);
-  const { active, chainId, error: web3Error } = useWeb3React<Web3Provider>();
+  const { setShowWalletList, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
+
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
+
   const errors = [...ordersErrors, ...takeOtcErrors];
 
   const [state, setState] = useState<OrderDetailWidgetState>(
@@ -120,7 +120,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
     signerAmount!
   );
-  const hasApprovalPending = useApprovalPending(order.senderToken);
+  const hasApprovalPending = !!useApprovalPending(order.senderToken);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
   const { hasSufficientAllowance } = useAllowance(
@@ -138,6 +138,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     senderToken?.address,
     senderAmount
   );
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
@@ -146,13 +147,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     !!chainId && orderChainId !== chainId;
 
   const orderType =
-    order.senderWallet === nativeCurrencyAddress
+    order.senderWallet === ADDRESS_ZERO
       ? OrderType.publicUnlisted
       : OrderType.private;
   const userIsMakerOfSwap = order.signerWallet === account;
   const userIsIntendedRecipient =
-    order.senderWallet === account ||
-    order.senderWallet === nativeCurrencyAddress;
+    compareAddresses(order.senderWallet, account || "") ||
+    order.senderWallet === ADDRESS_ZERO;
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
@@ -171,8 +172,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       dispatch(
         getFilteredOrders({
           filter: {
-            senderTokens: [senderToken.address],
-            signerTokens: [signerToken.address],
+            senderToken: senderToken.address,
+            signerToken: signerToken.address,
           },
         })
       );
@@ -201,53 +202,42 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
   const takeOrder = async () => {
     if (!library) return;
+
     const errors = await check(
       order,
       order.senderWallet,
       order.chainId,
       library
     );
+
     if (errors.length) {
       dispatch(setErrors(errors));
       return;
     }
 
-    await dispatch(
-      take({
-        order,
-        library: library,
-        contractType: "Swap",
-        onExpired: () => {},
-      })
-    );
+    await dispatch(take(order, signerToken!, senderToken!, library, "Swap"));
+  };
+
+  const openTransactionsTab = () => {
+    setTransactionsTabIsOpen(true);
   };
 
   const approveToken = () => {
-    if (!senderToken || !senderAmount) {
+    if (!senderToken || !senderAmount || !library) {
       return;
     }
 
-    dispatch(
-      approve({
-        token: senderToken,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: senderAmount,
-      })
-    );
+    dispatch(approve(senderAmount, senderToken, library, "Swap"));
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: senderToken!.decimals,
-        provider: library!,
-      })
+    deposit(
+      shouldDepositNativeTokenAmount!,
+      senderToken!,
+      wrappedNativeToken!,
+      chainId!,
+      library!
     );
-    await unwrapResult(result);
   };
 
   const restart = () => {
@@ -256,7 +246,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     dispatch(reset());
   };
 
-  const handleEditButtonClick = () => {
+  const backToOverview = () => {
     setState(OrderDetailWidgetState.overview);
   };
 
@@ -290,15 +280,27 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     );
   }
 
+  if (orderTransaction) {
+    return (
+      <OrderSubmittedScreen
+        chainId={chainId}
+        transaction={orderTransaction}
+        onMakeNewOrderButtonClick={restart}
+        onTrackTransactionButtonClick={openTransactionsTab}
+      />
+    );
+  }
+
   if (state === OrderDetailWidgetState.review && shouldDepositNativeToken) {
     return (
       <Container>
         <WrapReview
           isLoading={hasDepositPending}
           amount={senderAmount || "0"}
+          errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={depositNativeToken}
         />
       </Container>
@@ -311,10 +313,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         <ApproveReview
           isLoading={hasApprovalPending}
           amount={senderAmount || "0"}
+          errors={errors}
           readableAllowance={"0"}
           token={senderToken}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -325,26 +328,18 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     return (
       <Container>
         <TakeOrderReview
+          errors={errors}
           expiry={+order.expiry}
           senderAmount={senderAmount || "0"}
           senderToken={senderToken}
           signerAmount={signerAmount || "0"}
           signerToken={signerToken}
           wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
+          onEditButtonClick={backToOverview}
+          onRestartButtonClick={restart}
           onSignButtonClick={takeOrder}
         />
       </Container>
-    );
-  }
-
-  if (orderTransaction) {
-    return (
-      <OrderSubmittedScreen
-        chainId={chainId}
-        transaction={orderTransaction}
-        onMakeNewOrderButtonClick={restart}
-      />
     );
   }
 
@@ -389,11 +384,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onFeeButtonClick={toggleShowFeeInfo}
       />
       <StyledInfoSection
+        isAllowancesFailed={isAllowancesOrBalancesFailed}
         isExpired={orderStatus === OrderStatus.expired}
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
-        isNotConnected={!active}
+        isNotConnected={!isActive}
         orderChainId={orderChainId}
       />
       <StyledActionButtons
@@ -405,10 +401,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
         isIntendedRecipient={userIsIntendedRecipient}
         isMakerOfSwap={userIsMakerOfSwap}
-        isNotConnected={!active}
-        isNetworkUnsupported={
-          !!web3Error && web3Error instanceof UnsupportedChainIdError
-        }
+        isNotConnected={!isActive}
+        requiresReload={isAllowancesOrBalancesFailed}
         shouldDepositNativeToken={shouldDepositNativeToken}
         senderTokenSymbol={senderTokenSymbol}
         onBackButtonClick={handleBackButtonClick}
@@ -424,17 +418,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={() =>
-          handleActionButtonClick(ButtonActions.restart)
-        }
+        onCloseButtonClick={restart}
         isHidden={!errors.length}
       >
-        <ErrorList
-          errors={errors}
-          onBackButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-        />
+        <ErrorList errors={errors} onBackButtonClick={restart} />
       </Overlay>
       {signerToken && senderToken && (
         <Overlay

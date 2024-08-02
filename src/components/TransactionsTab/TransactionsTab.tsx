@@ -1,24 +1,28 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { chainCurrencies, chainNames } from "@airswap/constants";
-import { TokenInfo } from "@airswap/types";
-import { getAccountUrl } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import {
+  getAccountUrl,
+  chainCurrencies,
+  chainNames,
+  ADDRESS_ZERO,
+} from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
+import { useAppSelector } from "../../app/hooks";
+import { supportedNetworks } from "../../constants/supportedNetworks";
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { BalancesState } from "../../features/balances/balancesSlice";
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
 import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import { ClearOrderType } from "../../types/clearOrderType";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import Icon from "../Icon/Icon";
 import {
   Container,
@@ -41,44 +45,44 @@ import {
   MobileWalletInfoButton,
   StyledWalletMobileMenu,
   BackdropFilter,
+  ConnectButton,
 } from "./TransactionsTab.styles";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
-type TransactionsTabType = {
-  address: string;
+interface TransactionsTabProps {
+  account: string;
   chainId: number;
   open: boolean;
+  protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
-  /**
-   * Callback function for when disconnect button is clicked
-   */
-  onDisconnectWalletClicked: () => void;
+  onConnectButtonClick: () => void;
+  onDisconnectButtonClick: () => void;
   transactions: SubmittedTransaction[];
-  tokens: TokenInfo[];
   balances: BalancesState;
   isUnsupportedNetwork?: boolean;
-};
+}
 
 const TransactionsTab = ({
-  address = "",
+  account = "",
   chainId,
   open,
+  protocolFee,
   setTransactionsTabOpen,
   onClearTransactionsChange,
-  onDisconnectWalletClicked,
+  onConnectButtonClick,
+  onDisconnectButtonClick,
   transactions = [],
-  tokens = [],
   balances,
   isUnsupportedNetwork = false,
-}: TransactionsTabType) => {
+}: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
-  const { active } = useWeb3React<Web3Provider>();
+  const { isActive } = useAppSelector((state) => state.web3);
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -87,7 +91,7 @@ const TransactionsTab = ({
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const addressOrName = useAddressOrEnsName(address);
+  const addressOrName = useAddressOrEnsName(account);
   const walletInfoText = useMemo(() => {
     return isUnsupportedNetwork
       ? t("wallet.unsupported")
@@ -96,8 +100,8 @@ const TransactionsTab = ({
       : t("wallet.notConnected");
   }, [addressOrName, isUnsupportedNetwork, t]);
   const walletUrl = useMemo(
-    () => getAccountUrl(chainId, address),
-    [chainId, address]
+    () => getAccountUrl(chainId, account),
+    [chainId, account]
   );
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
@@ -142,17 +146,19 @@ const TransactionsTab = ({
 
   const pendingTransactions = useMemo(() => {
     return transactions.filter(
-      (transaction) => transaction.status === "processing"
+      (transaction) => transaction.status === TransactionStatusType.processing
     );
   }, [transactions]);
 
   const completedTransactions = useMemo(() => {
     return transactions
-      .filter((transaction) => transaction.status !== "processing")
+      .filter(
+        (transaction) => transaction.status !== TransactionStatusType.processing
+      )
       .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 
-  const balance = balances.values[nativeCurrencyAddress] || "0";
+  const balance = balances.values[ADDRESS_ZERO] || "0";
 
   return (
     <AnimatePresence initial={false}>
@@ -177,9 +183,11 @@ const TransactionsTab = ({
           <WalletHeader>
             <NetworkInfoContainer>
               <NetworkName>
-                {chainNames[chainId] || t("wallet.unsupported")}
+                {isActive &&
+                  !supportedNetworks.includes(chainId) &&
+                  t("wallet.unsupported")}
               </NetworkName>
-              {active && (
+              {isActive && (
                 <Balances>
                   {formatUnits(balance).substring(0, 4)}{" "}
                   {chainCurrencies[chainId]}
@@ -187,7 +195,7 @@ const TransactionsTab = ({
               )}
             </NetworkInfoContainer>
             <DesktopWalletInfoButton
-              isConnected={active}
+              isConnected={isActive}
               onClick={setTransactionsTabOpen.bind(null, false)}
             >
               {walletInfoText}
@@ -198,8 +206,8 @@ const TransactionsTab = ({
             {showMobileMenu && (
               <StyledWalletMobileMenu
                 walletUrl={walletUrl}
-                address={address}
-                onDisconnectButtonClick={onDisconnectWalletClicked}
+                address={account}
+                onDisconnectButtonClick={onDisconnectButtonClick}
               />
             )}
           </WalletHeader>
@@ -219,10 +227,11 @@ const TransactionsTab = ({
               <AnimatePresence initial={false}>
                 {pendingTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}-pending`}
+                    key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
+                    account={account}
                   />
                 ))}
               </AnimatePresence>
@@ -235,12 +244,13 @@ const TransactionsTab = ({
             </LegendContainer>
             <TransactionContainer>
               <AnimatePresence initial={false}>
-                {completedTransactions.slice(0, 10).map((transaction) => (
+                {completedTransactions.map((transaction) => (
                   <AnimatedWalletTransaction
-                    key={`${transaction.hash}-${transaction.nonce}-${transaction.expiry}`}
+                    key={getSubmittedTransactionKey(transaction)}
+                    protocolFee={protocolFee}
                     transaction={transaction}
-                    tokens={tokens}
                     chainId={chainId!}
+                    account={account}
                   />
                 ))}
               </AnimatePresence>
@@ -255,12 +265,15 @@ const TransactionsTab = ({
             </TransactionContainer>
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
-            <DisconnectButton
-              aria-label={t("wallet.disconnectWallet")}
-              onClick={onDisconnectWalletClicked}
-            >
-              {t("wallet.disconnectWallet")}
-            </DisconnectButton>
+            {isActive ? (
+              <DisconnectButton onClick={onDisconnectButtonClick}>
+                {t("wallet.disconnectWallet")}
+              </DisconnectButton>
+            ) : (
+              <ConnectButton onClick={onConnectButtonClick}>
+                {t("wallet.connectWallet")}
+              </ConnectButton>
+            )}
             <MobileBackButton
               aria-label={t("common.back")}
               onClick={() => setTransactionsTabOpen(false)}

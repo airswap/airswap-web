@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 
 import { OrdersSortType } from "../../../../../features/myOrders/myOrdersSlice";
 import useWindowSize from "../../../../../hooks/useWindowSize";

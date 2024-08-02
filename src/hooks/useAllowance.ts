@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
@@ -22,7 +19,7 @@ const useAllowance = (
   allowance: string;
   readableAllowance: string;
 } => {
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const allowances = useAppSelector(selectAllowances);
 
@@ -45,7 +42,7 @@ const useAllowance = (
 
     // ETH can't have allowance because it's not a token. So we default to WETH when wrapNativeToken is true.
 
-    if (token.address === nativeCurrencyAddress && !wrapNativeToken) {
+    if (token.address === ADDRESS_ZERO && !wrapNativeToken) {
       setHasSufficientAllowance(true);
       setAllowance("0");
       setReadableAllowance("0");
@@ -54,9 +51,7 @@ const useAllowance = (
     }
 
     const justifiedAddress =
-      token.address === nativeCurrencyAddress
-        ? getWethAddress(chainId)
-        : token.address;
+      token.address === ADDRESS_ZERO ? getWethAddress(chainId) : token.address;
 
     const justifiedToken = findEthOrTokenByAddress(
       justifiedAddress,

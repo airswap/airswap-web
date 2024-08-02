@@ -1,11 +1,6 @@
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { store } from "../../app/store";
-import { getTransactionsLocalStorageKey } from "../transactions/transactionUtils";
-import {
-  SubmittedTransaction,
-  TransactionsState,
-} from "../transactions/transactionsSlice";
 import {
   getActiveTokensLocalStorageKey,
   getAllTokensLocalStorageKey,
@@ -46,68 +41,17 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const activeTokensCache: TokensCache = {};
   const customTokensCache: TokensCache = {};
   const allTokensCache: AllTokensCache = {};
-  const transactionCache: {
-    [address: string]: {
-      [chainId: number]: SubmittedTransaction[];
-    };
-  } = {};
-
-  let currentChainId: number;
-  let currentTransaction: TransactionsState;
 
   store.subscribe(() => {
-    const { wallet, metadata, transactions } = store.getState();
-    if (!wallet.connected) return;
-
-    let previousChainId = currentChainId;
-    currentChainId = wallet.chainId!;
-
-    let previousTransaction = currentTransaction;
-    currentTransaction = transactions;
-
-    if (
-      previousTransaction !== currentTransaction ||
-      previousChainId !== currentChainId
-    ) {
-      // handles change in transactions and persists all transactions to localStorage
-      // Store only the top 10 transactions
-      const txs: TransactionsState = JSON.parse(
-        localStorage.getItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!)
-        )!
-      ) || { all: [] };
-
-      const mostRecentTransactions = transactions.all;
-
-      if (transactionCache[wallet.address!] === undefined) {
-        transactionCache[wallet.address!] = {};
-        transactionCache[wallet.address!][wallet.chainId!] = txs.all.slice(
-          0,
-          10
-        );
-      }
-      if (
-        previousChainId === currentChainId &&
-        transactions.all.length &&
-        transactionCache[wallet.address!][wallet.chainId!] !== transactions.all
-      ) {
-        transactionCache[wallet.address!][wallet.chainId!] =
-          mostRecentTransactions;
-        localStorage.setItem(
-          getTransactionsLocalStorageKey(wallet.address!, wallet.chainId!),
-          JSON.stringify({
-            all: mostRecentTransactions,
-          })
-        );
-      }
-    }
+    const { web3, metadata, transactions } = store.getState();
+    if (!web3.isActive) return;
 
     // All tokens
-    if (!allTokensCache[wallet.chainId!]) {
-      allTokensCache[wallet.chainId!] = {};
+    if (!allTokensCache[web3.chainId!]) {
+      allTokensCache[web3.chainId!] = {};
     }
 
-    const cachedAllTokensForChain = allTokensCache[wallet.chainId!];
+    const cachedAllTokensForChain = allTokensCache[web3.chainId!];
 
     if (
       Object.values(metadata.tokens.all).length !==
@@ -115,14 +59,14 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     ) {
       // all tokens have changed, persist to local storage.
 
-      allTokensCache[wallet.chainId!] = metadata.tokens.all;
+      allTokensCache[web3.chainId!] = metadata.tokens.all;
       localStorage.setItem(
-        getAllTokensLocalStorageKey(wallet.chainId!),
+        getAllTokensLocalStorageKey(web3.chainId!),
         JSON.stringify(metadata.tokens.all)
       );
     }
 
-    if (!wallet.address || !wallet.chainId) {
+    if (!web3.account || !web3.chainId) {
       return;
     }
 
@@ -130,18 +74,18 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     compareAndWriteTokensToLocalStorage(
       activeTokensCache,
       metadata.tokens.active,
-      wallet.address,
-      wallet.chainId,
-      getActiveTokensLocalStorageKey(wallet.address, wallet.chainId)
+      web3.account,
+      web3.chainId,
+      getActiveTokensLocalStorageKey(web3.account, web3.chainId)
     );
 
     // Custom tokens
     compareAndWriteTokensToLocalStorage(
       customTokensCache,
       metadata.tokens.custom,
-      wallet.address,
-      wallet.chainId,
-      getCustomTokensLocalStorageKey(wallet.address, wallet.chainId)
+      web3.account,
+      web3.chainId,
+      getCustomTokensLocalStorageKey(web3.account, web3.chainId)
     );
   });
 };

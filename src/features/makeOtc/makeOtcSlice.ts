@@ -1,4 +1,4 @@
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";

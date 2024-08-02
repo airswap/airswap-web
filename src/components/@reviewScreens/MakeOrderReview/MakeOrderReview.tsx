@@ -1,12 +1,11 @@
 import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { ADDRESS_ZERO, TokenInfo } from "@airswap/utils";
 import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
 import { getExpiryTranslation } from "../../../helpers/getExpiryTranslation";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -62,10 +61,8 @@ const MakeOrderReview: FC<MakeOrderReviewProps> = ({
   const { t } = useTranslation();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
 
-  const isSignerTokenNativeToken =
-    signerToken?.address === nativeCurrencyAddress;
-  const isSenderTokenNativeToken =
-    senderToken?.address === nativeCurrencyAddress;
+  const isSignerTokenNativeToken = signerToken?.address === ADDRESS_ZERO;
+  const isSenderTokenNativeToken = senderToken?.address === ADDRESS_ZERO;
   const justifiedSignerToken = isSignerTokenNativeToken
     ? wrappedNativeToken
     : signerToken;

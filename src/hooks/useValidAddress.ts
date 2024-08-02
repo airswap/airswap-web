@@ -1,13 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { isAddress } from "ethers/lib/utils";
 
+import { useAppSelector } from "../app/hooks";
+
 const useValidAddress = (address: string): boolean => {
-  const { library } = useWeb3React<Web3Provider>();
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const [isValidAddress, setIsValidAddress] = useState(false);
 

@@ -3,13 +3,14 @@ on:
   push:
     branches:
       - main
+      - ipfs
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.15.1
+          node-version: 18.19.0
 
       - name: Checkout Code
         uses: actions/checkout@v2.3.1
@@ -19,18 +20,14 @@ jobs:
           REACT_APP_SENTRY_DSN: ${{ vars.REACT_APP_SENTRY_DSN }}
           REACT_APP_RPC_URL_1: ${{ vars.REACT_APP_RPC_URL_1 }}
           REACT_APP_RPC_URL_5: ${{ vars.REACT_APP_RPC_URL_5 }}
+          REACT_APP_RPC_URL_137: ${{ vars.REACT_APP_RPC_URL_137 }}
           REACT_APP_RPC_URL_59140: ${{ vars.REACT_APP_RPC_URL_59140 }}
+          REACT_APP_RPC_URL_59144: ${{ vars.REACT_APP_RPC_URL_59144 }}
         run: |
           yarn
           yarn build
 
-      - name: GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: build
-
-      - name: IPFS (Infura)
+      - name: IPFS Deploy 🚀
         uses: aquiladev/ipfs-action@master
         with:
           path: ./build

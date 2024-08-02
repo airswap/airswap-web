@@ -5,7 +5,7 @@ const switchToChain = (chainId = 1): Promise<null> => {
     method: "wallet_switchEthereumChain",
     params: [
       {
-        chainId: `0x${nativeCurrency[chainId].chainId.toString(16)}`,
+        chainId: `0x${nativeCurrency[chainId].chainId?.toString(16)}`,
       },
     ],
   });

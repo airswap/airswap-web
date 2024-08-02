@@ -12,12 +12,13 @@ import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../featur
 import myOrdersReducer from "../features/myOrders/myOrdersSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import pricingReducer from "../features/pricing/pricingSlice";
+import quotesReducer from "../features/quotes/quotesSlice";
 import registryReducer from "../features/registry/registrySlice";
 import takeOtcReducer from "../features/takeOtc/takeOtcSlice";
 import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
 import userSettingsReducer from "../features/userSettings/userSettingsSlice";
-import walletReducer from "../features/wallet/walletSlice";
+import web3Reducer from "../features/web3/web3Slice";
 
 export const store = configureStore({
   reducer: {
@@ -30,12 +31,13 @@ export const store = configureStore({
     orders: ordersReducer,
     pricing: pricingReducer,
     gasCost: gasCostReducer,
-    wallet: walletReducer,
     registry: registryReducer,
     userSettings: userSettingsReducer,
     makeOtc: makeOtcReducer,
     myOrders: myOrdersReducer,
     takeOtc: takeOtcReducer,
+    web3: web3Reducer,
+    quotes: quotesReducer,
   },
 });
 

@@ -1,16 +1,10 @@
-import { SwapERC20 } from "@airswap/libraries";
-import { getKnownTokens, getTokenInfo } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo, getTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import * as ethers from "ethers";
-import uniqBy from "lodash.uniqby";
 
+import { getSwapErc20Contract } from "../../helpers/swapErc20";
 import { MetadataTokens } from "./metadataSlice";
-
-const tokensCache: {
-  [chainId: number]: TokenInfo[];
-} = {};
 
 export const getActiveTokensLocalStorageKey: (
   account: string,
@@ -26,16 +20,6 @@ export const getCustomTokensLocalStorageKey: (
 
 export const getAllTokensLocalStorageKey = (chainId: number): string =>
   `airswap/metadataCache/${chainId}`;
-
-export const getAllTokens = async (chainId: number) => {
-  let tokens;
-  if (!tokensCache[chainId]) {
-    tokensCache[chainId] = (await getKnownTokens(chainId)).tokens;
-    //TODO: handle failure here, need to decide what to do with errors
-  }
-  tokens = tokensCache[chainId];
-  return tokens;
-};
 
 export const getUnknownTokens = async (
   chainId: number,
@@ -100,23 +84,11 @@ export const getAllTokensFromLocalStorage = (
   return localStorageItem ? JSON.parse(localStorageItem) : {};
 };
 
-export const getSavedActiveTokensInfo = async (
-  account: string,
-  chainId: number
-) => {
-  const tokens = await getAllTokens(chainId);
-  const activeTokens = getActiveTokensFromLocalStorage(account, chainId);
-  const matchingTokens = tokens.filter((tokenInfo) =>
-    activeTokens.includes(tokenInfo.address)
-  );
-  return uniqBy(matchingTokens, (token) => token.address);
-};
-
 export const getProtocolFee = async (
   chainId: number,
   provider: Web3Provider
 ): Promise<number> => {
   return (
-    await SwapERC20.getContract(provider, chainId).protocolFee()
+    await getSwapErc20Contract(provider, chainId).protocolFee()
   ).toNumber();
 };

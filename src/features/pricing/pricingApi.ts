@@ -1,5 +1,9 @@
-import { Formula, Levels, Pricing } from "@airswap/types";
-import { calculateCostFromLevels } from "@airswap/utils";
+import {
+  calculateCostFromLevels,
+  Formula,
+  Levels,
+  Pricing,
+} from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
@@ -27,15 +31,12 @@ export const calculateQuoteAmount: (params: {
       throw new Error("formulaic pricing not yet supported");
     }
     const signerAmount = new BigNumber(baseAmount)
-      .dividedBy(1.0007)
-      // .integerValue(BigNumber.ROUND_CEIL)
-      .toString();
+      // Get fee amount from protocolFee in metadata store
+      .dividedBy(1 + protocolFee / 10000);
+    // .integerValue(BigNumber.ROUND_CEIL)
 
-    // @ts-ignore - TODO: Fix when types updated
     if (pricing.minimum) {
-      // @ts-ignore - TODO: Fix when types updated
-      const minimum = new BigNumber(pricing.minimum);
-      if (minimum.isGreaterThan(signerAmount)) {
+      if (signerAmount.isLessThan(pricing.minimum)) {
         throw new Error("Amount too low");
       }
     }

@@ -1,16 +1,10 @@
-import { FullOrderERC20 } from "@airswap/types";
+import { FullOrderERC20 } from "@airswap/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { setUserOrder } from "../makeOtc/makeOtcSlice";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import {
-  getUserOrdersFromLocalStorage,
-  writeUserOrdersToLocalStorage,
-} from "./myOrdersHelpers";
+import { walletChanged, walletDisconnected } from "../web3/web3Actions";
+import { writeUserOrdersToLocalStorage } from "./myOrdersHelpers";
 
 export type OrdersSortType =
   | "active"
@@ -74,6 +68,15 @@ export const myOrdersSlice = createSlice({
         sortTypeDirection: sortTypeDirection,
       };
     },
+    setUserOrders: (
+      state,
+      action: PayloadAction<FullOrderERC20[]>
+    ): MyOrdersState => {
+      return {
+        ...state,
+        userOrders: action.payload,
+      };
+    },
     reset: (state): MyOrdersState => {
       return {
         ...initialState,
@@ -82,21 +85,8 @@ export const myOrdersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setWalletConnected, (state, action) => {
-      const userOrders = getUserOrdersFromLocalStorage(
-        action.payload.address,
-        action.payload.chainId
-      );
-
-      return {
-        ...state,
-        userOrders,
-      };
-    });
-
-    builder.addCase(setWalletDisconnected, (state, action) => {
-      return initialState;
-    });
+    builder.addCase(walletDisconnected, (): MyOrdersState => initialState);
+    builder.addCase(walletChanged, (): MyOrdersState => initialState);
 
     builder.addCase(setUserOrder, (state, action) => {
       const userOrders = [action.payload, ...state.userOrders];
@@ -111,7 +101,7 @@ export const myOrdersSlice = createSlice({
   },
 });
 
-export const { removeUserOrder, reset, setActiveSortType } =
+export const { removeUserOrder, reset, setActiveSortType, setUserOrders } =
   myOrdersSlice.actions;
 
 export const selectMyOrdersReducer = (state: RootState) => state.myOrders;

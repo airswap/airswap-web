@@ -1,28 +1,35 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { SubmittedTransaction } from "../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { TransactionStatusType } from "../../types/transactionTypes";
 import { InfoSubHeading } from "../Typography/Typography";
 import {
+  ButtonsContainer,
   Container,
   DoneAllIcon,
   InfoContainer,
   MakeNewOrderButton,
   StyledInfoHeading,
   StyledTransactionLink,
+  TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
 
 interface OrderSubmittedInfoProps {
+  showTrackTransactionButton?: boolean;
   chainId?: number;
   transaction: SubmittedTransaction;
   onMakeNewOrderButtonClick: () => void;
+  onTrackTransactionButtonClick?: () => void;
   className?: string;
 }
 
 const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
+  showTrackTransactionButton,
   chainId,
   transaction,
   onMakeNewOrderButtonClick,
+  onTrackTransactionButtonClick,
   className = "",
 }) => {
   const { t } = useTranslation();
@@ -31,13 +38,13 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
     <Container className={className}>
       <InfoContainer>
         <DoneAllIcon />
-        {transaction.status === "processing" && (
+        {transaction.status === TransactionStatusType.processing && (
           <>
             <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
             <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
           </>
         )}
-        {transaction.status === "succeeded" && (
+        {transaction.status === TransactionStatusType.succeeded && (
           <>
             <StyledInfoHeading>
               {t("orders.transactionCompleted")}
@@ -48,9 +55,23 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
           <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
         )}
       </InfoContainer>
-      <MakeNewOrderButton intent="primary" onClick={onMakeNewOrderButtonClick}>
-        {t("orders.makeNewOrder")}
-      </MakeNewOrderButton>
+      <ButtonsContainer>
+        <MakeNewOrderButton
+          intent="primary"
+          onClick={onMakeNewOrderButtonClick}
+        >
+          {t("orders.makeNewOrder")}
+        </MakeNewOrderButton>
+
+        {showTrackTransactionButton && (
+          <TrackTransactionButton
+            intent="neutral"
+            onClick={onTrackTransactionButtonClick}
+          >
+            {t("orders.track")}
+          </TrackTransactionButton>
+        )}
+      </ButtonsContainer>
     </Container>
   );
 };

@@ -1,15 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { providers } from "ethers";
-import uniqBy from "lodash.uniqby";
-
-import { AppDispatch, RootState } from "../../app/store";
-import { getActiveTokensFromLocalStorage } from "../metadata/metadataApi";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
-import { getStakerTokens } from "./registryApi";
+import { RootState } from "../../app/store";
+import { walletDisconnected } from "../web3/web3Actions";
+import { fetchSupportedTokens } from "./registryActions";
 
 export interface RegistryState {
   stakerTokens: Record<string, string[]>;
@@ -22,39 +15,6 @@ const initialState: RegistryState = {
   allSupportedTokens: [],
   status: "idle",
 };
-
-export const fetchSupportedTokens = createAsyncThunk<
-  {
-    allSupportedTokens: string[];
-    stakerTokens: Record<string, string[]>;
-    activeTokens: string[];
-  },
-  {
-    provider: providers.Provider;
-  },
-  {
-    // Optional fields for defining thunkApi field types
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("registry/fetchSupportedTokens", async ({ provider }, { getState }) => {
-  const { wallet } = getState();
-  const stakerTokens = await getStakerTokens(wallet.chainId!, provider);
-  // Combine token lists from all makers and flatten them.
-  const allSupportedTokens = uniqBy(
-    Object.values(stakerTokens).flat(),
-    (i) => i
-  );
-  const activeTokensLocalStorage = getActiveTokensFromLocalStorage(
-    wallet.address!,
-    wallet.chainId!
-  );
-  const activeTokens =
-    (activeTokensLocalStorage.length && activeTokensLocalStorage) ||
-    allSupportedTokens ||
-    [];
-  return { stakerTokens, allSupportedTokens, activeTokens };
-});
 
 export const registrySlice = createSlice({
   name: "registry",
@@ -86,9 +46,7 @@ export const registrySlice = createSlice({
       .addCase(fetchSupportedTokens.rejected, (state) => {
         state.status = "failed";
       })
-      // Reset on wallet connect or disconnect
-      .addCase(setWalletConnected, () => initialState)
-      .addCase(setWalletDisconnected, () => initialState);
+      .addCase(walletDisconnected, () => initialState);
   },
 });
 

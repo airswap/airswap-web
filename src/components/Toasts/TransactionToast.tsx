@@ -2,16 +2,19 @@ import { useTranslation } from "react-i18next";
 import { HiX } from "react-icons/hi";
 import { MdBeenhere, MdError } from "react-icons/md";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 
+import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
-  SubmittedLastLookOrder,
-  SubmittedRFQOrder,
-  SubmittedTransaction,
-  TransactionType,
-} from "../../features/transactions/transactionsSlice";
+  isApprovalTransaction,
+  isDepositTransaction,
+  isLastLookOrderTransaction,
+  isSubmittedOrder,
+  isWithdrawTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { TransactionTypes } from "../../types/transactionTypes";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -29,7 +32,7 @@ export type TransactionToastProps = {
   /**
    * Error affects whether the icon colors show up as blue or red;
    */
-  error: boolean;
+  error?: boolean;
   /**
    * The parent object of SubmittedOrder and SubmittedApproval
    */
@@ -37,7 +40,7 @@ export type TransactionToastProps = {
   /**
    * Type of transaction the toast will display;
    */
-  type: TransactionType;
+  type: TransactionTypes;
   /**
    * Token Info of sender token
    */
@@ -54,7 +57,7 @@ export type TransactionToastProps = {
 
 const TransactionToast = ({
   onClose,
-  error,
+  error = false,
   transaction,
   type,
   senderToken,
@@ -62,6 +65,13 @@ const TransactionToast = ({
   approvalToken,
 }: TransactionToastProps) => {
   const { t } = useTranslation();
+  const order =
+    isSubmittedOrder(transaction) ||
+    isWithdrawTransaction(transaction) ||
+    isDepositTransaction(transaction)
+      ? transaction.order
+      : undefined;
+  const isApproval = isApprovalTransaction(transaction);
 
   return (
     <Container>
@@ -74,7 +84,7 @@ const TransactionToast = ({
       </IconContainer>
       <TextContainer>
         <InfoHeading>
-          {type === "Order" || type === "Deposit" || type === "Withdraw"
+          {!isApproval
             ? error
               ? t("toast.swapFail")
               : t("toast.swapComplete")
@@ -84,33 +94,29 @@ const TransactionToast = ({
         </InfoHeading>
         <SwapAmounts>
           {(() => {
-            if (type === "Order" || type === "Deposit" || type === "Withdraw") {
-              if (transaction && senderToken && signerToken) {
-                const tx =
-                  transaction.protocol === "last-look-erc20"
-                    ? (transaction as SubmittedLastLookOrder)
-                    : (transaction as SubmittedRFQOrder);
-                let translationKey = "wallet.transaction";
-                if (tx.protocol === "last-look-erc20") {
-                  translationKey = "wallet.lastLookTransaction";
-                }
-                // @ts-ignore dynamic translation key
-                return t(translationKey, {
-                  senderAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.senderAmount, senderToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  senderToken: senderToken.symbol,
-                  signerAmount: parseFloat(
-                    Number(
-                      formatUnits(tx.order.signerAmount, signerToken.decimals)
-                    ).toFixed(5)
-                  ),
-                  signerToken: signerToken.symbol,
-                });
+            if (order && senderToken && signerToken) {
+              let translationKey = "wallet.transaction";
+              if (isLastLookOrderTransaction(transaction)) {
+                translationKey = "wallet.lastLookTransaction";
               }
+
+              // @ts-ignore dynamic translation key
+              return t(translationKey, {
+                senderAmount: parseFloat(
+                  Number(
+                    formatUnits(order.senderAmount, senderToken.decimals)
+                  ).toFixed(5)
+                ),
+                senderToken: senderToken.symbol,
+                signerAmount: parseFloat(
+                  Number(
+                    formatUnits(order.signerAmount, signerToken.decimals)
+                  ).toFixed(5)
+                ),
+                signerToken: signerToken.symbol,
+              });
             }
+
             return t("toast.approve", { symbol: approvalToken?.symbol });
           })()}
         </SwapAmounts>

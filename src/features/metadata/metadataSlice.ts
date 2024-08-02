@@ -1,27 +1,19 @@
-import { getKnownTokens } from "@airswap/metadata";
-import { TokenInfo } from "@airswap/types";
-import { Web3Provider } from "@ethersproject/providers";
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { TokenInfo } from "@airswap/utils";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import * as ethers from "ethers";
-
-import { AppDispatch, RootState } from "../../app/store";
-import { fetchSupportedTokens } from "../registry/registrySlice";
+import { RootState } from "../../app/store";
+import { fetchSupportedTokens } from "../registry/registryActions";
+import { walletDisconnected } from "../web3/web3Actions";
+import { selectChainId, setWeb3Data } from "../web3/web3Slice";
 import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
+  fetchAllTokens,
+  fetchProtocolFee,
+  fetchUnkownTokens,
+} from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,
   getAllTokensFromLocalStorage,
   getCustomTokensFromLocalStorage,
-  getProtocolFee,
-  getUnknownTokens,
 } from "./metadataApi";
 
 export interface MetadataTokens {
@@ -47,50 +39,6 @@ const initialState: MetadataState = {
     custom: [],
   },
 };
-
-export const fetchAllTokens = createAsyncThunk<
-  TokenInfo[], // Return type
-  number, // First argument
-  {
-    // thunkApi
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("metadata/getKnownTokens", async (chainId, thunkApi) => {
-  return (await getKnownTokens(chainId)).tokens;
-});
-
-export const fetchUnkownTokens = createAsyncThunk<
-  TokenInfo[], // Return type
-  {
-    // First argument
-    provider: ethers.providers.BaseProvider;
-  },
-  {
-    // thunkApi
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("metadata/fetchUnknownTokens", async ({ provider }, thunkApi) => {
-  const { registry, metadata, wallet } = thunkApi.getState();
-  if (wallet.chainId === null) return [];
-  return await getUnknownTokens(
-    wallet.chainId,
-    registry.allSupportedTokens,
-    Object.values(metadata.tokens.all),
-    provider
-  );
-});
-
-export const fetchProtocolFee = createAsyncThunk<
-  number,
-  {
-    provider: Web3Provider;
-    chainId: number;
-  }
->("metadata/fetchProtocolFee", async ({ provider, chainId }) =>
-  getProtocolFee(chainId, provider)
-);
 
 export const metadataSlice = createSlice({
   name: "metadata",
@@ -121,16 +69,22 @@ export const metadataSlice = createSlice({
         (tokenAddress) => tokenAddress !== action.payload
       );
     },
+    setTokens: (state, action: PayloadAction<MetadataTokens>) => {
+      return {
+        ...state,
+        tokens: action.payload,
+      };
+    },
   },
   extraReducers: async (builder) => {
     builder
-      .addCase(fetchAllTokens.pending, (state) => {
+      .addCase(fetchAllTokens.pending, (state): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: true,
         };
       })
-      .addCase(fetchAllTokens.fulfilled, (state, action) => {
+      .addCase(fetchAllTokens.fulfilled, (state, action): MetadataState => {
         const { payload: tokenInfo } = action;
         const newAllTokens = tokenInfo.reduce(
           (allTokens: MetadataTokens["all"], token) => {
@@ -170,9 +124,7 @@ export const metadataSlice = createSlice({
           tokens,
         };
       })
-      .addCase(fetchAllTokens.rejected, (state) => {
-        // TODO: handle failure?
-        // perhaps rejected state can be for when errors.length === known.length ?
+      .addCase(fetchAllTokens.rejected, (state, action): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: false,
@@ -190,15 +142,9 @@ export const metadataSlice = createSlice({
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
         state.protocolFee = action.payload;
       })
-      .addCase(setWalletConnected, (state, action) => {
-        const { chainId, address } = action.payload;
-        state.tokens.active =
-          getActiveTokensFromLocalStorage(address, chainId) || [];
-        state.tokens.custom =
-          getCustomTokensFromLocalStorage(address, chainId) || [];
-        state.tokens.all = getAllTokensFromLocalStorage(chainId);
-      })
-      .addCase(setWalletDisconnected, () => initialState);
+      .addCase(walletDisconnected, (): MetadataState => {
+        return initialState;
+      });
   },
 });
 
@@ -208,15 +154,22 @@ export const {
   addTokenInfo,
   removeActiveToken,
   removeCustomToken,
+  setTokens,
 } = metadataSlice.actions;
 
 const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
 export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;
-export const selectAllTokenInfo = (state: RootState) => [
+export const selectAllTokens = (state: RootState) => [
   ...Object.values(state.metadata.tokens.all),
 ];
+export const selectAllTokenInfo = createSelector(
+  [selectAllTokens, selectChainId],
+  (allTokenInfo, chainId) => {
+    return allTokenInfo.filter((tokenInfo) => tokenInfo.chainId === chainId);
+  }
+);
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {

@@ -1,12 +1,12 @@
 import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { ADDRESS_ZERO, TokenInfo } from "@airswap/utils";
 import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencyAddress } from "../../../constants/nativeCurrency";
+import { AppError } from "../../../errors/appError";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
 import {
@@ -14,7 +14,9 @@ import {
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
+import { ErrorList } from "../../ErrorList/ErrorList";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
+import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
@@ -25,33 +27,38 @@ import {
 } from "./ApproveReview.styles";
 
 interface ApproveReviewProps {
+  hasEditButton?: boolean;
   isLoading: boolean;
   amount: string;
   amountPlusFee?: string;
   backButtonText?: string;
+  errors?: AppError[];
   readableAllowance: string;
   token: TokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
-  onEditButtonClick: () => void;
+  onEditButtonClick?: () => void;
+  onRestartButtonClick?: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
 const ApproveReview: FC<ApproveReviewProps> = ({
+  hasEditButton,
   isLoading,
   amount,
   amountPlusFee,
-  backButtonText,
+  errors = [],
   readableAllowance,
   token,
   wrappedNativeToken,
   onEditButtonClick,
+  onRestartButtonClick,
   onSignButtonClick,
   className = "",
 }): ReactElement => {
   const { t } = useTranslation();
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
-  const isTokenNativeToken = token?.address === nativeCurrencyAddress;
+  const isTokenNativeToken = token?.address === ADDRESS_ZERO;
   const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
   const tokenSymbol = justifiedToken?.symbol || "?";
 
@@ -71,6 +78,16 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 
     return toRoundedNumberString(amountPlusFee, justifiedToken?.decimals);
   }, [amountPlusFee, justifiedToken]);
+
+  const handleEditOrBackButtonClick = () => {
+    if (!isLoading && hasEditButton && onEditButtonClick) {
+      onEditButtonClick();
+    }
+
+    if (onRestartButtonClick) {
+      onRestartButtonClick();
+    }
+  };
 
   return (
     <Container className={className}>
@@ -127,8 +144,10 @@ const ApproveReview: FC<ApproveReviewProps> = ({
 
       <StyledActionButtons
         isLoading={isLoading}
-        backButtonText={backButtonText || t("common.back")}
-        onEditButtonClick={onEditButtonClick}
+        backButtonText={
+          hasEditButton && !isLoading ? t("common.edit") : t("common.back")
+        }
+        onEditButtonClick={handleEditOrBackButtonClick}
         onSignButtonClick={onSignButtonClick}
       />
 
@@ -136,6 +155,17 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo()}
       />
+
+      {onRestartButtonClick && (
+        <Overlay
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onCloseButtonClick={onRestartButtonClick}
+          isHidden={!errors.length}
+        >
+          <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
+        </Overlay>
+      )}
     </Container>
   );
 };

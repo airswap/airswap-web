@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 import { format } from "@greypixel_/nicenumbers";
 
 import { isAppError } from "../errors/appError";

@@ -1,16 +1,11 @@
 import { useMemo } from "react";
 
-import { toAtomicString } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { toAtomicString, ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import {
-  nativeCurrencyAddress,
-  nativeCurrencySafeTransactionFee,
-} from "../constants/nativeCurrency";
+import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -27,22 +22,28 @@ const useShouldDepositNativeTokenAmount = (
   const balances = useAppSelector(selectBalances);
   const protocolFee = useAppSelector(selectProtocolFee);
 
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const wrappedNativeToken = useNativeWrappedToken(chainId);
 
   return useMemo(() => {
-    if (!token || !tokenAmount || !chainId || !wrappedNativeToken) {
+    if (
+      !token ||
+      !tokenAmount ||
+      !Number(tokenAmount) ||
+      !chainId ||
+      !wrappedNativeToken
+    ) {
       return undefined;
     }
 
     const wrappedTokenAddress = wrappedNativeToken.address;
 
-    if (token !== nativeCurrencyAddress && token !== wrappedTokenAddress) {
+    if (token !== ADDRESS_ZERO && token !== wrappedTokenAddress) {
       return undefined;
     }
 
-    const nativeTokenBalance = balances.values[nativeCurrencyAddress];
+    const nativeTokenBalance = balances.values[ADDRESS_ZERO];
     const wrappedTokenBalance = balances.values[wrappedTokenAddress];
 
     if (!nativeTokenBalance || !wrappedTokenBalance) {
@@ -50,7 +51,7 @@ const useShouldDepositNativeTokenAmount = (
     }
 
     const nativeTokenInfo = findEthOrTokenByAddress(
-      nativeCurrencyAddress,
+      ADDRESS_ZERO,
       activeTokens,
       chainId
     );

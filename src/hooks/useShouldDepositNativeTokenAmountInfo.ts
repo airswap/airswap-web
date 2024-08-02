@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
+import { ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import { nativeCurrencyAddress } from "../constants/nativeCurrency";
 import { selectBalances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
@@ -24,7 +22,7 @@ const useShouldDepositNativeTokenAmountInfo =
     const allTokens = useAppSelector(selectAllTokenInfo);
     const balances = useAppSelector(selectBalances);
 
-    const { chainId } = useWeb3React<Web3Provider>();
+    const { chainId } = useAppSelector((state) => state.web3);
 
     const [nativeTokenSymbol, setNativeTokenSymbol] = useState("");
     const [wrappedNativeTokenSymbol, setWrappedNativeTokenSymbol] =
@@ -44,7 +42,7 @@ const useShouldDepositNativeTokenAmountInfo =
       }
 
       const nativeTokenInfo = findEthOrTokenByAddress(
-        nativeCurrencyAddress,
+        ADDRESS_ZERO,
         allTokens,
         chainId
       );

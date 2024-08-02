@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/types";
+import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectIndexerReducer } from "../../features/indexer/indexerSlice";

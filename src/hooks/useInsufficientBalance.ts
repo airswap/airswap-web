@@ -1,35 +1,38 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
 import { selectBalances } from "../features/balances/balancesSlice";
+import useMaxAmount from "./useMaxAmount";
 
 const useInsufficientBalance = (
   tokenInfo: TokenInfo | null,
-  amount: string
+  requestedAmount: string,
+  deductProtocolFee = false
 ): boolean => {
   const balances = useAppSelector(selectBalances);
 
+  const availableAmount = useMaxAmount(
+    tokenInfo?.address || null,
+    deductProtocolFee
+  );
+
   return useMemo(() => {
-    if (!tokenInfo || !amount) {
+    if (!availableAmount) return true;
+
+    if (!tokenInfo || !requestedAmount) {
       return false;
     }
 
-    if (parseFloat(amount) === 0 || amount === ".") {
+    if (parseFloat(requestedAmount) === 0 || requestedAmount === ".") {
       return false;
     }
 
-    if (!tokenInfo.decimals) {
-      return false;
-    }
-
-    return new BigNumber(balances.values[tokenInfo.address] || "0").lt(
-      new BigNumber(amount).multipliedBy(10 ** tokenInfo.decimals)
-    );
-  }, [balances, tokenInfo, amount]);
+    return new BigNumber(availableAmount).lt(new BigNumber(requestedAmount));
+  }, [balances, tokenInfo, requestedAmount]);
 };
 
 export default useInsufficientBalance;

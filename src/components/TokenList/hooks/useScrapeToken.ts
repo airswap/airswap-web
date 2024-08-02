@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -13,7 +13,7 @@ const useScrapeToken = (
   tokens: TokenInfo[]
 ): TokenInfo | undefined => {
   const dispatch = useDispatch();
-  const { library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
 
   const [scrapedToken, setScrapedToken] = useState<TokenInfo | undefined>();
 

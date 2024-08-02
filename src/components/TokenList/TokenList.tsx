@@ -1,19 +1,14 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import nativeCurrency from "../../constants/nativeCurrency";
-import {
-  BalancesState,
-  requestActiveTokenAllowancesSwap,
-  requestActiveTokenAllowancesWrapper,
-  requestActiveTokenBalances,
-} from "../../features/balances/balancesSlice";
+import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveToken,
   addCustomToken,
@@ -85,7 +80,8 @@ const TokenList = ({
   const { t } = useTranslation();
 
   const { width, height } = useWindowSize();
-  const { account, chainId, library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { account, chainId } = useAppSelector((state) => state.web3);
 
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -164,9 +160,6 @@ const TokenList = ({
         dispatch(addCustomToken(address));
       }
       await dispatch(addActiveToken(address));
-      dispatch(requestActiveTokenBalances({ provider: library }));
-      dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
-      dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
 
       onAfterAddActiveToken && onAfterAddActiveToken(address);
     }
@@ -204,28 +197,27 @@ const TokenList = ({
               <LegendItem>{t("balances.balance")}</LegendItem>
             </Legend>
 
-            {sortedFilteredTokens && sortedFilteredTokens.length > 0 && (
-              <TokenContainer>
-                {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
-                  (token) => (
-                    <TokenButton
-                      showDeleteButton={
-                        editMode &&
-                        token.address !== nativeCurrency[chainId || 1].address
-                      }
-                      token={token}
-                      balance={formatUnits(
-                        balances.values[token.address] || 0,
-                        token.decimals
-                      )}
-                      setToken={onSelectToken}
-                      removeActiveToken={handleRemoveActiveToken}
-                      key={token.address}
-                    />
-                  )
-                )}
-              </TokenContainer>
-            )}
+            <TokenContainer>
+              {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
+                (token) => (
+                  <TokenButton
+                    showDeleteButton={
+                      editMode &&
+                      token.address !== nativeCurrency[chainId || 1].address
+                    }
+                    token={token}
+                    balance={formatUnits(
+                      balances.values[token.address] || 0,
+                      token.decimals
+                    )}
+                    setToken={onSelectToken}
+                    removeActiveToken={handleRemoveActiveToken}
+                    key={token.address}
+                  />
+                )
+              )}
+            </TokenContainer>
+
             {inactiveTokens.length !== 0 && (
               <InactiveTokensList
                 inactiveTokens={inactiveTokens}

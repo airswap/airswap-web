@@ -1,34 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { TokenInfo } from "@airswap/types";
-
 import { useReducedMotion } from "framer-motion";
 import { useTheme } from "styled-components";
 
-import { SubmittedTransaction } from "../../../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import WalletTransaction from "../WalletTransaction/WalletTransaction";
 import { walletTransactionHeight } from "../WalletTransaction/WalletTransaction.styles";
 import { Container } from "./AnimatedWalletTransaction.styles";
 
 interface AnimatedWalletTransactionProps {
-  /**
-   * The parent object of SubmittedOrder and SubmittedApproval
-   */
+  protocolFee: number;
   transaction: SubmittedTransaction;
-  /**
-   * All token metadata
-   */
-  tokens: TokenInfo[];
-  /**
-   * chainId of current Ethereum net
-   */
   chainId: number;
+  account: string;
 }
 
 const AnimatedWalletTransaction = ({
+  protocolFee,
   transaction,
-  tokens,
   chainId,
+  account,
 }: AnimatedWalletTransactionProps) => {
   const theme = useTheme();
   const shouldReduceMotion = useReducedMotion();
@@ -71,13 +62,14 @@ const AnimatedWalletTransaction = ({
       <WalletTransaction
         animate={{ borderColor: theme.colors.borderGrey }}
         initial={!transactionTooOld && { borderColor: theme.colors.white }}
+        protocolFee={protocolFee}
         transition={{
           delay: heightAnimationDuration,
           duration: borderAnimationDuration,
         }}
         transaction={transaction}
-        tokens={tokens}
         chainId={chainId}
+        account={account}
       />
     </Container>
   );

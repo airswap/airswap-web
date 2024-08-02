@@ -1,4 +1,4 @@
-import { WETH } from "@airswap/libraries";
+import { ADDRESS_ZERO } from "@airswap/utils";
 import {
   AsyncThunk,
   combineReducers,
@@ -11,12 +11,9 @@ import {
 import { BigNumber, ethers } from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
-import { nativeCurrencyAddress } from "../../constants/nativeCurrency";
 import getWethAddress from "../../helpers/getWethAddress";
-import {
-  setWalletConnected,
-  setWalletDisconnected,
-} from "../wallet/walletSlice";
+import { walletChanged, walletDisconnected } from "../web3/web3Actions";
+import { setWeb3Data } from "../web3/web3Slice";
 import {
   fetchAllowancesSwap,
   fetchAllowancesWrapper,
@@ -81,26 +78,27 @@ const getThunk: (
     async (params, { getState, dispatch }) => {
       try {
         const state = getState();
-        const { chainId, address } = state.wallet;
+        const { chainId, account } = state.web3;
 
-        const wrappedNativeCurrencyAddress = chainId
+        const wrappedNativeToken = chainId
           ? getWethAddress(chainId)
           : undefined;
         const activeTokensAddresses = [
           ...state.metadata.tokens.active,
           ...state.metadata.tokens.custom,
-          ...(wrappedNativeCurrencyAddress
-            ? [wrappedNativeCurrencyAddress]
-            : []),
-          nativeCurrencyAddress,
+          ...(wrappedNativeToken ? [wrappedNativeToken] : []),
+          ADDRESS_ZERO,
         ];
+        if (state.takeOtc.activeOrder) {
+          activeTokensAddresses.push(state.takeOtc.activeOrder.senderToken);
+        }
         dispatch(
           getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
         );
         const amounts = await methods[type]({
           ...params,
           chainId: chainId!,
-          walletAddress: address!,
+          walletAddress: account!,
           tokenAddresses: activeTokensAddresses,
         });
         return activeTokensAddresses.map((address, i) => ({
@@ -205,8 +203,20 @@ const getSlice = (
         .addCase(asyncThunk.rejected, (state, action) => {
           state.status = "failed";
         })
-        .addCase(setWalletConnected, () => initialState)
-        .addCase(setWalletDisconnected, () => initialState);
+        .addCase(walletDisconnected, (): BalancesState => {
+          return initialState;
+        })
+        .addCase(walletChanged, (state): BalancesState => {
+          const keys = Object.keys(state.values);
+          const values = keys.reduce((acc, key) => {
+            return { ...acc, [key]: "0" };
+          }, {});
+
+          return {
+            ...state,
+            values,
+          };
+        });
     },
   });
 };
@@ -231,22 +241,6 @@ export const allowancesWrapperSlice = getSlice(
   "allowances.wrapper",
   requestActiveTokenAllowancesWrapper
 );
-
-export const {
-  incrementBy: incrementBalanceBy,
-  decrementBy: decrementBalanceBy,
-  set: setBalance,
-} = balancesSlice.actions;
-export const {
-  incrementBy: incrementAllowanceSwapBy,
-  decrementBy: decrementAllowanceSwapBy,
-  set: setAllowanceSwap,
-} = allowancesSwapSlice.actions;
-export const {
-  incrementBy: incrementAllowanceWrapperBy,
-  decrementBy: decreementAllowanceWrapperBy,
-  set: setAllowanceWrapper,
-} = allowancesWrapperSlice.actions;
 
 export const balancesActions = balancesSlice.actions;
 export const allowancesSwapActions = allowancesSwapSlice.actions;

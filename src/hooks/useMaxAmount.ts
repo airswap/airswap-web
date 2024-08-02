@@ -1,8 +1,5 @@
 import { useMemo } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../app/hooks";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
@@ -19,7 +16,7 @@ const useMaxAmount = (
   const balances = useAppSelector(selectBalances);
   const activeTokens = useAppSelector(selectActiveTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   return useMemo(() => {
     if (!token || !balances || !chainId) {

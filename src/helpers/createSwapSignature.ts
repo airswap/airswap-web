@@ -1,9 +1,14 @@
-import { Signature, UnsignedOrderERC20 } from "@airswap/types";
-import { createOrderERC20Signature as airSwapCreateSwapSignature } from "@airswap/utils";
+import {
+  createOrderERC20Signature as airSwapCreateSwapSignature,
+  Signature,
+  UnsignedOrderERC20,
+} from "@airswap/utils";
 import { JsonRpcSigner } from "@ethersproject/providers/src.ts/json-rpc-provider";
 
 import { AppError } from "../errors/appError";
 import transformUnknownErrorToAppError from "../errors/transformUnknownErrorToAppError";
+
+const SWAP_ERC20_VERSION = "4";
 
 export const createOrderERC20Signature = (
   unsignedOrder: UnsignedOrderERC20,
@@ -18,7 +23,8 @@ export const createOrderERC20Signature = (
         // @ts-ignore
         signer,
         swapContract,
-        chainId
+        chainId,
+        SWAP_ERC20_VERSION
       );
       resolve(signature);
     } catch (error: unknown) {

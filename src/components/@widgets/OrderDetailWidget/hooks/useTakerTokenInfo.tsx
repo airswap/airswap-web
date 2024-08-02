@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -13,7 +13,6 @@ import {
   selectAllTokenInfo,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
-import { selectWallet } from "../../../../features/wallet/walletSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import { getRpcUrl } from "../../../../helpers/getRpcUrl";
 import scrapeToken from "../../../../helpers/scrapeToken";
@@ -25,9 +24,9 @@ const useTakerTokenInfo = (
   address: string | null
 ): [TokenInfo | null, boolean] => {
   const dispatch = useAppDispatch();
-  const { library } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive } = useAppSelector((state) => state.web3);
 
-  const { connected } = useAppSelector(selectWallet);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
@@ -60,7 +59,7 @@ const useTakerTokenInfo = (
 
     const tokens = [
       ...allTokens,
-      ...(!connected ? Object.values(tokensObject) : []),
+      ...(!isActive ? Object.values(tokensObject) : []),
     ];
 
     const callScrapeToken = async () => {
@@ -92,7 +91,7 @@ const useTakerTokenInfo = (
       callScrapeToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allTokens, address, activeOrder, connected]);
+  }, [allTokens, address, activeOrder, isActive]);
 
   return [token || scrapedToken || null, isCallScrapeTokenLoading];
 };

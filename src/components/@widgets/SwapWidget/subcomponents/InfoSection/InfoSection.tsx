@@ -1,24 +1,23 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OrderERC20, Levels, TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
-import { SubmittedTransaction } from "../../../../../features/transactions/transactionsSlice";
+import { SubmittedTransaction } from "../../../../../entities/SubmittedTransaction/SubmittedTransaction";
+import { PricingErrorType } from "../../../../../errors/pricingError";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
 import { InfoSubHeading } from "../../../../Typography/Typography";
 import ClearServerButton from "../ClearServerButton/ClearServerButton";
+import PricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
+import pricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
 import {
-  StyledInfoHeading,
-  RevertPriceButton,
-  FeeText,
-  InfoButton,
-  FeeTextContainer,
-  ApprovalText,
-  StyledLargePillButton,
   DoneAllIcon,
+  RevertPriceButton,
+  StyledInfoHeading,
+  StyledLargePillButton,
   StyledTransactionLink,
 } from "./InfoSection.styles";
 
@@ -28,33 +27,16 @@ export type InfoSectionProps = {
   isApproving: boolean;
   isConnected: boolean;
   isFetchingOrders: boolean;
-  isPairUnavailable: boolean;
-  isSwapping: boolean;
+  isNetworkUnsupported: boolean;
   isWrapping: boolean;
-  orderSubmitted: boolean;
-  orderCompleted: boolean;
-  requiresApproval: boolean;
   showViewAllQuotes: boolean;
-  bestTradeOption:
-    | {
-        protocol: "last-look-erc20";
-        quoteAmount: string;
-        pricing: Levels;
-      }
-    | {
-        protocol: "request-for-quote-erc20";
-        quoteAmount: string;
-        order: OrderERC20;
-      }
-    | null;
-  chainId: number;
+  bestQuote?: string;
+  pricingError?: PricingErrorType;
   quoteTokenInfo: TokenInfo | null;
   baseTokenInfo: TokenInfo | null;
   baseAmount: string;
   serverUrl: string | null;
   onClearServerUrlButtonClick: () => void;
-  onFeeButtonClick: () => void;
-  transaction?: SubmittedTransaction;
   onViewAllQuotesButtonClick: () => void;
 };
 
@@ -64,22 +46,16 @@ const InfoSection: FC<InfoSectionProps> = ({
   isApproving,
   isConnected,
   isFetchingOrders,
-  isPairUnavailable,
-  isSwapping,
+  isNetworkUnsupported,
   isWrapping,
-  orderCompleted,
-  orderSubmitted,
-  requiresApproval,
   showViewAllQuotes,
-  bestTradeOption,
+  bestQuote,
   baseTokenInfo,
   baseAmount,
-  chainId,
+  pricingError,
   quoteTokenInfo,
-  transaction,
   serverUrl,
   onClearServerUrlButtonClick,
-  onFeeButtonClick,
   onViewAllQuotesButtonClick,
 }) => {
   const { t } = useTranslation();
@@ -95,11 +71,13 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (
-    isConnected &&
-    failedToFetchAllowances &&
-    (!!bestTradeOption || isWrapping)
-  ) {
+  if (isNetworkUnsupported) {
+    return (
+      <StyledInfoHeading>{t("wallet.unsupportedNetwork")}</StyledInfoHeading>
+    );
+  }
+
+  if (failedToFetchAllowances) {
     return (
       <>
         <StyledInfoHeading>
@@ -112,11 +90,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (
-    isConnected &&
-    failedToFetchAllowances &&
-    (!!bestTradeOption || isWrapping)
-  ) {
+  if (isConnected && failedToFetchAllowances && (!!bestQuote || isWrapping)) {
     return (
       <>
         <StyledInfoHeading>
@@ -138,45 +112,15 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (isPairUnavailable) {
+  if (pricingError) {
     return (
       <>
-        <StyledInfoHeading>
-          {t("orders.tokenPairUnavailable")}
-        </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+        <PricingErrorInfo pricingError={pricingError} />
         {showViewAllQuotes && (
           <StyledLargePillButton onClick={onViewAllQuotesButtonClick}>
             {t("orders.viewAllQuotes")}
             <Icon name="chevron-down" />
           </StyledLargePillButton>
-        )}
-      </>
-    );
-  }
-
-  if (orderCompleted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>
-          {t("orders.transactionCompleted")}
-        </StyledInfoHeading>
-        {transaction?.hash && (
-          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
-        )}
-      </>
-    );
-  }
-
-  if (orderSubmitted) {
-    return (
-      <>
-        <DoneAllIcon />
-        <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-        {transaction?.hash && (
-          <StyledTransactionLink chainId={chainId} hash={transaction?.hash} />
         )}
       </>
     );
@@ -193,15 +137,6 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (isSwapping) {
-    return (
-      <>
-        <StyledInfoHeading>{t("orders.swapPending")}</StyledInfoHeading>
-        <InfoSubHeading>{t("orders.swapMessage")}</InfoSubHeading>
-      </>
-    );
-  }
-
   if (isWrapping) {
     return (
       <>
@@ -214,10 +149,8 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  if (!!bestTradeOption) {
-    let price = new BigNumber(bestTradeOption.quoteAmount).dividedBy(
-      baseAmount
-    );
+  if (bestQuote) {
+    let price = new BigNumber(bestQuote).dividedBy(baseAmount);
 
     if (invertPrice) {
       price = new BigNumber(1).dividedBy(price);

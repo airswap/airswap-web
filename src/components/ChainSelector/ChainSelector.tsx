@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 
-import nativeCurrency from "../../constants/nativeCurrency";
-import { CHAIN_PARAMS } from "../../constants/supportedNetworks";
-import ChainSelectionPopover from "../ChainSelectionPopover/ChainSelectionPopover";
+import { chainNames } from "@airswap/utils";
+
 import {
   Container,
   ChainSelectButton,
@@ -69,8 +68,8 @@ const ChainSelector = ({
           setChainSelectionOpen(!chainSelectionOpen);
         }}
       >
-        <ChainIcon src={nativeCurrency[chainId].logoURI} />
-        <ChainNameText>{CHAIN_PARAMS[chainId].chainName}</ChainNameText>
+        <ChainIcon src={`images/networks/${chainId}.png`} />
+        <ChainNameText>{chainNames[chainId]}</ChainNameText>
         <ArrowIcon isOpen={chainSelectionOpen}>
           <GoChevronDown />
         </ArrowIcon>

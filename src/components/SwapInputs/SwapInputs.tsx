@@ -1,7 +1,7 @@
 import { FC, FormEvent, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { AppError } from "../../errors/appError";
 import TokenSelect from "../TokenSelect/TokenSelect";

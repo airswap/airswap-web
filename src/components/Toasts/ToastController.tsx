@@ -1,17 +1,19 @@
 import toast from "react-hot-toast";
 
-import { findTokenByAddress } from "@airswap/metadata";
-import { FullOrderERC20, TokenInfo } from "@airswap/types";
+import { findTokenByAddress, FullOrderERC20, TokenInfo } from "@airswap/utils";
 
 import i18n from "i18next";
 
 import {
-  SubmittedApproval,
+  SubmittedApprovalTransaction,
+  SubmittedDepositTransaction,
   SubmittedTransaction,
-  SubmittedTransactionWithOrder,
-  TransactionType,
-} from "../../features/transactions/transactionsSlice";
+  SubmittedOrder,
+  SubmittedWithdrawTransaction,
+  SubmittedOrderUnderConsideration,
+} from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
+import { TransactionTypes } from "../../types/transactionTypes";
 import ConfirmationToast from "./ConfirmationToast";
 import CopyToast from "./CopyToast";
 import ErrorToast from "./ErrorToast";
@@ -19,7 +21,7 @@ import OrderToast from "./OrderToast";
 import TransactionToast from "./TransactionToast";
 
 export const notifyTransaction = (
-  type: TransactionType,
+  type: TransactionTypes,
   transaction: SubmittedTransaction,
   tokens: TokenInfo[],
   error: boolean,
@@ -28,11 +30,12 @@ export const notifyTransaction = (
   let token: TokenInfo | null;
   // TODO: make a switch case to render a different toast for each case
   if (
-    (type === "Order" || type === "Deposit" || type === "Withdraw") &&
+    (type === TransactionTypes.order ||
+      type === TransactionTypes.deposit ||
+      type === TransactionTypes.withdraw) &&
     chainId
   ) {
-    const tx: SubmittedTransactionWithOrder =
-      transaction as SubmittedTransactionWithOrder;
+    const tx: SubmittedOrder = transaction as SubmittedOrder;
     /*  TODO: fix toaster for multiple tabs or apps
         now that we have a listener, you can have multiple
         tabs open that receives the same order event. Only one redux
@@ -67,7 +70,8 @@ export const notifyTransaction = (
       );
     }
   } else {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
+    const tx: SubmittedApprovalTransaction =
+      transaction as SubmittedApprovalTransaction;
     token = findTokenByAddress(tx.tokenAddress, tokens);
     toast(
       (t) => (
@@ -84,6 +88,73 @@ export const notifyTransaction = (
       }
     );
   }
+};
+
+export const notifyApproval = (transaction: SubmittedApprovalTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type={TransactionTypes.approval}
+        transaction={transaction}
+        approvalToken={transaction.token}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyDeposit = (transaction: SubmittedDepositTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type={TransactionTypes.deposit}
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyWithdrawal = (transaction: SubmittedWithdrawTransaction) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type={TransactionTypes.withdraw}
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
+};
+
+export const notifyOrder = (transaction: SubmittedOrder) => {
+  toast(
+    (t) => (
+      <TransactionToast
+        onClose={() => toast.dismiss(t.id)}
+        type={TransactionTypes.order}
+        transaction={transaction}
+        senderToken={transaction.senderToken}
+        signerToken={transaction.signerToken}
+      />
+    ),
+    {
+      duration: 3000,
+    }
+  );
 };
 
 export const notifyError = (props: { heading: string; cta: string }) => {
@@ -123,6 +194,13 @@ export const notifyOrderCreated = (order: FullOrderERC20) => {
       duration: 3000,
     }
   );
+};
+
+export const notifyOrderExpiry = () => {
+  notifyError({
+    heading: i18n.t("orders.swapRejected"),
+    cta: i18n.t("orders.swapRejectedCallToAction"),
+  });
 };
 
 export const notifyCopySuccess = () => {

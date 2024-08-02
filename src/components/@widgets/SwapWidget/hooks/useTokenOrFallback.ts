@@ -1,8 +1,5 @@
 import { useMemo } from "react";
 
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
-
 import { useAppSelector } from "../../../../app/hooks";
 import nativeCurrency from "../../../../constants/nativeCurrency";
 import { selectCustomTokenAddresses } from "../../../../features/metadata/metadataSlice";
@@ -19,7 +16,7 @@ const useTokenOrFallback = (
 ): string | null => {
   const userTokens = useAppSelector(selectUserTokens);
   const customTokens = useAppSelector(selectCustomTokenAddresses);
-  const { chainId } = useWeb3React<Web3Provider>();
+  const { chainId } = useAppSelector((state) => state.web3);
 
   const defaultBaseTokenAddress = useTokenAddress("USDT");
   const defaultQuoteTokenAddress = nativeCurrency[chainId || 1]?.address;

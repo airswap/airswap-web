@@ -14,6 +14,7 @@ export const getActionButtonTranslation = (
   hasMissingTakerToken: boolean,
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
+  shouldRefresh: boolean,
   walletIsNotConnected: boolean,
   makerTokenSymbol?: string
 ): string => {
@@ -22,7 +23,11 @@ export const getActionButtonTranslation = (
   }
 
   if (networkIsUnsupported) {
-    return i18n.t("wallet.unsupportedNetwork");
+    return i18n.t("wallet.switchNetwork");
+  }
+
+  if (shouldRefresh) {
+    return i18n.t("common.reloadPage");
   }
 
   if (hasInsufficientExpiry) {

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 
 import { MainButton, BackButton } from "./ActionButtons.styles";
 
@@ -43,10 +43,9 @@ const buttonTextMapping: Record<ButtonActions, string> = {
  */
 const ActionButtons: FC<{
   walletIsActive: boolean;
-  unsupportedNetwork: boolean;
+  isNetworkUnsupported: boolean;
   requiresReload: boolean;
-  orderComplete: boolean;
-  pairUnavailable: boolean;
+  hasError: boolean;
   hasQuote: boolean;
   needsApproval: boolean;
   hasAmount: boolean;
@@ -54,14 +53,12 @@ const ActionButtons: FC<{
   quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
   isLoading: boolean;
-  transactionsTabOpen: boolean;
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
   walletIsActive,
-  unsupportedNetwork,
+  isNetworkUnsupported,
   requiresReload,
-  orderComplete,
-  pairUnavailable,
+  hasError,
   hasQuote,
   needsApproval,
   hasAmount,
@@ -69,7 +66,6 @@ const ActionButtons: FC<{
   quoteTokenInfo,
   hasSufficientBalance,
   isLoading,
-  transactionsTabOpen,
   onButtonClicked,
 }) => {
   const { t } = useTranslation();
@@ -77,24 +73,20 @@ const ActionButtons: FC<{
   // First determine the next action.
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
-  if (unsupportedNetwork) nextAction = ButtonActions.switchNetwork;
-  else if (!walletIsActive) nextAction = ButtonActions.connectWallet;
-  else if (pairUnavailable) nextAction = ButtonActions.goBack;
-  else if (orderComplete) nextAction = ButtonActions.restart;
+  if (!walletIsActive) nextAction = ButtonActions.connectWallet;
+  else if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
+  else if (hasError) nextAction = ButtonActions.goBack;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
   else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
   else if (hasQuote) nextAction = ButtonActions.takeQuote;
   else nextAction = ButtonActions.requestQuotes;
 
-  // If a secondary action is defined, a secondary button will be displayed.
-  let secondaryAction: ButtonActions | null = null;
-  if (orderComplete && !transactionsTabOpen)
-    secondaryAction = ButtonActions.trackTransaction;
-
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
   let isDisabled =
     walletIsActive &&
+    !requiresReload &&
+    !isNetworkUnsupported &&
     (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);
 
   // Some actions require an additional back button
@@ -102,11 +94,6 @@ const ActionButtons: FC<{
     !isDisabled &&
     (nextAction === ButtonActions.takeQuote ||
       nextAction === ButtonActions.approve);
-
-  if (orderComplete) {
-    isDisabled = false;
-    nextAction = ButtonActions.restart;
-  }
 
   // The text depends on the next action, unless the button is disabled, when
   // it depends on the reason for being disabled instead.
@@ -124,27 +111,12 @@ const ActionButtons: FC<{
     mainButtonText = t(buttonTextMapping[nextAction]);
   }
 
-  //@ts-ignore
-  let secondaryButtonText: string | null = !!secondaryAction
-    ? // @ts-ignore dynamic translation key.
-      t(buttonTextMapping[secondaryAction])
-    : null;
-
   return (
     <>
       {hasBackButton && (
         <BackButton onClick={onButtonClicked.bind(null, ButtonActions.goBack)}>
           {t("common.back")}
         </BackButton>
-      )}
-      {secondaryAction && (
-        // Note MainButton used to ensure secondary button is same size as main
-        <MainButton
-          intent="neutral"
-          onClick={onButtonClicked.bind(null, secondaryAction)}
-        >
-          {secondaryButtonText}
-        </MainButton>
       )}
       <MainButton
         intent={nextAction === ButtonActions.goBack ? "neutral" : "primary"}

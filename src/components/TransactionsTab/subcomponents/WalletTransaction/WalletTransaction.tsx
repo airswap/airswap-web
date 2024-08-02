@@ -1,21 +1,21 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
-import { formatUnits } from "@ethersproject/units";
-
-import BigNumber from "bignumber.js";
 import { HTMLMotionProps } from "framer-motion";
 
+import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
-  SubmittedApproval,
-  SubmittedCancellation,
-  SubmittedTransactionWithOrder,
-  SubmittedTransaction,
-} from "../../../../features/transactions/transactionsSlice";
-import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
+  isApprovalTransaction,
+  isCancelTransaction,
+  isDepositTransaction,
+  isSubmittedOrder,
+  isSubmittedOrderUnderConsideration,
+  isWithdrawTransaction,
+} from "../../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { TransactionStatusType } from "../../../../types/transactionTypes";
 import ProgressBar from "../../../ProgressBar/ProgressBar";
 import getTimeAgoTranslation from "../../helpers/getTimeAgoTranslation";
+import getWalletTransactionOrderText from "../../helpers/getWalletTransactionOrderText";
 import getWalletTransactionStatusText from "../../helpers/getWalletTransactionStatusText";
 import {
   Container,
@@ -27,27 +27,20 @@ import {
 } from "./WalletTransaction.styles";
 
 interface WalletTransactionProps extends HTMLMotionProps<"div"> {
-  /**
-   * The parent object of SubmittedOrder and SubmittedApproval
-   */
+  protocolFee: number;
   transaction: SubmittedTransaction;
-  /**
-   * All token metadata
-   */
-  tokens: TokenInfo[];
-  /**
-   * chainId of current Ethereum net
-   */
   chainId: number;
+  account: string;
 }
 
 const WalletTransaction = ({
+  protocolFee,
   transaction,
-  tokens,
   chainId,
   animate,
   initial,
   transition,
+  account,
 }: WalletTransactionProps) => {
   const { t } = useTranslation();
 
@@ -55,25 +48,39 @@ const WalletTransaction = ({
     return getWalletTransactionStatusText(transaction.status, t);
   }, [transaction.status, t]);
 
-  if (transaction.type === "Approval") {
-    const tx: SubmittedApproval = transaction as SubmittedApproval;
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+  if (isApprovalTransaction(transaction)) {
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
+
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
-          <SpanTitle>{t("wallet.approve")}</SpanTitle>
+          <SpanTitle>
+            {t("wallet.approve", { symbol: transaction.token.symbol })}
+          </SpanTitle>
+
           <SpanSubtitle>
             {statusText} · {timeBetween}
           </SpanSubtitle>
         </TextContainer>
-        {tx.hash && (
-          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
-        )}
+
+        <StyledTransactionLink
+          hideLabel
+          chainId={chainId}
+          hash={transaction.hash}
+        />
       </Container>
     );
-  } else if (transaction.type === "Cancel") {
-    const tx: SubmittedCancellation = transaction as SubmittedCancellation;
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+  }
+
+  if (isCancelTransaction(transaction)) {
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
+
     return (
       <Container transition={transition} animate={animate} initial={initial}>
         <TextContainer>
@@ -82,72 +89,58 @@ const WalletTransaction = ({
             {statusText} · {timeBetween}
           </SpanSubtitle>
         </TextContainer>
-        {tx.hash && <StyledTransactionLink chainId={chainId} hash={tx.hash} />}
+
+        <StyledTransactionLink
+          hideLabel
+          chainId={chainId}
+          hash={transaction.hash}
+        />
       </Container>
     );
-  } else {
-    const tx: SubmittedTransactionWithOrder =
-      transaction as SubmittedTransactionWithOrder;
-    const senderToken = findEthOrTokenByAddress(
-      tx.order.senderToken,
-      tokens,
-      chainId
-    );
-    const signerToken = findEthOrTokenByAddress(
-      tx.order.signerToken,
-      tokens,
-      chainId
-    );
-    const hasExpiry = !!tx.expiry;
+  }
 
-    // For last look transactions, the user has sent the signer amount plus
-    // the fee:
-    let signerAmountWithFee: string | null = null;
-    if (tx.protocol === "last-look-erc20") {
-      signerAmountWithFee = new BigNumber(tx.order.signerAmount)
-        .multipliedBy(1.0007)
-        .integerValue(BigNumber.ROUND_FLOOR)
-        .toString();
-    }
-    //@ts-ignore
-    const timeBetween = getTimeAgoTranslation(new Date(tx.timestamp), t);
+  if (
+    isSubmittedOrder(transaction) ||
+    isWithdrawTransaction(transaction) ||
+    isDepositTransaction(transaction)
+  ) {
+    const { signerToken, senderToken } = transaction;
+    const expiry = isSubmittedOrder(transaction)
+      ? transaction.order.expiry
+      : undefined;
+
+    const timeBetween = getTimeAgoTranslation(
+      new Date(transaction.timestamp),
+      t
+    );
 
     return (
       <Container transition={transition} animate={animate} initial={initial}>
-        {tx.status === "processing" && (
+        {transaction.status === TransactionStatusType.processing && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
         <TextContainer>
-          {tx && senderToken && signerToken && (
+          {transaction && senderToken && signerToken && (
             <>
-              <SpanTitle hasProgress={hasExpiry && tx.status === "processing"}>
-                {t(
-                  tx.protocol === "last-look-erc20"
-                    ? "wallet.lastLookTransaction"
-                    : "wallet.transaction",
-                  {
-                    senderAmount: parseFloat(
-                      Number(
-                        formatUnits(tx.order.senderAmount, senderToken.decimals)
-                      ).toFixed(5)
-                    ),
-                    senderToken: senderToken.symbol,
-                    signerAmount: parseFloat(
-                      Number(
-                        formatUnits(
-                          signerAmountWithFee || tx.order.signerAmount,
-                          signerToken.decimals
-                        )
-                      ).toFixed(5)
-                    ),
-                    signerToken: signerToken.symbol,
-                  }
+              <SpanTitle
+                hasProgress={
+                  !!expiry &&
+                  transaction.status === TransactionStatusType.processing
+                }
+              >
+                {getWalletTransactionOrderText(
+                  transaction,
+                  signerToken,
+                  senderToken,
+                  account,
+                  protocolFee
                 )}
               </SpanTitle>
-              {hasExpiry && tx.status === "processing" ? (
+              {!!expiry &&
+              transaction.status === TransactionStatusType.processing ? (
                 <ProgressBar
-                  startTime={tx.timestamp}
-                  endTime={parseInt(tx.expiry!) * 1000}
+                  startTime={transaction.timestamp}
+                  endTime={+expiry * 1000}
                 />
               ) : (
                 <SpanSubtitle>
@@ -157,12 +150,19 @@ const WalletTransaction = ({
             </>
           )}
         </TextContainer>
-        {tx.hash && (
-          <StyledTransactionLink hideLabel chainId={chainId} hash={tx.hash} />
+
+        {!isSubmittedOrderUnderConsideration(transaction) && (
+          <StyledTransactionLink
+            hideLabel
+            chainId={chainId}
+            hash={transaction.hash}
+          />
         )}
       </Container>
     );
   }
+
+  return null;
 };
 
 export default WalletTransaction;

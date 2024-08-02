@@ -1,11 +1,12 @@
 import React, { FC, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/types";
+import { TokenInfo } from "@airswap/utils";
 import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
+import { AppError } from "../../../errors/appError";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useShouldDepositNativeTokenAmountInfo from "../../../hooks/useShouldDepositNativeTokenAmountInfo";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -14,7 +15,9 @@ import {
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
+import { ErrorList } from "../../ErrorList/ErrorList";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
+import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
@@ -25,25 +28,29 @@ import {
 } from "./WrapReview.styles";
 
 interface WrapReviewProps {
+  hasEditButton?: boolean;
   isLoading: boolean;
   amount: string;
   amountPlusFee?: string;
-  backButtonText?: string;
+  errors?: AppError[];
   wrappedNativeToken: TokenInfo | null;
   shouldDepositNativeTokenAmount: string;
-  onEditButtonClick: () => void;
+  onEditButtonClick?: () => void;
+  onRestartButtonClick?: () => void;
   onSignButtonClick: () => void;
   className?: string;
 }
 
 const ApproveReview: FC<WrapReviewProps> = ({
+  hasEditButton,
   isLoading,
   amount,
   amountPlusFee,
-  backButtonText,
+  errors = [],
   shouldDepositNativeTokenAmount,
   wrappedNativeToken,
   onEditButtonClick,
+  onRestartButtonClick,
   onSignButtonClick,
   className = "",
 }): ReactElement => {
@@ -72,6 +79,16 @@ const ApproveReview: FC<WrapReviewProps> = ({
 
     return toRoundedNumberString(amountPlusFee, wrappedNativeToken?.decimals);
   }, [amountPlusFee, wrappedNativeToken]);
+
+  const handleEditOrBackButtonClick = () => {
+    if (!isLoading && hasEditButton && onEditButtonClick) {
+      onEditButtonClick();
+    }
+
+    if (onRestartButtonClick) {
+      onRestartButtonClick();
+    }
+  };
 
   return (
     <Container className={className}>
@@ -130,8 +147,10 @@ const ApproveReview: FC<WrapReviewProps> = ({
 
       <StyledActionButtons
         isLoading={isLoading}
-        backButtonText={backButtonText || t("common.back")}
-        onEditButtonClick={onEditButtonClick}
+        backButtonText={
+          hasEditButton && !isLoading ? t("common.edit") : t("common.back")
+        }
+        onEditButtonClick={handleEditOrBackButtonClick}
         onSignButtonClick={onSignButtonClick}
       />
 
@@ -139,6 +158,17 @@ const ApproveReview: FC<WrapReviewProps> = ({
         isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo()}
       />
+
+      {onRestartButtonClick && (
+        <Overlay
+          title={t("validatorErrors.unableSwap")}
+          subTitle={t("validatorErrors.swapFail")}
+          onCloseButtonClick={onRestartButtonClick}
+          isHidden={!errors.length}
+        >
+          <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
+        </Overlay>
+      )}
     </Container>
   );
 };

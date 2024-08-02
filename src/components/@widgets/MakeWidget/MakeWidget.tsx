@@ -2,26 +2,22 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { compressFullOrderERC20 } from "@airswap/utils";
+import { compressFullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import nativeCurrency, {
-  nativeCurrencyAddress,
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppErrorType } from "../../../errors/appError";
 import { selectBalances } from "../../../features/balances/balancesSlice";
-import {
-  fetchIndexerUrls,
-  selectIndexerReducer,
-} from "../../../features/indexer/indexerSlice";
+import { fetchIndexerUrls } from "../../../features/indexer/indexerActions";
+import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import { createOtcOrder } from "../../../features/makeOtc/makeOtcActions";
 import {
   clearLastUserOrder,
@@ -34,11 +30,8 @@ import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../../features/metadata/metadataSlice";
-import {
-  approve,
-  deposit,
-  selectOrdersStatus,
-} from "../../../features/orders/ordersSlice";
+import { approve, deposit } from "../../../features/orders/ordersActions";
+import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
   selectUserTokens,
   setUserTokens,
@@ -48,13 +41,14 @@ import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import toMaxAllowedDecimalsNumberString from "../../../helpers/toMaxAllowedDecimalsNumberString";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useAllowance from "../../../hooks/useAllowance";
+import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
+import useNetworkSupported from "../../../hooks/useNetworkSupported";
 import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTokenAmount";
-import useTokenAddress from "../../../hooks/useTokenAddress";
 import useTokenInfo from "../../../hooks/useTokenInfo";
 import useValidAddress from "../../../hooks/useValidAddress";
 import { AppRoutes } from "../../../routes";
@@ -68,6 +62,7 @@ import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesMod
 import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
+import { notifyOrderCreated } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
@@ -75,6 +70,7 @@ import {
   OrderTypeSelectorAndRateFieldWrapper,
   StyledActionButtons,
   StyledAddressInput,
+  StyledInfoSection,
   StyledOrderTypeSelector,
   StyledRateField,
   StyledTooltip,
@@ -107,13 +103,8 @@ const MakeWidget: FC = () => {
     lastUserOrder,
   } = useAppSelector(selectMakeOtcReducer);
   const ordersStatus = useAppSelector(selectOrdersStatus);
-  const {
-    active,
-    chainId,
-    account,
-    library,
-    error: web3Error,
-  } = useWeb3React<Web3Provider>();
+  const { provider: library } = useWeb3React<Web3Provider>();
+  const { isActive, chainId, account } = useAppSelector((state) => state.web3);
 
   // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
@@ -129,11 +120,8 @@ const MakeWidget: FC = () => {
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
-  const defaultTokenFromAddress = useTokenAddress("USDT");
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
-  const makerTokenInfo = useTokenInfo(
-    userTokens.tokenFrom || defaultTokenFromAddress || null
-  );
+  const makerTokenInfo = useTokenInfo(userTokens.tokenFrom || null);
   const takerTokenInfo = useTokenInfo(
     userTokens.tokenTo || defaultTokenToAddress || null
   );
@@ -150,7 +138,8 @@ const MakeWidget: FC = () => {
   );
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
-    makerAmount
+    makerAmount,
+    true
   );
   const hasMissingMakerAmount =
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
@@ -160,9 +149,9 @@ const MakeWidget: FC = () => {
   const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
   const showMaxInfoButton =
     !!maxAmount &&
-    makerTokenInfo?.address === nativeCurrencyAddress &&
+    makerTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
-  const hasApprovalPending = useApprovalPending(makerTokenInfo?.address);
+  const hasApprovalPending = !!useApprovalPending(makerTokenInfo?.address);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
@@ -171,6 +160,8 @@ const MakeWidget: FC = () => {
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const hasDepositPending = useDepositPending();
   const isValidAddress = useValidAddress(takerAddress);
+  const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
+  const isNetworkSupported = useNetworkSupported();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -203,14 +194,16 @@ const MakeWidget: FC = () => {
       const compressedOrder = compressFullOrderERC20(lastUserOrder);
       dispatch(clearLastUserOrder());
       history.push({ pathname: `/${AppRoutes.order}/${compressedOrder}` });
+
+      notifyOrderCreated(lastUserOrder);
     }
   }, [lastUserOrder, history, dispatch]);
 
   useEffect(() => {
-    if (!active) {
+    if (!isActive) {
       setShowTokenSelectModal(null);
     }
-  }, [active]);
+  }, [isActive]);
 
   // Event handlers
   const handleOrderTypeCheckboxChange = (isChecked: boolean) => {
@@ -222,7 +215,7 @@ const MakeWidget: FC = () => {
       type,
       value,
       userTokens.tokenTo || defaultTokenToAddress || undefined,
-      userTokens.tokenFrom || defaultTokenFromAddress || undefined
+      userTokens.tokenFrom || undefined
     );
 
     dispatch(
@@ -279,11 +272,11 @@ const MakeWidget: FC = () => {
     const takerTokenAddress = takerTokenInfo?.address!;
 
     const signerToken =
-      makerTokenAddress === nativeCurrencyAddress
+      makerTokenAddress === ADDRESS_ZERO
         ? getWethAddress(chainId!)
         : makerTokenAddress;
     const senderToken =
-      takerTokenAddress === nativeCurrencyAddress
+      takerTokenAddress === ADDRESS_ZERO
         ? getWethAddress(chainId!)
         : takerTokenAddress;
 
@@ -297,9 +290,7 @@ const MakeWidget: FC = () => {
         signerAmount: makerAmount,
         protocolFee: protocolFee.toString(),
         senderWallet:
-          orderType === OrderType.private
-            ? takerAddress!
-            : nativeCurrencyAddress,
+          orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
         senderToken,
         senderTokenInfo: takerTokenInfo!,
         senderAmount: takerAmount,
@@ -313,35 +304,32 @@ const MakeWidget: FC = () => {
 
   const approveToken = () => {
     const justifiedToken =
-      makerTokenInfo?.address === nativeCurrencyAddress
+      makerTokenInfo?.address === ADDRESS_ZERO
         ? wrappedNativeToken
         : makerTokenInfo;
 
-    dispatch(
-      approve({
-        token: justifiedToken!,
-        library,
-        contractType: "Swap",
-        chainId: chainId!,
-        amount: makerAmountPlusFee,
-      })
-    );
+    dispatch(approve(makerAmountPlusFee, justifiedToken!, library!, "Swap"));
   };
 
   const depositNativeToken = async () => {
-    const result = await dispatch(
-      deposit({
-        chainId: chainId!,
-        senderAmount: shouldDepositNativeTokenAmount!,
-        senderTokenDecimals: makerTokenInfo!.decimals,
-        provider: library!,
-      })
+    dispatch(
+      deposit(
+        shouldDepositNativeTokenAmount!,
+        makerTokenInfo!,
+        wrappedNativeToken!,
+        chainId!,
+        library!
+      )
     );
-    await unwrapResult(result);
   };
 
   const handleEditButtonClick = () => {
     setState(MakeWidgetState.list);
+  };
+
+  const restart = () => {
+    setState(MakeWidgetState.list);
+    dispatch(reset());
   };
 
   const handleActionButtonClick = (action: ButtonActions) => {
@@ -358,13 +346,13 @@ const MakeWidget: FC = () => {
     }
 
     if (action === ButtonActions.restart) {
-      dispatch(reset());
+      restart();
     }
   };
 
   const handleBackButtonClick = (action: ButtonActions) => {
     if (action === ButtonActions.restart) {
-      dispatch(reset());
+      restart();
     }
 
     if (action === ButtonActions.goBack) {
@@ -391,13 +379,14 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <WrapReview
+          hasEditButton
           isLoading={hasDepositPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
-          backButtonText={t("common.edit")}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
       </Container>
@@ -408,14 +397,15 @@ const MakeWidget: FC = () => {
     return (
       <Container>
         <ApproveReview
+          hasEditButton
           isLoading={hasApprovalPending}
           amount={makerAmount}
           amountPlusFee={makerAmountPlusFee}
-          backButtonText={t("common.edit")}
           readableAllowance={readableAllowance}
           token={makerTokenInfo}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={handleEditButtonClick}
+          onRestartButtonClick={restart}
           onSignButtonClick={approveToken}
         />
       </Container>
@@ -451,8 +441,8 @@ const MakeWidget: FC = () => {
       />
       <SwapInputs
         canSetQuoteAmount
-        disabled={!active}
-        readOnly={!active}
+        disabled={!isActive || isAllowancesOrBalancesFailed}
+        readOnly={!isActive || !isNetworkSupported}
         showMaxButton={showMaxButton}
         showMaxInfoButton={showMaxInfoButton}
         baseAmount={makerAmount}
@@ -505,6 +495,11 @@ const MakeWidget: FC = () => {
         </TooltipContainer>
       )}
 
+      <StyledInfoSection
+        isAllowancesFailed={isAllowancesOrBalancesFailed}
+        isNetworkUnsupported={!isNetworkSupported}
+      />
+
       <StyledActionButtons
         hasInsufficientExpiry={expiry === 0}
         hasInsufficientAllowance={!hasSufficientAllowance}
@@ -515,12 +510,10 @@ const MakeWidget: FC = () => {
         hasMissingMakerToken={!makerTokenInfo}
         hasMissingTakerAmount={hasMissingTakerAmount}
         hasMissingTakerToken={!takerTokenInfo}
-        isLoading={hasApprovalPending || hasDepositPending}
-        isNetworkUnsupported={
-          !!web3Error && web3Error instanceof UnsupportedChainIdError
-        }
+        isNetworkUnsupported={!isNetworkSupported}
         shouldDepositNativeToken={shouldDepositNativeToken}
-        walletIsNotConnected={!active}
+        shouldRefresh={isAllowancesOrBalancesFailed}
+        walletIsNotConnected={!isActive}
         makerTokenSymbol={makerTokenInfo?.symbol}
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
