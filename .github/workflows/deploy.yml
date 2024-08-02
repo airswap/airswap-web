@@ -27,14 +27,6 @@ jobs:
           yarn
           yarn build
 
-      - name: IPFS Deploy 🚀
-        uses: aquiladev/ipfs-action@master
-        with:
-          path: ./build
-          service: infura
-          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
-          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}
-
       - name: IPFS (Pinata)
         uses: aquiladev/ipfs-action@master
         with:
@@ -42,3 +34,11 @@ jobs:
           service: pinata
           pinataKey: ${{ secrets.PINATA_KEY }}
           pinataSecret: ${{ secrets.PINATA_SECRET }}
+
+      - name: IPFS Deploy 🚀
+        uses: aquiladev/ipfs-action@master
+        with:
+          path: ./build
+          service: infura
+          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
+          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}
