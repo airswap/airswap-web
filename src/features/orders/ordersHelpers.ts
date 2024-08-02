@@ -19,6 +19,7 @@ import {
 } from "../../errors/swapError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import {
+  checkSwapErc20Order,
   getSwapErc20Address,
   getSwapErc20Contract,
 } from "../../helpers/swapErc20";
@@ -209,9 +210,12 @@ export async function check(
   provider: ethers.providers.Web3Provider,
   isSwapWithWrap?: boolean
 ): Promise<AppError[]> {
-  const [count, strings] = await (
-    await getSwapErc20Contract(provider, chainId)
-  ).check(senderWallet, ...orderERC20ToParams(order));
+  const strings = await checkSwapErc20Order(
+    provider,
+    chainId,
+    senderWallet,
+    order
+  );
 
   const errors = parseCheckResult(strings) as SwapError[];
 

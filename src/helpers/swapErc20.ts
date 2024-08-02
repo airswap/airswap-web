@@ -1,5 +1,5 @@
 import { SwapERC20 } from "@airswap/libraries";
-import { mainnets } from "@airswap/utils";
+import { mainnets, OrderERC20, orderERC20ToParams } from "@airswap/utils";
 
 import { ethers } from "ethers";
 
@@ -582,6 +582,34 @@ export const getSwapErc20Contract = (
   const contractInterface = new ethers.utils.Interface(contractV4Abi);
 
   return new ethers.Contract(address, contractInterface, providerOrSigner);
+};
+
+const isV4CheckResponse = (response: any): response is [number, string[]] => {
+  return (
+    Array.isArray(response) &&
+    response.length === 2 &&
+    Array.isArray(response[1])
+  );
+};
+
+export const checkSwapErc20Order = async (
+  providerOrSigner: ethers.providers.Provider,
+  chainId: number,
+  senderWallet: string,
+  order: OrderERC20
+): Promise<string[]> => {
+  const contract = getSwapErc20Contract(providerOrSigner, chainId);
+
+  const response = await contract.check(
+    senderWallet,
+    ...orderERC20ToParams(order)
+  );
+
+  if (isV4CheckResponse(response)) {
+    return response[1];
+  }
+
+  return response;
 };
 
 export const getSwapErc20Address = (chainId: number): string | undefined => {
