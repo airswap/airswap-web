@@ -7,8 +7,10 @@ import * as buffer from "buffer";
 import App from "./App";
 import { store } from "./app/store";
 import * as serviceWorker from "./serviceWorker";
+import { safaryTracking } from '../src/tracking/safaryTracking';
 
 window.Buffer = buffer.Buffer;
+safaryTracking()
 
 ReactDOM.render(
   <React.StrictMode>
