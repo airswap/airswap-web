@@ -35,9 +35,12 @@ export const SwitchTokensButton = styled.button`
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
-      ? props.theme.colors.primary
+      ? props.theme.colors.lightGrey
       : props.theme.colors.darkGrey};
-  background-color: ${(props) => props.theme.colors.white};
+  background-color: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.darkGrey
+      : props.theme.colors.white};
   z-index: 1;
 
   &:disabled {

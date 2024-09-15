@@ -14,6 +14,11 @@ import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
 import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
+import TokenSelectBackground from "./subcomponents/TokenSelectBackground/TokenSelectBackground";
+import {
+  TokenSelectLeftBorderBackground,
+  TokenSelectLeftGradientBackground,
+} from "./subcomponents/TokenSelectBackground/TokenSelectBackground.styles";
 
 const fadeOut = keyframes`
   from {
@@ -218,21 +223,18 @@ export const TokenSelectContainer = styled.div<{
   $isQuote: boolean;
   showTokenContractLink: boolean;
 }>`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   position: relative;
   width: 100%;
   height: 6.25rem;
-  padding-inline: 1.5rem 1rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 0.75rem;
-  background-color: ${(props) =>
-    props.theme.name === "dark"
-      ? props.theme.colors.darkGrey
-      : props.theme.colors.primaryLight};
-  overflow: hidden;
+
+  &:focus-within,
+  &:hover {
+    ${TokenSelectLeftGradientBackground},
+    ${TokenSelectLeftBorderBackground} {
+      opacity: 1;
+    }
+  }
 
   &:first-of-type {
     margin-bottom: 0.75rem;
@@ -286,6 +288,12 @@ export const TokenSelectContainer = styled.div<{
   }
 `;
 
+export const StyledTokenSelectBackground = styled(TokenSelectBackground)`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
   transition: opacity ease-in-out 0.3s;
   will-change: opacity;
@@ -329,4 +337,16 @@ export const TokenAccountButton = styled(AccountLink)`
   min-height: 1.625rem;
   max-height: 1.625rem;
   background: ${(props) => props.theme.colors.black};
+`;
+
+export const TokenSelectOverflowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  padding-inline: 1.5rem 1rem;
+  overflow: hidden;
 `;

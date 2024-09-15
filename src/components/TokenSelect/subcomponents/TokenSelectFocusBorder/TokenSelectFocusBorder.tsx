@@ -5,6 +5,7 @@ import {
   BorderBottom,
   BorderRight,
   BorderTop,
+  Background,
 } from "./TokenSelectFocusBorder.styles";
 
 type TokenSelectFocusBorderProps = {
@@ -19,6 +20,7 @@ const TokenSelectFocusBorder: FC<TokenSelectFocusBorderProps> = ({
   return (
     <>
       <GlobalStyle />
+      <Background position={position} />
       <BorderRight position={position} hasError={hasError} />
       <BorderTop position={position} hasError={hasError} />
       <BorderBottom position={position} hasError={hasError} />

@@ -11,7 +11,8 @@ export const StyledHeader = styled(SwapWidgetHeader)`
 `;
 
 export const WelcomeMessage = styled.h2`
-  margin-block-start: 1rem;
+  margin-block-start: 0.75rem;
+  color: ${(props) => props.theme.colors.lightGrey};
   text-align: center;
   font-family: ${fontWide};
   font-size: 1.125rem;

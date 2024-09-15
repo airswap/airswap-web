@@ -14,6 +14,17 @@ const Border = styled.div<BorderType>`
   opacity: ${({ hasError }) => (hasError ? 1 : 0)};
 `;
 
+export const Background = styled.div<{ position: "left" | "right" }>`
+  position: absolute;
+  // top: 0;
+  // left: 0;
+  // border: 1px solid ${(props) => props.theme.colors.lightGrey};
+  // border-radius: 0.125rem;
+  // width: 100%;
+  // height: 100%;
+  // background: linear-gradient(90deg, #111D34 0%, #142445 100%);
+`;
+
 export const BorderRight = styled(Border)`
   top: 0;
   right: ${(props) => (props.position === "right" ? 0 : "auto")};
@@ -54,7 +65,7 @@ export const GlobalStyle = createGlobalStyle`
   input, button {
     &:focus, &:hover {
       & ~ ${Border} {
-        opacity: 1;
+        // opacity: 1;
       }
     }
   }
