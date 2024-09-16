@@ -6,6 +6,7 @@ import {
   BorderBackground,
   TokenSelectRightGradientBackground,
   TokenSelectLeftBorderBackground,
+  TokenSelectRightBorderBackground,
 } from "./TokenSelectBackground.styles";
 
 interface TokenSelectBackgroundProps {
@@ -19,7 +20,7 @@ const TokenSelectBackground: FC<TokenSelectBackgroundProps> = ({
     <Container className={className}>
       <BorderBackground />
       <TokenSelectLeftBorderBackground />
-      <TokenSelectRightGradientBackground />
+      <TokenSelectRightBorderBackground />
       <TokenSelectLeftGradientBackground />
       <TokenSelectRightGradientBackground />
     </Container>

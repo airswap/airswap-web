@@ -18,6 +18,8 @@ import TokenSelectBackground from "./subcomponents/TokenSelectBackground/TokenSe
 import {
   TokenSelectLeftBorderBackground,
   TokenSelectLeftGradientBackground,
+  TokenSelectRightBorderBackground,
+  TokenSelectRightGradientBackground,
 } from "./subcomponents/TokenSelectBackground/TokenSelectBackground.styles";
 
 const fadeOut = keyframes`
@@ -219,22 +221,16 @@ export const SubText = styled.div`
 `;
 
 export const TokenSelectContainer = styled.div<{
-  $isLoading: boolean;
-  $isQuote: boolean;
+  isLoading: boolean;
+  isQuote: boolean;
+  isAmountFocused: boolean;
+  isTokenFocused: boolean;
   showTokenContractLink: boolean;
 }>`
   position: relative;
   width: 100%;
   height: 6.25rem;
   border-radius: 0.75rem;
-
-  &:focus-within,
-  &:hover {
-    ${TokenSelectLeftGradientBackground},
-    ${TokenSelectLeftBorderBackground} {
-      opacity: 1;
-    }
-  }
 
   &:first-of-type {
     margin-bottom: 0.75rem;
@@ -248,8 +244,16 @@ export const TokenSelectContainer = styled.div<{
     }
   }
 
+  ${TokenSelectRightGradientBackground}, ${TokenSelectRightBorderBackground} {
+    opacity: ${(props) => (props.isAmountFocused ? 1 : 0)};
+  }
+
+  ${TokenSelectLeftGradientBackground}, ${TokenSelectLeftBorderBackground} {
+    opacity: ${(props) => (props.isTokenFocused ? 1 : 0)};
+  }
+
   ${PlaceHolderBar} {
-    ${(props) => (!props.$isLoading ? "animation: none" : "")};
+    ${(props) => (!props.isLoading ? "animation: none" : "")};
   }
 
   ${ContainingButton} ${StyledTokenLogo} {
@@ -258,12 +262,12 @@ export const TokenSelectContainer = styled.div<{
 
   ${TokenLogoLeft} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
+      props.isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
   }
 
   ${StyledSelector} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
+      props.isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
 
   ${SubText},
@@ -271,20 +275,20 @@ export const TokenSelectContainer = styled.div<{
   ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(2.75rem)"};
   }
 
   ${TokenLogoRight} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(3rem)"};
   }
 
   ${StyledLabel} {
-    font-size: ${(props) => (props.$isQuote ? "0.75rem" : "")};
+    font-size: ${(props) => (props.isQuote ? "0.75rem" : "")};
   }
 
   ${StyledSelectItem} {
-    font-size: ${(props) => (props.$isQuote ? "1rem" : "")};
+    font-size: ${(props) => (props.isQuote ? "1rem" : "")};
   }
 `;
 

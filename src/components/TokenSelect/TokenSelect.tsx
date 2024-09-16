@@ -1,8 +1,16 @@
-import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
+import {
+  FC,
+  MouseEventHandler,
+  FormEventHandler,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
+import { useMouse } from "react-use";
 
 import { TokenInfo } from "@airswap/utils";
 
+import useWindowMousePosition from "../../hooks/useWindowMousePosition";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -26,7 +34,6 @@ import {
   StyledTokenSelectBackground,
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
-import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
   /**
@@ -119,27 +126,47 @@ const TokenSelect: FC<TokenSelectProps> = ({
   showTokenContractLink = false,
 }) => {
   const { t } = useTranslation();
+  const [isTokenFocused, setTokenFocused] = useState(false);
+  const [isAmountFocused, setIsAmountFocused] = useState(false);
 
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
 
+  const handleAmountFocus = () => setIsAmountFocused(true);
+  const handleAmountBlur = () => setIsAmountFocused(false);
+  const handleTokenFocus = () => setTokenFocused(true);
+  const handleTokenBlur = () => setTokenFocused(false);
+
   return (
     <TokenSelectContainer
-      $isQuote={isQuote}
-      $isLoading={isRequestingAmount}
+      isQuote={isQuote}
+      isLoading={isRequestingAmount}
+      isAmountFocused={isAmountFocused}
+      isTokenFocused={isTokenFocused}
       showTokenContractLink={showTokenContractLink}
     >
-      <StyledTokenSelectBackground />
+      {!readOnly && <StyledTokenSelectBackground />}
       <TokenSelectOverflowContainer>
         {selectedToken && showTokenContractLink && (
           <TokenAccountButton
             chainId={selectedToken.chainId}
             address={selectedToken.address}
+            onBlur={handleTokenBlur}
+            onFocus={handleTokenFocus}
+            onMouseEnter={handleTokenFocus}
+            onMouseLeave={handleTokenBlur}
           />
         )}
         {!isRequestingToken ? (
-          <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
+          <ContainingButton
+            disabled={readOnly}
+            onClick={onChangeTokenClicked}
+            onBlur={handleTokenBlur}
+            onFocus={handleTokenFocus}
+            onMouseEnter={handleTokenFocus}
+            onMouseLeave={handleTokenBlur}
+          >
             <TokenLogoLeft logoURI={selectedToken?.logoURI} />
             <StyledSelector>
               <StyledLabel>{label}</StyledLabel>
@@ -157,7 +184,6 @@ const TokenSelect: FC<TokenSelectProps> = ({
             <PlaceHolderBar />
           </PlaceholderContainer>
         )}
-        <TokenSelectFocusBorder position="left" />
         {includeAmountInput && selectedToken && !isRequestingAmount ? (
           <InputAndMaxButtonWrapper>
             <AmountAndDetailsContainer>
@@ -173,16 +199,25 @@ const TokenSelect: FC<TokenSelectProps> = ({
                 spellCheck={false}
                 value={amount}
                 disabled={readOnly}
+                onBlur={handleAmountBlur}
                 onChange={onAmountChange}
+                onFocus={handleAmountFocus}
+                onMouseEnter={handleAmountFocus}
+                onMouseLeave={handleAmountBlur}
                 placeholder="0.00"
               />
-              {!readOnly && (
-                <TokenSelectFocusBorder position="right" hasError={hasError} />
-              )}
               {subText && <SubText>{subText}</SubText>}
             </AmountAndDetailsContainer>
             {onMaxClicked && showMaxButton && !readOnly && (
-              <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
+              <MaxButton
+                onClick={onMaxClicked}
+                onBlur={handleAmountBlur}
+                onFocus={handleAmountFocus}
+                onMouseEnter={handleAmountFocus}
+                onMouseLeave={handleAmountBlur}
+              >
+                {t("common.max")}
+              </MaxButton>
             )}
             {showMaxInfoButton && !showMaxButton && !readOnly && (
               <InfoLabel

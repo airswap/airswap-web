@@ -52,12 +52,12 @@ export const TokenSelectLeftBorderBackground = styled(BorderBackground)`
   );
 `;
 
-export const TokenSelectrightBorderBackground = styled(BorderBackground)`
+export const TokenSelectRightBorderBackground = styled(BorderBackground)`
   z-index: -1;
   opacity: 0;
-  background: linear-gradient(270deg, #2b71ff -125%, #142445 50%);
+  background: linear-gradient(
+    270deg,
+    ${({ theme }) => theme.colors.primary} -25%,
+    ${({ theme }) => theme.colors.borderGrey} 75%
+  );
 `;
-
-// background: linear-gradient(${(props) =>
-//   props.position === "left" ? "90deg" : "270deg"}, ${({ theme }) => theme.colors.borderGrey} -25%, #142445 75%);
-// }
