@@ -144,7 +144,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
       isTokenFocused={isTokenFocused}
       showTokenContractLink={showTokenContractLink}
     >
-      {!readOnly && <StyledTokenSelectBackground />}
+      <StyledTokenSelectBackground />
       <TokenSelectOverflowContainer>
         {selectedToken && showTokenContractLink && (
           <TokenAccountButton

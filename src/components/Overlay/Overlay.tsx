@@ -13,6 +13,7 @@ import {
   ContentContainer,
   TitleSubContainer,
   StyledInfoSubHeading,
+  StyledCloseButton,
 } from "./Overlay.styles";
 
 export type OverlayProps = {
@@ -66,23 +67,6 @@ const Overlay: FC<OverlayProps> = ({
 
   return (
     <Container hasTitle={!!title} isHidden={isHidden} className={className}>
-      <TitleContainer>
-        <TitleSubContainer>
-          <StyledTitle type="h2" as="h1">
-            {title}
-          </StyledTitle>
-          {!!subTitle && (
-            <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
-          )}
-        </TitleSubContainer>
-        <CloseButton
-          icon="exit-modal"
-          ariaLabel={t("common.back")}
-          iconSize={1}
-          tabIndex={isHidden ? -1 : 0}
-          onClick={onClose}
-        />
-      </TitleContainer>
       <AnimatePresence>
         {!isHidden && (
           <ContentContainer
@@ -98,6 +82,23 @@ const Overlay: FC<OverlayProps> = ({
             animate={{ y: "0%" }}
             exit={{ y: "100%" }}
           >
+            <TitleContainer>
+              <TitleSubContainer>
+                <StyledTitle type="h2" as="h1">
+                  {title}
+                </StyledTitle>
+                {!!subTitle && (
+                  <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
+                )}
+              </TitleSubContainer>
+              <StyledCloseButton
+                icon="exit-modal"
+                ariaLabel={t("common.back")}
+                iconSize={1}
+                tabIndex={isHidden ? -1 : 0}
+                onClick={onClose}
+              />
+            </TitleContainer>
             {children}
           </ContentContainer>
         )}

@@ -10,16 +10,16 @@ const CloseButton = styled(IconButton)`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0.5rem;
-  width: 2rem;
-  height: 2rem;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0;
   color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+    theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
 
   ${StyledIcon} svg {
-    width: 1.375rem;
-    height: 1.375rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `;
 

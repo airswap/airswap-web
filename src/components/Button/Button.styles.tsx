@@ -15,7 +15,7 @@ function getButtonBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.neutral;
+      return theme.colors.darkBlue;
     default:
       return theme.colors.primary;
   }

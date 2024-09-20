@@ -23,7 +23,6 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
   flex-grow: 99;
   width: 100%;
   height: 100%;
-  max-height: calc(100% - 3.75rem);
   margin-block-start: 0.5rem;
   padding-inline-end: 0.5rem;
   padding-block-end: 1.5rem;
@@ -43,12 +42,37 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
 
 export const ContentContainer = styled(motion.div)`
   position: relative;
-  height: calc(100% - 5.625rem);
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2rem;
+  width: calc(100vw - 4rem);
+  max-width: 38.75rem;
+  height: calc(100vh - 3rem);
+  height: calc(100svh - 3rem);
+  max-height: 47.5rem;
   padding: 0 ${sizes.tradeContainerPadding};
+  backdrop-filter: blur(25px);
+
+  @media (max-height: ${sizes.widgetSize}) {
+    height: ${sizes.widgetSize};
+  }
 
   @media ${breakPoints.phoneOnly} {
-    height: calc(100% - 3.625rem);
     padding: 0 ${sizes.tradeContainerMobilePadding};
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 2rem;
+    width: 100%;
+    height: 100%;
+    background: ${(props) => props.theme.colors.darkBlue};
+    filter: brightness(0.5);
+    opacity: 0.8;
+    pointer-events: none;
   }
 `;
 
@@ -57,19 +81,17 @@ export const TitleContainer = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  padding-block: ${sizes.tradeContainerPadding} 1.25rem;
-  padding-inline: ${sizes.tradeContainerPadding};
+  padding-block-start: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
 
   @media ${breakPoints.phoneOnly} {
-    padding: ${sizes.tradeContainerMobilePadding};
+    padding-block-start: ${sizes.tradeContainerMobilePadding};
   }
 `;
 
 export const TitleSubContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding-inline-start: 1rem;
 `;
 
 export const StyledTitle = styled(StyledH3)<{
@@ -102,8 +124,7 @@ export const StyledInfoSubHeading = styled(InfoSubHeading)`
 
 const OverlayActionButtonStyle = css`
   margin-top: 1rem;
-  justify-self: flex-end;
-  float: right;
+  margin-inline: auto;
 `;
 
 export const OverlayActionButton = styled(Button)`
@@ -113,6 +134,8 @@ export const OverlayActionButton = styled(Button)`
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
@@ -120,28 +143,12 @@ export const Container = styled.div<ContainerProps>`
   height: 100%;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   z-index: 2;
-  overflow: hidden;
-  
-  ${CloseButton} {
-    transition: transform ${(props) =>
-      props.isHidden
-        ? "0.25s ease-in"
-        : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
-    transform: translateY(${(props) => (props.isHidden ? "-5.25rem" : "0%")});
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
-  
-  ${StyledTitle} {
-    opacity: ${(props) => (props.isHidden ? 0 : 1)};
-    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  }
-
-  ${StyledInfoSubHeading} {
-    opacity: ${(props) => (props.isHidden ? 0 : 1)};
-    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  }
 }
+`;
+
+export const StyledCloseButton = styled(CloseButton)`
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
 `;

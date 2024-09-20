@@ -25,7 +25,7 @@ export const TokenName = styled.h3`
 
   line-height: 1.25;
   max-width: 8.5rem;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 400;
   text-align: left;
   color: ${({ theme }) =>
@@ -33,12 +33,13 @@ export const TokenName = styled.h3`
 
   @media ${breakPoints.phoneOnly} {
     line-height: calc(1 + (1 / 3));
-    font-size: 0.75rem;
+    font-size: 1rem;
   }
 `;
 
 export const Balance = styled.div`
   font-family: ${fontMono};
+  font-size: 1.25rem;
   font-weight: 500;
   text-align: right;
   white-space: nowrap;
@@ -101,16 +102,24 @@ export const Container = styled.button<ContainerProps>`
   align-items: center;
   position: relative;
   width: 100%;
-  padding-block: 0.375rem;
-  padding-inline: 0.75rem 0.5rem;
+  padding-block: 0.625rem;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 
   &:hover,
   &:focus-within {
-    border: 1px solid ${(props) => props.theme.colors.borderGrey};
-    border-radius: 0.5rem;
-    background: ${(props) => props.theme.colors.darkGrey};
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: -0.125rem;
+      left: -0.75rem;
+      border-radius: 0.5rem;
+      width: calc(100% + 1.5rem);
+      height: calc(100% + 0.25rem);
+      background: ${(props) => props.theme.colors.darkBlue};
+      z-index: -1;
+    }
 
     ${TokenName} {
       color: ${({ theme, disabled }) =>
@@ -156,7 +165,7 @@ export const Symbol = styled.h3`
   width: 5rem;
   text-align: left;
   line-height: calc(1 + (1 / 3));
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -197,6 +206,9 @@ export const Tooltip = styled.div`
 export const StyledIcon = styled(AccountLink)`
   display: flex;
   position: relative;
+  margin-inline-start: 0.25rem;
+  translate: 0 0.125rem;
+  transform: scale(0.875);
 
   &:hover {
     color: ${(props) => props.theme.colors.white};

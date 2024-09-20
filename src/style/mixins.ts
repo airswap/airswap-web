@@ -11,7 +11,7 @@ export const ScrollBarStyle = css`
 
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+      theme.name === "dark" ? theme.colors.darkBlue : theme.colors.primary};
     border-radius: 0.5rem;
   }
 `;

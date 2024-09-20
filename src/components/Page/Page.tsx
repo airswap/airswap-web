@@ -86,7 +86,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         <WidgetFrame
           isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}
-          isOverlayOpen={showOverlay}
+          // isOverlayOpen={showOverlay}
         >
           {children}
           <WalletConnector />

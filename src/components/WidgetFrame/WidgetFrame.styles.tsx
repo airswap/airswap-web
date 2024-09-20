@@ -43,6 +43,7 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   width: 100%;
   height: 100%;
   min-height: ${sizes.widgetSize};
+  overflow: hidden;
 
   ${(props) =>
     props.$isOverlayOpen &&

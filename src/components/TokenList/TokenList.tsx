@@ -85,7 +85,6 @@ const TokenList = ({
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [overflow, setOverflow] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tokenQuery, setTokenQuery] = useState<string>("");
 
@@ -134,11 +133,6 @@ const TokenList = ({
     ) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
       const { clientHeight: buttonHeight } = buttonRef.current;
-
-      setOverflow(
-        scrollHeight + offsetTop + buttonHeight >
-          sizingContainerRef.current.offsetHeight
-      );
     }
   }, [
     sizingContainerRef,
@@ -194,7 +188,7 @@ const TokenList = ({
             <LegendItem>{t("balances.balance")}</LegendItem>
           </Legend>
 
-          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
+          <StyledScrollContainer ref={scrollContainerRef}>
             <TokenContainer>
               {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
                 (token) => (
@@ -233,7 +227,7 @@ const TokenList = ({
             )}
           </StyledScrollContainer>
           <OverlayActionButton
-            intent="neutral"
+            intent="primary"
             ref={buttonRef}
             onClick={() => setEditMode(!editMode)}
           >

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@airswap/utils";
 
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
-import TokenLogo from "../../../TokenLogo/TokenLogo";
 import {
   Container,
   Symbol,
