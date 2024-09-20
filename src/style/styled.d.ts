@@ -32,6 +32,7 @@ declare module "styled-components" {
       primary: string;
       primaryDark: string;
       primaryLight: string;
+      neutral: string;
       white: string;
       alwaysWhite: string;
       black: string;

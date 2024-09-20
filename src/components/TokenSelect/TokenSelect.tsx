@@ -6,11 +6,9 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { useMouse } from "react-use";
 
 import { TokenInfo } from "@airswap/utils";
 
-import useWindowMousePosition from "../../hooks/useWindowMousePosition";
 import {
   AmountInput,
   AmountAndDetailsContainer,

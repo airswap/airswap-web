@@ -15,7 +15,7 @@ function getButtonBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.darkGrey;
+      return theme.colors.neutral;
     default:
       return theme.colors.primary;
   }
@@ -31,7 +31,7 @@ function getButtonHoverBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.black;
+      return theme.colors.darkGrey;
     default:
       return theme.colors.primaryDark;
   }
@@ -46,12 +46,12 @@ function getButtonBorderColor(
     return theme.colors.darkGrey;
   }
 
-  return theme.colors.borderGrey;
+  return "transparent";
 }
 
 function getButtonHoverBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
   if (intent === "neutral") {
-    return theme.colors.lightGrey;
+    return "transparent";
   }
 
   return theme.colors.primaryDark;
