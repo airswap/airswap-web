@@ -469,19 +469,6 @@ const MakeWidget: FC = () => {
         />
       </OrderTypeSelectorAndExpirySelectorWrapper>
 
-      {makerTokenInfo &&
-        takerTokenInfo &&
-        !hasMissingMakerAmount &&
-        !hasMissingTakerAmount && (
-          <StyledRateField
-            token1={makerTokenInfo.symbol}
-            token2={takerTokenInfo.symbol}
-            rate={new BigNumber(takerAmount).dividedBy(
-              new BigNumber(makerAmount)
-            )}
-          />
-        )}
-
       {orderType === OrderType.private && (
         <TooltipContainer>
           <StyledAddressInput
@@ -524,6 +511,20 @@ const MakeWidget: FC = () => {
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />
+
+      {makerTokenInfo &&
+        takerTokenInfo &&
+        !hasMissingMakerAmount &&
+        !hasMissingTakerAmount && (
+          <StyledRateField
+            token1={makerTokenInfo.symbol}
+            token2={takerTokenInfo.symbol}
+            rate={new BigNumber(takerAmount).dividedBy(
+              new BigNumber(makerAmount)
+            )}
+          />
+        )}
+
       <Overlay
         onClose={() => setShowTokenSelectModal(null)}
         isHidden={!showTokenSelectModal}

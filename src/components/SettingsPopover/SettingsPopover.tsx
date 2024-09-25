@@ -79,6 +79,7 @@ const SettingsPopover = ({
             {t("common.system")}
           </ThemeButton>
           <ThemeButton
+            disabled
             $isActive={selectedTheme === "light"}
             onClick={() => handleThemeButtonClick("light")}
           >

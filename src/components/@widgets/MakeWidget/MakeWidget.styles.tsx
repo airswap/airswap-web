@@ -8,7 +8,6 @@ import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import { ExpirySelector } from "./subcomponents/ExpirySelector/ExpirySelector";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
-import InputSection from "./subcomponents/InputSection/InputSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 import { RateField } from "./subcomponents/RateField/RateField";
 
@@ -35,15 +34,6 @@ export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
     width: auto;
   }
 }
-`;
-
-export const StyledRateField = styled(RateField)`
-  margin-inline: auto;
-  padding-block-start: 0.25rem;
-
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
 `;
 
 export const OrderTypeSelectorAndExpirySelectorWrapper = styled.div`
@@ -98,4 +88,13 @@ export const TooltipContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+`;
+
+export const StyledRateField = styled(RateField)`
+  margin-inline: auto;
+  margin-block-start: 1rem;
+
+  @media ${breakPoints.phoneOnly} {
+    width: auto;
+  }
 `;

@@ -13,7 +13,6 @@ const ButtonStyle = css`
   justify-content: space-between;
   position: relative;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
-  border-inline-start: unset;
   width: 100%;
   height: var(--dropdown-button-height);
   padding: 0 0.75rem;
@@ -165,7 +164,7 @@ export const NativeSelect = styled.select`
 export const Wrapper = styled.div`
   position: relative;
 
-  --dropdown-button-height: 3.75rem;
+  --dropdown-button-height: 3rem;
   --dropdown-options-wrapper-padding: 0.5rem;
 
   ${NativeSelectWrapper} {

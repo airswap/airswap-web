@@ -27,7 +27,7 @@ export const Input = styled(TextInput)`
     ${({ hasError, theme }) =>
       hasError ? `border-color: ${theme.colors.red}` : ""};
 
-    border-radius: 2px;
+    border-radius: 0.5rem;
     padding-right: 3.5rem;
     padding-left: 1rem;
     height: 100%;

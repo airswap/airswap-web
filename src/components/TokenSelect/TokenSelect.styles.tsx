@@ -90,20 +90,22 @@ export const MaxButtonStyle = css`
   position: relative;
   bottom: 1px;
   align-self: center;
-  border-radius: 0.125rem;
-  font-family: Verdana, sans-serif;
-  font-weight: 600;
+  border-radius: 0.25rem;
+  font-family: ${fontWide};
+  font-weight: 500;
   font-size: 0.75rem;
   line-height: 1;
-  background-color: ${(props) => props.theme.colors.lightGrey};
-  color: ${(props) => props.theme.colors.black};
-  opacity: 0.6;
+  padding: 0.25rem 0.5rem;
+  background-color: ${(props) => props.theme.colors.darkBlue};
+  color: ${(props) => props.theme.colors.lightGrey};
+  opacity: 1;
 
   ${BorderlessButtonStyle}
 
   &:hover,
   &:focus {
-    background-color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
 `;
@@ -112,10 +114,7 @@ export const MaxButton = styled.button`
   ${MaxButtonStyle};
 
   width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
-  padding: 0.125rem;
-  text-transform: uppercase;
-  letter-spacing: ${() => (isActiveLanguageLogographic() ? 0 : "0.0625rem")};
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.5rem")};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.6875rem")};
 `;
 
 export const InfoLabel = styled.div`

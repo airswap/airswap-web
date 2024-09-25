@@ -16,7 +16,7 @@ export const SelectElementStyle = css`
 
 export const SelectWrapper = styled.div`
   display: flex;
-  height: 3.75rem;
+  height: 3rem;
   width: fit-content;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
@@ -31,7 +31,7 @@ export const SelectLabel = styled.div`
   border-top-left-radius: 0.75rem;
   border-bottom-left-radius: 0.75rem;
   border-inline-end: unset;
-  padding-inline: 1.25rem 0.25rem;
+  padding-inline: 0.5rem;
   color: ${({ theme }) => theme.colors.lightGrey};
   background: ${({ theme }) => theme.colors.darkGrey};
 

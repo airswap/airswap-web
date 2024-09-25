@@ -48,6 +48,7 @@ export const Input = styled.input`
   all: unset;
 
   ${SelectorStyle};
+  ${InputOrButtonBorderStyleType2};
 
   width: 2.5rem;
   text-align: center;
@@ -60,6 +61,8 @@ export const Input = styled.input`
 `;
 
 export const StyledDropdown = styled(Dropdown)`
+  margin-inline-start: -1px;
+
   ${SelectButtonText} {
     max-width: 7rem;
   }
