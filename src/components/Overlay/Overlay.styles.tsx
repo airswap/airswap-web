@@ -73,6 +73,7 @@ export const ContentContainer = styled(motion.div)`
     filter: brightness(0.5);
     opacity: 0.8;
     pointer-events: none;
+    z-index: -1;
   }
 `;
 
@@ -81,6 +82,7 @@ export const TitleContainer = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  margin-block-end: 1rem;
   padding-block-start: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
 

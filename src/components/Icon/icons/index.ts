@@ -1,4 +1,5 @@
 import IconAirswap from "./IconAirswap";
+import IconAirswapFull from "./IconAirswapFull";
 import IconArrowDown from "./IconArrowDown";
 import IconArrowLeft from "./IconArrowLeft";
 import IconArrowRight from "./IconArrowRight";
@@ -38,6 +39,7 @@ import IconX from "./IconX";
 
 export {
   IconAirswap,
+  IconAirswapFull,
   IconArrowDown,
   IconArrowRight,
   IconArrowLeft,

@@ -262,7 +262,7 @@ export const TokenSelectContainer = styled.div<{
 
   ${TokenLogoLeft} {
     transform: ${(props) =>
-      props.isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
+      props.isQuote ? "translateX(-4.625rem)" : "translateX(0)"};
   }
 
   ${StyledSelector} {

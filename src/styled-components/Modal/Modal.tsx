@@ -16,7 +16,8 @@ export const ScrollableModalContainer = styled.div`
 `;
 
 export const ModalParagraph = styled(InfoSubHeading)`
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.darkSubText};
+  line-height: 1.5;
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.white};
 
   & + & {
     margin-top: 1rem;
