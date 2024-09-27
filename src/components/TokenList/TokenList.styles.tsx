@@ -13,7 +13,7 @@ export const StyledScrollContainer = styled(ScrollContainer)`
   margin-block-start: 0.625rem;
   margin-inline-start: -0.875rem;
   width: calc(100% + 3.25rem);
-  max-height: calc(100% - 17rem);
+  max-height: 20rem;
   padding-inline: 0.875rem 2.25rem;
   padding-block-start: 0.125rem;
   overflow-y: auto;
@@ -22,6 +22,7 @@ export const StyledScrollContainer = styled(ScrollContainer)`
 export const ContentContainer = styled.div`
   position: relative;
   height: 100%;
+  padding-block-end: 2rem;
 `;
 
 export const SizingContainer = styled.div`

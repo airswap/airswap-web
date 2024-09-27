@@ -1,22 +1,27 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../../../style/mixins";
+import { BorderlessButtonStyle } from "../../../../style/mixins";
 
 export const ButtonStyle = css`
-  ${InputOrButtonBorderStyleType2};
+  ${BorderlessButtonStyle};
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding: 1rem;
-  height: 4.5rem;
-  background: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  height: 3.5rem;
+  font-size: 1.25rem;
+
+  &:hover,
+  &:focus {
+    background: ${({ theme }) => theme.colors.darkBlue};
+  }
 
   & + a,
   & + button {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
 `;
 

@@ -46,13 +46,7 @@ export const StyledSwapWidget = styled.div`
   height: 100%;
 `;
 
-export const StyledWalletProviderList = styled(WalletProviderList)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
+export const StyledWalletProviderList = styled(WalletProviderList)``;
 
 export const StyledDebugMenu = styled(DebugMenu)`
   margin-bottom: 1.5rem;

@@ -12,6 +12,7 @@ import { StyledH3 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
   isHidden: boolean;
+  hasDynamicHeight: boolean;
   hasTitle: boolean;
 };
 
@@ -37,24 +38,21 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
     to(rgba(0, 0, 0, 0))
   );
 
-  ${ScrollBarStyle}
+  ${ScrollBarStyle};
 `;
 
 export const ContentContainer = styled(motion.div)`
   position: relative;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2rem;
+  margin-block-end: 2rem;
   width: calc(100vw - 4rem);
   max-width: 38.75rem;
-  height: calc(100vh - 3rem);
-  height: calc(100svh - 3rem);
+  height: fit-content;
   max-height: 47.5rem;
+  min-height: 30rem;
   padding: 0 ${sizes.tradeContainerPadding};
   backdrop-filter: blur(25px);
-
-  @media (max-height: ${sizes.widgetSize}) {
-    height: ${sizes.widgetSize};
-  }
 
   @media ${breakPoints.phoneOnly} {
     padding: 0 ${sizes.tradeContainerMobilePadding};
@@ -136,15 +134,22 @@ export const OverlayActionButton = styled(Button)`
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   z-index: 2;
+
+  @media (max-height: 700px) {
+    padding-block-start: 2rem;
+  }
+
+  @media (min-height: 800px) {
+    margin-block-start: -2rem;
+  }
 }
 `;
 

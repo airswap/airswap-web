@@ -43,18 +43,7 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   width: 100%;
   height: 100%;
   min-height: ${sizes.widgetSize};
-  overflow: hidden;
-
-  ${(props) =>
-    props.$isOverlayOpen &&
-    `
-    ${WidgetFrameWrapper} > * > * {
-    
-      &:not(${OverlayContainer}) {
-        opacity: 0;
-      }      
-    }
-  `}
+  overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
 
   @media ${breakPoints.tabletPortraitUp} {
     transition: transform 0.3s ease-in-out;

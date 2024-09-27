@@ -526,7 +526,9 @@ const MakeWidget: FC = () => {
         )}
 
       <Overlay
+        hasDynamicHeight
         onClose={() => setShowTokenSelectModal(null)}
+        title={t("common.selectToken")}
         isHidden={!showTokenSelectModal}
       >
         <TokenList

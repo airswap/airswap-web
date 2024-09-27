@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import {
   ModalParagraph,
   ModalSubTitle,
-  ScrollableModalContainer,
 } from "../../../../styled-components/Modal/Modal";
 import HelmetContainer from "../../../HelmetContainer/HelmetContainer";
 import GuideButton, { GuideButtonProps } from "../GuideButton/GuideButton";
@@ -43,28 +42,26 @@ const JoinModal: FC = () => {
         description={t("information.join.intro")}
       />
 
-      <ScrollableModalContainer>
-        <ModalParagraph>{t("information.join.intro")}</ModalParagraph>
+      <ModalParagraph>{t("information.join.intro")}</ModalParagraph>
 
-        <ModalSubTitle type="h2">
-          {t("information.join.getStarted")}
-        </ModalSubTitle>
+      <ModalSubTitle type="h2">
+        {t("information.join.getStarted")}
+      </ModalSubTitle>
 
-        <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
+      <ModalParagraph>{t("information.join.paragraph2")}</ModalParagraph>
 
-        <GuideButtons>
-          {guideButtons.map((guideButton, index) => {
-            return (
-              <GuideButton
-                key={`${guideButton.iconName}-${index}`}
-                iconName={guideButton.iconName}
-                text={guideButton.text}
-                href={guideButton.href}
-              />
-            );
-          })}
-        </GuideButtons>
-      </ScrollableModalContainer>
+      <GuideButtons>
+        {guideButtons.map((guideButton, index) => {
+          return (
+            <GuideButton
+              key={`${guideButton.iconName}-${index}`}
+              iconName={guideButton.iconName}
+              text={guideButton.text}
+              href={guideButton.href}
+            />
+          );
+        })}
+      </GuideButtons>
     </>
   );
 };

@@ -22,6 +22,11 @@ export const TopBar = styled.div`
   height: 3rem;
   padding: 1.5rem;
   z-index: 1;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 
   @media ${breakPoints.tabletPortraitUp} {
     padding: 1.5rem;

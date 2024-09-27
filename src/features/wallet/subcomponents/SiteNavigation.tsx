@@ -18,10 +18,19 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
   const { t } = useTranslation();
 
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
+  const isHome = !!(window.location.pathname === "/");
 
   return (
     <Container className={className}>
-      <NavigationNavLink to={`/${AppRoutes.swap}`}>
+      <NavigationNavLink
+        to={`/${AppRoutes.swap}`}
+        isActive={(match, location) => {
+          return (
+            location.pathname === `/${AppRoutes.swap}` ||
+            location.pathname === "/"
+          );
+        }}
+      >
         {t("common.rfq")}
       </NavigationNavLink>
       <NavigationNavLink

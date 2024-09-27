@@ -658,6 +658,7 @@ const SwapWidget: FC = () => {
         </ButtonContainer>
 
         <Overlay
+          hasDynamicHeight
           isHidden={!showTokenSelectModalFor}
           title={t("common.selectToken")}
           onClose={() => setShowTokenSelectModalFor(null)}
