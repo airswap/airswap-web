@@ -131,6 +131,18 @@ export const OverlayActionButton = styled(Button)`
   ${OverlayActionButtonStyle};
 `;
 
+const containerDynamicHeightStyle = css`
+  padding-block-start: 0;
+
+  @media (max-height: 700px) {
+    padding-block-start: 2rem;
+  }
+
+  @media (min-height: 800px) {
+    margin-block-start: -2rem;
+  }
+`;
+
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
@@ -140,16 +152,11 @@ export const Container = styled.div<ContainerProps>`
   left: 0;
   width: 100%;
   height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
+  padding-block-start: 2rem;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   z-index: 2;
 
-  @media (max-height: 700px) {
-    padding-block-start: 2rem;
-  }
-
-  @media (min-height: 800px) {
-    margin-block-start: -2rem;
-  }
+  ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
 }
 `;
 

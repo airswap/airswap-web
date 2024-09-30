@@ -167,8 +167,8 @@ const TransactionsTab = ({
           ref={containerRef}
           animate={{ x: 0 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          initial={{ x: isMobile ? "100%" : "24rem" }}
-          exit={{ x: isMobile ? "100%" : "24rem" }}
+          initial={{ x: isMobile ? "100%" : "27.75rem" }}
+          exit={{ x: isMobile ? "100%" : "27.75rem" }}
         >
           <BackButton
             aria-label={t("common.back")}
