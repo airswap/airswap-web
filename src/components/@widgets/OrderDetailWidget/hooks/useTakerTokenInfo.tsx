@@ -14,7 +14,6 @@ import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice"
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import { getRpcUrl } from "../../../../helpers/getRpcUrl";
 import scrapeToken from "../../../../helpers/scrapeToken";
-import useDefaultLibrary from "../../../../hooks/useDefaultLibrary";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
