@@ -1,4 +1,4 @@
-import { Server, RegistryV3, Registry } from "@airswap/libraries";
+import { Server, Registry } from "@airswap/libraries";
 import { ProtocolIds } from "@airswap/utils";
 import { BaseProvider } from "@ethersproject/providers";
 
@@ -12,10 +12,6 @@ export const getVersionedRegistryServers = (
   quoteToken: string,
   baseToken: string
 ): Promise<Server[]> => {
-  if (RegistryV3.addresses[chainId]) {
-    return RegistryV3.getServers(provider, chainId, quoteToken, baseToken);
-  }
-
   return Registry.getServers(
     provider,
     chainId,

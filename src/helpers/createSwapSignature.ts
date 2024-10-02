@@ -8,8 +8,6 @@ import { JsonRpcSigner } from "@ethersproject/providers/src.ts/json-rpc-provider
 import { AppError } from "../errors/appError";
 import transformUnknownErrorToAppError from "../errors/transformUnknownErrorToAppError";
 
-const SWAP_ERC20_VERSION = "4";
-
 export const createOrderERC20Signature = (
   unsignedOrder: UnsignedOrderERC20,
   signer: JsonRpcSigner,
@@ -23,8 +21,7 @@ export const createOrderERC20Signature = (
         // @ts-ignore
         signer,
         swapContract,
-        chainId,
-        SWAP_ERC20_VERSION
+        chainId
       );
       resolve(signature);
     } catch (error: unknown) {

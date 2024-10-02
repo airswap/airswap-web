@@ -4,6 +4,13 @@ import { AppError, AppErrorType } from "../../../errors/appError";
 import { ErrorListItemProps } from "../subcomponents/ErrorListItem/ErrorListItem";
 
 export const getAppErrorTranslation = (error: AppError): ErrorListItemProps => {
+  if (error.type === AppErrorType.signatureInvalid) {
+    return {
+      title: AppErrorType.signatureInvalid,
+      text: i18n.t("validatorErrors.signatureInvalid"),
+    };
+  }
+
   if (error.type === AppErrorType.expiryPassed) {
     return {
       title: AppErrorType.expiryPassed,

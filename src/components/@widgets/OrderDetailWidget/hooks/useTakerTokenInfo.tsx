@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { TokenInfo } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
-import { getDefaultProvider } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
@@ -16,6 +14,7 @@ import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice"
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
 import { getRpcUrl } from "../../../../helpers/getRpcUrl";
 import scrapeToken from "../../../../helpers/scrapeToken";
+import useDefaultLibrary from "../../../../hooks/useDefaultLibrary";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
 // of active wallet chainId. This way we don't need to connect a wallet to show order tokens.
@@ -65,7 +64,7 @@ const useTakerTokenInfo = (
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const lib = library || getDefaultProvider(getRpcUrl(activeOrder.chainId));
+      const lib = library || new JsonRpcProvider(getRpcUrl(activeOrder.chainId));
 
       if (lib) {
         const result = await scrapeToken(address, lib);
