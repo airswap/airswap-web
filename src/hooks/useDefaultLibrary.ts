@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 
-import { BaseProvider, Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
+import {
+  BaseProvider,
+  Web3Provider,
+  JsonRpcProvider,
+} from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { getRpcUrl } from "../helpers/getRpcUrl";

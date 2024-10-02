@@ -64,7 +64,8 @@ const useTakerTokenInfo = (
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const lib = library || new JsonRpcProvider(getRpcUrl(activeOrder.chainId));
+      const lib =
+        library || new JsonRpcProvider(getRpcUrl(activeOrder.chainId));
 
       if (lib) {
         const result = await scrapeToken(address, lib);

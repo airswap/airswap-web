@@ -62,7 +62,9 @@ export const getOrdersFromLogs = async (
         hash: swapLog.transactionHash,
         order,
         swap,
-        timestamp: blocks[index]?.timestamp ? blocks[index].timestamp * 1000 : 0,
+        timestamp: blocks[index]?.timestamp
+          ? blocks[index].timestamp * 1000
+          : 0,
       };
     })
   );
