@@ -14,13 +14,7 @@ export const getRegistryServers = async (
 ): Promise<Server[]> => {
   try {
     const response = await Promise.race([
-      Registry.getServers(
-        provider,
-        chainId,
-        protocol,
-        quoteToken,
-        baseToken
-      ),
+      Registry.getServers(provider, chainId, protocol, quoteToken, baseToken),
       new Promise((_, reject) =>
         setTimeout(
           () => reject(new Error("Timeout")),
