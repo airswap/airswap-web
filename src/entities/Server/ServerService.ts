@@ -5,22 +5,6 @@ import { BaseProvider } from "@ethersproject/providers";
 import { REGISTRY_SERVER_RESPONSE_TIME_MS } from "../../constants/configParams";
 import { isServer } from "./ServerHelpers";
 
-export const getVersionedRegistryServers = (
-  provider: BaseProvider,
-  chainId: number,
-  protocol: ProtocolIds,
-  quoteToken: string,
-  baseToken: string
-): Promise<Server[]> => {
-  return Registry.getServers(
-    provider,
-    chainId,
-    protocol,
-    quoteToken,
-    baseToken
-  );
-};
-
 export const getRegistryServers = async (
   provider: BaseProvider,
   chainId: number,
@@ -30,7 +14,7 @@ export const getRegistryServers = async (
 ): Promise<Server[]> => {
   try {
     const response = await Promise.race([
-      getVersionedRegistryServers(
+      Registry.getServers(
         provider,
         chainId,
         protocol,
