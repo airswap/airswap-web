@@ -53,6 +53,7 @@ const fontTransition = css`
 export const ContainingButton = styled.button`
   display: flex;
   flex-direction: row;
+  position: relative;
   width: 40%;
   height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};

@@ -14,12 +14,13 @@ export const SelectElementStyle = css`
   font-weight: 500;
 `;
 
-export const SelectWrapper = styled.div`
+export const SelectWrapper = styled.div<{ isDisabled?: boolean }>`
   display: flex;
   height: 3rem;
   width: fit-content;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
 `;
 
 export const SelectLabel = styled.div`

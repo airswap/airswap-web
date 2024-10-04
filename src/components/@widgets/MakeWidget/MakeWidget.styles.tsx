@@ -53,7 +53,8 @@ export const StyledExpirySelector = styled(ExpirySelector)<{
   transition: opacity 0.3s ease-out;
 
   margin-left: 1rem;
-  opacity: ${({ hideExpirySelector }) => (hideExpirySelector ? 0 : 1)};
+  visibility: ${({ hideExpirySelector }) =>
+    hideExpirySelector ? "hidden" : "visible"};
 `;
 
 export const StyledAddressInput = styled(AddressInput)`

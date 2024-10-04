@@ -13,7 +13,6 @@ export const Container = styled.div<{ $disabled: boolean }>`
   will-change: opacity, transform;
   transition: opacity 0.3s ease-in-out,
     transform 0.4s cubic-bezier(0.45, 0.22, 0, 1);
-  transform: scale(${(props) => (props.$disabled ? 0.95 : 1)});
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;

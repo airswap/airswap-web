@@ -126,6 +126,8 @@ const TokenSelect: FC<TokenSelectProps> = ({
   const { t } = useTranslation();
   const [isTokenFocused, setTokenFocused] = useState(false);
   const [isAmountFocused, setIsAmountFocused] = useState(false);
+  const [isAmountHovered, setIsAmountHovered] = useState(false);
+  const [isMaxButtonFocused, setIsMaxButtonFocused] = useState(false);
 
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
@@ -133,6 +135,10 @@ const TokenSelect: FC<TokenSelectProps> = ({
 
   const handleAmountFocus = () => setIsAmountFocused(true);
   const handleAmountBlur = () => setIsAmountFocused(false);
+  const handleAmountMouseEnter = () => setIsAmountHovered(true);
+  const handleAmountMouseLeave = () => setIsAmountHovered(false);
+  const handleMaxButtonFocus = () => setIsMaxButtonFocused(true);
+  const handleMaxButtonBlur = () => setIsMaxButtonFocused(false);
   const handleTokenFocus = () => setTokenFocused(true);
   const handleTokenBlur = () => setTokenFocused(false);
 
@@ -140,7 +146,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
     <TokenSelectContainer
       isQuote={isQuote}
       isLoading={isRequestingAmount}
-      isAmountFocused={isAmountFocused}
+      isAmountFocused={isAmountFocused || isMaxButtonFocused || isAmountHovered}
       isTokenFocused={isTokenFocused}
       showTokenContractLink={showTokenContractLink}
     >
@@ -200,8 +206,8 @@ const TokenSelect: FC<TokenSelectProps> = ({
                 onBlur={handleAmountBlur}
                 onChange={onAmountChange}
                 onFocus={handleAmountFocus}
-                onMouseEnter={handleAmountFocus}
-                onMouseLeave={handleAmountBlur}
+                onMouseEnter={handleAmountMouseEnter}
+                onMouseLeave={handleAmountMouseLeave}
                 placeholder="0.00"
               />
               {subText && <SubText>{subText}</SubText>}
@@ -209,10 +215,10 @@ const TokenSelect: FC<TokenSelectProps> = ({
             {onMaxClicked && showMaxButton && !readOnly && (
               <MaxButton
                 onClick={onMaxClicked}
-                onBlur={handleAmountBlur}
-                onFocus={handleAmountFocus}
-                onMouseEnter={handleAmountFocus}
-                onMouseLeave={handleAmountBlur}
+                onBlur={handleMaxButtonBlur}
+                onFocus={handleMaxButtonFocus}
+                onMouseEnter={handleMaxButtonFocus}
+                onMouseLeave={handleMaxButtonBlur}
               >
                 {t("common.max")}
               </MaxButton>

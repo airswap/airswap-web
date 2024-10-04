@@ -53,7 +53,7 @@ export const Input = styled.input`
   width: 2.5rem;
   text-align: center;
 
-  &:hover,
+  &:hover:enabled,
   :active,
   :focus {
     z-index: 1;

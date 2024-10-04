@@ -23,25 +23,29 @@ export const InputOrButtonBorderStyle = css`
         ? theme.colors.borderGrey
         : convertHexToRGBA(theme.colors.borderGrey, 0.2)};
 
-  &:hover,
-  &:focus {
+  &:hover:enabled,
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:active {
+  &:active:enabled {
     border-color: ${(props) =>
       props.theme.name === "dark"
         ? props.theme.colors.primary
         : props.theme.colors.alwaysWhite};
+  }
+
+  &:disabled {
+    pointer-events: none;
   }
 `;
 
 export const InputOrButtonBorderStyleType2 = css`
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
 
-  &:hover,
-  &:focus {
+  &:hover:enabled,
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
@@ -64,7 +68,7 @@ export const InputTextStyle = css`
     color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:focus {
+  &:focus:enabled {
     border-color: ${(props) => props.theme.colors.primary};
   }
 `;
@@ -72,12 +76,12 @@ export const InputTextStyle = css`
 export const BorderlessButtonStyle = css`
   border: 1px solid transparent;
 
-  &:focus {
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:active {
+  &:active:enabled {
     border-color: ${(props) => props.theme.colors.primary};
   }
 `;

@@ -458,12 +458,14 @@ const MakeWidget: FC = () => {
       />
       <OrderTypeSelectorAndExpirySelectorWrapper>
         <StyledOrderTypeSelector
+          isDisabled={!isActive}
           options={orderTypeSelectOptions}
           selectedOrderTypeOption={orderScopeTypeOption}
           onChange={setOrderScopeTypeOption}
         />
 
         <StyledExpirySelector
+          isDisabled={!isActive}
           onChange={setExpiry}
           hideExpirySelector={!!showTokenSelectModal}
         />
@@ -490,7 +492,7 @@ const MakeWidget: FC = () => {
 
       <StyledInfoSection
         isAllowancesFailed={isAllowancesOrBalancesFailed}
-        isNetworkUnsupported={!isNetworkSupported}
+        isNetworkUnsupported={isActive && !isNetworkSupported}
       />
 
       <StyledActionButtons
