@@ -280,7 +280,7 @@ export const TokenSelectContainer = styled.div<{
 
   ${TokenLogoRight} {
     transform: ${(props) =>
-      props.isQuote ? "translateX(0)" : "translateX(3rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(3.5rem)"};
   }
 
   ${StyledLabel} {
@@ -351,6 +351,6 @@ export const TokenSelectOverflowContainer = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 0.75rem;
-  padding-inline: 1.5rem 1rem;
+  padding-inline: 1.5rem;
   overflow: hidden;
 `;
