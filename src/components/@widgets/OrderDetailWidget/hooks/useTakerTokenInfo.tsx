@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { TokenInfo } from "@airswap/utils";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
-import { getDefaultProvider } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
@@ -65,7 +63,8 @@ const useTakerTokenInfo = (
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const lib = library || getDefaultProvider(getRpcUrl(activeOrder.chainId));
+      const lib =
+        library || new JsonRpcProvider(getRpcUrl(activeOrder.chainId));
 
       if (lib) {
         const result = await scrapeToken(address, lib);

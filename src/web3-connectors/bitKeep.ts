@@ -4,7 +4,7 @@ import {
 } from "@akkafinance/web3-react-bitkeep";
 import { initializeConnector } from "@web3-react/core";
 
-import { getRpcUrl } from "../helpers/ethers";
+import { getRpcUrl } from "../helpers/getRpcUrl";
 import { Connection, ConnectionType } from "./connections";
 import { onConnectionError } from "./helpers";
 

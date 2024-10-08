@@ -18,20 +18,6 @@ export const clearedCachedLibrary = (): void => {
   cachedLibrary = {};
 };
 
-export const getRpcUrl = (chainId: number): string | undefined => {
-  const rpcUrl = rpcUrls[chainId];
-
-  if (!rpcUrl) {
-    console.error(
-      `No rpc url found for chainId ${chainId}, did you setup your .env correctly?`
-    );
-
-    return undefined;
-  }
-
-  return rpcUrl;
-};
-
 export const getTransactionReceiptMined = (
   transactionHash: string,
   provider: Web3Provider
