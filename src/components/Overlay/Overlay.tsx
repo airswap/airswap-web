@@ -1,8 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
+import { InterfaceContext } from "../../contexts/interface/Interface";
+import useDebounce from "../../hooks/useDebounce";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
@@ -12,13 +14,14 @@ import {
   ContentContainer,
   TitleSubContainer,
   StyledInfoSubHeading,
+  StyledCloseButton,
 } from "./Overlay.styles";
 
 export type OverlayProps = {
   /**
    * Function to close component
    */
-  onCloseButtonClick: () => void;
+  onClose: () => void;
   /**
    * Title shown on top
    */
@@ -32,14 +35,16 @@ export type OverlayProps = {
    */
   isHidden?: boolean;
   shouldAnimate?: boolean;
+  hasDynamicHeight?: boolean;
   className?: string;
 };
 
 export const overlayShowHideAnimationDuration = 0.3;
 
 const Overlay: FC<OverlayProps> = ({
-  onCloseButtonClick,
+  onClose,
   title = "",
+  hasDynamicHeight = false,
   isHidden = true,
   subTitle = "",
   shouldAnimate = true,
@@ -51,31 +56,36 @@ const Overlay: FC<OverlayProps> = ({
   const [initialized, setInitialized] = useState(false);
   const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
 
-  useKeyPress(onCloseButtonClick, ["Escape"]);
+  const { setShowOverlay } = useContext(InterfaceContext);
+
+  useKeyPress(onClose, ["Escape"]);
 
   useEffect(() => {
     setInitialized(true);
   }, []);
 
+  useEffect(() => {
+    if (isHidden) {
+      setShowOverlay(false);
+    }
+  }, [isHidden]);
+
+  useDebounce(
+    () => {
+      // Make sure the animation ended before setting the showOverlay state
+      setShowOverlay(!isHidden);
+    },
+    250,
+    [isHidden]
+  );
+
   return (
-    <Container hasTitle={!!title} isHidden={isHidden} className={className}>
-      <TitleContainer>
-        <TitleSubContainer>
-          <StyledTitle type="h2" as="h1">
-            {title}
-          </StyledTitle>
-          {!!subTitle && (
-            <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
-          )}
-        </TitleSubContainer>
-        <CloseButton
-          icon="chevron-down"
-          ariaLabel={t("common.back")}
-          iconSize={1}
-          tabIndex={isHidden ? -1 : 0}
-          onClick={onCloseButtonClick}
-        />
-      </TitleContainer>
+    <Container
+      hasDynamicHeight={hasDynamicHeight}
+      hasTitle={!!title}
+      isHidden={isHidden}
+      className={className}
+    >
       <AnimatePresence>
         {!isHidden && (
           <ContentContainer
@@ -87,10 +97,27 @@ const Overlay: FC<OverlayProps> = ({
                   ? 0
                   : overlayShowHideAnimationDuration,
             }}
-            initial={{ y: "100%" }}
+            initial={{ y: "100vh" }}
             animate={{ y: "0%" }}
-            exit={{ y: "100%" }}
+            exit={{ y: "100vh" }}
           >
+            <TitleContainer>
+              <TitleSubContainer>
+                <StyledTitle type="h2" as="h1">
+                  {title}
+                </StyledTitle>
+                {!!subTitle && (
+                  <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
+                )}
+              </TitleSubContainer>
+              <StyledCloseButton
+                icon="exit-modal"
+                ariaLabel={t("common.back")}
+                iconSize={1}
+                tabIndex={isHidden ? -1 : 0}
+                onClick={onClose}
+              />
+            </TitleContainer>
             {children}
           </ContentContainer>
         )}

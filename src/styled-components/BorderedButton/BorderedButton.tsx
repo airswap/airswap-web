@@ -28,9 +28,6 @@ const BorderedButton = styled.button<{ $glow?: boolean }>`
     $glow !== undefined &&
     css`
       position: relative;
-      background: ${theme.name === "dark"
-        ? theme.colors.black
-        : theme.colors.primary};
       ${$glow &&
       css`
         border-color: ${theme.name === "dark"

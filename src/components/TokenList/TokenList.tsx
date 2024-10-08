@@ -24,7 +24,6 @@ import {
   TokenContainer,
   Legend,
   LegendItem,
-  LegendDivider,
   StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
@@ -86,7 +85,6 @@ const TokenList = ({
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [overflow, setOverflow] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tokenQuery, setTokenQuery] = useState<string>("");
 
@@ -135,11 +133,6 @@ const TokenList = ({
     ) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
       const { clientHeight: buttonHeight } = buttonRef.current;
-
-      setOverflow(
-        scrollHeight + offsetTop + buttonHeight >
-          sizingContainerRef.current.offsetHeight
-      );
     }
   }, [
     sizingContainerRef,
@@ -190,13 +183,12 @@ const TokenList = ({
             }}
           />
 
-          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
-            <Legend>
-              <LegendItem>{t("common.token")}</LegendItem>
-              <LegendDivider />
-              <LegendItem>{t("balances.balance")}</LegendItem>
-            </Legend>
+          <Legend>
+            <LegendItem>{t("common.token")}</LegendItem>
+            <LegendItem>{t("balances.balance")}</LegendItem>
+          </Legend>
 
+          <StyledScrollContainer ref={scrollContainerRef}>
             <TokenContainer>
               {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
                 (token) => (

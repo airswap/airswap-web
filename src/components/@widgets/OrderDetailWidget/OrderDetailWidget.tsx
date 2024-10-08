@@ -410,7 +410,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       />
       <Overlay
         title={t("information.protocolFee.title")}
-        onCloseButtonClick={() => toggleShowFeeInfo()}
+        onClose={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >
         <ProtocolFeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
@@ -418,7 +418,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       <Overlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={restart}
+        onClose={restart}
         isHidden={!errors.length}
       >
         <ErrorList errors={errors} onBackButtonClick={restart} />
@@ -427,7 +427,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         <Overlay
           title={t("orders.availableOrders")}
           isHidden={!showViewAllQuotes}
-          onCloseButtonClick={() => toggleShowViewAllQuotes()}
+          onClose={() => toggleShowViewAllQuotes()}
         >
           <AvailableOrdersWidget
             senderToken={senderToken}

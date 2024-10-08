@@ -4,38 +4,42 @@ import {
   InputOrButtonBorderStyleType2,
   TextEllipsis,
 } from "../../style/mixins";
+import { fontWide } from "../../style/themes";
 
 export const SelectElementStyle = css`
   ${InputOrButtonBorderStyleType2};
 
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-right: -1px;
+  font-family: ${fontWide};
+  font-size: 1rem;
+  font-weight: 500;
 `;
 
-export const SelectWrapper = styled.div`
+export const SelectWrapper = styled.div<{ isDisabled?: boolean }>`
   display: flex;
-  height: 2rem;
+  height: 3rem;
   width: fit-content;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
 `;
 
 export const SelectLabel = styled.div`
   ${SelectElementStyle};
   ${TextEllipsis};
 
-  border-top-left-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  line-height: 2.5;
-  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  border-inline-end: unset;
+  padding-inline: 0.5rem;
   color: ${({ theme }) => theme.colors.lightGrey};
-  text-transform: uppercase;
+  background: ${({ theme }) => theme.colors.darkGrey};
 
   &:hover,
   :active,
   :focus {
-    border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+    border-color: ${({ theme }) => theme.colors.borderGrey};
     cursor: initial;
   }
 

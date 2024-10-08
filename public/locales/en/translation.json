@@ -58,6 +58,7 @@
     "review": "Review",
     "rfq": "RFQ",
     "select": "Select",
+    "selectToken": "Select token",
     "send": "Send",
     "settings": "Settings",
     "sign": "Sign",
@@ -102,7 +103,7 @@
   "marketing": {
     "includesFee": "Includes 0.07% fee",
     "welcomeHeading": "Secure and efficient P2P swaps",
-    "welcomeMessage": "Decentralized trading with zero slippage "
+    "welcomeMessage": "Zero slippage atomic swaps"
   },
   "orders": {
     "actionCannotBeReversed": "This action cannot be reversed",

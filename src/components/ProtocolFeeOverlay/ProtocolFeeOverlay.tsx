@@ -21,7 +21,7 @@ const ProtocolFeeOverlay: FC<ProtocolFeeOverlayProps> = ({
     <Overlay
       title={t("information.protocolFee.title")}
       isHidden={!isHidden}
-      onCloseButtonClick={onCloseButtonClick}
+      onClose={onCloseButtonClick}
       className={className}
     >
       <ProtocolFeeModal onCloseButtonClick={onCloseButtonClick} />

@@ -19,7 +19,9 @@ const useSystemTheme = () => {
     };
   }, []);
 
-  return systemTheme;
+  // TOOD: Enable when light mode is ready
+  return "dark" as ThemeType;
+  // return systemTheme;
 };
 
 export default useSystemTheme;

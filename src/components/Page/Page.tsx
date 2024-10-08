@@ -30,6 +30,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const appRouteParams = useAppRouteParams();
   const {
     showMobileToolbar,
+    showOverlay,
     transactionsTabIsOpen,
     pageHeight,
     setShowMobileToolbar,
@@ -85,9 +86,9 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         <WidgetFrame
           isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}
+          isOverlayOpen={showOverlay}
         >
           {children}
-
           <WalletConnector />
         </WidgetFrame>
         <StyledSocialButtons />

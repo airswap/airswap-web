@@ -6,6 +6,7 @@ import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 import { StyledIcon } from "./Icon.styles";
 import {
   IconAirswap,
+  IconAirswapFull,
   IconArrowDown,
   IconArrowLeft,
   IconArrowRight,
@@ -17,6 +18,7 @@ import {
   IconChevronDown,
   IconChevronRight,
   IconClose,
+  IconCloseCircleOutline,
   IconCode,
   IconCopy,
   IconCopy2,
@@ -41,7 +43,6 @@ import {
   IconTwitter,
   IconVote,
   IconX,
-  IconCloseCircleOutline,
 } from "./icons";
 
 type IconSet = {
@@ -57,6 +58,7 @@ export interface SvgIconProps {
 export const icons: IconSet = {
   learn: IconLibrary,
   airswap: IconAirswap,
+  "airswap-full": IconAirswapFull,
   "arrow-down": IconArrowDown,
   "arrow-right": IconArrowRight,
   "arrow-left": IconArrowLeft,

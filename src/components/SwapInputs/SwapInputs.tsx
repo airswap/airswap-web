@@ -46,6 +46,7 @@ const SwapInputs: FC<{
   onMaxButtonClick: () => void;
   onQuoteAmountChange?: (newValue: string) => void;
   onSwitchTokensButtonClick?: () => void;
+  className?: string;
 }> = ({
   disabled = false,
   canSetQuoteAmount = false,
@@ -74,6 +75,8 @@ const SwapInputs: FC<{
   onMaxButtonClick,
   onQuoteAmountChange,
   onSwitchTokensButtonClick,
+
+  className = "",
 }) => {
   const { t } = useTranslation();
   const [showMaxAmountInfo, setShowMaxAmountInfo] = useState(false);
@@ -115,7 +118,7 @@ const SwapInputs: FC<{
   };
 
   return (
-    <Container $disabled={disabled}>
+    <Container $disabled={disabled} className={className}>
       <TokenSelect
         hasError={!!baseAmountError}
         isQuote={isQuote}

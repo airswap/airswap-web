@@ -5,15 +5,13 @@ import breakPoints from "./breakpoints";
 
 export const ScrollBarStyle = css`
   &::-webkit-scrollbar {
-    border-radius: 0.5rem;
-    width: 0.5rem;
-    background: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.darkGrey : theme.colors.borderGrey};
+    width: 0.375rem;
+    background: none;
   }
 
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+      theme.name === "dark" ? theme.colors.darkBlue : theme.colors.primary};
     border-radius: 0.5rem;
   }
 `;
@@ -25,25 +23,29 @@ export const InputOrButtonBorderStyle = css`
         ? theme.colors.borderGrey
         : convertHexToRGBA(theme.colors.borderGrey, 0.2)};
 
-  &:hover,
-  &:focus {
+  &:hover:enabled,
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:active {
+  &:active:enabled {
     border-color: ${(props) =>
       props.theme.name === "dark"
         ? props.theme.colors.primary
         : props.theme.colors.alwaysWhite};
+  }
+
+  &:disabled {
+    pointer-events: none;
   }
 `;
 
 export const InputOrButtonBorderStyleType2 = css`
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
 
-  &:hover,
-  &:focus {
+  &:hover:enabled,
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
@@ -66,7 +68,7 @@ export const InputTextStyle = css`
     color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:focus {
+  &:focus:enabled {
     border-color: ${(props) => props.theme.colors.primary};
   }
 `;
@@ -74,12 +76,12 @@ export const InputTextStyle = css`
 export const BorderlessButtonStyle = css`
   border: 1px solid transparent;
 
-  &:focus {
+  &:focus:enabled {
     outline: 0;
     border-color: ${(props) => props.theme.colors.lightGrey};
   }
 
-  &:active {
+  &:active:enabled {
     border-color: ${(props) => props.theme.colors.primary};
   }
 `;
@@ -100,7 +102,7 @@ export const BorderedPill = css`
   align-items: center;
   justify-content: center;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 24rem;
+  border-radius: 0.75rem;
   height: 3rem;
   padding: 0 1.25rem;
 

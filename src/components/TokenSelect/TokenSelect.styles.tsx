@@ -3,15 +3,24 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
+import breakPoints from "../../style/breakpoints";
 import {
   BorderlessButtonStyle,
   InputOrButtonBorderStyle,
   TextEllipsis,
 } from "../../style/mixins";
+import { fontWide } from "../../style/themes";
 import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
 import StyledTokenLogo from "../TokenLogo/TokenLogo.styles";
 import { SelectItem, FormLabel, FormInput } from "../Typography/Typography";
+import TokenSelectBackground from "./subcomponents/TokenSelectBackground/TokenSelectBackground";
+import {
+  TokenSelectLeftBorderBackground,
+  TokenSelectLeftGradientBackground,
+  TokenSelectRightBorderBackground,
+  TokenSelectRightGradientBackground,
+} from "./subcomponents/TokenSelectBackground/TokenSelectBackground.styles";
 
 const fadeOut = keyframes`
   from {
@@ -44,13 +53,18 @@ const fontTransition = css`
 export const ContainingButton = styled.button`
   display: flex;
   flex-direction: row;
+  position: relative;
   width: 40%;
-  height: 2.5rem;
+  height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
 
   &:focus {
     outline: 0;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    height: 2.75rem;
   }
 `;
 
@@ -77,20 +91,22 @@ export const MaxButtonStyle = css`
   position: relative;
   bottom: 1px;
   align-self: center;
-  border-radius: 0.125rem;
-  font-family: Verdana, sans-serif;
-  font-weight: 600;
+  border-radius: 0.25rem;
+  font-family: ${fontWide};
+  font-weight: 500;
   font-size: 0.75rem;
   line-height: 1;
-  background-color: ${(props) => props.theme.colors.lightGrey};
-  color: ${(props) => props.theme.colors.black};
-  opacity: 0.6;
+  padding: 0.25rem 0.5rem;
+  background-color: ${(props) => props.theme.colors.darkBlue};
+  color: ${(props) => props.theme.colors.lightGrey};
+  opacity: 1;
 
   ${BorderlessButtonStyle}
 
   &:hover,
   &:focus {
-    background-color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => props.theme.colors.white};
     opacity: 1;
   }
 `;
@@ -99,10 +115,7 @@ export const MaxButton = styled.button`
   ${MaxButtonStyle};
 
   width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
-  padding: 0.125rem;
-  text-transform: uppercase;
-  letter-spacing: ${() => (isActiveLanguageLogographic() ? 0 : "0.0625rem")};
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.5rem")};
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.6875rem")};
 `;
 
 export const InfoLabel = styled.div`
@@ -136,18 +149,29 @@ export const AmountInput = styled(FormInput)<{
 `;
 
 export const PlaceHolderBar = styled.div`
-  width: 100%;
-  height: 1.5rem;
-  background-image: ${(props) => props.theme.colors.placeholderGradient};
+  border-radius: 0.25rem;
+  width: 50%;
+  height: 1.75rem;
+  background: ${(props) => props.theme.colors.placeholder};
   animation: ${fadeOut} 0.35s ease-in-out infinite alternate;
 `;
 
 export const TokenLogoLeft = styled(TokenLogo)`
   ${quoteTransition};
+
+  min-width: 3.125rem;
+  aspect-ratio: 1;
+
+  @media ${breakPoints.phoneOnly} {
+    min-width: 2.5rem;
+  }
 `;
 
 export const TokenLogoRight = styled(TokenLogo)`
   ${quoteTransition};
+
+  min-width: 2rem;
+  aspect-ratio: 1;
 `;
 
 export const StyledSelector = styled.div`
@@ -155,7 +179,7 @@ export const StyledSelector = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: -0.125rem;
+  gap: 0.125rem;
   margin-left: 0.9375rem;
   height: 100%;
 `;
@@ -167,18 +191,23 @@ export const StyledSelectItem = styled(SelectItem)`
   align-items: center;
   text-align: left;
   line-height: 1;
+  font-family: ${fontWide};
+  font-weight: 700;
   gap: 0.375rem;
-  max-width: 7rem;
+  max-width: 9rem;
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.white
       : props.theme.colors.primary};
+
+  @media ${breakPoints.phoneOnly} {
+    max-width: 7rem;
+  }
 `;
 
 export const StyledLabel = styled(FormLabel)`
   ${fontTransition};
   text-align: left;
-  text-transform: uppercase;
 `;
 
 export const SubText = styled.div`
@@ -192,32 +221,39 @@ export const SubText = styled.div`
 `;
 
 export const TokenSelectContainer = styled.div<{
-  $isLoading: boolean;
-  $isQuote: boolean;
+  isLoading: boolean;
+  isQuote: boolean;
+  isAmountFocused: boolean;
+  isTokenFocused: boolean;
   showTokenContractLink: boolean;
 }>`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   position: relative;
   width: 100%;
-  height: 4.5rem;
-  padding: 1rem;
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  border-radius: 2px;
-  background-color: ${(props) =>
-    props.theme.name === "dark"
-      ? props.theme.colors.darkGrey
-      : props.theme.colors.primaryLight};
-  overflow: hidden;
+  height: 6.25rem;
+  border-radius: 0.75rem;
 
   &:first-of-type {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    height: 5.75rem;
+
+    &:first-of-type {
+      margin-bottom: 0.625rem;
+    }
+  }
+
+  ${TokenSelectRightGradientBackground}, ${TokenSelectRightBorderBackground} {
+    opacity: ${(props) => (props.isAmountFocused ? 1 : 0)};
+  }
+
+  ${TokenSelectLeftGradientBackground}, ${TokenSelectLeftBorderBackground} {
+    opacity: ${(props) => (props.isTokenFocused ? 1 : 0)};
   }
 
   ${PlaceHolderBar} {
-    ${(props) => (!props.$isLoading ? "animation: none" : "")};
+    ${(props) => (!props.isLoading ? "animation: none" : "")};
   }
 
   ${ContainingButton} ${StyledTokenLogo} {
@@ -226,12 +262,12 @@ export const TokenSelectContainer = styled.div<{
 
   ${TokenLogoLeft} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.6rem)" : "translateX(0)"};
+      props.isQuote ? "translateX(-4.625rem)" : "translateX(0)"};
   }
 
   ${StyledSelector} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
+      props.isQuote ? "translateX(-3.4rem)" : "translateX(0)"};
   }
 
   ${SubText},
@@ -239,21 +275,27 @@ export const TokenSelectContainer = styled.div<{
   ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(2.75rem)"};
   }
 
   ${TokenLogoRight} {
     transform: ${(props) =>
-      props.$isQuote ? "translateX(0)" : "translateX(3rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(3.5rem)"};
   }
 
   ${StyledLabel} {
-    font-size: ${(props) => (props.$isQuote ? "0.625rem" : "0.75rem")};
+    font-size: ${(props) => (props.isQuote ? "0.75rem" : "")};
   }
 
   ${StyledSelectItem} {
-    font-size: ${(props) => (props.$isQuote ? "0.875rem" : "1.125rem")};
+    font-size: ${(props) => (props.isQuote ? "1rem" : "")};
   }
+`;
+
+export const StyledTokenSelectBackground = styled(TokenSelectBackground)`
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 const fadeOutWhenInvisible = css<{ $invisible: boolean }>`
@@ -271,12 +313,15 @@ export const StyledSelectButtonContent = styled.span`
 export const StyledDownArrow = styled(MdKeyboardArrowDown)<{
   $invisible: boolean;
 }>`
-  ${fadeOutWhenInvisible}
+  ${fadeOutWhenInvisible};
+
+  translate: 0 3px;
 `;
 
 export const PlaceholderContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   justify-content: center;
   width: 50%;
 
@@ -296,4 +341,16 @@ export const TokenAccountButton = styled(AccountLink)`
   min-height: 1.625rem;
   max-height: 1.625rem;
   background: ${(props) => props.theme.colors.black};
+`;
+
+export const TokenSelectOverflowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  padding-inline: 1.5rem;
+  overflow: hidden;
 `;

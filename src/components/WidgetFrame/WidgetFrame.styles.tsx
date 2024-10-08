@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
+import { Container as OverlayContainer } from "../Overlay/Overlay.styles";
 
 export const WidgetFrameWrapper = styled.div`
   display: flex;
@@ -13,8 +14,6 @@ export const WidgetFrameWrapper = styled.div`
   height: fit-content;
   min-height: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
-  background: ${(props) => props.theme.colors.black};
-  box-shadow: ${(props) => props.theme.shadows.widgetGlow};
   transition: box-shadow 0.3s ease-in-out;
   will-change: transform;
 
@@ -33,6 +32,7 @@ export const WidgetFrameWrapper = styled.div`
 type StyledTradeContainerProps = {
   $isOpen?: boolean;
   $isConnected?: boolean;
+  $isOverlayOpen?: boolean;
 };
 
 export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
@@ -43,13 +43,7 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   width: 100%;
   height: 100%;
   min-height: ${sizes.widgetSize};
-
-  ${WidgetFrameWrapper} {
-    box-shadow: ${(props) =>
-      props.$isConnected
-        ? props.theme.shadows.widgetGlow
-        : props.theme.shadows.widgetGlowOff};
-  }
+  overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
 
   @media ${breakPoints.tabletPortraitUp} {
     transition: transform 0.3s ease-in-out;

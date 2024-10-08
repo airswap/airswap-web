@@ -9,6 +9,7 @@ import { SelectOption } from "../../../../Dropdown/Dropdown";
 import { StyledDropdown } from "./OrderTypeSelector.styles";
 
 export type OrderTypeSelectorProps = {
+  isDisabled?: boolean;
   options: SelectOption[];
   selectedOrderTypeOption: SelectOption;
   onChange: (option: SelectOption) => void;
@@ -16,6 +17,7 @@ export type OrderTypeSelectorProps = {
 };
 
 const OrderTypeSelector: FC<OrderTypeSelectorProps> = ({
+  isDisabled,
   options,
   selectedOrderTypeOption,
   className,
@@ -24,9 +26,10 @@ const OrderTypeSelector: FC<OrderTypeSelectorProps> = ({
   const { t } = useTranslation();
 
   return (
-    <SelectWrapper className={className}>
+    <SelectWrapper className={className} isDisabled={isDisabled}>
       <SelectLabel>{t("common.for")}</SelectLabel>
       <StyledDropdown
+        isDisabled={isDisabled}
         selectedOption={selectedOrderTypeOption}
         options={options}
         onChange={onChange}

@@ -1,29 +1,28 @@
 import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
-import breakPoints from "../../style/breakpoints";
 import { InputTextStyle } from "../../style/mixins";
-import { sizes } from "../../style/sizes";
+import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 import { ScrollContainer } from "../Overlay/Overlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
-import { Title } from "../Typography/Typography";
 
 export const StyledScrollContainer = styled(ScrollContainer)`
-  max-height: calc(100% - 7rem);
-  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
+  position: relative;
+  margin-block-start: 0.625rem;
+  margin-inline-start: -0.875rem;
+  width: calc(100% + 3.25rem);
+  max-height: 20rem;
+  padding-inline: 0.875rem 2.25rem;
+  padding-block-start: 0.125rem;
+  overflow-y: auto;
 `;
 
 export const ContentContainer = styled.div`
   position: relative;
   height: 100%;
-  padding: 0 ${sizes.tradeContainerPadding} ${sizes.tradeContainerPadding};
-  background-color: ${(props) => props.theme.colors.black};
-
-  @media ${breakPoints.phoneOnly} {
-    padding: 0 1.5rem ${sizes.tradeContainerMobilePadding};
-  }
+  padding-block-end: 2rem;
 `;
 
 export const SizingContainer = styled.div`
@@ -34,30 +33,23 @@ export const SizingContainer = styled.div`
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
+  margin-block-start: 2rem;
   width: 100%;
   height: 100%;
-`;
-
-export const StyledTitle = styled(Title)`
-  visibility: hidden;
-`;
-
-export const StyledLabel = styled.label`
-  font-size: 1rem;
+  max-height: calc(100% - 5.75rem);
 `;
 
 export const SearchInput = styled(TextInput)`
-  margin-bottom: 1.25rem;
   width: 100%;
-  background-color: ${(props) => props.theme.colors.black};
 
   ${StyledInput} {
     ${InputTextStyle};
 
-    border-radius: 2px;
+    border-radius: 0.5rem;
+    padding-inline: 1.25rem;
+    line-height: 3;
+    font-size: 1.25rem;
+    height: 3.5rem;
     background: transparent;
   }
 `;
@@ -68,23 +60,16 @@ export const Legend = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.25rem;
   min-height: 1.5rem;
+  margin-block-start: 2rem;
 `;
 
 export const LegendItem = styled.div`
   word-break: keep-all;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "0.625rem")};
+  font-family: ${fontWide};
+  font-weight: 500;
+  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "1rem")};
   color: ${(props) => props.theme.colors.lightGrey};
-`;
-
-export const LegendDivider = styled.div`
-  margin: 0 1rem;
-  width: 100%;
-  height: 1px;
-  background: ${({ theme }) => theme.colors.borderGrey};
 `;
 
 export const InactiveTitleContainer = styled.div`
@@ -109,5 +94,6 @@ export const InformationIcon = styled(Icon)`
 `;
 
 export const NoResultsContainer = styled.div`
+  margin-block-start: 1rem;
   text-align: center;
 `;

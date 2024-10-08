@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -6,10 +6,13 @@ import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import useNetworkSupported from "../../hooks/useNetworkSupported";
 import {
+  AirswapButtonAndNavigationContainer,
   StyledAirswapButton,
+  StyledAirswapFullButton,
   StyledChainSelector,
   StyledMenuButton,
   StyledSettingsButton,
+  StyledSiteNavigation,
   StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
@@ -76,12 +79,21 @@ export const Wallet: FC<WalletProps> = ({
   return (
     <>
       <TopBar>
-        <StyledAirswapButton
-          onClick={onAirswapButtonClick}
-          ariaLabel={t("common.AirSwap")}
-          icon="airswap"
-          iconSize={2}
-        />
+        <AirswapButtonAndNavigationContainer>
+          <StyledAirswapButton
+            onClick={onAirswapButtonClick}
+            ariaLabel={t("common.AirSwap")}
+            icon="airswap"
+            iconSize={2}
+          />
+          <StyledAirswapFullButton
+            onClick={onAirswapButtonClick}
+            ariaLabel={t("common.AirSwap")}
+            icon="airswap-full"
+            iconSize={2}
+          />
+          <StyledSiteNavigation />
+        </AirswapButtonAndNavigationContainer>
         {chainId && (
           <StyledChainSelector
             chainId={chainId}

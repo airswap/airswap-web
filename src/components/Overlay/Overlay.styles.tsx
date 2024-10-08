@@ -2,18 +2,17 @@ import { motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "styled-components/macro";
 
-import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
-import { ButtonStyle } from "../Button/Button.styles";
 import { InfoSubHeading } from "../Typography/Typography";
-import { StyledH2 } from "../Typography/Typography.styles";
+import { StyledH3 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
   isHidden: boolean;
+  hasDynamicHeight: boolean;
   hasTitle: boolean;
 };
 
@@ -23,39 +22,70 @@ type ScrollContainerProps = {
 
 export const ScrollContainer = styled.div<ScrollContainerProps>`
   flex-grow: 99;
-  width: calc(100% + (${sizes.tradeContainerPadding} / 2));
+  width: 100%;
   height: 100%;
-  max-height: calc(100% - 3.75rem);
-  padding-right: calc(${sizes.tradeContainerPadding} / 2);
-  padding-left: 0.125rem;
-  padding-bottom: 1rem;
+  margin-block-start: 0.5rem;
+  padding-inline-end: 0.5rem;
+  padding-block-end: 1.5rem;
   overflow-x: hidden;
   overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
 
-  ${ScrollBarStyle}
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    0 75%,
+    0 100%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+
+  ${ScrollBarStyle};
 `;
 
 export const ContentContainer = styled(motion.div)`
   position: relative;
-  height: calc(100% - 5.625rem);
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  border-radius: 2rem;
+  margin-block-end: 2rem;
+  width: calc(100vw - 4rem);
+  max-width: 38.75rem;
+  height: fit-content;
+  max-height: 47.5rem;
+  min-height: 30rem;
   padding: 0 ${sizes.tradeContainerPadding};
-  background-color: ${(props) => props.theme.colors.black};
+  backdrop-filter: blur(25px);
 
   @media ${breakPoints.phoneOnly} {
-    height: calc(100% - 3.625rem);
     padding: 0 ${sizes.tradeContainerMobilePadding};
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 2rem;
+    width: 100%;
+    height: 100%;
+    background: ${(props) => props.theme.colors.darkBlue};
+    filter: brightness(0.5);
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: -1;
   }
 `;
 
 export const TitleContainer = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  padding: ${sizes.tradeContainerPadding};
+  margin-block-end: 1rem;
+  padding-block-start: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
 
   @media ${breakPoints.phoneOnly} {
-    padding: ${sizes.tradeContainerMobilePadding};
+    padding-block-start: ${sizes.tradeContainerMobilePadding};
   }
 `;
 
@@ -64,7 +94,7 @@ export const TitleSubContainer = styled.div`
   flex-direction: column;
 `;
 
-export const StyledTitle = styled(StyledH2)<{
+export const StyledTitle = styled(StyledH3)<{
   type: keyof JSX.IntrinsicElements;
   as?: keyof JSX.IntrinsicElements;
 }>`
@@ -93,80 +123,46 @@ export const StyledInfoSubHeading = styled(InfoSubHeading)`
 `;
 
 const OverlayActionButtonStyle = css`
-  margin-top: auto;
-  justify-self: flex-end;
+  margin-top: 1rem;
+  margin-inline: auto;
 `;
 
 export const OverlayActionButton = styled(Button)`
   ${OverlayActionButtonStyle};
 `;
 
-export const OverlayActionLink = styled.a`
-  ${ButtonStyle}
-  ${OverlayActionButtonStyle};
-  color: ${(props) => props.theme.colors.alwaysWhite};
-  background-color: ${(props) => props.theme.colors.primary};
+const containerDynamicHeightStyle = css`
+  padding-block-start: 0;
 
-  &:focus,
-  &:hover {
-    outline: 0;
-    border-color: ${(props) => props.theme.colors.primaryDark};
-    color: ${(props) => props.theme.colors.alwaysWhite};
-    background-color: ${(props) => props.theme.colors.primaryDark};
+  @media (max-height: 700px) {
+    padding-block-start: 2rem;
   }
 
-  &:active {
-    border-color: ${(props) => props.theme.colors.primary};
+  @media (min-height: 800px) {
+    margin-block-start: -2rem;
   }
-`;
-
-export const StyledSubTitle = styled(InfoSubHeading)`
-  transition: opacity ease-in-out 0.3s;
-  will-change: opacity;
-  white-space: nowrap;
-  overflow: hidden;
-  padding-right: 1rem;
 `;
 
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
+  padding-block-start: 2rem;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   z-index: 2;
-  overflow: hidden;
-  
-  ${CloseButton} {
-    transition: transform ${(props) =>
-      props.isHidden
-        ? "0.25s ease-in"
-        : "0.75s cubic-bezier(0.12, 0.71, 0.36, 1)"};
-    transform: translateY(${(props) => (props.isHidden ? "-5rem" : "0%")});
 
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
-  
-  ${StyledTitle} {
-    opacity: ${(props) => (props.isHidden ? 0 : 1)};
-    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  }
-
-  ${StyledInfoSubHeading} {
-    opacity: ${(props) => (props.isHidden ? 0 : 1)};
-    pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  }
-  
-  ${TitleContainer} {
-    background: ${(props) =>
-      props.isHidden || !props.hasTitle
-        ? convertHexToRGBA(props.theme.colors.black, 0)
-        : props.theme.colors.black};
-  }
+  ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
 }
+`;
+
+export const StyledCloseButton = styled(CloseButton)`
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
 `;

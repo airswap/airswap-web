@@ -6,6 +6,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 export interface InterfaceContextContextProps {
   isConnecting: boolean;
   isDebugMode: boolean;
+  showOverlay?: boolean;
   showMobileToolbar: boolean;
   showWalletList: boolean;
   transactionsTabIsOpen: boolean;
@@ -15,6 +16,7 @@ export interface InterfaceContextContextProps {
   setIsConnecting: Dispatch<React.SetStateAction<boolean>>;
   setIsDebugMode: Dispatch<React.SetStateAction<boolean>>;
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
+  setShowOverlay: Dispatch<React.SetStateAction<boolean>>;
   setShowWalletList: Dispatch<React.SetStateAction<boolean>>;
   setTransactionsTabIsOpen: Dispatch<React.SetStateAction<boolean>>;
 }
@@ -23,12 +25,14 @@ export const InterfaceContext =
   React.createContext<InterfaceContextContextProps>({
     isConnecting: false,
     isDebugMode: false,
-    showWalletList: false,
     showMobileToolbar: false,
+    showOverlay: false,
+    showWalletList: false,
     transactionsTabIsOpen: false,
     setIsConnecting: () => {},
     setIsDebugMode: () => {},
     setShowMobileToolbar: () => {},
+    setShowOverlay: () => {},
     setShowWalletList: () => {},
     setTransactionsTabIsOpen: () => {},
   });
@@ -39,6 +43,7 @@ const InterfaceProvider: FC = ({ children }) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [transactionsTabIsOpen, setTransactionsTabIsOpen] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
@@ -65,12 +70,14 @@ const InterfaceProvider: FC = ({ children }) => {
         isConnecting,
         isDebugMode,
         showMobileToolbar,
+        showOverlay,
         showWalletList,
         transactionsTabIsOpen,
         pageHeight,
         setIsConnecting,
         setIsDebugMode,
         setShowMobileToolbar,
+        setShowOverlay,
         setShowWalletList,
         setTransactionsTabIsOpen,
       }}

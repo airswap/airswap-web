@@ -64,6 +64,11 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.$isActive ? props.theme.colors.borderGrey : "transparent"};
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 `;
 
 type LocaleContainerType = {

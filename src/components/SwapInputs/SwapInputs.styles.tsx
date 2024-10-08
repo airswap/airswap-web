@@ -13,7 +13,6 @@ export const Container = styled.div<{ $disabled: boolean }>`
   will-change: opacity, transform;
   transition: opacity 0.3s ease-in-out,
     transform 0.4s cubic-bezier(0.45, 0.22, 0, 1);
-  transform: scale(${(props) => (props.$disabled ? 0.95 : 1)});
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -22,27 +21,35 @@ export const Container = styled.div<{ $disabled: boolean }>`
 `;
 
 export const SwitchTokensButton = styled.button`
-  ${InputOrButtonBorderStyle}
+  ${InputOrButtonBorderStyle};
 
   position: absolute;
-  right: calc(50% - 0.75rem);
-  top: calc(50% - 0.75rem);
+  right: calc(50% - 1rem);
+  top: calc(50% - 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  aspect-ratio: 1;
   border-radius: 50%;
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.lightGrey
       : props.theme.colors.darkGrey};
-  background-color: ${(props) => props.theme.colors.black};
-  font-size: 1.25rem;
+  background-color: ${(props) =>
+    props.theme.name === "dark"
+      ? props.theme.colors.darkGrey
+      : props.theme.colors.white};
   z-index: 1;
 
   &:disabled {
     pointer-events: none;
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    right: calc(50% - 0.875rem);
+    top: calc(50% - 0.875rem);
+    width: 1.75rem;
   }
 `;
 

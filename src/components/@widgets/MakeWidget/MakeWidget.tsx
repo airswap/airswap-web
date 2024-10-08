@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -61,18 +61,19 @@ import { SelectOption } from "../../Dropdown/Dropdown";
 import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
-import SwapInputs from "../../SwapInputs/SwapInputs";
 import { notifyOrderCreated } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
   Container,
-  OrderTypeSelectorAndRateFieldWrapper,
+  OrderTypeSelectorAndExpirySelectorWrapper,
   StyledActionButtons,
   StyledAddressInput,
+  StyledExpirySelector,
   StyledInfoSection,
   StyledOrderTypeSelector,
   StyledRateField,
+  StyledSwapInputs,
   StyledTooltip,
   TooltipContainer,
 } from "./MakeWidget.styles";
@@ -435,11 +436,9 @@ const MakeWidget: FC = () => {
 
   return (
     <Container>
-      <MakeWidgetHeader
-        hideExpirySelector={!!showTokenSelectModal}
-        onExpiryChange={setExpiry}
-      />
-      <SwapInputs
+      <MakeWidgetHeader />
+
+      <StyledSwapInputs
         canSetQuoteAmount
         disabled={!isActive || isAllowancesOrBalancesFailed}
         readOnly={!isActive || !isNetworkSupported}
@@ -457,25 +456,21 @@ const MakeWidget: FC = () => {
         onQuoteAmountChange={handleTakerAmountChange}
         onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
       />
-      <OrderTypeSelectorAndRateFieldWrapper>
+      <OrderTypeSelectorAndExpirySelectorWrapper>
         <StyledOrderTypeSelector
+          isDisabled={!isActive}
           options={orderTypeSelectOptions}
           selectedOrderTypeOption={orderScopeTypeOption}
           onChange={setOrderScopeTypeOption}
         />
-        {makerTokenInfo &&
-          takerTokenInfo &&
-          !hasMissingMakerAmount &&
-          !hasMissingTakerAmount && (
-            <StyledRateField
-              token1={makerTokenInfo.symbol}
-              token2={takerTokenInfo.symbol}
-              rate={new BigNumber(takerAmount).dividedBy(
-                new BigNumber(makerAmount)
-              )}
-            />
-          )}
-      </OrderTypeSelectorAndRateFieldWrapper>
+
+        <StyledExpirySelector
+          isDisabled={!isActive}
+          onChange={setExpiry}
+          hideExpirySelector={!!showTokenSelectModal}
+        />
+      </OrderTypeSelectorAndExpirySelectorWrapper>
+
       {orderType === OrderType.private && (
         <TooltipContainer>
           <StyledAddressInput
@@ -497,7 +492,7 @@ const MakeWidget: FC = () => {
 
       <StyledInfoSection
         isAllowancesFailed={isAllowancesOrBalancesFailed}
-        isNetworkUnsupported={!isNetworkSupported}
+        isNetworkUnsupported={isActive && !isNetworkSupported}
       />
 
       <StyledActionButtons
@@ -518,8 +513,24 @@ const MakeWidget: FC = () => {
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />
+
+      {makerTokenInfo &&
+        takerTokenInfo &&
+        !hasMissingMakerAmount &&
+        !hasMissingTakerAmount && (
+          <StyledRateField
+            token1={makerTokenInfo.symbol}
+            token2={takerTokenInfo.symbol}
+            rate={new BigNumber(takerAmount).dividedBy(
+              new BigNumber(makerAmount)
+            )}
+          />
+        )}
+
       <Overlay
-        onCloseButtonClick={() => setShowTokenSelectModal(null)}
+        hasDynamicHeight
+        onClose={() => setShowTokenSelectModal(null)}
+        title={t("common.selectToken")}
         isHidden={!showTokenSelectModal}
       >
         <TokenList
@@ -535,14 +546,14 @@ const MakeWidget: FC = () => {
       </Overlay>
       <Overlay
         title={t("information.counterParty.title")}
-        onCloseButtonClick={() => toggleShowOrderTypeInfo()}
+        onClose={() => toggleShowOrderTypeInfo(false)}
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
       </Overlay>
       <ProtocolFeeOverlay
         isHidden={showFeeInfo}
-        onCloseButtonClick={() => toggleShowFeeInfo()}
+        onCloseButtonClick={() => toggleShowFeeInfo(false)}
       />
     </Container>
   );
