@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   BaseProvider,
   Web3Provider,
-  JsonRpcProvider,
+  getDefaultProvider,
 } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -21,7 +21,7 @@ const useDefaultLibrary = (
       return library;
     }
 
-    return new JsonRpcProvider(getRpcUrl(chainId));
+    return getDefaultProvider(getRpcUrl(chainId));
   }, [library, chainId]);
 };
 

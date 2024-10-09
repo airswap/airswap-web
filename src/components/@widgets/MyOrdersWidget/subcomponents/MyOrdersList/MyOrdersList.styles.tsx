@@ -7,13 +7,13 @@ import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSort
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   position: relative;
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
   width: number;
 }>`
+  margin-top: 1rem;
   width: ${({ width }) => (width ? `${width}px` : "100%")};
 `;
 

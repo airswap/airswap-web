@@ -138,7 +138,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           </OrderIndicatorTooltip>
         )}
       </OrdersContainer>
-      <Shadow />
     </Container>
   );
 };

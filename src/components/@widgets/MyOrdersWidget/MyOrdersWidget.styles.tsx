@@ -3,7 +3,9 @@ import styled from "styled-components/macro";
 
 export const Container = styled.div`
   display: flex;
+  justify-content: center;
   flex-direction: column;
+  gap: 1rem;
   flex-grow: 1;
 `;
 
@@ -20,7 +22,6 @@ export const InfoSectionContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 2;
   margin-bottom: 0.5rem;
   text-align: center;
 `;
