@@ -4,17 +4,12 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
 import { walletDisconnected } from "../web3/web3Actions";
-import { selectChainId, setWeb3Data } from "../web3/web3Slice";
+import { selectChainId } from "../web3/web3Slice";
 import {
   fetchAllTokens,
   fetchProtocolFee,
   fetchUnkownTokens,
 } from "./metadataActions";
-import {
-  getActiveTokensFromLocalStorage,
-  getAllTokensFromLocalStorage,
-  getCustomTokensFromLocalStorage,
-} from "./metadataApi";
 
 export interface MetadataTokens {
   all: {
