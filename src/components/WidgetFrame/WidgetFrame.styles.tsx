@@ -41,9 +41,10 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
-  min-height: ${sizes.widgetSize};
-  overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
+  height: fit-content;
+  // min-height: ${(props) =>
+    props.$isOverlayOpen ? "unset" : sizes.widgetSize};
+  overflow-y: ${(props) => (props.$isOverlayOpen ? "hidden" : "unset")};
 
   @media ${breakPoints.tabletPortraitUp} {
     transition: transform 0.3s ease-in-out;

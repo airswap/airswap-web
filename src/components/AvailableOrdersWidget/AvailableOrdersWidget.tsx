@@ -44,6 +44,10 @@ const AvailableOrdersWidget = ({
   });
 
   const sortedOrders = useMemo(() => {
+    if (!bestRfqOrder) {
+      return [];
+    }
+
     const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
 
     if (
@@ -107,6 +111,10 @@ const AvailableOrdersWidget = ({
       pathname: `/${AppRoutes.make}`,
     });
   };
+
+  if (!senderToken || !signerToken) {
+    return <div />;
+  }
 
   return (
     <Container>

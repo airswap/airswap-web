@@ -24,24 +24,21 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   }
 `;
 
-export const StyledPage = styled.div`
+export const StyledPage = styled.div<{ showOverlay?: boolean }>`
   position: relative;
   min-width: 18rem;
-  height: 100vh;
-  min-height: 37.5rem;
+  min-height: ${(props) => (props.showOverlay ? "unset" : "37.5rem")};
 
   @media (min-height: 29rem) and (max-width: ${breakpointSizes.phone}) {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 100vh;
     padding-top: 0;
     padding-bottom: 0;
   }
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    height: 100vh;
     min-height: ${sizes.widgetMobileSize};
     padding: 0 ${sizes.pageMobilePadding};
   }

@@ -11,8 +11,9 @@ import { InfoSubHeading } from "../Typography/Typography";
 import { StyledH3 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
+  hasOverflow: boolean;
   isHidden: boolean;
-  hasDynamicHeight: boolean;
+  showScrollbar: boolean;
   hasTitle: boolean;
 };
 
@@ -41,37 +42,20 @@ export const ScrollContainer = styled.div<ScrollContainerProps>`
   ${ScrollBarStyle};
 `;
 
-export const ContentContainer = styled(motion.div)`
+export const ContentContainer = styled.div<{ isHidden: boolean }>`
   position: relative;
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2rem;
-  margin-block-end: 2rem;
   width: calc(100vw - 4rem);
   max-width: 38.75rem;
   height: fit-content;
-  max-height: 47.5rem;
-  min-height: 30rem;
   padding: 0 ${sizes.tradeContainerPadding};
-  backdrop-filter: blur(25px);
-
+  background: rgba(57, 122, 255, 0.11);
+  transform: translateY(${(props) => (props.isHidden ? "100vh" : "0vh")});
+  pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
+  transition: transform ease-out 0.3s;
   @media ${breakPoints.phoneOnly} {
     padding: 0 ${sizes.tradeContainerMobilePadding};
-  }
-
-  &::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 2rem;
-    width: 100%;
-    height: 100%;
-    background: ${(props) => props.theme.colors.darkBlue};
-    filter: brightness(0.5);
-    opacity: 0.8;
-    pointer-events: none;
-    z-index: -1;
   }
 `;
 
@@ -131,32 +115,24 @@ export const OverlayActionButton = styled(Button)`
   ${OverlayActionButtonStyle};
 `;
 
-const containerDynamicHeightStyle = css`
-  padding-block-start: 0;
-
-  @media (max-height: 700px) {
-    padding-block-start: 2rem;
-  }
-
-  @media (min-height: 800px) {
-    margin-block-start: -2rem;
-  }
-`;
-
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
-  padding-block-start: 2rem;
+  height: 100svh;
+  padding-block: 2rem;
+  overflow-y: ${(props) => (props.showScrollbar ? "auto" : "hidden")};;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  z-index: 2;
-
-  ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
+  background: ${(props) =>
+    props.isHidden ? "rgba(0, 0, 0, 0);" : "rgba(0, 0, 0, 0.5)"};
+  backdrop-filter: ${(props) => (props.isHidden ? "none" : "blur(25px)")};
+  z-index: 10;
+  transition: background ease-out 0.3s;
 }
 `;
 
