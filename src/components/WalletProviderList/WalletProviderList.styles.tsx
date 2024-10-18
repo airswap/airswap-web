@@ -4,7 +4,7 @@ export const StyledWalletProviderList = styled.div`
   display: flex;
   flex-direction: column;
   margin-block-start: 3rem;
-  padding-block-end: 2rem;
+  padding-block-end: 3rem;
 `;
 
 export const TitleContainer = styled.div`

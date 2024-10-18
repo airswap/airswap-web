@@ -69,11 +69,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   }, []);
 
   return (
-    <StyledPage
-      showOverlay={showOverlay}
-      style={{ height: `${pageHeight}px` }}
-      className={className}
-    >
+    <StyledPage showOverlay={showOverlay} className={className}>
       <HelmetContainer title={t("app.title")} />
       <InnerContainer>
         <Toaster open={transactionsTabIsOpen} />

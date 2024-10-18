@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useState } from "react";
 
 interface Size {
   width: number;
@@ -20,19 +20,32 @@ const useElementSize = (
     top: 0,
   });
 
-  let resizeObserver: ResizeObserver;
+  // Add debounce function
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  // Create a memoized, debounced version of setSize
+  const debouncedSetSize = useCallback(
+    debounce((newSize: Size) => {
+      setSize(newSize);
+    }, 100),
+    []
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: More dependencies not needed
   useEffect(
     (): (() => void) => {
-      resizeObserver = new ResizeObserver((entries): void => {
-        for (let i = 0; i < entries.length; i += 1) {
-          const entry = entries[i];
-
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
           const { scrollWidth, scrollHeight } = entry.target;
           const { width, height, top } = entry.target.getBoundingClientRect();
 
-          setSize({ width, height, scrollWidth, scrollHeight, top });
+          debouncedSetSize({ width, height, scrollWidth, scrollHeight, top });
         }
       });
 

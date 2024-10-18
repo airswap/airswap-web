@@ -56,28 +56,22 @@ const Overlay: FC<OverlayProps> = ({
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const [initialized, setInitialized] = useState(false);
-  const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
 
   const { showOverlay, setShowOverlay } = useContext(InterfaceContext);
+  const [isAnimatedOut, setIsAnimatedOut] = useState(false);
   const { height: containerHeight } = useWindowSize();
   const { height: contentHeight } = useElementSize(contentRef);
-  const [, hasOverflow] = useIsOverflowing(ref, [showOverlay, isHidden]);
   const paddingBlock = 32;
   const contentY = Math.max(
     0,
     (containerHeight - paddingBlock * 2 - contentHeight) / 2
   );
-  console.log(ref.current, hasOverflow);
 
   useKeyPress(onClose, ["Escape"]);
 
   useEffect(() => {
-    setInitialized(true);
-  }, []);
+    setIsAnimatedOut(false);
 
-  useEffect(() => {
     if (isHidden) {
       setShowOverlay(false);
     }
@@ -87,6 +81,10 @@ const Overlay: FC<OverlayProps> = ({
     () => {
       // Make sure the animation ended before setting the showOverlay state
       setShowOverlay(!isHidden);
+
+      if (isHidden) {
+        setIsAnimatedOut(true);
+      }
     },
     250,
     [isHidden]
@@ -99,6 +97,9 @@ const Overlay: FC<OverlayProps> = ({
       hasOverflow={!contentY}
       isHidden={isHidden}
       showScrollbar={!!showOverlay && !isHidden}
+      style={{
+        visibility: isAnimatedOut ? "hidden" : "visible",
+      }}
       className={className}
     >
       <ContentContainer

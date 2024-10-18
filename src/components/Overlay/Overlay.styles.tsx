@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "styled-components/macro";
 
@@ -64,7 +63,7 @@ export const TitleContainer = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  margin-block-end: 1rem;
+  margin-block-end: 2rem;
   padding-block-start: ${sizes.tradeContainerPadding};
   transition: background ease-in-out 0.3s;
 
