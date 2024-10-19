@@ -30,7 +30,8 @@ export const StyledPage = styled.div<{ showOverlay?: boolean }>`
   flex-direction: column;
   position: relative;
   min-width: 18rem;
-  min-height: ${(props) => (props.showOverlay ? "unset" : "100vh")};
+  min-height: 100vh;
+  min-height: 100svh;
   max-height: ${(props) => (props.showOverlay ? "100vh" : "unset")};
   overflow-x: hidden;
   overflow-y: ${(props) => (props.showOverlay ? "hidden" : "unset")};
