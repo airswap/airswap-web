@@ -1,12 +1,15 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { useWindowSize } from "usehooks-ts";
 
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import useDebounce from "../../hooks/useDebounce";
+import useElementSize from "../../hooks/useElementSize";
+import useIsOverflowing from "../../hooks/useIsOverflowing";
 import { useKeyPress } from "../../hooks/useKeyPress";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
   Container,
   StyledTitle,
@@ -44,7 +47,6 @@ export const overlayShowHideAnimationDuration = 0.3;
 const Overlay: FC<OverlayProps> = ({
   onClose,
   title = "",
-  hasDynamicHeight = false,
   isHidden = true,
   subTitle = "",
   shouldAnimate = true,
@@ -52,19 +54,24 @@ const Overlay: FC<OverlayProps> = ({
   className = "",
 }) => {
   const { t } = useTranslation();
-  const shouldReduceMotion = useReducedMotion();
-  const [initialized, setInitialized] = useState(false);
-  const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
+  const ref = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const { setShowOverlay } = useContext(InterfaceContext);
+  const { showOverlay, setShowOverlay } = useContext(InterfaceContext);
+  const [isAnimatedOut, setIsAnimatedOut] = useState(false);
+  const { height: containerHeight } = useWindowSize();
+  const { height: contentHeight } = useElementSize(contentRef);
+  const paddingBlock = 32;
+  const contentY = Math.max(
+    0,
+    (containerHeight - paddingBlock * 2 - contentHeight) / 2
+  );
 
   useKeyPress(onClose, ["Escape"]);
 
   useEffect(() => {
-    setInitialized(true);
-  }, []);
+    setIsAnimatedOut(false);
 
-  useEffect(() => {
     if (isHidden) {
       setShowOverlay(false);
     }
@@ -74,55 +81,55 @@ const Overlay: FC<OverlayProps> = ({
     () => {
       // Make sure the animation ended before setting the showOverlay state
       setShowOverlay(!isHidden);
+
+      if (isHidden) {
+        setIsAnimatedOut(true);
+      }
     },
     250,
     [isHidden]
   );
 
-  return (
+  return createPortal(
     <Container
-      hasDynamicHeight={hasDynamicHeight}
+      ref={ref}
       hasTitle={!!title}
+      hasOverflow={!contentY}
       isHidden={isHidden}
+      showScrollbar={!!showOverlay && !isHidden}
+      style={{
+        visibility: isAnimatedOut ? "hidden" : "visible",
+      }}
       className={className}
     >
-      <AnimatePresence>
-        {!isHidden && (
-          <ContentContainer
-            key="content"
-            transition={{
-              ease: "easeOut",
-              duration:
-                shouldReduceMotion || animationIsDisabled
-                  ? 0
-                  : overlayShowHideAnimationDuration,
-            }}
-            initial={{ y: "100vh" }}
-            animate={{ y: "0%" }}
-            exit={{ y: "100vh" }}
-          >
-            <TitleContainer>
-              <TitleSubContainer>
-                <StyledTitle type="h2" as="h1">
-                  {title}
-                </StyledTitle>
-                {!!subTitle && (
-                  <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
-                )}
-              </TitleSubContainer>
-              <StyledCloseButton
-                icon="exit-modal"
-                ariaLabel={t("common.back")}
-                iconSize={1}
-                tabIndex={isHidden ? -1 : 0}
-                onClick={onClose}
-              />
-            </TitleContainer>
-            {children}
-          </ContentContainer>
-        )}
-      </AnimatePresence>
-    </Container>
+      <ContentContainer
+        isHidden={isHidden}
+        ref={contentRef}
+        style={{
+          marginTop: `${contentY}px`,
+        }}
+      >
+        <TitleContainer>
+          <TitleSubContainer>
+            <StyledTitle type="h2" as="h1">
+              {title}
+            </StyledTitle>
+            {!!subTitle && (
+              <StyledInfoSubHeading>{subTitle}</StyledInfoSubHeading>
+            )}
+          </TitleSubContainer>
+          <StyledCloseButton
+            icon="exit-modal"
+            ariaLabel={t("common.back")}
+            iconSize={1}
+            tabIndex={isHidden ? -1 : 0}
+            onClick={onClose}
+          />
+        </TitleContainer>
+        {children}
+      </ContentContainer>
+    </Container>,
+    document.getElementById("root") as HTMLElement
   );
 };
 

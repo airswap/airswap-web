@@ -12,6 +12,7 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
+  flex-grow: 1;
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     justify-content: flex-start;
@@ -24,25 +25,27 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   }
 `;
 
-export const StyledPage = styled.div`
+export const StyledPage = styled.div<{ showOverlay?: boolean }>`
+  display: flex;
+  flex-direction: column;
   position: relative;
   min-width: 18rem;
-  height: 100vh;
-  min-height: 37.5rem;
+  min-height: 100vh;
+  min-height: 100svh;
+  max-height: ${(props) => (props.showOverlay ? "100vh" : "unset")};
+  overflow-x: hidden;
+  overflow-y: ${(props) => (props.showOverlay ? "hidden" : "unset")};
 
   @media (min-height: 29rem) and (max-width: ${breakpointSizes.phone}) {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 100vh;
     padding-top: 0;
     padding-bottom: 0;
   }
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
-    height: 100vh;
-    min-height: ${sizes.widgetMobileSize};
     padding: 0 ${sizes.pageMobilePadding};
   }
 `;
