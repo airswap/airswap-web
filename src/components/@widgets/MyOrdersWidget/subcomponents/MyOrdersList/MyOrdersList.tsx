@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FullOrderERC20 } from "@airswap/utils";
@@ -13,7 +13,6 @@ import {
   DeleteButtonTooltip,
   OrderIndicatorTooltip,
   OrdersContainer,
-  Shadow,
   StyledMyOrdersListSortButtons,
 } from "./MyOrdersList.styles";
 
@@ -138,7 +137,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           </OrderIndicatorTooltip>
         )}
       </OrdersContainer>
-      <Shadow />
     </Container>
   );
 };

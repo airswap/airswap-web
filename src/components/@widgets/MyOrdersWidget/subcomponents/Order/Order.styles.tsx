@@ -60,13 +60,12 @@ export const Text = styled.div`
   -webkit-box-orient: vertical;
   position: relative;
   font-family: ${fontMono};
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
   word-break: break-word;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  color: ${({ theme }) => theme.colors.carteBlanche};
   overflow: hidden;
   z-index: 2;
   pointer-events: none;

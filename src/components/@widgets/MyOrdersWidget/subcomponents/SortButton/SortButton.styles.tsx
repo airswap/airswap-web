@@ -4,16 +4,19 @@ import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
 
 export const Container = styled.div`
   display: flex;
-  margin-left: -0.25rem;
+
+  &:not(&:first-child) {
+    margin-left: -0.25rem;
+  }
 `;
 
 export const Arrow = styled.span`
   width: 0;
   height: 0;
-  border-left: 0.3125rem solid transparent;
-  border-right: 0.3125rem solid transparent;
-
-  border-top: 0.3125rem solid ${({ theme }) => theme.colors.lightGrey};
+  border-style: solid;
+  border-width: 0 0.1875rem 0.375rem 0.1875rem;
+  border-color: transparent transparent ${({ theme }) => theme.colors.lightGrey}
+    transparent;
 `;
 
 export const Button = styled.button<{
@@ -29,11 +32,10 @@ export const Button = styled.button<{
   line-height: 1;
   height: 1.5rem;
   padding: 0 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  font-size: 1rem;
+  font-weight: 500;
+  color: ${({ isActive, theme }) =>
+    isActive ? theme.colors.white : theme.colors.lightGrey};
 
   &:not(&:focus) {
     border-color: transparent;
@@ -43,15 +45,15 @@ export const Button = styled.button<{
   &:focus,
   &:active {
     ${Arrow} {
-      border-top-color: ${(props) => props.theme.colors.primary};
+      border-top-color: ${(props) => props.theme.colors.white};
     }
   }
 
   ${Arrow} {
     transform: ${({ isDescending }) =>
-      isDescending ? "rotate(180deg)" : "none"};
-    margin-left: ${({ hasText }) => (hasText ? "0.25rem" : "0")};
-    border-top-color: ${({ theme, isActive }) =>
-      isActive ? theme.colors.primary : theme.colors.lightGrey};
+      isDescending ? "rotate(180deg) translateY(-1px)" : "translateY(1px)"};
+    margin-left: ${({ hasText }) => (hasText ? "0.5rem" : "0")};
+    border-bottom-color: ${({ theme, isActive }) =>
+      isActive ? theme.colors.white : theme.colors.lightGrey};
   }
 `;

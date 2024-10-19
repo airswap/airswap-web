@@ -7,8 +7,8 @@ import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSort
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   position: relative;
+  margin-block-start: 2rem;
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
@@ -26,23 +26,6 @@ export const OrdersContainer = styled.div`
   padding-right: 0.5rem;
   overflow-y: auto;
   overflow-x: visible;
-`;
-
-const darkShadow =
-  "linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%)";
-const lightShadow =
-  "linear-gradient(0deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%)";
-
-export const Shadow = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3rem;
-  z-index: 2;
-  background: ${({ theme }) =>
-    theme.name === "dark" ? darkShadow : lightShadow};
-  pointer-events: none;
 `;
 
 export const TooltipContainer = styled.div`
