@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 
 import { TokenInfo } from "@airswap/utils";
-import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
 import {
   addTokenInfo,
-  selectAllTokenInfo,
+  selectAllTokens,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
-import { getRpcUrl } from "../../../../helpers/getRpcUrl";
 import scrapeToken from "../../../../helpers/scrapeToken";
 
 // OTC Taker version of useTokenInfo. Look at chainId of the active FullOrderERC20 instead
@@ -25,7 +24,7 @@ const useTakerTokenInfo = (
   const { provider: library } = useWeb3React<Web3Provider>();
   const { isActive } = useAppSelector((state) => state.web3);
 
-  const allTokens = useAppSelector(selectAllTokenInfo);
+  const allTokens = useAppSelector(selectAllTokens);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<TokenInfo>();
@@ -63,11 +62,8 @@ const useTakerTokenInfo = (
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
-      const lib =
-        library || new JsonRpcProvider(getRpcUrl(activeOrder.chainId));
-
-      if (lib) {
-        const result = await scrapeToken(address, lib);
+      if (library) {
+        const result = await scrapeToken(address, library);
         if (result) {
           setScrapedToken(result);
         }
