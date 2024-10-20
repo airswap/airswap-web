@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 
 import styled, { DefaultTheme } from "styled-components/macro";
 
+import breakPoints from "../../../../../style/breakpoints";
 import { fontMono } from "../../../../../style/themes";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import IconButton from "../../../../IconButton/IconButton";
@@ -59,7 +60,7 @@ export const Text = styled.div`
   -webkit-box-orient: vertical;
   position: relative;
   font-family: ${fontMono};
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -68,6 +69,10 @@ export const Text = styled.div`
   overflow: hidden;
   z-index: 2;
   pointer-events: none;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    font-size: 1.25rem;
+  }
 `;
 
 export const ActionButtonContainer = styled.div`
@@ -119,6 +124,7 @@ export const StyledNavLink = styled(NavLink)<{ isHovered: boolean }>`
 export const Tokens = styled.div`
   display: flex;
   align-items: center;
+  overflow: hidden;
 `;
 
 export const TokenIcon = styled(TokenLogo)`

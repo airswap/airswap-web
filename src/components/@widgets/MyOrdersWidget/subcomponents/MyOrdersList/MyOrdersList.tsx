@@ -103,7 +103,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   }, [containerRef, windowWidth]);
 
   return (
-    <Container className={className}>
+    <Container className={className} hasOverflow={hasOverflow}>
       <StyledMyOrdersListSortButtons
         width={containerWidth}
         activeSortType={activeSortType}

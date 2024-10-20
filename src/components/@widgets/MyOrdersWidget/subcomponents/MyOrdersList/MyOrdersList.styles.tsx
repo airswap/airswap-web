@@ -4,11 +4,16 @@ import { ScrollBarStyle } from "../../../../../style/mixins";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
 
-export const Container = styled.div`
+export const Container = styled.div<{ hasOverflow: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
   margin-block-start: 2rem;
+
+  -webkit-mask-image: ${({ hasOverflow }) =>
+    hasOverflow
+      ? "-webkit-gradient(linear, 0 75%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
+      : ""};
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
@@ -21,7 +26,7 @@ export const OrdersContainer = styled.div`
   ${ScrollBarStyle};
 
   margin-top: 1rem;
-  width: calc(100% + 0.5rem);
+  width: 100%;
   max-height: 20rem;
   padding-right: 1rem;
   overflow-y: auto;
@@ -38,8 +43,10 @@ export const StyledTooltip = styled(Tooltip)<{
 }>`
   justify-content: flex-start;
   position: absolute;
+  left: unset;
+  right: 3rem;
   top: calc(
-    4rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
+    2.25rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
       ${({ orderIndex }) => orderIndex}
   );
   width: auto;
@@ -48,13 +55,11 @@ export const StyledTooltip = styled(Tooltip)<{
 `;
 
 export const DeleteButtonTooltip = styled(StyledTooltip)`
-  left: 100%;
   margin-left: -1rem;
 `;
 
 export const OrderIndicatorTooltip = styled(StyledTooltip)`
   justify-content: flex-end;
   margin-left: 0.5rem;
-  left: 0;
   width: 0;
 `;

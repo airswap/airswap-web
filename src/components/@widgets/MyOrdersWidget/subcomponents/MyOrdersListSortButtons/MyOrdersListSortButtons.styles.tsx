@@ -7,3 +7,7 @@ export const Container = styled.div<{ hasOverflow: boolean }>`
 
   padding-right: ${({ hasOverflow }) => (hasOverflow ? "2.5rem" : "2rem")};
 `;
+
+export const PairButtonWrapper = styled.div`
+  overflow: hidden;
+`;

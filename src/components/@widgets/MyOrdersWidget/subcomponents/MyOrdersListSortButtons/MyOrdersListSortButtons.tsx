@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { OrdersSortType } from "../../../../../features/myOrders/myOrdersSlice";
 import SortButton from "../SortButton/SortButton";
-import { Container } from "./MyOrdersListSortButtons.styles";
+import { Container, PairButtonWrapper } from "./MyOrdersListSortButtons.styles";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
@@ -30,7 +30,9 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
         isDescending={sortTypeDirection.active}
         onClick={() => onSortButtonClick("active")}
       />
-      <SortButton isDisabled>{t("common.pair")}</SortButton>
+      <PairButtonWrapper>
+        <SortButton isDisabled>{t("common.pair")}</SortButton>
+      </PairButtonWrapper>
       <SortButton
         isSortable
         isActive={activeSortType === "signerToken"}
