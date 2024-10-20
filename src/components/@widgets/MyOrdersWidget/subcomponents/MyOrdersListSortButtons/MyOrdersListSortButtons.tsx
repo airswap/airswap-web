@@ -7,6 +7,7 @@ import { Container } from "./MyOrdersListSortButtons.styles";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
+  hasOverflow: boolean;
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
@@ -14,6 +15,7 @@ interface MyOrdersListProps {
 
 const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   activeSortType,
+  hasOverflow,
   sortTypeDirection,
   onSortButtonClick,
   className,
@@ -21,13 +23,14 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container className={className}>
+    <Container className={className} hasOverflow={hasOverflow}>
       <SortButton
         isSortable
         isActive={activeSortType === "active"}
         isDescending={sortTypeDirection.active}
         onClick={() => onSortButtonClick("active")}
       />
+      <SortButton isDisabled>{t("common.pair")}</SortButton>
       <SortButton
         isSortable
         isActive={activeSortType === "signerToken"}

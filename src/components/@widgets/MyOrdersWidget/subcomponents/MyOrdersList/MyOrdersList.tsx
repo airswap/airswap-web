@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FullOrderERC20 } from "@airswap/utils";
 
 import { OrdersSortType } from "../../../../../features/myOrders/myOrdersSlice";
+import useIsOverflowing from "../../../../../hooks/useIsOverflowing";
 import useWindowSize from "../../../../../hooks/useWindowSize";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import { getOrderStatusTranslation } from "../../helpers";
@@ -46,6 +47,8 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const [tooltipText, setTooltipText] = useState("");
   const [containerScrollTop, setContainerScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+
+  const [, hasOverflow] = useIsOverflowing(containerRef);
 
   const handleDeleteOrderButtonClick = (order: FullOrderERC20) => {
     setActiveDeleteButtonTooltipIndex(undefined);
@@ -104,6 +107,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       <StyledMyOrdersListSortButtons
         width={containerWidth}
         activeSortType={activeSortType}
+        hasOverflow={hasOverflow}
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={onSortButtonClick}
       />

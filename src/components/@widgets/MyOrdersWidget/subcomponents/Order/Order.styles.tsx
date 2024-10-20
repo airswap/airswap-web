@@ -2,10 +2,10 @@ import { NavLink } from "react-router-dom";
 
 import styled, { DefaultTheme } from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
 import { fontMono } from "../../../../../style/themes";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import IconButton from "../../../../IconButton/IconButton";
+import TokenLogo from "../../../../TokenLogo/TokenLogo";
 import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
 
 export const Circle = styled.div`
@@ -34,9 +34,8 @@ export const Container = styled.div<{ orderStatus: OrderStatus }>`
   ${MyOrdersGrid};
 
   position: relative;
-  border-top: 1px solid ${({ theme }) => theme.colors.borderGrey};
   align-items: center;
-  height: 3rem;
+  height: 3.5rem;
 
   ${Circle} {
     background: ${({ theme, orderStatus }) =>
@@ -56,7 +55,7 @@ export const StatusIndicator = styled.div`
 
 export const Text = styled.div`
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   position: relative;
   font-family: ${fontMono};
@@ -64,7 +63,7 @@ export const Text = styled.div`
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  word-break: break-word;
+  word-break: break-all;
   color: ${({ theme }) => theme.colors.carteBlanche};
   overflow: hidden;
   z-index: 2;
@@ -76,8 +75,6 @@ export const ActionButtonContainer = styled.div`
 `;
 
 export const ActionButton = styled(IconButton)`
-  ${InputOrButtonBorderStyleType2};
-
   position: relative;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 50%;
@@ -90,26 +87,47 @@ export const ActionButton = styled(IconButton)`
   &:hover,
   &:focus,
   &:active {
+    border: 1px solid ${({ theme }) => theme.colors.borderGrey};
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+    background: ${({ theme }) => theme.colors.darkGrey};
   }
 `;
 
-export const StyledNavLink = styled(NavLink)`
-  ${InputOrButtonBorderStyleType2};
-
+export const StyledNavLink = styled(NavLink)<{ isHovered: boolean }>`
   position: absolute;
   top: -1px;
   left: 0;
+  border-radius: 0.5rem;
   width: 100%;
   height: calc(100% + 1px);
-  background: ${({ theme }) => theme.colors.borderGrey};
-  opacity: 0;
+  background: ${({ theme }) => theme.colors.darkBlue};
+  opacity: ${({ isHovered }) => (isHovered ? 1 : 0)};
   z-index: 1;
 
   &:hover,
   &:focus,
   &:active {
-    opacity: 0.5;
+    opacity: 1;
+
+    & + ${ActionButtonContainer} ${ActionButton} {
+      background: ${({ theme }) => theme.colors.darkGrey};
+    }
+  }
+`;
+
+export const Tokens = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const TokenIcon = styled(TokenLogo)`
+  min-width: 1.875rem;
+  aspect-ratio: 1;
+  background: ${({ theme }) => theme.colors.darkGrey};
+  z-index: 3;
+  &:not(:first-child) {
+    margin-left: -1rem;
+    z-index: 2;
   }
 `;

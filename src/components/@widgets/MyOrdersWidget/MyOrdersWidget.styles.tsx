@@ -10,7 +10,7 @@ export const Container = styled.div`
 
 export const MyOrdersGrid = css`
   display: grid;
-  grid-template-columns: 1rem calc(50% - 7.5rem) calc(50% - 7.5rem) 8.5rem 1.5rem;
+  grid-template-columns: 1rem 3rem calc(50% - 9rem) calc(50% - 9rem) 7.5rem 1.5rem;
   grid-column-gap: 1rem;
   width: 100%;
   padding: 0 1rem;

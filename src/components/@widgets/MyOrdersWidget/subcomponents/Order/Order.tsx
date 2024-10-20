@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useMemo } from "react";
+import React, { FC, PropsWithChildren, useMemo, useState } from "react";
 
 import { compressFullOrderERC20, FullOrderERC20 } from "@airswap/utils";
 
@@ -22,6 +22,8 @@ import {
   StatusIndicator,
   StyledNavLink,
   Text,
+  TokenIcon,
+  Tokens,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -49,6 +51,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const signerTokenInfo = useTokenInfo(order.signerToken);
   const cancelInProgress = useCancelPending(order.nonce);
   const [orderStatus] = useOrderStatus(order);
+
+  const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
 
   const senderAmount = useMemo(
     () =>
@@ -85,6 +89,17 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
+    setIsHoveredActionButton(false);
+  };
+
+  const handleActionButtonMouseEnter = () => {
+    setIsHoveredActionButton(true);
+    onDeleteOrderButtonMouseEnter(index, orderStatus === OrderStatus.open);
+  };
+
+  const handleActionButtonMouseLeave = () => {
+    setIsHoveredActionButton(false);
+    onDeleteOrderButtonMouseLeave();
   };
 
   return (
@@ -95,12 +110,19 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       >
         <Circle />
       </StatusIndicator>
+      <Tokens>
+        <TokenIcon logoURI={signerTokenInfo?.logoURI} />
+        <TokenIcon logoURI={senderTokenInfo?.logoURI} />
+      </Tokens>
       <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
       <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
       <Text>
         {orderStatus === OrderStatus.open ? timeLeft : orderStatusTranslation}
       </Text>
-      <StyledNavLink to={`/${AppRoutes.order}/${orderString}`} />
+      <StyledNavLink
+        isHovered={isHoveredActionButton}
+        to={`/${AppRoutes.order}/${orderString}`}
+      />
 
       <ActionButtonContainer>
         {cancelInProgress ? (
@@ -110,13 +132,8 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
             icon={orderStatus !== OrderStatus.open ? "bin" : "button-x"}
             iconSize={orderStatus === OrderStatus.open ? 0.5625 : 0.675}
             onClick={handleDeleteOrderButtonClick}
-            onMouseEnter={() =>
-              onDeleteOrderButtonMouseEnter(
-                index,
-                orderStatus === OrderStatus.open
-              )
-            }
-            onMouseLeave={onDeleteOrderButtonMouseLeave}
+            onMouseEnter={handleActionButtonMouseEnter}
+            onMouseLeave={handleActionButtonMouseLeave}
           />
         )}
       </ActionButtonContainer>

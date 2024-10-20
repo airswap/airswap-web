@@ -20,10 +20,10 @@ export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
 export const OrdersContainer = styled.div`
   ${ScrollBarStyle};
 
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   width: calc(100% + 0.5rem);
-  max-height: 17rem;
-  padding-right: 0.5rem;
+  max-height: 20rem;
+  padding-right: 1rem;
   overflow-y: auto;
   overflow-x: visible;
 `;
