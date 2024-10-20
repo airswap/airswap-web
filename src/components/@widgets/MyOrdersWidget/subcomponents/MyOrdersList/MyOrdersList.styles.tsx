@@ -9,6 +9,7 @@ export const Container = styled.div<{ hasOverflow: boolean }>`
   flex-direction: column;
   position: relative;
   margin-block-start: 2rem;
+  padding-block-end: ${({ hasOverflow }) => (hasOverflow ? "2rem" : "0")};
 
   -webkit-mask-image: ${({ hasOverflow }) =>
     hasOverflow

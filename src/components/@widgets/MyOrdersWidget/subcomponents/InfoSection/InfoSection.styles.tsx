@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import { fontWide } from "../../../../../style/themes";
 import { InfoHeading, InfoSubHeading } from "../../../../Typography/Typography";
 
 export const StyledInfoHeading = styled(InfoHeading)`
@@ -7,6 +8,6 @@ export const StyledInfoHeading = styled(InfoHeading)`
   align-items: center;
 
   & + ${InfoSubHeading} {
-    margin-top: 0.25rem;
+    margin-top: 1rem;
   }
 `;
