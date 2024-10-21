@@ -46,6 +46,7 @@
     "max": "Max",
     "minutes": "minutes",
     "minutesShort": "Min",
+    "myOrders": "My orders",
     "networks": "Networks",
     "no": "No",
     "noResultsFound": "No results found",
@@ -120,6 +121,7 @@
     "chooseToken": "Choose token",
     "clearCustomServer": "Clear custom server",
     "confirmCancel": "Confirm cancel",
+    "connectWallet": "Connect your wallet to view your swaps",
     "continue": "Continue",
     "copyLink": "Copy link",
     "counterPartyAddress": "Counterparty address",
@@ -167,7 +169,7 @@
     "selectedServer": "Selected {{serverUrl}} as custom server",
     "settings": "Settings",
     "specificTaker": "Specific Taker",
-    "startByCreatingANewOrder": "Start by creating a new order",
+    "startByCreatingANewOrder": "Start by creating a new order.",
     "submitted": "Transaction Submitted",
     "swapExpired": "Swap expired",
     "swapExpiredCallToAction": "Please try again",
@@ -193,7 +195,7 @@
     "unableTake": "Unable to take",
     "viewAllQuotes": "View all quotes",
     "wrapMessage": "No protocol fee for ETH/WETH swaps",
-    "youHaveNoOpenOTCOrders": "You have no open OTC orders"
+    "youHaveNoOpenOTCOrders": "You have no open OTC orders."
   },
   "toast": {
     "approvalComplete": "Approval Complete",

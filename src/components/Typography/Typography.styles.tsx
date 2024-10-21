@@ -121,11 +121,17 @@ export const StyledLink = makeTypographyComponent(
 ) as StyledComponent<"a", DefaultTheme, {}>;
 
 export const StyledNavigation = makeTypographyComponent("nav");
-export const StyledInfoHeading = makeTypographyComponent("infoHeading");
+export const StyledInfoHeading = makeTypographyComponent(
+  "infoHeading",
+  css`
+    font-family: ${fontWide};
+  `
+);
 export const StyledInfoSubHeading = makeTypographyComponent(
   "infoSubHeading",
   css`
     color: ${(props) => props.theme.colors.lightGrey};
+    font-family: ${fontWide};
   `
 );
 export const StyledFormLabel = makeTypographyComponent(

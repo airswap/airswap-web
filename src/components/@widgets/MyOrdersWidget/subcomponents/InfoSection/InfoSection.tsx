@@ -18,7 +18,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
   if (walletIsNotConnected) {
     return (
       <>
-        <StyledInfoHeading>{t("wallet.connectWallet")}</StyledInfoHeading>
+        <InfoSubHeading>{t("orders.connectWallet")}</InfoSubHeading>
       </>
     );
   }
@@ -26,10 +26,11 @@ const InfoSection: FC<ActionButtonsProps> = ({
   if (userHasNoOrders) {
     return (
       <>
-        <StyledInfoHeading>
+        <InfoSubHeading>
           {t("orders.youHaveNoOpenOTCOrders")}
-        </StyledInfoHeading>
-        <InfoSubHeading>{t("orders.startByCreatingANewOrder")}</InfoSubHeading>
+          {` `}
+          {t("orders.startByCreatingANewOrder")}
+        </InfoSubHeading>
       </>
     );
   }
