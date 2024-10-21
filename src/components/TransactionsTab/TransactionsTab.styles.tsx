@@ -24,14 +24,13 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 100%;
   max-width: ${sizes.widgetMobileSize};
-  height: 100%;
+  height: calc(100% - 5rem);
   padding: 1.5rem 1.5rem 0;
-  background-color: ${(props) => props.theme.colors.black};
-  border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
-  top: 0;
+  top: 5rem;
   right: 0;
-  z-index: 1001;
+  z-index: 10;
   will-change: transform;
+  backdrop-filter: drop-shadow(4px 4px 10px blue);
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -39,8 +38,10 @@ export const Container = styled(motion.div)`
 
   @media ${breakPoints.phoneOnly} {
     position: fixed;
+    top: 0;
     width: 100%;
     max-width: inherit;
+    height: 100%;
     padding: 1rem 1rem 0;
   }
 `;
@@ -67,8 +68,8 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};
   transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
-  background: ${(props) => props.theme.colors.black};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -105,17 +106,23 @@ export const LegendLine = styled.span`
 `;
 
 type TransactionsContainerProps = {
-  $overflow: boolean;
+  hasOverflow: boolean;
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
-  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
-  padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
+  overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
+  padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};
+  padding-bottom: ${(props) => (props.hasOverflow ? "2rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
+
+  -webkit-mask-image: ${({ hasOverflow }) =>
+    hasOverflow
+      ? "-webkit-gradient(linear, 0 85%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
+      : ""};
 `;
 
 export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`

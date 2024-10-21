@@ -15,7 +15,6 @@ import {
 type ChainSelectorType = {
   chainId: number;
   chainSelectionOpen: boolean;
-  transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
   className?: string;
 };
@@ -23,7 +22,6 @@ type ChainSelectorType = {
 const ChainSelector = ({
   chainId,
   chainSelectionOpen,
-  transactionsTabOpen,
   setChainSelectionOpen,
   className,
 }: ChainSelectorType) => {
@@ -61,7 +59,6 @@ const ChainSelector = ({
       className={className}
       ref={containerRef}
       isOpen={chainSelectionOpen}
-      shiftLeft={transactionsTabOpen}
     >
       <ChainSelectButton
         onClick={() => {

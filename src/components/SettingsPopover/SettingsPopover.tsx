@@ -27,13 +27,11 @@ import GithubInfo from "./subcomponents/GithubInfo/GithubInfo";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
 type SettingsPopoverPropsType = {
-  isOpen: boolean;
   popoverRef: RefObject<HTMLDivElement>;
   className?: string;
 };
 
 const SettingsPopover = ({
-  isOpen,
   popoverRef,
   className,
 }: SettingsPopoverPropsType) => {
@@ -69,7 +67,7 @@ const SettingsPopover = ({
   }, [popoverRef, scrollContainerRef, width, height]);
 
   return (
-    <Container isOpen={isOpen} ref={popoverRef} className={className}>
+    <Container ref={popoverRef} className={className}>
       <PopoverSection title={t("common.theme")}>
         <ThemeContainer>
           <ThemeButton

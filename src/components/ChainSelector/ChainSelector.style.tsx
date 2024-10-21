@@ -7,7 +7,6 @@ import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
   isOpen: boolean;
-  shiftLeft: boolean;
 };
 
 type ArrowIconProps = {
@@ -16,16 +15,6 @@ type ArrowIconProps = {
 
 export const Container = styled.div<ContainerProps>`
   position: relative;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-
-  @media ${breakPoints.tabletPortraitUp} {
-    transform: ${({ shiftLeft }) =>
-      shiftLeft ? "translate(-12.75rem, 0)" : "0"};
-    transition: transform 0.3s ease-in-out;
-  }
 `;
 
 export const ChainSelectButton = styled.button`

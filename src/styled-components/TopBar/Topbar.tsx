@@ -21,7 +21,7 @@ export const TopBar = styled.div`
   width: calc(100% - 3rem);
   height: 3rem;
   padding: 1.5rem;
-  z-index: 1;
+  z-index: 20;
   pointer-events: none;
 
   > * {
