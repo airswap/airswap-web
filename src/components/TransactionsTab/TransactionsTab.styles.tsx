@@ -43,6 +43,8 @@ export const Container = styled(motion.div)`
     max-width: inherit;
     height: 100%;
     padding: 1rem 1rem 0;
+    background-color: ${({ theme }) => theme.colors.black};
+    z-index: 1000;
   }
 `;
 
@@ -138,7 +140,7 @@ export const NoTransactions = styled(motion.div)`
 export const BottomButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  padding: 1rem 0;
+  padding: 1rem 0 2rem;
 `;
 
 export const DisconnectButton = styled(Button)`

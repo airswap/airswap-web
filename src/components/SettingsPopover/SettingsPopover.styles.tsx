@@ -25,7 +25,7 @@ export const Container = styled.div`
   z-index: 1000;
 
   @media ${breakPoints.tabletPortraitUp} {
-    right: 13.75rem;
+    right: 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly} {

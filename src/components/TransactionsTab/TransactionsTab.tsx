@@ -3,10 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { setTransactions } from "../../features/transactions/transactionsSlice";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -56,7 +55,6 @@ const TransactionsTab = ({
 }: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
-  const dispatch = useAppDispatch();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
@@ -154,7 +152,7 @@ const TransactionsTab = ({
                 ))}
               </AnimatePresence>
             </TransactionContainer>
-            <LegendContainer $isVisible>
+            <LegendContainer $isVisible={isActive}>
               <Legend>{t("wallet.completedTransactions")}</Legend>
               <ClearTransactionsSelector onChange={onClearTransactionsChange} />
             </LegendContainer>
@@ -170,7 +168,7 @@ const TransactionsTab = ({
                   />
                 ))}
               </AnimatePresence>
-              {!completedTransactions.length && (
+              {isActive && !completedTransactions.length && (
                 <NoTransactions>
                   <IconContainer>
                     <Icon name="transaction" />

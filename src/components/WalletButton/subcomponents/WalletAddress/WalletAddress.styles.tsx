@@ -13,8 +13,10 @@ export const Button = styled.div`
 `;
 
 export const StyledBorderedButton = styled(BorderedButton)`
+  padding-inline: 1.5rem;
+
   @media ${breakPoints.phoneOnly} {
-    padding: 0 1rem;
+    padding-inline: 1rem;
   }
 `;
 
@@ -24,6 +26,7 @@ export const WalletAddressText = styled(InfoHeading)`
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 700;
+  font-size: 0.9375rem;
 
   @media ${breakPoints.phoneOnly} {
     font-size: 0.875rem;
@@ -31,9 +34,10 @@ export const WalletAddressText = styled(InfoHeading)`
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`
+  margin-top: 0.125rem;
   margin-right: 0.75rem;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0.625rem;
+  height: 0.625rem;
   background-color: ${(props) =>
     props.$connected ? props.theme.colors.green : props.theme.colors.red};
   border-radius: 50%;

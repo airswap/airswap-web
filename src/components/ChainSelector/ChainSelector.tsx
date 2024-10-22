@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { GoChevronDown } from "react-icons/go";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { chainNames } from "@airswap/utils";
 
@@ -68,7 +68,7 @@ const ChainSelector = ({
         <ChainIcon src={`images/networks/${chainId}.png`} />
         <ChainNameText>{chainNames[chainId]}</ChainNameText>
         <ArrowIcon isOpen={chainSelectionOpen}>
-          <GoChevronDown />
+          <MdKeyboardArrowDown />
         </ArrowIcon>
       </ChainSelectButton>
       {chainSelectionOpen && (
