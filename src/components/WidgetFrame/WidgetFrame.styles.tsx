@@ -46,8 +46,11 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
 
   @media ${breakPoints.tabletPortraitUp} {
-    transition: transform 0.3s ease-in-out;
-    transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
+    & > div {
+      transition: transform 0.3s ease-in-out;
+      transform: ${(props) =>
+        props.$isOpen ? "translate(-6.5rem, 0rem)" : "0"};
+    }
   }
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
