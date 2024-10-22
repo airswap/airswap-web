@@ -65,7 +65,8 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  margin-bottom: ${({ $isVisible }) => ($isVisible ? ".75rem" : "0")};
+  padding-inline: 1.5rem;
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};
@@ -79,30 +80,15 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
 export const Legend = styled(InfoSubHeading)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0;
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1rem;
   width: 100%;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:after {
-    margin: 0 0 0 0.5rem;
-    background: ${(props) => props.theme.colors.borderGrey};
-    height: 1px;
-    flex: 1;
-    content: "";
-  }
-
-  &:before {
-    background: none;
-  }
-`;
-
-export const LegendLine = styled.span`
   text-transform: uppercase;
   background: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
 `;
 
 type TransactionsContainerProps = {
@@ -131,7 +117,7 @@ export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
   align-items: center;
   justify-content: center;
   flex-grow: 2;
-  margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1rem")};
+  margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1.5rem")};
   width: 100%;
   transition: margin-bottom ease-out 0.3s;
   overflow: hidden;
@@ -150,13 +136,13 @@ export const NoTransactions = styled(motion.div)`
 `;
 
 export const BottomButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
   padding: 1rem 0;
 `;
 
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
-
-  width: 100%;
 
   @media ${breakPoints.phoneOnly} {
     display: none;
@@ -184,43 +170,6 @@ export const IconContainer = styled.div`
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
   border-radius: 50%;
-`;
-
-export const BackButton = styled(motion.button)`
-  ${InputOrButtonBorderStyleType2};
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: -1.5rem;
-  top: 1.5rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background-color: ${(props) => props.theme.colors.black};
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-
-  @media ${breakPoints.phoneOnly} {
-    display: none !important;
-  }
-`;
-
-export const NetworkInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  max-width: 5.5rem;
-`;
-
-export const NetworkName = styled(FormLabel)`
-  text-transform: uppercase;
-`;
-
-export const Balances = styled(InfoHeading)`
-  line-height: 1;
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`

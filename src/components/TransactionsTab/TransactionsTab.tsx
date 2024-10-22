@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import useIsOverflowing from "../../hooks/useIsOverflowing";
+import { setTransactions } from "../../features/transactions/transactionsSlice";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -17,7 +17,6 @@ import Icon from "../Icon/Icon";
 import {
   Container,
   Legend,
-  LegendLine,
   TransactionContainer,
   TransactionsContainer,
   BottomButtonContainer,
@@ -54,10 +53,11 @@ const TransactionsTab = ({
   onClearTransactionsChange,
   onConnectButtonClick,
   onDisconnectButtonClick,
-  transactions = [],
+  transactions,
 }: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
+  const dispatch = useAppDispatch();
   const isMobile = useMediaQuery(breakPoints.phoneOnly);
   const { t } = useTranslation();
 
@@ -141,11 +141,7 @@ const TransactionsTab = ({
             hasOverflow={overflow}
           >
             <LegendContainer $isVisible={!!pendingTransactions.length}>
-              <Legend>
-                <LegendLine>
-                  {t("wallet.activeTransactions").toUpperCase()}
-                </LegendLine>
-              </Legend>
+              <Legend>{t("wallet.activeTransactions").toUpperCase()}</Legend>
             </LegendContainer>
             <TransactionContainer $isEmpty={!pendingTransactions.length}>
               <AnimatePresence initial={false}>
@@ -161,9 +157,7 @@ const TransactionsTab = ({
               </AnimatePresence>
             </TransactionContainer>
             <LegendContainer $isVisible>
-              <Legend>
-                <LegendLine>{t("wallet.completedTransactions")}</LegendLine>
-              </Legend>
+              <Legend>{t("wallet.completedTransactions")}</Legend>
               <ClearTransactionsSelector onChange={onClearTransactionsChange} />
             </LegendContainer>
             <TransactionContainer>

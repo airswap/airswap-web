@@ -9,8 +9,4 @@ export const Container = styled(motion.div)`
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
-
-  & + & {
-    margin-top: 0.5rem;
-  }
 `;

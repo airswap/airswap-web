@@ -52,7 +52,7 @@ export const StyledSocialButtons = styled(SocialButtons)`
 
   @media ${breakPoints.tabletPortraitUp} {
     display: flex;
-    position: fixed;
+    position: absolute;
     bottom: 1.5rem;
     right: 1.5rem;
   }
