@@ -38,8 +38,11 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     showOverlay,
     transactionsTabIsOpen,
     pageHeight,
+    overlayHeight,
     setShowMobileToolbar,
   } = useContext(InterfaceContext);
+
+  const showBlurOverlay = showOverlay || transactionsTabIsOpen;
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
@@ -76,7 +79,9 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   return (
     <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
       <HelmetContainer title={t("app.title")} />
-      <InnerContainer>
+      <InnerContainer
+        style={{ minHeight: showBlurOverlay ? `${overlayHeight}px` : "unset" }}
+      >
         <Toaster open={transactionsTabIsOpen} />
         <Toolbar
           isHiddenOnMobile={!showMobileToolbar}
@@ -96,7 +101,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           <WalletConnector />
         </WidgetFrame>
 
-        <BlurredOverlay isVisible={showOverlay || transactionsTabIsOpen} />
+        <BlurredOverlay isVisible={showBlurOverlay} />
 
         <StyledSocialButtons />
       </InnerContainer>

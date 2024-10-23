@@ -2,10 +2,10 @@ import styled from "styled-components/macro";
 
 import IconButton from "../../components/IconButton/IconButton";
 import { StyledIcon } from "../../components/IconButton/IconButton.styles";
-import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
+import { InputOrButtonBorderStyle } from "../../style/mixins";
 
 const CloseButton = styled(IconButton)`
-  ${InputOrButtonBorderStyleType2};
+  ${InputOrButtonBorderStyle};
 
   display: flex;
   justify-content: center;

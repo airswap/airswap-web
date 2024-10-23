@@ -1,10 +1,11 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import useDebounce from "../../hooks/useDebounce";
+import useElementSize from "../../hooks/useElementSize";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
@@ -55,10 +56,18 @@ const Overlay: FC<OverlayProps> = ({
   const shouldReduceMotion = useReducedMotion();
   const [initialized, setInitialized] = useState(false);
   const animationIsDisabled = !shouldAnimate || (!isHidden && !initialized);
+  const ref = useRef<HTMLDivElement>(null);
+  const { height: elementHeight } = useElementSize(ref);
 
-  const { setShowOverlay } = useContext(InterfaceContext);
+  const { setOverlayHeight, setShowOverlay } = useContext(InterfaceContext);
 
   useKeyPress(onClose, ["Escape"]);
+
+  useEffect(() => {
+    if (!isHidden) {
+      setOverlayHeight(elementHeight);
+    }
+  }, [elementHeight]);
 
   useEffect(() => {
     setInitialized(true);
@@ -81,6 +90,7 @@ const Overlay: FC<OverlayProps> = ({
 
   return (
     <Container
+      ref={ref}
       hasDynamicHeight={hasDynamicHeight}
       hasTitle={!!title}
       isHidden={isHidden}

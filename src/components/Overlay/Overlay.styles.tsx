@@ -68,7 +68,7 @@ export const ContentContainer = styled(motion.div)`
     height: 100%;
     background: ${(props) => props.theme.colors.darkBlue};
     filter: brightness(0.5);
-    opacity: 0.8;
+    opacity: 0.75;
     pointer-events: none;
     z-index: -1;
   }
@@ -131,14 +131,14 @@ export const OverlayActionButton = styled(Button)`
 `;
 
 const containerDynamicHeightStyle = css`
-  padding-block-start: 0;
+  padding-block-start: 5.5rem;
 
-  @media (max-height: 700px) {
+  @media ${breakPoints.bigDesktopUp} {
     padding-block-start: 2rem;
   }
 
-  @media (min-height: 800px) {
-    margin-block-start: -2rem;
+  @media ${breakPoints.phoneOnly} {
+    padding-block-start: 4.25rem;
   }
 `;
 

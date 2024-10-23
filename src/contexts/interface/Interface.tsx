@@ -12,6 +12,7 @@ export interface InterfaceContextContextProps {
   transactionsTabIsOpen: boolean;
 
   pageHeight?: number;
+  overlayHeight?: number;
 
   setIsConnecting: Dispatch<React.SetStateAction<boolean>>;
   setIsDebugMode: Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +20,7 @@ export interface InterfaceContextContextProps {
   setShowOverlay: Dispatch<React.SetStateAction<boolean>>;
   setShowWalletList: Dispatch<React.SetStateAction<boolean>>;
   setTransactionsTabIsOpen: Dispatch<React.SetStateAction<boolean>>;
+  setOverlayHeight: Dispatch<React.SetStateAction<number>>;
 }
 
 export const InterfaceContext =
@@ -35,6 +37,7 @@ export const InterfaceContext =
     setShowOverlay: () => {},
     setShowWalletList: () => {},
     setTransactionsTabIsOpen: () => {},
+    setOverlayHeight: () => {},
   });
 
 const InterfaceProvider: FC = ({ children }) => {
@@ -47,6 +50,7 @@ const InterfaceProvider: FC = ({ children }) => {
   const [showWalletList, setShowWalletList] = useState(false);
   const [transactionsTabIsOpen, setTransactionsTabIsOpen] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
+  const [overlayHeight, setOverlayHeight] = useState(0);
 
   useDebounce(
     () => {
@@ -74,12 +78,14 @@ const InterfaceProvider: FC = ({ children }) => {
         showWalletList,
         transactionsTabIsOpen,
         pageHeight,
+        overlayHeight,
         setIsConnecting,
         setIsDebugMode,
         setShowMobileToolbar,
         setShowOverlay,
         setShowWalletList,
         setTransactionsTabIsOpen,
+        setOverlayHeight,
       }}
     >
       {children}

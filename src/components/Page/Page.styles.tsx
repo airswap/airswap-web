@@ -12,6 +12,10 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
+  background: ${(props) =>
+    props.theme.name === "dark"
+      ? "conic-gradient(from 180deg at 0% 0%, #2B71FF 0deg, #060607 360deg)"
+      : props.theme.colors.primary};
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     justify-content: flex-start;
