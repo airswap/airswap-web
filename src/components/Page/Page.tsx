@@ -13,7 +13,12 @@ import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
-import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
+import {
+  BlurredOverlay,
+  InnerContainer,
+  StyledPage,
+  StyledSocialButtons,
+} from "./Page.styles";
 
 type PageProps = {
   className?: string;
@@ -84,13 +89,15 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         />
 
         <WidgetFrame
-          isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}
           isOverlayOpen={showOverlay}
         >
           {children}
           <WalletConnector />
         </WidgetFrame>
+
+        <BlurredOverlay isVisible={showOverlay || transactionsTabIsOpen} />
+
         <StyledSocialButtons />
       </InnerContainer>
     </StyledPage>

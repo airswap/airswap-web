@@ -68,3 +68,17 @@ export const StyledSocialButtons = styled(SocialButtons)`
     padding-bottom: 1.5rem;
   }
 `;
+
+export const BlurredOverlay = styled.div<{ isVisible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  backdrop-filter: blur(20px);
+  opacity: ${(props) => (props.isVisible ? "1" : "0")};
+  transition: opacity 0.3s ease-out;
+  filter: brightness(0.5);
+  pointer-events: ${(props) => (props.isVisible ? "visible" : "none")};
+`;

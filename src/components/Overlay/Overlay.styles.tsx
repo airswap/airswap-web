@@ -52,7 +52,6 @@ export const ContentContainer = styled(motion.div)`
   max-height: 47.5rem;
   min-height: 30rem;
   padding: 0 ${sizes.tradeContainerPadding};
-  backdrop-filter: blur(25px);
 
   @media ${breakPoints.phoneOnly} {
     padding: 0 ${sizes.tradeContainerMobilePadding};
@@ -154,7 +153,7 @@ export const Container = styled.div<ContainerProps>`
   height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
   padding-block-start: 2rem;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  z-index: 2;
+  z-index: 20;
 
   ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
 }

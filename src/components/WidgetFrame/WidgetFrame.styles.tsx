@@ -30,7 +30,6 @@ export const WidgetFrameWrapper = styled.div`
 `;
 
 type StyledTradeContainerProps = {
-  $isOpen?: boolean;
   $isConnected?: boolean;
   $isOverlayOpen?: boolean;
 };
@@ -44,14 +43,6 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   height: 100%;
   min-height: ${sizes.widgetSize};
   overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
-
-  @media ${breakPoints.tabletPortraitUp} {
-    & > div {
-      transition: transform 0.3s ease-in-out;
-      transform: ${(props) =>
-        props.$isOpen ? "translate(-6.5rem, 0rem)" : "0"};
-    }
-  }
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     margin-bottom: 1.5rem;

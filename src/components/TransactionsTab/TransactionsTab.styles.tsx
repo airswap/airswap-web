@@ -9,12 +9,7 @@ import {
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
-import TransactionLink from "../TransactionLink/TransactionLink";
-import {
-  InfoSubHeading,
-  InfoHeading,
-  FormLabel,
-} from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
@@ -28,7 +23,7 @@ export const Container = styled(motion.div)`
   padding: 1.5rem 1.5rem 0;
   top: 5rem;
   right: 0;
-  z-index: 10;
+  z-index: 21;
   will-change: transform;
   backdrop-filter: drop-shadow(4px 4px 10px blue);
 
