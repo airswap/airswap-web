@@ -128,6 +128,7 @@ export const NoTransactions = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-block-start: 1rem;
   height: 4.5rem;
   color: ${(props) => props.theme.colors.lightGrey};
 `;

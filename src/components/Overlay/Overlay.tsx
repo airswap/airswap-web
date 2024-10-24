@@ -91,12 +91,6 @@ const Overlay: FC<OverlayProps> = ({
     [isHidden]
   );
 
-  useEffect(() => {
-    if (transactionsTabIsOpen && !isHidden) {
-      onClose();
-    }
-  }, [transactionsTabIsOpen]);
-
   return (
     <Container
       ref={ref}
