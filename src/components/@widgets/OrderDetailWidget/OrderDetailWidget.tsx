@@ -49,8 +49,8 @@ import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWi
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
-import Overlay from "../../Overlay/Overlay";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
@@ -408,23 +408,23 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />
-      <Overlay
+      <ModalOverlay
         title={t("information.protocolFee.title")}
         onClose={() => toggleShowFeeInfo()}
         isHidden={!showFeeInfo}
       >
         <ProtocolFeeModal onCloseButtonClick={() => toggleShowFeeInfo()} />
-      </Overlay>
-      <Overlay
+      </ModalOverlay>
+      <ModalOverlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
         onClose={restart}
         isHidden={!errors.length}
       >
         <ErrorList errors={errors} onBackButtonClick={restart} />
-      </Overlay>
+      </ModalOverlay>
       {signerToken && senderToken && (
-        <Overlay
+        <ModalOverlay
           title={t("orders.availableOrders")}
           isHidden={!showViewAllQuotes}
           onClose={() => toggleShowViewAllQuotes()}
@@ -435,7 +435,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
             onSwapLinkClick={backToSwapPage}
             onFullOrderLinkClick={toggleShowViewAllQuotes}
           />
-        </Overlay>
+        </ModalOverlay>
       )}
     </Container>
   );

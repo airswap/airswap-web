@@ -85,8 +85,8 @@ import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWi
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
-import Overlay from "../../Overlay/Overlay";
 import TokenList from "../../TokenList/TokenList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
@@ -663,7 +663,7 @@ const SwapWidget: FC = () => {
           />
         </ButtonContainer>
 
-        <Overlay
+        <ModalOverlay
           hasDynamicHeight
           isHidden={!showTokenSelectModalFor}
           title={t("common.selectToken")}
@@ -682,16 +682,16 @@ const SwapWidget: FC = () => {
             supportedTokenAddresses={supportedTokens}
             onAfterRemoveActiveToken={handleRemoveActiveToken}
           />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("validatorErrors.unableSwap")}
           subTitle={t("validatorErrors.swapFail")}
           onClose={backToOverview}
           isHidden={!ordersErrors.length}
         >
           <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("information.gasFreeSwaps.title")}
           onClose={() => setShowGasFeeInfo(false)}
           isHidden={!showGasFeeInfo}
@@ -699,8 +699,8 @@ const SwapWidget: FC = () => {
           <GasFreeSwapsModal
             onCloseButtonClick={() => setShowGasFeeInfo(false)}
           />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("information.protocolFee.title")}
           onClose={() => setProtocolFeeInfo(false)}
           isHidden={!protocolFeeInfo}
@@ -708,9 +708,9 @@ const SwapWidget: FC = () => {
           <ProtocolFeeModal
             onCloseButtonClick={() => setProtocolFeeInfo(false)}
           />
-        </Overlay>
+        </ModalOverlay>
         {baseTokenInfo && quoteTokenInfo && (
-          <Overlay
+          <ModalOverlay
             title={t("orders.availableOrders")}
             isHidden={!showViewAllQuotes}
             onClose={() => toggleShowViewAllQuotes()}
@@ -720,7 +720,7 @@ const SwapWidget: FC = () => {
               signerToken={quoteTokenInfo}
               onSwapLinkClick={() => toggleShowViewAllQuotes()}
             />
-          </Overlay>
+          </ModalOverlay>
         )}
       </StyledSwapWidget>
     </>

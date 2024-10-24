@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-import { StyledTitle } from "../../../Overlay/Overlay.styles";
+import { StyledTitle } from "../../../ModalOverlay/ModalOverlay.styles";
 
 export const Container = styled.div`
   padding: 0 1rem;

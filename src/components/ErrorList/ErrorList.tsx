@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AppError } from "../../errors/appError";
-import { OverlayActionButton } from "../Overlay/Overlay.styles";
+import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
 import {
   Container,
   StyledErrorList,

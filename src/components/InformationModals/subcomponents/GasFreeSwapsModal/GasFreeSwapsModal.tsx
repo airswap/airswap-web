@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ModalParagraph } from "../../../../styled-components/Modal/Modal";
-import { OverlayActionButton } from "../../../Overlay/Overlay.styles";
+import { OverlayActionButton } from "../../../ModalOverlay/ModalOverlay.styles";
 import { Container } from "./GasFreeModal.styles";
 
 interface GasFreeSwapsModalProps {
