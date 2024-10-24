@@ -6,7 +6,8 @@ import useWindowSize from "../../hooks/useWindowSize";
 export interface InterfaceContextContextProps {
   isConnecting: boolean;
   isDebugMode: boolean;
-  showOverlay?: boolean;
+  showModalOverlay: boolean;
+  showTransactionOverlay: boolean;
   showMobileToolbar: boolean;
   showWalletList: boolean;
   transactionsTabIsOpen: boolean;
@@ -17,7 +18,8 @@ export interface InterfaceContextContextProps {
   setIsConnecting: Dispatch<React.SetStateAction<boolean>>;
   setIsDebugMode: Dispatch<React.SetStateAction<boolean>>;
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
-  setShowOverlay: Dispatch<React.SetStateAction<boolean>>;
+  setShowModalOverlay: Dispatch<React.SetStateAction<boolean>>;
+  setShowTransactionOverlay: Dispatch<React.SetStateAction<boolean>>;
   setShowWalletList: Dispatch<React.SetStateAction<boolean>>;
   setTransactionsTabIsOpen: Dispatch<React.SetStateAction<boolean>>;
   setOverlayHeight: Dispatch<React.SetStateAction<number>>;
@@ -28,13 +30,15 @@ export const InterfaceContext =
     isConnecting: false,
     isDebugMode: false,
     showMobileToolbar: false,
-    showOverlay: false,
+    showModalOverlay: false,
+    showTransactionOverlay: false,
     showWalletList: false,
     transactionsTabIsOpen: false,
     setIsConnecting: () => {},
     setIsDebugMode: () => {},
     setShowMobileToolbar: () => {},
-    setShowOverlay: () => {},
+    setShowModalOverlay: () => {},
+    setShowTransactionOverlay: () => {},
     setShowWalletList: () => {},
     setTransactionsTabIsOpen: () => {},
     setOverlayHeight: () => {},
@@ -46,7 +50,8 @@ const InterfaceProvider: FC = ({ children }) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [showMobileToolbar, setShowMobileToolbar] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showModalOverlay, setShowModalOverlay] = useState(false);
+  const [showTransactionOverlay, setShowTransactionOverlay] = useState(false);
   const [showWalletList, setShowWalletList] = useState(false);
   const [transactionsTabIsOpen, setTransactionsTabIsOpen] = useState(false);
   const [pageHeight, setPageHeight] = useState(windowHeight);
@@ -61,10 +66,10 @@ const InterfaceProvider: FC = ({ children }) => {
   );
 
   useEffect(() => {
-    if (!showOverlay) {
+    if (!showModalOverlay) {
       setOverlayHeight(0);
     }
-  }, [showOverlay]);
+  }, [showModalOverlay]);
 
   useEffect(() => {
     if (showMobileToolbar) {
@@ -80,7 +85,8 @@ const InterfaceProvider: FC = ({ children }) => {
         isConnecting,
         isDebugMode,
         showMobileToolbar,
-        showOverlay,
+        showModalOverlay,
+        showTransactionOverlay,
         showWalletList,
         transactionsTabIsOpen,
         pageHeight,
@@ -88,7 +94,8 @@ const InterfaceProvider: FC = ({ children }) => {
         setIsConnecting,
         setIsDebugMode,
         setShowMobileToolbar,
-        setShowOverlay,
+        setShowModalOverlay,
+        setShowTransactionOverlay,
         setShowWalletList,
         setTransactionsTabIsOpen,
         setOverlayHeight,

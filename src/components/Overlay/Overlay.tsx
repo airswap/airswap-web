@@ -60,7 +60,7 @@ const Overlay: FC<OverlayProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const { height: elementHeight } = useElementSize(ref);
 
-  const { setOverlayHeight, setShowOverlay, transactionsTabIsOpen } =
+  const { setOverlayHeight, setShowModalOverlay } =
     useContext(InterfaceContext);
   const [, hasOverflow] = useIsOverflowing(ref);
 
@@ -78,14 +78,14 @@ const Overlay: FC<OverlayProps> = ({
 
   useEffect(() => {
     if (isHidden) {
-      setShowOverlay(false);
+      setShowModalOverlay(false);
     }
   }, [isHidden]);
 
   useDebounce(
     () => {
       // Make sure the animation ended before setting the showOverlay state
-      setShowOverlay(!isHidden);
+      setShowModalOverlay(!isHidden);
     },
     250,
     [isHidden]

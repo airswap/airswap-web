@@ -35,14 +35,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const appRouteParams = useAppRouteParams();
   const {
     showMobileToolbar,
-    showOverlay,
+    showModalOverlay,
+    showTransactionOverlay,
     transactionsTabIsOpen,
     pageHeight,
     overlayHeight,
     setShowMobileToolbar,
   } = useContext(InterfaceContext);
 
-  const showBlurOverlay = showOverlay || transactionsTabIsOpen;
+  const showBlurOverlay =
+    showModalOverlay || showTransactionOverlay || transactionsTabIsOpen;
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
@@ -80,7 +82,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
       <HelmetContainer title={t("app.title")} />
       <InnerContainer
-        style={{ minHeight: showOverlay ? `${overlayHeight}px` : "unset" }}
+        style={{ minHeight: showModalOverlay ? `${overlayHeight}px` : "unset" }}
       >
         <Toaster open={transactionsTabIsOpen} />
         <Toolbar
@@ -95,7 +97,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
 
         <WidgetFrame
           isConnected={web3ProviderIsActive}
-          isOverlayOpen={showOverlay}
+          isOverlayOpen={showModalOverlay}
         >
           {children}
           <WalletConnector />
