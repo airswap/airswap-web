@@ -28,11 +28,11 @@ export const Container = styled(motion.div)<{ isActive?: boolean }>`
   gap: 1rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  background: ${({ isActive }) =>
-    isActive ? "rgba(0, 0, 0, 0.15)" : "transparent"};
+  background: ${({ theme, isActive }) =>
+    isActive ? theme.colors.darkBlue : "transparent"};
 
   &:hover {
-    background: rgba(0, 0, 0, 0.15);
+    background: ${({ theme }) => theme.colors.darkGrey};
 
     ${SpanSubtitle} {
       color: ${({ theme }) => theme.colors.white};

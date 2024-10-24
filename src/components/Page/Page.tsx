@@ -80,7 +80,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
       <HelmetContainer title={t("app.title")} />
       <InnerContainer
-        style={{ minHeight: showBlurOverlay ? `${overlayHeight}px` : "unset" }}
+        style={{ minHeight: showOverlay ? `${overlayHeight}px` : "unset" }}
       >
         <Toaster open={transactionsTabIsOpen} />
         <Toolbar

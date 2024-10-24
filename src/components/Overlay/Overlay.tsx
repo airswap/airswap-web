@@ -6,6 +6,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import useDebounce from "../../hooks/useDebounce";
 import useElementSize from "../../hooks/useElementSize";
+import useIsOverflowing from "../../hooks/useIsOverflowing";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
@@ -59,7 +60,9 @@ const Overlay: FC<OverlayProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const { height: elementHeight } = useElementSize(ref);
 
-  const { setOverlayHeight, setShowOverlay } = useContext(InterfaceContext);
+  const { setOverlayHeight, setShowOverlay, transactionsTabIsOpen } =
+    useContext(InterfaceContext);
+  const [, hasOverflow] = useIsOverflowing(ref);
 
   useKeyPress(onClose, ["Escape"]);
 
@@ -88,12 +91,20 @@ const Overlay: FC<OverlayProps> = ({
     [isHidden]
   );
 
+  useEffect(() => {
+    if (transactionsTabIsOpen && !isHidden) {
+      onClose();
+    }
+  }, [transactionsTabIsOpen]);
+
   return (
     <Container
       ref={ref}
       hasDynamicHeight={hasDynamicHeight}
+      hasOverflow={hasDynamicHeight && hasOverflow}
       hasTitle={!!title}
       isHidden={isHidden}
+      isAnimating={!animationIsDisabled}
       className={className}
     >
       <AnimatePresence>

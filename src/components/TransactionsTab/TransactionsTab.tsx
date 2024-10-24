@@ -27,6 +27,7 @@ import {
   BackdropFilter,
   ConnectButton,
 } from "./TransactionsTab.styles";
+import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
@@ -68,6 +69,7 @@ const TransactionsTab = ({
   const buttonRef = useRef<HTMLDivElement>(null);
 
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
+  useClickOutsideTransactionsTab(() => setTransactionsTabOpen(false));
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);

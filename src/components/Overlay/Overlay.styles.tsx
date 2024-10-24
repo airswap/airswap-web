@@ -11,9 +11,11 @@ import { InfoSubHeading } from "../Typography/Typography";
 import { StyledH3 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
+  isAnimating: boolean;
   isHidden: boolean;
   hasDynamicHeight: boolean;
   hasTitle: boolean;
+  hasOverflow: boolean;
 };
 
 type ScrollContainerProps = {
@@ -21,6 +23,8 @@ type ScrollContainerProps = {
 };
 
 export const ScrollContainer = styled.div<ScrollContainerProps>`
+  display: flex;
+  flex-direction: column;
   flex-grow: 99;
   width: 100%;
   height: 100%;
@@ -145,15 +149,19 @@ const containerDynamicHeightStyle = css`
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  justify-content: ${(props) => (props.hasOverflow ? "flex-start" : "center")};;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
+  min-height: 100vh;
+  min-height: 100svh;
   padding-block-start: 2rem;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
   z-index: 20;
+  overflow: ${(props) => (props.isAnimating ? "hidden" : "auto")};
 
   ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
 }

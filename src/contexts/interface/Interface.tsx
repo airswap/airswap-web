@@ -61,6 +61,12 @@ const InterfaceProvider: FC = ({ children }) => {
   );
 
   useEffect(() => {
+    if (!showOverlay) {
+      setOverlayHeight(0);
+    }
+  }, [showOverlay]);
+
+  useEffect(() => {
     if (showMobileToolbar) {
       document.body.classList.add("scroll-locked");
     } else {
