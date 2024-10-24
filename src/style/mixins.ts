@@ -42,7 +42,7 @@ export const InputOrButtonBorderStyle = css`
 `;
 
 export const InputOrButtonBorderStyleType2 = css`
-  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+  border: 1px solid transparent;
 
   &:hover:enabled,
   &:focus:enabled {

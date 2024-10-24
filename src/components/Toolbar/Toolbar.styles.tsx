@@ -23,7 +23,7 @@ export const ToolbarContainer = styled.div<{
   left: 100%;
   width: 100%;
   height: 100%;
-  z-index: 5;
+  z-index: 100;
   background: ${({ theme, $overflow }) =>
     theme.name === "dark"
       ? convertHexToRGBA(theme.colors.black, $overflow ? 1 : 0.8)

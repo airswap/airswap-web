@@ -31,7 +31,10 @@ const useElementSize = (
           const { scrollWidth, scrollHeight } = entry.target;
           const { width, height, top } = entry.target.getBoundingClientRect();
 
-          setSize({ width, height, scrollWidth, scrollHeight, top });
+          // Use requestAnimationFrame to batch updates to prevent resizeObserver lost event error
+          requestAnimationFrame(() => {
+            setSize({ width, height, scrollWidth, scrollHeight, top });
+          });
         }
       });
 

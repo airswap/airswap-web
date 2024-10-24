@@ -165,7 +165,8 @@ const MakeWidget: FC = () => {
   const isNetworkSupported = useNetworkSupported();
 
   // Modal states
-  const { setShowWalletList } = useContext(InterfaceContext);
+  const { setShowWalletList, transactionsTabIsOpen } =
+    useContext(InterfaceContext);
   const [showOrderTypeInfo, toggleShowOrderTypeInfo] = useToggle(false);
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const [showTokenSelectModal, setShowTokenSelectModal] =
@@ -175,6 +176,12 @@ const MakeWidget: FC = () => {
   useEffect(() => {
     dispatch(reset());
   }, []);
+
+  useEffect(() => {
+    if (transactionsTabIsOpen) {
+      setShowTokenSelectModal(null);
+    }
+  }, [transactionsTabIsOpen]);
 
   useEffect(() => {
     if (library) {

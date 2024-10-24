@@ -92,10 +92,12 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       handleOnContainerScroll.bind(this)
     );
 
-    return containerRef.current?.removeEventListener(
-      "scroll",
-      handleOnContainerScroll.bind(this)
-    );
+    return () => {
+      containerRef.current?.removeEventListener(
+        "scroll",
+        handleOnContainerScroll.bind(this)
+      );
+    };
   }, [containerRef]);
 
   useEffect(() => {

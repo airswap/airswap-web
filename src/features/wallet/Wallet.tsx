@@ -98,7 +98,6 @@ export const Wallet: FC<WalletProps> = ({
           <StyledChainSelector
             chainId={chainId}
             chainSelectionOpen={chainsOpen}
-            transactionsTabOpen={transactionsTabIsOpen}
             setChainSelectionOpen={setChainsOpen}
           />
         )}
@@ -107,13 +106,14 @@ export const Wallet: FC<WalletProps> = ({
           isUnsupportedNetwork={false}
           address={account}
           glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() => setTransactionsTabIsOpen(true)}
+          setTransactionsTabOpen={() =>
+            setTransactionsTabIsOpen(!transactionsTabIsOpen)
+          }
           setShowWalletList={setShowWalletList}
         />
         <StyledSettingsButton
           settingsOpen={settingsOpen}
           setSettingsOpen={setSettingsOpen}
-          transactionsTabOpen={transactionsTabIsOpen}
         />
         <StyledMenuButton
           onClick={onMobileMenuButtonClick}
@@ -132,8 +132,6 @@ export const Wallet: FC<WalletProps> = ({
         onConnectButtonClick={handleConnectWalletClicked}
         onDisconnectButtonClick={handleDisconnectWalletClicked}
         transactions={transactions}
-        balances={balances!}
-        isUnsupportedNetwork={!isSupportedNetwork}
       />
     </>
   );

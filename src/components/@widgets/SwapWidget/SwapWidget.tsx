@@ -214,6 +214,12 @@ const SwapWidget: FC = () => {
     !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
 
   useEffect(() => {
+    if (transactionsTabIsOpen) {
+      setShowTokenSelectModalFor(null);
+    }
+  }, [transactionsTabIsOpen]);
+
+  useEffect(() => {
     setTokenFrom(appRouteParams.tokenFrom);
     setTokenTo(appRouteParams.tokenTo);
   }, [appRouteParams]);

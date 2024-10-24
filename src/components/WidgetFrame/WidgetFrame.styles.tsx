@@ -2,24 +2,16 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
 import { sizes } from "../../style/sizes";
-import { Container as OverlayContainer } from "../Overlay/Overlay.styles";
 
 export const WidgetFrameWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  position: relative;
   border-radius: 0.25rem;
   margin: 0 ${sizes.pageMobilePadding};
   width: ${sizes.widgetSize};
   height: fit-content;
   min-height: ${sizes.widgetSize};
   padding: ${sizes.tradeContainerPadding};
-  transition: box-shadow 0.3s ease-in-out;
-  will-change: transform;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
 
   @media ${breakPoints.phoneOnly} {
     width: 100%;
@@ -30,13 +22,11 @@ export const WidgetFrameWrapper = styled.div`
 `;
 
 type StyledTradeContainerProps = {
-  $isOpen?: boolean;
   $isConnected?: boolean;
   $isOverlayOpen?: boolean;
 };
 
 export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,11 +34,6 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   height: 100%;
   min-height: ${sizes.widgetSize};
   overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
-
-  @media ${breakPoints.tabletPortraitUp} {
-    transition: transform 0.3s ease-in-out;
-    transform: ${(props) => (props.$isOpen ? "translate(-6.5rem, 0rem)" : "0")};
-  }
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     margin-bottom: 1.5rem;

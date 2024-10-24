@@ -236,7 +236,7 @@
     "copyAddress": "Copy address",
     "dayAgo_one": "{{count}} day ago",
     "dayAgo_other": "{{count}} days ago",
-    "disconnectWallet": "Disconnect",
+    "disconnectWallet": "Disconnect Wallet",
     "get": "Get",
     "hourAgo_one": "{{count}} hour ago",
     "hourAgo_other": "{{count}} hours ago",

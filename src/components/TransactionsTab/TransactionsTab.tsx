@@ -1,22 +1,11 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import {
-  getAccountUrl,
-  chainCurrencies,
-  chainNames,
-  ADDRESS_ZERO,
-} from "@airswap/utils";
-
-import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { useAppSelector } from "../../app/hooks";
-import { supportedNetworks } from "../../constants/supportedNetworks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { BalancesState } from "../../features/balances/balancesSlice";
-import useAddressOrEnsName from "../../hooks/useAddressOrEnsName";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -26,27 +15,19 @@ import { TransactionStatusType } from "../../types/transactionTypes";
 import Icon from "../Icon/Icon";
 import {
   Container,
-  WalletHeader,
   Legend,
-  LegendLine,
   TransactionContainer,
   TransactionsContainer,
   BottomButtonContainer,
   DisconnectButton,
   NoTransactions,
   IconContainer,
-  BackButton,
-  NetworkInfoContainer,
-  NetworkName,
-  Balances,
   LegendContainer,
   MobileBackButton,
-  DesktopWalletInfoButton,
-  MobileWalletInfoButton,
-  StyledWalletMobileMenu,
   BackdropFilter,
   ConnectButton,
 } from "./TransactionsTab.styles";
+import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 
@@ -60,8 +41,6 @@ interface TransactionsTabProps {
   onConnectButtonClick: () => void;
   onDisconnectButtonClick: () => void;
   transactions: SubmittedTransaction[];
-  balances: BalancesState;
-  isUnsupportedNetwork?: boolean;
 }
 
 const TransactionsTab = ({
@@ -73,9 +52,7 @@ const TransactionsTab = ({
   onClearTransactionsChange,
   onConnectButtonClick,
   onDisconnectButtonClick,
-  transactions = [],
-  balances,
-  isUnsupportedNetwork = false,
+  transactions,
 }: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
   const shouldReduceMotion = useReducedMotion();
@@ -91,19 +68,8 @@ const TransactionsTab = ({
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const addressOrName = useAddressOrEnsName(account);
-  const walletInfoText = useMemo(() => {
-    return isUnsupportedNetwork
-      ? t("wallet.unsupported")
-      : addressOrName
-      ? addressOrName
-      : t("wallet.notConnected");
-  }, [addressOrName, isUnsupportedNetwork, t]);
-  const walletUrl = useMemo(
-    () => getAccountUrl(chainId, account),
-    [chainId, account]
-  );
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
+  useClickOutsideTransactionsTab(() => setTransactionsTabOpen(false));
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
@@ -158,8 +124,6 @@ const TransactionsTab = ({
       .sort((a, b) => b.timestamp - a.timestamp);
   }, [transactions]);
 
-  const balance = balances.values[ADDRESS_ZERO] || "0";
-
   return (
     <AnimatePresence initial={false}>
       {open && (
@@ -170,58 +134,12 @@ const TransactionsTab = ({
           initial={{ x: isMobile ? "100%" : "27.75rem" }}
           exit={{ x: isMobile ? "100%" : "27.75rem" }}
         >
-          <BackButton
-            aria-label={t("common.back")}
-            animate={{ y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-            initial={{ y: "-5rem" }}
-            exit={{ opacity: 0 }}
-            onClick={() => setTransactionsTabOpen(false)}
-          >
-            <Icon name="chevron-right" iconSize={1.5} />
-          </BackButton>
-          <WalletHeader>
-            <NetworkInfoContainer>
-              <NetworkName>
-                {isActive &&
-                  !supportedNetworks.includes(chainId) &&
-                  t("wallet.unsupported")}
-              </NetworkName>
-              {isActive && (
-                <Balances>
-                  {formatUnits(balance).substring(0, 4)}{" "}
-                  {chainCurrencies[chainId]}
-                </Balances>
-              )}
-            </NetworkInfoContainer>
-            <DesktopWalletInfoButton
-              isConnected={isActive}
-              onClick={setTransactionsTabOpen.bind(null, false)}
-            >
-              {walletInfoText}
-            </DesktopWalletInfoButton>
-            <MobileWalletInfoButton onClick={toggleWalletMobileMenu}>
-              {walletInfoText}
-            </MobileWalletInfoButton>
-            {showMobileMenu && (
-              <StyledWalletMobileMenu
-                walletUrl={walletUrl}
-                address={account}
-                onDisconnectButtonClick={onDisconnectButtonClick}
-              />
-            )}
-          </WalletHeader>
-
           <TransactionsContainer
             ref={transactionsScrollRef}
-            $overflow={overflow}
+            hasOverflow={overflow}
           >
             <LegendContainer $isVisible={!!pendingTransactions.length}>
-              <Legend>
-                <LegendLine>
-                  {t("wallet.activeTransactions").toUpperCase()}
-                </LegendLine>
-              </Legend>
+              <Legend>{t("wallet.activeTransactions").toUpperCase()}</Legend>
             </LegendContainer>
             <TransactionContainer $isEmpty={!pendingTransactions.length}>
               <AnimatePresence initial={false}>
@@ -236,10 +154,8 @@ const TransactionsTab = ({
                 ))}
               </AnimatePresence>
             </TransactionContainer>
-            <LegendContainer $isVisible>
-              <Legend>
-                <LegendLine>{t("wallet.completedTransactions")}</LegendLine>
-              </Legend>
+            <LegendContainer $isVisible={isActive}>
+              <Legend>{t("wallet.completedTransactions")}</Legend>
               <ClearTransactionsSelector onChange={onClearTransactionsChange} />
             </LegendContainer>
             <TransactionContainer>
@@ -254,7 +170,7 @@ const TransactionsTab = ({
                   />
                 ))}
               </AnimatePresence>
-              {!completedTransactions.length && (
+              {isActive && !completedTransactions.length && (
                 <NoTransactions>
                   <IconContainer>
                     <Icon name="transaction" />

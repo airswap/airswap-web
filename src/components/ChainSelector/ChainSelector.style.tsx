@@ -7,7 +7,6 @@ import { IconButtonStyle } from "../IconButton/IconButton.styles";
 
 type ContainerProps = {
   isOpen: boolean;
-  shiftLeft: boolean;
 };
 
 type ArrowIconProps = {
@@ -16,16 +15,6 @@ type ArrowIconProps = {
 
 export const Container = styled.div<ContainerProps>`
   position: relative;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-
-  @media ${breakPoints.tabletPortraitUp} {
-    transform: ${({ shiftLeft }) =>
-      shiftLeft ? "translate(-12.75rem, 0)" : "0"};
-    transition: transform 0.3s ease-in-out;
-  }
 `;
 
 export const ChainSelectButton = styled.button`
@@ -33,10 +22,10 @@ export const ChainSelectButton = styled.button`
   ${InputOrButtonBorderStyle}
 
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 1rem;
 
   @media ${breakPoints.tabletPortraitUp} {
-    padding: 0 1rem;
+    padding: 0 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly} {
@@ -47,18 +36,18 @@ export const ChainSelectButton = styled.button`
 `;
 
 export const ChainIcon = styled.img`
-  width: 1.5rem;
+  width: 1rem;
 
   @media ${breakPoints.tabletPortraitUp} {
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
   }
 `;
 
 export const ChainNameText = styled.span`
   display: none;
   text-transform: uppercase;
-  font-size: 0.8rem;
-  font-weight: bold;
+  font-size: 0.9375rem;
+  font-weight: 700;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: inline;
@@ -66,8 +55,14 @@ export const ChainNameText = styled.span`
 `;
 
 export const ArrowIcon = styled.div<ArrowIconProps>`
-  margin-left: 0.5rem;
+  margin-top: 0.125rem;
+  margin-left: 0.25rem;
   transition: transform 0.3s ease-in-out;
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 
   ${({ isOpen }) => (isOpen ? "transform: rotateX(180deg);" : "")}
 `;

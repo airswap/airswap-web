@@ -18,7 +18,6 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
   const { t } = useTranslation();
 
   const { userOrders } = useAppSelector(selectMyOrdersReducer);
-  const isHome = !!(window.location.pathname === "/");
 
   return (
     <Container className={className}>
@@ -26,7 +25,7 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
         to={`/${AppRoutes.swap}`}
         isActive={(match, location) => {
           return (
-            location.pathname === `/${AppRoutes.swap}` ||
+            location.pathname.includes(AppRoutes.swap) ||
             location.pathname === "/"
           );
         }}
@@ -35,6 +34,13 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
       </NavigationNavLink>
       <NavigationNavLink
         to={`/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`}
+        isActive={(match, location) => {
+          return (
+            location.pathname.includes(AppRoutes.myOrders) ||
+            location.pathname.includes(AppRoutes.make) ||
+            location.pathname.includes(AppRoutes.order)
+          );
+        }}
       >
         {t("common.otc")}
       </NavigationNavLink>

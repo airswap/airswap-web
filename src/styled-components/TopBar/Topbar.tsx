@@ -21,7 +21,7 @@ export const TopBar = styled.div`
   width: calc(100% - 3rem);
   height: 3rem;
   padding: 1.5rem;
-  z-index: 1;
+  z-index: 30;
   pointer-events: none;
 
   > * {
@@ -110,14 +110,14 @@ export const StyledMenuButton = styled(IconButton)`
   }
 `;
 
-export const StyledSettingsButton = styled(SettingsButton)`
+export const StyledWalletButton = styled(WalletButton)`
   @media ${breakPoints.tabletPortraitUp} {
     order: 2;
     margin-right: 1rem;
   }
 `;
 
-export const StyledWalletButton = styled(WalletButton)`
+export const StyledSettingsButton = styled(SettingsButton)`
   margin-right: 0.5rem;
 
   @media ${breakPoints.tabletPortraitUp} {
