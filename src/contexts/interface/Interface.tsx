@@ -1,5 +1,6 @@
 import React, { Dispatch, FC, useEffect, useState } from "react";
 
+import useAppRouteParams from "../../hooks/useAppRouteParams";
 import useDebounce from "../../hooks/useDebounce";
 import useWindowSize from "../../hooks/useWindowSize";
 
@@ -46,6 +47,7 @@ export const InterfaceContext =
 
 const InterfaceProvider: FC = ({ children }) => {
   const { height: windowHeight } = useWindowSize();
+  const appRouteParams = useAppRouteParams();
 
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
@@ -78,6 +80,12 @@ const InterfaceProvider: FC = ({ children }) => {
       document.body.classList.remove("scroll-locked");
     }
   }, [showMobileToolbar]);
+
+  useEffect(() => {
+    setShowTransactionOverlay(false);
+    setTransactionsTabIsOpen(false);
+    setShowModalOverlay(false);
+  }, [appRouteParams.route]);
 
   return (
     <InterfaceContext.Provider

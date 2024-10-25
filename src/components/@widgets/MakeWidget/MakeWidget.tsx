@@ -63,6 +63,7 @@ import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { notifyOrderCreated } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
   Container,
@@ -375,13 +376,7 @@ const MakeWidget: FC = () => {
     }
   };
 
-  if (makeOtcStatus === "signing" || ordersStatus === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen />
-      </Container>
-    );
-  }
+  console.log(ordersStatus);
 
   if (state === MakeWidgetState.review && shouldDepositNativeToken) {
     return (
@@ -397,6 +392,10 @@ const MakeWidget: FC = () => {
           onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="deposit" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -416,6 +415,10 @@ const MakeWidget: FC = () => {
           onRestartButtonClick={restart}
           onSignButtonClick={approveToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="approve" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -437,6 +440,10 @@ const MakeWidget: FC = () => {
           onEditButtonClick={handleEditButtonClick}
           onSignButtonClick={createOrder}
         />
+
+        <TransactionOverlay isHidden={makeOtcStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
       </Container>
     );
   }
