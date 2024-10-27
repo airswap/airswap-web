@@ -376,8 +376,6 @@ const MakeWidget: FC = () => {
     }
   };
 
-  console.log(ordersStatus);
-
   if (state === MakeWidgetState.review && shouldDepositNativeToken) {
     return (
       <Container>

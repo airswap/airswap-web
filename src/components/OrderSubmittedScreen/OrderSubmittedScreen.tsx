@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -7,10 +7,11 @@ import { InfoSubHeading } from "../Typography/Typography";
 import {
   ButtonsContainer,
   Container,
-  DoneAllIcon,
   InfoContainer,
   MakeNewOrderButton,
+  StyledIcon,
   StyledInfoHeading,
+  StyledInfoSubHeading,
   StyledTransactionLink,
   TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
@@ -37,11 +38,13 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
   return (
     <Container className={className}>
       <InfoContainer>
-        <DoneAllIcon />
+        <StyledIcon name="check-circle" />
         {transaction.status === TransactionStatusType.processing && (
           <>
             <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-            <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
+            <StyledInfoSubHeading>
+              {t("orders.trackTransaction")}
+            </StyledInfoSubHeading>
           </>
         )}
         {transaction.status === TransactionStatusType.succeeded && (

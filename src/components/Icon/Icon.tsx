@@ -43,6 +43,7 @@ import {
   IconTwitter,
   IconVote,
   IconX,
+  IconCheckCircle,
 } from "./icons";
 
 type IconSet = {
@@ -67,6 +68,7 @@ export const icons: IconSet = {
   "button-x": IconX,
   campaign: IconCampaign,
   check: IconCheck,
+  "check-circle": IconCheckCircle,
   "chevron-down": IconChevronDown,
   "chevron-right": IconChevronRight,
   "chevron-up-down": IconChevronUpDown,

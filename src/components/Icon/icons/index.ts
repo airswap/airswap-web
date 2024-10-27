@@ -7,6 +7,7 @@ import IconBars from "./IconBars";
 import IconBin from "./IconBin";
 import IconCampaign from "./IconCampaign";
 import IconCheck from "./IconCheck";
+import IconCheckCircle from "./IconCheckCircle";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
 import IconChevronUpDown from "./IconChevronUpDown";
@@ -47,6 +48,7 @@ export {
   IconBin,
   IconCampaign,
   IconCheck,
+  IconCheckCircle,
   IconChevronDown,
   IconChevronRight,
   IconChevronUpDown,

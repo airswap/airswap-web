@@ -42,6 +42,10 @@ import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTo
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrderType } from "../../../types/orderTypes";
+import {
+  TransactionStatusType,
+  TransactionTypes,
+} from "../../../types/transactionTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
@@ -52,6 +56,7 @@ import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeM
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
 import SwapInputs from "../../SwapInputs/SwapInputs";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
   Container,
@@ -123,6 +128,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const hasApprovalPending = !!useApprovalPending(order.senderToken);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
+
   const { hasSufficientAllowance } = useAllowance(
     senderToken,
     senderAmount,
@@ -272,25 +278,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     }
   };
 
-  if (ordersStatus === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen />
-      </Container>
-    );
-  }
-
-  if (orderTransaction) {
-    return (
-      <OrderSubmittedScreen
-        chainId={chainId}
-        transaction={orderTransaction}
-        onMakeNewOrderButtonClick={restart}
-        onTrackTransactionButtonClick={openTransactionsTab}
-      />
-    );
-  }
-
   if (state === OrderDetailWidgetState.review && shouldDepositNativeToken) {
     return (
       <Container>
@@ -303,6 +290,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onRestartButtonClick={backToOverview}
           onSignButtonClick={depositNativeToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="deposit" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -320,11 +311,15 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="approve" />
+        </TransactionOverlay>
       </Container>
     );
   }
 
-  if (state === OrderDetailWidgetState.review && !orderTransaction) {
+  if (state === OrderDetailWidgetState.review) {
     return (
       <Container>
         <TakeOrderReview
@@ -339,6 +334,21 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onRestartButtonClick={restart}
           onSignButtonClick={takeOrder}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
+
+        <TransactionOverlay isHidden={!orderTransaction}>
+          {orderTransaction && (
+            <OrderSubmittedScreen
+              chainId={chainId}
+              transaction={orderTransaction}
+              onMakeNewOrderButtonClick={restart}
+              onTrackTransactionButtonClick={openTransactionsTab}
+            />
+          )}
+        </TransactionOverlay>
       </Container>
     );
   }
