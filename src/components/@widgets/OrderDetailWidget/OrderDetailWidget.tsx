@@ -278,7 +278,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     }
   };
 
-  if (state === OrderDetailWidgetState.review && shouldDepositNativeToken) {
+  if (
+    state === OrderDetailWidgetState.review &&
+    shouldDepositNativeToken &&
+    !orderTransaction
+  ) {
     return (
       <Container>
         <WrapReview
@@ -298,7 +302,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     );
   }
 
-  if (state === OrderDetailWidgetState.review && !hasSufficientAllowance) {
+  if (
+    state === OrderDetailWidgetState.review &&
+    !hasSufficientAllowance &&
+    !orderTransaction
+  ) {
     return (
       <Container>
         <ApproveReview
@@ -319,7 +327,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     );
   }
 
-  if (state === OrderDetailWidgetState.review) {
+  if (state === OrderDetailWidgetState.review && !orderTransaction) {
     return (
       <Container>
         <TakeOrderReview
@@ -447,6 +455,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           />
         </ModalOverlay>
       )}
+
+      <TransactionOverlay isHidden={!orderTransaction}>
+        {orderTransaction && (
+          <OrderSubmittedScreen
+            chainId={chainId}
+            transaction={orderTransaction}
+            onMakeNewOrderButtonClick={restart}
+            onTrackTransactionButtonClick={openTransactionsTab}
+          />
+        )}
+      </TransactionOverlay>
     </Container>
   );
 };

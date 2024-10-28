@@ -1,13 +1,10 @@
 import styled, { css } from "styled-components/macro";
 
-import {
-  InputOrButtonBorderStyleType2,
-  TextEllipsis,
-} from "../../style/mixins";
+import { InputOrButtonBorderStyle, TextEllipsis } from "../../style/mixins";
 import { fontWide } from "../../style/themes";
 
 export const SelectElementStyle = css`
-  ${InputOrButtonBorderStyleType2};
+  ${InputOrButtonBorderStyle};
 
   font-family: ${fontWide};
   font-size: 1rem;

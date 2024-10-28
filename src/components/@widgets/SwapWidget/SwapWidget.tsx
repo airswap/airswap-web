@@ -88,6 +88,7 @@ import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeM
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
 import TokenList from "../../TokenList/TokenList";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
 import StyledSwapWidget, {
@@ -533,35 +534,6 @@ const SwapWidget: FC = () => {
     handleActionButtonClick(ButtonActions.restart);
   };
 
-  if (ordersStatus === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen />
-      </Container>
-    );
-  }
-
-  if (activeOrderTransaction) {
-    return (
-      <Container>
-        <OrderSubmittedScreen
-          showTrackTransactionButton={
-            activeOrderTransaction.status ===
-              TransactionStatusType.processing && !transactionsTabIsOpen
-          }
-          chainId={chainId}
-          transaction={activeOrderTransaction}
-          onMakeNewOrderButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-          onTrackTransactionButtonClick={() =>
-            handleActionButtonClick(ButtonActions.trackTransaction)
-          }
-        />
-      </Container>
-    );
-  }
-
   if (state === SwapWidgetState.review && shouldApprove) {
     return (
       <Container>
@@ -576,6 +548,10 @@ const SwapWidget: FC = () => {
           onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -594,7 +570,7 @@ const SwapWidget: FC = () => {
         <WelcomeMessage>{t("marketing.welcomeMessage")}</WelcomeMessage>
 
         {isDebugMode && <StyledDebugMenu />}
-        {!isApproving && !hasSubmittedTransaction && (
+        {!isApproving && (
           <StyledSwapInputs
             baseAmount={baseAmount}
             baseTokenInfo={baseTokenInfo}
@@ -722,6 +698,29 @@ const SwapWidget: FC = () => {
             />
           </ModalOverlay>
         )}
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
+
+        <TransactionOverlay isHidden={!activeOrderTransaction}>
+          {activeOrderTransaction && (
+            <OrderSubmittedScreen
+              showTrackTransactionButton={
+                activeOrderTransaction.status ===
+                  TransactionStatusType.processing && !transactionsTabIsOpen
+              }
+              chainId={chainId}
+              transaction={activeOrderTransaction}
+              onMakeNewOrderButtonClick={() =>
+                handleActionButtonClick(ButtonActions.restart)
+              }
+              onTrackTransactionButtonClick={() =>
+                handleActionButtonClick(ButtonActions.trackTransaction)
+              }
+            />
+          )}
+        </TransactionOverlay>
       </StyledSwapWidget>
     </>
   );
