@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { GoChevronDown } from "react-icons/go";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { chainNames } from "@airswap/utils";
 
@@ -15,7 +15,6 @@ import {
 type ChainSelectorType = {
   chainId: number;
   chainSelectionOpen: boolean;
-  transactionsTabOpen: boolean;
   setChainSelectionOpen: (x: boolean) => void;
   className?: string;
 };
@@ -23,7 +22,6 @@ type ChainSelectorType = {
 const ChainSelector = ({
   chainId,
   chainSelectionOpen,
-  transactionsTabOpen,
   setChainSelectionOpen,
   className,
 }: ChainSelectorType) => {
@@ -61,7 +59,6 @@ const ChainSelector = ({
       className={className}
       ref={containerRef}
       isOpen={chainSelectionOpen}
-      shiftLeft={transactionsTabOpen}
     >
       <ChainSelectButton
         onClick={() => {
@@ -71,7 +68,7 @@ const ChainSelector = ({
         <ChainIcon src={`images/networks/${chainId}.png`} />
         <ChainNameText>{chainNames[chainId]}</ChainNameText>
         <ArrowIcon isOpen={chainSelectionOpen}>
-          <GoChevronDown />
+          <MdKeyboardArrowDown />
         </ArrowIcon>
       </ChainSelectButton>
       {chainSelectionOpen && (

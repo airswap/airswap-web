@@ -11,9 +11,11 @@ import { InfoSubHeading } from "../Typography/Typography";
 import { StyledH3 } from "../Typography/Typography.styles";
 
 type ContainerProps = {
+  isAnimating: boolean;
   isHidden: boolean;
   hasDynamicHeight: boolean;
   hasTitle: boolean;
+  hasOverflow: boolean;
 };
 
 type ScrollContainerProps = {
@@ -21,6 +23,8 @@ type ScrollContainerProps = {
 };
 
 export const ScrollContainer = styled.div<ScrollContainerProps>`
+  display: flex;
+  flex-direction: column;
   flex-grow: 99;
   width: 100%;
   height: 100%;
@@ -52,7 +56,6 @@ export const ContentContainer = styled(motion.div)`
   max-height: 47.5rem;
   min-height: 30rem;
   padding: 0 ${sizes.tradeContainerPadding};
-  backdrop-filter: blur(25px);
 
   @media ${breakPoints.phoneOnly} {
     padding: 0 ${sizes.tradeContainerMobilePadding};
@@ -69,7 +72,7 @@ export const ContentContainer = styled(motion.div)`
     height: 100%;
     background: ${(props) => props.theme.colors.darkBlue};
     filter: brightness(0.5);
-    opacity: 0.8;
+    opacity: 0.75;
     pointer-events: none;
     z-index: -1;
   }
@@ -132,29 +135,33 @@ export const OverlayActionButton = styled(Button)`
 `;
 
 const containerDynamicHeightStyle = css`
-  padding-block-start: 0;
+  padding-block-start: 5.5rem;
 
-  @media (max-height: 700px) {
+  @media ${breakPoints.bigDesktopUp} {
     padding-block-start: 2rem;
   }
 
-  @media (min-height: 800px) {
-    margin-block-start: -2rem;
+  @media ${breakPoints.phoneOnly} {
+    padding-block-start: 4.25rem;
   }
 `;
 
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  justify-content: ${(props) => (props.hasOverflow ? "flex-start" : "center")};;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: ${(props) => (props.hasDynamicHeight ? "auto" : "100%")};
+  min-height: 100vh;
+  min-height: 100svh;
   padding-block-start: 2rem;
   pointer-events: ${(props) => (props.isHidden ? "none" : "visible")};
-  z-index: 2;
+  z-index: 20;
+  overflow: ${(props) => (props.isAnimating ? "hidden" : "auto")};
 
   ${(props) => props.hasDynamicHeight && containerDynamicHeightStyle};
 }

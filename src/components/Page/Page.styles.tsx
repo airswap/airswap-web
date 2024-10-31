@@ -12,6 +12,10 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
+  background: ${(props) =>
+    props.theme.name === "dark"
+      ? "conic-gradient(from 180deg at 0% 0%, #2B71FF 0deg, #060607 360deg)"
+      : props.theme.colors.primary};
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     justify-content: flex-start;
@@ -52,7 +56,7 @@ export const StyledSocialButtons = styled(SocialButtons)`
 
   @media ${breakPoints.tabletPortraitUp} {
     display: flex;
-    position: fixed;
+    position: absolute;
     bottom: 1.5rem;
     right: 1.5rem;
   }
@@ -67,4 +71,18 @@ export const StyledSocialButtons = styled(SocialButtons)`
     padding-right: 2rem;
     padding-bottom: 1.5rem;
   }
+`;
+
+export const BlurredOverlay = styled.div<{ isVisible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  backdrop-filter: blur(20px);
+  opacity: ${(props) => (props.isVisible ? "1" : "0")};
+  transition: opacity 0.3s ease-out;
+  filter: brightness(0.5);
+  pointer-events: ${(props) => (props.isVisible ? "visible" : "none")};
 `;

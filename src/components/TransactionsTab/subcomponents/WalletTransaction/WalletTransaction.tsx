@@ -44,6 +44,8 @@ const WalletTransaction = ({
 }: WalletTransactionProps) => {
   const { t } = useTranslation();
 
+  const isActive = transaction.status === TransactionStatusType.processing;
+
   const statusText = useMemo(() => {
     return getWalletTransactionStatusText(transaction.status, t);
   }, [transaction.status, t]);
@@ -55,7 +57,12 @@ const WalletTransaction = ({
     );
 
     return (
-      <Container transition={transition} animate={animate} initial={initial}>
+      <Container
+        isActive={isActive}
+        transition={transition}
+        animate={animate}
+        initial={initial}
+      >
         <TextContainer>
           <SpanTitle>
             {t("wallet.approve", { symbol: transaction.token.symbol })}
@@ -82,7 +89,12 @@ const WalletTransaction = ({
     );
 
     return (
-      <Container transition={transition} animate={animate} initial={initial}>
+      <Container
+        isActive={isActive}
+        transition={transition}
+        animate={animate}
+        initial={initial}
+      >
         <TextContainer>
           <SpanTitle>{t("orders.cancelOrder")}</SpanTitle>
           <SpanSubtitle>
@@ -115,7 +127,12 @@ const WalletTransaction = ({
     );
 
     return (
-      <Container transition={transition} animate={animate} initial={initial}>
+      <Container
+        isActive={isActive}
+        transition={transition}
+        animate={animate}
+        initial={initial}
+      >
         {transaction.status === TransactionStatusType.processing && (
           <RotatedIcon name="swap" iconSize={1.25} />
         )}
