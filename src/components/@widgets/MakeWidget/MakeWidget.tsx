@@ -59,10 +59,11 @@ import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderRevie
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import { SelectOption } from "../../Dropdown/Dropdown";
 import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
-import Overlay from "../../Overlay/Overlay";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { notifyOrderCreated } from "../../Toasts/ToastController";
 import TokenList from "../../TokenList/TokenList";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
   Container,
@@ -375,14 +376,6 @@ const MakeWidget: FC = () => {
     }
   };
 
-  if (makeOtcStatus === "signing" || ordersStatus === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen />
-      </Container>
-    );
-  }
-
   if (state === MakeWidgetState.review && shouldDepositNativeToken) {
     return (
       <Container>
@@ -397,6 +390,10 @@ const MakeWidget: FC = () => {
           onRestartButtonClick={restart}
           onSignButtonClick={depositNativeToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="deposit" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -416,6 +413,10 @@ const MakeWidget: FC = () => {
           onRestartButtonClick={restart}
           onSignButtonClick={approveToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="approve" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -437,6 +438,10 @@ const MakeWidget: FC = () => {
           onEditButtonClick={handleEditButtonClick}
           onSignButtonClick={createOrder}
         />
+
+        <TransactionOverlay isHidden={makeOtcStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -534,7 +539,7 @@ const MakeWidget: FC = () => {
           />
         )}
 
-      <Overlay
+      <ModalOverlay
         hasDynamicHeight
         onClose={() => setShowTokenSelectModal(null)}
         title={t("common.selectToken")}
@@ -550,14 +555,14 @@ const MakeWidget: FC = () => {
             setShowTokenSelectModal(null);
           }}
         />
-      </Overlay>
-      <Overlay
+      </ModalOverlay>
+      <ModalOverlay
         title={t("information.counterParty.title")}
         onClose={() => toggleShowOrderTypeInfo(false)}
         isHidden={!showOrderTypeInfo}
       >
         <OrderTypesModal onCloseButtonClick={() => toggleShowOrderTypeInfo()} />
-      </Overlay>
+      </ModalOverlay>
       <ProtocolFeeOverlay
         isHidden={showFeeInfo}
         onCloseButtonClick={() => toggleShowFeeInfo(false)}

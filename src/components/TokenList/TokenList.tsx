@@ -16,7 +16,7 @@ import {
   removeCustomToken,
 } from "../../features/metadata/metadataSlice";
 import useWindowSize from "../../hooks/useWindowSize";
-import { OverlayActionButton } from "../Overlay/Overlay.styles";
+import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,

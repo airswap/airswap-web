@@ -4,7 +4,7 @@ import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogograph
 import { InputTextStyle } from "../../style/mixins";
 import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
-import { ScrollContainer } from "../Overlay/Overlay.styles";
+import { ScrollContainer } from "../ModalOverlay/ModalOverlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 

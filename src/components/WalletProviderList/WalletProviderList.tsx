@@ -3,7 +3,7 @@ import { useReducedMotion } from "framer-motion";
 import walletProviders, {
   WalletProvider,
 } from "../../web3-connectors/walletProviders";
-import { overlayShowHideAnimationDuration } from "../Overlay/Overlay";
+import { overlayShowHideAnimationDuration } from "../ModalOverlay/ModalOverlay";
 import { StyledWalletProviderList } from "./WalletProviderList.styles";
 import WalletProviderButton from "./subcomponents/WalletProviderButton/WalletProviderButton";
 

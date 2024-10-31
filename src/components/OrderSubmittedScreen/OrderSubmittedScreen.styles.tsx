@@ -1,8 +1,10 @@
 import { MdDoneAll } from "react-icons/md";
 
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
+import { fontWide } from "../../style/themes";
 import Button from "../Button/Button";
+import Icon from "../Icon/Icon";
 import TransactionLink from "../TransactionLink/TransactionLink";
 import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 
@@ -19,12 +21,20 @@ export const InfoContainer = styled.div`
   align-items: center;
   text-align: center;
   flex-grow: 1;
-  padding-bottom: 4rem;
+  padding-bottom: 2rem;
+`;
+
+export const StyledInfoSubHeading = styled(InfoSubHeading)`
+  font-weight: 500;
 `;
 
 export const StyledInfoHeading = styled(InfoHeading)`
-  & + ${InfoSubHeading} {
-    margin-top: 0.25rem;
+  margin-top: 1.75rem;
+  font-size: 1.875rem;
+  font-weight: 700;
+
+  & + ${StyledInfoSubHeading} {
+    margin-top: 1.25rem;
   }
 `;
 
@@ -32,23 +42,32 @@ export const StyledTransactionLink = styled(TransactionLink)`
   margin-top: 1rem;
 `;
 
-export const DoneAllIcon = styled(MdDoneAll)`
-  font-size: 8rem;
-  margin: 2rem auto;
+export const StyledIcon = styled(Icon)`
+  width: 3.6875rem;
+  height: 3.6875rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
 `;
 
-export const MakeNewOrderButton = styled(Button)`
-  width: 100%;
+const ButtonStyle = css`
+  width: fit-content;
+  padding-inline: 3.5rem;
 `;
 
+export const MakeNewOrderButton = styled(Button)`
+  ${ButtonStyle};
+`;
 export const TrackTransactionButton = styled(Button)`
-  width: 100%;
+  ${ButtonStyle};
 `;

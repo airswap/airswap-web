@@ -1,6 +1,9 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
+import {
+  InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
+} from "../../../../../style/mixins";
 import { fontWide } from "../../../../../style/themes";
 import Dropdown from "../../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../../Dropdown/Dropdown.styles";
@@ -48,7 +51,7 @@ export const Input = styled.input`
   all: unset;
 
   ${SelectorStyle};
-  ${InputOrButtonBorderStyleType2};
+  ${InputOrButtonBorderStyle};
 
   width: 2.5rem;
   text-align: center;

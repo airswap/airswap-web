@@ -8,7 +8,6 @@ import useDebounce from "../../hooks/useDebounce";
 import useElementSize from "../../hooks/useElementSize";
 import useIsOverflowing from "../../hooks/useIsOverflowing";
 import { useKeyPress } from "../../hooks/useKeyPress";
-import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import {
   Container,
   StyledTitle,
@@ -17,9 +16,9 @@ import {
   TitleSubContainer,
   StyledInfoSubHeading,
   StyledCloseButton,
-} from "./Overlay.styles";
+} from "./ModalOverlay.styles";
 
-export type OverlayProps = {
+export type ModalOverlayProps = {
   /**
    * Function to close component
    */
@@ -43,7 +42,7 @@ export type OverlayProps = {
 
 export const overlayShowHideAnimationDuration = 0.3;
 
-const Overlay: FC<OverlayProps> = ({
+const ModalOverlay: FC<ModalOverlayProps> = ({
   onClose,
   title = "",
   hasDynamicHeight = false,
@@ -60,7 +59,7 @@ const Overlay: FC<OverlayProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const { height: elementHeight } = useElementSize(ref);
 
-  const { setOverlayHeight, setShowOverlay, transactionsTabIsOpen } =
+  const { setOverlayHeight, setShowModalOverlay } =
     useContext(InterfaceContext);
   const [, hasOverflow] = useIsOverflowing(ref);
 
@@ -78,14 +77,14 @@ const Overlay: FC<OverlayProps> = ({
 
   useEffect(() => {
     if (isHidden) {
-      setShowOverlay(false);
+      setShowModalOverlay(false);
     }
   }, [isHidden]);
 
   useDebounce(
     () => {
       // Make sure the animation ended before setting the showOverlay state
-      setShowOverlay(!isHidden);
+      setShowModalOverlay(!isHidden);
     },
     250,
     [isHidden]
@@ -141,4 +140,4 @@ const Overlay: FC<OverlayProps> = ({
   );
 };
 
-export default Overlay;
+export default ModalOverlay;

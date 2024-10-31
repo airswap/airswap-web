@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../style/sizes";
-import { ScrollContainer } from "../Overlay/Overlay.styles";
+import { ScrollContainer } from "../ModalOverlay/ModalOverlay.styles";
 
 export const Container = styled.div`
   display: flex;

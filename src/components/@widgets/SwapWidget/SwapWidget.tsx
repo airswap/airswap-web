@@ -85,9 +85,10 @@ import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWi
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScreen";
-import Overlay from "../../Overlay/Overlay";
 import TokenList from "../../TokenList/TokenList";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container } from "../MakeWidget/MakeWidget.styles";
 import StyledSwapWidget, {
@@ -533,35 +534,6 @@ const SwapWidget: FC = () => {
     handleActionButtonClick(ButtonActions.restart);
   };
 
-  if (ordersStatus === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen />
-      </Container>
-    );
-  }
-
-  if (activeOrderTransaction) {
-    return (
-      <Container>
-        <OrderSubmittedScreen
-          showTrackTransactionButton={
-            activeOrderTransaction.status ===
-              TransactionStatusType.processing && !transactionsTabIsOpen
-          }
-          chainId={chainId}
-          transaction={activeOrderTransaction}
-          onMakeNewOrderButtonClick={() =>
-            handleActionButtonClick(ButtonActions.restart)
-          }
-          onTrackTransactionButtonClick={() =>
-            handleActionButtonClick(ButtonActions.trackTransaction)
-          }
-        />
-      </Container>
-    );
-  }
-
   if (state === SwapWidgetState.review && shouldApprove) {
     return (
       <Container>
@@ -576,6 +548,10 @@ const SwapWidget: FC = () => {
           onRestartButtonClick={backToOverview}
           onSignButtonClick={approveToken}
         />
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
       </Container>
     );
   }
@@ -594,7 +570,7 @@ const SwapWidget: FC = () => {
         <WelcomeMessage>{t("marketing.welcomeMessage")}</WelcomeMessage>
 
         {isDebugMode && <StyledDebugMenu />}
-        {!isApproving && !hasSubmittedTransaction && (
+        {!isApproving && (
           <StyledSwapInputs
             baseAmount={baseAmount}
             baseTokenInfo={baseTokenInfo}
@@ -663,7 +639,7 @@ const SwapWidget: FC = () => {
           />
         </ButtonContainer>
 
-        <Overlay
+        <ModalOverlay
           hasDynamicHeight
           isHidden={!showTokenSelectModalFor}
           title={t("common.selectToken")}
@@ -682,16 +658,16 @@ const SwapWidget: FC = () => {
             supportedTokenAddresses={supportedTokens}
             onAfterRemoveActiveToken={handleRemoveActiveToken}
           />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("validatorErrors.unableSwap")}
           subTitle={t("validatorErrors.swapFail")}
           onClose={backToOverview}
           isHidden={!ordersErrors.length}
         >
           <ErrorList errors={ordersErrors} onBackButtonClick={backToOverview} />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("information.gasFreeSwaps.title")}
           onClose={() => setShowGasFeeInfo(false)}
           isHidden={!showGasFeeInfo}
@@ -699,8 +675,8 @@ const SwapWidget: FC = () => {
           <GasFreeSwapsModal
             onCloseButtonClick={() => setShowGasFeeInfo(false)}
           />
-        </Overlay>
-        <Overlay
+        </ModalOverlay>
+        <ModalOverlay
           title={t("information.protocolFee.title")}
           onClose={() => setProtocolFeeInfo(false)}
           isHidden={!protocolFeeInfo}
@@ -708,9 +684,9 @@ const SwapWidget: FC = () => {
           <ProtocolFeeModal
             onCloseButtonClick={() => setProtocolFeeInfo(false)}
           />
-        </Overlay>
+        </ModalOverlay>
         {baseTokenInfo && quoteTokenInfo && (
-          <Overlay
+          <ModalOverlay
             title={t("orders.availableOrders")}
             isHidden={!showViewAllQuotes}
             onClose={() => toggleShowViewAllQuotes()}
@@ -720,8 +696,31 @@ const SwapWidget: FC = () => {
               signerToken={quoteTokenInfo}
               onSwapLinkClick={() => toggleShowViewAllQuotes()}
             />
-          </Overlay>
+          </ModalOverlay>
         )}
+
+        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
+          <WalletSignScreen type="signature" />
+        </TransactionOverlay>
+
+        <TransactionOverlay isHidden={!activeOrderTransaction}>
+          {activeOrderTransaction && (
+            <OrderSubmittedScreen
+              showTrackTransactionButton={
+                activeOrderTransaction.status ===
+                  TransactionStatusType.processing && !transactionsTabIsOpen
+              }
+              chainId={chainId}
+              transaction={activeOrderTransaction}
+              onMakeNewOrderButtonClick={() =>
+                handleActionButtonClick(ButtonActions.restart)
+              }
+              onTrackTransactionButtonClick={() =>
+                handleActionButtonClick(ButtonActions.trackTransaction)
+              }
+            />
+          )}
+        </TransactionOverlay>
       </StyledSwapWidget>
     </>
   );
