@@ -8,7 +8,10 @@ export const Container = styled.div`
   align-items: center;
   width: 100%;
   height: 3rem;
-  margin-top: 1.5rem;
+
+  & + & {
+    margin-top: 1.5rem;
+  }
 `;
 
 export const ErrorTextContainer = styled.div`
