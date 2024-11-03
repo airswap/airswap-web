@@ -9,6 +9,7 @@ import {
   InputOrButtonBorderStyle,
   TextEllipsis,
 } from "../../style/mixins";
+import { sizes } from "../../style/sizes";
 import { fontWide } from "../../style/themes";
 import AccountLink from "../AccountLink/AccountLink";
 import TokenLogo from "../TokenLogo/TokenLogo";
@@ -233,15 +234,11 @@ export const TokenSelectContainer = styled.div<{
   border-radius: 0.75rem;
 
   &:first-of-type {
-    margin-bottom: 0.75rem;
+    margin-bottom: ${sizes.widgetGutter};
   }
 
   @media ${breakPoints.phoneOnly} {
     height: 5.75rem;
-
-    &:first-of-type {
-      margin-bottom: 0.625rem;
-    }
   }
 
   ${TokenSelectRightGradientBackground}, ${TokenSelectRightBorderBackground} {

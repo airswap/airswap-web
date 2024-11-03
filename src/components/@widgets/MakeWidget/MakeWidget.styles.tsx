@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../style/breakpoints";
-import { SelectLabel } from "../../../styled-components/Select/Select";
+import { sizes } from "../../../style/sizes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import Tooltip from "../../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
@@ -22,48 +22,35 @@ export const StyledSwapInputs = styled(SwapInputs)`
 `;
 
 export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
-  margin-bottom: 1rem;
-  width: calc(50% - 1rem);
-  
-  ${SelectLabel} {
-    flex-grow: 1;
-    max-width: 4.375rem;
-  }
-
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
+  margin-bottom: ${sizes.widgetGutter};
+  width: calc(46% - ${sizes.widgetGutter});
 }
 `;
 
 export const OrderTypeSelectorAndExpirySelectorWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
-
-  @media ${breakPoints.phoneOnly} {
-    flex-direction: column;
-    align-items: center;
-  }
+  margin-top: ${sizes.widgetGutter};
 `;
 
 export const StyledExpirySelector = styled(ExpirySelector)<{
   hideExpirySelector: boolean;
 }>`
+  width: 54%;
   transition: opacity 0.3s ease-out;
 
-  margin-left: 1rem;
+  margin-left: ${sizes.widgetGutter};
   visibility: ${({ hideExpirySelector }) =>
     hideExpirySelector ? "hidden" : "visible"};
 `;
 
 export const StyledAddressInput = styled(AddressInput)`
-  margin-bottom: 1rem;
+  margin-bottom: ${sizes.widgetGutter};
   height: 3.5rem;
 `;
 
 export const StyledActionButtons = styled(ActionButtons)`
-  margin-block-start: 1.25rem;
+  margin-block-start: 0.5rem;
 `;
 
 export const StyledInfoSection = styled(InfoSection)`

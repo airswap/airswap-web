@@ -26,12 +26,11 @@ export const SelectLabel = styled.div`
 
   display: flex;
   align-items: center;
-  border-top-left-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
   border-inline-end: unset;
-  padding-inline: 0.5rem;
+  padding-inline: 0.875rem;
   color: ${({ theme }) => theme.colors.lightGrey};
-  background: ${({ theme }) => theme.colors.darkGrey};
 
   &:hover,
   :active,

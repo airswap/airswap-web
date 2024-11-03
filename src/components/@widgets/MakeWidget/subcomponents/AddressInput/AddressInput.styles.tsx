@@ -1,21 +1,27 @@
 import styled from "styled-components/macro";
 
-import { InputTextStyle } from "../../../../../style/mixins";
+import {
+  BorderlessButtonStyleType2,
+  InputTextStyle,
+} from "../../../../../style/mixins";
 import IconButton from "../../../../IconButton/IconButton";
 import TextInput from "../../../../TextInput/TextInput";
 import { StyledInput } from "../../../../TextInput/TextInput.styles";
 
 export const Wrapper = styled.div`
   position: relative;
-  background: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.darkGrey : theme.colors.primaryLight};
 `;
 
 export const StyledIconButton = styled(IconButton)`
   position: absolute;
   top: 0.825rem;
   right: 0.5rem;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.lightGrey};
+
+  &:hover,
+  &:focus {
+    color: ${({ theme }) => theme.colors.white};
+  }
 `;
 
 export const Input = styled(TextInput)`

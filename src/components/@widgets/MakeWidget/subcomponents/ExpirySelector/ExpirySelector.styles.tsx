@@ -15,7 +15,6 @@ export const SelectorStyle = css`
   font-family: ${fontWide};
   font-weight: 500;
   color: ${({ theme }) => theme.colors.carteBlanche};
-  background: ${({ theme }) => theme.colors.darkGrey};
 
   @supports (-moz-appearance: none) {
     padding-top: 0.125rem;
@@ -64,6 +63,7 @@ export const Input = styled.input`
 `;
 
 export const StyledDropdown = styled(Dropdown)`
+  flex-grow: 1;
   margin-inline-start: -1px;
 
   ${SelectButtonText} {
