@@ -21,7 +21,6 @@ const ButtonStyle = css`
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   overflow: hidden;
-  background: ${({ theme }) => theme.colors.darkGrey};
 
   @supports (-moz-appearance: none) {
     padding-top: 0.125rem;
@@ -128,8 +127,8 @@ const SelectStyle = css`
   ${InputOrButtonBorderStyle};
   ${ButtonStyle};
 
-  border-top-right-radius: 1rem;
-  border-bottom-right-radius: 1rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
   padding-right: 0.5rem;
 
   &:focus + ${SelectOptions} {
@@ -147,7 +146,7 @@ export const NativeSelectWrapper = styled.div`
 
 export const NativeSelectIcon = styled(Icon)`
   position: absolute;
-  top: 0.25rem;
+  top: 0.75rem;
   right: 0.5625rem;
   pointer-events: none;
   z-index: 2;
@@ -159,6 +158,7 @@ export const NativeSelect = styled.select`
 
   appearance: none;
   padding-right: 2rem;
+  background: none;
 `;
 
 export const Wrapper = styled.div`
@@ -195,5 +195,5 @@ export const Sizer = styled.div`
 `;
 
 export const StyledIcon = styled(Icon)`
-  translate: 0 0.125rem;
+  translate: 0 1px;
 `;

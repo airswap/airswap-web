@@ -56,7 +56,7 @@ export const InputOrButtonBorderStyleType2 = css`
 `;
 
 export const InputTextStyle = css`
-  ${InputOrButtonBorderStyleType2};
+  ${InputOrButtonBorderStyle};
 
   line-height: 2.25;
   padding: 0.25rem 0.625rem;

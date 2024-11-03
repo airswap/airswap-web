@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -73,7 +73,6 @@ import {
   StyledExpirySelector,
   StyledInfoSection,
   StyledOrderTypeSelector,
-  StyledRateField,
   StyledSwapInputs,
   StyledTooltip,
   TooltipContainer,
@@ -525,19 +524,6 @@ const MakeWidget: FC = () => {
         onBackButtonClick={handleBackButtonClick}
         onActionButtonClick={handleActionButtonClick}
       />
-
-      {makerTokenInfo &&
-        takerTokenInfo &&
-        !hasMissingMakerAmount &&
-        !hasMissingTakerAmount && (
-          <StyledRateField
-            token1={makerTokenInfo.symbol}
-            token2={takerTokenInfo.symbol}
-            rate={new BigNumber(takerAmount).dividedBy(
-              new BigNumber(makerAmount)
-            )}
-          />
-        )}
 
       <ModalOverlay
         hasDynamicHeight

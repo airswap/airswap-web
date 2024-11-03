@@ -6,7 +6,7 @@ import {
   SelectWrapper,
 } from "../../../../../styled-components/Select/Select";
 import { SelectOption } from "../../../../Dropdown/Dropdown";
-import { StyledDropdown } from "./OrderTypeSelector.styles";
+import { StyledDropdown, StyledSelectLabel } from "./OrderTypeSelector.styles";
 
 export type OrderTypeSelectorProps = {
   isDisabled?: boolean;
@@ -27,7 +27,7 @@ const OrderTypeSelector: FC<OrderTypeSelectorProps> = ({
 
   return (
     <SelectWrapper className={className} isDisabled={isDisabled}>
-      <SelectLabel>{t("common.for")}</SelectLabel>
+      <StyledSelectLabel>{t("common.for")}</StyledSelectLabel>
       <StyledDropdown
         isDisabled={isDisabled}
         selectedOption={selectedOrderTypeOption}
