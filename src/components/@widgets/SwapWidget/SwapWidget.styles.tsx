@@ -18,13 +18,14 @@ export const WelcomeMessage = styled.h2`
   font-size: 1.125rem;
 `;
 
-export const InfoContainer = styled.div`
+export const InfoContainer = styled.div<{ hasQuoteText: boolean }>`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: ${(props) =>
+    props.hasQuoteText ? "space-between" : "center"};
   align-items: center;
   gap: 0.25rem;
-  margin-block-start: 1rem;
+  margin-block-start: 2rem;
+  padding-inline: 1rem;
   text-align: center;
 `;
 
@@ -36,7 +37,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 1.25rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 `;
 
 export const StyledSwapWidget = styled.div`

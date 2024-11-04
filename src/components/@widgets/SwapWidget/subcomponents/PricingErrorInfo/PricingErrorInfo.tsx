@@ -18,7 +18,6 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
         <StyledInfoHeading>
           Requested price under minimum amount
         </StyledInfoHeading>
-        <InfoSubHeading>Retry order with higher price</InfoSubHeading>
       </>
     );
   }
@@ -27,7 +26,6 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
     return (
       <>
         <StyledInfoHeading>No servers found at this time</StyledInfoHeading>
-        <InfoSubHeading>Please retry later</InfoSubHeading>
       </>
     );
   }
@@ -35,7 +33,6 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
   return (
     <>
       <StyledInfoHeading>{t("orders.tokenPairUnavailable")}</StyledInfoHeading>
-      <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
     </>
   );
 };

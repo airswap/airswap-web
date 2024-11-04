@@ -103,8 +103,7 @@
   },
   "marketing": {
     "includesFee": "Includes 0.07% fee",
-    "welcomeHeading": "Secure and efficient P2P swaps",
-    "welcomeMessage": "Zero slippage atomic swaps"
+    "welcomeMessage": "Swap now with zero slippage."
   },
   "orders": {
     "actionCannotBeReversed": "This action cannot be reversed",
@@ -150,7 +149,7 @@
     "makeNewSwap": "New swap",
     "moreInformation": "More information",
     "nativeCurrencyMaxInfoText": "{{amount}}. This amount is calculated after subtracting a {{fee}} gas fee from your total balance.",
-    "newQuoteIn": "New Quote In",
+    "newQuoteIn": "New quote in",
     "noIndexerOrdersFound": "No orders found for this token pair",
     "noIndexersFound": "No indexer nodes found",
     "orderSuccessfullyCreated": "Order successfully created.",

@@ -105,6 +105,7 @@ import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
+import QuoteText from "./subcomponents/QuoteText/QuoteText";
 
 export enum SwapWidgetState {
   overview = "overview",
@@ -567,8 +568,6 @@ const SwapWidget: FC = () => {
           expiry={quote.bestOrder?.expiry}
         />
 
-        <WelcomeMessage>{t("marketing.welcomeMessage")}</WelcomeMessage>
-
         {isDebugMode && <StyledDebugMenu />}
         {!isApproving && (
           <StyledSwapInputs
@@ -598,25 +597,27 @@ const SwapWidget: FC = () => {
             onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
           />
         )}
-        <InfoContainer>
+        <InfoContainer hasQuoteText={!!quote.bestOrder}>
           <InfoSection
             failedToFetchAllowances={isAllowancesOrBalancesFailed}
             hasSelectedCustomServer={!!customServerUrl}
-            isApproving={isApproving}
             isConnected={isActive}
             isFetchingOrders={quote.isLoading}
             isNetworkUnsupported={!isNetworkSupported}
-            isWrapping={isWrapping}
-            showViewAllQuotes={indexerOrders.length > 0}
             bestQuote={quote.bestQuote}
             baseTokenInfo={baseTokenInfo}
             baseAmount={baseAmount}
             pricingError={quote.error}
             serverUrl={customServerUrl}
             quoteTokenInfo={quoteTokenInfo}
-            onClearServerUrlButtonClick={handleClearServerUrl}
-            onViewAllQuotesButtonClick={() => toggleShowViewAllQuotes()}
           />
+
+          {quote.bestOrder && (
+            <QuoteText
+              isGasFreeTrade={quote.bestOrderType === ProtocolIds.LastLookERC20}
+              expiry={quote.bestOrder?.expiry}
+            />
+          )}
         </InfoContainer>
         <ButtonContainer>
           <ActionButtons
