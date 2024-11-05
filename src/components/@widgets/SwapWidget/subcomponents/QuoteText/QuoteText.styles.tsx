@@ -10,6 +10,15 @@ export const Container = styled.div`
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
+export const GasFreeButton = styled.button`
+  color: ${(props) => props.theme.colors.lightGrey};
+
+  &:hover,
+  &:focus {
+    color: ${(props) => props.theme.colors.white};
+  }
+`;
+
 export const StyledTimer = styled(Timer)`
   min-width: 2.125rem;
   text-align: left;

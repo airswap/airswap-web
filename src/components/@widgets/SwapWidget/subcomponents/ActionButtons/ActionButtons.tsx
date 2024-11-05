@@ -85,6 +85,7 @@ const ActionButtons: FC<{
   // be disabled. These disabled states never have a back button.
   let isDisabled =
     walletIsActive &&
+    !hasError &&
     !requiresReload &&
     !isNetworkUnsupported &&
     (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);

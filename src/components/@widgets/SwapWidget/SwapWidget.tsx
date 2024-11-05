@@ -560,13 +560,7 @@ const SwapWidget: FC = () => {
   return (
     <>
       <StyledSwapWidget>
-        <StyledHeader
-          isLastLook={quote.bestOrderType === ProtocolIds.LastLookERC20}
-          title={isApproving ? t("orders.approve") : t("common.rfq")}
-          isQuote={!hasSubmittedTransaction}
-          onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
-          expiry={quote.bestOrder?.expiry}
-        />
+        <StyledHeader />
 
         {isDebugMode && <StyledDebugMenu />}
         {!isApproving && (
@@ -616,6 +610,7 @@ const SwapWidget: FC = () => {
             <QuoteText
               isGasFreeTrade={quote.bestOrderType === ProtocolIds.LastLookERC20}
               expiry={quote.bestOrder?.expiry}
+              onGasFreeTradeButtonClick={() => setShowGasFeeInfo(true)}
             />
           )}
         </InfoContainer>

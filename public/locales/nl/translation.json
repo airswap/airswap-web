@@ -41,9 +41,9 @@
         "vote": "Stem"
     },
     "information": {
-        "gasFreeSwaps.paragraph": "Je hebt een gasless swap gevonden!",
+        "gasFreeSwaps.paragraph": "Je hebt een gas free swap gevonden!",
         "gasFreeSwaps.paragraph2": "Bij sommige swaps is het niet nodig om een gas fee te betalen omdat de transactie wordt afgehandeld door de maker. Je moet nog wel de swap ondertekenen met je wallet op verder te kunnen gaan.",
-        "gasFreeSwaps.title": "Gasless swaps",
+        "gasFreeSwaps.title": "Gas free swaps",
         "join.ambassador": "Ambassadeur",
         "join.author": "Auteur",
         "join.developer": "Ontwikkelaar",
@@ -81,7 +81,7 @@
         "findingBestPrice": "Zoeken naar de beste prijzen...",
         "from": "Van",
         "gasCost": "Gas kosten",
-        "gasFreeTrade": "Gasless swap",
+        "gasFreeTrade": "Gas free swap",
         "insufficientBalance": "Onvoldoende {{symbol}} balans",
         "moreInformation": "Meer informatie",
         "newQuoteIn": "Nieuwe prijsopgave in",
