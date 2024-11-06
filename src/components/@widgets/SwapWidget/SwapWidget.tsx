@@ -110,7 +110,6 @@ import QuoteText from "./subcomponents/QuoteText/QuoteText";
 export enum SwapWidgetState {
   overview = "overview",
   requestPrices = "requestPrices",
-  review = "review",
 }
 
 const SwapWidget: FC = () => {
@@ -277,12 +276,6 @@ const SwapWidget: FC = () => {
       setIsWrapping(false);
     }
   }, [hasDepositOrWithdrawalPending]);
-
-  useEffect(() => {
-    if (hasApprovalSuccess && SwapWidgetState.review) {
-      setState(SwapWidgetState.requestPrices);
-    }
-  }, [hasApprovalSuccess]);
 
   useEffect(() => {
     if (approvalTransaction) {
@@ -472,7 +465,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.approve:
-        setState(SwapWidgetState.review);
+        approveToken();
         break;
 
       case ButtonActions.takeQuote:
@@ -523,39 +516,9 @@ const SwapWidget: FC = () => {
     setIsApproving(false);
   };
 
-  const handleEditButtonClick = () => {
-    setState(SwapWidgetState.overview);
-  };
-
-  const handleClearServerUrl = () => {
-    dispatch(setCustomServerUrl(null));
-  };
-
   const backToOverview = () => {
     handleActionButtonClick(ButtonActions.restart);
   };
-
-  if (state === SwapWidgetState.review && shouldApprove) {
-    return (
-      <Container>
-        <ApproveReview
-          isLoading={hasApprovalPending}
-          amount={baseAmount || "0"}
-          errors={ordersErrors}
-          readableAllowance={readableAllowance}
-          token={baseTokenInfo}
-          wrappedNativeToken={wrappedNativeTokenInfo}
-          onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={backToOverview}
-          onSignButtonClick={approveToken}
-        />
-
-        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
-          <WalletSignScreen type="signature" />
-        </TransactionOverlay>
-      </Container>
-    );
-  }
 
   return (
     <>
@@ -563,34 +526,35 @@ const SwapWidget: FC = () => {
         <StyledHeader />
 
         {isDebugMode && <StyledDebugMenu />}
-        {!isApproving && (
-          <StyledSwapInputs
-            baseAmount={baseAmount}
-            baseTokenInfo={baseTokenInfo}
-            quoteTokenInfo={quoteTokenInfo}
-            side="sell"
-            tradeNotAllowed={!!quote.error}
-            isRequestingQuoteAmount={quote.isLoading}
-            // Note that using the quoteAmount from tradeTerms will stop this
-            // updating when the user clicks the take button.
-            quoteAmount={formattedQuoteAmount}
-            disabled={!isActive || isAllowancesOrBalancesFailed}
-            readOnly={
-              !!quote.bestQuote ||
-              !!quote.error ||
-              isWrapping ||
-              !isActive ||
-              !isNetworkSupported
-            }
-            showMaxButton={showMaxButton}
-            showMaxInfoButton={showMaxInfoButton}
-            maxAmount={maxAmount}
-            onBaseAmountChange={setBaseAmount}
-            onChangeTokenClick={setShowTokenSelectModalFor}
-            onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
-            onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
-          />
-        )}
+
+        <StyledSwapInputs
+          baseAmount={baseAmount}
+          baseTokenInfo={baseTokenInfo}
+          quoteTokenInfo={quoteTokenInfo}
+          side="sell"
+          tradeNotAllowed={!!quote.error}
+          isRequestingQuoteAmount={quote.isLoading}
+          // Note that using the quoteAmount from tradeTerms will stop this
+          // updating when the user clicks the take button.
+          quoteAmount={formattedQuoteAmount}
+          disabled={!isActive || isAllowancesOrBalancesFailed}
+          readOnly={
+            !!quote.bestQuote ||
+            !!quote.error ||
+            isWrapping ||
+            !isActive ||
+            isApproving ||
+            !isNetworkSupported
+          }
+          showMaxButton={showMaxButton}
+          showMaxInfoButton={showMaxInfoButton}
+          maxAmount={maxAmount}
+          onBaseAmountChange={setBaseAmount}
+          onChangeTokenClick={setShowTokenSelectModalFor}
+          onMaxButtonClick={() => setBaseAmount(maxAmount || "0")}
+          onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
+        />
+
         <InfoContainer hasQuoteText={!!quote.bestOrder}>
           <InfoSection
             failedToFetchAllowances={isAllowancesOrBalancesFailed}
@@ -616,17 +580,18 @@ const SwapWidget: FC = () => {
         </InfoContainer>
         <ButtonContainer>
           <ActionButtons
-            walletIsActive={isActive}
-            isNetworkUnsupported={!isNetworkSupported}
-            requiresReload={isAllowancesOrBalancesFailed}
             baseTokenInfo={baseTokenInfo}
             quoteTokenInfo={quoteTokenInfo}
             hasAmount={
               !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
             }
+            hasApprovalPending={hasApprovalPending}
             hasQuote={!!quote.bestQuote}
             hasSufficientBalance={!insufficientBalance}
+            isWalletActive={isActive}
+            isNetworkUnsupported={!isNetworkSupported}
             needsApproval={!!baseToken && shouldApprove}
+            requiresReload={isAllowancesOrBalancesFailed}
             hasError={!!quote.error}
             onButtonClicked={(action) => handleActionButtonClick(action)}
             isLoading={

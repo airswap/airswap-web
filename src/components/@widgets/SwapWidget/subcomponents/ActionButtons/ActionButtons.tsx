@@ -11,6 +11,7 @@ export enum ButtonActions {
   restart,
   goBack,
   approve,
+  approving,
   reloadPage,
   requestQuotes,
   takeQuote,
@@ -24,48 +25,39 @@ const buttonTextMapping: Record<ButtonActions, string> = {
   [ButtonActions.restart]: "orders.makeNewSwap",
   [ButtonActions.goBack]: "common.back",
   [ButtonActions.approve]: "orders.approve",
+  [ButtonActions.approving]: "orders.approving",
   [ButtonActions.requestQuotes]: "orders.continue",
   [ButtonActions.takeQuote]: "orders.takeQuote",
   [ButtonActions.trackTransaction]: "orders.track",
 };
 
-/**
- * This can either be:
- *  - Connect wallet button (Wallet not connected, OR isConnecting [loading])
- *  - Invisible (approving and swapping - TBD - could be overlay)
- *  - Back button (pair unavailable)
- *  - New swap button (to restart after order has been submitted)
- *  - "Back" and "Complete Swap" buttons (when ready to go)
- *  - "Back" and "Approve" buttons
- *  - A disabled button containing reason text (enter an amount, token info
- *    not found, or insufficient balance)
- *  - A continue button to request quotes
- */
 const ActionButtons: FC<{
-  walletIsActive: boolean;
-  isNetworkUnsupported: boolean;
-  requiresReload: boolean;
+  hasAmount: boolean;
+  hasApprovalPending: boolean;
   hasError: boolean;
   hasQuote: boolean;
+  isLoading: boolean;
+  isNetworkUnsupported: boolean;
+  isWalletActive: boolean;
   needsApproval: boolean;
-  hasAmount: boolean;
+  requiresReload: boolean;
   baseTokenInfo: TokenInfo | null;
   quoteTokenInfo: TokenInfo | null;
   hasSufficientBalance: boolean;
-  isLoading: boolean;
   onButtonClicked: (action: ButtonActions) => void;
 }> = ({
-  walletIsActive,
-  isNetworkUnsupported,
-  requiresReload,
+  hasAmount,
   hasError,
   hasQuote,
+  hasApprovalPending,
+  isLoading,
+  isNetworkUnsupported,
+  isWalletActive,
   needsApproval,
-  hasAmount,
+  requiresReload,
   baseTokenInfo,
   quoteTokenInfo,
   hasSufficientBalance,
-  isLoading,
   onButtonClicked,
 }) => {
   const { t } = useTranslation();
@@ -73,7 +65,7 @@ const ActionButtons: FC<{
   // First determine the next action.
   let nextAction: ButtonActions;
   // Note that wallet is not considered "active" if connected to wrong network
-  if (!walletIsActive) nextAction = ButtonActions.connectWallet;
+  if (!isWalletActive) nextAction = ButtonActions.connectWallet;
   else if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
   else if (hasError) nextAction = ButtonActions.goBack;
   else if (requiresReload) nextAction = ButtonActions.reloadPage;
@@ -84,11 +76,15 @@ const ActionButtons: FC<{
   // If there's something to fix before progress can be made, the button will
   // be disabled. These disabled states never have a back button.
   let isDisabled =
-    walletIsActive &&
+    isWalletActive &&
     !hasError &&
     !requiresReload &&
     !isNetworkUnsupported &&
-    (!hasSufficientBalance || !baseTokenInfo || !quoteTokenInfo || !hasAmount);
+    (!hasSufficientBalance ||
+      !baseTokenInfo ||
+      !quoteTokenInfo ||
+      !hasAmount ||
+      hasApprovalPending);
 
   // Some actions require an additional back button
   const hasBackButton: boolean =
