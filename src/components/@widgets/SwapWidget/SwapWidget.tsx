@@ -96,6 +96,7 @@ import StyledSwapWidget, {
   InfoContainer,
   StyledDebugMenu,
   StyledHeader,
+  StyledNewActionButtons,
   StyledSwapInputs,
   WelcomeMessage,
 } from "./SwapWidget.styles";
@@ -105,6 +106,7 @@ import ActionButtons, {
   ButtonActions,
 } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
+import NewActionButtons from "./subcomponents/NewActionButtons/NewActionButtons";
 import QuoteText from "./subcomponents/QuoteText/QuoteText";
 
 export enum SwapWidgetState {
@@ -578,6 +580,28 @@ const SwapWidget: FC = () => {
             />
           )}
         </InfoContainer>
+
+        <StyledNewActionButtons
+          hasError={!!quote.error}
+          hasInsufficientAllowance={!!quote.bestQuote && shouldApprove}
+          hasInsufficientBalance={insufficientBalance}
+          hasQuote={!!quote.bestQuote}
+          isCompleted={!!activeOrderTransaction}
+          isLoading={
+            isConnecting ||
+            quote.isLoading ||
+            ordersStatus === "requesting" ||
+            hasSubmittedTransaction
+          }
+          isNotConnected={!isActive}
+          requiresReload={isAllowancesOrBalancesFailed}
+          shouldEnterAmount={
+            !baseAmount.length || baseAmount === "0" || baseAmount === "."
+          }
+          onBackButtonClick={backToOverview}
+          onActionButtonClick={console.log}
+        />
+
         <ButtonContainer>
           <ActionButtons
             baseTokenInfo={baseTokenInfo}

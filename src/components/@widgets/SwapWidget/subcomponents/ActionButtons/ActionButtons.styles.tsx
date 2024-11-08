@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import Button from "../../../../Button/Button";
 
 const ButtonStyle = css`

@@ -4,6 +4,7 @@ import { fontWide } from "../../../style/themes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
+import NewActionButtons from "./subcomponents/NewActionButtons/NewActionButtons";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 export const StyledHeader = styled(SwapWidgetHeader)`
@@ -30,6 +31,10 @@ export const InfoContainer = styled.div<{ hasQuoteText: boolean }>`
 `;
 
 export const StyledSwapInputs = styled(SwapInputs)`
+  margin-block-start: 2rem;
+`;
+
+export const StyledNewActionButtons = styled(NewActionButtons)`
   margin-block-start: 2rem;
 `;
 
