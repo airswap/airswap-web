@@ -141,6 +141,7 @@ const SwapWidget: FC = () => {
     transactionsTabIsOpen,
     setShowWalletList,
     setTransactionsTabIsOpen,
+    setShowTransactionOverlay,
   } = useContext(InterfaceContext);
 
   // Input states
@@ -447,6 +448,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.restart:
+        setShowTransactionOverlay(false);
         restart();
         break;
 

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components/macro";
 
+import { TextEllipsis } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 import TransactionLink from "../../../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
@@ -43,15 +44,19 @@ export const Container = styled(motion.div)<{ isActive?: boolean }>`
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   flex: 1;
   flex-wrap: wrap;
   justify-content: center;
+  max-width: calc(100% - 2.5rem);
+  height: 100%;
 `;
 
 export const SpanTitle = styled.span<{
   hasProgress?: boolean;
 }>`
+  ${TextEllipsis};
+
+  width: 100%;
   line-height: 1.25;
   font-size: 1.125rem;
   font-weight: 400;
