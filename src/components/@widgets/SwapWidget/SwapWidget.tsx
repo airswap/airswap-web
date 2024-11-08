@@ -190,8 +190,6 @@ const SwapWidget: FC = () => {
     baseTokenInfo,
     baseAmount
   );
-  const shouldApprove =
-    !hasSufficientAllowance && swapType !== SwapType.wrapOrUnwrap;
 
   const activeOrderTransaction = useOrderTransaction(
     activeOrderNonce,
@@ -200,6 +198,10 @@ const SwapWidget: FC = () => {
   const approvalTransaction = useApprovalPending(baseToken);
   const hasApprovalPending = !!approvalTransaction;
   const hasApprovalSuccess = useApprovalSuccess(activeApprovalHash);
+  const shouldApprove =
+    !hasSufficientAllowance &&
+    !hasApprovalSuccess &&
+    swapType !== SwapType.wrapOrUnwrap;
   const hasDepositPending = useDepositPending();
   const hasWithdrawalPending = useWithdrawalPending();
   const hasDepositOrWithdrawalPending =

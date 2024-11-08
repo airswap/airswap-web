@@ -46,6 +46,10 @@ const AvailableOrdersWidget = ({
   const sortedOrders = useMemo(() => {
     const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
 
+    if (!bestRfqOrder) {
+      return ordersToSort;
+    }
+
     if (
       bestRfqOrder.senderToken === senderToken.address &&
       bestRfqOrder.signerToken === signerToken.address
