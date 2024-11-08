@@ -56,7 +56,6 @@ import {
 } from "../../../features/tradeTerms/tradeTermsSlice";
 import {
   selectCustomServerUrl,
-  setCustomServerUrl,
   setUserTokens,
 } from "../../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../../helpers/stringToSignificantDecimals";
@@ -80,7 +79,6 @@ import { AppRoutes } from "../../../routes";
 import { SwapType } from "../../../types/swapType";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import { TransactionStatusType } from "../../../types/transactionTypes";
-import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -90,23 +88,17 @@ import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScree
 import TokenList from "../../TokenList/TokenList";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import { Container } from "../MakeWidget/MakeWidget.styles";
 import StyledSwapWidget, {
-  ButtonContainer,
   InfoContainer,
   StyledDebugMenu,
   StyledHeader,
   StyledNewActionButtons,
   StyledSwapInputs,
-  WelcomeMessage,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
-import ActionButtons, {
-  ButtonActions,
-} from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
-import NewActionButtons from "./subcomponents/NewActionButtons/NewActionButtons";
+import { ButtonActions } from "./subcomponents/NewActionButtons/NewActionButtons";
 import QuoteText from "./subcomponents/QuoteText/QuoteText";
 
 export enum SwapWidgetState {
@@ -141,7 +133,6 @@ const SwapWidget: FC = () => {
     transactionsTabIsOpen,
     setShowWalletList,
     setTransactionsTabIsOpen,
-    setShowTransactionOverlay,
   } = useContext(InterfaceContext);
 
   // Input states
@@ -448,7 +439,7 @@ const SwapWidget: FC = () => {
         break;
 
       case ButtonActions.restart:
-        setShowTransactionOverlay(false);
+        setTransactionsTabIsOpen(false);
         restart();
         break;
 
@@ -603,30 +594,8 @@ const SwapWidget: FC = () => {
             !baseAmount.length || baseAmount === "0" || baseAmount === "."
           }
           onBackButtonClick={backToOverview}
-          onActionButtonClick={console.log}
+          onActionButtonClick={handleActionButtonClick}
         />
-
-        <ButtonContainer>
-          <ActionButtons
-            baseTokenInfo={baseTokenInfo}
-            quoteTokenInfo={quoteTokenInfo}
-            hasAmount={
-              !!baseAmount.length && baseAmount !== "0" && baseAmount !== "."
-            }
-            hasApprovalPending={hasApprovalPending}
-            hasQuote={!!quote.bestQuote}
-            hasSufficientBalance={!insufficientBalance}
-            isWalletActive={isActive}
-            isNetworkUnsupported={!isNetworkSupported}
-            needsApproval={!!baseToken && shouldApprove}
-            requiresReload={isAllowancesOrBalancesFailed}
-            hasError={!!quote.error}
-            onButtonClicked={(action) => handleActionButtonClick(action)}
-            isLoading={
-              isConnecting || quote.isLoading || ordersStatus === "requesting"
-            }
-          />
-        </ButtonContainer>
 
         <ModalOverlay
           hasDynamicHeight

@@ -20,7 +20,6 @@ const QuoteText: FC<QuoteTextProps> = ({
   const { t } = useTranslation();
 
   const expiryTime = useMemo(() => {
-    console.log("expiry", expiry);
     return expiry ? getOrderExpiryWithBufferInSeconds(expiry) : undefined;
   }, [expiry]);
 

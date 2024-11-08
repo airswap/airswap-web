@@ -38,13 +38,6 @@ export const StyledNewActionButtons = styled(NewActionButtons)`
   margin-block-start: 2rem;
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  margin-top: 2rem;
-`;
-
 export const StyledSwapWidget = styled.div`
   display: flex;
   flex-direction: column;

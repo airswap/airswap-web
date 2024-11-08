@@ -12,6 +12,7 @@ export enum ButtonActions {
   restart = "restart",
   switchNetwork = "switchNetwork",
   takeQuote = "takeQuote",
+  trackTransaction = "trackTransaction",
 }
 
 type ActionButtonsProps = {
