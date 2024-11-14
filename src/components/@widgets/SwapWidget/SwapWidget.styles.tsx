@@ -3,8 +3,8 @@ import styled from "styled-components/macro";
 import { fontWide } from "../../../style/themes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
+import NewActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
-import NewActionButtons from "./subcomponents/NewActionButtons/NewActionButtons";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
 export const StyledHeader = styled(SwapWidgetHeader)`

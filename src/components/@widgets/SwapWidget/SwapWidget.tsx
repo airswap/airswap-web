@@ -98,8 +98,8 @@ import StyledSwapWidget, {
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
 import useTokenOrFallback from "./hooks/useTokenOrFallback";
+import { ButtonActions } from "./subcomponents/ActionButtons/ActionButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
-import { ButtonActions } from "./subcomponents/NewActionButtons/NewActionButtons";
 import QuoteText from "./subcomponents/QuoteText/QuoteText";
 
 export enum SwapWidgetState {

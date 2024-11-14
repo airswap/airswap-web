@@ -1,130 +1,164 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
-
-import { MainButton, BackButton } from "./ActionButtons.styles";
+import { BackButton, Container, SignButton } from "./ActionButtons.styles";
 
 export enum ButtonActions {
-  connectWallet,
-  switchNetwork,
-  restart,
-  goBack,
-  approve,
-  approving,
-  reloadPage,
-  requestQuotes,
-  takeQuote,
-  trackTransaction,
+  approve = "approve",
+  connectWallet = "connectWallet",
+  goBack = "goBack",
+  reloadPage = "reloadPage",
+  requestQuotes = "requestQuotes",
+  restart = "restart",
+  switchNetwork = "switchNetwork",
+  takeQuote = "takeQuote",
+  trackTransaction = "trackTransaction",
 }
 
-const buttonTextMapping: Record<ButtonActions, string> = {
-  [ButtonActions.connectWallet]: "wallet.connectWallet",
-  [ButtonActions.switchNetwork]: "wallet.switchNetwork",
-  [ButtonActions.reloadPage]: "common.reloadPage",
-  [ButtonActions.restart]: "orders.makeNewSwap",
-  [ButtonActions.goBack]: "common.back",
-  [ButtonActions.approve]: "orders.approve",
-  [ButtonActions.approving]: "orders.approving",
-  [ButtonActions.requestQuotes]: "orders.continue",
-  [ButtonActions.takeQuote]: "orders.takeQuote",
-  [ButtonActions.trackTransaction]: "orders.track",
+type ActionButtonsProps = {
+  hasInsufficientAllowance: boolean;
+  hasInsufficientBalance: boolean;
+  hasQuote: boolean;
+  hasError: boolean;
+  isCompleted: boolean;
+  isLoading: boolean;
+  isNotConnected: boolean;
+  requiresReload: boolean;
+  shouldEnterAmount: boolean;
+  onBackButtonClick: () => void;
+  onActionButtonClick: (action: ButtonActions) => void;
+  className?: string;
 };
 
-const ActionButtons: FC<{
-  hasAmount: boolean;
-  hasApprovalPending: boolean;
-  hasError: boolean;
-  hasQuote: boolean;
-  isLoading: boolean;
-  isNetworkUnsupported: boolean;
-  isWalletActive: boolean;
-  needsApproval: boolean;
-  requiresReload: boolean;
-  baseTokenInfo: TokenInfo | null;
-  quoteTokenInfo: TokenInfo | null;
-  hasSufficientBalance: boolean;
-  onButtonClicked: (action: ButtonActions) => void;
-}> = ({
-  hasAmount,
-  hasError,
+const NewActionButtons: FC<ActionButtonsProps> = ({
+  hasInsufficientAllowance,
+  hasInsufficientBalance,
   hasQuote,
-  hasApprovalPending,
+  hasError,
+  isCompleted,
   isLoading,
-  isNetworkUnsupported,
-  isWalletActive,
-  needsApproval,
+  isNotConnected,
   requiresReload,
-  baseTokenInfo,
-  quoteTokenInfo,
-  hasSufficientBalance,
-  onButtonClicked,
+  shouldEnterAmount,
+  onBackButtonClick,
+  onActionButtonClick,
+  className,
 }) => {
   const { t } = useTranslation();
 
-  // First determine the next action.
-  let nextAction: ButtonActions;
-  // Note that wallet is not considered "active" if connected to wrong network
-  if (!isWalletActive) nextAction = ButtonActions.connectWallet;
-  else if (isNetworkUnsupported) nextAction = ButtonActions.switchNetwork;
-  else if (hasError) nextAction = ButtonActions.goBack;
-  else if (requiresReload) nextAction = ButtonActions.reloadPage;
-  else if (hasQuote && needsApproval) nextAction = ButtonActions.approve;
-  else if (hasQuote) nextAction = ButtonActions.takeQuote;
-  else nextAction = ButtonActions.requestQuotes;
+  if (isNotConnected) {
+    return (
+      <Container center className={className}>
+        <SignButton
+          isFilled
+          intent="primary"
+          disabled={isLoading}
+          onClick={() => onActionButtonClick(ButtonActions.connectWallet)}
+        >
+          {t("wallet.connectWallet")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-  // If there's something to fix before progress can be made, the button will
-  // be disabled. These disabled states never have a back button.
-  let isDisabled =
-    isWalletActive &&
-    !hasError &&
-    !requiresReload &&
-    !isNetworkUnsupported &&
-    (!hasSufficientBalance ||
-      !baseTokenInfo ||
-      !quoteTokenInfo ||
-      !hasAmount ||
-      hasApprovalPending);
+  if (requiresReload) {
+    return (
+      <Container className={className}>
+        <SignButton
+          intent="primary"
+          disabled={isLoading}
+          onClick={() => onActionButtonClick(ButtonActions.reloadPage)}
+        >
+          {t("common.reloadPage")}
+        </SignButton>
+      </Container>
+    );
+  }
 
-  // Some actions require an additional back button
-  const hasBackButton: boolean =
-    !isDisabled &&
-    (nextAction === ButtonActions.takeQuote ||
-      nextAction === ButtonActions.approve);
+  if (hasError) {
+    return (
+      <Container center className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      </Container>
+    );
+  }
 
-  // The text depends on the next action, unless the button is disabled, when
-  // it depends on the reason for being disabled instead.
-  let mainButtonText;
-  if (isDisabled) {
-    if (!hasAmount) mainButtonText = t("orders.enterAmount");
-    else if (!baseTokenInfo || !quoteTokenInfo)
-      mainButtonText = t("orders.chooseToken");
-    else if (!hasSufficientBalance)
-      mainButtonText = t("orders.insufficientBalance", {
-        symbol: baseTokenInfo.symbol,
-      });
-  } else {
-    // @ts-ignore dynamic translation key.
-    mainButtonText = t(buttonTextMapping[nextAction]);
+  if (shouldEnterAmount) {
+    return (
+      <Container center className={className}>
+        <SignButton disabled intent="primary">
+          {t("orders.enterAmount")}
+        </SignButton>
+      </Container>
+    );
+  }
+
+  if (hasInsufficientBalance) {
+    return (
+      <Container center className={className}>
+        <SignButton disabled intent="neutral">
+          {t("orders.insufficientBalance")}
+        </SignButton>
+      </Container>
+    );
+  }
+
+  if (hasInsufficientAllowance) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          disabled={isLoading}
+          onClick={() => onActionButtonClick(ButtonActions.approve)}
+        >
+          {t("orders.approve")}
+        </SignButton>
+      </Container>
+    );
+  }
+
+  if (isCompleted) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          disabled={isLoading}
+          onClick={() => onActionButtonClick(ButtonActions.restart)}
+        >
+          {t("orders.trackTransaction")}
+        </SignButton>
+      </Container>
+    );
+  }
+
+  if (hasQuote) {
+    return (
+      <Container className={className}>
+        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <SignButton
+          intent="primary"
+          disabled={isLoading}
+          onClick={() => onActionButtonClick(ButtonActions.takeQuote)}
+        >
+          {t("orders.takeQuote")}
+        </SignButton>
+      </Container>
+    );
   }
 
   return (
-    <>
-      {hasBackButton && (
-        <BackButton onClick={onButtonClicked.bind(null, ButtonActions.goBack)}>
-          {t("common.back")}
-        </BackButton>
-      )}
-      <MainButton
-        intent={nextAction === ButtonActions.goBack ? "neutral" : "primary"}
-        loading={isLoading}
-        disabled={isDisabled}
-        onClick={onButtonClicked.bind(null, nextAction)}
+    <Container center className={className}>
+      <SignButton
+        intent="primary"
+        disabled={isLoading}
+        onClick={() => onActionButtonClick(ButtonActions.requestQuotes)}
       >
-        {mainButtonText}
-      </MainButton>
-    </>
+        {t("orders.continue")}
+      </SignButton>
+    </Container>
   );
 };
 
-export default ActionButtons;
+export default NewActionButtons;
