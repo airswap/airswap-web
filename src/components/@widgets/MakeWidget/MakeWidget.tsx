@@ -57,6 +57,7 @@ import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
+import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import { SelectOption } from "../../Dropdown/Dropdown";
 import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
@@ -152,7 +153,7 @@ const MakeWidget: FC = () => {
     !!maxAmount &&
     makerTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
-  const hasApprovalPending = !!useApprovalPending(makerTokenInfo?.address);
+  const approvalTransaction = useApprovalPending(makerTokenInfo?.address, true);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
@@ -375,155 +376,171 @@ const MakeWidget: FC = () => {
     }
   };
 
-  if (state === MakeWidgetState.review && shouldDepositNativeToken) {
+  const renderScreens = () => {
+    if (state === MakeWidgetState.review && shouldDepositNativeToken) {
+      return (
+        <>
+          <WrapReview
+            hasEditButton
+            isLoading={hasDepositPending}
+            amount={makerAmount}
+            amountPlusFee={makerAmountPlusFee}
+            shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
+            wrappedNativeToken={wrappedNativeToken}
+            onEditButtonClick={handleEditButtonClick}
+            onRestartButtonClick={restart}
+            onSignButtonClick={depositNativeToken}
+          />
+        </>
+      );
+    }
+
+    if (
+      (state === MakeWidgetState.review && !hasSufficientAllowance) ||
+      !!approvalTransaction
+    ) {
+      return (
+        <>
+          <ApproveReview
+            hasEditButton
+            isLoading={!!approvalTransaction}
+            amount={makerAmount}
+            amountPlusFee={makerAmountPlusFee}
+            readableAllowance={readableAllowance}
+            token={makerTokenInfo}
+            wrappedNativeToken={wrappedNativeToken}
+            onEditButtonClick={handleEditButtonClick}
+            onRestartButtonClick={restart}
+            onSignButtonClick={approveToken}
+          />
+        </>
+      );
+    }
+
+    if (state === MakeWidgetState.review) {
+      return (
+        <>
+          <MakeOrderReview
+            chainId={chainId}
+            expiry={expiry}
+            orderType={orderType}
+            senderAddress={takerAddress}
+            senderAmount={takerAmount}
+            senderToken={takerTokenInfo}
+            signerAmount={makerAmount}
+            signerAmountPlusFee={makerAmountPlusFee}
+            signerToken={makerTokenInfo}
+            wrappedNativeToken={wrappedNativeToken}
+            onEditButtonClick={handleEditButtonClick}
+            onSignButtonClick={createOrder}
+          />
+        </>
+      );
+    }
+
     return (
-      <Container>
-        <WrapReview
-          hasEditButton
-          isLoading={hasDepositPending}
-          amount={makerAmount}
-          amountPlusFee={makerAmountPlusFee}
-          shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
-          wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={restart}
-          onSignButtonClick={depositNativeToken}
+      <>
+        <MakeWidgetHeader />
+
+        <StyledSwapInputs
+          canSetQuoteAmount
+          disabled={!isActive || isAllowancesOrBalancesFailed}
+          readOnly={!isActive || !isNetworkSupported}
+          showMaxButton={showMaxButton}
+          showMaxInfoButton={showMaxInfoButton}
+          baseAmount={makerAmount}
+          baseTokenInfo={makerTokenInfo}
+          maxAmount={maxAmount}
+          side="sell"
+          quoteAmount={takerAmount}
+          quoteTokenInfo={takerTokenInfo}
+          onBaseAmountChange={handleMakerAmountChange}
+          onChangeTokenClick={setShowTokenSelectModal}
+          onMaxButtonClick={() => handleMakerAmountChange(maxAmount || "0")}
+          onQuoteAmountChange={handleTakerAmountChange}
+          onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
+        />
+        <OrderTypeSelectorAndExpirySelectorWrapper>
+          <StyledOrderTypeSelector
+            isDisabled={!isActive}
+            options={orderTypeSelectOptions}
+            selectedOrderTypeOption={orderScopeTypeOption}
+            onChange={setOrderScopeTypeOption}
+          />
+
+          <StyledExpirySelector
+            isDisabled={!isActive}
+            onChange={setExpiry}
+            hideExpirySelector={!!showTokenSelectModal}
+          />
+        </OrderTypeSelectorAndExpirySelectorWrapper>
+
+        {orderType === OrderType.private && (
+          <TooltipContainer>
+            <StyledAddressInput
+              hasError={!!error}
+              value={takerAddress}
+              onChange={handleAddressInputChange}
+              onInfoButtonClick={toggleShowOrderTypeInfo}
+            />
+
+            {error && (
+              <StyledTooltip>
+                {t("validatorErrors.invalidAddress", {
+                  address: takerAddress,
+                })}
+              </StyledTooltip>
+            )}
+          </TooltipContainer>
+        )}
+
+        <StyledInfoSection
+          isAllowancesFailed={isAllowancesOrBalancesFailed}
+          isNetworkUnsupported={isActive && !isNetworkSupported}
         />
 
-        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
-          <WalletSignScreen type="deposit" />
-        </TransactionOverlay>
-      </Container>
-    );
-  }
-
-  if (state === MakeWidgetState.review && !hasSufficientAllowance) {
-    return (
-      <Container>
-        <ApproveReview
-          hasEditButton
-          isLoading={hasApprovalPending}
-          amount={makerAmount}
-          amountPlusFee={makerAmountPlusFee}
-          readableAllowance={readableAllowance}
-          token={makerTokenInfo}
-          wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
-          onRestartButtonClick={restart}
-          onSignButtonClick={approveToken}
+        <StyledActionButtons
+          hasInsufficientExpiry={expiry === 0}
+          hasInsufficientAllowance={!hasSufficientAllowance}
+          hasInsufficientBalance={
+            hasInsufficientBalance && !shouldDepositNativeToken
+          }
+          hasMissingMakerAmount={hasMissingMakerAmount}
+          hasMissingMakerToken={!makerTokenInfo}
+          hasMissingTakerAmount={hasMissingTakerAmount}
+          hasMissingTakerToken={!takerTokenInfo}
+          isNetworkUnsupported={!isNetworkSupported}
+          shouldDepositNativeToken={shouldDepositNativeToken}
+          shouldRefresh={isAllowancesOrBalancesFailed}
+          walletIsNotConnected={!isActive}
+          makerTokenSymbol={makerTokenInfo?.symbol}
+          onBackButtonClick={handleBackButtonClick}
+          onActionButtonClick={handleActionButtonClick}
         />
-
-        <TransactionOverlay isHidden={ordersStatus !== "signing"}>
-          <WalletSignScreen type="approve" />
-        </TransactionOverlay>
-      </Container>
+      </>
     );
-  }
-
-  if (state === MakeWidgetState.review) {
-    return (
-      <Container>
-        <MakeOrderReview
-          chainId={chainId}
-          expiry={expiry}
-          orderType={orderType}
-          senderAddress={takerAddress}
-          senderAmount={takerAmount}
-          senderToken={takerTokenInfo}
-          signerAmount={makerAmount}
-          signerAmountPlusFee={makerAmountPlusFee}
-          signerToken={makerTokenInfo}
-          wrappedNativeToken={wrappedNativeToken}
-          onEditButtonClick={handleEditButtonClick}
-          onSignButtonClick={createOrder}
-        />
-
-        <TransactionOverlay isHidden={makeOtcStatus !== "signing"}>
-          <WalletSignScreen type="signature" />
-        </TransactionOverlay>
-      </Container>
-    );
-  }
+  };
 
   return (
     <Container>
-      <MakeWidgetHeader />
+      {renderScreens()}
 
-      <StyledSwapInputs
-        canSetQuoteAmount
-        disabled={!isActive || isAllowancesOrBalancesFailed}
-        readOnly={!isActive || !isNetworkSupported}
-        showMaxButton={showMaxButton}
-        showMaxInfoButton={showMaxInfoButton}
-        baseAmount={makerAmount}
-        baseTokenInfo={makerTokenInfo}
-        maxAmount={maxAmount}
-        side="sell"
-        quoteAmount={takerAmount}
-        quoteTokenInfo={takerTokenInfo}
-        onBaseAmountChange={handleMakerAmountChange}
-        onChangeTokenClick={setShowTokenSelectModal}
-        onMaxButtonClick={() => handleMakerAmountChange(maxAmount || "0")}
-        onQuoteAmountChange={handleTakerAmountChange}
-        onSwitchTokensButtonClick={handleSwitchTokensButtonClick}
-      />
-      <OrderTypeSelectorAndExpirySelectorWrapper>
-        <StyledOrderTypeSelector
-          isDisabled={!isActive}
-          options={orderTypeSelectOptions}
-          selectedOrderTypeOption={orderScopeTypeOption}
-          onChange={setOrderScopeTypeOption}
-        />
+      <TransactionOverlay
+        isHidden={ordersStatus !== "signing" && makeOtcStatus !== "signing"}
+      >
+        <WalletSignScreen type="approve" />
+      </TransactionOverlay>
 
-        <StyledExpirySelector
-          isDisabled={!isActive}
-          onChange={setExpiry}
-          hideExpirySelector={!!showTokenSelectModal}
-        />
-      </OrderTypeSelectorAndExpirySelectorWrapper>
-
-      {orderType === OrderType.private && (
-        <TooltipContainer>
-          <StyledAddressInput
-            hasError={!!error}
-            value={takerAddress}
-            onChange={handleAddressInputChange}
-            onInfoButtonClick={toggleShowOrderTypeInfo}
+      <TransactionOverlay
+        isHidden={ordersStatus === "signing" || !approvalTransaction}
+      >
+        {approvalTransaction && (
+          <ApprovalSubmittedScreen
+            chainId={chainId}
+            transaction={approvalTransaction}
           />
-
-          {error && (
-            <StyledTooltip>
-              {t("validatorErrors.invalidAddress", {
-                address: takerAddress,
-              })}
-            </StyledTooltip>
-          )}
-        </TooltipContainer>
-      )}
-
-      <StyledInfoSection
-        isAllowancesFailed={isAllowancesOrBalancesFailed}
-        isNetworkUnsupported={isActive && !isNetworkSupported}
-      />
-
-      <StyledActionButtons
-        hasInsufficientExpiry={expiry === 0}
-        hasInsufficientAllowance={!hasSufficientAllowance}
-        hasInsufficientBalance={
-          hasInsufficientBalance && !shouldDepositNativeToken
-        }
-        hasMissingMakerAmount={hasMissingMakerAmount}
-        hasMissingMakerToken={!makerTokenInfo}
-        hasMissingTakerAmount={hasMissingTakerAmount}
-        hasMissingTakerToken={!takerTokenInfo}
-        isNetworkUnsupported={!isNetworkSupported}
-        shouldDepositNativeToken={shouldDepositNativeToken}
-        shouldRefresh={isAllowancesOrBalancesFailed}
-        walletIsNotConnected={!isActive}
-        makerTokenSymbol={makerTokenInfo?.symbol}
-        onBackButtonClick={handleBackButtonClick}
-        onActionButtonClick={handleActionButtonClick}
-      />
+        )}
+      </TransactionOverlay>
 
       <ModalOverlay
         hasDynamicHeight
