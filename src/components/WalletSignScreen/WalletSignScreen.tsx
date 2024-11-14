@@ -3,12 +3,11 @@ import { FC, ReactElement } from "react";
 import i18n from "i18next";
 
 import {
-  Container,
-  Loader,
-  StyledTitle,
-  StyledWidgetHeader,
-  Text,
-} from "./WalletSignScreen.styles";
+  OverlayContainer,
+  OverlayLoader,
+  OverlaySubHeading,
+  OverlayTitle,
+} from "../../styled-components/Overlay/Overlay";
 
 type WalletSignScreenType = "approve" | "deposit" | "signature";
 
@@ -22,13 +21,11 @@ const WalletSignScreen: FC<WalletConfirmScreenProps> = ({
   className = "",
 }): ReactElement => {
   return (
-    <Container className={className}>
-      <Loader />
-      <StyledWidgetHeader>
-        <StyledTitle type="h2">{getTitle(type)}</StyledTitle>
-      </StyledWidgetHeader>
-      <Text>{getDescription(type)}</Text>
-    </Container>
+    <OverlayContainer className={className}>
+      <OverlayLoader />
+      <OverlayTitle type="h2">{getTitle(type)}</OverlayTitle>
+      <OverlaySubHeading>{getDescription(type)}</OverlaySubHeading>
+    </OverlayContainer>
   );
 };
 

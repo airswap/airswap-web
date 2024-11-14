@@ -3,8 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { getReceiptUrl } from "@airswap/utils";
 
-import Icon from "../Icon/Icon";
-import { Label, Link } from "./TransactionLink.style";
+import { Label, Link, StyledIcon } from "./TransactionLink.style";
 
 type TransactionLinkProps = {
   hideLabel?: boolean;
@@ -34,7 +33,7 @@ const TransactionLink = ({
       href={receiptUrl}
     >
       {!hideLabel && <Label>{t("wallet.transactionLink")}</Label>}
-      <Icon iconSize={1} name="transaction-link" />
+      <StyledIcon iconSize={1} name="transaction-link" />
     </Link>
   );
 };

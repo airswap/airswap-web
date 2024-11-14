@@ -79,6 +79,7 @@ import { AppRoutes } from "../../../routes";
 import { SwapType } from "../../../types/swapType";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import { TransactionStatusType } from "../../../types/transactionTypes";
+import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
@@ -187,7 +188,7 @@ const SwapWidget: FC = () => {
     activeOrderNonce,
     activeWrapOrUnwrapHash
   );
-  const approvalTransaction = useApprovalPending(baseToken);
+  const approvalTransaction = useApprovalPending(baseToken, true);
   const hasApprovalPending = !!approvalTransaction;
   const hasApprovalSuccess = useApprovalSuccess(activeApprovalHash);
   const shouldApprove =
@@ -659,6 +660,17 @@ const SwapWidget: FC = () => {
 
         <TransactionOverlay isHidden={ordersStatus !== "signing"}>
           <WalletSignScreen type="signature" />
+        </TransactionOverlay>
+
+        <TransactionOverlay
+          isHidden={ordersStatus === "signing" || !approvalTransaction}
+        >
+          {approvalTransaction && (
+            <ApprovalSubmittedScreen
+              chainId={chainId}
+              transaction={approvalTransaction}
+            />
+          )}
         </TransactionOverlay>
 
         <TransactionOverlay isHidden={!activeOrderTransaction}>
