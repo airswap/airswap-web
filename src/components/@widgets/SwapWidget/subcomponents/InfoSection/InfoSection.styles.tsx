@@ -7,11 +7,11 @@ import { LargePillButton } from "../../../../../styled-components/Pill/Pill";
 import IconButton from "../../../../IconButton/IconButton";
 import TransactionLink from "../../../../TransactionLink/TransactionLink";
 import { InfoHeading, InfoSubHeading } from "../../../../Typography/Typography";
-import { StyledParagraph } from "../../../../Typography/Typography.styles";
 
 export const StyledInfoHeading = styled(InfoHeading)`
   display: flex;
   align-items: center;
+  color: ${(props) => props.theme.colors.lightGrey};
 
   & + ${InfoSubHeading} {
     margin-top: 0.25rem;

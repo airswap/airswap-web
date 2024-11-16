@@ -2,16 +2,18 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  OverlaySubHeading,
+  OverlayTitle,
+} from "../../styled-components/Overlay/Overlay";
 import { TransactionStatusType } from "../../types/transactionTypes";
-import { InfoSubHeading } from "../Typography/Typography";
 import {
   ButtonsContainer,
   Container,
   InfoContainer,
   MakeNewOrderButton,
   StyledIcon,
-  StyledInfoHeading,
-  StyledInfoSubHeading,
+  StyledOverlayTitle,
   StyledTransactionLink,
   TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
@@ -41,18 +43,18 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
         <StyledIcon name="check-circle" />
         {transaction.status === TransactionStatusType.processing && (
           <>
-            <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-            <StyledInfoSubHeading>
+            <StyledOverlayTitle type="h2">
+              {t("orders.transactionSubmitted")}
+            </StyledOverlayTitle>
+            <OverlaySubHeading>
               {t("orders.trackTransaction")}
-            </StyledInfoSubHeading>
+            </OverlaySubHeading>
           </>
         )}
         {transaction.status === TransactionStatusType.succeeded && (
-          <>
-            <StyledInfoHeading>
-              {t("orders.transactionCompleted")}
-            </StyledInfoHeading>
-          </>
+          <OverlayTitle type="h2">
+            {t("orders.transactionCompleted")}
+          </OverlayTitle>
         )}
         {transaction.hash && chainId && (
           <StyledTransactionLink chainId={chainId} hash={transaction.hash} />

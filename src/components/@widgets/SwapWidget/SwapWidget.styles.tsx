@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import { fontWide } from "../../../style/themes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
+import NewActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
@@ -18,13 +19,14 @@ export const WelcomeMessage = styled.h2`
   font-size: 1.125rem;
 `;
 
-export const InfoContainer = styled.div`
+export const InfoContainer = styled.div<{ hasQuoteText: boolean }>`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: ${(props) =>
+    props.hasQuoteText ? "space-between" : "center"};
   align-items: center;
   gap: 0.25rem;
-  margin-block-start: 1rem;
+  margin-block-start: 2rem;
+  padding-inline: 1rem;
   text-align: center;
 `;
 
@@ -32,11 +34,8 @@ export const StyledSwapInputs = styled(SwapInputs)`
   margin-block-start: 2rem;
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  margin-top: 1.5rem;
+export const StyledNewActionButtons = styled(NewActionButtons)`
+  margin-block-start: 2rem;
 `;
 
 export const StyledSwapWidget = styled.div`
@@ -49,7 +48,7 @@ export const StyledSwapWidget = styled.div`
 export const StyledWalletProviderList = styled(WalletProviderList)``;
 
 export const StyledDebugMenu = styled(DebugMenu)`
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
 `;
 
 export default StyledSwapWidget;

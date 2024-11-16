@@ -10,7 +10,6 @@ import {
   SubmittedTransaction,
   SubmittedOrder,
   SubmittedWithdrawTransaction,
-  SubmittedOrderUnderConsideration,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import findEthOrTokenByAddress from "../../helpers/findEthOrTokenByAddress";
 import { TransactionTypes } from "../../types/transactionTypes";

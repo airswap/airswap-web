@@ -25,7 +25,7 @@ import {
 
 const fadeOut = keyframes`
   from {
-    opacity: 1;
+    opacity: 0.5;
   }
 
   to {
@@ -150,9 +150,9 @@ export const AmountInput = styled(FormInput)<{
 `;
 
 export const PlaceHolderBar = styled.div`
-  border-radius: 0.25rem;
-  width: 50%;
-  height: 1.75rem;
+  border-radius: 0.5rem;
+  width: 65%;
+  height: 1rem;
   background: ${(props) => props.theme.colors.placeholder};
   animation: ${fadeOut} 0.35s ease-in-out infinite alternate;
 `;

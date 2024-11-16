@@ -1,25 +1,18 @@
-import styled, { css } from "styled-components/macro";
+import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import Button from "../../../../Button/Button";
 
-const ButtonStyle = css`
-  width: calc(50% - 0.5rem);
-  height: auto;
-  min-height: 3rem;
-  max-width: 14.375rem;
-  line-height: 1.375;
-  padding: 0.375rem 1rem;
-  white-space: inherit;
-
-  @supports (-moz-appearance: none) {
-    padding-top: 0.4375rem;
-  }
+export const Container = styled.div<{ center?: boolean }>`
+  display: flex;
+  justify-content: ${({ center }) => (center ? "center" : "space-between")};
+  justify-self: flex-end;
+  margin-top: auto;
 `;
 
 export const BackButton = styled(Button)`
-  ${ButtonStyle};
+  width: calc(50% - 0.5rem);
 `;
-export const MainButton = styled(Button)`
-  ${ButtonStyle};
+
+export const SignButton = styled(Button)<{ isFilled?: boolean }>`
+  ${({ isFilled }) => (isFilled ? `` : `width: calc(50% - 0.5rem);`)};
 `;

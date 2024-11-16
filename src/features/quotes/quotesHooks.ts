@@ -44,7 +44,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const dispatch = useAppDispatch();
 
   const { provider: library } = useWeb3React();
-  const { account, chainId, connectionType } = useAppSelector(
+  const { account, chainId, connectionType, isInitialized } = useAppSelector(
     (state) => state.web3
   );
   const {
@@ -210,9 +210,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   useEffect(() => {
     // LastLook not working for gnosis provider, I have not been able to find the root cause.
-    if (connectionType === ConnectionType.gnosis) {
-      dispatch(setDisableLastLook(true));
-    }
+    dispatch(setDisableLastLook(connectionType === ConnectionType.gnosis));
   }, [connectionType]);
 
   if (swapType === SwapType.wrapOrUnwrap) {

@@ -151,7 +151,7 @@ const SwapInputs: FC<{
         disabled={tradeNotAllowed || readOnly}
         onClick={onSwitchTokensButtonClick}
       >
-        {getSwitchTokensButtonIcon(tradeNotAllowed)}
+        {getSwitchTokensButtonIcon(tradeNotAllowed, isQuote)}
       </SwitchTokensButton>
       <TokenSelect
         hasError={!!quoteAmountError}

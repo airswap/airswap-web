@@ -1,8 +1,9 @@
-import { MdDoneAll } from "react-icons/md";
-
 import styled, { css } from "styled-components/macro";
 
-import { fontWide } from "../../style/themes";
+import {
+  OverlaySubHeading,
+  OverlayTitle,
+} from "../../styled-components/Overlay/Overlay";
 import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import TransactionLink from "../TransactionLink/TransactionLink";
@@ -24,22 +25,16 @@ export const InfoContainer = styled.div`
   padding-bottom: 2rem;
 `;
 
-export const StyledInfoSubHeading = styled(InfoSubHeading)`
-  font-weight: 500;
-`;
-
-export const StyledInfoHeading = styled(InfoHeading)`
+export const StyledOverlayTitle = styled(OverlayTitle)`
   margin-top: 1.75rem;
-  font-size: 1.875rem;
-  font-weight: 700;
 
-  & + ${StyledInfoSubHeading} {
+  & + ${OverlaySubHeading} {
     margin-top: 1.25rem;
   }
 `;
 
 export const StyledTransactionLink = styled(TransactionLink)`
-  margin-top: 1rem;
+  margin-top: 2.5rem;
 `;
 
 export const StyledIcon = styled(Icon)`

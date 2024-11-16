@@ -1,8 +1,6 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OrderType } from "../../../../../types/orderTypes";
-import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
 import {
   BackButton,
   Container,
