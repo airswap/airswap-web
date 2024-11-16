@@ -2,6 +2,7 @@ import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getOrderExpiryWithBufferInSeconds } from "../../../../../entities/OrderERC20/OrderERC20Helpers";
+import { InfoSectionHeading } from "../../../../../styled-components/InfoSection/InfoSection";
 import { Container, GasFreeButton, StyledTimer } from "./QuoteText.styles";
 
 interface QuoteTextProps {
@@ -35,7 +36,7 @@ const QuoteText: FC<QuoteTextProps> = ({
 
   return (
     <Container className={className}>
-      {t("orders.newQuoteIn")}:
+      <InfoSectionHeading>{t("orders.newQuoteIn")}:</InfoSectionHeading>
       {expiryTime && <StyledTimer expiryTime={expiryTime} />}
     </Container>
   );

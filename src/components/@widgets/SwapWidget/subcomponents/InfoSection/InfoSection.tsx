@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/utils";
@@ -6,16 +6,9 @@ import { TokenInfo } from "@airswap/utils";
 import { BigNumber } from "bignumber.js";
 
 import { PricingErrorType } from "../../../../../errors/pricingError";
-import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
-import Icon from "../../../../Icon/Icon";
-import { InfoSubHeading } from "../../../../Typography/Typography";
-import ClearServerButton from "../ClearServerButton/ClearServerButton";
+import { InfoSectionHeading } from "../../../../../styled-components/InfoSection/InfoSection";
+import { PriceConverter } from "../../../../PriceConverter/PriceConverter";
 import PricingErrorInfo from "../PricingErrorInfo/PricingErrorInfo";
-import {
-  RevertPriceButton,
-  StyledInfoHeading,
-  StyledLargePillButton,
-} from "./InfoSection.styles";
 
 export type InfoSectionProps = {
   failedToFetchAllowances: boolean;
@@ -49,85 +42,66 @@ const InfoSection: FC<InfoSectionProps> = ({
   serverUrl,
 }) => {
   const { t } = useTranslation();
-  const [invertPrice, setInvertPrice] = useState<boolean>(false);
 
   if (!isConnected) {
     return (
-      <StyledInfoHeading>{t("marketing.welcomeMessage")}</StyledInfoHeading>
+      <InfoSectionHeading>{t("marketing.welcomeMessage")}</InfoSectionHeading>
     );
   }
 
   if (isNetworkUnsupported) {
     return (
-      <StyledInfoHeading>{t("wallet.unsupportedNetwork")}</StyledInfoHeading>
+      <InfoSectionHeading>{t("wallet.unsupportedNetwork")}</InfoSectionHeading>
     );
   }
 
   if (failedToFetchAllowances) {
     return (
-      <>
-        <StyledInfoHeading>
-          {t("balances.failedToFetchAllowances")}
-        </StyledInfoHeading>
-      </>
+      <InfoSectionHeading>
+        {t("balances.failedToFetchAllowances")}
+      </InfoSectionHeading>
     );
   }
 
   if (isConnected && failedToFetchAllowances && !!bestQuote) {
     return (
-      <StyledInfoHeading>
+      <InfoSectionHeading>
         {t("balances.failedToFetchAllowances")}
-      </StyledInfoHeading>
+      </InfoSectionHeading>
     );
   }
 
   if (isFetchingOrders) {
     return (
-      <>
-        <StyledInfoHeading>{t("orders.findingBestPrice")}</StyledInfoHeading>
-      </>
+      <InfoSectionHeading>{t("orders.findingBestPrice")}</InfoSectionHeading>
     );
   }
 
   if (pricingError) {
-    return (
-      <>
-        <PricingErrorInfo pricingError={pricingError} />
-      </>
-    );
+    return <PricingErrorInfo pricingError={pricingError} />;
   }
 
   if (bestQuote) {
     let price = new BigNumber(bestQuote).dividedBy(baseAmount);
 
-    if (invertPrice) {
-      price = new BigNumber(1).dividedBy(price);
-    }
-
     return (
-      <StyledInfoHeading>
-        1 {invertPrice ? quoteTokenInfo!.symbol : baseTokenInfo!.symbol} ={" "}
-        {stringToSignificantDecimals(price.toString())}{" "}
-        {invertPrice ? baseTokenInfo!.symbol : quoteTokenInfo!.symbol}
-        <RevertPriceButton
-          icon="swap"
-          ariaLabel={t("orders.revertPrice")}
-          iconSize={1}
-          onClick={() => setInvertPrice((p) => !p)}
-        />
-      </StyledInfoHeading>
+      <PriceConverter
+        baseTokenSymbol={baseTokenInfo!.symbol}
+        price={price}
+        quoteTokenSymbol={quoteTokenInfo!.symbol}
+      />
     );
   }
 
   if (hasSelectedCustomServer) {
     return (
-      <StyledInfoHeading>
+      <InfoSectionHeading>
         {t("orders.selectedServer", { serverUrl })}
-      </StyledInfoHeading>
+      </InfoSectionHeading>
     );
   }
 
-  return <StyledInfoHeading>Get a price.</StyledInfoHeading>;
+  return <InfoSectionHeading>Get a price.</InfoSectionHeading>;
 };
 
 export default InfoSection;
