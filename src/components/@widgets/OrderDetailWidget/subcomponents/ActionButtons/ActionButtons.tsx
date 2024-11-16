@@ -9,12 +9,13 @@ import {
 } from "./ActionButtons.styles";
 
 export enum ButtonActions {
-  connectWallet,
-  switchNetwork,
-  reloadPage,
-  restart,
-  cancel,
-  review,
+  approve = "approve",
+  cancel = "cancel",
+  connectWallet = "connectWallet",
+  reloadPage = "reloadPage",
+  restart = "restart",
+  review = "review",
+  switchNetwork = "switchNetwork",
 }
 
 type ActionButtonsProps = {
@@ -29,7 +30,6 @@ type ActionButtonsProps = {
   isNotConnected: boolean;
   requiresReload: boolean;
   shouldDepositNativeToken: boolean;
-  senderTokenSymbol?: string;
   onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
   className?: string;
@@ -47,7 +47,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isNotConnected,
   requiresReload,
   shouldDepositNativeToken,
-  senderTokenSymbol,
   onBackButtonClick,
   onActionButtonClick,
   className,
@@ -139,7 +138,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.review)}
         >
-          {`${t("common.wrap")} ${senderTokenSymbol}`}
+          {t("common.wrap")}
         </SignButton>
       </Container>
     );
@@ -150,7 +149,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <Container className={className}>
         <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
         <SignButton disabled intent="neutral">
-          {t("orders.insufficientBalance", { symbol: senderTokenSymbol })}
+          {t("orders.insufficientBalance")}
         </SignButton>
       </Container>
     );
@@ -162,9 +161,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
         <SignButton
           intent="primary"
-          onClick={() => onActionButtonClick(ButtonActions.review)}
+          onClick={() => onActionButtonClick(ButtonActions.approve)}
         >
-          {`${t("orders.approve")} ${senderTokenSymbol || ""}`}
+          {t("orders.approve")}
         </SignButton>
       </Container>
     );
