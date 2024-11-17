@@ -1,10 +1,12 @@
 import styled from "styled-components/macro";
 
-import { Pill, PillButton } from "../../../../../styled-components/Pill/Pill";
+import { PillButton } from "../../../../../styled-components/Pill/Pill";
 import Icon from "../../../../Icon/Icon";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 
-export const InfoWrapper = styled(Pill)`
+export const InfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
   color: ${({ theme }) => theme.colors.lightGrey};
 `;
 

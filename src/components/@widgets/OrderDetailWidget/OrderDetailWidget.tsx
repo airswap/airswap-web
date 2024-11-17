@@ -59,11 +59,13 @@ import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScree
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
+import { RecipientAndStatus } from "../SwapWidget/subcomponents/RecipientAndStatus/RecipientAndStatus";
 import {
   Container,
   StyledActionButtons,
   StyledInfoButtons,
   StyledInfoSection,
+  StyledRecipientAndStatus,
 } from "./OrderDetailWidget.styles";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import { useOrderStatus } from "./hooks/useOrderStatus";
@@ -323,16 +325,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
     return (
       <>
-        <OrderDetailWidgetHeader
-          isMakerOfSwap={userIsMakerOfSwap}
-          isOrderStatusLoading={isOrderStatusLoading}
-          expiry={parsedExpiry}
-          orderStatus={orderStatus}
-          orderType={orderType}
-          recipientAddress={order.senderWallet}
-          transactionLink={orderTransactionLink}
-          userAddress={account || undefined}
-        />
+        <OrderDetailWidgetHeader isMakerOfSwap={userIsMakerOfSwap} />
         <SwapInputs
           readOnly
           disabled={orderStatus === OrderStatus.canceled}
@@ -352,7 +345,18 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onChangeTokenClick={() => {}}
           onMaxButtonClick={() => {}}
         />
-        <StyledInfoButtons
+
+        <StyledRecipientAndStatus
+          isLoading={isOrderStatusLoading}
+          expiry={parsedExpiry}
+          link={orderTransactionLink}
+          orderType={orderType}
+          recipient={order.senderWallet}
+          status={orderStatus}
+          userAddress={account || undefined}
+        />
+
+        {/* <StyledInfoButtons
           isMakerOfSwap={userIsMakerOfSwap}
           showViewAllQuotes={isFromAvailableOrdersWidget && !userIsMakerOfSwap}
           token1={signerTokenSymbol}
@@ -369,7 +373,8 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isMakerOfSwap={userIsMakerOfSwap}
           isNotConnected={!isActive}
           orderChainId={orderChainId}
-        />
+        /> */}
+
         <StyledActionButtons
           hasInsufficientBalance={hasInsufficientTokenBalance}
           hasInsufficientAllowance={!hasSufficientAllowance}
