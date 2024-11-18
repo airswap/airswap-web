@@ -279,14 +279,6 @@ export const TokenSelectContainer = styled.div<{
     transform: ${(props) =>
       props.isQuote ? "translateX(0)" : "translateX(3.5rem)"};
   }
-
-  ${StyledLabel} {
-    font-size: ${(props) => (props.isQuote ? "0.75rem" : "")};
-  }
-
-  ${StyledSelectItem} {
-    font-size: ${(props) => (props.isQuote ? "1rem" : "")};
-  }
 `;
 
 export const StyledTokenSelectBackground = styled(TokenSelectBackground)`
@@ -329,15 +321,11 @@ export const PlaceholderContainer = styled.div`
 `;
 
 export const TokenAccountButton = styled(AccountLink)`
-  ${InputOrButtonBorderStyle};
-
-  border-radius: 50%;
-  margin-right: 0.5rem;
+  position: relative;
   min-width: 1.625rem;
   max-width: 1.625rem;
   min-height: 1.625rem;
   max-height: 1.625rem;
-  background: ${(props) => props.theme.colors.black};
 `;
 
 export const TokenSelectOverflowContainer = styled.div`
