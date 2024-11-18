@@ -171,7 +171,7 @@ export const TokenLogoLeft = styled(TokenLogo)`
 export const TokenLogoRight = styled(TokenLogo)`
   ${quoteTransition};
 
-  min-width: 2rem;
+  min-width: 3rem;
   aspect-ratio: 1;
 `;
 
@@ -272,12 +272,12 @@ export const TokenSelectContainer = styled.div<{
   ${MaxButton},
   ${InfoLabel} {
     transform: ${(props) =>
-      props.isQuote ? "translateX(0)" : "translateX(2.75rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(3.75rem)"};
   }
 
   ${TokenLogoRight} {
     transform: ${(props) =>
-      props.isQuote ? "translateX(0)" : "translateX(3.5rem)"};
+      props.isQuote ? "translateX(0)" : "translateX(4.5rem)"};
   }
 `;
 
