@@ -12,10 +12,6 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
-  background: ${(props) =>
-    props.theme.name === "dark"
-      ? "conic-gradient(from 180deg at 0% 0%, #2B71FF 0deg, #060607 360deg)"
-      : props.theme.colors.primary};
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
     justify-content: flex-start;
@@ -25,6 +21,21 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
   @media ${breakPoints.phoneOnly} {
     height: 100%;
     padding-bottom: 2rem;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: ${(props) =>
+      props.theme.name === "dark"
+        ? "conic-gradient(from 180deg at -10% -10%, #060607 -7.2deg, #2B71FF 37.8deg, #060607 352.8deg, #2B71FF 397.8deg)"
+        : props.theme.colors.primary};
+    transform: rotate(0.5turn) scaleX(-1);
   }
 `;
 

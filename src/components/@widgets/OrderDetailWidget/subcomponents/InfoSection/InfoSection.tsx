@@ -1,14 +1,12 @@
-import React, { FC, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { FC, useMemo } from "react";
 
-import useShouldDepositNativeTokenAmountInfo from "../../../../../hooks/useShouldDepositNativeTokenAmountInfo";
+import BigNumber from "bignumber.js";
+
+import { PriceConverter } from "../../../../PriceConverter/PriceConverter";
 import { InfoSubHeading } from "../../../../Typography/Typography";
-import {
-  StyledInfoHeading,
-  StyledInfoSubHeading,
-} from "../../../../Typography/Typography.styles";
+import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField";
 import { getFullOrderERC20WarningTranslation } from "../../helpers";
-import { Container, Strong } from "./InfoSection.styles";
+import { Container } from "./InfoSection.styles";
 
 type ActionButtonsProps = {
   isAllowancesFailed: boolean;
@@ -18,6 +16,10 @@ type ActionButtonsProps = {
   isMakerOfSwap: boolean;
   isNotConnected: boolean;
   orderChainId: number;
+  token1?: string;
+  token2?: string;
+  rate: BigNumber;
+  onFeeButtonClick: () => void;
   className?: string;
 };
 
@@ -29,6 +31,9 @@ const InfoSection: FC<ActionButtonsProps> = ({
   isMakerOfSwap,
   isNotConnected,
   orderChainId,
+  token1,
+  token2,
+  rate,
   className,
 }) => {
   const warningText = useMemo(() => {
@@ -53,16 +58,24 @@ const InfoSection: FC<ActionButtonsProps> = ({
   if (warningText) {
     return (
       <Container className={className}>
-        <StyledInfoHeading>{warningText.heading}</StyledInfoHeading>
-
-        {warningText.subHeading && (
-          <StyledInfoSubHeading>{warningText.subHeading}</StyledInfoSubHeading>
-        )}
+        <InfoSubHeading>{warningText.heading}</InfoSubHeading>
       </Container>
     );
   }
 
-  return null;
+  if (token1 && token2 && rate) {
+    return (
+      <Container className={className}>
+        <PriceConverter
+          baseTokenSymbol={token1}
+          quoteTokenSymbol={token2}
+          price={rate}
+        />
+      </Container>
+    );
+  }
+
+  return <Container className={className} />;
 };
 
 export default InfoSection;

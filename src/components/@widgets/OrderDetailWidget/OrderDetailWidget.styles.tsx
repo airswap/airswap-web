@@ -1,7 +1,8 @@
 import styled from "styled-components/macro";
 
+import { sizes } from "../../../style/sizes";
+import { RecipientAndStatus } from "../SwapWidget/subcomponents/RecipientAndStatus/RecipientAndStatus";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
-import InfoButtons from "./subcomponents/InfoButtons/InfoButtons";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 
 export const Container = styled.div`
@@ -11,16 +12,14 @@ export const Container = styled.div`
   height: 100%;
 `;
 
-export const StyledInfoButtons = styled(InfoButtons)`
-  flex-grow: 1;
+export const StyledRecipientAndStatus = styled(RecipientAndStatus)`
+  margin-block-start: ${sizes.widgetGutter};
 `;
 
-export const StyledActionButtons = styled(ActionButtons)``;
-
 export const StyledInfoSection = styled(InfoSection)`
-  flex-grow: 1;
+  margin-top: ${sizes.widgetGutter};
+`;
 
-  & + ${StyledActionButtons} {
-    margin-top: 1rem;
-  }
+export const StyledActionButtons = styled(ActionButtons)`
+  margin-top: ${sizes.widgetGutter};
 `;

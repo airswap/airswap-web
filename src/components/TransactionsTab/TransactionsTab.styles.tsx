@@ -23,7 +23,7 @@ export const Container = styled(motion.div)`
   padding: 1.5rem 1.5rem 0;
   top: 5rem;
   right: 0;
-  z-index: 21;
+  z-index: 25;
   will-change: transform;
   backdrop-filter: drop-shadow(4px 4px 10px blue);
 

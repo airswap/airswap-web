@@ -42,11 +42,6 @@ import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTo
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrderType } from "../../../types/orderTypes";
-import {
-  TransactionStatusType,
-  TransactionTypes,
-} from "../../../types/transactionTypes";
-import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
@@ -62,8 +57,8 @@ import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import {
   Container,
   StyledActionButtons,
-  StyledInfoButtons,
   StyledInfoSection,
+  StyledRecipientAndStatus,
 } from "./OrderDetailWidget.styles";
 import useFormattedTokenAmount from "./hooks/useFormattedTokenAmount";
 import { useOrderStatus } from "./hooks/useOrderStatus";
@@ -86,9 +81,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { provider: library } = useWeb3React<Web3Provider>();
   const { isActive, account, chainId } = useAppSelector((state) => state.web3);
   const history = useHistory();
-  const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
-  const isFromAvailableOrdersWidget =
-    !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList, setTransactionsTabIsOpen } =
@@ -97,7 +89,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
-  const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
 
   const errors = [...ordersErrors, ...takeOtcErrors];
@@ -195,18 +186,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     });
   };
 
-  const handleBackButtonClick = () => {
-    if (isFromAvailableOrdersWidget) {
-      backToSwapPage();
-
-      return;
-    }
-
-    history.push({
-      pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
-    });
-  };
-
   const takeOrder = async () => {
     if (!library) return;
 
@@ -283,6 +262,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     if (action === ButtonActions.cancel) {
       history.push({ pathname: `/order/${params.compressedOrder}/cancel` });
     }
+
+    if (action === ButtonActions.take) {
+      takeOrder();
+    }
   };
 
   const renderScreens = () => {
@@ -323,16 +306,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
 
     return (
       <>
-        <OrderDetailWidgetHeader
-          isMakerOfSwap={userIsMakerOfSwap}
-          isOrderStatusLoading={isOrderStatusLoading}
-          expiry={parsedExpiry}
-          orderStatus={orderStatus}
-          orderType={orderType}
-          recipientAddress={order.senderWallet}
-          transactionLink={orderTransactionLink}
-          userAddress={account || undefined}
-        />
+        <OrderDetailWidgetHeader isMakerOfSwap={userIsMakerOfSwap} />
         <SwapInputs
           readOnly
           disabled={orderStatus === OrderStatus.canceled}
@@ -352,15 +326,17 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           onChangeTokenClick={() => {}}
           onMaxButtonClick={() => {}}
         />
-        <StyledInfoButtons
-          isMakerOfSwap={userIsMakerOfSwap}
-          showViewAllQuotes={isFromAvailableOrdersWidget && !userIsMakerOfSwap}
-          token1={signerTokenSymbol}
-          token2={senderTokenSymbol}
-          rate={tokenExchangeRate}
-          onViewAllQuotesButtonClick={toggleShowViewAllQuotes}
-          onFeeButtonClick={toggleShowFeeInfo}
+
+        <StyledRecipientAndStatus
+          isLoading={isOrderStatusLoading}
+          expiry={parsedExpiry}
+          link={orderTransactionLink}
+          orderType={orderType}
+          recipient={order.senderWallet}
+          status={orderStatus}
+          userAddress={account || undefined}
         />
+
         <StyledInfoSection
           isAllowancesFailed={isAllowancesOrBalancesFailed}
           isExpired={orderStatus === OrderStatus.expired}
@@ -369,7 +345,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isMakerOfSwap={userIsMakerOfSwap}
           isNotConnected={!isActive}
           orderChainId={orderChainId}
+          token1={signerTokenSymbol}
+          token2={senderTokenSymbol}
+          rate={tokenExchangeRate}
+          onFeeButtonClick={toggleShowFeeInfo}
         />
+
         <StyledActionButtons
           hasInsufficientBalance={hasInsufficientTokenBalance}
           hasInsufficientAllowance={!hasSufficientAllowance}
@@ -382,7 +363,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isNotConnected={!isActive}
           requiresReload={isAllowancesOrBalancesFailed}
           shouldDepositNativeToken={shouldDepositNativeToken}
-          onBackButtonClick={handleBackButtonClick}
           onActionButtonClick={handleActionButtonClick}
         />
       </>

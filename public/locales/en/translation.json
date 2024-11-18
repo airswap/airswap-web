@@ -188,6 +188,7 @@
     "thisOrderIsForADifferentTaker": "This order is for a different taker",
     "thisOrderIsForAnotherChain": "This order is for {{chainName}}",
     "thisOrderWasForADifferentTaker": "This order was for a different taker",
+    "takeSwap": "Take swap",
     "to": "To",
     "tokenInfoNotFound": "Token info not found",
     "tokenPairUnavailable": "No quotes available",
