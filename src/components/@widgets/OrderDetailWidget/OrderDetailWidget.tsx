@@ -262,6 +262,10 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     if (action === ButtonActions.cancel) {
       history.push({ pathname: `/order/${params.compressedOrder}/cancel` });
     }
+
+    if (action === ButtonActions.take) {
+      takeOrder();
+    }
   };
 
   const renderScreens = () => {

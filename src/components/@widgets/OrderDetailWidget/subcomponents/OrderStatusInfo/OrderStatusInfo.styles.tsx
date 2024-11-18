@@ -1,6 +1,5 @@
 import styled from "styled-components/macro";
 
-import { PillButton } from "../../../../../styled-components/Pill/Pill";
 import Icon from "../../../../Icon/Icon";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 
@@ -19,6 +18,7 @@ export const Button = styled.button`
   align-items: center;
 
   ${StyledIcon} {
+    margin-top: 0.125rem;
     margin-left: 0.375rem;
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};

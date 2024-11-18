@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -16,6 +16,7 @@ export enum ButtonActions {
   restart = "restart",
   review = "review",
   switchNetwork = "switchNetwork",
+  take = "take",
 }
 
 type ActionButtonsProps = {
@@ -166,9 +167,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     <Container center className={className}>
       <SignButton
         intent="primary"
-        onClick={() => onActionButtonClick(ButtonActions.review)}
+        onClick={() => onActionButtonClick(ButtonActions.take)}
       >
-        {t("common.review")}
+        {t("orders.takeSwap")}
       </SignButton>
     </Container>
   );
