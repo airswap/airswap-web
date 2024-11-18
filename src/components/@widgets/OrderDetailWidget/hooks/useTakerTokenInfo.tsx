@@ -7,6 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
 import {
+  addActiveToken,
   addTokenInfo,
   selectAllTokens,
 } from "../../../../features/metadata/metadataSlice";
@@ -37,6 +38,8 @@ const useTakerTokenInfo = (
   useEffect(() => {
     if (scrapedToken) {
       dispatch(addTokenInfo(scrapedToken));
+      // Add active token so balance will be fetched
+      dispatch(addActiveToken(scrapedToken.address));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrapedToken]);

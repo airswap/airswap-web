@@ -321,6 +321,10 @@ export const PlaceholderContainer = styled.div`
 `;
 
 export const TokenAccountButton = styled(AccountLink)`
+  ${InputOrButtonBorderStyle};
+
+  border-radius: 50%;
+  margin-right: 0.5rem;
   position: relative;
   min-width: 1.625rem;
   max-width: 1.625rem;
