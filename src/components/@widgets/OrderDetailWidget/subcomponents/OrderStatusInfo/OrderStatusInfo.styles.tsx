@@ -14,7 +14,10 @@ export const StyledIcon = styled(Icon)`
   color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
-export const Button = styled(PillButton)`
+export const Button = styled.button`
+  display: flex;
+  align-items: center;
+
   ${StyledIcon} {
     margin-left: 0.375rem;
     color: ${({ theme }) =>

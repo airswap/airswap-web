@@ -6,7 +6,7 @@ import { compareAsc, format } from "date-fns";
 import { getExpiryTranslation } from "../../helpers/getExpiryTranslation";
 import {
   Container,
-  Strong,
+  TimeLeft,
   Expiry,
   StyledTooltip,
   Text,
@@ -43,7 +43,7 @@ const ExpiryIndicator: FC<ExpiryIndicatorProps> = ({ expiry, className }) => {
         <Text hasExpired={hasExpired}>
           {hasExpired ? t("common.expired") : t("common.expiresIn")}
         </Text>
-        {!hasExpired && <Strong>{timeLeft}</Strong>}
+        {!hasExpired && <TimeLeft>{timeLeft}</TimeLeft>}
       </Expiry>
       <StyledTooltip>{format(expiry, "dd-MMM-yyyy pppp")}</StyledTooltip>
     </Container>

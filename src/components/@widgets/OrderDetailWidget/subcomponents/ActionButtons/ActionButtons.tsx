@@ -30,7 +30,6 @@ type ActionButtonsProps = {
   isNotConnected: boolean;
   requiresReload: boolean;
   shouldDepositNativeToken: boolean;
-  onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
   className?: string;
 };
@@ -47,7 +46,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isNotConnected,
   requiresReload,
   shouldDepositNativeToken,
-  onBackButtonClick,
   onActionButtonClick,
   className,
 }) => {
@@ -55,7 +53,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isNotConnected) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
           isFilled
           intent="primary"
@@ -69,7 +67,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isDifferentChainId) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
           isFilled
           intent="primary"
@@ -83,7 +81,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (requiresReload) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.reloadPage)}
@@ -96,8 +94,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isExpired || isTaken || isCanceled) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.restart)}
@@ -121,8 +118,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (!isIntendedRecipient) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton disabled intent="neutral">
           {t("orders.unableTake")}
         </SignButton>
@@ -132,8 +128,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (shouldDepositNativeToken) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.review)}
@@ -146,8 +141,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientBalance) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton disabled intent="neutral">
           {t("orders.insufficientBalance")}
         </SignButton>
@@ -157,8 +151,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientAllowance) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.approve)}
@@ -170,8 +163,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   }
 
   return (
-    <Container className={className}>
-      <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+    <Container center className={className}>
       <SignButton
         intent="primary"
         onClick={() => onActionButtonClick(ButtonActions.review)}

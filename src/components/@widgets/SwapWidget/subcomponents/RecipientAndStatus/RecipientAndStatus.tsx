@@ -36,8 +36,6 @@ export const RecipientAndStatus: FC<RecipientAndStatusProps> = ({
   userAddress,
   className,
 }) => {
-  const { t } = useTranslation();
-
   return (
     <Container className={className}>
       <OrderRecipientInfo

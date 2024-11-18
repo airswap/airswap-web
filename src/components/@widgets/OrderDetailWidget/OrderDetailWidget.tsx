@@ -42,11 +42,6 @@ import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTo
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrderType } from "../../../types/orderTypes";
-import {
-  TransactionStatusType,
-  TransactionTypes,
-} from "../../../types/transactionTypes";
-import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
@@ -59,11 +54,9 @@ import OrderSubmittedScreen from "../../OrderSubmittedScreen/OrderSubmittedScree
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import { RecipientAndStatus } from "../SwapWidget/subcomponents/RecipientAndStatus/RecipientAndStatus";
 import {
   Container,
   StyledActionButtons,
-  StyledInfoButtons,
   StyledInfoSection,
   StyledRecipientAndStatus,
 } from "./OrderDetailWidget.styles";
@@ -88,9 +81,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { provider: library } = useWeb3React<Web3Provider>();
   const { isActive, account, chainId } = useAppSelector((state) => state.web3);
   const history = useHistory();
-  const location = useLocation<{ isFromAvailableOrdersWidget?: boolean }>();
-  const isFromAvailableOrdersWidget =
-    !!location.state?.isFromAvailableOrdersWidget;
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList, setTransactionsTabIsOpen } =
@@ -99,7 +89,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
   const takeOtcErrors = useAppSelector(selectTakeOtcErrors);
-  const { userOrders } = useAppSelector(selectMyOrdersReducer);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
 
   const errors = [...ordersErrors, ...takeOtcErrors];
@@ -194,18 +183,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
     history.push({
       pathname: `/${AppRoutes.swap}/${senderToken?.address}/${signerToken?.address}`,
       state: { isFromOrderDetailPage: true },
-    });
-  };
-
-  const handleBackButtonClick = () => {
-    if (isFromAvailableOrdersWidget) {
-      backToSwapPage();
-
-      return;
-    }
-
-    history.push({
-      pathname: `/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`,
     });
   };
 
@@ -356,15 +333,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           userAddress={account || undefined}
         />
 
-        {/* <StyledInfoButtons
-          isMakerOfSwap={userIsMakerOfSwap}
-          showViewAllQuotes={isFromAvailableOrdersWidget && !userIsMakerOfSwap}
-          token1={signerTokenSymbol}
-          token2={senderTokenSymbol}
-          rate={tokenExchangeRate}
-          onViewAllQuotesButtonClick={toggleShowViewAllQuotes}
-          onFeeButtonClick={toggleShowFeeInfo}
-        />
         <StyledInfoSection
           isAllowancesFailed={isAllowancesOrBalancesFailed}
           isExpired={orderStatus === OrderStatus.expired}
@@ -373,7 +341,11 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isMakerOfSwap={userIsMakerOfSwap}
           isNotConnected={!isActive}
           orderChainId={orderChainId}
-        /> */}
+          token1={signerTokenSymbol}
+          token2={senderTokenSymbol}
+          rate={tokenExchangeRate}
+          onFeeButtonClick={toggleShowFeeInfo}
+        />
 
         <StyledActionButtons
           hasInsufficientBalance={hasInsufficientTokenBalance}
@@ -387,7 +359,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isNotConnected={!isActive}
           requiresReload={isAllowancesOrBalancesFailed}
           shouldDepositNativeToken={shouldDepositNativeToken}
-          onBackButtonClick={handleBackButtonClick}
           onActionButtonClick={handleActionButtonClick}
         />
       </>

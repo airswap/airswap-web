@@ -17,7 +17,7 @@ export const Text = styled.span<{ hasExpired: boolean }>`
   color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
-export const Strong = styled.strong`
+export const TimeLeft = styled.div`
   ${TextEllipsis};
 
   display: inline;
