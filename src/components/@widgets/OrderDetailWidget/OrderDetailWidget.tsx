@@ -1,7 +1,7 @@
 import { FC, useContext, useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -17,7 +17,6 @@ import {
   getFilteredOrders,
 } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
-import { selectMyOrdersReducer } from "../../../features/myOrders/myOrdersSlice";
 import { approve, deposit, take } from "../../../features/orders/ordersActions";
 import { check } from "../../../features/orders/ordersHelpers";
 import {
@@ -34,6 +33,7 @@ import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
 import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
+import { useBalanceLoading } from "../../../hooks/useBalanceLoading";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
@@ -80,11 +80,13 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const { t } = useTranslation();
   const { provider: library } = useWeb3React<Web3Provider>();
   const { isActive, account, chainId } = useAppSelector((state) => state.web3);
+
   const history = useHistory();
   const dispatch = useAppDispatch();
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList, setTransactionsTabIsOpen } =
     useContext(InterfaceContext);
+  const isBalanceLoading = useBalanceLoading();
 
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
@@ -359,6 +361,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
           isTaken={orderStatus === OrderStatus.taken}
           isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
           isIntendedRecipient={userIsIntendedRecipient}
+          isLoading={isBalanceLoading}
           isMakerOfSwap={userIsMakerOfSwap}
           isNotConnected={!isActive}
           requiresReload={isAllowancesOrBalancesFailed}
