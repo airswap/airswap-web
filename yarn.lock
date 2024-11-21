@@ -7,15 +7,19 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@airswap/batch-call@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/batch-call/-/batch-call-5.0.0.tgz#f4561453b41506d598ca7b36c0efd9d0ccad2151"
-  integrity sha512-b5SqVM0+KiSGchVY16eNphP7nDfoGXJWdjKPd/SdRHaZS+a+jB73snbaqTX9j3KFd5Idy9z+Ot+nKq6L3JGqEA==
+"@airswap/batch-call@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/batch-call/-/batch-call-5.0.1.tgz#e0f95da0b65eecafa151cbbe84ce2698e46fa75b"
+  integrity sha512-+2FH4QicX7sXXqeaMEpNKYROoYffLcA0LZR1rSnKq5KJDgdqVHJGHmJ31bQqHom1aCALPXp6Uc5GnxeCdaqAwA==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/delegate@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/delegate/-/delegate-5.0.0.tgz#028285145b9c62b0760a881d12311129c22d439b"
-  integrity sha512-w/+5UA4jUnONCnDpKbNN/dGPzALQx3XoHPRJwQrcbPh2JCXlmgreUKI+edU4r8Qu9F4MN8gokGzfTebA8PERpg==
+"@airswap/delegate@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/delegate/-/delegate-5.0.1.tgz#0fb25951359093ceddce047f9ad38a03b4e36f49"
+  integrity sha512-DXKhz1/MZphzAwgNFpLCZFnEBK+Hs9AstDzs5ljyxIFO49dM8UdUt3BC5x072nmsAjH7r6j0IcEaddX9CYvpYA==
+  dependencies:
+    ethers "^5.7.2"
 
 "@airswap/jsonrpc-client-websocket@0.0.1":
   version "0.0.1"
@@ -24,21 +28,21 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.1.tgz#ca31ac3318045e78dcbe5f65743e9942ee76cc5c"
-  integrity sha512-zZxI122CkjVFhxmB2muYmLA3ZNWi2ry8ob1aWvSk5i24fOShrI0lR+CK8ncDONxxp2RU1eXosR5D2DUSFN2Adw==
+"@airswap/libraries@5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.3.tgz#8d9a55574e6a190384c17e995a684dce4ad92bf6"
+  integrity sha512-g9Wn2dTvCQ+C4R66WfHWGNFT+ECLJsaa+LB5i34oJvoNwqzHMwEm0dD8O7XauUWwo5sjQw4OLt9N94fZte7l8w==
   dependencies:
-    "@airswap/batch-call" "5.0.0"
-    "@airswap/delegate" "5.0.0"
+    "@airswap/batch-call" "5.0.1"
+    "@airswap/delegate" "5.0.1"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
-    "@airswap/pool" "5.0.0"
-    "@airswap/registry" "5.0.0"
-    "@airswap/staking" "5.0.0"
-    "@airswap/swap" "5.0.0"
-    "@airswap/swap-erc20" "5.0.0"
-    "@airswap/utils" "5.0.0"
-    "@airswap/wrapper" "5.0.0"
+    "@airswap/pool" "5.0.1"
+    "@airswap/registry" "5.0.1"
+    "@airswap/staking" "5.0.1"
+    "@airswap/swap" "5.0.1"
+    "@airswap/swap-erc20" "5.0.1"
+    "@airswap/utils" "5.0.2"
+    "@airswap/wrapper" "5.0.1"
     browser-or-node "^2.1.1"
     ethers "^5.7.2"
     jayson "^4.0.0"
@@ -46,35 +50,45 @@
     tiny-typed-emitter "^2.1.0"
     websocket "^1.0.34"
 
-"@airswap/pool@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/pool/-/pool-5.0.0.tgz#5e0a66405e3a11d1f2dcf95e0b7fe40f99e977db"
-  integrity sha512-iva4QVpWMS/YdoCgwQRWW7aC9YnNjpGJOe3HYlsVVMp3imTB0d3ON9ej/oBQuKQG72ZYwZ+FCPYsTeCW4wMCgw==
+"@airswap/pool@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/pool/-/pool-5.0.1.tgz#7761e58e3ff3a4aea08cd1c36f9f479b79463257"
+  integrity sha512-UIAYmjaXhwgCQZhEq7AKQlBgieYwSlyMMq2pekT/5aFXMfCLN3S7cbpwC8Vwxk3EUr9WxKpPVyO8rJ6+WHSlNg==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/registry@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-5.0.0.tgz#a27a6ab8e859a5776ac108940fc0714251b9d8fe"
-  integrity sha512-2Vkd7i0jjBq0ivYKHrr5NYR6a92VQW0F6ALfPpkaxuRV14OgfqmpBr/QGP2hEs5R0qbxDi4Z5lZO6af6eyh68A==
+"@airswap/registry@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/registry/-/registry-5.0.1.tgz#473854d84291561aba02944f0f12e92792fdcad2"
+  integrity sha512-eQeGj0MK5bWWLQ1oZVZEsHNE7W6b+bY+bOLNdx7mAHxA7SMoH73O2u/dletTn/saHtkoMxIfL+jlYE039/5amQ==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/staking@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/staking/-/staking-5.0.0.tgz#ab0b7d0d7dfa904d83acf1e1822f11aa6874ad8b"
-  integrity sha512-7lBk0sQ8Rs39OqmUOHEZsHgqCiTh3h9BJb4BCdFsuiN0j32y9rpKeJgCrygs9JJoIXZK0eUbYq/i3WaEDH1qIA==
+"@airswap/staking@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/staking/-/staking-5.0.1.tgz#dc181c7fd198613163321035ac59c7d555d1401f"
+  integrity sha512-tgxTjm/X61kRL2KCGx0kfEIXGnSYFZpWlulU8xiX2lf8RCcF8vPF1no2crqdfImqku8aXN6KQlXrS+5llLZzPg==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/swap-erc20@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/swap-erc20/-/swap-erc20-5.0.0.tgz#0b8bfb583ab847f864429aba0918e6989fbf7303"
-  integrity sha512-R4L9qwqd3FQtTtP6PalPx4CLVxdPhvuYHT/1jSU0/JREGaGezoDj3nonYhJAuchmT7vVZrb0/xtZAJx5kAzC9w==
+"@airswap/swap-erc20@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/swap-erc20/-/swap-erc20-5.0.1.tgz#7c953d6cfa8e5a2ae4c8b7a5d35c016759b35454"
+  integrity sha512-qppBnnoQFd+7LjhOSUX1gDx+vOzS62roQEVIpnV3TLET2HMDWNwKArdk55xiKPbtGx4yQWWuxMHlhWZSAh1fEw==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/swap@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-5.0.0.tgz#adb99b9ef890a03fcc81bbfd6f5c657615b11edc"
-  integrity sha512-8+/eAZuMfo5g2p42QKPorHIzytZdZ9e/FpTmRV2M52dVltCHog8HcvAHJ5ShydCwNyHHrTMSyBjT4XyKis3MOg==
+"@airswap/swap@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/swap/-/swap-5.0.1.tgz#957429381c3c30db2ea5d1a9d52a176a61f22050"
+  integrity sha512-7+6aP+/hljvo3ULWLPmyZNr7N7TjRJqp1N0bg3kRBcr6U9ibfdHYAo2cFJZJ/1qBlX8MscD7Muy/mSB0/F0C9g==
+  dependencies:
+    ethers "^5.7.2"
 
-"@airswap/utils@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-5.0.0.tgz#0a8045d22869118aa6a6c6f264783606833b453f"
-  integrity sha512-fjreIlv1pEwIFaaujwFdjdYvnf55NUAR0yftZdL5fn2oVAB4i/M4jdyHAWqUtOPpg2+1txdN7+z5ebqTxG85Rg==
+"@airswap/utils@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-5.0.2.tgz#2c79dd17e06ff3232225f68e7c2f777bf7d1e744"
+  integrity sha512-JIDR6hW8EX6zWvpA/rNetPpNv7Dwkza9bhgj6TaM0rhYSyyySj3cUTmGXHJTqZv7SOFw9LLFashhbqxtW+nG/A==
   dependencies:
     "@metamask/eth-sig-util" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
@@ -84,10 +98,10 @@
     lz-string "^1.5.0"
     valid-url "^1.0.9"
 
-"@airswap/wrapper@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-5.0.0.tgz#71e30dc4939087808d2a22d601e5e94f42bc3886"
-  integrity sha512-ZRi3KALwL7SZ0WpQkSnQ/vMdlrymxUQhPmUW+EmOxRraQ1RAig4okioEEILKh9/pWpdXF5ZwynhLcz86W9r9DA==
+"@airswap/wrapper@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@airswap/wrapper/-/wrapper-5.0.1.tgz#32e2a15a4d62fc2da7b2a20956ca58ec8fa00b43"
+  integrity sha512-H0N2XDS6f2W7D+ZAmtPOfVd/jEaFnaxRLZ534yWLViGRpV7oN2Ic5kl5CtxzeGuEsxVPXllFL6KhnOOP0auoBg==
 
 "@akkafinance/bitkeep-detect-provider@^1.0.0":
   version "1.0.0"
