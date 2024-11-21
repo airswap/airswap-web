@@ -101,7 +101,7 @@ const InfoSection: FC<InfoSectionProps> = ({
     );
   }
 
-  return <InfoSectionHeading>Get a price.</InfoSectionHeading>;
+  return <InfoSectionHeading>{t("orders.getAPrice")}</InfoSectionHeading>;
 };
 
 export default InfoSection;

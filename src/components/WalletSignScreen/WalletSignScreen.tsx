@@ -9,7 +9,7 @@ import {
   OverlayTitle,
 } from "../../styled-components/Overlay/Overlay";
 
-type WalletSignScreenType = "approve" | "deposit" | "signature";
+type WalletSignScreenType = "approve" | "deposit" | "signature" | "swap" | "cancel";
 
 interface WalletConfirmScreenProps {
   type?: WalletSignScreenType;
@@ -23,30 +23,26 @@ const WalletSignScreen: FC<WalletConfirmScreenProps> = ({
   return (
     <OverlayContainer className={className}>
       <OverlayLoader />
-      <OverlayTitle type="h2">{getTitle(type)}</OverlayTitle>
+      <OverlayTitle type="h2">{i18n.t("orders.pendingWallet")}</OverlayTitle>
       <OverlaySubHeading>{getDescription(type)}</OverlaySubHeading>
     </OverlayContainer>
   );
 };
 
-const getTitle = (type: WalletSignScreenType) => {
+const getDescription = (type: WalletSignScreenType) => {
   if (type === "approve") {
     return i18n.t("orders.pendingApproval");
   }
-
   if (type === "deposit") {
     return i18n.t("orders.pendingDeposit");
   }
-
-  return i18n.t("orders.pendingSignature");
-};
-
-const getDescription = (type: WalletSignScreenType) => {
-  if (type === "approve") {
-    return i18n.t("orders.approveTokenInYourWallet");
+  if (type === "swap") {
+    return i18n.t("orders.pendingConfirmation");
   }
-
-  return i18n.t("orders.signTransactionInYourWallet");
+  if (type === "cancel") {
+    return i18n.t("orders.pendingCancellation");
+  }
+  return i18n.t("orders.pendingSignature");
 };
 
 export default WalletSignScreen;

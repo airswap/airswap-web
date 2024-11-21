@@ -24,7 +24,7 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
   if (pricingError === PricingErrorType.noServersFound) {
     return (
       <>
-        <InfoSectionHeading>No servers found at this time</InfoSectionHeading>
+        <InfoSectionHeading>{t("orders.noValidResponses")}</InfoSectionHeading>
       </>
     );
   }
