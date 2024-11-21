@@ -9,7 +9,12 @@ import {
   OverlayTitle,
 } from "../../styled-components/Overlay/Overlay";
 
-type WalletSignScreenType = "approve" | "deposit" | "signature" | "swap" | "cancel";
+type WalletSignScreenType =
+  | "approve"
+  | "deposit"
+  | "signature"
+  | "swap"
+  | "cancel";
 
 interface WalletConfirmScreenProps {
   type?: WalletSignScreenType;
