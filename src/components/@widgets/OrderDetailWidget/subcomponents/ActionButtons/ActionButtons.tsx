@@ -27,6 +27,7 @@ type ActionButtonsProps = {
   isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
+  isLoading: boolean;
   isMakerOfSwap: boolean;
   isNotConnected: boolean;
   requiresReload: boolean;
@@ -43,6 +44,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isTaken,
   isDifferentChainId,
   isIntendedRecipient,
+  isLoading,
   isMakerOfSwap,
   isNotConnected,
   requiresReload,
@@ -52,11 +54,18 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  if (isLoading) {
+    return (
+      <Container center className={className}>
+        <SignButton disabled intent="primary" loading />
+      </Container>
+    );
+  }
+
   if (isNotConnected) {
     return (
       <Container center className={className}>
         <SignButton
-          isFilled
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.connectWallet)}
         >
@@ -70,7 +79,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     return (
       <Container center className={className}>
         <SignButton
-          isFilled
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.switchNetwork)}
         >

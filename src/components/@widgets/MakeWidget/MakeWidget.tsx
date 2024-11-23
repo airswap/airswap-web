@@ -43,6 +43,7 @@ import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import useAllowance from "../../../hooks/useAllowance";
 import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
 import useApprovalPending from "../../../hooks/useApprovalPending";
+import { useBalanceLoading } from "../../../hooks/useBalanceLoading";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
@@ -143,6 +144,7 @@ const MakeWidget: FC = () => {
     makerAmount,
     true
   );
+  const isBalanceLoading = useBalanceLoading();
   const hasMissingMakerAmount =
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
   const hasMissingTakerAmount =
@@ -509,6 +511,7 @@ const MakeWidget: FC = () => {
           hasMissingMakerToken={!makerTokenInfo}
           hasMissingTakerAmount={hasMissingTakerAmount}
           hasMissingTakerToken={!takerTokenInfo}
+          isLoading={isBalanceLoading}
           isNetworkUnsupported={!isNetworkSupported}
           shouldDepositNativeToken={shouldDepositNativeToken}
           shouldRefresh={isAllowancesOrBalancesFailed}

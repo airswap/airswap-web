@@ -65,6 +65,7 @@ import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalance
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import useApprovalSuccess from "../../../hooks/useApprovalSuccess";
+import { useBalanceLoading } from "../../../hooks/useBalanceLoading";
 import useDepositPending from "../../../hooks/useDepositPending";
 import useInsufficientBalance from "../../../hooks/useInsufficientBalance";
 import useMaxAmount from "../../../hooks/useMaxAmount";
@@ -93,7 +94,7 @@ import StyledSwapWidget, {
   InfoContainer,
   StyledDebugMenu,
   StyledHeader,
-  StyledNewActionButtons,
+  StyledActionButtons,
   StyledSwapInputs,
 } from "./SwapWidget.styles";
 import getTokenPairs from "./helpers/getTokenPairs";
@@ -179,10 +180,8 @@ const SwapWidget: FC = () => {
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const nativeTokenInfo = useNativeToken(chainId);
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
-  const { hasSufficientAllowance, readableAllowance } = useAllowance(
-    baseTokenInfo,
-    baseAmount
-  );
+  const { hasSufficientAllowance } = useAllowance(baseTokenInfo, baseAmount);
+  const isBalanceLoading = useBalanceLoading();
 
   const activeOrderTransaction = useOrderTransaction(
     activeOrderNonce,
@@ -577,11 +576,12 @@ const SwapWidget: FC = () => {
           )}
         </InfoContainer>
 
-        <StyledNewActionButtons
+        <StyledActionButtons
           hasError={!!quote.error}
           hasInsufficientAllowance={!!quote.bestQuote && shouldApprove}
           hasInsufficientBalance={insufficientBalance}
           hasQuote={!!quote.bestQuote}
+          isBalanceLoading={isBalanceLoading}
           isCompleted={!!activeOrderTransaction}
           isLoading={
             isConnecting ||
