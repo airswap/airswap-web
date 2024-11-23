@@ -19,7 +19,7 @@ export const useBalanceLoading = () => {
   const swapAllowances = useAppSelector(selectAllowancesSwap);
   const wrapperAllowances = useAppSelector(selectAllowancesWrapper);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isBalancesLoading = balances.status === "fetching";
   const isSwapLoading = swapAllowances.status === "fetching";

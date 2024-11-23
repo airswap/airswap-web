@@ -202,6 +202,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     );
   }, [
     isGasCostSuccessful,
+    isLoading,
     disableLastLook,
     disableRfq,
     bestLastLookOrder,
