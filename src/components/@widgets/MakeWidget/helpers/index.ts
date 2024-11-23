@@ -12,12 +12,17 @@ export const getActionButtonTranslation = (
   hasMissingMakerToken: boolean,
   hasMissingTakerAmount: boolean,
   hasMissingTakerToken: boolean,
+  isLoading: boolean,
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   shouldRefresh: boolean,
   walletIsNotConnected: boolean,
   makerTokenSymbol?: string
 ): string => {
+  if (isLoading) {
+    return "";
+  }
+
   if (walletIsNotConnected) {
     return i18n.t("wallet.connectWallet");
   }

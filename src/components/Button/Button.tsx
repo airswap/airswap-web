@@ -1,6 +1,5 @@
 import React from "react";
 
-import Icon from "../Icon/Icon";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { StyledButton, StyledIcon, Text } from "./Button.styles";
 
@@ -8,7 +7,7 @@ export type ButtonIntent = "neutral" | "primary" | "positive" | "destructive";
 export type ButtonJustifyContent = "center" | "flex-start" | "flex-end";
 
 export type ButtonProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   icon?: string;
   /**

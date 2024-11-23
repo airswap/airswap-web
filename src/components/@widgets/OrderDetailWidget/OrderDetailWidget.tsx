@@ -86,7 +86,6 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const params = useParams<{ compressedOrder: string }>();
   const { setShowWalletList, setTransactionsTabIsOpen } =
     useContext(InterfaceContext);
-  const isBalanceLoading = useBalanceLoading();
 
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
@@ -105,7 +104,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
     order.signerToken
   );
-
+  const isBalanceLoading = useBalanceLoading();
   const senderAmount = useFormattedTokenAmount(
     order.senderAmount,
     senderToken?.decimals

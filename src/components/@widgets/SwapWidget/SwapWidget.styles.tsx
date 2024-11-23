@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 import { fontWide } from "../../../style/themes";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
-import NewActionButtons from "./subcomponents/ActionButtons/ActionButtons";
+import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
 import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
 
@@ -34,7 +34,7 @@ export const StyledSwapInputs = styled(SwapInputs)`
   margin-block-start: 2rem;
 `;
 
-export const StyledNewActionButtons = styled(NewActionButtons)`
+export const StyledActionButtons = styled(ActionButtons)`
   margin-block-start: 2rem;
 `;
 

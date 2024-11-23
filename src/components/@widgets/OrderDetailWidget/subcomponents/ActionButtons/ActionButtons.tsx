@@ -57,9 +57,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (isLoading) {
     return (
       <Container center className={className}>
-        <SignButton disabled intent="primary" loading>
-          {""}
-        </SignButton>
+        <SignButton disabled intent="primary" loading />
       </Container>
     );
   }

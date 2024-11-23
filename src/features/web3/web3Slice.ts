@@ -10,6 +10,7 @@ import {
 
 export interface Web3State {
   isActive: boolean;
+  isDisconnected: boolean;
   isInitialized: boolean;
   isUnsupportedChain: boolean;
   account?: string;
@@ -22,6 +23,7 @@ export interface Web3State {
 
 const initialState: Web3State = {
   isActive: false,
+  isDisconnected: false,
   isInitialized: false,
   isUnsupportedChain: false,
   libraries: {},
@@ -56,6 +58,7 @@ export const web3Slice = createSlice({
     setIsInitialized: (state, action: PayloadAction<boolean>) => ({
       ...state,
       isInitialized: action.payload,
+      isDisconnected: !action.payload,
     }),
     setLibraries: (state, action: PayloadAction<Record<number, boolean>>) => ({
       ...state,
@@ -74,6 +77,7 @@ export const web3Slice = createSlice({
     builder.addCase(walletDisconnected, () => {
       return {
         ...initialState,
+        isDisconnected: true,
         isInitialized: false,
       };
     });

@@ -20,6 +20,7 @@ type ActionButtonsProps = {
   hasInsufficientBalance: boolean;
   hasQuote: boolean;
   hasError: boolean;
+  isBalanceLoading: boolean;
   isCompleted: boolean;
   isLoading: boolean;
   isNotConnected: boolean;
@@ -30,11 +31,12 @@ type ActionButtonsProps = {
   className?: string;
 };
 
-const NewActionButtons: FC<ActionButtonsProps> = ({
+const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientAllowance,
   hasInsufficientBalance,
   hasQuote,
   hasError,
+  isBalanceLoading,
   isCompleted,
   isLoading,
   isNotConnected,
@@ -45,6 +47,14 @@ const NewActionButtons: FC<ActionButtonsProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
+
+  if (isBalanceLoading) {
+    return (
+      <Container center className={className}>
+        <SignButton disabled intent="primary" loading />
+      </Container>
+    );
+  }
 
   if (isNotConnected) {
     return (
@@ -161,4 +171,4 @@ const NewActionButtons: FC<ActionButtonsProps> = ({
   );
 };
 
-export default NewActionButtons;
+export default ActionButtons;

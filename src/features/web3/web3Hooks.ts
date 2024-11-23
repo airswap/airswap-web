@@ -8,6 +8,8 @@ import { clearedCachedLibrary, setCachedLibrary } from "../../helpers/ethers";
 import { walletChanged, walletDisconnected } from "./web3Actions";
 import { setLibraries, setWeb3Data } from "./web3Slice";
 
+const useWeb3ReactRouteDebounceDuration = 100;
+
 const useWeb3 = (): void => {
   const dispatch = useAppDispatch();
 
@@ -30,7 +32,7 @@ const useWeb3 = (): void => {
         })
       );
     },
-    100,
+    useWeb3ReactRouteDebounceDuration,
     [isActive, account, chainId, library]
   );
 

@@ -1,53 +1,48 @@
 import { useEffect, useState } from "react";
 
+import { useWeb3React } from "@web3-react/core";
+
 import { useAppSelector } from "../app/hooks";
 import {
   selectAllowancesSwap,
   selectAllowancesWrapper,
   selectBalances,
 } from "../features/balances/balancesSlice";
-import useDebounce from "./useDebounce";
 
 export const useBalanceLoading = () => {
-  const { account, chainId, isInitialized } = useAppSelector(
+  const { isActive, isDisconnected, isInitialized } = useAppSelector(
     (state) => state.web3
   );
+
+  const { account } = useWeb3React();
   const balances = useAppSelector(selectBalances);
   const swapAllowances = useAppSelector(selectAllowancesSwap);
   const wrapperAllowances = useAppSelector(selectAllowancesWrapper);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [debouncedInitialized, setDebouncedInitialized] =
-    useState(isInitialized);
 
   const isBalancesLoading = balances.status === "fetching";
   const isSwapLoading = swapAllowances.status === "fetching";
   const isWrapperLoading = wrapperAllowances.status === "fetching";
 
-  // Debouncing isInitialized will solve flickering when switching between accounts
-  useDebounce(
-    () => {
-      setDebouncedInitialized(isInitialized);
-    },
-    100,
-    [isInitialized]
-  );
-
+  // Fires after wallet connect or wallet change
   useEffect(() => {
-    if (account) {
+    if (isInitialized && isActive && account) {
       setIsLoading(true);
     }
-  }, [account, chainId]);
+  }, [account]);
 
+  // Fires after balances, swap allowances, and wrapper allowances are fetched
   useEffect(() => {
-    if (!isBalancesLoading && !isSwapLoading && !isWrapperLoading) {
+    if (!isBalancesLoading && !isSwapLoading && !isWrapperLoading && isActive) {
       setIsLoading(false);
     }
   }, [isBalancesLoading, isSwapLoading, isWrapperLoading]);
 
-  const snavie = isLoading || !debouncedInitialized;
+  // This will be true when the page loads and the wallet is connected
+  if (!isInitialized && !isDisconnected) {
+    return true;
+  }
 
-  console.log("snavie", snavie);
-
-  return snavie;
+  return isLoading;
 };
