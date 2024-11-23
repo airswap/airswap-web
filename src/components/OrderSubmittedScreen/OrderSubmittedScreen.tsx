@@ -65,7 +65,7 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
           intent="primary"
           onClick={onMakeNewOrderButtonClick}
         >
-          {t("orders.makeNewOrder")}
+          {t("orders.makeNewSwap")}
         </MakeNewOrderButton>
 
         {showTrackTransactionButton && (

@@ -659,7 +659,7 @@ const SwapWidget: FC = () => {
         )}
 
         <TransactionOverlay isHidden={ordersStatus !== "signing"}>
-          <WalletSignScreen type="signature" />
+          <WalletSignScreen type="approve" />
         </TransactionOverlay>
 
         <TransactionOverlay

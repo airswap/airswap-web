@@ -406,7 +406,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
       )}
 
       <TransactionOverlay isHidden={ordersStatus !== "signing"}>
-        <WalletSignScreen type="signature" />
+        <WalletSignScreen type="swap" />
       </TransactionOverlay>
 
       <TransactionOverlay

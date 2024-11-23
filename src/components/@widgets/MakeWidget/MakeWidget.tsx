@@ -528,7 +528,7 @@ const MakeWidget: FC = () => {
       <TransactionOverlay
         isHidden={ordersStatus !== "signing" && makeOtcStatus !== "signing"}
       >
-        <WalletSignScreen type="approve" />
+        <WalletSignScreen type="signature" />
       </TransactionOverlay>
 
       <TransactionOverlay
