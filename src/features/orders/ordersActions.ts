@@ -383,6 +383,8 @@ export const takeLastLookOrder =
   async (
     dispatch: AppDispatch
   ): Promise<SubmittedOrderUnderConsideration | undefined> => {
+    dispatch(setStatus("signing"));
+
     const servers = await Registry.getServers(
       library,
       chainId,
@@ -398,8 +400,6 @@ export const takeLastLookOrder =
 
       return;
     }
-
-    dispatch(setStatus("signing"));
 
     const signature = await createOrderERC20Signature(
       unsignedOrder,

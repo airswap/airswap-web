@@ -21,7 +21,6 @@ type ActionButtonsProps = {
   hasQuote: boolean;
   hasError: boolean;
   isBalanceLoading: boolean;
-  isCompleted: boolean;
   isLoading: boolean;
   isNotConnected: boolean;
   requiresReload: boolean;
@@ -37,7 +36,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasQuote,
   hasError,
   isBalanceLoading,
-  isCompleted,
   isLoading,
   isNotConnected,
   requiresReload,
@@ -131,23 +129,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
           onClick={() => onActionButtonClick(ButtonActions.approve)}
         >
           {t("orders.approve")}
-        </SignButton>
-      </Container>
-    );
-  }
-
-  if (isCompleted) {
-    return (
-      <Container className={className}>
-        <BackButton onClick={handleBackButtonClick}>
-          {t("common.back")}
-        </BackButton>
-        <SignButton
-          intent="primary"
-          disabled={isLoading}
-          onClick={() => onActionButtonClick(ButtonActions.restart)}
-        >
-          {t("orders.trackTransaction")}
         </SignButton>
       </Container>
     );

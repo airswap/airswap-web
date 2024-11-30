@@ -19,15 +19,17 @@ import {
 } from "./OrderSubmittedScreen.styles";
 
 interface OrderSubmittedInfoProps {
+  isSendingOrder?: boolean;
   showTrackTransactionButton?: boolean;
   chainId?: number;
-  transaction: SubmittedTransaction;
+  transaction?: SubmittedTransaction;
   onMakeNewOrderButtonClick: () => void;
   onTrackTransactionButtonClick?: () => void;
   className?: string;
 }
 
 const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
+  isSendingOrder,
   showTrackTransactionButton,
   chainId,
   transaction,
@@ -41,7 +43,17 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
     <Container className={className}>
       <InfoContainer>
         <StyledIcon name="check-circle" />
-        {transaction.status === TransactionStatusType.processing && (
+        {isSendingOrder && (
+          <>
+            <StyledOverlayTitle type="h2">
+              {t("orders.transactionSent")}
+            </StyledOverlayTitle>
+            <OverlaySubHeading>
+              {t("orders.transactionSentForConsideration")}
+            </OverlaySubHeading>
+          </>
+        )}
+        {transaction?.status === TransactionStatusType.processing && (
           <>
             <StyledOverlayTitle type="h2">
               {t("orders.transactionSubmitted")}
@@ -51,12 +63,12 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
             </OverlaySubHeading>
           </>
         )}
-        {transaction.status === TransactionStatusType.succeeded && (
+        {transaction?.status === TransactionStatusType.succeeded && (
           <OverlayTitle type="h2">
             {t("orders.transactionCompleted")}
           </OverlayTitle>
         )}
-        {transaction.hash && chainId && (
+        {transaction?.hash && chainId && (
           <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
         )}
       </InfoContainer>

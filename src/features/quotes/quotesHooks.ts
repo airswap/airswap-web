@@ -101,7 +101,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   }, [isSubmitted]);
 
   useEffect(() => {
-    if (!bestOrder) {
+    if (!bestOrder || bestOrderType !== ProtocolIds.RequestForQuoteERC20) {
       return noop;
     }
 
