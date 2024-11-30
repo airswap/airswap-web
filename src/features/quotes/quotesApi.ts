@@ -11,10 +11,15 @@ import {
 } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import {
+  getBestPricing,
   getPricingQuoteAmount,
   isExtendedPricing,
 } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
-import { getExtendedPricingERC20 } from "../../entities/ExtendedPricing/ExtendedPricingService";
+import {
+  getExtendedPricingERC20,
+  subscribeExtendedPricingERC20,
+} from "../../entities/ExtendedPricing/ExtendedPricingService";
+import { transformToExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricingTransformers";
 import { requestRfqOrders } from "../../entities/OrderERC20/OrderERC20Service";
 import { getRegistryServers } from "../../entities/Server/ServerService";
 import { PricingErrorType } from "../../errors/pricingError";
@@ -58,7 +63,7 @@ export const fetchBestPricing = createAsyncThunk<
 
     const pricingPromises = servers.map((server) =>
       Promise.race([
-        getExtendedPricingERC20(server, baseToken, quoteToken),
+        subscribeExtendedPricingERC20(server, baseToken, quoteToken),
         new Promise((_, reject) =>
           setTimeout(
             () => reject(new Error("Timeout")),
@@ -73,8 +78,6 @@ export const fetchBestPricing = createAsyncThunk<
     }
 
     const responses = await Promise.allSettled(pricingPromises);
-
-    servers.forEach((server) => server.disconnect());
 
     const pricings = responses
       .filter((response): response is PromiseFulfilledResult<unknown> =>
@@ -93,28 +96,7 @@ export const fetchBestPricing = createAsyncThunk<
       return PricingErrorType.noPricingFound;
     }
 
-    const quoteAmounts = pricings.map((pricing) =>
-      getPricingQuoteAmount(pricing, baseTokenAmount, protocolFee)
-    );
-
-    // If all pricings are errors, return the first error
-    if (quoteAmounts.every((quoteAmount) => quoteAmount in PricingErrorType)) {
-      return quoteAmounts.find(
-        (quoteAmount) => quoteAmount in PricingErrorType
-      ) as PricingErrorType;
-    }
-
-    const highestQuoteIndex = quoteAmounts
-      .filter((quoteAmount) => typeof quoteAmount === "string")
-      .reduce(
-        (maxIndex, current, index, arr) =>
-          new BigNumber(arr[maxIndex]).isLessThan(new BigNumber(current))
-            ? index
-            : maxIndex,
-        0
-      );
-
-    return pricings[highestQuoteIndex];
+    return getBestPricing(pricings, baseTokenAmount, protocolFee);
   }
 );
 
@@ -183,3 +165,26 @@ export const fetchBestRfqOrder = createAsyncThunk<
     return getBestOrder(orders);
   }
 );
+
+export const getBestPricingServer = async (
+  params: FetchBestPricingParams,
+  locator: string
+): Promise<Server | PricingErrorType> => {
+  const { provider, chainId, quoteToken, baseToken } = params;
+
+  const servers = await getRegistryServers(
+    provider,
+    chainId,
+    ProtocolIds.LastLookERC20,
+    quoteToken,
+    baseToken
+  );
+
+  const server = servers.find((server) => server.locator === locator);
+
+  if (!server) {
+    return PricingErrorType.noServersFound;
+  }
+
+  return server;
+};

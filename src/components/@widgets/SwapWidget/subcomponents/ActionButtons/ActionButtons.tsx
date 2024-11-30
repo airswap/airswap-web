@@ -48,6 +48,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const handleBackButtonClick = () => {
+    onActionButtonClick(ButtonActions.goBack);
+  };
+
   if (isBalanceLoading) {
     return (
       <Container center className={className}>
@@ -88,7 +92,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasError) {
     return (
       <Container center className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
       </Container>
     );
   }
@@ -116,7 +122,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasInsufficientAllowance) {
     return (
       <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           disabled={isLoading}
@@ -131,7 +139,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (isCompleted) {
     return (
       <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           disabled={isLoading}
@@ -146,7 +156,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasQuote) {
     return (
       <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           disabled={isLoading}

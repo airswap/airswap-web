@@ -19,7 +19,7 @@ export const fetchAllTokens = createAsyncThunk<
   const response = await getKnownTokens(chainId);
 
   if (response.errors.length) {
-    console.log("Errors fetching metadata", response.errors);
+    console.error("Errors fetching metadata", response.errors);
 
     return [];
   }

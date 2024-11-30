@@ -1,6 +1,7 @@
+import { Server } from "@airswap/libraries";
 import {
-  createOrderERC20,
   OrderERC20,
+  Pricing,
   ProtocolIds,
   TokenInfo,
   UnsignedOrderERC20,
@@ -9,20 +10,19 @@ import { Web3Provider } from "@ethersproject/providers";
 import { formatUnits } from "@ethersproject/units";
 
 import { BigNumber } from "bignumber.js";
+import { providers } from "ethers";
 
 import { AppDispatch } from "../../app/store";
-import { LAST_LOOK_ORDER_EXPIRY_SEC } from "../../constants/configParams";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
-import { getPricingQuoteAmount } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
+import {
+  handlePricingErc20Event,
+  isExtendedPricing,
+} from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
+import { transformExtendedPricingToUnsignedOrder } from "../../entities/ExtendedPricing/ExtendedPricingTransformers";
+import { getRegistryServers } from "../../entities/Server/ServerService";
 import { PricingErrorType } from "../../errors/pricingError";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
-import {
-  reset,
-  setBestLastLookOrder,
-  setBestOrder,
-  setLastLookError,
-  setRfqError,
-} from "./quotesSlice";
+import { reset, setBestOrder, setStreamedLastLookOrder } from "./quotesSlice";
 
 interface FetchBestPricingAndRfqOrder {
   isSubmitted: boolean;
@@ -45,7 +45,6 @@ export const fetchBestPricingAndRfqOrder =
       baseToken,
       baseTokenAmount,
       chainId,
-      pricing,
       protocolFee,
       library,
       quoteToken,
@@ -82,52 +81,6 @@ export const fetchBestPricingAndRfqOrder =
         senderWallet: account,
       })
     );
-  };
-
-interface CreateLastLookUnsignedOrderProps {
-  account: string;
-  baseToken: TokenInfo;
-  baseAmount: string;
-  pricing: ExtendedPricing;
-  protocolFee: number;
-  quoteToken: TokenInfo;
-}
-
-export const createLastLookUnsignedOrder =
-  (props: CreateLastLookUnsignedOrderProps) =>
-  async (dispatch: AppDispatch): Promise<void> => {
-    const { account, baseToken, baseAmount, pricing, protocolFee, quoteToken } =
-      props;
-
-    const quoteAmount = getPricingQuoteAmount(pricing, baseAmount, protocolFee);
-    const senderWallet = pricing.serverWallet;
-
-    const baseAmountAtomic = new BigNumber(baseAmount)
-      .multipliedBy(10 ** baseToken.decimals)
-      // Note that we remove the signer fee from the amount that we send.
-      // This was already done to determine quoteAmount.
-      .dividedBy(1 + protocolFee / 10000)
-      .integerValue(BigNumber.ROUND_CEIL)
-      .toString();
-
-    const quoteAmountAtomic = new BigNumber(quoteAmount)
-      .multipliedBy(10 ** quoteToken.decimals)
-      .integerValue(BigNumber.ROUND_FLOOR)
-      .toString();
-
-    const unsignedOrder = createOrderERC20({
-      expiry: Math.floor(Date.now() / 1000 + LAST_LOOK_ORDER_EXPIRY_SEC),
-      nonce: Date.now().toString(),
-      senderWallet,
-      signerWallet: account,
-      signerToken: baseToken.address,
-      senderToken: quoteToken.address,
-      protocolFee: protocolFee.toString(),
-      signerAmount: baseAmountAtomic,
-      senderAmount: quoteAmountAtomic,
-    });
-
-    dispatch(setBestLastLookOrder(unsignedOrder));
   };
 
 export const compareOrdersAndSetBestOrder =
@@ -202,4 +155,79 @@ export const compareOrdersAndSetBestOrder =
         quote: rfqQuote!,
       })
     );
+  };
+
+interface SubscribePricingERC20 {
+  provider: providers.BaseProvider;
+  account: string;
+  chainId: number;
+  baseToken: TokenInfo;
+  baseTokenAmount: string;
+  quoteToken: TokenInfo;
+  protocolFee: number;
+  bestPricing: ExtendedPricing;
+}
+
+export const subscribePricingERC20 =
+  (params: SubscribePricingERC20) =>
+  async (dispatch: AppDispatch): Promise<Server | PricingErrorType> => {
+    const {
+      account,
+      baseTokenAmount,
+      provider,
+      protocolFee,
+      chainId,
+      quoteToken,
+      baseToken,
+      bestPricing,
+    } = params;
+
+    const servers = await getRegistryServers(
+      provider,
+      chainId,
+      ProtocolIds.LastLookERC20,
+      quoteToken.address,
+      baseToken.address
+    );
+
+    const server = servers.find(
+      (server) => server.locator === bestPricing.locator
+    );
+
+    if (!server) {
+      return PricingErrorType.noServersFound;
+    }
+
+    server.on("pricing-erc20", (e: Pricing[]) => {
+      const newBestPricing = handlePricingErc20Event(
+        e,
+        bestPricing.locator,
+        server.getSenderWallet(),
+        baseToken.address,
+        baseTokenAmount,
+        quoteToken.address,
+        protocolFee
+      );
+
+      if (!isExtendedPricing(newBestPricing)) {
+        return;
+      }
+
+      const newOrder = transformExtendedPricingToUnsignedOrder({
+        account,
+        baseToken,
+        baseAmount: baseTokenAmount,
+        pricing: newBestPricing,
+        protocolFee,
+        quoteToken,
+      });
+
+      dispatch(setStreamedLastLookOrder(newOrder));
+    });
+
+    server.subscribePricingERC20([
+      { baseToken: baseToken.address, quoteToken: quoteToken.address },
+    ]);
+
+    return server;
   };
