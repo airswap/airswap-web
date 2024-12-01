@@ -49,7 +49,7 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
               {t("orders.transactionSent")}
             </StyledOverlayTitle>
             <OverlaySubHeading>
-              {t("orders.transactionSentForConsideration")}
+              {t("orders.transactionSentToMaker")}
             </OverlaySubHeading>
           </>
         )}

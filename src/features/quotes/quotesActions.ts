@@ -22,7 +22,7 @@ import { transformExtendedPricingToUnsignedOrder } from "../../entities/Extended
 import { getRegistryServers } from "../../entities/Server/ServerService";
 import { PricingErrorType } from "../../errors/pricingError";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
-import { reset, setBestOrder, setStreamedLastLookOrder } from "./quotesSlice";
+import { reset, setBestOrder, setStreamedOrderAndPricing } from "./quotesSlice";
 
 interface FetchBestPricingAndRfqOrder {
   isSubmitted: boolean;
@@ -213,7 +213,7 @@ export const subscribePricingERC20 =
         return;
       }
 
-      const newOrder = transformExtendedPricingToUnsignedOrder({
+      const newLastLookOrder = transformExtendedPricingToUnsignedOrder({
         account,
         baseToken,
         baseAmount: baseTokenAmount,
@@ -222,7 +222,12 @@ export const subscribePricingERC20 =
         quoteToken,
       });
 
-      dispatch(setStreamedLastLookOrder(newOrder));
+      dispatch(
+        setStreamedOrderAndPricing({
+          lastLookOrder: newLastLookOrder,
+          bestPricing: newBestPricing,
+        })
+      );
     });
 
     server.subscribePricingERC20([

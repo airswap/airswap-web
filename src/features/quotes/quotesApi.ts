@@ -1,8 +1,7 @@
-import { Registry, Server } from "@airswap/libraries";
+import { Server } from "@airswap/libraries";
 import { OrderERC20, ProtocolIds, TokenInfo } from "@airswap/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import BigNumber from "bignumber.js";
 import { providers } from "ethers";
 
 import {
@@ -12,14 +11,9 @@ import {
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
 import {
   getBestPricing,
-  getPricingQuoteAmount,
   isExtendedPricing,
 } from "../../entities/ExtendedPricing/ExtendedPricingHelpers";
-import {
-  getExtendedPricingERC20,
-  subscribeExtendedPricingERC20,
-} from "../../entities/ExtendedPricing/ExtendedPricingService";
-import { transformToExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricingTransformers";
+import { getExtendedPricingERC20 } from "../../entities/ExtendedPricing/ExtendedPricingService";
 import { requestRfqOrders } from "../../entities/OrderERC20/OrderERC20Service";
 import { getRegistryServers } from "../../entities/Server/ServerService";
 import { PricingErrorType } from "../../errors/pricingError";
@@ -63,7 +57,7 @@ export const fetchBestPricing = createAsyncThunk<
 
     const pricingPromises = servers.map((server) =>
       Promise.race([
-        subscribeExtendedPricingERC20(server, baseToken, quoteToken),
+        getExtendedPricingERC20(server, baseToken, quoteToken),
         new Promise((_, reject) =>
           setTimeout(
             () => reject(new Error("Timeout")),

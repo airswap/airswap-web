@@ -192,7 +192,7 @@
     "trackTransaction": "Available in transaction history",
     "transactionCompleted": "Swap complete",
     "transactionSent": "Sending order...",
-    "transactionSentForConsideration": "Sending order out for consideration",
+    "transactionSentToMaker": "Sending order to the maker",
     "transactionSubmitted": "Swap processing...",
     "unableTake": "Unable to take",
     "viewAllQuotes": "View all quotes",

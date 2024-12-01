@@ -73,6 +73,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     bestQuote,
     lastLookError,
     rfqError,
+    streamedBestPricing,
     streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
 
@@ -272,7 +273,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   return {
     isFailed: !isLoading && !!error,
     isLoading: isLastLookLoading || isRfqLoading,
-    bestPricing: bestPricing,
+    bestPricing: streamedBestPricing || bestPricing,
     bestOrder: streamedLastLookOrder || bestOrder,
     bestOrderType,
     bestQuote,
