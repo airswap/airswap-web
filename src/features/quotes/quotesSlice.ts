@@ -20,6 +20,8 @@ interface QuotesState {
   bestQuote?: string;
   lastLookError?: PricingErrorType;
   rfqError?: PricingErrorType;
+  streamedBestPricing?: ExtendedPricing;
+  streamedLastLookOrder?: UnsignedOrderERC20;
 }
 
 const initialState: QuotesState = {
@@ -96,6 +98,17 @@ const quotesSlice = createSlice({
     ): QuotesState => ({
       ...state,
       rfqError: action.payload,
+    }),
+    setStreamedOrderAndPricing: (
+      state,
+      action: PayloadAction<{
+        lastLookOrder: UnsignedOrderERC20;
+        bestPricing: ExtendedPricing;
+      }>
+    ): QuotesState => ({
+      ...state,
+      streamedLastLookOrder: action.payload.lastLookOrder,
+      streamedBestPricing: action.payload.bestPricing,
     }),
   },
   extraReducers: (builder) => {
@@ -183,6 +196,7 @@ export const {
   setDisableRfq,
   setLastLookError,
   setRfqError,
+  setStreamedOrderAndPricing,
 } = quotesSlice.actions;
 
 export default quotesSlice.reducer;

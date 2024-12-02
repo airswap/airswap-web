@@ -191,6 +191,8 @@
     "track": "Track",
     "trackTransaction": "Available in transaction history",
     "transactionCompleted": "Swap complete",
+    "transactionSent": "Sending order...",
+    "transactionSentToMaker": "Sending order to the maker",
     "transactionSubmitted": "Swap processing...",
     "unableTake": "Unable to take",
     "viewAllQuotes": "View all quotes",

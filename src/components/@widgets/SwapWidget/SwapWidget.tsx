@@ -579,10 +579,11 @@ const SwapWidget: FC = () => {
         <StyledActionButtons
           hasError={!!quote.error}
           hasInsufficientAllowance={!!quote.bestQuote && shouldApprove}
-          hasInsufficientBalance={insufficientBalance}
+          hasInsufficientBalance={
+            ordersStatus === "idle" && insufficientBalance
+          }
           hasQuote={!!quote.bestQuote}
           isBalanceLoading={isBalanceLoading}
-          isCompleted={!!activeOrderTransaction}
           isLoading={
             isConnecting ||
             quote.isLoading ||
@@ -673,23 +674,24 @@ const SwapWidget: FC = () => {
           )}
         </TransactionOverlay>
 
-        <TransactionOverlay isHidden={!activeOrderTransaction}>
-          {activeOrderTransaction && (
-            <OrderSubmittedScreen
-              showTrackTransactionButton={
-                activeOrderTransaction.status ===
-                  TransactionStatusType.processing && !transactionsTabIsOpen
-              }
-              chainId={chainId}
-              transaction={activeOrderTransaction}
-              onMakeNewOrderButtonClick={() =>
-                handleActionButtonClick(ButtonActions.restart)
-              }
-              onTrackTransactionButtonClick={() =>
-                handleActionButtonClick(ButtonActions.trackTransaction)
-              }
-            />
-          )}
+        <TransactionOverlay
+          isHidden={!activeOrderTransaction && ordersStatus !== "requesting"}
+        >
+          <OrderSubmittedScreen
+            isSendingOrder={ordersStatus === "requesting"}
+            showTrackTransactionButton={
+              activeOrderTransaction?.status ===
+                TransactionStatusType.processing && !transactionsTabIsOpen
+            }
+            chainId={chainId}
+            transaction={activeOrderTransaction}
+            onMakeNewOrderButtonClick={() =>
+              handleActionButtonClick(ButtonActions.restart)
+            }
+            onTrackTransactionButtonClick={() =>
+              handleActionButtonClick(ButtonActions.trackTransaction)
+            }
+          />
         </TransactionOverlay>
       </StyledSwapWidget>
     </>

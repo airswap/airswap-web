@@ -21,7 +21,6 @@ type ActionButtonsProps = {
   hasQuote: boolean;
   hasError: boolean;
   isBalanceLoading: boolean;
-  isCompleted: boolean;
   isLoading: boolean;
   isNotConnected: boolean;
   requiresReload: boolean;
@@ -37,7 +36,6 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasQuote,
   hasError,
   isBalanceLoading,
-  isCompleted,
   isLoading,
   isNotConnected,
   requiresReload,
@@ -47,6 +45,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
+
+  const handleBackButtonClick = () => {
+    onActionButtonClick(ButtonActions.goBack);
+  };
 
   if (isBalanceLoading) {
     return (
@@ -88,7 +90,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasError) {
     return (
       <Container center className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
       </Container>
     );
   }
@@ -116,7 +120,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasInsufficientAllowance) {
     return (
       <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           disabled={isLoading}
@@ -128,25 +134,12 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     );
   }
 
-  if (isCompleted) {
-    return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
-        <SignButton
-          intent="primary"
-          disabled={isLoading}
-          onClick={() => onActionButtonClick(ButtonActions.restart)}
-        >
-          {t("orders.trackTransaction")}
-        </SignButton>
-      </Container>
-    );
-  }
-
   if (hasQuote) {
     return (
       <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+        <BackButton onClick={handleBackButtonClick}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           disabled={isLoading}

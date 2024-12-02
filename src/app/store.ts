@@ -11,7 +11,6 @@ import metadataReducer from "../features/metadata/metadataSlice";
 import { subscribeToSavedTokenChangesForLocalStoragePersisting } from "../features/metadata/metadataSubscriber";
 import myOrdersReducer from "../features/myOrders/myOrdersSlice";
 import ordersReducer from "../features/orders/ordersSlice";
-import pricingReducer from "../features/pricing/pricingSlice";
 import quotesReducer from "../features/quotes/quotesSlice";
 import registryReducer from "../features/registry/registrySlice";
 import takeOtcReducer from "../features/takeOtc/takeOtcSlice";
@@ -29,7 +28,6 @@ export const store = configureStore({
     tradeTerms: tradeTermsReducer,
     indexer: indexerReducer,
     orders: ordersReducer,
-    pricing: pricingReducer,
     gasCost: gasCostReducer,
     registry: registryReducer,
     userSettings: userSettingsReducer,
