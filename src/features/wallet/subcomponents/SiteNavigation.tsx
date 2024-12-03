@@ -44,10 +44,7 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
       >
         {t("common.otc")}
       </NavigationNavLink>
-      <NavigationLink
-        href="https://analytics.airswap.xyz/"
-        target="_blank"
-      >
+      <NavigationLink href="https://analytics.airswap.xyz/" target="_blank">
         {t("common.stats")}
       </NavigationLink>
     </Container>
