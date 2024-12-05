@@ -5,7 +5,6 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { getAllTokensFromLocalStorage } from "../../../../features/metadata/metadataApi";
 import {
   addActiveToken,
   addTokenInfo,
@@ -51,17 +50,6 @@ const useTakerTokenInfo = (
 
     const chainId = activeOrder.chainId;
 
-    // If wallet is not connected the metadata tokens can't be filled yet because it gets chainId from
-    // the wallet. But in this case we have the chainId from the order already. So we can get tokens from
-    // localStorage directly so we don't have to wait for the wallet getting connected.
-
-    const tokensObject = getAllTokensFromLocalStorage(chainId);
-
-    const tokens = [
-      ...allTokens,
-      ...(!isActive ? Object.values(tokensObject) : []),
-    ];
-
     const callScrapeToken = async () => {
       setIsCallScrapeTokenLoading(true);
 
@@ -77,7 +65,7 @@ const useTakerTokenInfo = (
       setIsCallScrapeTokenLoading(false);
     };
 
-    const tokenFromStore = findEthOrTokenByAddress(address, tokens, chainId);
+    const tokenFromStore = findEthOrTokenByAddress(address, allTokens, chainId);
 
     if (tokenFromStore) {
       setToken(tokenFromStore);

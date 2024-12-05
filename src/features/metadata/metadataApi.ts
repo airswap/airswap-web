@@ -18,9 +18,6 @@ export const getCustomTokensLocalStorageKey: (
 ) => string = (account, chainId) =>
   `airswap/customTokens/${account}/${chainId}`;
 
-export const getAllTokensLocalStorageKey = (chainId: number): string =>
-  `airswap/metadataCache/${chainId}`;
-
 export const getUnknownTokens = async (
   chainId: number,
   supportedTokenAddresses: string[],
@@ -73,15 +70,6 @@ export const getCustomTokensFromLocalStorage = (
     .split(",")
     .filter((address) => address.length);
   return (savedTokens.length && savedTokens) || [];
-};
-
-export const getAllTokensFromLocalStorage = (
-  chainId: number
-): MetadataTokens["all"] => {
-  const localStorageItem = localStorage.getItem(
-    getAllTokensLocalStorageKey(chainId)
-  );
-  return localStorageItem ? JSON.parse(localStorageItem) : {};
 };
 
 export const getProtocolFee = async (

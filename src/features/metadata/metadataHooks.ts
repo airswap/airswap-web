@@ -7,7 +7,6 @@ import { fetchSupportedTokens } from "../registry/registryActions";
 import { fetchAllTokens, fetchProtocolFee } from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,
-  getAllTokensFromLocalStorage,
   getCustomTokensFromLocalStorage,
 } from "./metadataApi";
 import { MetadataTokens, setTokens } from "./metadataSlice";
@@ -17,7 +16,6 @@ const useMetadata = () => {
 
   const { provider } = useWeb3React();
   const { isActive, account, chainId } = useAppSelector((state) => state.web3);
-  const { tokens } = useAppSelector((state) => state.metadata);
 
   const [activeAccount, setActiveAccount] = useState<string>();
   const [activeAccountChainId, setActiveAccountChainId] = useState<number>();
@@ -36,7 +34,7 @@ const useMetadata = () => {
     setActiveAccountChainId(chainId);
 
     const tokens: MetadataTokens = {
-      all: getAllTokensFromLocalStorage(chainId),
+      all: {},
       active: getActiveTokensFromLocalStorage(account, chainId),
       custom: getCustomTokensFromLocalStorage(account, chainId),
     };

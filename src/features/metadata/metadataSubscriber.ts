@@ -3,7 +3,6 @@ import { TokenInfo } from "@airswap/utils";
 import { store } from "../../app/store";
 import {
   getActiveTokensLocalStorageKey,
-  getAllTokensLocalStorageKey,
   getCustomTokensLocalStorageKey,
 } from "./metadataApi";
 
@@ -40,33 +39,11 @@ const compareAndWriteTokensToLocalStorage = (
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const activeTokensCache: TokensCache = {};
   const customTokensCache: TokensCache = {};
-  const allTokensCache: AllTokensCache = {};
 
   store.subscribe(() => {
-    const { web3, metadata, transactions } = store.getState();
-    if (!web3.isActive) return;
+    const { web3, metadata } = store.getState();
 
-    // All tokens
-    if (!allTokensCache[web3.chainId!]) {
-      allTokensCache[web3.chainId!] = {};
-    }
-
-    const cachedAllTokensForChain = allTokensCache[web3.chainId!];
-
-    if (
-      Object.values(metadata.tokens.all).length !==
-      Object.values(cachedAllTokensForChain).length
-    ) {
-      // all tokens have changed, persist to local storage.
-
-      allTokensCache[web3.chainId!] = metadata.tokens.all;
-      localStorage.setItem(
-        getAllTokensLocalStorageKey(web3.chainId!),
-        JSON.stringify(metadata.tokens.all)
-      );
-    }
-
-    if (!web3.account || !web3.chainId) {
+    if (!web3.isActive || !web3.account || !web3.chainId) {
       return;
     }
 
