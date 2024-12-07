@@ -7,7 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   addActiveToken,
-  addTokenInfo,
+  addCustomTokenInfo,
   selectAllTokens,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
@@ -36,7 +36,7 @@ const useTakerTokenInfo = (
 
   useEffect(() => {
     if (scrapedToken) {
-      dispatch(addTokenInfo(scrapedToken));
+      dispatch(addCustomTokenInfo(scrapedToken));
       // Add active token so balance will be fetched
       dispatch(addActiveToken(scrapedToken.address));
     }

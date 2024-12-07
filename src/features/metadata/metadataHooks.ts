@@ -9,7 +9,7 @@ import {
   getActiveTokensFromLocalStorage,
   getCustomTokensFromLocalStorage,
 } from "./metadataApi";
-import { MetadataTokens, setTokens } from "./metadataSlice";
+import { setTokens } from "./metadataSlice";
 
 const useMetadata = () => {
   const dispatch = useAppDispatch();
@@ -33,13 +33,10 @@ const useMetadata = () => {
     setActiveAccount(account);
     setActiveAccountChainId(chainId);
 
-    const tokens: MetadataTokens = {
-      all: {},
-      active: getActiveTokensFromLocalStorage(account, chainId),
-      custom: getCustomTokensFromLocalStorage(account, chainId),
-    };
+    const active = getActiveTokensFromLocalStorage(account, chainId);
+    const custom = getCustomTokensFromLocalStorage(account, chainId);
 
-    dispatch(setTokens(tokens));
+    dispatch(setTokens({ active, custom }));
   }, [account, chainId, provider]);
 
   useEffect(() => {

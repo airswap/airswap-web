@@ -6,47 +6,66 @@ import * as ethers from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
 import { getProtocolFee, getUnknownTokens } from "./metadataApi";
+import { MetadataTokenInfoMap } from "./metadataSlice";
+
+const transformTokenInfoArrayToMap = (tokens: TokenInfo[]) => {
+  return tokens.reduce((acc, token) => {
+    const address = token.address.toLowerCase();
+
+    acc[address] = { ...token, address };
+    return acc;
+  }, {} as MetadataTokenInfoMap);
+};
 
 export const fetchAllTokens = createAsyncThunk<
-  TokenInfo[], // Return type
-  number, // First argument
+  MetadataTokenInfoMap,
+  number,
   {
-    // thunkApi
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/getKnownTokens", async (chainId, thunkApi) => {
+>("metadata/getKnownTokens", async (chainId) => {
   const response = await getKnownTokens(chainId);
 
   if (response.errors.length) {
     console.error("Errors fetching metadata", response.errors);
 
-    return [];
+    return {};
   }
 
-  return response.tokens;
+  return transformTokenInfoArrayToMap(response.tokens);
 });
 export const fetchUnkownTokens = createAsyncThunk<
-  TokenInfo[], // Return type
+  MetadataTokenInfoMap,
   {
-    // First argument
     provider: ethers.providers.BaseProvider;
   },
   {
-    // thunkApi
     dispatch: AppDispatch;
     state: RootState;
   }
 >("metadata/fetchUnknownTokens", async ({ provider }, thunkApi) => {
   const { registry, metadata, web3 } = thunkApi.getState();
-  if (!web3.chainId) return [];
+  if (!web3.chainId) return {};
 
-  return await getUnknownTokens(
+  const allTokens: MetadataTokenInfoMap = {
+    ...metadata.knownTokens,
+    ...metadata.unknownTokens,
+    ...metadata.customTokens,
+  };
+
+  const response = await getUnknownTokens(
     web3.chainId!,
     registry.allSupportedTokens,
-    Object.values(metadata.tokens.all),
+    Object.values(allTokens),
     provider
   );
+
+  if (!response) {
+    return {};
+  }
+
+  return transformTokenInfoArrayToMap(response);
 });
 export const fetchProtocolFee = createAsyncThunk<
   number,

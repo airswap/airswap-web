@@ -3,7 +3,11 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { fetchSupportedTokens } from "../registry/registryActions";
-import { walletDisconnected } from "../web3/web3Actions";
+import {
+  chainIdChanged,
+  walletChanged,
+  walletDisconnected,
+} from "../web3/web3Actions";
 import { selectChainId } from "../web3/web3Slice";
 import {
   fetchAllTokens,
@@ -12,24 +16,30 @@ import {
 } from "./metadataActions";
 
 export interface MetadataTokens {
-  all: {
-    [address: string]: TokenInfo;
-  };
   active: string[];
   custom: string[];
 }
 
+export type MetadataTokenInfoMap = {
+  [address: string]: TokenInfo;
+};
+
 export interface MetadataState {
   isFetchingAllTokens: boolean;
+  customTokens: MetadataTokenInfoMap;
+  knownTokens: MetadataTokenInfoMap;
+  unknownTokens: MetadataTokenInfoMap;
   protocolFee: number;
   tokens: MetadataTokens;
 }
 
 const initialState: MetadataState = {
   isFetchingAllTokens: false,
+  customTokens: {},
+  knownTokens: {},
+  unknownTokens: {},
   protocolFee: 0,
   tokens: {
-    all: {},
     active: [],
     custom: [],
   },
@@ -51,8 +61,8 @@ export const metadataSlice = createSlice({
         state.tokens.custom.push(lowerCasedToken);
       }
     },
-    addTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
-      state.tokens.all[action.payload.address] = action.payload;
+    addCustomTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
+      state.customTokens[action.payload.address] = action.payload;
     },
     removeActiveToken: (state, action: PayloadAction<string>) => {
       state.tokens.active = state.tokens.active.filter(
@@ -80,62 +90,60 @@ export const metadataSlice = createSlice({
         };
       })
       .addCase(fetchAllTokens.fulfilled, (state, action): MetadataState => {
-        const { payload: tokenInfo } = action;
-        const newAllTokens = tokenInfo.reduce(
-          (allTokens: MetadataTokens["all"], token) => {
-            const address = token.address.toLowerCase();
-            if (!allTokens[address]) {
-              allTokens[address] = {
-                ...token,
-                address: token.address.toLowerCase(),
-              };
-            }
-            return allTokens;
-          },
-          {}
-        );
-
-        const stateAllTokens = Object.keys(state.tokens.all).reduce(
-          (allTokens: MetadataTokens["all"], token) => {
-            return {
-              ...allTokens,
-              [token.toLowerCase()]: state.tokens.all[token],
-            };
-          },
-          {}
-        );
-
-        const tokens = {
-          ...state.tokens,
-          all: {
-            ...stateAllTokens,
-            ...newAllTokens,
-          },
-        };
-
         return {
           ...state,
           isFetchingAllTokens: false,
-          tokens,
+          knownTokens: action.payload,
         };
       })
-      .addCase(fetchAllTokens.rejected, (state, action): MetadataState => {
+      .addCase(fetchAllTokens.rejected, (state): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: false,
         };
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
-        if (!state.tokens.active?.length)
-          state.tokens.active = action.payload.activeTokens || [];
+        if (state.tokens.active.length) {
+          return state;
+        }
+
+        return {
+          ...state,
+          tokens: {
+            ...state.tokens,
+            active: action.payload.activeTokens || [],
+          },
+        };
       })
       .addCase(fetchUnkownTokens.fulfilled, (state, action) => {
-        action.payload.forEach((token) => {
-          state.tokens.all[token.address] = token;
-        });
+        return {
+          ...state,
+          unknownTokens: action.payload,
+        };
       })
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
-        state.protocolFee = action.payload;
+        return {
+          ...state,
+          protocolFee: action.payload,
+        };
+      })
+      .addCase(walletChanged, (state): MetadataState => {
+        return {
+          ...state,
+          tokens: {
+            active: [],
+            custom: [],
+          },
+        };
+      })
+      .addCase(chainIdChanged, (state): MetadataState => {
+        return {
+          ...state,
+          tokens: {
+            active: [],
+            custom: [],
+          },
+        };
       })
       .addCase(walletDisconnected, (): MetadataState => {
         return initialState;
@@ -146,7 +154,7 @@ export const metadataSlice = createSlice({
 export const {
   addActiveToken,
   addCustomToken,
-  addTokenInfo,
+  addCustomTokenInfo,
   removeActiveToken,
   removeCustomToken,
   setTokens,
@@ -157,7 +165,9 @@ const selectActiveTokenAddresses = (state: RootState) =>
 export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;
 export const selectAllTokens = (state: RootState) => [
-  ...Object.values(state.metadata.tokens.all),
+  ...Object.values(state.metadata.customTokens),
+  ...Object.values(state.metadata.knownTokens),
+  ...Object.values(state.metadata.unknownTokens),
 ];
 export const selectAllTokenInfo = createSelector(
   [selectAllTokens, selectChainId],
