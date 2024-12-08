@@ -160,7 +160,7 @@ export const {
   setTokens,
 } = metadataSlice.actions;
 
-const selectActiveTokenAddresses = (state: RootState) =>
+export const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.tokens.active;
 export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;

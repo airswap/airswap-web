@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   addActiveToken,
   addCustomTokenInfo,
+  selectActiveTokenAddresses,
   selectAllTokens,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
@@ -25,6 +26,7 @@ const useTakerTokenInfo = (
   const { isActive } = useAppSelector((state) => state.web3);
 
   const allTokens = useAppSelector(selectAllTokens);
+  const activeTokenAddresses = useAppSelector(selectActiveTokenAddresses);
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<TokenInfo>();
@@ -36,12 +38,22 @@ const useTakerTokenInfo = (
 
   useEffect(() => {
     if (scrapedToken) {
+      // TODO: Add custom token to localStorage
       dispatch(addCustomTokenInfo(scrapedToken));
-      // Add active token so balance will be fetched
-      dispatch(addActiveToken(scrapedToken.address));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrapedToken]);
+
+  useEffect(() => {
+    if (
+      address &&
+      allTokens.find((token) => token.address === address) &&
+      !activeTokenAddresses.includes(address)
+    ) {
+      // Add as active token so balance will be fetched
+      // TODO: Zelfde door voor SwapWidget
+      dispatch(addActiveToken(address));
+    }
+  }, [address, allTokens]);
 
   useEffect(() => {
     if (!activeOrder || !address || !allTokens.length) {
