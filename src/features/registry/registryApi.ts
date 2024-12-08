@@ -45,10 +45,10 @@ async function getStakerTokens(
   );
 
   return stakers.reduce((acc, staker, index) => {
-    const stakerTokens = tokensForStakers[index][0];
+    const stakerTokens = tokensForStakers[index].map((t) => t.toLowerCase());
     const address = staker.toLowerCase();
 
-    return { ...acc, [address]: stakerTokens.toLowerCase() };
+    return { ...acc, [address]: stakerTokens };
   }, {});
 }
 

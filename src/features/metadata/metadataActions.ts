@@ -39,27 +39,14 @@ export const fetchUnkownTokens = createAsyncThunk<
   MetadataTokenInfoMap,
   {
     provider: ethers.providers.BaseProvider;
+    tokens: string[];
   },
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/fetchUnknownTokens", async ({ provider }, thunkApi) => {
-  const { registry, metadata, web3 } = thunkApi.getState();
-  if (!web3.chainId) return {};
-
-  const allTokens: MetadataTokenInfoMap = {
-    ...metadata.knownTokens,
-    ...metadata.unknownTokens,
-    ...metadata.customTokens,
-  };
-
-  const response = await getUnknownTokens(
-    web3.chainId!,
-    registry.allSupportedTokens,
-    Object.values(allTokens),
-    provider
-  );
+>("metadata/fetchUnknownTokens", async ({ provider, tokens }, thunkApi) => {
+  const response = await getUnknownTokens(provider, tokens);
 
   if (!response) {
     return {};

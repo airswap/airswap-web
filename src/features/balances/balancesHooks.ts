@@ -5,7 +5,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { TransactionTypes } from "../../types/transactionTypes";
-import { fetchUnkownTokens } from "../metadata/metadataActions";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import useLatestSucceededTransaction from "../transactions/hooks/useLatestSucceededTransaction";
 import {
@@ -46,8 +45,11 @@ export const useBalances = () => {
     dispatch(requestActiveTokenBalances({ provider: library }));
     dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
     dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
-    dispatch(fetchUnkownTokens({ provider: library }));
   }, [account, chainId, library, activeTokens]);
+
+  useEffect(() => {
+    setActiveTokensLength(activeTokens.length);
+  }, [account]);
 
   useEffect(() => {
     if (!isActive) {

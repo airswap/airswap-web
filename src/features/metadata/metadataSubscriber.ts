@@ -1,10 +1,10 @@
-import { TokenInfo } from "@airswap/utils";
-
 import { store } from "../../app/store";
 import {
   getActiveTokensLocalStorageKey,
   getCustomTokensLocalStorageKey,
+  getUnknownTokensLocalStorageKey,
 } from "./metadataApi";
+import { MetadataTokenInfoMap } from "./metadataSlice";
 
 interface TokensCache {
   [address: string]: {
@@ -12,13 +12,11 @@ interface TokensCache {
   };
 }
 
-interface AllTokensCache {
-  [chainId: number]: {
-    [address: string]: TokenInfo;
-  };
+interface UnknownTokensCache {
+  [chainId: number]: MetadataTokenInfoMap;
 }
 
-const compareAndWriteTokensToLocalStorage = (
+const compareAndWriteUserTokensToLocalStorage = (
   tokensCache: TokensCache,
   tokens: string[],
   address: string,
@@ -36,9 +34,28 @@ const compareAndWriteTokensToLocalStorage = (
   }
 };
 
+const compareAndWriteUnknownTokensToLocalStorage = (
+  unknownTokensCache: UnknownTokensCache,
+  tokens: MetadataTokenInfoMap,
+  chainId: number,
+  localStorageKey: string
+) => {
+  if (!unknownTokensCache[chainId]) {
+    unknownTokensCache[chainId] = {};
+  }
+
+  const cachedUnknownTokensForChain = unknownTokensCache[chainId];
+  if (Object.keys(tokens).length && cachedUnknownTokensForChain !== tokens) {
+    // unknown tokens have changed, persist to local storage.
+    unknownTokensCache[chainId] = tokens;
+    localStorage.setItem(localStorageKey, JSON.stringify(tokens));
+  }
+};
+
 export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
   const activeTokensCache: TokensCache = {};
   const customTokensCache: TokensCache = {};
+  const unknownTokensCache: UnknownTokensCache = {};
 
   store.subscribe(() => {
     const { web3, metadata } = store.getState();
@@ -47,8 +64,16 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
       return;
     }
 
+    // Unknown tokenInfo
+    compareAndWriteUnknownTokensToLocalStorage(
+      unknownTokensCache,
+      metadata.unknownTokens,
+      web3.chainId,
+      getUnknownTokensLocalStorageKey(web3.chainId)
+    );
+
     // Active tokens
-    compareAndWriteTokensToLocalStorage(
+    compareAndWriteUserTokensToLocalStorage(
       activeTokensCache,
       metadata.tokens.active,
       web3.account,
@@ -57,7 +82,7 @@ export const subscribeToSavedTokenChangesForLocalStoragePersisting = () => {
     );
 
     // Custom tokens
-    compareAndWriteTokensToLocalStorage(
+    compareAndWriteUserTokensToLocalStorage(
       customTokensCache,
       metadata.tokens.custom,
       web3.account,

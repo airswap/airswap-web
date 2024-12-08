@@ -38,7 +38,6 @@ const useTakerTokenInfo = (
 
   useEffect(() => {
     if (scrapedToken) {
-      // TODO: Add custom token to localStorage
       dispatch(addCustomTokenInfo(scrapedToken));
     }
   }, [scrapedToken]);
@@ -50,7 +49,6 @@ const useTakerTokenInfo = (
       !activeTokenAddresses.includes(address)
     ) {
       // Add as active token so balance will be fetched
-      // TODO: Zelfde door voor SwapWidget
       dispatch(addActiveToken(address));
     }
   }, [address, allTokens]);

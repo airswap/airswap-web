@@ -26,7 +26,7 @@ export type MetadataTokenInfoMap = {
 
 export interface MetadataState {
   isFetchingAllTokens: boolean;
-  customTokens: MetadataTokenInfoMap;
+  isFetchingAllTokensSuccess: boolean;
   knownTokens: MetadataTokenInfoMap;
   unknownTokens: MetadataTokenInfoMap;
   protocolFee: number;
@@ -35,7 +35,7 @@ export interface MetadataState {
 
 const initialState: MetadataState = {
   isFetchingAllTokens: false,
-  customTokens: {},
+  isFetchingAllTokensSuccess: false,
   knownTokens: {},
   unknownTokens: {},
   protocolFee: 0,
@@ -62,7 +62,7 @@ export const metadataSlice = createSlice({
       }
     },
     addCustomTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
-      state.customTokens[action.payload.address] = action.payload;
+      state.unknownTokens[action.payload.address] = action.payload;
     },
     removeActiveToken: (state, action: PayloadAction<string>) => {
       state.tokens.active = state.tokens.active.filter(
@@ -80,6 +80,12 @@ export const metadataSlice = createSlice({
         tokens: action.payload,
       };
     },
+    setUnknownTokens: (state, action: PayloadAction<MetadataTokenInfoMap>) => {
+      return {
+        ...state,
+        unknownTokens: action.payload,
+      };
+    },
   },
   extraReducers: async (builder) => {
     builder
@@ -87,13 +93,18 @@ export const metadataSlice = createSlice({
         return {
           ...state,
           isFetchingAllTokens: true,
+          isFetchingAllTokensSuccess: false,
         };
       })
       .addCase(fetchAllTokens.fulfilled, (state, action): MetadataState => {
         return {
           ...state,
           isFetchingAllTokens: false,
-          knownTokens: action.payload,
+          isFetchingAllTokensSuccess: true,
+          knownTokens: {
+            ...state.knownTokens,
+            ...action.payload,
+          },
         };
       })
       .addCase(fetchAllTokens.rejected, (state): MetadataState => {
@@ -118,7 +129,10 @@ export const metadataSlice = createSlice({
       .addCase(fetchUnkownTokens.fulfilled, (state, action) => {
         return {
           ...state,
-          unknownTokens: action.payload,
+          unknownTokens: {
+            ...state.unknownTokens,
+            ...action.payload,
+          },
         };
       })
       .addCase(fetchProtocolFee.fulfilled, (state, action) => {
@@ -139,6 +153,8 @@ export const metadataSlice = createSlice({
       .addCase(chainIdChanged, (state): MetadataState => {
         return {
           ...state,
+          knownTokens: {},
+          unknownTokens: {},
           tokens: {
             active: [],
             custom: [],
@@ -158,6 +174,7 @@ export const {
   removeActiveToken,
   removeCustomToken,
   setTokens,
+  setUnknownTokens,
 } = metadataSlice.actions;
 
 export const selectActiveTokenAddresses = (state: RootState) =>
@@ -165,7 +182,6 @@ export const selectActiveTokenAddresses = (state: RootState) =>
 export const selectCustomTokenAddresses = (state: RootState) =>
   state.metadata.tokens.custom;
 export const selectAllTokens = (state: RootState) => [
-  ...Object.values(state.metadata.customTokens),
   ...Object.values(state.metadata.knownTokens),
   ...Object.values(state.metadata.unknownTokens),
 ];

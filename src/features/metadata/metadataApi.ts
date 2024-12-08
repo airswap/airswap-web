@@ -4,7 +4,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import * as ethers from "ethers";
 
 import { getSwapErc20Contract } from "../../helpers/swapErc20";
-import { MetadataTokens } from "./metadataSlice";
+import { MetadataTokenInfoMap, MetadataTokens } from "./metadataSlice";
 
 export const getActiveTokensLocalStorageKey: (
   account: string,
@@ -18,34 +18,26 @@ export const getCustomTokensLocalStorageKey: (
 ) => string = (account, chainId) =>
   `airswap/customTokens/${account}/${chainId}`;
 
+export const getUnknownTokensLocalStorageKey: (chainId: number) => string = (
+  chainId
+) => `airswap/unknownTokens/${chainId}`;
+
 export const getUnknownTokens = async (
-  chainId: number,
-  supportedTokenAddresses: string[],
-  allTokens: TokenInfo[],
-  provider: ethers.providers.BaseProvider
+  provider: ethers.providers.BaseProvider,
+  tokens: string[]
 ): Promise<TokenInfo[]> => {
-  // Determine tokens we still don't know about.
-  const allTokenAddresses = allTokens.map((token) => token.address);
-  const unknownTokens = supportedTokenAddresses.filter(
-    (supportedTokenAddr) => !allTokenAddresses.includes(supportedTokenAddr)
-  );
+  const scrapePromises = tokens.map((t) => getTokenInfo(provider, t));
+  const results = await Promise.allSettled(scrapePromises);
 
-  let scrapedTokens: TokenInfo[] = [];
-  if (unknownTokens.length) {
-    const scrapePromises = unknownTokens.map((t) => getTokenInfo(provider, t));
-    const results = await Promise.allSettled(scrapePromises);
-    scrapedTokens = results
-      .filter((r) => r.status === "fulfilled")
-      .map((r) => {
-        const tokenInfo = (r as PromiseFulfilledResult<TokenInfo>).value;
-        return {
-          ...tokenInfo,
-          address: tokenInfo.address.toLowerCase(),
-        };
-      });
-  }
-
-  return scrapedTokens;
+  return results
+    .filter((r) => r.status === "fulfilled")
+    .map((r) => {
+      const tokenInfo = (r as PromiseFulfilledResult<TokenInfo>).value;
+      return {
+        ...tokenInfo,
+        address: tokenInfo.address.toLowerCase(),
+      };
+    });
 };
 
 export const getActiveTokensFromLocalStorage = (
@@ -70,6 +62,14 @@ export const getCustomTokensFromLocalStorage = (
     .split(",")
     .filter((address) => address.length);
   return (savedTokens.length && savedTokens) || [];
+};
+
+export const getUnknownTokensFromLocalStorage = (
+  chainId: number
+): MetadataTokenInfoMap => {
+  return JSON.parse(
+    localStorage.getItem(getUnknownTokensLocalStorageKey(chainId)) || "{}"
+  );
 };
 
 export const getProtocolFee = async (
