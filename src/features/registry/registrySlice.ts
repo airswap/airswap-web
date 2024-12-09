@@ -1,16 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { walletDisconnected } from "../web3/web3Actions";
+import {
+  chainIdChanged,
+  walletChanged,
+  walletDisconnected,
+} from "../web3/web3Actions";
 import { fetchSupportedTokens } from "./registryActions";
 
 export interface RegistryState {
+  isFetchingSupportedTokensSuccess: boolean;
   stakerTokens: Record<string, string[]>;
   allSupportedTokens: string[];
   status: "idle" | "fetching" | "failed";
 }
 
 const initialState: RegistryState = {
+  isFetchingSupportedTokensSuccess: false,
   stakerTokens: {},
   allSupportedTokens: [],
   status: "idle",
@@ -20,15 +26,6 @@ export const registrySlice = createSlice({
   name: "registry",
   initialState,
   reducers: {
-    setStakerTokens: (
-      state,
-      action: PayloadAction<Record<string, string[]>>
-    ) => {
-      state.stakerTokens = { ...action.payload };
-    },
-    setAllSupportedTokens: (state, action: PayloadAction<string[]>) => {
-      state.allSupportedTokens = [...action.payload];
-    },
     reset: () => {
       return { ...initialState };
     },
@@ -36,22 +33,33 @@ export const registrySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSupportedTokens.pending, (state) => {
-        state.status = "fetching";
+        return {
+          ...state,
+          isFetchingSupportedTokensSuccess: false,
+          status: "fetching",
+        };
       })
       .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.allSupportedTokens = [...action.payload.allSupportedTokens];
-        state.stakerTokens = { ...action.payload.stakerTokens };
+        return {
+          ...state,
+          isFetchingSupportedTokensSuccess: true,
+          status: "idle",
+          allSupportedTokens: action.payload.allSupportedTokens,
+          stakerTokens: action.payload.stakerTokens,
+        };
       })
       .addCase(fetchSupportedTokens.rejected, (state) => {
-        state.status = "failed";
+        return {
+          ...state,
+          status: "failed",
+        };
       })
-      .addCase(walletDisconnected, () => initialState);
+      .addCase(walletDisconnected, () => initialState)
+      .addCase(chainIdChanged, () => initialState);
   },
 });
 
-export const { setStakerTokens, setAllSupportedTokens, reset } =
-  registrySlice.actions;
+export const { reset } = registrySlice.actions;
 export const selectAllSupportedTokens = (state: RootState) =>
   state.registry.allSupportedTokens;
 export default registrySlice.reducer;

@@ -84,8 +84,7 @@ const getThunk: (
           ? getWethAddress(chainId)
           : undefined;
         const activeTokensAddresses = [
-          ...state.metadata.tokens.active,
-          ...state.metadata.tokens.custom,
+          ...state.metadata.activeTokens,
           ...(wrappedNativeToken ? [wrappedNativeToken] : []),
           ADDRESS_ZERO,
         ];
@@ -123,7 +122,7 @@ const getThunk: (
         // If we're not fetching, definitely continue
         if (sliceState.status !== "fetching") return true;
         if (sliceState.inFlightFetchTokens) {
-          const tokensToFetch = getState().metadata.tokens.active;
+          const tokensToFetch = getState().metadata.activeTokens;
           // only fetch if new list is larger.
           return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
         }

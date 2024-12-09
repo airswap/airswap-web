@@ -99,10 +99,12 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   );
   const [orderStatus, isOrderStatusLoading] = useOrderStatus(order);
   const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
-    order.senderToken
+    order.senderToken,
+    order.chainId
   );
   const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
-    order.signerToken
+    order.signerToken,
+    order.chainId
   );
   const isBalanceLoading = useBalanceLoading();
   const senderAmount = useFormattedTokenAmount(

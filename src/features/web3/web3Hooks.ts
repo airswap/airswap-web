@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { clearedCachedLibrary, setCachedLibrary } from "../../helpers/ethers";
-import { walletChanged, walletDisconnected } from "./web3Actions";
+import {
+  chainIdChanged,
+  walletChanged,
+  walletDisconnected,
+} from "./web3Actions";
 import { setLibraries, setWeb3Data } from "./web3Slice";
 
 const useWeb3ReactRouteDebounceDuration = 100;
@@ -69,6 +73,12 @@ const useWeb3 = (): void => {
       dispatch(walletChanged());
     }
   }, [account]);
+
+  useEffect(() => {
+    if (isInitialized && isActive && chainId) {
+      dispatch(chainIdChanged());
+    }
+  }, [chainId]);
 };
 
 export default useWeb3;

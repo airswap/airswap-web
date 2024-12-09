@@ -34,9 +34,6 @@ const InfoSection: FC<ActionButtonsProps> = ({
         <StyledInfoHeading>
           {t("balances.failedToFetchAllowances")}
         </StyledInfoHeading>
-        <StyledInfoSubHeading>
-          {t("balances.failedToFetchAllowancesCta")}
-        </StyledInfoSubHeading>
       </Container>
     );
   }
