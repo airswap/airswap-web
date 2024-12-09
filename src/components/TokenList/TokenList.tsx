@@ -11,10 +11,8 @@ import nativeCurrency from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveToken,
-  addCustomToken,
   removeActiveToken,
-  removeCustomToken,
-} from "../../features/metadata/metadataSlice";
+} from "../../features/metadata/metadataActions";
 import useWindowSize from "../../hooks/useWindowSize";
 import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
 import { InfoHeading } from "../Typography/Typography";
@@ -146,12 +144,7 @@ const TokenList = ({
   ]);
 
   const handleAddToken = async (address: string) => {
-    const isCustomToken = scrapedToken?.address === address;
-
     if (library && account) {
-      if (isCustomToken) {
-        dispatch(addCustomToken(address));
-      }
       await dispatch(addActiveToken(address));
 
       onAfterAddActiveToken && onAfterAddActiveToken(address);
@@ -161,7 +154,6 @@ const TokenList = ({
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       dispatch(removeActiveToken(address));
-      dispatch(removeCustomToken(address));
 
       onAfterRemoveActiveToken && onAfterRemoveActiveToken(address);
     }

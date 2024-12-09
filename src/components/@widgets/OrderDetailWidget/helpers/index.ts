@@ -22,7 +22,6 @@ export const getFullOrderERC20WarningTranslation = (
   if (isAllowancesFailed) {
     return {
       heading: i18n.t("balances.failedToFetchAllowances"),
-      subHeading: i18n.t("balances.failedToFetchAllowancesCta"),
     };
   }
 

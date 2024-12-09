@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { walletDisconnected } from "../web3/web3Actions";
+import {
+  chainIdChanged,
+  walletChanged,
+  walletDisconnected,
+} from "../web3/web3Actions";
 import { fetchSupportedTokens } from "./registryActions";
 
 export interface RegistryState {
@@ -50,7 +54,8 @@ export const registrySlice = createSlice({
           status: "failed",
         };
       })
-      .addCase(walletDisconnected, () => initialState);
+      .addCase(walletDisconnected, () => initialState)
+      .addCase(chainIdChanged, () => initialState);
   },
 });
 

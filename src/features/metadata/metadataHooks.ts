@@ -13,13 +13,12 @@ import {
 } from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,
-  getCustomTokensFromLocalStorage,
   getUnknownTokensFromLocalStorage,
 } from "./metadataApi";
 import {
   selectActiveTokenAddresses,
   selectAllTokens,
-  setTokens,
+  setActiveTokens,
   setUnknownTokens,
 } from "./metadataSlice";
 
@@ -41,24 +40,34 @@ const useMetadata = () => {
   const [activeAccount, setActiveAccount] = useState<string>();
   const [activeAccountChainId, setActiveAccountChainId] = useState<number>();
   const [activeChainId, setActiveChainId] = useState<number>();
+  const [activeSupportedTokens, setActiveSupportedTokens] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     if (!account || !chainId || !provider) {
       return;
     }
 
-    if (activeAccount === account && activeAccountChainId === chainId) {
+    if (
+      activeAccount === account &&
+      activeAccountChainId === chainId &&
+      JSON.stringify(activeSupportedTokens) ===
+        JSON.stringify(supportedTokenAddresses)
+    ) {
       return;
     }
 
     setActiveAccount(account);
     setActiveAccountChainId(chainId);
+    setActiveSupportedTokens(supportedTokenAddresses);
 
-    const active = getActiveTokensFromLocalStorage(account, chainId);
-    const custom = getCustomTokensFromLocalStorage(account, chainId);
+    const newActiveTokens = getActiveTokensFromLocalStorage(account, chainId);
 
-    dispatch(setTokens({ active, custom }));
-  }, [account, chainId, provider]);
+    dispatch(setActiveTokens(newActiveTokens || supportedTokenAddresses));
+  }, [account, chainId, provider, isFetchingSupportedTokensSuccess]);
+
+  // TODO: Fetch unknown when active tokens are added
 
   useEffect(() => {
     if (!chainId || !provider || !account) {

@@ -33,8 +33,10 @@ export const useBalances = () => {
     if (
       activeAccount === account &&
       activeChainId === chainId &&
-      activeTokens.length === activeTokensLength
+      activeTokens.length <= activeTokensLength
     ) {
+      setActiveTokensLength(activeTokens.length);
+
       return;
     }
 
@@ -49,7 +51,7 @@ export const useBalances = () => {
 
   useEffect(() => {
     setActiveTokensLength(activeTokens.length);
-  }, [account]);
+  }, [account, chainId]);
 
   useEffect(() => {
     if (!isActive) {
@@ -65,6 +67,10 @@ export const useBalances = () => {
     }
 
     const { type } = latestSuccessfulTransaction;
+
+    if (latestSuccessfulTransaction.type === TransactionTypes.order) {
+      return;
+    }
 
     if (type === TransactionTypes.order) {
       dispatch(requestActiveTokenBalances({ provider: library }));

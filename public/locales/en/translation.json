@@ -7,7 +7,6 @@
     "addToTokenSet": "Import",
     "balance": "Balance",
     "failedToFetchAllowances": "Failed to fetch token allowances",
-    "failedToFetchAllowancesCta": "Please reload the page",
     "tokenBalances": "Token balances",
     "unsupportedToken": "Not yet supported"
   },

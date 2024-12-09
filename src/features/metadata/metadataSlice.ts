@@ -2,7 +2,7 @@ import { TokenInfo } from "@airswap/utils";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { fetchSupportedTokens } from "../registry/registryActions";
+import { getUniqueSingleDimensionArray } from "../../helpers/array";
 import {
   chainIdChanged,
   walletChanged,
@@ -15,11 +15,6 @@ import {
   fetchUnkownTokens,
 } from "./metadataActions";
 
-export interface MetadataTokens {
-  active: string[];
-  custom: string[];
-}
-
 export type MetadataTokenInfoMap = {
   [address: string]: TokenInfo;
 };
@@ -30,7 +25,7 @@ export interface MetadataState {
   knownTokens: MetadataTokenInfoMap;
   unknownTokens: MetadataTokenInfoMap;
   protocolFee: number;
-  tokens: MetadataTokens;
+  activeTokens: string[];
 }
 
 const initialState: MetadataState = {
@@ -39,45 +34,18 @@ const initialState: MetadataState = {
   knownTokens: {},
   unknownTokens: {},
   protocolFee: 0,
-  tokens: {
-    active: [],
-    custom: [],
-  },
+  activeTokens: [],
 };
 
 export const metadataSlice = createSlice({
   name: "metadata",
   initialState,
   reducers: {
-    addActiveToken: (state, action: PayloadAction<string>) => {
-      const lowerCasedToken = action.payload.trim().toLowerCase();
-      if (!state.tokens.active.includes(lowerCasedToken)) {
-        state.tokens.active.push(lowerCasedToken);
-      }
-    },
-    addCustomToken: (state, action: PayloadAction<string>) => {
-      const lowerCasedToken = action.payload.trim().toLowerCase();
-      if (!state.tokens.custom.includes(lowerCasedToken)) {
-        state.tokens.custom.push(lowerCasedToken);
-      }
-    },
-    addCustomTokenInfo: (state, action: PayloadAction<TokenInfo>) => {
-      state.unknownTokens[action.payload.address] = action.payload;
-    },
-    removeActiveToken: (state, action: PayloadAction<string>) => {
-      state.tokens.active = state.tokens.active.filter(
-        (tokenAddress) => tokenAddress !== action.payload
-      );
-    },
-    removeCustomToken: (state, action: PayloadAction<string>) => {
-      state.tokens.custom = state.tokens.active.filter(
-        (tokenAddress) => tokenAddress !== action.payload
-      );
-    },
-    setTokens: (state, action: PayloadAction<MetadataTokens>) => {
+    setActiveTokens: (state, action: PayloadAction<string[]>) => {
       return {
         ...state,
-        tokens: action.payload,
+        isInitialized: true,
+        activeTokens: action.payload.map((token) => token.toLowerCase()),
       };
     },
     setUnknownTokens: (state, action: PayloadAction<MetadataTokenInfoMap>) => {
@@ -113,19 +81,6 @@ export const metadataSlice = createSlice({
           isFetchingAllTokens: false,
         };
       })
-      .addCase(fetchSupportedTokens.fulfilled, (state, action) => {
-        if (state.tokens.active.length) {
-          return state;
-        }
-
-        return {
-          ...state,
-          tokens: {
-            ...state.tokens,
-            active: action.payload.activeTokens || [],
-          },
-        };
-      })
       .addCase(fetchUnkownTokens.fulfilled, (state, action) => {
         return {
           ...state,
@@ -144,10 +99,7 @@ export const metadataSlice = createSlice({
       .addCase(walletChanged, (state): MetadataState => {
         return {
           ...state,
-          tokens: {
-            active: [],
-            custom: [],
-          },
+          activeTokens: [],
         };
       })
       .addCase(chainIdChanged, (state): MetadataState => {
@@ -155,10 +107,7 @@ export const metadataSlice = createSlice({
           ...state,
           knownTokens: {},
           unknownTokens: {},
-          tokens: {
-            active: [],
-            custom: [],
-          },
+          activeTokens: [],
         };
       })
       .addCase(walletDisconnected, (): MetadataState => {
@@ -167,20 +116,10 @@ export const metadataSlice = createSlice({
   },
 });
 
-export const {
-  addActiveToken,
-  addCustomToken,
-  addCustomTokenInfo,
-  removeActiveToken,
-  removeCustomToken,
-  setTokens,
-  setUnknownTokens,
-} = metadataSlice.actions;
+export const { setActiveTokens, setUnknownTokens } = metadataSlice.actions;
 
 export const selectActiveTokenAddresses = (state: RootState) =>
-  state.metadata.tokens.active;
-export const selectCustomTokenAddresses = (state: RootState) =>
-  state.metadata.tokens.custom;
+  state.metadata.activeTokens;
 export const selectAllTokens = (state: RootState) => [
   ...Object.values(state.metadata.knownTokens),
   ...Object.values(state.metadata.unknownTokens),
@@ -196,16 +135,6 @@ export const selectActiveTokens = createSelector(
   (activeTokenAddresses, allTokenInfo) => {
     return Object.values(allTokenInfo).filter((tokenInfo) =>
       activeTokenAddresses.includes(tokenInfo.address)
-    );
-  }
-);
-export const selectActiveTokensWithoutCustomTokens = createSelector(
-  [selectActiveTokenAddresses, selectCustomTokenAddresses, selectAllTokenInfo],
-  (activeTokenAddresses, customTokenAddresses, allTokenInfo) => {
-    return Object.values(allTokenInfo).filter(
-      (tokenInfo) =>
-        activeTokenAddresses.includes(tokenInfo.address) &&
-        !customTokenAddresses.includes(tokenInfo.address)
     );
   }
 );
