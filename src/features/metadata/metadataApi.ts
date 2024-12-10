@@ -42,7 +42,12 @@ export const getActiveTokensFromLocalStorage = (
     getActiveTokensLocalStorageKey(account, chainId)
   );
 
-  return savedTokenString ? JSON.parse(savedTokenString) : undefined;
+  try {
+    return savedTokenString ? JSON.parse(savedTokenString) : undefined;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
 };
 
 export const getUnknownTokensFromLocalStorage = (

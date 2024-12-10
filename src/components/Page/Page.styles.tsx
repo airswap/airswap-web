@@ -43,7 +43,7 @@ export const StyledPage = styled.div`
   position: relative;
   min-width: 18rem;
   height: 100vh;
-  min-height: 37.5rem;
+  min-height: 34.5rem;
 
   @media (min-height: 29rem) and (max-width: ${breakpointSizes.phone}) {
     display: flex;

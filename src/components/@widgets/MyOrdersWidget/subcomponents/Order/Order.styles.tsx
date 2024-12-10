@@ -36,7 +36,7 @@ export const Container = styled.div<{ orderStatus: OrderStatus }>`
 
   position: relative;
   align-items: center;
-  height: 3.5rem;
+  height: 3rem;
 
   ${Circle} {
     background: ${({ theme, orderStatus }) =>
@@ -60,7 +60,7 @@ export const Text = styled.div`
   -webkit-box-orient: vertical;
   position: relative;
   font-family: ${fontMono};
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 500;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -71,7 +71,7 @@ export const Text = styled.div`
   pointer-events: none;
 
   @media ${breakPoints.tabletPortraitUp} {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 `;
 

@@ -93,7 +93,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
     <Container className={className}>
       <StyledWidgetHeader>
         <Title type="h2" as="h1">
-          {t("orders.approve")} {tokenSymbol}
+          {t("orders.approve")}
         </Title>
       </StyledWidgetHeader>
       <OrderReviewToken
@@ -103,41 +103,40 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         tokenUri={justifiedToken?.logoURI}
       />
       <ReviewList>
-        {readableAllowance !== "0" && (
-          <ReviewListItem>
-            <ReviewListItemLabel>Current approve amount</ReviewListItemLabel>
-            <ReviewListItemValue>
-              {readableAllowance} {tokenSymbol}
-            </ReviewListItemValue>
-          </ReviewListItem>
-        )}
         {roundedFeeAmount && (
           <>
             <ReviewListItem>
-              <ReviewListItemLabel>Order amount</ReviewListItemLabel>
-              <ReviewListItemValue>
-                {amount} {tokenSymbol}
-              </ReviewListItemValue>
+              <ReviewListItemLabel>
+                {t("orders.orderAmount")}
+              </ReviewListItemLabel>
+              <ReviewListItemValue>{amount}</ReviewListItemValue>
             </ReviewListItem>
             <ReviewListItem>
               <ReviewListItemLabel>
-                {t("orders.protocolFee")}
+                {t("orders.feeAmount")}
                 <StyledIconButton
                   icon="information-circle-outline"
                   onClick={toggleShowFeeInfo}
                 />
               </ReviewListItemLabel>
-              <ReviewListItemValue>
-                {roundedFeeAmount} {tokenSymbol}
-              </ReviewListItemValue>
+              <ReviewListItemValue>{roundedFeeAmount}</ReviewListItemValue>
             </ReviewListItem>
           </>
         )}
-
+        {readableAllowance !== "0" && (
+          <ReviewListItem>
+            <ReviewListItemLabel>
+              {t("orders.currentApprovalAmount")}
+            </ReviewListItemLabel>
+            <ReviewListItemValue>{readableAllowance}</ReviewListItemValue>
+          </ReviewListItem>
+        )}
         <ReviewListItem>
-          <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
+          <ReviewListItemLabel>
+            {t("orders.requiredApprovalAmount")}
+          </ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedAmountPlusFee || amount} {tokenSymbol}
+            {roundedAmountPlusFee || amount}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
