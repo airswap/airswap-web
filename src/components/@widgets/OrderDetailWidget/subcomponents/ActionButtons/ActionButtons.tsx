@@ -151,7 +151,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   if (hasInsufficientBalance) {
     return (
       <Container center className={className}>
-        <SignButton disabled intent="neutral">
+        <SignButton disabled intent="neutral" isFilled={true}>
           {t("orders.insufficientBalance")}
         </SignButton>
       </Container>

@@ -118,6 +118,7 @@ export const MaxButton = styled.button`
 
   width: ${() => (isActiveLanguageLogographic() ? "1.75rem" : "auto")};
   font-size: ${() => (isActiveLanguageLogographic() ? "0.75rem" : "0.6875rem")};
+  font-weight: 700;
 `;
 
 export const InfoLabel = styled.div`
