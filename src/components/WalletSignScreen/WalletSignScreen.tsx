@@ -4,7 +4,7 @@ import i18n from "i18next";
 
 import {
   OverlayContainer,
-  OverlayLoader,
+  OverlaySpinningLoader,
   OverlaySubHeading,
   OverlayTitle,
 } from "../../styled-components/Overlay/Overlay";
@@ -27,7 +27,7 @@ const WalletSignScreen: FC<WalletConfirmScreenProps> = ({
 }): ReactElement => {
   return (
     <OverlayContainer className={className}>
-      <OverlayLoader />
+      <OverlaySpinningLoader />
       <OverlayTitle type="h2">{i18n.t("orders.pendingWallet")}</OverlayTitle>
       <OverlaySubHeading>
         {i18n.t("orders.pendingConfirmation")}

@@ -141,7 +141,7 @@ const OrderDetailWidget: FC<OrderDetailWidgetProps> = ({ order }) => {
   );
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const hasDepositPending = useDepositPending();
+  const hasDepositPending = !!useDepositPending();
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
   const orderChainId = useMemo(() => order.chainId, [order]);
   const walletChainIdIsDifferentThanOrderChainId =
