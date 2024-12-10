@@ -29,7 +29,9 @@ const WalletSignScreen: FC<WalletConfirmScreenProps> = ({
     <OverlayContainer className={className}>
       <OverlayLoader />
       <OverlayTitle type="h2">{i18n.t("orders.pendingWallet")}</OverlayTitle>
-      <OverlaySubHeading>{i18n.t("orders.pendingConfirmation")}</OverlaySubHeading>
+      <OverlaySubHeading>
+        {i18n.t("orders.pendingConfirmation")}
+      </OverlaySubHeading>
     </OverlayContainer>
   );
 };
