@@ -106,10 +106,10 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         {roundedFeeAmount && (
           <>
             <ReviewListItem>
-              <ReviewListItemLabel>{t("orders.orderAmount")}</ReviewListItemLabel>
-              <ReviewListItemValue>
-                {amount}
-              </ReviewListItemValue>
+              <ReviewListItemLabel>
+                {t("orders.orderAmount")}
+              </ReviewListItemLabel>
+              <ReviewListItemValue>{amount}</ReviewListItemValue>
             </ReviewListItem>
             <ReviewListItem>
               <ReviewListItemLabel>
@@ -119,9 +119,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
                   onClick={toggleShowFeeInfo}
                 />
               </ReviewListItemLabel>
-              <ReviewListItemValue>
-                {roundedFeeAmount}
-              </ReviewListItemValue>
+              <ReviewListItemValue>{roundedFeeAmount}</ReviewListItemValue>
             </ReviewListItem>
           </>
         )}
@@ -130,9 +128,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
             <ReviewListItemLabel>
               {t("orders.currentApprovalAmount")}
             </ReviewListItemLabel>
-            <ReviewListItemValue>
-              {readableAllowance}
-            </ReviewListItemValue>
+            <ReviewListItemValue>{readableAllowance}</ReviewListItemValue>
           </ReviewListItem>
         )}
         <ReviewListItem>
