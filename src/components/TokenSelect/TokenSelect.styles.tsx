@@ -93,6 +93,7 @@ export const MaxButtonStyle = css`
   bottom: 1px;
   align-self: center;
   border-radius: 0.25rem;
+  text-transform: uppercase;
   font-family: ${fontWide};
   font-weight: 500;
   font-size: 0.75rem;

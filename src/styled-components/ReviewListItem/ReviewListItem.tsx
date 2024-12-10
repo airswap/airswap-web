@@ -1,7 +1,7 @@
 import styled from "styled-components/macro";
 
 import { TextEllipsis } from "../../style/mixins";
-
+import { fontMono } from "../../style/themes";
 export const ReviewListItem = styled.li`
   display: flex;
   justify-content: space-between;
@@ -23,5 +23,6 @@ export const ReviewListItemValue = styled.div`
 
   display: flex;
   align-items: center;
+  font-family: ${fontMono};
   color: ${(props) => props.theme.colors.white};
 `;

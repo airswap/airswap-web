@@ -60,7 +60,7 @@ export const getActionButtonTranslation = (
   }
 
   if (hasInsufficientAllowance) {
-    return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
+    return `${i18n.t("orders.continue")}`;
   }
 
   return i18n.t("common.review");

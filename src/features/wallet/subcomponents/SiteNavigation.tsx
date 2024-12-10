@@ -1,9 +1,7 @@
 import { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppSelector } from "../../../app/hooks";
 import { AppRoutes } from "../../../routes";
-import { selectMyOrdersReducer } from "../../myOrders/myOrdersSlice";
 import {
   Container,
   NavigationLink,
@@ -16,8 +14,6 @@ interface NavigationProps {
 
 const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
   const { t } = useTranslation();
-
-  const { userOrders } = useAppSelector(selectMyOrdersReducer);
 
   return (
     <Container className={className}>
@@ -33,7 +29,7 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
         {t("common.rfq")}
       </NavigationNavLink>
       <NavigationNavLink
-        to={`/${userOrders.length ? AppRoutes.myOrders : AppRoutes.make}`}
+        to={`/${AppRoutes.myOrders}`}
         isActive={(match, location) => {
           return (
             location.pathname.includes(AppRoutes.myOrders) ||
