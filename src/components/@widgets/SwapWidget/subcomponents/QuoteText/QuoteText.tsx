@@ -28,7 +28,7 @@ const QuoteText: FC<QuoteTextProps> = ({
     return (
       <Container className={className}>
         <GasFreeButton onClick={onGasFreeTradeButtonClick}>
-          {t("orders.gasFreeTrade")}
+          {t("orders.gasFreeTrade")} ♻️
         </GasFreeButton>
       </Container>
     );

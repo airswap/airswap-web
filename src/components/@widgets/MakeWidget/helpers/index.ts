@@ -52,7 +52,7 @@ export const getActionButtonTranslation = (
   }
 
   if (hasInsufficientBalance) {
-    return i18n.t("orders.insufficientBalance", { symbol: makerTokenSymbol });
+    return i18n.t("orders.insufficientBalance");
   }
 
   if (shouldDepositNativeToken) {

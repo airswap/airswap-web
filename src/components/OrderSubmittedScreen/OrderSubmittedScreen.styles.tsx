@@ -6,8 +6,6 @@ import {
 } from "../../styled-components/Overlay/Overlay";
 import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
-import TransactionLink from "../TransactionLink/TransactionLink";
-import { InfoHeading, InfoSubHeading } from "../Typography/Typography";
 
 export const Container = styled.div`
   display: flex;
@@ -33,13 +31,18 @@ export const StyledOverlayTitle = styled(OverlayTitle)`
   }
 `;
 
-export const StyledTransactionLink = styled(TransactionLink)`
-  margin-top: 2.5rem;
+export const IconWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  width: 3.6875rem;
+  height: 3.6875rem;
 `;
 
 export const StyledIcon = styled(Icon)`
-  width: 3.6875rem;
-  height: 3.6875rem;
+  width: 100%;
+  height: 100%;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
@@ -53,6 +56,7 @@ export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 1rem;
+  padding-top: 2rem;
 `;
 
 const ButtonStyle = css`
