@@ -52,8 +52,8 @@ const spin = keyframes`
 `;
 
 export const OverlaySpinningLoader = styled.div`
-  width: 2.375rem;
-  height: 2.375rem;
+  width: 3.6875rem;
+  height: 3.6875rem;
   border-radius: 50%;
   border: 4px solid;
   border-color: #475777;
