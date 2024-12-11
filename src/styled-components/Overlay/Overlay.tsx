@@ -14,7 +14,7 @@ export const OverlayContainer = styled.div`
 `;
 
 export const OverlayTitle = styled(Title)<{ isFocused?: boolean }>`
-  margin-block-start: 1rem;
+  margin-block-start: 1.75rem;
   font-size: 1.875rem;
   color: ${({ theme }) => theme.colors.carteBlanche};
 
@@ -39,7 +39,7 @@ export const OverlaySubHeading = styled(InfoSubHeading)<{ isHidden?: boolean }>`
 export const OverlayTransactionLink = styled(TransactionLink)<{
   isHidden?: boolean;
 }>`
-  margin-top: 2.5rem;
+  margin-top: 0rem;
   transition: opacity 0.3s ease-in;
 
   ${({ isHidden }) => isHidden && "opacity: 0; pointer-events: none;"}
@@ -52,8 +52,8 @@ const spin = keyframes`
 `;
 
 export const OverlayLoader = styled.div`
-  width: 2.375rem;
-  height: 2.375rem;
+  width: 3.6875rem;
+  height: 3.6875rem;
   border-radius: 50%;
   border: 4px solid;
   border-color: #475777;

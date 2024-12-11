@@ -12,6 +12,7 @@ export const Container = styled.div`
 
 export const GasFreeButton = styled.button`
   color: ${(props) => props.theme.colors.lightGrey};
+  text-transform: uppercase;
 
   &:hover,
   &:focus {

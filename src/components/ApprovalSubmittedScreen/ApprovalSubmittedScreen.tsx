@@ -46,24 +46,27 @@ const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
         transform: isAnimatedToCenter ? "translateY(5rem)" : "translateY(0)",
       }}
     >
-      <IconWrapper>
-        {isSucceeded ? <StyledIcon name="check-circle" /> : <OverlayLoader />}
-      </IconWrapper>
+      {isSucceeded ? (
+        <IconWrapper>
+          <StyledIcon name="check-circle" />
+        </IconWrapper>
+      ) : (
+        <OverlayLoader />
+      )}
       <OverlayTitle type="h2">
         {isSucceeded
           ? t("orders.approvalComplete")
           : t("orders.approvalProcessing")}
       </OverlayTitle>
       <OverlaySubHeading isHidden={isSucceeded}>
-        {t("orders.trackTransaction")}
+        {transaction?.hash && chainId && (
+          <OverlayTransactionLink
+            isHidden={isSucceeded}
+            chainId={chainId}
+            hash={transaction.hash}
+          />
+        )}
       </OverlaySubHeading>
-      {transaction?.hash && chainId && (
-        <OverlayTransactionLink
-          isHidden={isSucceeded}
-          chainId={chainId}
-          hash={transaction.hash}
-        />
-      )}
     </OverlayContainer>
   );
 };

@@ -8,7 +8,7 @@ export const Link = styled.a`
   flex-direction: row-reverse;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.25rem;
+  padding: 0 0.25rem;
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
