@@ -42,7 +42,7 @@ const DepositSubmittedScreen: FC<DepositSubmittedScreenProps> = ({
     <OverlayContainer
       className={className}
       style={{
-        transform: isAnimatedToCenter ? "translateY(5rem)" : "translateY(0)",
+        transform: isAnimatedToCenter ? "translateY(2.5rem)" : "translateY(0)",
       }}
     >
       <OverlayLoader isSucceeded={isSucceeded} />

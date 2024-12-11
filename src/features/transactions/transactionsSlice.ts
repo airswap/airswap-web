@@ -173,6 +173,11 @@ export const selectSuccessfulTransactions = (
     (tx) => tx.status === TransactionStatusType.succeeded
   ) as SubmittedTransaction[];
 
+export const selectAllDeposits = (state: RootState) =>
+  state.transactions.transactions.filter(
+    (tx) => tx.type === TransactionTypes.deposit
+  ) as SubmittedDepositTransaction[];
+
 export const selectPendingDeposits = (
   state: RootState
 ): SubmittedDepositTransaction[] =>
