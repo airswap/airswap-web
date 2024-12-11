@@ -194,7 +194,7 @@ const SwapWidget: FC = () => {
     !hasSufficientAllowance &&
     !hasApprovalSuccess &&
     swapType !== SwapType.wrapOrUnwrap;
-  const hasDepositPending = useDepositPending();
+  const hasDepositPending = !!useDepositPending();
   const hasWithdrawalPending = useWithdrawalPending();
   const hasDepositOrWithdrawalPending =
     hasDepositPending || hasWithdrawalPending;

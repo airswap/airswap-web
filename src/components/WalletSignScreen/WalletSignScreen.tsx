@@ -4,10 +4,11 @@ import i18n from "i18next";
 
 import {
   OverlayContainer,
-  OverlayLoader,
+  OverlaySpinningLoader,
   OverlaySubHeading,
   OverlayTitle,
 } from "../../styled-components/Overlay/Overlay";
+import OverlayLoader from "../OverlayLoader/OverlayLoader";
 
 type WalletSignScreenType =
   | "approve"
