@@ -8,9 +8,9 @@ export const WidgetFrameWrapper = styled.div`
   flex-direction: column;
   border-radius: 0.25rem;
   margin: 0 ${sizes.pageMobilePadding};
-  width: ${sizes.widgetSize};
+  width: ${sizes.widgetWidth};
   height: fit-content;
-  min-height: ${sizes.widgetSize};
+  min-height: ${sizes.widgetHeight};
   padding: ${sizes.tradeContainerPadding};
 
   @media ${breakPoints.phoneOnly} {
@@ -32,7 +32,7 @@ export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
   justify-content: center;
   width: 100%;
   height: 100%;
-  min-height: ${sizes.widgetSize};
+  min-height: ${sizes.widgetHeight};
   overflow-y: ${(props) => (props.$isOverlayOpen ? "auto" : "hidden")};
 
   @media ${breakPoints.phoneOnly}, ${breakPoints.shallowScreenOnly} {
