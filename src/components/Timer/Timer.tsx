@@ -21,7 +21,7 @@ export const Timer = ({
   );
 
   useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       const dist: number = Math.floor(expiryTime - Date.now() / 1000);
 
       if (dist <= 0) {

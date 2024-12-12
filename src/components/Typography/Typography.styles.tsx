@@ -47,7 +47,7 @@ const makeTypographyComponent = (
   const Component = (styled[tag] as ThemedStyledFunction<
     typeof tag,
     DefaultTheme,
-    {},
+    object,
     never
   >)`
     font-family: ${(props) =>
@@ -56,7 +56,7 @@ const makeTypographyComponent = (
     font-weight: ${(props) => props.theme.typography[key].desktop.fontWeight};
     line-height: ${(props) => props.theme.typography[key].desktop.lineHeight};
     ${additionalCSS ? additionalCSS : ""}
-    
+
     ${(props) =>
       props.theme.typography[key].mobile
         ? `
@@ -118,7 +118,7 @@ export const StyledLink = makeTypographyComponent(
     text-transform: uppercase;
     text-decoration: underline;
   `
-) as StyledComponent<"a", DefaultTheme, {}>;
+) as StyledComponent<"a", DefaultTheme, object>;
 
 export const StyledNavigation = makeTypographyComponent("nav");
 export const StyledInfoHeading = makeTypographyComponent(

@@ -130,7 +130,7 @@ export const handleTransactionEvent =
       return;
     }
 
-    let updatedTransaction: SubmittedTransaction = {
+    const updatedTransaction: SubmittedTransaction = {
       ...matchingTransaction,
       hash: event.hash,
       status:

@@ -9,7 +9,7 @@ import { OrderStatus } from "../../../../types/orderStatus";
 
 export const getTokenAmountWithDecimals = (
   amount: string,
-  decimals: number = 18
+  decimals = 18
 ): BigNumber => {
   return new BigNumber(amount).div(10 ** decimals);
 };

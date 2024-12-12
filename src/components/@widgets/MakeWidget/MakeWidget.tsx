@@ -280,8 +280,8 @@ const MakeWidget: FC = () => {
 
   const createOrder = () => {
     const expiryDate = Date.now() + expiry;
-    const makerTokenAddress = makerTokenInfo?.address!;
-    const takerTokenAddress = takerTokenInfo?.address!;
+    const makerTokenAddress = makerTokenInfo?.address || "";
+    const takerTokenAddress = takerTokenInfo?.address || "";
 
     const signerToken =
       makerTokenAddress === ADDRESS_ZERO

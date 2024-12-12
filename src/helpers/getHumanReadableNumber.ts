@@ -52,7 +52,7 @@ export const getHumanReadableNumber: (
       readableNumber = input;
     }
     let numExtraZeros = 0;
-    let decIndex = readableNumber.indexOf(".");
+    const decIndex = readableNumber.indexOf(".");
     //get to 4 sig digits
     if (
       readableNumber.length > maxDigits &&

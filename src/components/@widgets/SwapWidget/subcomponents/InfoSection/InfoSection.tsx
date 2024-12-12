@@ -82,7 +82,7 @@ const InfoSection: FC<InfoSectionProps> = ({
   }
 
   if (bestQuote) {
-    let price = new BigNumber(bestQuote).dividedBy(baseAmount);
+    const price = new BigNumber(bestQuote).dividedBy(baseAmount);
 
     return (
       <PriceConverter
