@@ -1,30 +1,33 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  OverlayContainer,
+  OverlaySubHeading,
+  OverlayTitle,
+  OverlayTransactionLink,
+} from "../../styled-components/Overlay/Overlay";
 import { TransactionStatusType } from "../../types/transactionTypes";
-import { InfoSubHeading } from "../Typography/Typography";
+import OverlayLoader from "../OverlayLoader/OverlayLoader";
 import {
   ButtonsContainer,
-  Container,
-  DoneAllIcon,
-  InfoContainer,
   MakeNewOrderButton,
-  StyledInfoHeading,
-  StyledTransactionLink,
   TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
 
 interface OrderSubmittedInfoProps {
+  isSendingOrder?: boolean;
   showTrackTransactionButton?: boolean;
   chainId?: number;
-  transaction: SubmittedTransaction;
+  transaction?: SubmittedTransaction;
   onMakeNewOrderButtonClick: () => void;
   onTrackTransactionButtonClick?: () => void;
   className?: string;
 }
 
 const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
+  isSendingOrder,
   showTrackTransactionButton,
   chainId,
   transaction,
@@ -34,45 +37,57 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  return (
-    <Container className={className}>
-      <InfoContainer>
-        <DoneAllIcon />
-        {transaction.status === TransactionStatusType.processing && (
-          <>
-            <StyledInfoHeading>{t("orders.submitted")}</StyledInfoHeading>
-            <InfoSubHeading>{t("orders.trackTransaction")}</InfoSubHeading>
-          </>
-        )}
-        {transaction.status === TransactionStatusType.succeeded && (
-          <>
-            <StyledInfoHeading>
-              {t("orders.transactionCompleted")}
-            </StyledInfoHeading>
-          </>
-        )}
-        {transaction.hash && chainId && (
-          <StyledTransactionLink chainId={chainId} hash={transaction.hash} />
-        )}
-      </InfoContainer>
-      <ButtonsContainer>
-        <MakeNewOrderButton
-          intent="primary"
-          onClick={onMakeNewOrderButtonClick}
-        >
-          {t("orders.makeNewOrder")}
-        </MakeNewOrderButton>
+  const isSucceeded = transaction?.status === TransactionStatusType.succeeded;
 
-        {showTrackTransactionButton && (
-          <TrackTransactionButton
-            intent="neutral"
-            onClick={onTrackTransactionButtonClick}
+  return (
+    <OverlayContainer className={className}>
+      <OverlayLoader isSucceeded={isSucceeded} />
+      {isSendingOrder && (
+        <>
+          <OverlayTitle type="h2">{t("orders.orderSent")}</OverlayTitle>
+          <OverlaySubHeading>{t("orders.orderSentToMaker")}</OverlaySubHeading>
+        </>
+      )}
+      {transaction?.status === TransactionStatusType.processing && (
+        <>
+          <OverlayTitle type="h2">{t("orders.orderSubmitted")}</OverlayTitle>
+          <OverlaySubHeading>
+            {(transaction?.hash && chainId && (
+              <OverlayTransactionLink
+                chainId={chainId}
+                hash={transaction.hash}
+              />
+            )) ||
+              t("orders.orderSubmittedByMaker")}
+          </OverlaySubHeading>
+        </>
+      )}
+      {isSucceeded && (
+        <OverlayTitle type="h2">
+          {t("orders.transactionCompleted")}
+        </OverlayTitle>
+      )}
+
+      {isSucceeded && (
+        <ButtonsContainer>
+          <MakeNewOrderButton
+            intent="primary"
+            onClick={onMakeNewOrderButtonClick}
           >
-            {t("orders.track")}
-          </TrackTransactionButton>
-        )}
-      </ButtonsContainer>
-    </Container>
+            {t("orders.makeNewSwap")}
+          </MakeNewOrderButton>
+
+          {showTrackTransactionButton && (
+            <TrackTransactionButton
+              intent="neutral"
+              onClick={onTrackTransactionButtonClick}
+            >
+              {t("orders.track")}
+            </TrackTransactionButton>
+          )}
+        </ButtonsContainer>
+      )}
+    </OverlayContainer>
   );
 };
 

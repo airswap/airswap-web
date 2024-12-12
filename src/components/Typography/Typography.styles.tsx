@@ -6,6 +6,7 @@ import styled, {
 } from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
+import { fontLoos, fontWide } from "../../style/themes";
 
 const elementMap: Record<
   keyof DefaultTheme["typography"],
@@ -49,6 +50,8 @@ const makeTypographyComponent = (
     {},
     never
   >)`
+    font-family: ${(props) =>
+      props.theme.typography[key].desktop.isWide ? fontWide : fontLoos};
     font-size: ${(props) => props.theme.typography[key].desktop.fontSize};
     font-weight: ${(props) => props.theme.typography[key].desktop.fontWeight};
     line-height: ${(props) => props.theme.typography[key].desktop.lineHeight};
@@ -118,11 +121,17 @@ export const StyledLink = makeTypographyComponent(
 ) as StyledComponent<"a", DefaultTheme, {}>;
 
 export const StyledNavigation = makeTypographyComponent("nav");
-export const StyledInfoHeading = makeTypographyComponent("infoHeading");
+export const StyledInfoHeading = makeTypographyComponent(
+  "infoHeading",
+  css`
+    font-family: ${fontWide};
+  `
+);
 export const StyledInfoSubHeading = makeTypographyComponent(
   "infoSubHeading",
   css`
     color: ${(props) => props.theme.colors.lightGrey};
+    font-family: ${fontWide};
   `
 );
 export const StyledFormLabel = makeTypographyComponent(
@@ -137,13 +146,13 @@ export const StyledFormInput = makeTypographyComponent(
   css`
     color: ${(props) =>
       props.theme.name === "dark"
-        ? props.theme.colors.white
+        ? props.theme.colors.carteBlanche
         : props.theme.colors.primary};
     background-color: transparent;
     border: none;
 
     &::placeholder {
-      color: ${(props) => props.theme.colors.placeholderGrey};
+      color: ${(props) => props.theme.colors.placeholder};
     }
   `
 );

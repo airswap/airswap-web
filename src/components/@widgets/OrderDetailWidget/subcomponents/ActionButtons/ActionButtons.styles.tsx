@@ -1,19 +1,16 @@
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import Button from "../../../../Button/Button";
 import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
 
-export const Container = styled.div`
+export const Container = styled.div<{ center?: boolean }>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ center }) => (center ? "center" : "space-between")};
   justify-self: flex-end;
   margin-top: auto;
 `;
 
 export const BackButton = styled(Button)`
-  ${InputOrButtonBorderStyle};
-
   width: calc(50% - 0.5rem);
 `;
 

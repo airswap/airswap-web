@@ -1,13 +1,13 @@
 import React, { FC } from "react";
 
 import MyOrdersWidget from "../../components/@widgets/MyOrdersWidget/MyOrdersWidget";
-import Page from "../../components/Page/Page";
+import { StyledMyOrdersPage } from "./MyOrders.styles";
 
 const MyOrdersPage: FC = () => {
   return (
-    <Page>
+    <StyledMyOrdersPage>
       <MyOrdersWidget />
-    </Page>
+    </StyledMyOrdersPage>
   );
 };
 

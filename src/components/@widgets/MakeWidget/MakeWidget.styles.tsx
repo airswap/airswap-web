@@ -1,12 +1,13 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../style/breakpoints";
-import { SelectLabel } from "../../../styled-components/Select/Select";
+import { sizes } from "../../../style/sizes";
+import SwapInputs from "../../SwapInputs/SwapInputs";
 import Tooltip from "../../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
+import { ExpirySelector } from "./subcomponents/ExpirySelector/ExpirySelector";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
-import InputSection from "./subcomponents/InputSection/InputSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 import { RateField } from "./subcomponents/RateField/RateField";
 
@@ -16,54 +17,41 @@ export const Container = styled.div`
   flex-grow: 1;
 `;
 
-export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
-  margin-bottom: 1rem;
-  width: calc(50% - 1rem);
-  
-  ${SelectLabel} {
-    flex-shrink: 0;
-  }
+export const StyledSwapInputs = styled(SwapInputs)`
+  margin-block-start: 2rem;
+`;
 
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
+export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
+  margin-bottom: ${sizes.widgetGutter};
+  width: calc(46% - ${sizes.widgetGutter});
 }
 `;
 
-export const StyledRateField = styled(RateField)`
-  justify-content: flex-end;
-  margin-left: 1rem;
-  margin-bottom: 1rem;
-  width: 50%;
-
-  @media ${breakPoints.phoneOnly} {
-    width: auto;
-  }
-`;
-
-export const OrderTypeSelectorAndRateFieldWrapper = styled.div`
+export const OrderTypeSelectorAndExpirySelectorWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
-
-  @media ${breakPoints.phoneOnly} {
-    flex-direction: column;
-    align-items: center;
-  }
+  margin-top: ${sizes.widgetGutter};
 `;
 
-export const StyledInputSection = styled(InputSection)`
-  border-radius: 2px;
-  margin-bottom: 1rem;
-  height: 3.5rem;
+export const StyledExpirySelector = styled(ExpirySelector)<{
+  hideExpirySelector: boolean;
+}>`
+  width: 54%;
+  transition: opacity 0.3s ease-out;
+
+  margin-left: ${sizes.widgetGutter};
+  visibility: ${({ hideExpirySelector }) =>
+    hideExpirySelector ? "hidden" : "visible"};
 `;
 
 export const StyledAddressInput = styled(AddressInput)`
-  margin-bottom: 1rem;
+  margin-bottom: ${sizes.widgetGutter};
   height: 3.5rem;
 `;
 
-export const StyledActionButtons = styled(ActionButtons)``;
+export const StyledActionButtons = styled(ActionButtons)`
+  margin-block-start: 0.5rem;
+`;
 
 export const StyledInfoSection = styled(InfoSection)`
   flex-grow: 1;
@@ -88,4 +76,13 @@ export const TooltipContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+`;
+
+export const StyledRateField = styled(RateField)`
+  margin-inline: auto;
+  margin-block-start: 1rem;
+
+  @media ${breakPoints.phoneOnly} {
+    width: auto;
+  }
 `;

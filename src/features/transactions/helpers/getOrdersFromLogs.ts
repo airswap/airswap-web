@@ -48,7 +48,7 @@ export const getOrdersFromLogs = async (
       const receipt = receipts[index];
 
       const swap = await getFullSwapERC20(
-        swapLog.transactionHash,
+        nonce.toString(),
         signerAddress,
         feeReceiver,
         receipt.logs
@@ -62,7 +62,9 @@ export const getOrdersFromLogs = async (
         hash: swapLog.transactionHash,
         order,
         swap,
-        timestamp: blocks[index].timestamp * 1000,
+        timestamp: blocks[index]?.timestamp
+          ? blocks[index].timestamp * 1000
+          : 0,
       };
     })
   );

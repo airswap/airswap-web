@@ -1,5 +1,7 @@
 import styled, { css, DefaultTheme } from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
+import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
 import { ButtonIntent, ButtonJustifyContent } from "./Button";
 
@@ -13,7 +15,7 @@ function getButtonBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.black;
+      return theme.colors.darkBlue;
     default:
       return theme.colors.primary;
   }
@@ -29,7 +31,7 @@ function getButtonHoverBackground(
     case "positive":
       return theme.colors.green;
     case "neutral":
-      return theme.colors.black;
+      return theme.colors.darkGrey;
     default:
       return theme.colors.primaryDark;
   }
@@ -44,18 +46,12 @@ function getButtonBorderColor(
     return theme.colors.darkGrey;
   }
 
-  if (intent === "neutral") {
-    return theme.name === "dark"
-      ? theme.colors.lightGrey
-      : theme.colors.borderGrey;
-  }
-
-  return theme.colors.borderGrey;
+  return "transparent";
 }
 
 function getButtonHoverBorderColor(theme: DefaultTheme, intent?: ButtonIntent) {
   if (intent === "neutral") {
-    return theme.colors.lightGrey;
+    return "transparent";
   }
 
   return theme.colors.primaryDark;
@@ -76,16 +72,16 @@ export const ButtonStyle = css<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.justifyContent || "center"};
-  width: 100%;
+  width: fit-content;
   height: 3rem;
-  padding: 0 1rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  padding: 0 2rem;
+  font-family: ${fontWide};
+  font-size: 1.25rem;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-radius: 2px;
+  border-radius: 0.5rem;
   border-style: "solid";
   border-width: 1px;
   border-color: ${(props) =>
@@ -115,6 +111,10 @@ export const ButtonStyle = css<StyledButtonProps>`
 
   &:active {
     border-color: ${(props) => props.theme.colors.primary};
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    font-size: 1.125rem;
   }
 
   @supports (-moz-appearance: none) {

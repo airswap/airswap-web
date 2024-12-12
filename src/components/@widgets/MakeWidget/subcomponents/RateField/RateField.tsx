@@ -1,16 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { FC, useState, useMemo, useEffect } from "react";
 
 import BigNumber from "bignumber.js";
 
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import Icon from "../../../../Icon/Icon";
-import {
-  Text,
-  Wrapper,
-  StyledIconButton,
-  RateBox,
-  Equals,
-} from "./RateField.styles";
+import { Text, Wrapper, StyledIconButton, Rate } from "./RateField.styles";
 
 export type RateFieldProps = {
   isButton?: boolean;
@@ -20,7 +14,7 @@ export type RateFieldProps = {
   className?: string;
 };
 
-export const RateField: React.FC<RateFieldProps> = ({
+export const RateField: FC<RateFieldProps> = ({
   isButton = false,
   token1,
   token2,
@@ -59,9 +53,8 @@ export const RateField: React.FC<RateFieldProps> = ({
       isButton={isButton}
       className={className}
     >
-      1<Text title={firstDisplayedToken}>{firstDisplayedToken}</Text>
-      <Equals>=</Equals>
-      <RateBox title={displayRate}>{displayRate}</RateBox>
+      1<Text title={firstDisplayedToken}>{firstDisplayedToken}</Text>=
+      <Rate title={displayRate}>{displayRate}</Rate>
       <Text title={secondDisplayedToken}>{secondDisplayedToken}</Text>
       {isButton ? (
         <Icon name="swap-horizontal" iconSize={0.75} />

@@ -14,8 +14,8 @@ import {
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
 import { getTokenPairTranslation } from "../../@widgets/MakeWidget/helpers";
 import { ErrorList } from "../../ErrorList/ErrorList";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
-import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import {
@@ -129,14 +129,14 @@ const MakeOrderReview: FC<TakeOrderReviewProps> = ({
         onCloseButtonClick={() => toggleShowFeeInfo()}
       />
 
-      <Overlay
+      <ModalOverlay
         title={t("validatorErrors.unableSwap")}
         subTitle={t("validatorErrors.swapFail")}
-        onCloseButtonClick={onRestartButtonClick}
+        onClose={onRestartButtonClick}
         isHidden={!errors.length}
       >
         <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
-      </Overlay>
+      </ModalOverlay>
     </Container>
   );
 };

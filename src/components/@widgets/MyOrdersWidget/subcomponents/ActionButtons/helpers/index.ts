@@ -7,5 +7,5 @@ export const getActionButtonTranslation = (
     return i18n.t("wallet.connectWallet");
   }
 
-  return i18n.t("orders.makeNewOrder");
+  return i18n.t("orders.makeAnOrder");
 };

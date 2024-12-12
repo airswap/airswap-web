@@ -23,7 +23,7 @@ export const ToolbarContainer = styled.div<{
   left: 100%;
   width: 100%;
   height: 100%;
-  z-index: 5;
+  z-index: 100;
   background: ${({ theme, $overflow }) =>
     theme.name === "dark"
       ? convertHexToRGBA(theme.colors.black, $overflow ? 1 : 0.8)
@@ -35,27 +35,7 @@ export const ToolbarContainer = styled.div<{
   }
 
   @media ${breakPoints.tabletPortraitUp} {
-    transform: none;
-    transition: none;
-
-    align-items: center;
-    position: absolute;
-    left: 0;
-    width: 7rem;
-    height: 100%;
-    padding: 0 1rem 0;
-    border-right: 1px solid
-      ${({ theme }) =>
-        theme.name === "dark"
-          ? theme.colors.borderGrey
-          : convertHexToRGBA(theme.colors.borderGrey, 0.2)};
-    overflow: hidden;
-    background: ${(props) =>
-      props.theme.name === "dark"
-        ? props.theme.colors.black
-        : props.theme.colors.primary};
-    z-index: 3;
-    backdrop-filter: none;
+    display: none;
   }
 `;
 
@@ -74,12 +54,6 @@ export const ToolbarButtonsContainer = styled.div<{ $overflow?: boolean }>`
 
   @media (min-height: ${sizes.toolbarMaxHeight}) and (${breakPoints.tabletPortraitUp}) {
     margin: 2rem 0 4.5rem;
-  }
-
-  @media ${breakPoints.tabletPortraitUp} {
-    justify-content: center;
-    width: auto;
-    overflow-y: auto;
   }
 `;
 

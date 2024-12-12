@@ -12,12 +12,17 @@ export const getActionButtonTranslation = (
   hasMissingMakerToken: boolean,
   hasMissingTakerAmount: boolean,
   hasMissingTakerToken: boolean,
+  isLoading: boolean,
   networkIsUnsupported: boolean,
   shouldDepositNativeToken: boolean,
   shouldRefresh: boolean,
   walletIsNotConnected: boolean,
   makerTokenSymbol?: string
 ): string => {
+  if (isLoading) {
+    return "";
+  }
+
   if (walletIsNotConnected) {
     return i18n.t("wallet.connectWallet");
   }
@@ -47,7 +52,7 @@ export const getActionButtonTranslation = (
   }
 
   if (hasInsufficientBalance) {
-    return i18n.t("orders.insufficientBalance", { symbol: makerTokenSymbol });
+    return i18n.t("orders.insufficientBalance");
   }
 
   if (shouldDepositNativeToken) {
@@ -55,7 +60,7 @@ export const getActionButtonTranslation = (
   }
 
   if (hasInsufficientAllowance) {
-    return `${i18n.t("orders.approve")} ${makerTokenSymbol}`;
+    return `${i18n.t("orders.continue")}`;
   }
 
   return i18n.t("common.review");

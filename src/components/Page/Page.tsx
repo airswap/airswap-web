@@ -13,7 +13,12 @@ import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import Toaster from "../Toasts/Toaster";
 import Toolbar from "../Toolbar/Toolbar";
 import WidgetFrame from "../WidgetFrame/WidgetFrame";
-import { InnerContainer, StyledPage, StyledSocialButtons } from "./Page.styles";
+import {
+  BlurredOverlay,
+  InnerContainer,
+  StyledPage,
+  StyledSocialButtons,
+} from "./Page.styles";
 
 type PageProps = {
   className?: string;
@@ -30,10 +35,16 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   const appRouteParams = useAppRouteParams();
   const {
     showMobileToolbar,
+    showModalOverlay,
+    showTransactionOverlay,
     transactionsTabIsOpen,
     pageHeight,
+    overlayHeight,
     setShowMobileToolbar,
   } = useContext(InterfaceContext);
+
+  const showBlurOverlay =
+    showModalOverlay || showTransactionOverlay || transactionsTabIsOpen;
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 
@@ -70,7 +81,9 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
   return (
     <StyledPage style={{ height: `${pageHeight}px` }} className={className}>
       <HelmetContainer title={t("app.title")} />
-      <InnerContainer>
+      <InnerContainer
+        style={{ minHeight: showModalOverlay ? `${overlayHeight}px` : "unset" }}
+      >
         <Toaster open={transactionsTabIsOpen} />
         <Toolbar
           isHiddenOnMobile={!showMobileToolbar}
@@ -83,13 +96,15 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
         />
 
         <WidgetFrame
-          isOpen={transactionsTabIsOpen}
           isConnected={web3ProviderIsActive}
+          isOverlayOpen={showModalOverlay}
         >
           {children}
-
           <WalletConnector />
         </WidgetFrame>
+
+        <BlurredOverlay isVisible={showBlurOverlay} />
+
         <StyledSocialButtons />
       </InnerContainer>
     </StyledPage>

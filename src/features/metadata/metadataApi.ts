@@ -4,7 +4,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import * as ethers from "ethers";
 
 import { getSwapErc20Contract } from "../../helpers/swapErc20";
-import { MetadataTokens } from "./metadataSlice";
+import { MetadataTokenInfoMap } from "./metadataSlice";
 
 export const getActiveTokensLocalStorageKey: (
   account: string,
@@ -12,76 +12,50 @@ export const getActiveTokensLocalStorageKey: (
 ) => string = (account, chainId) =>
   `airswap/activeTokens/${account}/${chainId}`;
 
-export const getCustomTokensLocalStorageKey: (
-  account: string,
-  chainId: number
-) => string = (account, chainId) =>
-  `airswap/customTokens/${account}/${chainId}`;
-
-export const getAllTokensLocalStorageKey = (chainId: number): string =>
-  `airswap/metadataCache/${chainId}`;
+export const getUnknownTokensLocalStorageKey: (chainId: number) => string = (
+  chainId
+) => `airswap/unknownTokens/${chainId}`;
 
 export const getUnknownTokens = async (
-  chainId: number,
-  supportedTokenAddresses: string[],
-  allTokens: TokenInfo[],
-  provider: ethers.providers.BaseProvider
+  provider: ethers.providers.BaseProvider,
+  tokens: string[]
 ): Promise<TokenInfo[]> => {
-  // Determine tokens we still don't know about.
-  const allTokenAddresses = allTokens.map((token) => token.address);
-  const unknownTokens = supportedTokenAddresses.filter(
-    (supportedTokenAddr) => !allTokenAddresses.includes(supportedTokenAddr)
-  );
+  const scrapePromises = tokens.map((t) => getTokenInfo(provider, t));
+  const results = await Promise.allSettled(scrapePromises);
 
-  let scrapedTokens: TokenInfo[] = [];
-  if (unknownTokens.length) {
-    const scrapePromises = unknownTokens.map((t) => getTokenInfo(provider, t));
-    const results = await Promise.allSettled(scrapePromises);
-    scrapedTokens = results
-      .filter((r) => r.status === "fulfilled")
-      .map((r) => {
-        const tokenInfo = (r as PromiseFulfilledResult<TokenInfo>).value;
-        return {
-          ...tokenInfo,
-          address: tokenInfo.address.toLowerCase(),
-        };
-      });
-  }
-
-  return scrapedTokens;
+  return results
+    .filter((r) => r.status === "fulfilled")
+    .map((r) => {
+      const tokenInfo = (r as PromiseFulfilledResult<TokenInfo>).value;
+      return {
+        ...tokenInfo,
+        address: tokenInfo.address.toLowerCase(),
+      };
+    });
 };
 
 export const getActiveTokensFromLocalStorage = (
   account: string,
   chainId: number
-): MetadataTokens["active"] => {
-  const savedTokens = (
-    localStorage.getItem(getActiveTokensLocalStorageKey(account, chainId)) || ""
-  )
-    .split(",")
-    .filter((address) => address.length);
-  return (savedTokens.length && savedTokens) || [];
-};
-
-export const getCustomTokensFromLocalStorage = (
-  account: string,
-  chainId: number
-): MetadataTokens["custom"] => {
-  const savedTokens = (
-    localStorage.getItem(getCustomTokensLocalStorageKey(account, chainId)) || ""
-  )
-    .split(",")
-    .filter((address) => address.length);
-  return (savedTokens.length && savedTokens) || [];
-};
-
-export const getAllTokensFromLocalStorage = (
-  chainId: number
-): MetadataTokens["all"] => {
-  const localStorageItem = localStorage.getItem(
-    getAllTokensLocalStorageKey(chainId)
+): string[] | undefined => {
+  const savedTokenString = localStorage.getItem(
+    getActiveTokensLocalStorageKey(account, chainId)
   );
-  return localStorageItem ? JSON.parse(localStorageItem) : {};
+
+  try {
+    return savedTokenString ? JSON.parse(savedTokenString) : undefined;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
+export const getUnknownTokensFromLocalStorage = (
+  chainId: number
+): MetadataTokenInfoMap => {
+  return JSON.parse(
+    localStorage.getItem(getUnknownTokensLocalStorageKey(chainId)) || "{}"
+  );
 };
 
 export const getProtocolFee = async (

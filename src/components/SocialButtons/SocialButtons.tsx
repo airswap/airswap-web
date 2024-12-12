@@ -1,5 +1,6 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { icons } from "../Icon/Icon";
 import {
   Container,
@@ -47,6 +48,7 @@ type SocialButtonsProps = {
 };
 
 const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
+  const { transactionsTabIsOpen } = useContext(InterfaceContext);
   const [hoveredIcon, setHoveredIcon] = useState<keyof typeof icons | null>(
     null
   );
@@ -69,7 +71,7 @@ const SocialButtons: FC<SocialButtonsProps> = ({ className = "" }) => {
   };
 
   return (
-    <Container className={className}>
+    <Container isVisible={!transactionsTabIsOpen} className={className}>
       {destinations.map((dest) => {
         const locales = Object.keys(dest.locales || {});
 

@@ -12,11 +12,13 @@ import getExpirySelectOptions from "./helpers/getExpirySelectOptions";
 const floatRegExp = new RegExp("^([0-9])*$");
 
 export type ExpirySelectorProps = {
+  isDisabled?: boolean;
   onChange: (msToExpiry: number) => void;
   className?: string;
 };
 
 export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
+  isDisabled,
   onChange,
   className,
 }) => {
@@ -46,10 +48,16 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
   }
 
   return (
-    <SelectWrapper className={className}>
+    <SelectWrapper className={className} isDisabled={isDisabled}>
       <SelectLabel>{t("common.expiresIn")}</SelectLabel>
-      <Input maxLength={3} value={amount} onChange={handleAmountChange} />
+      <Input
+        disabled={isDisabled}
+        maxLength={3}
+        value={amount}
+        onChange={handleAmountChange}
+      />
       <StyledDropdown
+        isDisabled={isDisabled}
         selectedOption={unit}
         options={translatedOptions}
         onChange={handleUnitChange}

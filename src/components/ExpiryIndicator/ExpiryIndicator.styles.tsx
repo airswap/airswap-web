@@ -1,10 +1,11 @@
 import styled from "styled-components/macro";
 
 import { TextEllipsis } from "../../style/mixins";
-import { Pill } from "../../styled-components/Pill/Pill";
 import Tooltip from "./subcomponents/Tooltip";
 
 export const Container = styled.div`
+  display: flex;
+  align-items: center;
   position: relative;
   width: fit-content;
   height: 2rem;
@@ -13,15 +14,10 @@ export const Container = styled.div`
 export const Text = styled.span<{ hasExpired: boolean }>`
   ${TextEllipsis};
 
-  color: ${({ theme, hasExpired }) =>
-    hasExpired
-      ? theme.name === "dark"
-        ? theme.colors.white
-        : theme.colors.primary
-      : theme.colors.lightGrey};
+  color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
-export const Strong = styled.strong`
+export const TimeLeft = styled.div`
   ${TextEllipsis};
 
   display: inline;
@@ -36,7 +32,7 @@ export const StyledTooltip = styled(Tooltip)`
   bottom: 2.5rem;
 `;
 
-export const StyledPill = styled(Pill)`
+export const Expiry = styled.div`
   ${TextEllipsis};
 
   &:hover + ${StyledTooltip} {

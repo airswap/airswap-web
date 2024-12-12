@@ -33,6 +33,8 @@ const useQuotesDebug = () => {
     bestQuote,
     lastLookError,
     rfqError,
+    streamedBestPricing,
+    streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
   const { isLoading: isGasCostLoading, swapTransactionCost } = useAppSelector(
     (state) => state.gasCost
@@ -58,6 +60,18 @@ const useQuotesDebug = () => {
       console.log("bestPricing:", bestPricing);
     }
   }, [bestPricing]);
+
+  useEffect(() => {
+    if (isDebugMode && streamedLastLookOrder) {
+      console.log("streamedLastLookOrder:", streamedLastLookOrder);
+    }
+  }, [streamedLastLookOrder]);
+
+  useEffect(() => {
+    if (isDebugMode && streamedBestPricing) {
+      console.log("streamedBestPricing:", streamedBestPricing);
+    }
+  }, [streamedBestPricing]);
 
   useEffect(() => {
     if (isDebugMode && bestRfqOrder) {

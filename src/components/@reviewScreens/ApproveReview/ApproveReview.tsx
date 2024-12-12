@@ -15,8 +15,8 @@ import {
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
 import { ErrorList } from "../../ErrorList/ErrorList";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
-import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
@@ -93,7 +93,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
     <Container className={className}>
       <StyledWidgetHeader>
         <Title type="h2" as="h1">
-          {t("orders.approve")} {tokenSymbol}
+          {t("orders.approve")}
         </Title>
       </StyledWidgetHeader>
       <OrderReviewToken
@@ -103,41 +103,40 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         tokenUri={justifiedToken?.logoURI}
       />
       <ReviewList>
-        {readableAllowance !== "0" && (
-          <ReviewListItem>
-            <ReviewListItemLabel>Current approve amount</ReviewListItemLabel>
-            <ReviewListItemValue>
-              {readableAllowance} {tokenSymbol}
-            </ReviewListItemValue>
-          </ReviewListItem>
-        )}
         {roundedFeeAmount && (
           <>
             <ReviewListItem>
-              <ReviewListItemLabel>Order amount</ReviewListItemLabel>
-              <ReviewListItemValue>
-                {amount} {tokenSymbol}
-              </ReviewListItemValue>
+              <ReviewListItemLabel>
+                {t("orders.orderAmount")}
+              </ReviewListItemLabel>
+              <ReviewListItemValue>{amount}</ReviewListItemValue>
             </ReviewListItem>
             <ReviewListItem>
               <ReviewListItemLabel>
-                {t("orders.protocolFee")}
+                {t("orders.feeAmount")}
                 <StyledIconButton
                   icon="information-circle-outline"
                   onClick={toggleShowFeeInfo}
                 />
               </ReviewListItemLabel>
-              <ReviewListItemValue>
-                {roundedFeeAmount} {tokenSymbol}
-              </ReviewListItemValue>
+              <ReviewListItemValue>{roundedFeeAmount}</ReviewListItemValue>
             </ReviewListItem>
           </>
         )}
-
+        {readableAllowance !== "0" && (
+          <ReviewListItem>
+            <ReviewListItemLabel>
+              {t("orders.currentApprovalAmount")}
+            </ReviewListItemLabel>
+            <ReviewListItemValue>{readableAllowance}</ReviewListItemValue>
+          </ReviewListItem>
+        )}
         <ReviewListItem>
-          <ReviewListItemLabel>Total approve amount</ReviewListItemLabel>
+          <ReviewListItemLabel>
+            {t("orders.requiredApprovalAmount")}
+          </ReviewListItemLabel>
           <ReviewListItemValue>
-            {roundedAmountPlusFee || amount} {tokenSymbol}
+            {roundedAmountPlusFee || amount}
           </ReviewListItemValue>
         </ReviewListItem>
       </ReviewList>
@@ -157,14 +156,14 @@ const ApproveReview: FC<ApproveReviewProps> = ({
       />
 
       {onRestartButtonClick && (
-        <Overlay
+        <ModalOverlay
           title={t("validatorErrors.unableSwap")}
           subTitle={t("validatorErrors.swapFail")}
-          onCloseButtonClick={onRestartButtonClick}
+          onClose={onRestartButtonClick}
           isHidden={!errors.length}
         >
           <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
-        </Overlay>
+        </ModalOverlay>
       )}
     </Container>
   );

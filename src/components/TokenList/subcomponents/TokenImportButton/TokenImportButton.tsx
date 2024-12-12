@@ -10,6 +10,7 @@ import {
   TokenName,
   ImportButton,
   UnsupportedTokenText,
+  StyledTokenLogo,
 } from "./TokenImportButton.styles";
 
 export type TokenImportRowProps = {
@@ -36,7 +37,7 @@ const TokenImportButton = ({
 
   return (
     <Container>
-      <TokenLogo logoURI={token.logoURI} size="medium" />
+      <StyledTokenLogo logoURI={token.logoURI} />
 
       <TextContainer>
         <Symbol>{token.symbol}</Symbol>

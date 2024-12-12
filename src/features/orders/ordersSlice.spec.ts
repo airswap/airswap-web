@@ -50,7 +50,7 @@ describe.only("orders reducer", () => {
         ],
       },
     };
-    expect(selectBestOrder(state).signerAmount).toBe("7");
+    expect(selectBestOrder(state)!.signerAmount).toBe("7");
   });
 
   it("should select the best sender side order", () => {
@@ -80,7 +80,7 @@ describe.only("orders reducer", () => {
         ],
       },
     };
-    expect(selectBestOrder(state).senderAmount).toBe("6");
+    expect(selectBestOrder(state)!.senderAmount).toBe("6");
   });
 
   it("should select orders based on longest expiry if token amounts are equal", () => {
@@ -112,7 +112,7 @@ describe.only("orders reducer", () => {
         ],
       },
     };
-    expect(selectBestOrder(state).expiry).toBe("1654764000");
+    expect(selectBestOrder(state)!.expiry).toBe("1654764000");
     jest.useRealTimers();
   });
 });

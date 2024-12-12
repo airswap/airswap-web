@@ -2,8 +2,7 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PricingErrorType } from "../../../../../errors/pricingError";
-import { InfoSubHeading } from "../../../../Typography/Typography";
-import { StyledInfoHeading } from "../InfoSection/InfoSection.styles";
+import { InfoSectionHeading } from "../../../../../styled-components/InfoSection/InfoSection";
 
 export type PricingErrorInfoProps = {
   pricingError: PricingErrorType;
@@ -15,10 +14,9 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
   if (pricingError === PricingErrorType.belowMinimumAmount) {
     return (
       <>
-        <StyledInfoHeading>
+        <InfoSectionHeading>
           Requested price under minimum amount
-        </StyledInfoHeading>
-        <InfoSubHeading>Retry order with higher price</InfoSubHeading>
+        </InfoSectionHeading>
       </>
     );
   }
@@ -26,16 +24,16 @@ const PricingErrorInfo: FC<PricingErrorInfoProps> = ({ pricingError }) => {
   if (pricingError === PricingErrorType.noServersFound) {
     return (
       <>
-        <StyledInfoHeading>No servers found at this time</StyledInfoHeading>
-        <InfoSubHeading>Please retry later</InfoSubHeading>
+        <InfoSectionHeading>{t("orders.noValidResponses")}</InfoSectionHeading>
       </>
     );
   }
 
   return (
     <>
-      <StyledInfoHeading>{t("orders.tokenPairUnavailable")}</StyledInfoHeading>
-      <InfoSubHeading>{t("orders.retryOrCancel")}</InfoSubHeading>
+      <InfoSectionHeading>
+        {t("orders.tokenPairUnavailable")}
+      </InfoSectionHeading>
     </>
   );
 };

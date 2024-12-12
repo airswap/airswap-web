@@ -1,11 +1,14 @@
 import styled from "styled-components/macro";
 
 import { BorderlessButtonStyle } from "../../style/mixins";
+import Icon from "../Icon/Icon";
 
 export const Link = styled.a`
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
-  padding: 0.25rem;
+  gap: 0.5rem;
+  padding: 0 0.25rem;
   color: ${(props) => props.theme.colors.lightGrey};
 
   &:hover {
@@ -15,6 +18,7 @@ export const Link = styled.a`
   ${BorderlessButtonStyle}
 `;
 
-export const Label = styled.div`
-  margin-right: 0.5rem;
+export const Label = styled.div``;
+export const StyledIcon = styled(Icon)`
+  margin-bottom: -0.125rem;
 `;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Wrapper } from "@airswap/libraries";
+import { Server, Wrapper } from "@airswap/libraries";
 import {
   ADDRESS_ZERO,
   OrderERC20,
@@ -12,7 +12,9 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ExtendedPricing } from "../../entities/ExtendedPricing/ExtendedPricing";
+import { transformExtendedPricingToUnsignedOrder } from "../../entities/ExtendedPricing/ExtendedPricingTransformers";
 import { getOrderExpiryWithBufferInSeconds } from "../../entities/OrderERC20/OrderERC20Helpers";
+import { isServer } from "../../entities/Server/ServerHelpers";
 import { PricingErrorType } from "../../errors/pricingError";
 import useNativeWrappedToken from "../../hooks/useNativeWrappedToken";
 import useSwapType from "../../hooks/useSwapType";
@@ -25,10 +27,10 @@ import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
 import useQuotesDebug from "./hooks/useQuotesDebug";
 import {
   compareOrdersAndSetBestOrder,
-  createLastLookUnsignedOrder,
+  subscribePricingERC20,
 } from "./quotesActions";
 import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
-import { reset, setDisableLastLook } from "./quotesSlice";
+import { reset, setBestLastLookOrder, setDisableLastLook } from "./quotesSlice";
 
 interface UseQuotesValues {
   isLoading: boolean;
@@ -71,6 +73,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     bestQuote,
     lastLookError,
     rfqError,
+    streamedBestPricing,
+    streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
 
   const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
@@ -98,7 +102,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   }, [isSubmitted]);
 
   useEffect(() => {
-    if (!bestOrder) {
+    if (!bestOrder || bestOrderType !== ProtocolIds.RequestForQuoteERC20) {
       return noop;
     }
 
@@ -170,16 +174,16 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       return;
     }
 
-    dispatch(
-      createLastLookUnsignedOrder({
-        account,
-        baseToken: justifiedBaseTokenInfo,
-        baseAmount: baseTokenAmount,
-        pricing: bestPricing,
-        protocolFee,
-        quoteToken: justifiedQuoteTokenInfo,
-      })
-    );
+    const newLastLookOrder = transformExtendedPricingToUnsignedOrder({
+      account,
+      baseToken: justifiedBaseTokenInfo,
+      baseAmount: baseTokenAmount,
+      pricing: bestPricing,
+      protocolFee,
+      quoteToken: justifiedQuoteTokenInfo,
+    });
+
+    dispatch(setBestLastLookOrder(newLastLookOrder));
   }, [bestPricing]);
 
   useEffect(() => {
@@ -202,6 +206,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     );
   }, [
     isGasCostSuccessful,
+    isLoading,
     disableLastLook,
     disableRfq,
     bestLastLookOrder,
@@ -209,10 +214,52 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   ]);
 
   useEffect(() => {
-    // LastLook not working for gnosis provider, I have not been able to find the root cause.
-    if (connectionType === ConnectionType.gnosis) {
-      dispatch(setDisableLastLook(true));
+    if (
+      !library ||
+      !chainId ||
+      !bestPricing ||
+      !justifiedBaseTokenInfo ||
+      !justifiedQuoteTokenInfo ||
+      !account ||
+      !isSubmitted ||
+      bestOrderType !== ProtocolIds.LastLookERC20
+    ) {
+      return;
     }
+
+    let server: Server | PricingErrorType;
+
+    const subscribe = async () => {
+      // @ts-ignore
+      server = await dispatch(
+        subscribePricingERC20({
+          account,
+          baseToken: justifiedBaseTokenInfo,
+          baseTokenAmount,
+          quoteToken: justifiedQuoteTokenInfo,
+          protocolFee,
+          bestPricing,
+          provider: library,
+          chainId,
+        })
+      );
+    };
+
+    subscribe();
+
+    return () => {
+      if (isServer(server)) {
+        server.unsubscribePricingERC20([
+          { baseToken: baseToken.address, quoteToken: quoteToken.address },
+        ]);
+        server.disconnect();
+      }
+    };
+  }, [bestOrderType, isSubmitted]);
+
+  useEffect(() => {
+    // LastLook not working for gnosis provider, I have not been able to find the root cause.
+    dispatch(setDisableLastLook(connectionType === ConnectionType.gnosis));
   }, [connectionType]);
 
   if (swapType === SwapType.wrapOrUnwrap) {
@@ -226,8 +273,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   return {
     isFailed: !isLoading && !!error,
     isLoading: isLastLookLoading || isRfqLoading,
-    bestPricing,
-    bestOrder,
+    bestPricing: streamedBestPricing || bestPricing,
+    bestOrder: streamedLastLookOrder || bestOrder,
     bestOrderType,
     bestQuote,
     error,

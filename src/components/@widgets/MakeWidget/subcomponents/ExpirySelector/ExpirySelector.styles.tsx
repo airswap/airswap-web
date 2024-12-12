@@ -1,15 +1,20 @@
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyleType2 } from "../../../../../style/mixins";
+import {
+  InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
+} from "../../../../../style/mixins";
+import { fontWide } from "../../../../../style/themes";
 import Dropdown from "../../../../Dropdown/Dropdown";
 import { SelectButtonText } from "../../../../Dropdown/Dropdown.styles";
 
 export const SelectorStyle = css`
   ${InputOrButtonBorderStyleType2};
 
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-right: -1px;
+  border-inline: unset;
+  font-family: ${fontWide};
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.carteBlanche};
 
   @supports (-moz-appearance: none) {
     padding-top: 0.125rem;
@@ -45,11 +50,12 @@ export const Input = styled.input`
   all: unset;
 
   ${SelectorStyle};
+  ${InputOrButtonBorderStyle};
 
   width: 2.5rem;
   text-align: center;
 
-  &:hover,
+  &:hover:enabled,
   :active,
   :focus {
     z-index: 1;
@@ -57,6 +63,9 @@ export const Input = styled.input`
 `;
 
 export const StyledDropdown = styled(Dropdown)`
+  flex-grow: 1;
+  margin-inline-start: -1px;
+
   ${SelectButtonText} {
     max-width: 7rem;
   }

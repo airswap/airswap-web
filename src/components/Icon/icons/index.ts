@@ -1,4 +1,5 @@
 import IconAirswap from "./IconAirswap";
+import IconAirswapFull from "./IconAirswapFull";
 import IconArrowDown from "./IconArrowDown";
 import IconArrowLeft from "./IconArrowLeft";
 import IconArrowRight from "./IconArrowRight";
@@ -6,6 +7,7 @@ import IconBars from "./IconBars";
 import IconBin from "./IconBin";
 import IconCampaign from "./IconCampaign";
 import IconCheck from "./IconCheck";
+import IconCheckCircle from "./IconCheckCircle";
 import IconChevronDown from "./IconChevronDown";
 import IconChevronRight from "./IconChevronRight";
 import IconChevronUpDown from "./IconChevronUpDown";
@@ -38,6 +40,7 @@ import IconX from "./IconX";
 
 export {
   IconAirswap,
+  IconAirswapFull,
   IconArrowDown,
   IconArrowRight,
   IconArrowLeft,
@@ -45,6 +48,7 @@ export {
   IconBin,
   IconCampaign,
   IconCheck,
+  IconCheckCircle,
   IconChevronDown,
   IconChevronRight,
   IconChevronUpDown,

@@ -12,6 +12,9 @@ export const subscribeExtendedPricingERC20 = async (
     { baseToken, quoteToken },
   ]);
 
+  server.unsubscribePricingERC20([{ baseToken, quoteToken }]);
+  server.disconnect();
+
   return pricings.map((pricing) =>
     transformToExtendedPricing(
       pricing,
@@ -27,6 +30,8 @@ export const getExtendedPricingERC20 = async (
   quoteToken: string
 ): Promise<ExtendedPricing[]> => {
   const pricings = await server.getPricingERC20([{ baseToken, quoteToken }]);
+
+  server.disconnect();
 
   return pricings.map((pricing) =>
     transformToExtendedPricing(

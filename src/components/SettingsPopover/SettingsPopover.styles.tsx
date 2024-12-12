@@ -8,11 +8,7 @@ import {
 } from "../../style/mixins";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 
-type ContainerProps = {
-  isOpen: boolean;
-};
-
-export const Container = styled.div<ContainerProps>`
+export const Container = styled.div`
   position: absolute;
   display: grid;
   grid-template-rows: 5rem auto 5.125rem;
@@ -21,7 +17,6 @@ export const Container = styled.div<ContainerProps>`
   top: 5rem;
   right: 3.75rem;
   padding-top: 0.5rem;
-  transform: ${(props) => (props.isOpen ? "translate(-11.5rem, 0)" : "0")};
   color: ${(props) => props.theme.colors.darkSubText};
   background-color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.darkGrey : theme.colors.black};
@@ -30,7 +25,7 @@ export const Container = styled.div<ContainerProps>`
   z-index: 1000;
 
   @media ${breakPoints.tabletPortraitUp} {
-    right: 13.75rem;
+    right: 1.5rem;
   }
 
   @media ${breakPoints.phoneOnly} {
@@ -64,6 +59,11 @@ export const ThemeButton = styled.button<ButtonStyleProps>`
       : props.theme.colors.darkSubText};
   background-color: ${(props) =>
     props.$isActive ? props.theme.colors.borderGrey : "transparent"};
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 `;
 
 type LocaleContainerType = {

@@ -7,9 +7,8 @@ import { ButtonStyle } from "../../../../Button/Button.styles";
 
 export const Container = styled.div`
   display: flex;
-  justify-content: space-between;
-  justify-self: flex-end;
-  margin-top: auto;
+  justify-content: center;
+  margin-block-start: 2.5rem;
 `;
 
 export const SignButton = styled(Button)`

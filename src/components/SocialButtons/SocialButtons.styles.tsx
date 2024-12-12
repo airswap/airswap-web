@@ -4,7 +4,7 @@ import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import Icon from "../Icon/Icon";
 import { Link } from "../Typography/Typography";
 
-export const Container = styled.div`
+export const Container = styled.div<{ isVisible: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -12,6 +12,8 @@ export const Container = styled.div`
   position: relative;
   height: 2.5rem;
   z-index: 1;
+  opacity: ${({ isVisible }) => (isVisible ? "1" : "0")};
+  transition: opacity 0.3s ease-out;
 `;
 
 export const Divider = styled.div`

@@ -18,6 +18,7 @@ type Typography =
   | "subText";
 
 type FontProps = {
+  isWide?: boolean;
   fontSize: string;
   fontWeight: number;
   lineHeight: number;
@@ -31,6 +32,7 @@ declare module "styled-components" {
       primary: string;
       primaryDark: string;
       primaryLight: string;
+      darkBlue: string;
       white: string;
       alwaysWhite: string;
       black: string;
@@ -39,12 +41,12 @@ declare module "styled-components" {
       borderGrey: string;
       darkGrey: string;
       lightGrey: string;
-      placeholderGrey: string;
       red: string;
       orange: string;
       green: string;
-      placeholderGradient: string;
+      placeholder: string;
       darkSubText: string;
+      carteBlanche: string;
     };
     shadows: {
       widgetGlow: string;

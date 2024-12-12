@@ -71,7 +71,6 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     if (isFullOrder(order)) {
       history.push({
         pathname: `/order/${compressFullOrderERC20(order)}`,
-        state: { isFromAvailableOrdersWidget: true },
       });
       onFullOrderLinkClick?.();
     } else {

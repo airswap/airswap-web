@@ -1,65 +1,55 @@
 import { Registry } from "@airswap/libraries";
+import { ProtocolIds } from "@airswap/utils";
 
-import { providers, Event } from "ethers";
+import { providers, Contract } from "ethers";
 
-async function getStakerTokens(chainId: number, provider: providers.Provider) {
+import { getUniqueSingleDimensionArray } from "../../helpers/array";
+
+const getStakersForProtocol = async (
+  registryContract: Contract,
+  protocolId: ProtocolIds
+): Promise<string[]> => {
+  const [stakers]: [string[], string[]] =
+    await registryContract.functions.getStakersForProtocol(protocolId);
+
+  return stakers;
+};
+
+const getTokensForStaker = async (
+  registryContract: Contract,
+  staker: string
+): Promise<string[]> => {
+  const [tokens]: [string[], string[]] =
+    await registryContract.functions.getTokensForStaker(staker);
+
+  return tokens;
+};
+
+async function getStakerTokens(
+  chainId: number,
+  provider: providers.Provider
+): Promise<Record<string, string[]>> {
   const registryContract = Registry.getContract(provider, chainId);
 
-  const firstTxRegistryContract =
-    chainId &&
-    Registry.deployedBlocks[chainId as keyof typeof Registry.deployedBlocks];
-  const currentBlock = await provider?.getBlockNumber();
-
-  const addTokensEventFilter = registryContract.filters.AddTokens();
-  const removeTokensEventFilter = registryContract.filters.RemoveTokens();
-
-  // Fetch all AddTokens and RemoveTokens events from the registry
-  const [addEvents, removeEvents] = await Promise.all([
-    registryContract.queryFilter(
-      addTokensEventFilter,
-      firstTxRegistryContract,
-      currentBlock
-    ),
-    registryContract.queryFilter(
-      removeTokensEventFilter,
-      firstTxRegistryContract,
-      currentBlock
-    ),
+  const [rfqStakers, lastLookStakers] = await Promise.all([
+    getStakersForProtocol(registryContract, ProtocolIds.RequestForQuoteERC20),
+    getStakersForProtocol(registryContract, ProtocolIds.LastLookERC20),
   ]);
 
-  // Order matters here, so order AddTokens and RemoveTokens chronologically
-  const sortedEvents: Event[] = [...addEvents, ...removeEvents]
-    .filter((log) => !log.removed)
-    .sort((a, b) => {
-      // Sort by oldest first. If they're not in the same block, sort based
-      // on blocknumber
-      if (a.blockNumber !== b.blockNumber) return a.blockNumber - b.blockNumber;
-      // if in the same block, sort by the index of the log in the block
-      return a.logIndex - b.logIndex;
-    });
+  const stakers = [...rfqStakers, ...lastLookStakers].filter(
+    getUniqueSingleDimensionArray
+  );
 
-  // Hold a list of tokens for each staker.
-  const stakerTokens: Record<string, string[]> = {};
+  const tokensForStakers = await Promise.all(
+    stakers.map((staker) => getTokensForStaker(registryContract, staker))
+  );
 
-  sortedEvents.forEach((log) => {
-    if (!log.args) return;
-    // @ts-ignore (args are not typed)
-    const [staker, tokens] = log.args as [string, string[]];
-    const lowerCasedTokens = tokens.map((t) => t.toLowerCase());
-    if (log.event === "AddTokens") {
-      // Adding tokens
-      stakerTokens[staker] = (stakerTokens[staker] || []).concat(
-        lowerCasedTokens
-      );
-    } else {
-      // Removing tokens
-      stakerTokens[staker] = (stakerTokens[staker] || []).filter(
-        (token) => !lowerCasedTokens.includes(token)
-      );
-    }
-  });
+  return stakers.reduce((acc, staker, index) => {
+    const stakerTokens = tokensForStakers[index].map((t) => t.toLowerCase());
+    const address = staker.toLowerCase();
 
-  return stakerTokens;
+    return { ...acc, [address]: stakerTokens };
+  }, {});
 }
 
 export { getStakerTokens };

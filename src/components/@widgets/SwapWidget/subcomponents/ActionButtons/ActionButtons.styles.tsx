@@ -2,9 +2,17 @@ import styled from "styled-components/macro";
 
 import Button from "../../../../Button/Button";
 
-export const BackButton = styled(Button)`
-  flex: 1 0 0;
+export const Container = styled.div<{ center?: boolean }>`
+  display: flex;
+  justify-content: ${({ center }) => (center ? "center" : "space-between")};
+  justify-self: flex-end;
+  margin-top: auto;
 `;
-export const MainButton = styled(Button)`
-  flex: 2.33333333 0 0;
+
+export const BackButton = styled(Button)`
+  width: calc(50% - 0.5rem);
+`;
+
+export const SignButton = styled(Button)<{ isFilled?: boolean }>`
+  ${({ isFilled }) => (isFilled ? `` : `width: calc(50% - 0.5rem);`)};
 `;

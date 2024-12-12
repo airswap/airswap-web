@@ -76,7 +76,7 @@ export const getContractEvents = (
 
         if (!blockLimit) {
           console.error(
-            "[getContractQueryFilter]: Error when getting logs, but no block limit could be found",
+            `[getContractQueryFilter]: Error when getting logs (${startBlock} to ${endBlock}) but no block limit could be found`,
             error
           );
 

@@ -1,10 +1,52 @@
+import { useEffect, useMemo, useState } from "react";
+import { useDebounce } from "react-use";
+
 import { useAppSelector } from "../app/hooks";
-import { selectPendingDeposits } from "../features/transactions/transactionsSlice";
+import { SubmittedDepositTransaction } from "../entities/SubmittedTransaction/SubmittedTransaction";
+import {
+  selectAllDeposits,
+  selectPendingDeposits,
+} from "../features/transactions/transactionsSlice";
 
-const useDepositPending = (): boolean => {
+const useDepositPending = (
+  showResolvedDeposit: boolean = false
+): SubmittedDepositTransaction | undefined => {
   const pendingDeposits = useAppSelector(selectPendingDeposits);
+  const allDeposits = useAppSelector(selectAllDeposits);
 
-  return !!pendingDeposits.length;
+  const [debouncedDeposit, setDebouncedDeposit] = useState<
+    SubmittedDepositTransaction | undefined
+  >(undefined);
+
+  const pendingDeposit = pendingDeposits.length
+    ? pendingDeposits[0]
+    : undefined;
+
+  const resolvedDeposit = useMemo(() => {
+    if (debouncedDeposit) {
+      return allDeposits.find((tx) => tx.hash === debouncedDeposit.hash);
+    }
+
+    return undefined;
+  }, [debouncedDeposit, allDeposits]);
+
+  useEffect(() => {
+    if (pendingDeposit) {
+      setDebouncedDeposit(pendingDeposit);
+    }
+  }, [pendingDeposit]);
+
+  useDebounce(
+    () => {
+      if (pendingDeposit === undefined) {
+        setDebouncedDeposit(undefined);
+      }
+    },
+    3000,
+    [pendingDeposit]
+  );
+
+  return pendingDeposit || (showResolvedDeposit ? resolvedDeposit : undefined);
 };
 
 export default useDepositPending;

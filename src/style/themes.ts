@@ -1,19 +1,22 @@
 import { DefaultTheme } from "styled-components/macro";
 
 export const fontLoos = '"loos-normal", sans-serif';
+export const fontWide = '"loos-wide", sans-serif';
 export const fontMono = '"DM Mono", monospace';
 
 const typography: DefaultTheme["typography"] = {
   title1: {
     desktop: {
-      fontSize: "2rem",
+      isWide: true,
+      fontSize: "2.5rem",
       lineHeight: 1.167,
-      fontWeight: 500,
+      fontWeight: 700,
     },
   },
   title2: {
     desktop: {
-      fontSize: "1.5rem",
+      isWide: true,
+      fontSize: "2.5rem",
       lineHeight: 1.25,
       fontWeight: 700,
     },
@@ -25,13 +28,15 @@ const typography: DefaultTheme["typography"] = {
   },
   title3: {
     desktop: {
-      fontSize: "1.25rem",
+      isWide: true,
+      fontSize: "2rem",
       lineHeight: 1.25,
-      fontWeight: 400,
+      fontWeight: 700,
     },
   },
   title4: {
     desktop: {
+      isWide: true,
       fontSize: "1rem",
       lineHeight: 1.33,
       fontWeight: 700,
@@ -55,36 +60,32 @@ const typography: DefaultTheme["typography"] = {
     desktop: {
       fontSize: "1rem",
       lineHeight: 1.25,
-      fontWeight: 600,
-    },
-    mobile: {
-      fontSize: "1rem",
-      lineHeight: 1.25,
-      fontWeight: 600,
+      fontWeight: 400,
     },
   },
   infoSubHeading: {
     desktop: {
-      fontSize: "1.0625rem",
-      lineHeight: 1.25,
-      fontWeight: 400,
-    },
-    mobile: {
       fontSize: "1rem",
-      lineHeight: 1.25,
+      lineHeight: 1,
       fontWeight: 400,
     },
   },
   formLabel: {
     desktop: {
-      fontSize: "0.75rem",
-      lineHeight: 1.5,
-      fontWeight: 600,
+      isWide: true,
+      fontSize: "1rem",
+      lineHeight: 1,
+      fontWeight: 500,
+    },
+    mobile: {
+      fontSize: ".875rem",
+      lineHeight: 1,
+      fontWeight: 500,
     },
   },
   formInput: {
     desktop: {
-      fontSize: "1.5rem",
+      fontSize: "1.75rem",
       lineHeight: 1.5,
       fontWeight: 500,
     },
@@ -109,9 +110,14 @@ const typography: DefaultTheme["typography"] = {
   // Form select inputs
   selectItem: {
     desktop: {
-      fontSize: "1.125rem",
+      fontSize: "1.5rem",
       lineHeight: 1 + 1 / 3,
-      fontWeight: 600,
+      fontWeight: 700,
+    },
+    mobile: {
+      fontSize: "1.25rem",
+      lineHeight: 1 + 1 / 3,
+      fontWeight: 700,
     },
   },
   link: {
@@ -148,19 +154,20 @@ export const darkTheme: DefaultTheme = {
     primary: "#2B71FF",
     primaryDark: "#0752EB",
     primaryLight: "#F5F9FF",
+    darkBlue: "#21396A",
     white: "#FFFFFF",
     alwaysWhite: "#FFFFFF",
     black: "#060607",
     alwaysBlack: "#060607",
     grey: "#404040",
-    borderGrey: "#1A1E25",
-    darkGrey: "#101217",
-    lightGrey: "#6E7686",
-    placeholderGrey: "#6E7686",
+    borderGrey: "#34425C",
+    darkGrey: "#12213D",
+    lightGrey: "#798BAD",
+    placeholder: "#5A709D",
+    carteBlanche: "#EBF1FF",
     red: "#FF0000",
     orange: "#E7765A",
     green: "#60FF66",
-    placeholderGradient: "linear-gradient(270deg, #232833 0%, #2F364400 93.3%)",
     darkSubText: "#9EA3AC",
   },
   shadows: {
@@ -180,6 +187,7 @@ export const lightTheme: DefaultTheme = {
     primary: "#2B71FF",
     primaryDark: "#0752EB",
     primaryLight: "#F5F9FF",
+    darkBlue: "#21396A",
     white: "#060607",
     alwaysWhite: "#FFFFFF",
     black: "#FFFFFF",
@@ -188,11 +196,11 @@ export const lightTheme: DefaultTheme = {
     borderGrey: "#E7ECF3",
     darkGrey: "#9BA8C4",
     lightGrey: "#B3BCC9",
-    placeholderGrey: "#9BA8C4",
+    placeholder: "#5A709D",
+    carteBlanche: "#EBF1FF",
     red: "#FF0000",
     orange: "#E7765A",
     green: "#60FF66",
-    placeholderGradient: "linear-gradient(270deg, #E1EBFF 0%, #E1EBFF 93.3%)",
     darkSubText: "#9EA3AC",
   },
   shadows: {

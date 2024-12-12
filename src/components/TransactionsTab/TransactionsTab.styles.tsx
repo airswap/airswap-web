@@ -9,12 +9,7 @@ import {
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
-import TransactionLink from "../TransactionLink/TransactionLink";
-import {
-  InfoSubHeading,
-  InfoHeading,
-  FormLabel,
-} from "../Typography/Typography";
+import { InfoSubHeading } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
 import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu";
 
@@ -24,14 +19,13 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 100%;
   max-width: ${sizes.widgetMobileSize};
-  height: 100%;
+  height: calc(100% - 5rem);
   padding: 1.5rem 1.5rem 0;
-  background-color: ${(props) => props.theme.colors.black};
-  border-left: 1px solid ${(props) => props.theme.colors.borderGrey};
-  top: 0;
+  top: 5rem;
   right: 0;
-  z-index: 1001;
+  z-index: 25;
   will-change: transform;
+  backdrop-filter: drop-shadow(4px 4px 10px blue);
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -39,9 +33,13 @@ export const Container = styled(motion.div)`
 
   @media ${breakPoints.phoneOnly} {
     position: fixed;
+    top: 0;
     width: 100%;
     max-width: inherit;
+    height: 100%;
     padding: 1rem 1rem 0;
+    background-color: ${({ theme }) => theme.colors.black};
+    z-index: 1000;
   }
 `;
 
@@ -59,25 +57,17 @@ export const WalletHeader = styled.div`
   }
 `;
 
-export const StyledTransactionLink = styled(TransactionLink)`
-  justify-self: flex-end;
-  margin-left: auto;
-
-  &:hover {
-    color: ${(props) => props.theme.colors.alwaysWhite};
-  }
-`;
-
 export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  margin-bottom: ${({ $isVisible }) => ($isVisible ? ".75rem" : "0")};
+  padding-inline: 1.5rem;
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
+  visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};
   transition: height ease-out 0.3s, margin-bottom ease-out 0.3s;
-  background: ${(props) => props.theme.colors.black};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -87,44 +77,35 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
 export const Legend = styled(InfoSubHeading)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0;
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1rem;
   width: 100%;
-  color: ${(props) => props.theme.colors.lightGrey};
-
-  &:after {
-    margin: 0 0 0 0.5rem;
-    background: ${(props) => props.theme.colors.borderGrey};
-    height: 1px;
-    flex: 1;
-    content: "";
-  }
-
-  &:before {
-    background: none;
-  }
-`;
-
-export const LegendLine = styled.span`
   text-transform: uppercase;
   background: transparent;
+  color: ${(props) => props.theme.colors.lightGrey};
 `;
 
 type TransactionsContainerProps = {
-  $overflow: boolean;
+  hasOverflow: boolean;
 };
 
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
-  overflow-y: ${(props) => (props.$overflow ? "scroll" : "hidden")};
-  padding-right: ${(props) => (props.$overflow ? "1rem" : "0")};
+  overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
+  padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};
+  padding-bottom: ${(props) => (props.hasOverflow ? "2rem" : "0")};
 
   flex-grow: 99;
   height: 100%;
+
+  -webkit-mask-image: ${({ hasOverflow }) =>
+    hasOverflow
+      ? "-webkit-gradient(linear, 0 85%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
+      : ""};
 `;
 
 export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
@@ -133,7 +114,7 @@ export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
   align-items: center;
   justify-content: center;
   flex-grow: 2;
-  margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1rem")};
+  margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1.5rem")};
   width: 100%;
   transition: margin-bottom ease-out 0.3s;
   overflow: hidden;
@@ -147,12 +128,15 @@ export const NoTransactions = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-block-start: 1rem;
   height: 4.5rem;
   color: ${(props) => props.theme.colors.lightGrey};
 `;
 
 export const BottomButtonContainer = styled.div`
-  padding: 1rem 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0 2rem;
 `;
 
 export const DisconnectButton = styled(Button)`
@@ -184,43 +168,6 @@ export const IconContainer = styled.div`
   background-color: rgb(110, 118, 134, 0.1);
   color: ${(props) => props.theme.colors.lightGrey};
   border-radius: 50%;
-`;
-
-export const BackButton = styled(motion.button)`
-  ${InputOrButtonBorderStyleType2};
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: -1.5rem;
-  top: 1.5rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background-color: ${(props) => props.theme.colors.black};
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-
-  @media ${breakPoints.phoneOnly} {
-    display: none !important;
-  }
-`;
-
-export const NetworkInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  max-width: 5.5rem;
-`;
-
-export const NetworkName = styled(FormLabel)`
-  text-transform: uppercase;
-`;
-
-export const Balances = styled(InfoHeading)`
-  line-height: 1;
 `;
 
 export const ConnectionStatusCircle = styled.div<{ $connected: boolean }>`

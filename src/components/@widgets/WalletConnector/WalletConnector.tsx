@@ -18,7 +18,7 @@ import {
 import { buildGnosisSafeConnector } from "../../../web3-connectors/gnosis";
 import { tryActivateConnector } from "../../../web3-connectors/helpers";
 import { WalletProvider } from "../../../web3-connectors/walletProviders";
-import Overlay from "../../Overlay/Overlay";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import { StyledWalletProviderList } from "../SwapWidget/SwapWidget.styles";
 
 interface WalletConnectorProps {
@@ -126,17 +126,17 @@ const WalletConnector: FC<WalletConnectorProps> = ({ className }) => {
   );
 
   return (
-    <Overlay
+    <ModalOverlay
       isHidden={!showWalletList}
       title={t("wallet.selectWallet")}
-      onCloseButtonClick={handleCloseButtonClick}
+      onClose={handleCloseButtonClick}
       className={className}
     >
       <StyledWalletProviderList
         onClose={handleCloseButtonClick}
         onWalletProviderButtonClick={handleWalletProviderButtonClick}
       />
-    </Overlay>
+    </ModalOverlay>
   );
 };
 

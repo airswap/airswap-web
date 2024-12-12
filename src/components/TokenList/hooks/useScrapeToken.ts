@@ -5,7 +5,7 @@ import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
-import { addTokenInfo } from "../../../features/metadata/metadataSlice";
+import { addUnknownTokenInfo } from "../../../features/metadata/metadataActions";
 import scrapeToken from "../../../helpers/scrapeToken";
 
 const useScrapeToken = (
@@ -19,7 +19,7 @@ const useScrapeToken = (
 
   useEffect(() => {
     if (scrapedToken) {
-      dispatch(addTokenInfo(scrapedToken));
+      dispatch(addUnknownTokenInfo(scrapedToken));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrapedToken]);

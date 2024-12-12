@@ -16,8 +16,8 @@ import {
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
 import { ErrorList } from "../../ErrorList/ErrorList";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
-import Overlay from "../../Overlay/Overlay";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import { StyledIconButton } from "../MakeOrderReview/MakeOrderReview.styles";
@@ -160,14 +160,14 @@ const ApproveReview: FC<WrapReviewProps> = ({
       />
 
       {onRestartButtonClick && (
-        <Overlay
+        <ModalOverlay
           title={t("validatorErrors.unableSwap")}
           subTitle={t("validatorErrors.swapFail")}
-          onCloseButtonClick={onRestartButtonClick}
+          onClose={onRestartButtonClick}
           isHidden={!errors.length}
         >
           <ErrorList errors={errors} onBackButtonClick={onRestartButtonClick} />
-        </Overlay>
+        </ModalOverlay>
       )}
     </Container>
   );

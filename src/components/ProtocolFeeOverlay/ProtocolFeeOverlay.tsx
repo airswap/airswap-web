@@ -2,7 +2,7 @@ import { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
 import ProtocolFeeModal from "../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
-import Overlay from "../Overlay/Overlay";
+import ModalOverlay from "../ModalOverlay/ModalOverlay";
 
 interface ProtocolFeeOverlayProps {
   isHidden: boolean;
@@ -18,14 +18,14 @@ const ProtocolFeeOverlay: FC<ProtocolFeeOverlayProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Overlay
+    <ModalOverlay
       title={t("information.protocolFee.title")}
       isHidden={!isHidden}
-      onCloseButtonClick={onCloseButtonClick}
+      onClose={onCloseButtonClick}
       className={className}
     >
       <ProtocolFeeModal onCloseButtonClick={onCloseButtonClick} />
-    </Overlay>
+    </ModalOverlay>
   );
 };
 

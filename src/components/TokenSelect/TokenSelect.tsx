@@ -1,4 +1,10 @@
-import { FC, MouseEventHandler, FormEventHandler, useMemo } from "react";
+import {
+  FC,
+  MouseEventHandler,
+  FormEventHandler,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@airswap/utils";
@@ -22,9 +28,10 @@ import {
   InfoLabel,
   SubText,
   TokenAccountButton,
+  TokenSelectOverflowContainer,
+  StyledTokenSelectBackground,
 } from "./TokenSelect.styles";
 import { getTokenText } from "./helpers";
-import TokenSelectFocusBorder from "./subcomponents/TokenSelectFocusBorder/TokenSelectFocusBorder";
 
 export type TokenSelectProps = {
   /**
@@ -117,84 +124,123 @@ const TokenSelect: FC<TokenSelectProps> = ({
   showTokenContractLink = false,
 }) => {
   const { t } = useTranslation();
+  const [isTokenFocused, setTokenFocused] = useState(false);
+  const [isAmountFocused, setIsAmountFocused] = useState(false);
+  const [isAmountHovered, setIsAmountHovered] = useState(false);
+  const [isMaxButtonFocused, setIsMaxButtonFocused] = useState(false);
 
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
 
+  const handleAmountFocus = () => setIsAmountFocused(true);
+  const handleAmountBlur = () => setIsAmountFocused(false);
+  const handleAmountMouseEnter = () => setIsAmountHovered(true);
+  const handleAmountMouseLeave = () => setIsAmountHovered(false);
+  const handleMaxButtonFocus = () => setIsMaxButtonFocused(true);
+  const handleMaxButtonBlur = () => setIsMaxButtonFocused(false);
+  const handleTokenFocus = () => setTokenFocused(true);
+  const handleTokenBlur = () => setTokenFocused(false);
+
   return (
     <TokenSelectContainer
-      $isQuote={isQuote}
-      $isLoading={isRequestingAmount}
+      isQuote={isQuote}
+      isLoading={isRequestingAmount}
+      isAmountFocused={isAmountFocused || isMaxButtonFocused || isAmountHovered}
+      isTokenFocused={isTokenFocused}
       showTokenContractLink={showTokenContractLink}
     >
-      {selectedToken && showTokenContractLink && (
-        <TokenAccountButton
-          chainId={selectedToken.chainId}
-          address={selectedToken.address}
-        />
-      )}
-      {!isRequestingToken ? (
-        <ContainingButton onClick={onChangeTokenClicked} disabled={readOnly}>
-          <TokenLogoLeft logoURI={selectedToken?.logoURI} size="large" />
-          <StyledSelector>
+      <StyledTokenSelectBackground />
+      <TokenSelectOverflowContainer>
+        {selectedToken && showTokenContractLink && (
+          <TokenAccountButton
+            chainId={selectedToken.chainId}
+            address={selectedToken.address}
+            onBlur={handleTokenBlur}
+            onFocus={handleTokenFocus}
+            onMouseEnter={handleTokenFocus}
+            onMouseLeave={handleTokenBlur}
+          />
+        )}
+        {!isRequestingToken ? (
+          <ContainingButton
+            disabled={readOnly}
+            onClick={onChangeTokenClicked}
+            onBlur={handleTokenBlur}
+            onFocus={handleTokenFocus}
+            onMouseEnter={handleTokenFocus}
+            onMouseLeave={handleTokenBlur}
+          >
+            <TokenLogoLeft logoURI={selectedToken?.logoURI} />
+            <StyledSelector>
+              <StyledLabel>{label}</StyledLabel>
+              <StyledSelectItem>
+                <StyledSelectButtonContent>
+                  {tokenText}
+                </StyledSelectButtonContent>
+                <StyledDownArrow $invisible={readOnly} />
+              </StyledSelectItem>
+            </StyledSelector>
+          </ContainingButton>
+        ) : (
+          <PlaceholderContainer>
             <StyledLabel>{label}</StyledLabel>
-            <StyledSelectItem>
-              <StyledSelectButtonContent>{tokenText}</StyledSelectButtonContent>
-              <StyledDownArrow $invisible={readOnly} />
-            </StyledSelectItem>
-          </StyledSelector>
-        </ContainingButton>
-      ) : (
-        <PlaceholderContainer>
-          <StyledLabel>{label}</StyledLabel>
-          <PlaceHolderBar />
-        </PlaceholderContainer>
-      )}
-      <TokenSelectFocusBorder position="left" />
-      {includeAmountInput && selectedToken && !isRequestingAmount ? (
-        <InputAndMaxButtonWrapper>
-          <AmountAndDetailsContainer>
-            <AmountInput
-              // @ts-ignore
-              inputMode="decimal"
-              hasSubtext={!!subText}
-              tabIndex={readOnly ? -1 : 0}
-              autoComplete="off"
-              pattern="^[0-9]*[.,]?[0-9]*$"
-              minLength={1}
-              maxLength={79}
-              spellCheck={false}
-              value={amount}
-              disabled={readOnly}
-              onChange={onAmountChange}
-              placeholder="0.00"
-            />
-            {!readOnly && (
-              <TokenSelectFocusBorder position="right" hasError={hasError} />
+            <PlaceHolderBar />
+          </PlaceholderContainer>
+        )}
+        {includeAmountInput && selectedToken && !isRequestingAmount ? (
+          <InputAndMaxButtonWrapper>
+            <AmountAndDetailsContainer>
+              <AmountInput
+                // @ts-ignore
+                inputMode="decimal"
+                hasSubtext={!!subText}
+                tabIndex={readOnly ? -1 : 0}
+                autoComplete="off"
+                pattern="^[0-9]*[.,]?[0-9]*$"
+                minLength={1}
+                maxLength={79}
+                spellCheck={false}
+                value={amount}
+                disabled={readOnly}
+                onBlur={handleAmountBlur}
+                onChange={onAmountChange}
+                onFocus={handleAmountFocus}
+                onMouseEnter={handleAmountMouseEnter}
+                onMouseLeave={handleAmountMouseLeave}
+                placeholder="0.00"
+              />
+              {subText && <SubText>{subText}</SubText>}
+            </AmountAndDetailsContainer>
+            {onMaxClicked && showMaxButton && !readOnly && (
+              <MaxButton
+                onClick={onMaxClicked}
+                onBlur={handleMaxButtonBlur}
+                onFocus={handleMaxButtonFocus}
+                onMouseEnter={handleMaxButtonFocus}
+                onMouseLeave={handleMaxButtonBlur}
+              >
+                {t("common.max")}
+              </MaxButton>
             )}
-            {subText && <SubText>{subText}</SubText>}
-          </AmountAndDetailsContainer>
-          {onMaxClicked && showMaxButton && !readOnly && (
-            <MaxButton onClick={onMaxClicked}>{t("common.max")}</MaxButton>
-          )}
-          {showMaxInfoButton && !showMaxButton && !readOnly && (
-            <InfoLabel
-              onMouseOver={onInfoLabelMouseEnter}
-              onFocus={onInfoLabelMouseEnter}
-              onMouseOut={onInfoLabelMouseLeave}
-              onBlur={onInfoLabelMouseLeave}
-            >
-              i
-            </InfoLabel>
-          )}
-          <TokenLogoRight logoURI={selectedToken?.logoURI} size="medium" />
-        </InputAndMaxButtonWrapper>
-      ) : (
-        <PlaceholderContainer>
-          <PlaceHolderBar />
-        </PlaceholderContainer>
-      )}
+            {showMaxInfoButton && !showMaxButton && !readOnly && (
+              <InfoLabel
+                onMouseOver={onInfoLabelMouseEnter}
+                onFocus={onInfoLabelMouseEnter}
+                onMouseOut={onInfoLabelMouseLeave}
+                onBlur={onInfoLabelMouseLeave}
+              >
+                i
+              </InfoLabel>
+            )}
+            <TokenLogoRight logoURI={selectedToken?.logoURI} />
+          </InputAndMaxButtonWrapper>
+        ) : (
+          <PlaceholderContainer>
+            <PlaceHolderBar />
+          </PlaceholderContainer>
+        )}
+      </TokenSelectOverflowContainer>
     </TokenSelectContainer>
   );
 };

@@ -7,7 +7,11 @@ import Page from "../../components/Page/Page";
 import { fetchAllTokens } from "../../features/metadata/metadataActions";
 import { selectMetaDataReducer } from "../../features/metadata/metadataSlice";
 import { decompressAndSetActiveOrder } from "../../features/takeOtc/takeOtcActions";
-import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
+import {
+  reset,
+  selectTakeOtcReducer,
+  setActiveOrder,
+} from "../../features/takeOtc/takeOtcSlice";
 import InvalidOrder from "./subcomponents/InvalidOrder/InvalidOrder";
 
 const OrderDetail: FC = () => {
@@ -21,6 +25,10 @@ const OrderDetail: FC = () => {
     if (compressedOrder) {
       dispatch(decompressAndSetActiveOrder({ compressedOrder }));
     }
+
+    return () => {
+      dispatch(reset());
+    };
   }, [dispatch, compressedOrder]);
 
   useEffect(() => {

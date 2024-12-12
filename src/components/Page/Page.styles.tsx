@@ -22,13 +22,28 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
     height: 100%;
     padding-bottom: 2rem;
   }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: ${(props) =>
+      props.theme.name === "dark"
+        ? "conic-gradient(from 180deg at -10% -10%, #060607 -7.2deg, #2B71FF 37.8deg, #060607 352.8deg, #2B71FF 397.8deg)"
+        : props.theme.colors.primary};
+    transform: rotate(0.5turn) scaleX(-1);
+  }
 `;
 
 export const StyledPage = styled.div`
   position: relative;
   min-width: 18rem;
   height: 100vh;
-  min-height: 35rem;
+  min-height: 34.5rem;
 
   @media (min-height: 29rem) and (max-width: ${breakpointSizes.phone}) {
     display: flex;
@@ -52,7 +67,7 @@ export const StyledSocialButtons = styled(SocialButtons)`
 
   @media ${breakPoints.tabletPortraitUp} {
     display: flex;
-    position: fixed;
+    position: absolute;
     bottom: 1.5rem;
     right: 1.5rem;
   }
@@ -67,4 +82,18 @@ export const StyledSocialButtons = styled(SocialButtons)`
     padding-right: 2rem;
     padding-bottom: 1.5rem;
   }
+`;
+
+export const BlurredOverlay = styled.div<{ isVisible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  backdrop-filter: blur(20px);
+  opacity: ${(props) => (props.isVisible ? "1" : "0")};
+  transition: opacity 0.3s ease-out;
+  filter: brightness(0.5);
+  pointer-events: ${(props) => (props.isVisible ? "visible" : "none")};
 `;

@@ -15,11 +15,7 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     font-family: ${fontLoos};
     color: ${(props) => props.theme.colors.alwaysWhite};
-    background: ${(props) =>
-      props.theme.name === "dark"
-        ? props.theme.colors.black
-        : props.theme.colors.primary};
-    -webkit-font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   

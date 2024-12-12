@@ -12,6 +12,7 @@ export const Container = styled.div`
   padding: 0 1.125rem;
   background: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.black : theme.colors.primary};
+  z-index: 100;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: none;

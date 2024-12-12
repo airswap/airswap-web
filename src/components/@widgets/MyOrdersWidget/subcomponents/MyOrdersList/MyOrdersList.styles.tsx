@@ -4,11 +4,17 @@ import { ScrollBarStyle } from "../../../../../style/mixins";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
 
-export const Container = styled.div`
+export const Container = styled.div<{ hasOverflow: boolean }>`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   position: relative;
+  margin-block-start: 2rem;
+  padding-block-end: ${({ hasOverflow }) => (hasOverflow ? "2rem" : "0")};
+
+  -webkit-mask-image: ${({ hasOverflow }) =>
+    hasOverflow
+      ? "-webkit-gradient(linear, 0 75%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
+      : ""};
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
@@ -20,29 +26,12 @@ export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
 export const OrdersContainer = styled.div`
   ${ScrollBarStyle};
 
-  margin-top: 0.5rem;
-  width: calc(100% + 0.5rem);
-  max-height: 17rem;
-  padding-right: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-height: 20rem;
+  padding-right: 1rem;
   overflow-y: auto;
   overflow-x: visible;
-`;
-
-const darkShadow =
-  "linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%)";
-const lightShadow =
-  "linear-gradient(0deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%)";
-
-export const Shadow = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3rem;
-  z-index: 2;
-  background: ${({ theme }) =>
-    theme.name === "dark" ? darkShadow : lightShadow};
-  pointer-events: none;
 `;
 
 export const TooltipContainer = styled.div`
@@ -55,8 +44,10 @@ export const StyledTooltip = styled(Tooltip)<{
 }>`
   justify-content: flex-start;
   position: absolute;
+  left: unset;
+  right: 3rem;
   top: calc(
-    4rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
+    2.25rem + ${({ containerScrollTop }) => -containerScrollTop}px + 3rem *
       ${({ orderIndex }) => orderIndex}
   );
   width: auto;
@@ -65,13 +56,11 @@ export const StyledTooltip = styled(Tooltip)<{
 `;
 
 export const DeleteButtonTooltip = styled(StyledTooltip)`
-  left: 100%;
   margin-left: -1rem;
 `;
 
 export const OrderIndicatorTooltip = styled(StyledTooltip)`
   justify-content: flex-end;
   margin-left: 0.5rem;
-  left: 0;
   width: 0;
 `;

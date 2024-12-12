@@ -1,51 +1,65 @@
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../style/mixins";
+import { TextEllipsis } from "../../../../style/mixins";
 import Icon from "../../../Icon/Icon";
 import TransactionLink from "../../../TransactionLink/TransactionLink";
 import WalletTransactionStatus from "../WalletTransactionStatus/WalletTransactionStatus";
 
 export const StyledWalletTransactionStatus = styled(WalletTransactionStatus)``;
 
-export const walletTransactionHeight = "4.125rem";
+export const walletTransactionHeight = "5rem";
 
-export const Container = styled(motion.div)`
-  ${InputOrButtonBorderStyle};
+export const SpanSubtitle = styled.span`
+  line-height: 1.25;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: ${(props) => props.theme.colors.lightGrey};
+`;
 
+export const Container = styled(motion.div)<{ isActive?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  border-color: ${({ theme }) => theme.colors.borderGrey};
-  border-radius: 0.1875rem;
+  border-radius: 0.75rem;
   width: 100%;
   height: ${walletTransactionHeight};
-  padding: 0 1.5rem;
+  padding: 1rem 1.5rem;
   gap: 1rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+  background: ${({ theme, isActive }) =>
+    isActive ? theme.colors.darkBlue : "transparent"};
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.lightGrey} !important;
+    background: ${({ theme }) => theme.colors.darkGrey};
+
+    ${SpanSubtitle} {
+      color: ${({ theme }) => theme.colors.white};
+    }
   }
 `;
 
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   flex: 1;
   flex-wrap: wrap;
   justify-content: center;
+  max-width: calc(100% - 2.5rem);
+  height: 100%;
 `;
 
 export const SpanTitle = styled.span<{
   hasProgress?: boolean;
 }>`
+  ${TextEllipsis};
+
+  width: 100%;
   line-height: 1.25;
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 1.125rem;
+  font-weight: 400;
   ${({ hasProgress }) =>
     hasProgress &&
     css`
@@ -53,15 +67,11 @@ export const SpanTitle = styled.span<{
     `}
 `;
 
-export const SpanSubtitle = styled.span`
-  line-height: 1.25;
-  font-size: 1rem;
-  font-weight: 400;
-  color: ${(props) => props.theme.colors.lightGrey};
-`;
-
 export const StyledTransactionLink = styled(TransactionLink)`
+  align-self: flex-start;
   align-items: center;
+  margin-top: 0.125rem;
+
   &:hover {
     color: ${(props) => props.theme.colors.white};
   }

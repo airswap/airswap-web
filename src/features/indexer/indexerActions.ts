@@ -17,6 +17,7 @@ export const fetchIndexerUrls = createAsyncThunk<
   // First get a list of indexer nodes from the contract
   return await getIndexerUrls(web3.chainId!, provider);
 });
+
 export const getFilteredOrders = createAsyncThunk<
   FullOrderERC20[],
   { filter: Pick<OrderFilter, "senderToken" | "signerToken"> },
@@ -50,7 +51,7 @@ export const getFilteredOrders = createAsyncThunk<
         const ordersToAdd = orderResponse.orders;
         orders = { ...orders, ...ordersToAdd };
       } catch (e) {
-        console.log(
+        console.error(
           `[indexerSlice] Order request failed for ${
             indexerState.indexerUrls![i] || "an indexer node"
           }`,

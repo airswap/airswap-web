@@ -21,6 +21,7 @@ type ActionButtonsProps = {
   hasMissingMakerToken: boolean;
   hasMissingTakerAmount: boolean;
   hasMissingTakerToken: boolean;
+  isLoading: boolean;
   isNetworkUnsupported: boolean;
   shouldDepositNativeToken: boolean;
   shouldRefresh: boolean;
@@ -40,6 +41,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasMissingMakerToken,
   hasMissingTakerAmount,
   hasMissingTakerToken,
+  isLoading,
   isNetworkUnsupported,
   shouldDepositNativeToken,
   shouldRefresh,
@@ -57,7 +59,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       hasMissingMakerAmount ||
       hasMissingMakerToken ||
       hasMissingTakerAmount ||
-      hasMissingTakerToken) &&
+      hasMissingTakerToken ||
+      isLoading) &&
     !walletIsNotConnected &&
     !shouldRefresh &&
     !isNetworkUnsupported;
@@ -70,6 +73,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     hasMissingMakerToken,
     hasMissingTakerAmount,
     hasMissingTakerToken,
+    isLoading,
     isNetworkUnsupported,
     shouldDepositNativeToken,
     shouldRefresh,
@@ -99,6 +103,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <SignButton
         disabled={isDisabled}
         intent="primary"
+        loading={isLoading}
         onClick={handleSignButtonClick}
       >
         {buttonText}

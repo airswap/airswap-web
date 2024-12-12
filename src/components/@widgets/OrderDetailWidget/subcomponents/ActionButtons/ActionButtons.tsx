@@ -1,8 +1,6 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OrderType } from "../../../../../types/orderTypes";
-import CopyLinkButton from "../CopyLinkButton/CopyLinkButton";
 import {
   BackButton,
   Container,
@@ -11,12 +9,14 @@ import {
 } from "./ActionButtons.styles";
 
 export enum ButtonActions {
-  connectWallet,
-  switchNetwork,
-  reloadPage,
-  restart,
-  cancel,
-  review,
+  approve = "approve",
+  cancel = "cancel",
+  connectWallet = "connectWallet",
+  reloadPage = "reloadPage",
+  restart = "restart",
+  review = "review",
+  switchNetwork = "switchNetwork",
+  take = "take",
 }
 
 type ActionButtonsProps = {
@@ -27,12 +27,11 @@ type ActionButtonsProps = {
   isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
+  isLoading: boolean;
   isMakerOfSwap: boolean;
   isNotConnected: boolean;
   requiresReload: boolean;
   shouldDepositNativeToken: boolean;
-  senderTokenSymbol?: string;
-  onBackButtonClick: () => void;
   onActionButtonClick: (action: ButtonActions) => void;
   className?: string;
 };
@@ -45,22 +44,28 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   isTaken,
   isDifferentChainId,
   isIntendedRecipient,
+  isLoading,
   isMakerOfSwap,
   isNotConnected,
   requiresReload,
   shouldDepositNativeToken,
-  senderTokenSymbol,
-  onBackButtonClick,
   onActionButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
 
+  if (isLoading) {
+    return (
+      <Container center className={className}>
+        <SignButton disabled intent="primary" loading />
+      </Container>
+    );
+  }
+
   if (isNotConnected) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
-          isFilled
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.connectWallet)}
         >
@@ -72,9 +77,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isDifferentChainId) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
-          isFilled
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.switchNetwork)}
         >
@@ -86,7 +90,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (requiresReload) {
     return (
-      <Container className={className}>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.reloadPage)}
@@ -99,8 +103,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isExpired || isTaken || isCanceled) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.restart)}
@@ -124,8 +127,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (!isIntendedRecipient) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton disabled intent="neutral">
           {t("orders.unableTake")}
         </SignButton>
@@ -135,13 +137,12 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (shouldDepositNativeToken) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.review)}
         >
-          {`${t("common.wrap")} ${senderTokenSymbol}`}
+          {t("common.wrap")}
         </SignButton>
       </Container>
     );
@@ -149,10 +150,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientBalance) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
-        <SignButton disabled intent="neutral">
-          {t("orders.insufficientBalance", { symbol: senderTokenSymbol })}
+      <Container center className={className}>
+        <SignButton disabled intent="neutral" isFilled={true}>
+          {t("orders.insufficientBalance")}
         </SignButton>
       </Container>
     );
@@ -160,26 +160,24 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientAllowance) {
     return (
-      <Container className={className}>
-        <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+      <Container center className={className}>
         <SignButton
           intent="primary"
-          onClick={() => onActionButtonClick(ButtonActions.review)}
+          onClick={() => onActionButtonClick(ButtonActions.approve)}
         >
-          {`${t("orders.approve")} ${senderTokenSymbol || ""}`}
+          {t("orders.approve")}
         </SignButton>
       </Container>
     );
   }
 
   return (
-    <Container className={className}>
-      <BackButton onClick={onBackButtonClick}>{t("common.back")}</BackButton>
+    <Container center className={className}>
       <SignButton
         intent="primary"
-        onClick={() => onActionButtonClick(ButtonActions.review)}
+        onClick={() => onActionButtonClick(ButtonActions.take)}
       >
-        {t("common.review")}
+        {t("orders.takeSwap")}
       </SignButton>
     </Container>
   );

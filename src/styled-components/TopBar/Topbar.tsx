@@ -5,6 +5,7 @@ import IconButton from "../../components/IconButton/IconButton";
 import { IconButtonStyle } from "../../components/IconButton/IconButton.styles";
 import SettingsButton from "../../components/SettingsButton/SettingsButton";
 import WalletButton from "../../components/WalletButton/WalletButton";
+import SiteNavigation from "../../features/wallet/subcomponents/SiteNavigation";
 import breakPoints from "../../style/breakpoints";
 import { BorderedPill, InputOrButtonBorderStyle } from "../../style/mixins";
 import { AirswapButton } from "../AirswapButton/AirswapButton";
@@ -20,10 +21,14 @@ export const TopBar = styled.div`
   width: calc(100% - 3rem);
   height: 3rem;
   padding: 1.5rem;
-  z-index: 1;
+  z-index: 30;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 
   @media ${breakPoints.tabletPortraitUp} {
-    width: auto;
     padding: 1.5rem;
   }
 
@@ -42,13 +47,41 @@ export const TopBar = styled.div`
   }
 `;
 
+export const AirswapButtonAndNavigationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin: -0.25rem auto 0 -0.25rem;
+`;
+
+export const StyledSiteNavigation = styled(SiteNavigation)`
+  display: none;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    display: flex;
+    margin-left: 1.5rem;
+  } ;
+`;
+
 export const StyledAirswapButton = styled(AirswapButton)`
   display: block;
   justify-self: flex-start;
-  margin: -0.25rem auto 0 -0.25rem;
 
   @media ${breakPoints.tabletPortraitUp} {
     display: none;
+  }
+`;
+
+export const StyledAirswapFullButton = styled(AirswapButton)`
+  display: none;
+  justify-self: flex-start;
+
+  svg {
+    width: 8.875rem;
+    height: 2rem;
+  }
+
+  @media ${breakPoints.tabletPortraitUp} {
+    display: block;
   }
 `;
 
@@ -77,14 +110,14 @@ export const StyledMenuButton = styled(IconButton)`
   }
 `;
 
-export const StyledSettingsButton = styled(SettingsButton)`
+export const StyledWalletButton = styled(WalletButton)`
   @media ${breakPoints.tabletPortraitUp} {
     order: 2;
     margin-right: 1rem;
   }
 `;
 
-export const StyledWalletButton = styled(WalletButton)`
+export const StyledSettingsButton = styled(SettingsButton)`
   margin-right: 0.5rem;
 
   @media ${breakPoints.tabletPortraitUp} {

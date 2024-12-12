@@ -46,6 +46,10 @@ const AvailableOrdersWidget = ({
   const sortedOrders = useMemo(() => {
     const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
 
+    if (!bestRfqOrder) {
+      return ordersToSort;
+    }
+
     if (
       bestRfqOrder.senderToken === senderToken.address &&
       bestRfqOrder.signerToken === signerToken.address
@@ -124,7 +128,7 @@ const AvailableOrdersWidget = ({
         onFullOrderLinkClick={onFullOrderLinkClick}
       />
       <ActionButton
-        title={t("orders.makeNewOrder")}
+        title={t("orders.makeAnOrder")}
         onClick={handleCreateSwapClick}
       />
     </Container>

@@ -34,12 +34,6 @@ const useLatestSwapFromEvents = (
       const handleSwapEvent = async (
         nonce: BigNumber,
         signerAddress: string,
-        a: string,
-        b: number,
-        c: number,
-        d: string,
-        e: string,
-        f: number,
         swapEvent: Event
       ) => {
         const receipt = await swapEvent.getTransactionReceipt();

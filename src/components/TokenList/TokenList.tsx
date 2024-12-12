@@ -11,12 +11,10 @@ import nativeCurrency from "../../constants/nativeCurrency";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveToken,
-  addCustomToken,
   removeActiveToken,
-  removeCustomToken,
-} from "../../features/metadata/metadataSlice";
+} from "../../features/metadata/metadataActions";
 import useWindowSize from "../../hooks/useWindowSize";
-import { OverlayActionButton } from "../Overlay/Overlay.styles";
+import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
 import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
@@ -24,7 +22,6 @@ import {
   TokenContainer,
   Legend,
   LegendItem,
-  LegendDivider,
   StyledScrollContainer,
   ContentContainer,
   NoResultsContainer,
@@ -86,7 +83,6 @@ const TokenList = ({
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [overflow, setOverflow] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tokenQuery, setTokenQuery] = useState<string>("");
 
@@ -135,11 +131,6 @@ const TokenList = ({
     ) {
       const { offsetTop, scrollHeight } = scrollContainerRef.current;
       const { clientHeight: buttonHeight } = buttonRef.current;
-
-      setOverflow(
-        scrollHeight + offsetTop + buttonHeight >
-          sizingContainerRef.current.offsetHeight
-      );
     }
   }, [
     sizingContainerRef,
@@ -153,12 +144,7 @@ const TokenList = ({
   ]);
 
   const handleAddToken = async (address: string) => {
-    const isCustomToken = scrapedToken?.address === address;
-
     if (library && account) {
-      if (isCustomToken) {
-        dispatch(addCustomToken(address));
-      }
       await dispatch(addActiveToken(address));
 
       onAfterAddActiveToken && onAfterAddActiveToken(address);
@@ -168,7 +154,6 @@ const TokenList = ({
   const handleRemoveActiveToken = (address: string) => {
     if (library) {
       dispatch(removeActiveToken(address));
-      dispatch(removeCustomToken(address));
 
       onAfterRemoveActiveToken && onAfterRemoveActiveToken(address);
     }
@@ -190,13 +175,12 @@ const TokenList = ({
             }}
           />
 
-          <StyledScrollContainer ref={scrollContainerRef} $overflow={overflow}>
-            <Legend>
-              <LegendItem>{t("common.token")}</LegendItem>
-              <LegendDivider />
-              <LegendItem>{t("balances.balance")}</LegendItem>
-            </Legend>
+          <Legend>
+            <LegendItem>{t("common.token")}</LegendItem>
+            <LegendItem>{t("balances.balance")}</LegendItem>
+          </Legend>
 
+          <StyledScrollContainer ref={scrollContainerRef}>
             <TokenContainer>
               {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
                 (token) => (

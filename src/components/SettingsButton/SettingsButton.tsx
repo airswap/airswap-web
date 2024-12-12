@@ -7,14 +7,12 @@ import { Container, SettingsButtonContainer } from "./SettingsButton.style";
 
 type SettingsButtonType = {
   settingsOpen: boolean;
-  transactionsTabOpen: boolean;
   setSettingsOpen: (x: boolean) => void;
   className?: string;
 };
 
 const SettingsButton = ({
   settingsOpen,
-  transactionsTabOpen,
   setSettingsOpen,
   className,
 }: SettingsButtonType) => {
@@ -57,11 +55,7 @@ const SettingsButton = ({
 
   return (
     <>
-      <Container
-        className={className}
-        ref={containerRef}
-        isOpen={transactionsTabOpen}
-      >
+      <Container className={className} ref={containerRef}>
         <SettingsButtonContainer
           aria-label={t("common.settings")}
           onClick={() => setSettingsOpen(!settingsOpen)}
@@ -69,9 +63,7 @@ const SettingsButton = ({
           <Icon iconSize={1.5} name="settings" />
         </SettingsButtonContainer>
       </Container>
-      {settingsOpen && (
-        <SettingsPopover isOpen={transactionsTabOpen} popoverRef={popoverRef} />
-      )}
+      {settingsOpen && <SettingsPopover popoverRef={popoverRef} />}
     </>
   );
 };

@@ -56,7 +56,7 @@ export const { clear, setErrors, setResetStatus, setStatus } =
  * Sorts orders and returns the best order based on tokens received or sent
  * then falling back to expiry.
  */
-export const selectBestOrder = (state: RootState) =>
+export const selectBestOrder = (state: RootState): OrderERC20 | undefined =>
   // Note that `.sort` mutates the array, so we need to clone it first to
   // prevent mutating state.
   [...state.orders.orders].sort(orderSortingFunction)[0];

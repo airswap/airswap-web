@@ -1,27 +1,39 @@
-import React, { FC, ReactElement } from "react";
-import { useTranslation } from "react-i18next";
+import { FC, ReactElement } from "react";
 
-import { Title } from "../Typography/Typography";
-import { Container, StyledWidgetHeader, Text } from "./WalletSignScreen.styles";
+import i18n from "i18next";
+
+import {
+  OverlayContainer,
+  OverlaySpinningLoader,
+  OverlaySubHeading,
+  OverlayTitle,
+} from "../../styled-components/Overlay/Overlay";
+import OverlayLoader from "../OverlayLoader/OverlayLoader";
+
+type WalletSignScreenType =
+  | "approve"
+  | "deposit"
+  | "signature"
+  | "swap"
+  | "cancel";
 
 interface WalletConfirmScreenProps {
+  type?: WalletSignScreenType;
   className?: string;
 }
 
 const WalletSignScreen: FC<WalletConfirmScreenProps> = ({
+  type = "approve",
   className = "",
 }): ReactElement => {
-  const { t } = useTranslation();
-
   return (
-    <Container className={className}>
-      <StyledWidgetHeader>
-        <Title type="h2" as="h1">
-          {t("wallet.signInWallet")}
-        </Title>
-      </StyledWidgetHeader>
-      <Text>{t("wallet.ifYourWalletDoesNotOpenSomethingWentWrong")}</Text>
-    </Container>
+    <OverlayContainer className={className}>
+      <OverlayLoader />
+      <OverlayTitle type="h2">{i18n.t("orders.pendingWallet")}</OverlayTitle>
+      <OverlaySubHeading>
+        {i18n.t("orders.pendingConfirmation")}
+      </OverlaySubHeading>
+    </OverlayContainer>
   );
 };
 

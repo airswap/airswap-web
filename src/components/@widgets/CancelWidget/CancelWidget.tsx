@@ -75,7 +75,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   if (status === "signing") {
     return (
       <Container>
-        <WalletSignScreen />
+        <WalletSignScreen type="cancel" />
       </Container>
     );
   }

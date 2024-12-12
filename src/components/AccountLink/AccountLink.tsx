@@ -1,4 +1,4 @@
-import React from "react";
+import React, { AnchorHTMLAttributes, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getAccountUrl } from "@airswap/utils";
@@ -6,21 +6,23 @@ import { getAccountUrl } from "@airswap/utils";
 import Icon from "../Icon/Icon";
 import { Link } from "./AccountLink.style";
 
-type AccountLinkProps = {
+interface AccountLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   chainId: number;
   address: string;
   className?: string;
-};
+}
 
 const AccountLink = ({
   chainId,
   address,
   className = "",
+  ...props
 }: AccountLinkProps) => {
   const { t } = useTranslation();
 
   return (
     <Link
+      {...props}
       className={className}
       target="_blank"
       rel="noreferrer"

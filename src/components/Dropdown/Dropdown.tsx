@@ -1,6 +1,5 @@
-import React, { Dispatch, FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
-import Icon from "../Icon/Icon";
 import {
   Option,
   Wrapper,
@@ -13,6 +12,7 @@ import {
   NativeSelectWrapper,
   NativeSelectIcon,
   DropdownButtonText,
+  StyledIcon,
 } from "./Dropdown.styles";
 
 export type SelectOption = {
@@ -22,6 +22,7 @@ export type SelectOption = {
 
 export type DropdownProps = {
   isMenuOpen?: boolean;
+  isDisabled?: boolean;
   selectedOption: SelectOption;
   options: SelectOption[];
   onChange: (option: SelectOption) => void;
@@ -30,6 +31,7 @@ export type DropdownProps = {
 
 const Dropdown: FC<DropdownProps> = ({
   isMenuOpen = false,
+  isDisabled = false,
   selectedOption,
   options,
   onChange,
@@ -83,11 +85,15 @@ const Dropdown: FC<DropdownProps> = ({
 
   return (
     <Wrapper className={className}>
-      <Select onClick={handleSelectClick} onBlur={handleSelectBlur}>
+      <Select
+        onClick={handleSelectClick}
+        onBlur={handleSelectBlur}
+        disabled={isDisabled}
+      >
         <SelectButtonText width={selectWidth}>
           {selectedOption.label}
         </SelectButtonText>
-        <Icon name={"chevron-up-down"} iconSize={1.5} />
+        <StyledIcon name={"chevron-up-down"} iconSize={1.5} />
       </Select>
       <SelectOptions
         activeIndex={isMenuOpen ? 0 : activeOptionIndex}

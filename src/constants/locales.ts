@@ -9,6 +9,7 @@ export const SUPPORTED_LOCALES = [
   "ro",
   "ukr",
   "zh-tr",
+  "th",
 ] as const;
 
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
@@ -25,6 +26,7 @@ export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   ro: "Limba română",
   ukr: "українська",
   "zh-tr": "中文繁體",
+  th: "ภาษาไทย",
 };
 
 export const getUserLanguage = (): SupportedLocale => {
