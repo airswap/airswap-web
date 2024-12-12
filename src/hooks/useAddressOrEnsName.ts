@@ -13,10 +13,7 @@ import { useAppSelector } from "../app/hooks";
 // refreshes. Format: { [chainId]: { [address]: name | null }}
 const ensCachedResponses: Record<number, Record<string, string | null>> = {};
 
-const useAddressOrEnsName = (
-  address: string | null,
-  truncate: boolean = true
-) => {
+const useAddressOrEnsName = (address: string | null, truncate = true) => {
   const { provider: library } = useWeb3React<Web3Provider>();
   const { chainId } = useAppSelector((state) => state.web3);
 

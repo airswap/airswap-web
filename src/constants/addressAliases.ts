@@ -6,7 +6,7 @@ const nativeAddressAlias = "native";
 
 export function transformAddressToAddressAlias(
   address?: string,
-  chainId: number = 1
+  chainId = 1
 ): string | undefined {
   if (!address) {
     return undefined;
@@ -21,7 +21,7 @@ export function transformAddressToAddressAlias(
 
 export function transformAddressAliasToAddress(
   address?: string,
-  chainId: number = 1
+  chainId = 1
 ): string | undefined {
   if (!address) {
     return undefined;

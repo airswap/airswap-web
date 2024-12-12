@@ -14,7 +14,7 @@ import useDebounce from "./useDebounce";
 //* Will return the pending approval if it exists, and optionally the resolved approval for 2 seconds (for the transaction overlay).
 const useApprovalPending = (
   tokenAddress?: string | null,
-  showResolvedApproval: boolean = false
+  showResolvedApproval = false
 ): SubmittedApprovalTransaction | undefined => {
   const { chainId } = useAppSelector((state) => state.web3);
   const [debouncedApproval, setDebouncedApproval] = useState<

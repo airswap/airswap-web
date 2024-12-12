@@ -9,7 +9,7 @@ import {
 } from "../features/transactions/transactionsSlice";
 
 const useDepositPending = (
-  showResolvedDeposit: boolean = false
+  showResolvedDeposit = false
 ): SubmittedDepositTransaction | undefined => {
   const pendingDeposits = useAppSelector(selectPendingDeposits);
   const allDeposits = useAppSelector(selectAllDeposits);

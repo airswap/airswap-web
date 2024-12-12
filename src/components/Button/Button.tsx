@@ -28,6 +28,7 @@ export type ButtonProps = {
    * prevents further clicks on the button
    */
   loading?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -65,5 +66,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
+
+Button.displayName = "Button";
 
 export default Button;

@@ -14,19 +14,18 @@ export const createOrderERC20Signature = (
   swapContract: string,
   chainId: number
 ): Promise<Signature | AppError> => {
-  return new Promise<Signature | AppError>(async (resolve) => {
-    try {
-      const signature = await airSwapCreateSwapSignature(
-        unsignedOrder,
-        // @ts-ignore
-        signer,
-        swapContract,
-        chainId
-      );
-      resolve(signature);
-    } catch (error: unknown) {
-      console.error(error);
-      resolve(transformUnknownErrorToAppError(error));
-    }
+  return new Promise<Signature | AppError>((resolve) => {
+    airSwapCreateSwapSignature(
+      unsignedOrder,
+      // @ts-ignore
+      signer,
+      swapContract,
+      chainId
+    )
+      .then(resolve)
+      .catch((error) => {
+        console.error(error);
+        resolve(transformUnknownErrorToAppError(error));
+      });
   });
 };

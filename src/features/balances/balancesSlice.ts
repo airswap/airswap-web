@@ -56,7 +56,7 @@ const getThunk: (
   {
     provider: ethers.providers.Web3Provider;
   },
-  {}
+  object
 > = (type: "balances" | "allowances.swap" | "allowances.wrapper") => {
   const methods = {
     balances: fetchBalances,

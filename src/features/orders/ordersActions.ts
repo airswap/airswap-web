@@ -138,7 +138,7 @@ export const handleSubmittedCancelOrder = (
 
 // replaces WETH to ETH on Wrapper orders
 const refactorOrder = (order: OrderERC20, chainId: number) => {
-  let newOrder = { ...order };
+  const newOrder = { ...order };
   if (order.senderToken === getWethAddress(chainId)) {
     newOrder.senderToken = nativeCurrency[chainId].address!;
   } else if (order.signerToken === getWethAddress(chainId)) {

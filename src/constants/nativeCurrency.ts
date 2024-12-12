@@ -10,7 +10,7 @@ export const nativeCurrencyDecimals = 18;
 
 const nativeCurrency: Record<number, TokenInfo> = {};
 
-for (let chainId in ChainIds) {
+for (const chainId in ChainIds) {
   nativeCurrency[chainId] = {
     chainId: Number(chainId),
     address: ADDRESS_ZERO,

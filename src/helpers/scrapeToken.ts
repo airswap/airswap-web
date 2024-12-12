@@ -7,18 +7,17 @@ const scrapeToken = (
   provider: ethers.providers.BaseProvider,
   chainId?: number
 ): Promise<TokenInfo | undefined> => {
-  return new Promise<TokenInfo | undefined>(async (resolve) => {
+  return new Promise<TokenInfo | undefined>((resolve) => {
     if (!ethers.utils.isAddress(address)) {
       return resolve(undefined);
     }
 
-    try {
-      const tokenInfo = await airSwapScrapeToken(provider, address);
-      resolve(tokenInfo);
-    } catch (e) {
-      console.error(e);
-      resolve(undefined);
-    }
+    airSwapScrapeToken(provider, address)
+      .then(resolve)
+      .catch((e) => {
+        console.error(e);
+        resolve(undefined);
+      });
   });
 };
 

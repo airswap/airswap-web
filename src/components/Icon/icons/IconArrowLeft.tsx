@@ -9,7 +9,6 @@ const IconArrowLeft: FC<SvgIconProps> = ({ className = "" }): ReactElement => (
       d="M2 18L10 10L2 2"
       strokeWidth="2"
       strokeLinecap="square"
-      transform-origin="center"
       transform="scale(-1, 1)"
     />
   </svg>

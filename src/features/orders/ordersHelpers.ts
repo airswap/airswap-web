@@ -33,7 +33,7 @@ async function swap(
   provider: ethers.providers.Web3Provider,
   order: OrderERC20 | FullOrderERC20
 ) {
-  let contract = await getSwapErc20Contract(provider.getSigner(), chainId);
+  const contract = await getSwapErc20Contract(provider.getSigner(), chainId);
   if ("senderWallet" in order && order.senderWallet === ADDRESS_ZERO) {
     return contract.swapAnySender(
       await (await provider.getSigner()).getAddress(),
@@ -100,23 +100,23 @@ export async function approveToken(
   contractType: "Swap" | "Wrapper",
   amount: string | number
 ): Promise<Transaction | AppError> {
-  return new Promise<Transaction | AppError>(async (resolve) => {
-    try {
-      const spender =
-        contractType === "Swap"
-          ? getSwapErc20Address(provider.network.chainId)
-          : Wrapper.getAddress(provider.network.chainId);
-      const erc20Contract = new ethers.Contract(
-        baseToken,
-        erc20Interface,
-        // @ts-ignore
-        provider.getSigner()
-      );
-      const approvalTxHash = erc20Contract.approve(spender, amount);
-      resolve(approvalTxHash);
-    } catch (error: any) {
-      resolve(transformUnknownErrorToAppError(error));
-    }
+  return new Promise<Transaction | AppError>((resolve) => {
+    const spender =
+      contractType === "Swap"
+        ? getSwapErc20Address(provider.network.chainId)
+        : Wrapper.getAddress(provider.network.chainId);
+    const erc20Contract = new ethers.Contract(
+      baseToken,
+      erc20Interface,
+      // @ts-ignore
+      provider.getSigner()
+    );
+    erc20Contract
+      .approve(spender, amount)
+      .then(resolve)
+      .catch((error: any) => {
+        resolve(transformUnknownErrorToAppError(error));
+      });
   });
 }
 
@@ -125,15 +125,19 @@ export async function takeOrder(
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper"
 ): Promise<Transaction | AppError> {
-  return new Promise<Transaction | AppError>(async (resolve) => {
-    try {
-      const tx: Transaction =
-        contractType === "Swap"
-          ? await swap(provider.network.chainId, provider, order)
-          : await swapWrapper(provider.network.chainId, provider, order);
-      resolve(tx);
-    } catch (error: any) {
-      resolve(transformUnknownErrorToAppError(error));
+  return new Promise<Transaction | AppError>((resolve) => {
+    if (contractType === "Swap") {
+      swap(provider.network.chainId, provider, order)
+        .then(resolve)
+        .catch((error: any) => {
+          resolve(transformUnknownErrorToAppError(error));
+        });
+    } else {
+      swapWrapper(provider.network.chainId, provider, order)
+        .then(resolve)
+        .catch((error: any) => {
+          resolve(transformUnknownErrorToAppError(error));
+        });
     }
   });
 }

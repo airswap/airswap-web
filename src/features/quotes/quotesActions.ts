@@ -88,7 +88,7 @@ export const compareOrdersAndSetBestOrder =
     token: TokenInfo,
     lastLookOrder?: UnsignedOrderERC20,
     rfqOrder?: OrderERC20,
-    swapTransactionCost: string = "0"
+    swapTransactionCost = "0"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     dispatch(setBestOrder(undefined));

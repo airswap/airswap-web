@@ -93,7 +93,7 @@ const SwapInputs: FC<{
 
   const handleTokenAmountChange = (
     e: FormEvent<HTMLInputElement>,
-    callback: Function
+    callback: (value: string) => void
   ) => {
     let value = e.currentTarget.value;
     if (value === "" || floatRegExp.test(value)) {

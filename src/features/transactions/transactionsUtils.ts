@@ -79,7 +79,7 @@ export const getTransactionReceipt = async (
   transaction: SubmittedTransaction,
   library: BaseProvider
 ): Promise<TransactionReceipt | undefined> => {
-  let hash = transaction.hash;
+  const hash = transaction.hash;
 
   if (!hash) {
     console.error("Transaction hash is not found");
