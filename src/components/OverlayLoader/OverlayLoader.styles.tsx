@@ -2,7 +2,7 @@ import styled from "styled-components/macro";
 
 import Icon from "../Icon/Icon";
 
-export const IconWrapper = styled.div`
+export const Container = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;

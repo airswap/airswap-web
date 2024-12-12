@@ -59,6 +59,7 @@ import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
+import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { SelectOption } from "../../Dropdown/Dropdown";
 import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
@@ -156,13 +157,13 @@ const MakeWidget: FC = () => {
     makerTokenInfo?.address === ADDRESS_ZERO &&
     !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
   const approvalTransaction = useApprovalPending(makerTokenInfo?.address, true);
+  const depositTransaction = useDepositPending(true);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
     makerAmount
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const hasDepositPending = useDepositPending();
   const isValidAddress = useValidAddress(takerAddress);
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const isNetworkSupported = useNetworkSupported();
@@ -384,7 +385,7 @@ const MakeWidget: FC = () => {
         <>
           <WrapReview
             hasEditButton
-            isLoading={hasDepositPending}
+            isLoading={!!depositTransaction}
             amount={makerAmount}
             amountPlusFee={makerAmountPlusFee}
             shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
@@ -541,6 +542,17 @@ const MakeWidget: FC = () => {
           <ApprovalSubmittedScreen
             chainId={chainId}
             transaction={approvalTransaction}
+          />
+        )}
+      </TransactionOverlay>
+
+      <TransactionOverlay
+        isHidden={ordersStatus === "signing" || !depositTransaction}
+      >
+        {depositTransaction && (
+          <DepositSubmittedScreen
+            chainId={chainId}
+            transaction={depositTransaction}
           />
         )}
       </TransactionOverlay>

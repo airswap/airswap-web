@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { SubmittedApprovalTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import { SubmittedDepositTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import useDebounce from "../../hooks/useDebounce";
 import {
   OverlayContainer,
@@ -12,13 +12,13 @@ import {
 import { TransactionStatusType } from "../../types/transactionTypes";
 import OverlayLoader from "../OverlayLoader/OverlayLoader";
 
-interface ApprovalSubmittedScreenProps {
+interface DepositSubmittedScreenProps {
   chainId?: number;
-  transaction?: SubmittedApprovalTransaction;
+  transaction?: SubmittedDepositTransaction;
   className?: string;
 }
 
-const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
+const DepositSubmittedScreen: FC<DepositSubmittedScreenProps> = ({
   chainId,
   transaction,
   className = "",
@@ -48,8 +48,8 @@ const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
       <OverlayLoader isSucceeded={isSucceeded} />
       <OverlayTitle type="h2">
         {isSucceeded
-          ? t("orders.approvalComplete")
-          : t("orders.approvalProcessing")}
+          ? t("orders.depositComplete")
+          : t("orders.depositProcessing")}
       </OverlayTitle>
       <OverlaySubHeading isHidden={isSucceeded}>
         {transaction?.hash && chainId && (
@@ -64,4 +64,4 @@ const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
   );
 };
 
-export default ApprovalSubmittedScreen;
+export default DepositSubmittedScreen;

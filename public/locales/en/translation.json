@@ -119,6 +119,8 @@
     "continue": "Continue",
     "copyLink": "Copy link",
     "counterPartyAddress": "Counterparty address",
+    "depositComplete": "Deposit complete",
+    "depositProcessing": "Deposit processing...",
     "dismiss": "Dismiss",
     "editCustomTokens": "Edit",
     "enterAmount": "Enter an amount",

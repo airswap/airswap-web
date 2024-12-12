@@ -51,7 +51,7 @@ const spin = keyframes`
   }
 `;
 
-export const OverlayLoader = styled.div`
+export const OverlaySpinningLoader = styled.div`
   width: 3.6875rem;
   height: 3.6875rem;
   border-radius: 50%;

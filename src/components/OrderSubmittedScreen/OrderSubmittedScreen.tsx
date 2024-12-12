@@ -4,17 +4,15 @@ import { useTranslation } from "react-i18next";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   OverlayContainer,
-  OverlayLoader,
   OverlaySubHeading,
   OverlayTitle,
   OverlayTransactionLink,
 } from "../../styled-components/Overlay/Overlay";
 import { TransactionStatusType } from "../../types/transactionTypes";
+import OverlayLoader from "../OverlayLoader/OverlayLoader";
 import {
   ButtonsContainer,
-  IconWrapper,
   MakeNewOrderButton,
-  StyledIcon,
   TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
 
@@ -43,13 +41,7 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
 
   return (
     <OverlayContainer className={className}>
-      {isSucceeded ? (
-        <IconWrapper>
-          <StyledIcon name="check-circle" />
-        </IconWrapper>
-      ) : (
-        <OverlayLoader />
-      )}
+      <OverlayLoader isSucceeded={isSucceeded} />
       {isSendingOrder && (
         <>
           <OverlayTitle type="h2">{t("orders.orderSent")}</OverlayTitle>
