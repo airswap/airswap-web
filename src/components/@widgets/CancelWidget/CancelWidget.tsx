@@ -13,6 +13,7 @@ import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import Icon from "../../Icon/Icon";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import { Title } from "../../Typography/Typography";
 import { InfoSubHeading } from "../../Typography/Typography";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
@@ -26,6 +27,7 @@ import {
   BackButton,
   CancelButton,
 } from "./CancelWidget.styles";
+import SubmittedCancellationScreen from "./subcomponentss/SubmittedCancellationScreen/SubmittedCancellationScreen";
 
 interface CancelWidgetProps {
   library: Web3Provider;
@@ -43,7 +45,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const params = useParams<{ compressedOrder: string }>();
   const [orderStatus] = useOrderStatus(order);
   const isCancelSuccess = useCancellationSuccess(order.nonce);
-  const isCancelInProgress = useCancellationPending(order.nonce);
+  const pendingCancelTranssaction = useCancellationPending(order.nonce, true);
   const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;
 
   const wrongChainId = useMemo(() => {
@@ -55,12 +57,13 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   };
 
   useEffect(() => {
-    if (isCancelSuccess) {
+    // If success and the delayed pending cancellation is cleared, then route.
+    if (isCancelSuccess && !pendingCancelTranssaction) {
       history.push({
         pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
       });
     }
-  }, [isCancelSuccess]);
+  }, [isCancelSuccess, pendingCancelTranssaction]);
 
   const handleCancelClick = async () => {
     await dispatch(
@@ -71,14 +74,6 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
       })
     );
   };
-
-  if (status === "signing") {
-    return (
-      <Container>
-        <WalletSignScreen type="cancel" />
-      </Container>
-    );
-  }
 
   return (
     <Container>
@@ -104,11 +99,26 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
           disabled={
             orderStatus !== OrderStatus.open || wrongChainId || isExpired
           }
-          loading={isCancelInProgress}
+          loading={!!pendingCancelTranssaction}
         >
           {t("orders.confirmCancel")}
         </CancelButton>
       </ButtonContainer>
+
+      <TransactionOverlay isHidden={status !== "signing"}>
+        <WalletSignScreen type="signature" />
+      </TransactionOverlay>
+
+      <TransactionOverlay
+        isHidden={status === "signing" || !pendingCancelTranssaction}
+      >
+        {pendingCancelTranssaction && (
+          <SubmittedCancellationScreen
+            chainId={chainId}
+            transaction={pendingCancelTranssaction}
+          />
+        )}
+      </TransactionOverlay>
     </Container>
   );
 };
