@@ -112,6 +112,8 @@
     "availableOrders": "Available orders",
     "bestQuote": "Best quote",
     "cancelOrder": "Cancel",
+    "cancelComplete": "Cancelled",
+    "cancelProcessing": "Cancelling order...",
     "chooseToken": "Select token",
     "clearCustomServer": "Clear custom server",
     "confirmCancel": "Cancel",
