@@ -27,10 +27,10 @@ jobs:
           yarn
           yarn build
 
-      - name: IPFS Deploy 🚀
-        uses: aquiladev/ipfs-action@master
+      - name: IPFS Publish
+        uses: alexanderschau/ipfs-pinning-action@v1.0.0
         with:
-          path: ./build
-          service: infura
-          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
-          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}
+          path_to_add: 'build'
+          endpoint: ${{ secrets.IPFS_ENDPOINT }}
+          access_token: ${{ secrets.IPFS_ACCESS_TOKEN }}
+
