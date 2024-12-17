@@ -68,10 +68,6 @@ export const useBalances = () => {
 
     const { type } = latestSuccessfulTransaction;
 
-    if (latestSuccessfulTransaction.type === TransactionTypes.order) {
-      return;
-    }
-
     if (type === TransactionTypes.order) {
       dispatch(requestActiveTokenBalances({ provider: library }));
       dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
