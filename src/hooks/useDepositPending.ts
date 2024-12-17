@@ -8,6 +8,7 @@ import {
   selectPendingDeposits,
 } from "../features/transactions/transactionsSlice";
 
+//* Will return the pending deposit if it exists, and optionally the resolved deposit for 2 seconds (for the transaction overlay).
 const useDepositPending = (
   showResolvedDeposit = false
 ): SubmittedDepositTransaction | undefined => {
