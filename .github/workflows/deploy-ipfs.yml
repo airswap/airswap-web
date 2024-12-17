@@ -27,7 +27,7 @@ jobs:
           yarn
           yarn build
 
-      - name: IPFS Publish
+      - name: IPFS Deploy
         uses: alexanderschau/ipfs-pinning-action@v1.0.0
         with:
           path_to_add: 'build'
