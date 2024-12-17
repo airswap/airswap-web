@@ -174,7 +174,7 @@ export const getBestPricingServer = async (
     baseToken
   );
 
-  const server = servers.find((server) => server.locator === locator);
+  const server = servers.find((server) => server.getUrl() === locator);
 
   if (!server) {
     return PricingErrorType.noServersFound;

@@ -14,10 +14,10 @@
   dependencies:
     ethers "^5.7.2"
 
-"@airswap/delegate@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@airswap/delegate/-/delegate-5.0.1.tgz#0fb25951359093ceddce047f9ad38a03b4e36f49"
-  integrity sha512-DXKhz1/MZphzAwgNFpLCZFnEBK+Hs9AstDzs5ljyxIFO49dM8UdUt3BC5x072nmsAjH7r6j0IcEaddX9CYvpYA==
+"@airswap/delegate@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@airswap/delegate/-/delegate-5.0.2.tgz#c5957bf906f6c933d76c3f8c7bbb3d50be0d8f36"
+  integrity sha512-chRZE4akeaeV23mT9sPlwxVKkEyARsDxyQ8sOC4bHb2RM3oUUk+5wcGZgs1MTuUC8bnWKdJQyVvjrrMr0OBTYw==
   dependencies:
     ethers "^5.7.2"
 
@@ -28,20 +28,20 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.3.tgz#8d9a55574e6a190384c17e995a684dce4ad92bf6"
-  integrity sha512-g9Wn2dTvCQ+C4R66WfHWGNFT+ECLJsaa+LB5i34oJvoNwqzHMwEm0dD8O7XauUWwo5sjQw4OLt9N94fZte7l8w==
+"@airswap/libraries@5.0.9":
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.9.tgz#a886a9c39723b1b4a8353a378ff4d532c41a0800"
+  integrity sha512-scf8xWyQsGXVWvm8AAuqyCsehpDBr+v9pPDTuKhdW5uDs8HXDLBgghIrVFFwk91bw2vYrr182QjV2+5BmT4aow==
   dependencies:
     "@airswap/batch-call" "5.0.1"
-    "@airswap/delegate" "5.0.1"
+    "@airswap/delegate" "5.0.2"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
     "@airswap/pool" "5.0.1"
     "@airswap/registry" "5.0.1"
     "@airswap/staking" "5.0.1"
     "@airswap/swap" "5.0.1"
     "@airswap/swap-erc20" "5.0.1"
-    "@airswap/utils" "5.0.2"
+    "@airswap/utils" "5.0.5"
     "@airswap/wrapper" "5.0.1"
     browser-or-node "^2.1.1"
     ethers "^5.7.2"
@@ -85,10 +85,10 @@
   dependencies:
     ethers "^5.7.2"
 
-"@airswap/utils@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-5.0.2.tgz#2c79dd17e06ff3232225f68e7c2f777bf7d1e744"
-  integrity sha512-JIDR6hW8EX6zWvpA/rNetPpNv7Dwkza9bhgj6TaM0rhYSyyySj3cUTmGXHJTqZv7SOFw9LLFashhbqxtW+nG/A==
+"@airswap/utils@5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@airswap/utils/-/utils-5.0.5.tgz#999835c22d8e5c7b5b560e6bd822ee023864fc86"
+  integrity sha512-Aj6sPSFVfL2FePiFw2Th8WEqBdVsXxvkt99GENewFBgRY0xpJFhO4EV83V+NuIlfZyNoRH2bOx/0lnqcyxNbSA==
   dependencies:
     "@metamask/eth-sig-util" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"

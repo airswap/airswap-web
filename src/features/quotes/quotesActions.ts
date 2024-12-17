@@ -191,7 +191,7 @@ export const subscribePricingERC20 =
     );
 
     const server = servers.find(
-      (server) => server.locator === bestPricing.locator
+      (server) => server.getUrl() === bestPricing.locator
     );
 
     if (!server) {
