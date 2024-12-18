@@ -7,9 +7,11 @@ export const getIndexerUrls = async (
   chainId: number,
   provider: providers.Provider
 ): Promise<string[]> => {
-  return await Registry.getServerURLs(
+  const urls = await Registry.getServerURLs(
     provider,
     chainId,
     ProtocolIds.IndexingERC20
   );
+
+  return urls.map((url) => url.url);
 };

@@ -98,6 +98,9 @@ const useLatestApproveFromEvents = (
   // Normally the useEffect above should suffice, but gnosis safe has a bug where the event is not triggered.
   // This may also happen for other providers I have not tested. So this "backup" useEffect is a solution for this issue.
 
+  // Update 17-12-2024: It seems the above useEffect is not working anymore. It seems the provider is not picking up the
+  // approve events anymore. So this "backup" useEffect is now the default solution.
+
   useEffect(() => {
     if (!latestPendingTransaction || !provider) return;
 

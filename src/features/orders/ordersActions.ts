@@ -393,7 +393,7 @@ export const takeLastLookOrder =
       senderToken.address
     );
 
-    const server = servers.find((server) => server.locator === locator);
+    const server = servers.find((server) => server.getUrl() === locator);
 
     if (!server) {
       console.error("[takeLastLookOrder] Server not found");

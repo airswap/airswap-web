@@ -36,10 +36,6 @@ const useLatestTransaction = (storeTransactions: SubmittedTransaction[]) => {
   }, [account, chainId, storeTransactions]);
 
   useEffect(() => {
-    if (!activeAccount) {
-      return;
-    }
-
     const stateHashes = stateTransactions.map(
       (transaction) => transaction.hash
     );

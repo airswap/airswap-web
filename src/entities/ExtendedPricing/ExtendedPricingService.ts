@@ -18,7 +18,7 @@ export const subscribeExtendedPricingERC20 = async (
   return pricings.map((pricing) =>
     transformToExtendedPricing(
       pricing,
-      server.locator,
+      server.getUrl(),
       server.getSenderWallet()
     )
   );
@@ -36,7 +36,7 @@ export const getExtendedPricingERC20 = async (
   return pricings.map((pricing) =>
     transformToExtendedPricing(
       pricing,
-      server.locator,
+      server.getUrl(),
       server.getSenderWallet()
     )
   );

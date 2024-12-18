@@ -18,10 +18,10 @@ export const sendOrderToIndexers = async (
       const server = value.value;
       return server
         .addOrderERC20(order)
-        .then(() => console.log(`Order added to ${server.locator}`))
+        .then(() => console.log(`Order added to ${server.getUrl()}`))
         .catch((e: any) => {
           console.log(
-            `[indexerSlice] Order indexing failed for ${server.locator}`,
+            `[indexerSlice] Order indexing failed for ${server.getUrl()}`,
             e.message || ""
           );
         });
