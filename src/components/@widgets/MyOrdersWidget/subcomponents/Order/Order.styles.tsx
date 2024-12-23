@@ -99,7 +99,7 @@ export const ActionButton = styled(IconButton)`
   }
 `;
 
-export const StyledNavLink = styled(NavLink)<{ isHovered: boolean }>`
+export const StyledNavLink = styled(NavLink)<{ $isHovered?: boolean }>`
   position: absolute;
   top: -1px;
   left: 0;
@@ -107,7 +107,7 @@ export const StyledNavLink = styled(NavLink)<{ isHovered: boolean }>`
   width: 100%;
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
-  opacity: ${({ isHovered }) => (isHovered ? 1 : 0)};
+  opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
   z-index: 1;
 
   &:hover,
