@@ -1,16 +1,16 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { SubmittedCancellation } from "../../../../../entities/SubmittedTransaction/SubmittedTransaction";
-import useDebounce from "../../../../../hooks/useDebounce";
+import { SubmittedCancellation } from "../entities/SubmittedTransaction/SubmittedTransaction";
+import useDebounce from "../hooks/useDebounce";
 import {
   OverlayContainer,
   OverlaySubHeading,
   OverlayTitle,
   OverlayTransactionLink,
-} from "../../../../../styled-components/Overlay/Overlay";
-import { TransactionStatusType } from "../../../../../types/transactionTypes";
-import OverlayLoader from "../../../../OverlayLoader/OverlayLoader";
+} from "../styled-components/Overlay/Overlay";
+import { TransactionStatusType } from "../types/transactionTypes";
+import OverlayLoader from "./OverlayLoader/OverlayLoader";
 
 interface SubmittedCancellationScreenProps {
   chainId?: number;
