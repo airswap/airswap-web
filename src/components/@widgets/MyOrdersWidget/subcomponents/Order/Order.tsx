@@ -120,7 +120,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         {orderStatus === OrderStatus.open ? timeLeft : orderStatusTranslation}
       </Text>
       <StyledNavLink
-        isHovered={isHoveredActionButton}
+        $isHovered={isHoveredActionButton}
         to={`/${AppRoutes.order}/${orderString}`}
       />
 
