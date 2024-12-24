@@ -13,6 +13,7 @@ import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import Icon from "../../Icon/Icon";
+import SubmittedCancellationScreen from "../../SubmittedCancellationScreen";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import { Title } from "../../Typography/Typography";
 import { InfoSubHeading } from "../../Typography/Typography";
@@ -27,7 +28,6 @@ import {
   BackButton,
   CancelButton,
 } from "./CancelWidget.styles";
-import SubmittedCancellationScreen from "./subcomponentss/SubmittedCancellationScreen/SubmittedCancellationScreen";
 
 interface CancelWidgetProps {
   library: Web3Provider;
