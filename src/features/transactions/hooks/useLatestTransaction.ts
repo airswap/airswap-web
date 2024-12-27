@@ -43,7 +43,11 @@ const useLatestTransaction = (storeTransactions: SubmittedTransaction[]) => {
       (transaction) => !stateHashes.includes(transaction.hash)
     );
 
-    if (newTransaction) {
+    if (
+      newTransaction &&
+      activeAccount === account &&
+      activeChainId === chainId
+    ) {
       setLatestTransaction(newTransaction);
     }
   }, [storeTransactions]);

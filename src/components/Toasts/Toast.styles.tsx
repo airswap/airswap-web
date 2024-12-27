@@ -66,5 +66,7 @@ export const HiXContainer = styled.button`
 `;
 
 export const TextContainer = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 `;
