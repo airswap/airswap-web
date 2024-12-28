@@ -1,4 +1,12 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  ThunkDispatch,
+  AnyAction,
+  Store,
+  combineReducers,
+} from "@reduxjs/toolkit";
 
 import {
   balancesReducer,
@@ -18,31 +26,38 @@ import transactionsReducer from "../features/transactions/transactionsSlice";
 import userSettingsReducer from "../features/userSettings/userSettingsSlice";
 import web3Reducer from "../features/web3/web3Slice";
 
-export const store = configureStore({
-  reducer: {
-    allowances: allowancesReducer,
-    transactions: transactionsReducer,
-    balances: balancesReducer,
-    metadata: metadataReducer,
-    tradeTerms: tradeTermsReducer,
-    indexer: indexerReducer,
-    orders: ordersReducer,
-    gasCost: gasCostReducer,
-    registry: registryReducer,
-    userSettings: userSettingsReducer,
-    makeOtc: makeOtcReducer,
-    myOrders: myOrdersReducer,
-    takeOtc: takeOtcReducer,
-    web3: web3Reducer,
-    quotes: quotesReducer,
-  },
-});
+const reducers = {
+  allowances: allowancesReducer,
+  transactions: transactionsReducer,
+  balances: balancesReducer,
+  metadata: metadataReducer,
+  tradeTerms: tradeTermsReducer,
+  indexer: indexerReducer,
+  orders: ordersReducer,
+  gasCost: gasCostReducer,
+  registry: registryReducer,
+  userSettings: userSettingsReducer,
+  makeOtc: makeOtcReducer,
+  myOrders: myOrdersReducer,
+  takeOtc: takeOtcReducer,
+  web3: web3Reducer,
+  quotes: quotesReducer,
+};
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+const rootReducer = combineReducers(reducers);
+
+// 1. Get the root state's type from reducers
+export type RootState = ReturnType<typeof rootReducer>;
+
+// 2. Create a type for thunk dispatch
+export type AppDispatch = ThunkDispatch<RootState, any, AnyAction>;
+
+// 3. Create a type for store using RootState and Thunk enabled dispatch
+export type AppStore = Omit<Store<RootState, AnyAction>, "dispatch"> & {
+  dispatch: AppDispatch;
+};
+
+//4. create the store with your custom AppStore
+export const store: AppStore = configureStore({
+  reducer: rootReducer,
+});
