@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo } from "react";
+import React, { FC, useContext, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
@@ -17,8 +17,14 @@ import {
 } from "../../../features/myOrders/myOrdersSlice";
 import { getNonceUsed } from "../../../features/orders/ordersHelpers";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
+import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
+import { selectPendingCancellations } from "../../../features/transactions/transactionsSlice";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import useCancellationPending from "../../../hooks/useCancellationPending";
 import { AppRoutes } from "../../../routes";
+import SubmittedCancellationScreen from "../../SubmittedCancellationScreen";
+import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
+import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import { Container, InfoSectionContainer } from "./MyOrdersWidget.styles";
 import { getSortedOrders } from "./helpers";
 import ActionButtons, {
@@ -38,6 +44,14 @@ const MyOrdersWidget: FC = () => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOrdersReducer
+  );
+
+  const status = useAppSelector(selectTakeOtcStatus);
+  const [activeCancellationNonce, setActiveCancellationNonce] =
+    useState<string>();
+  const pendingCancelTranssaction = useCancellationPending(
+    activeCancellationNonce || null,
+    true
   );
 
   // Modal states
@@ -61,6 +75,7 @@ const MyOrdersWidget: FC = () => {
     const nonceUsed = await getNonceUsed(order, library!);
 
     if (!isExpired && !nonceUsed) {
+      setActiveCancellationNonce(order.nonce);
       await dispatch(
         cancelOrder({ order: order, chainId: chainId!, library: library! })
       );
@@ -93,6 +108,22 @@ const MyOrdersWidget: FC = () => {
   return (
     <Container>
       <MyOrdersWidgetHeader title={t("common.myOrders")} />
+
+      <TransactionOverlay isHidden={status !== "signing"}>
+        <WalletSignScreen type="signature" />
+      </TransactionOverlay>
+
+      <TransactionOverlay
+        isHidden={status === "signing" || !pendingCancelTranssaction}
+      >
+        {pendingCancelTranssaction && (
+          <SubmittedCancellationScreen
+            chainId={chainId}
+            transaction={pendingCancelTranssaction}
+          />
+        )}
+      </TransactionOverlay>
+
       {!!sortedUserOrders.length && (
         <>
           <MyOrdersList

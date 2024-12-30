@@ -645,19 +645,6 @@ const SwapWidget: FC = () => {
             onCloseButtonClick={() => setProtocolFeeInfo(false)}
           />
         </ModalOverlay>
-        {baseTokenInfo && quoteTokenInfo && (
-          <ModalOverlay
-            title={t("orders.availableOrders")}
-            isHidden={!showViewAllQuotes}
-            onClose={() => toggleShowViewAllQuotes()}
-          >
-            <AvailableOrdersWidget
-              senderToken={baseTokenInfo}
-              signerToken={quoteTokenInfo}
-              onSwapLinkClick={() => toggleShowViewAllQuotes()}
-            />
-          </ModalOverlay>
-        )}
 
         <TransactionOverlay isHidden={ordersStatus !== "signing"}>
           <WalletSignScreen type="approve" />

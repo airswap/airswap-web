@@ -146,28 +146,29 @@ export const handleTransactionEvent =
     dispatch(updateTransaction(updatedTransaction, matchingTransaction.hash));
   };
 
-export const handleTransactionResolved =
-  (transaction: SubmittedTransaction) => (): void => {
-    if (isApprovalTransaction(transaction)) {
-      handleApproveTransaction(transaction, transaction.status);
-    }
+export const handleTransactionResolved = (
+  transaction: SubmittedTransaction
+) => {
+  if (isApprovalTransaction(transaction)) {
+    handleApproveTransaction(transaction.status);
+  }
 
-    if (isDepositTransaction(transaction)) {
-      handleSubmittedDepositOrder(transaction, transaction.status);
-    }
+  if (isDepositTransaction(transaction)) {
+    handleSubmittedDepositOrder(transaction.status);
+  }
 
-    if (isWithdrawTransaction(transaction)) {
-      handleSubmittedWithdrawOrder(transaction, transaction.status);
-    }
+  if (isWithdrawTransaction(transaction)) {
+    handleSubmittedWithdrawOrder(transaction.status);
+  }
 
-    if (isSubmittedOrder(transaction)) {
-      handleSubmittedOrder(transaction, transaction.status);
-    }
+  if (isSubmittedOrder(transaction)) {
+    handleSubmittedOrder(transaction.status);
+  }
 
-    if (isCancelTransaction(transaction)) {
-      handleSubmittedCancelOrder(transaction.status);
-    }
-  };
+  if (isCancelTransaction(transaction)) {
+    handleSubmittedCancelOrder(transaction.status);
+  }
+};
 
 export const updateTransactionWithReceipt =
   (transaction: SubmittedTransaction, receipt: TransactionReceipt) =>
