@@ -12,13 +12,8 @@ import { Dispatch } from "@reduxjs/toolkit";
 
 import { AppDispatch } from "../../app/store";
 import {
-  notifyApproval,
-  notifyConfirmation,
-  notifyDeposit,
   notifyError,
-  notifyOrder,
   notifyRejectedByUserError,
-  notifyWithdrawal,
 } from "../../components/Toasts/ToastController";
 import nativeCurrency from "../../constants/nativeCurrency";
 import { transformUnsignedOrderERC20ToOrderERC20 } from "../../entities/OrderERC20/OrderERC20Transformers";
@@ -58,7 +53,6 @@ import {
 import { setErrors, setStatus } from "./ordersSlice";
 
 export const handleApproveTransaction = (
-  transaction: SubmittedApprovalTransaction,
   status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
@@ -69,12 +63,9 @@ export const handleApproveTransaction = (
 
     return;
   }
-
-  notifyApproval(transaction);
 };
 
 export const handleSubmittedDepositOrder = (
-  transaction: SubmittedDepositTransaction,
   status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
@@ -85,12 +76,9 @@ export const handleSubmittedDepositOrder = (
 
     return;
   }
-
-  notifyDeposit(transaction);
 };
 
 export const handleSubmittedWithdrawOrder = (
-  transaction: SubmittedWithdrawTransaction,
   status: TransactionStatusType
 ): void => {
   if (status === TransactionStatusType.failed) {
@@ -101,14 +89,9 @@ export const handleSubmittedWithdrawOrder = (
 
     return;
   }
-
-  notifyWithdrawal(transaction);
 };
 
-export const handleSubmittedOrder = (
-  transaction: SubmittedOrder,
-  status: TransactionStatusType
-): void => {
+export const handleSubmittedOrder = (status: TransactionStatusType): void => {
   if (status === TransactionStatusType.failed) {
     notifyError({
       heading: i18n.t("toast.swapFail"),
@@ -117,8 +100,6 @@ export const handleSubmittedOrder = (
 
     return;
   }
-
-  notifyOrder(transaction);
 };
 
 export const handleSubmittedCancelOrder = (
@@ -132,8 +113,6 @@ export const handleSubmittedCancelOrder = (
 
     return;
   }
-
-  notifyConfirmation({ heading: i18n.t("toast.cancelComplete"), cta: "" });
 };
 
 // replaces WETH to ETH on Wrapper orders
