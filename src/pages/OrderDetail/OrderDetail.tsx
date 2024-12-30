@@ -38,16 +38,16 @@ const OrderDetail: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeOrder]);
 
-  if (status === "idle" || !activeOrder) {
-    return <Page />;
-  }
-
   if (status === "not-found") {
     return (
       <Page>
         <InvalidOrder />
       </Page>
     );
+  }
+
+  if (status === "idle" || !activeOrder) {
+    return <Page />;
   }
 
   return (

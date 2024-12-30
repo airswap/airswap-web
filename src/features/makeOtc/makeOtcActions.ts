@@ -10,15 +10,18 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ethers } from "ethers";
 
-import {
-  notifyOrderCreated,
-  notifyRejectedByUserError,
-} from "../../components/Toasts/ToastController";
+import { notifyRejectedByUserError } from "../../components/Toasts/ToastController";
 import { AppErrorType, isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import { getSwapErc20Address } from "../../helpers/swapErc20";
 import { sendOrderToIndexers } from "../indexer/indexerHelpers";
 import { setError, setStatus, setUserOrder } from "./makeOtcSlice";
+
+const getJustifiedAddress = async (library: Web3Provider, address: string) => {
+  return ethers.utils.isAddress(address)
+    ? address
+    : await library.resolveName(address);
+};
 
 export const createOtcOrder = createAsyncThunk(
   "make-otc/createOtcOrder",
@@ -34,11 +37,12 @@ export const createOtcOrder = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      const signerWallet = ethers.utils.isAddress(params.signerWallet)
-        ? params.signerWallet
-        : await params.library.resolveName(params.signerWallet);
+      const [signerWallet, senderWallet] = await Promise.all([
+        getJustifiedAddress(params.library, params.signerWallet),
+        getJustifiedAddress(params.library, params.senderWallet),
+      ]);
 
-      if (!signerWallet) {
+      if (!signerWallet || !senderWallet) {
         dispatch(setStatus("failed"));
         dispatch(
           setError({
@@ -61,7 +65,7 @@ export const createOtcOrder = createAsyncThunk(
       const unsignedOrder = createOrderERC20({
         expiry: params.expiry,
         nonce: Date.now().toString(),
-        senderWallet: params.senderWallet,
+        senderWallet: senderWallet,
         signerWallet: signerWallet,
         signerToken: params.signerToken,
         senderToken: params.senderToken,
