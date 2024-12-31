@@ -35,7 +35,7 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
       const order = decompressFullOrderERC20(params.compressedOrder);
 
       if (!isValidFullOrderERC20(order)) {
-        return dispatch(setStatus("not-found"));
+        return dispatch(setStatus("invalid"));
       }
 
       dispatch(setActiveOrder(order));
@@ -43,7 +43,7 @@ export const decompressAndSetActiveOrder = createAsyncThunk(
       dispatch(setStatus("open"));
     } catch (e) {
       console.error(e);
-      dispatch(setStatus("not-found"));
+      dispatch(setStatus("invalid"));
     }
   }
 );
