@@ -24,16 +24,16 @@ const Cancel: FC = () => {
     }
   }, [dispatch, compressedOrder]);
 
-  if (status === "idle" || !activeOrder || !library) {
-    return <Page />;
-  }
-
-  if (status === "not-found") {
+  if (status === "invalid") {
     return (
       <Page>
         <InvalidOrder />
       </Page>
     );
+  }
+
+  if (status === "idle" || !activeOrder || !library) {
+    return <Page />;
   }
 
   return (

@@ -7,6 +7,7 @@ import {
   InfoSubHeading,
   Title,
 } from "../../../../components/Typography/Typography";
+import { AppRoutes } from "../../../../routes";
 import {
   Container,
   StyledInfoHeading,
@@ -20,20 +21,24 @@ const InvalidOrder: FC = () => {
   const history = useHistory();
 
   const handleBackButtonClick = () => {
-    history.push({ pathname: "/" });
+    history.push({ pathname: `/${AppRoutes.make}` });
   };
 
   return (
     <Container>
       <Header>
         <Title type="h2" as="h1">
-          {t("common.swap")}
+          {t("common.order")}
         </Title>
       </Header>
       <InfoContainer>
         <Icon name="close-circle-outline" iconSize={4.5} />
-        <StyledInfoHeading>404</StyledInfoHeading>
-        <InfoSubHeading>Order not found</InfoSubHeading>
+        <StyledInfoHeading>
+          {t("validatorErrors.invalidOrder")}
+        </StyledInfoHeading>
+        <InfoSubHeading>
+          {t("validatorErrors.invalidOrderDescription")}
+        </InfoSubHeading>
       </InfoContainer>
       <BackButton onClick={handleBackButtonClick}>
         {t("common.back")}

@@ -38,7 +38,7 @@ const OrderDetail: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeOrder]);
 
-  if (status === "not-found") {
+  if (status === "invalid") {
     return (
       <Page>
         <InvalidOrder />

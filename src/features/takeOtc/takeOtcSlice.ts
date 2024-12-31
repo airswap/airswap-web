@@ -6,7 +6,7 @@ import { AppError } from "../../errors/appError";
 
 export interface TakeOtcState {
   activeOrder?: FullOrderERC20;
-  status: "idle" | "not-found" | "open" | "taken" | "signing" | "failed";
+  status: "idle" | "invalid" | "open" | "taken" | "signing" | "failed";
   errors: AppError[];
 }
 
