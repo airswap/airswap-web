@@ -220,6 +220,8 @@
     "arithmeticUnderflow": "Amount too small",
     "expiryPassed": "Order has expired",
     "invalidAddress": "{{address}} is an invalid address",
+    "invalidOrder": "Invalid order",
+    "invalidOrderDescription": "The order you are trying to view is invalid.",
     "invalidSignature": "Invalid signature",
     "invalidValue": "{{address}} is an invalid value",
     "nonceAlreadyUsed": "Nonce has been already used or cancelled",
