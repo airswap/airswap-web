@@ -128,10 +128,10 @@ const getNftTokenKind = async (
     erc721AbiContract.abi,
     provider
   );
-  return (
-    contract.supportsInterface(TokenKinds.ERC721) ||
-    contract.supportsInterface(TokenKinds.ERC1155)
-  );
+  return [
+    contract.supportsInterface(TokenKinds.ERC721),
+    contract.supportsInterface(TokenKinds.ERC1155),
+  ];
 };
 
 export const getOwnedNftsOfWallet = async (

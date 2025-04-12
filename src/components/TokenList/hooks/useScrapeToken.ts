@@ -44,7 +44,6 @@ const useScrapeToken = (
         address,
         isQuoteToken ? undefined : account
       );
-      console.log(result);
       setScrapedTokens(result);
       setIsLoading(false);
     };

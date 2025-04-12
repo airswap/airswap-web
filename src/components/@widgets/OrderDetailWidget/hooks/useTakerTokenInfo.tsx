@@ -13,6 +13,7 @@ import {
 import {
   selectActiveTokenAddresses,
   selectAllTokens,
+  selectQuoteTokenAddresses,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -42,6 +43,11 @@ const useTakerTokenInfo = ({
 
   const allTokens = useAppSelector(selectAllTokens);
   const activeTokenAddresses = useAppSelector(selectActiveTokenAddresses);
+  const quoteTokenAddresses = useAppSelector(selectQuoteTokenAddresses);
+  const activeAndQuoteTokenAddresses = [
+    ...activeTokenAddresses,
+    ...quoteTokenAddresses,
+  ];
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<AppTokenInfo>();
@@ -50,8 +56,9 @@ const useTakerTokenInfo = ({
     if (
       address &&
       findEthOrTokenByAddress(address, allTokens, chainId, tokenId) &&
-      !activeTokenAddresses.includes(address)
+      !activeAndQuoteTokenAddresses.includes(address)
     ) {
+      console.log("useEffect", address, tokenId, tokenKind);
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
       dispatch(isQuoteToken ? addQuoteTokens([id]) : addActiveTokens([id]));
     }

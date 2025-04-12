@@ -173,10 +173,14 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     order.sender.wallet === ADDRESS_ZERO
       ? OrderType.publicUnlisted
       : OrderType.private;
-  const userIsMakerOfSwap = order.signer.wallet === account;
+  const userIsMakerOfSwap = compareAddresses(
+    order.signer.wallet,
+    account || ""
+  );
   const userIsIntendedRecipient =
     compareAddresses(order.sender.wallet, account || "") ||
     order.sender.wallet === ADDRESS_ZERO;
+
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
