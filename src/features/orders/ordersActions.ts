@@ -1,5 +1,6 @@
 import { Registry } from "@airswap/libraries";
 import {
+  FullOrder,
   FullOrderERC20,
   OrderERC20,
   ProtocolIds,
@@ -23,6 +24,8 @@ import {
   isCollectionTokenInfo,
   isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
+import { isOrderERC20 } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { transformUnsignedOrderERC20ToOrderERC20 } from "../../entities/OrderERC20/OrderERC20Transformers";
 import {
   SubmittedDepositTransaction,
@@ -60,7 +63,8 @@ import {
   approveErc20Token,
   approveNftToken,
   depositETH,
-  takeOrder,
+  takeErc20Order,
+  takeFullOrder,
   withdrawETH,
 } from "./ordersHelpers";
 import { setErrors, setStatus } from "./ordersSlice";
@@ -362,7 +366,7 @@ export const take =
   async (dispatch: AppDispatch): Promise<SubmittedOrder | undefined> => {
     dispatch(setStatus("signing"));
 
-    const tx = await takeOrder(order, library, contractType);
+    const tx = await takeErc20Order(order, library, contractType);
 
     if (isAppError(tx)) {
       const appError = tx;

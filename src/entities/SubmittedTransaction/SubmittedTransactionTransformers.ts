@@ -1,4 +1,5 @@
 import {
+  FullOrder,
   FullSwapERC20,
   OrderERC20,
   TokenInfo,

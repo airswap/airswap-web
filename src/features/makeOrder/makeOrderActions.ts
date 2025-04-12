@@ -8,6 +8,7 @@ import {
   TokenInfo,
   FullOrder,
   TokenKinds,
+  UnsignedOrder,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
@@ -50,7 +51,7 @@ type CreateOrderParams = {
   signerTokenInfo: AppTokenInfo;
   senderTokenInfo: AppTokenInfo;
   shouldSendToIndexers: boolean;
-} & UnsignedOrderERC20;
+} & UnsignedOrder;
 
 const createDelegateRule = async (
   params: CreateOrderParams,
@@ -64,12 +65,12 @@ const createDelegateRule = async (
   }
 
   const senderAmount = toAtomicString(
-    params.senderAmount,
+    params.sender.amount,
     params.senderTokenInfo.decimals
   );
 
   const signerAmount = toAtomicString(
-    params.signerAmount,
+    params.signer.amount,
     params.signerTokenInfo.decimals
   );
 
@@ -80,10 +81,10 @@ const createDelegateRule = async (
 
   // For a delegate rule, the sender and signer are reversed compared to an otc order
   const rule = transformToDelegateRule(
-    params.signerWallet,
-    params.signerToken,
+    params.signer.wallet,
+    params.signer.token,
     signerAmount,
-    params.senderToken,
+    params.sender.token,
     senderAmount,
     params.chainId,
     Number(params.expiry)
@@ -139,9 +140,15 @@ const createOtcOrder = async (
   const signerTokenKind = getTokenKind(params.signerTokenInfo);
   const senderTokenKind = getTokenKind(params.senderTokenInfo);
 
-  const signerAmount = toAtomicString(params.signerAmount, signerTokenDecimals);
+  const signerAmount = toAtomicString(
+    params.signer.amount,
+    signerTokenDecimals
+  );
 
-  const senderAmount = toAtomicString(params.senderAmount, senderTokenDecimals);
+  const senderAmount = toAtomicString(
+    params.sender.amount,
+    senderTokenDecimals
+  );
 
   const signerTokenId = isCollectionTokenInfo(params.signerTokenInfo)
     ? params.signerTokenInfo.id
@@ -156,22 +163,20 @@ const createOtcOrder = async (
     nonce: Date.now(),
     protocolFee: Number(params.protocolFee),
     signer: {
-      wallet: params.signerWallet,
-      token: params.signerToken,
+      wallet: params.signer.wallet,
+      token: params.signer.token,
       amount: signerAmount,
       id: signerTokenId,
       type: signerTokenKind,
     },
     sender: {
-      wallet: params.senderWallet,
-      token: params.senderToken,
+      wallet: params.sender.wallet,
+      token: params.sender.token,
       amount: senderAmount,
       id: senderTokenId,
       type: senderTokenKind,
     },
   });
-
-  console.log("unsignedOrder", unsignedOrder);
 
   dispatch(setStatus("signing"));
 
@@ -181,8 +186,6 @@ const createOtcOrder = async (
     Swap.getAddress(params.chainId) || "",
     params.chainId
   );
-
-  console.log("signature", signature);
 
   if (isAppError(signature)) {
     if (signature.type === AppErrorType.rejectedByUser) {
@@ -202,8 +205,6 @@ const createOtcOrder = async (
     swapContract: Swap.getAddress(params.chainId) || "",
   };
 
-  console.log("fullOrder", fullOrder);
-
   if (params.shouldSendToIndexers && params.activeIndexers) {
     sendOrderToIndexers(fullOrder, params.activeIndexers);
   }
@@ -221,8 +222,8 @@ export const createOtcOrDelegateOrder =
   ): Promise<SubmittedSetRuleTransaction | undefined> => {
     try {
       const [signerWallet, senderWallet] = await Promise.all([
-        getJustifiedAddress(params.library, params.signerWallet),
-        getJustifiedAddress(params.library, params.senderWallet),
+        getJustifiedAddress(params.library, params.signer.wallet),
+        getJustifiedAddress(params.library, params.sender.wallet),
       ]);
 
       if (!signerWallet || !senderWallet) {
@@ -230,7 +231,7 @@ export const createOtcOrDelegateOrder =
         dispatch(
           setError({
             type: AppErrorType.invalidAddress,
-            argument: params.signerWallet,
+            argument: params.signer.wallet,
           })
         );
         return;
@@ -238,8 +239,14 @@ export const createOtcOrDelegateOrder =
 
       const justifiedParams: CreateOrderParams = {
         ...params,
-        signerWallet,
-        senderWallet,
+        signer: {
+          ...params.signer,
+          wallet: signerWallet,
+        },
+        sender: {
+          ...params.sender,
+          wallet: senderWallet,
+        },
       };
 
       if (params.isLimitOrder) {

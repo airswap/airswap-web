@@ -8,6 +8,7 @@ import {
   ADDRESS_ZERO,
   FullOrder,
   TokenKinds,
+  fullOrderToParams,
 } from "@airswap/utils";
 import erc20Contract from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import erc721Contract from "@openzeppelin/contracts/build/contracts/ERC721.json";
@@ -35,7 +36,7 @@ const erc20Interface = new ethers.utils.Interface(erc20Contract.abi);
 const erc721Interface = new ethers.utils.Interface(erc721Contract.abi);
 const erc1155Interface = new ethers.utils.Interface(erc1155Contract.abi);
 
-async function swap(
+async function swapOrderErc20(
   chainId: number,
   provider: ethers.providers.Web3Provider,
   order: OrderERC20 | FullOrderERC20
@@ -50,6 +51,24 @@ async function swap(
   return contract.swap(
     await (await provider.getSigner()).getAddress(),
     ...orderERC20ToParams(order)
+  );
+}
+
+async function swapFullOrder(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: FullOrder
+) {
+  const contract = await getSwapContract(provider, chainId);
+  if (order.sender.wallet === ADDRESS_ZERO) {
+    return contract.swapAnySender(
+      await (await provider.getSigner()).getAddress(),
+      ...fullOrderToParams(order)
+    );
+  }
+  return contract.swap(
+    await (await provider.getSigner()).getAddress(),
+    ...fullOrderToParams(order)
   );
 }
 
@@ -167,14 +186,14 @@ export async function approveNftToken(
   });
 }
 
-export async function takeOrder(
+export async function takeErc20Order(
   order: OrderERC20 | FullOrderERC20,
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "Wrapper"
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
     if (contractType === "Swap") {
-      swap(provider.network.chainId, provider, order)
+      swapOrderErc20(provider.network.chainId, provider, order)
         .then(resolve)
         .catch((error: any) => {
           resolve(transformUnknownErrorToAppError(error));
@@ -186,6 +205,19 @@ export async function takeOrder(
           resolve(transformUnknownErrorToAppError(error));
         });
     }
+  });
+}
+
+export async function takeFullOrder(
+  order: FullOrder,
+  provider: ethers.providers.Web3Provider
+) {
+  return new Promise<Transaction | AppError>((resolve) => {
+    swapFullOrder(provider.network.chainId, provider, order)
+      .then(resolve)
+      .catch((error: any) => {
+        resolve(transformUnknownErrorToAppError(error));
+      });
   });
 }
 

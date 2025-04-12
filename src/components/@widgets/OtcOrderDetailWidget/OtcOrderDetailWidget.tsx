@@ -233,7 +233,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     // TODO: Support FullOrder and AppTokenInfo
     await dispatch(
       take(
-        order as unknown as FullOrderERC20,
+        order,
         signerToken! as TokenInfo,
         senderToken! as TokenInfo,
         library,
