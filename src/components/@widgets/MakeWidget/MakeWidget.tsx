@@ -369,9 +369,13 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   };
 
   const createOrder = async () => {
+    if (!makerTokenInfo || !takerTokenInfo) {
+      throw new Error("Maker or taker token info is not set");
+    }
+
     const expiryDate = Date.now() + expiry;
-    const makerTokenAddress = makerTokenInfo?.address || "";
-    const takerTokenAddress = takerTokenInfo?.address || "";
+    const makerTokenAddress = makerTokenInfo.address;
+    const takerTokenAddress = takerTokenInfo.address;
 
     const signerToken =
       makerTokenAddress === ADDRESS_ZERO
@@ -382,21 +386,37 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         ? getWethAddress(chainId!)
         : takerTokenAddress;
 
+    const signerTokenId = isCollectionTokenInfo(makerTokenInfo!)
+      ? makerTokenInfo.id
+      : "0";
+
+    const senderTokenId = isCollectionTokenInfo(takerTokenInfo!)
+      ? takerTokenInfo.id
+      : "0";
+
     const transaction = await dispatch(
       createOtcOrDelegateOrder({
         isLimitOrder,
         nonce: expiryDate.toString(),
         expiry: Math.floor(expiryDate / 1000).toString(),
-        signerWallet: account!,
-        signerToken,
         signerTokenInfo: makerTokenInfo!,
-        signerAmount: makerAmount,
-        protocolFee: protocolFee.toString(),
-        senderWallet:
-          orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
-        senderToken,
         senderTokenInfo: takerTokenInfo!,
-        senderAmount: takerAmount,
+        signer: {
+          wallet: account!,
+          token: signerToken,
+          amount: makerAmount,
+          id: signerTokenId,
+          kind: getTokenKind(makerTokenInfo!),
+        },
+        sender: {
+          wallet:
+            orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
+          token: senderToken,
+          amount: takerAmount,
+          id: senderTokenId,
+          kind: getTokenKind(takerTokenInfo!),
+        },
+        protocolFee: protocolFee.toString(),
         chainId: chainId!,
         library: library!,
         activeIndexers: indexerUrls,

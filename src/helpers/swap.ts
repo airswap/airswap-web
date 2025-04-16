@@ -8,6 +8,8 @@ import {
 
 import { ethers } from "ethers";
 
+import { isOrderERC20 } from "../entities/OrderERC20/OrderERC20Helpers";
+
 export const getSwapContract = (
   providerOrSigner: ethers.providers.Provider | ethers.Signer,
   chainId: number
@@ -19,18 +21,16 @@ export const checkSwapOrder = async (
   providerOrSigner: ethers.providers.Provider,
   chainId: number,
   senderWallet: string,
-  order: FullOrder
+  order: OrderERC20
 ): Promise<string[]> => {
   const contract = getSwapContract(providerOrSigner, chainId);
 
-  if (!isValidFullOrder(order)) {
+  if (!isOrderERC20(order)) {
     return [];
   }
 
   const response = await contract.check(
     senderWallet,
-    // TODO: Replace with fullOrderToParams
-    // @ts-ignore
     ...orderERC20ToParams(order)
   );
 

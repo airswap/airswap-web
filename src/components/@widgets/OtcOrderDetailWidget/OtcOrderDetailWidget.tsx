@@ -21,16 +21,18 @@ import {
   getTokenDecimals,
   getTokenSymbol,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { checkFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import {
   fetchIndexerUrls,
   getFilteredOrders,
 } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
-import { approve, deposit, take } from "../../../features/orders/ordersActions";
 import {
-  checkFullOrder,
-  checkOrderErc20,
-} from "../../../features/orders/ordersHelpers";
+  approve,
+  deposit,
+  takeErc20,
+  takeFullOrder,
+} from "../../../features/orders/ordersActions";
 import {
   clear,
   selectOrdersErrors,
@@ -150,7 +152,8 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
+  // const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
+  const hasSufficientAllowance = true;
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -216,29 +219,27 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   };
 
   const takeOrder = async () => {
-    if (!library) return;
+    if (!library || !account) return;
 
-    const errors = await checkFullOrder(
-      order,
-      order.sender.wallet,
-      order.chainId,
-      library
-    );
+    console.log("takeOrder", order);
+
+    const errors = await checkFullOrder(order, order.sender.wallet, library);
+
+    console.log("errors", errors);
 
     if (errors.length) {
       dispatch(setErrors(errors));
       return;
     }
 
-    // TODO: Support FullOrder and AppTokenInfo
     await dispatch(
-      take(
+      takeFullOrder({
         order,
-        signerToken! as TokenInfo,
-        senderToken! as TokenInfo,
+        senderWallet: account!,
+        signerToken: signerToken!,
+        senderToken: senderToken!,
         library,
-        "Swap"
-      )
+      })
     );
   };
 
@@ -275,7 +276,6 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
-    console.log("handleActionButtonClick", action);
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
     }

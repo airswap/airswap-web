@@ -51,7 +51,7 @@ type CreateOrderParams = {
   signerTokenInfo: AppTokenInfo;
   senderTokenInfo: AppTokenInfo;
   shouldSendToIndexers: boolean;
-} & UnsignedOrder;
+} & Omit<UnsignedOrder, "affiliateWallet" | "affiliateAmount">;
 
 const createDelegateRule = async (
   params: CreateOrderParams,
@@ -150,30 +150,18 @@ const createOtcOrder = async (
     senderTokenDecimals
   );
 
-  const signerTokenId = isCollectionTokenInfo(params.signerTokenInfo)
-    ? params.signerTokenInfo.id
-    : "0";
-
-  const senderTokenId = isCollectionTokenInfo(params.senderTokenInfo)
-    ? params.senderTokenInfo.id
-    : "0";
-
   const unsignedOrder = createOrder({
     expiry: params.expiry,
     nonce: Date.now(),
     protocolFee: Number(params.protocolFee),
     signer: {
-      wallet: params.signer.wallet,
-      token: params.signer.token,
+      ...params.signer,
       amount: signerAmount,
-      id: signerTokenId,
       type: signerTokenKind,
     },
     sender: {
-      wallet: params.sender.wallet,
-      token: params.sender.token,
+      ...params.sender,
       amount: senderAmount,
-      id: senderTokenId,
       type: senderTokenKind,
     },
   });

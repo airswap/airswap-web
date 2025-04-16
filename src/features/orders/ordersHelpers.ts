@@ -208,19 +208,6 @@ export async function takeErc20Order(
   });
 }
 
-export async function takeFullOrder(
-  order: FullOrder,
-  provider: ethers.providers.Web3Provider
-) {
-  return new Promise<Transaction | AppError>((resolve) => {
-    swapFullOrder(provider.network.chainId, provider, order)
-      .then(resolve)
-      .catch((error: any) => {
-        resolve(transformUnknownErrorToAppError(error));
-      });
-  });
-}
-
 export function orderSortingFunction(a: OrderERC20, b: OrderERC20) {
   const now = Date.now();
   const aTimeToExpiry = now - parseInt(a.expiry);
@@ -316,19 +303,6 @@ export async function checkOrderErc20(
   }
 
   return filteredErrors.map((error) => transformSwapErrorToAppError(error));
-}
-
-export async function checkFullOrder(
-  order: FullOrder,
-  senderWallet: string,
-  chainId: number,
-  provider: ethers.providers.Web3Provider
-): Promise<AppError[]> {
-  const strings = await checkSwapOrder(provider, chainId, senderWallet, order);
-
-  const errors = parseCheckResult(strings) as SwapError[];
-
-  return errors.map((error) => transformSwapErrorToAppError(error));
 }
 
 export async function getNonceUsed(

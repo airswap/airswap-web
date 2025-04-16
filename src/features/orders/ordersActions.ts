@@ -1,4 +1,4 @@
-import { Registry } from "@airswap/libraries";
+import { Registry, Swap } from "@airswap/libraries";
 import {
   FullOrder,
   FullOrderERC20,
@@ -10,9 +10,9 @@ import {
   UnsignedOrderERC20,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { Dispatch } from "@reduxjs/toolkit";
+import { createAsyncThunk, Dispatch } from "@reduxjs/toolkit";
 
-import { AppDispatch } from "../../app/store";
+import { AppDispatch, RootState } from "../../app/store";
 import {
   notifyError,
   notifyRejectedByUserError,
@@ -24,8 +24,7 @@ import {
   isCollectionTokenInfo,
   isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
-import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
-import { isOrderERC20 } from "../../entities/OrderERC20/OrderERC20Helpers";
+import { takeFullOrder as takeFullOrderHelper } from "../../entities/FullOrder/FullOrderHelpers";
 import { transformUnsignedOrderERC20ToOrderERC20 } from "../../entities/OrderERC20/OrderERC20Transformers";
 import {
   SubmittedDepositTransaction,
@@ -42,7 +41,7 @@ import {
   transformToSubmittedTransactionWithOrderUnderConsideration,
   transformToSubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
-import { AppErrorType, isAppError } from "../../errors/appError";
+import { AppError, AppErrorType, isAppError } from "../../errors/appError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
 import getWethAddress from "../../helpers/getWethAddress";
@@ -64,7 +63,6 @@ import {
   approveNftToken,
   depositETH,
   takeErc20Order,
-  takeFullOrder,
   withdrawETH,
 } from "./ordersHelpers";
 import { setErrors, setStatus } from "./ordersSlice";
@@ -355,7 +353,7 @@ export const approve =
     }
   };
 
-export const take =
+export const takeErc20 =
   (
     order: OrderERC20 | FullOrderERC20,
     signerToken: TokenInfo,
@@ -491,6 +489,51 @@ export const takeLastLookOrder =
 
     dispatch(submitTransaction(transaction));
 
+    dispatch(setStatus("idle"));
+
+    return transaction;
+  };
+
+interface TakeParams {
+  senderWallet: string;
+  order: FullOrder;
+  library: Web3Provider;
+  signerToken: AppTokenInfo;
+  senderToken: AppTokenInfo;
+}
+
+export const takeFullOrder =
+  (params: TakeParams) => async (dispatch: AppDispatch) => {
+    const { order, library, senderWallet, signerToken, senderToken } = params;
+
+    const tx = await takeFullOrderHelper(
+      params.order,
+      senderWallet,
+      params.library
+    );
+
+    if (isAppError(tx)) {
+      dispatch(setErrors([tx]));
+
+      throw tx;
+    }
+
+    // TODO: refactor to use FullOrder
+    const transaction = transformToSubmittedTransactionWithOrder(
+      tx.hash,
+      {
+        ...order,
+        signerWallet: senderWallet,
+        signerToken: signerToken.address,
+        senderToken: senderToken.address,
+        signerAmount: order.signer.amount,
+        senderAmount: order.sender.amount,
+      },
+      signerToken,
+      senderToken
+    );
+
+    dispatch(submitTransaction(transaction));
     dispatch(setStatus("idle"));
 
     return transaction;

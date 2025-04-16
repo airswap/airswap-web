@@ -1,4 +1,4 @@
-import { Swap, SwapERC20 } from "@airswap/libraries";
+import { SwapERC20 } from "@airswap/libraries";
 import { OrderERC20, orderERC20ToParams } from "@airswap/utils";
 
 import { ethers } from "ethers";

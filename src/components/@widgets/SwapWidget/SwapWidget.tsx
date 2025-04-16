@@ -37,7 +37,7 @@ import {
 import {
   approve,
   deposit,
-  take,
+  takeErc20,
   takeLastLookOrder,
   withdraw,
 } from "../../../features/orders/ordersActions";
@@ -356,7 +356,7 @@ const SwapWidget: FC = () => {
       }
 
       const transaction = await dispatch(
-        take(
+        takeErc20(
           order,
           quoteTokenInfo!,
           baseTokenInfo!,
