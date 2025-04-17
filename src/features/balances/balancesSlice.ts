@@ -1,26 +1,10 @@
-import { ADDRESS_ZERO } from "@airswap/utils";
-import {
-  AsyncThunk,
-  combineReducers,
-  createAction,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { combineReducers, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BigNumber, ethers } from "ethers";
-import { isAddress } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
-import { AppDispatch, RootState } from "../../app/store";
-import { isNftTokenId } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
-import getWethAddress from "../../helpers/getWethAddress";
+import { RootState } from "../../app/store";
 import { walletChanged, walletDisconnected } from "../web3/web3Actions";
-import {
-  fetchAllowancesSwap,
-  fetchAllowancesWrapper,
-  fetchAllowancesDelegate,
-  fetchBalances,
-} from "./balancesApi";
+import { getThunk, getSetInFlightRequestTokensAction } from "./balancesApi";
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -46,121 +30,10 @@ export const initialState: BalancesState = {
   values: {},
 };
 
-const getSetInFlightRequestTokensAction = (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => {
-  return createAction<string[]>(`${type}/setInFlightRequestTokens`);
-};
-
-const getThunk: (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => AsyncThunk<
-  { address: string; amount: string }[],
-  {
-    provider: ethers.providers.Web3Provider;
-  },
-  object
-> = (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => {
-  const methods = {
-    balances: fetchBalances,
-    "allowances.swap": fetchAllowancesSwap,
-    "allowances.wrapper": fetchAllowancesWrapper,
-    "allowances.delegate": fetchAllowancesDelegate,
-  };
-  return createAsyncThunk<
-    { address: string; amount: string }[],
-    {
-      provider: ethers.providers.Web3Provider;
-    },
-    {
-      // Optional fields for defining thunkApi field types
-      dispatch: AppDispatch;
-      state: RootState;
-    }
-  >(
-    `${type}/requestForActiveTokens`,
-    async (params, { getState, dispatch }) => {
-      try {
-        const state = getState();
-        const { chainId, account } = state.web3;
-
-        const wrappedNativeToken = chainId
-          ? getWethAddress(chainId)
-          : undefined;
-        const activeErc20Addresses = [
-          ...state.metadata.activeTokens,
-          ...(wrappedNativeToken ? [wrappedNativeToken] : []),
-          ADDRESS_ZERO,
-        ].filter(isAddress);
-        const activeNftAddresses = [...state.metadata.activeTokens].filter(
-          isNftTokenId
-        );
-
-        if (state.takeOtc.activeOrder) {
-          activeErc20Addresses.push(state.takeOtc.activeOrder.sender.token);
-        }
-
-        dispatch(getSetInFlightRequestTokensAction(type)(activeErc20Addresses));
-
-        const erc20Amounts = await methods[type]({
-          ...params,
-          chainId: chainId!,
-          walletAddress: account!,
-          tokenAddresses: activeErc20Addresses,
-        });
-
-        const tokenBalances = activeErc20Addresses.map((address, i) => ({
-          address,
-          amount: erc20Amounts[i],
-        }));
-        const nftBalances = activeNftAddresses.map((address, i) => ({
-          address,
-          // TODO: This is a placeholder for getting nft balance, hopefully we can get balances
-          // via the BatchCall contract
-          amount: "1",
-        }));
-
-        return [...tokenBalances, ...nftBalances];
-      } catch (e: any) {
-        console.error(`Error fetching ${type}: ` + e.message);
-        throw e;
-      }
-    },
-    {
-      // Logic to prevent fetching again if we're already fetching the same or more tokens.
-      condition: (params, { getState }) => {
-        const pathParts = type.split(".");
-        const sliceState =
-          pathParts.length > 1
-            ? // @ts-ignore
-              getState()[pathParts[0]][pathParts[1]]
-            : // @ts-ignore
-              getState()[type];
-        // If we're not fetching, definitely continue
-        if (sliceState.status !== "fetching") return true;
-        if (sliceState.inFlightFetchTokens) {
-          const tokensToFetch = getState().metadata.activeTokens;
-          // only fetch if new list is larger.
-          return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
-        }
-      },
-    }
-  );
-};
+interface TokenBalance {
+  address: string;
+  amount: string;
+}
 
 const getSlice = (
   type:
@@ -216,9 +89,9 @@ const getSlice = (
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
           state.lastFetch = Date.now();
-          const tokenBalances = action.payload;
+          const tokenBalances = action.payload as TokenBalance[];
 
-          tokenBalances?.forEach(({ address, amount }) => {
+          tokenBalances?.forEach(({ address, amount }: TokenBalance) => {
             state.values[address] = amount;
           });
 
