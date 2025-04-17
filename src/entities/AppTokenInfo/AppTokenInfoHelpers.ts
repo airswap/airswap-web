@@ -51,6 +51,20 @@ export const getTokenId = (tokenInfo: AppTokenInfo): string => {
   );
 };
 
+export const splitTokenIdentifier = (
+  tokenId: string
+): { address: string; id?: string } => {
+  const [address, id] = tokenId.split("-");
+
+  return { address, id };
+};
+
+export const getAddressFromTokenIdentifier = (tokenId: string): string =>
+  splitTokenIdentifier(tokenId).address;
+
+export const getIdFromTokenIdentifier = (tokenId: string): string =>
+  splitTokenIdentifier(tokenId).id || "0";
+
 export const getTokenDecimals = (tokenInfo: AppTokenInfo): number => {
   return isTokenInfo(tokenInfo) ? tokenInfo.decimals : 0;
 };

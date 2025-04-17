@@ -1,4 +1,10 @@
-import { Wrapper, BatchCall, Delegate } from "@airswap/libraries";
+import {
+  Wrapper,
+  BatchCall,
+  Delegate,
+  SwapERC20,
+  Swap,
+} from "@airswap/libraries";
 import { ADDRESS_ZERO, CollectionTokenInfo, TokenKinds } from "@airswap/utils";
 import { AsyncThunk, createAction, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -9,12 +15,12 @@ import { AppDispatch } from "../../app/store";
 import { RootState } from "../../app/store";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import {
+  getAddressFromTokenIdentifier,
+  getIdFromTokenIdentifier,
   getTokenIdentifier,
   isCollectionTokenInfo,
-  isNftTokenId,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import getWethAddress from "../../helpers/getWethAddress";
-import { getSwapErc20Address } from "../../helpers/swapErc20";
 
 interface WalletParams {
   chainId: number;
@@ -22,40 +28,82 @@ interface WalletParams {
   walletAddress: string;
   tokenAddresses: string[];
   tokenIds?: string[];
+  tokenKind: TokenKinds.ERC20 | TokenKinds.ERC721 | TokenKinds.ERC1155;
 }
 
+type FetchMethodType = "balances" | "allowances";
+type SpenderAddressType =
+  | "Wrapper"
+  | "Swap"
+  | "SwapERC20"
+  | "Delegate"
+  | "None";
+type BalanceRequestType =
+  | "balances"
+  | "allowances.swap"
+  | "allowances.wrapper"
+  | "allowances.delegate";
+
+const METHOD_MAP = {
+  balances: {
+    [TokenKinds.ERC721]: "walletBalancesERC721",
+    [TokenKinds.ERC1155]: "walletBalancesERC1155",
+    [TokenKinds.ERC20]: "walletBalances",
+  },
+  allowances: {
+    [TokenKinds.ERC721]: "walletAllowancesERC721",
+    [TokenKinds.ERC1155]: "walletAllowancesERC1155",
+    [TokenKinds.ERC20]: "walletAllowances",
+  },
+} as const;
+
+const getMethod = (
+  method: FetchMethodType,
+  tokenKind: TokenKinds.ERC20 | TokenKinds.ERC721 | TokenKinds.ERC1155
+) => {
+  return METHOD_MAP[method][tokenKind];
+};
+
+const getAllowanceSpenderAddress = (
+  spenderAddressType: SpenderAddressType,
+  chainId: number
+) => {
+  if (spenderAddressType === "Delegate") {
+    return Delegate.getAddress(chainId);
+  }
+
+  if (spenderAddressType === "Wrapper") {
+    return Wrapper.getAddress(chainId);
+  }
+
+  if (spenderAddressType === "SwapERC20") {
+    return SwapERC20.getAddress(chainId);
+  }
+
+  if (spenderAddressType === "Swap") {
+    return Swap.getAddress(chainId);
+  }
+
+  return ADDRESS_ZERO;
+};
+
 const getFetchBalancesOrAllowancesArgs = (
-  method:
-    | "walletBalances"
-    | "walletBalancesERC721"
-    | "walletBalancesERC1155"
-    | "walletAllowances",
-  spenderAddressType: "Wrapper" | "Swap" | "Delegate" | "None",
+  method: FetchMethodType,
+  spenderAddressType: SpenderAddressType,
   params: WalletParams
 ) => {
   const { chainId, tokenAddresses, walletAddress, tokenIds = [] } = params;
 
-  if (method === "walletBalances") {
-    return [walletAddress, tokenAddresses];
-  }
-
-  if (method === "walletBalancesERC721") {
+  if (method === "balances") {
     return [walletAddress, tokenAddresses, tokenIds];
   }
 
-  if (method === "walletBalancesERC1155") {
-    return [walletAddress, tokenAddresses, tokenIds];
-  }
+  const allowanceSpenderAddress = getAllowanceSpenderAddress(
+    spenderAddressType,
+    chainId
+  );
 
-  if (spenderAddressType === "Delegate") {
-    return [walletAddress, Delegate.getAddress(chainId), tokenAddresses];
-  }
-
-  if (spenderAddressType === "Wrapper") {
-    return [walletAddress, Wrapper.getAddress(chainId), tokenAddresses];
-  }
-
-  return [walletAddress, getSwapErc20Address(chainId), tokenAddresses];
+  return [walletAddress, allowanceSpenderAddress, tokenAddresses, tokenIds];
 };
 
 /**
@@ -63,56 +111,39 @@ const getFetchBalancesOrAllowancesArgs = (
  * contract `BalanceChecker.sol`. Balances are returned in base units.
  */
 const fetchBalancesOrAllowances: (
-  method:
-    | "walletBalances"
-    | "walletBalancesERC721"
-    | "walletBalancesERC1155"
-    | "walletAllowances",
-  spenderAddressType: "Wrapper" | "Swap" | "Delegate" | "None",
+  type: FetchMethodType,
+  spenderAddressType: SpenderAddressType,
   params: WalletParams
-) => Promise<string[]> = async (method, spenderAddressType, params) => {
-  const { chainId, provider } = params;
+) => Promise<string[]> = async (type, spenderAddressType, params) => {
+  const { chainId, provider, tokenKind } = params;
   const contract = BatchCall.getContract(provider, chainId);
+
   const args = getFetchBalancesOrAllowancesArgs(
-    method,
+    type,
     spenderAddressType,
     params
   );
+  const method = getMethod(type, tokenKind);
 
   const amounts: BigNumber[] = await contract[method].apply(null, args);
   return amounts.map((amount) => amount.toString());
 };
 
-export const getSetInFlightRequestTokensAction = (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => {
+export const getSetInFlightRequestTokensAction = (type: BalanceRequestType) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
-export const getThunk: (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => AsyncThunk<
+export const getThunk: (type: BalanceRequestType) => AsyncThunk<
   { address: string; amount: string }[],
   {
     provider: ethers.providers.Web3Provider;
   },
   object
-> = (
-  type:
-    | "balances"
-    | "allowances.swap"
-    | "allowances.wrapper"
-    | "allowances.delegate"
-) => {
-  const methods = {
+> = (type: BalanceRequestType) => {
+  const methods: Record<
+    BalanceRequestType,
+    (params: WalletParams) => Promise<string[]>
+  > = {
     balances: fetchBalances,
     "allowances.swap": fetchAllowancesSwap,
     "allowances.wrapper": fetchAllowancesWrapper,
@@ -149,8 +180,6 @@ export const getThunk: (
           (token) => token.kind === TokenKinds.ERC1155
         );
 
-        console.log(type);
-
         const wrappedNativeToken = chainId
           ? getWethAddress(chainId)
           : undefined;
@@ -159,7 +188,7 @@ export const getThunk: (
           ...(wrappedNativeToken ? [wrappedNativeToken] : []),
           ADDRESS_ZERO,
         ].filter(isAddress);
-        console.log(erc721Tokens);
+
         const activeErc721Addresses = activeTokens.filter((token) =>
           erc721Tokens.some(
             (t) => getTokenIdentifier(t.address, t.id) === token
@@ -170,8 +199,6 @@ export const getThunk: (
             (t) => getTokenIdentifier(t.address, t.id) === token
           )
         );
-
-        console.log("activeErc721Addresses", activeErc721Addresses);
 
         // TODO: this is probably not needed.
         // if (state.takeOtc.activeOrder) {
@@ -186,53 +213,50 @@ export const getThunk: (
           ])
         );
 
-        const erc20Amounts = await methods[type]({
+        const methodParams = {
           ...params,
           chainId: chainId!,
           walletAddress: account!,
-          tokenAddresses: activeErc20Addresses,
-        });
+        };
 
-        console.log(
-          activeErc721Addresses.map((address) => address.split("-")[0])
-        );
-        console.log(
-          activeErc721Addresses.map((address) => address.split("-")[1])
-        );
+        const erc20Amounts = (await methods[type]({
+          ...methodParams,
+          tokenAddresses: activeErc20Addresses,
+          tokenKind: TokenKinds.ERC20,
+        })) as string[];
 
         const erc721Amounts = await methods[type]({
-          ...params,
-          chainId: chainId!,
-          walletAddress: account!,
+          ...methodParams,
           tokenAddresses: activeErc721Addresses.map(
-            (address) => address.split("-")[0]
+            getAddressFromTokenIdentifier
           ),
-          tokenIds: activeErc721Addresses.map(
-            (address) => address.split("-")[1]
-          ),
+          tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
+          tokenKind: TokenKinds.ERC721,
         });
 
-        console.log(erc721Amounts);
-
         const erc1155Amounts = await methods[type]({
-          ...params,
-          chainId: chainId!,
-          walletAddress: account!,
-          tokenAddresses: activeErc1155Addresses,
+          ...methodParams,
+          tokenAddresses: activeErc1155Addresses.map(
+            getAddressFromTokenIdentifier
+          ),
+          tokenIds: activeErc1155Addresses.map(getIdFromTokenIdentifier),
+          tokenKind: TokenKinds.ERC1155,
         });
 
         const tokenBalances = activeErc20Addresses.map((address, i) => ({
           address,
           amount: erc20Amounts[i],
         }));
-        const nftBalances = activeErc721Addresses.map((address, i) => ({
+        const erc721Balances = activeErc721Addresses.map((address, i) => ({
           address,
-          // TODO: This is a placeholder for getting nft balance, hopefully we can get balances
-          // via the BatchCall contract
+          amount: "1",
+        }));
+        const erc1155Balances = activeErc1155Addresses.map((address, i) => ({
+          address,
           amount: "1",
         }));
 
-        return [...tokenBalances, ...nftBalances];
+        return [...tokenBalances, ...erc721Balances, ...erc1155Balances];
       } catch (e: any) {
         console.error(`Error fetching ${type}: ` + e.message);
         throw e;
@@ -260,23 +284,19 @@ export const getThunk: (
   );
 };
 
-const fetchBalances = fetchBalancesOrAllowances.bind(
-  null,
-  "walletBalances",
-  "None"
-);
+const fetchBalances = fetchBalancesOrAllowances.bind(null, "balances", "None");
 const fetchAllowancesSwap = fetchBalancesOrAllowances.bind(
   null,
-  "walletAllowances",
+  "allowances",
   "Swap"
 );
 const fetchAllowancesWrapper = fetchBalancesOrAllowances.bind(
   null,
-  "walletAllowances",
+  "allowances",
   "Wrapper"
 );
 const fetchAllowancesDelegate = fetchBalancesOrAllowances.bind(
   null,
-  "walletAllowances",
+  "allowances",
   "Delegate"
 );
