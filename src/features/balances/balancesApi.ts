@@ -22,27 +22,36 @@ import {
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import getWethAddress from "../../helpers/getWethAddress";
 
-interface WalletParams {
-  chainId: number;
-  provider: ethers.providers.Web3Provider;
-  walletAddress: string;
-  tokenAddresses: string[];
-  tokenIds?: string[];
-  tokenKind: TokenKinds.ERC20 | TokenKinds.ERC721 | TokenKinds.ERC1155;
-}
-
+/**
+ * Type for the fetch method - either fetching balances or allowances
+ */
 type FetchMethodType = "balances" | "allowances";
-type SpenderAddressType =
-  | "Wrapper"
-  | "Swap"
-  | "SwapERC20"
-  | "Delegate"
-  | "None";
+
+/**
+ * Type for the spender address - which contract we're checking allowances for
+ */
+type SpenderAddressType = "Wrapper" | "Swap" | "SwapERC20" | "Delegate";
+
+/**
+ * Type for balance request operations
+ */
 type BalanceRequestType =
   | "balances"
   | "allowances.swap"
   | "allowances.wrapper"
   | "allowances.delegate";
+
+/**
+ * Parameters required for fetching balances or allowances
+ */
+interface FetchParams {
+  chainId: number;
+  provider: ethers.providers.Web3Provider;
+  tokenKind: TokenKinds.ERC20 | TokenKinds.ERC721 | TokenKinds.ERC1155;
+  tokenAddresses: string[];
+  tokenIds?: string[];
+  walletAddress: string;
+}
 
 const METHOD_MAP = {
   balances: {
@@ -80,17 +89,13 @@ const getAllowanceSpenderAddress = (
     return SwapERC20.getAddress(chainId);
   }
 
-  if (spenderAddressType === "Swap") {
-    return Swap.getAddress(chainId);
-  }
-
-  return ADDRESS_ZERO;
+  return Swap.getAddress(chainId);
 };
 
 const getFetchBalancesOrAllowancesArgs = (
   method: FetchMethodType,
-  spenderAddressType: SpenderAddressType,
-  params: WalletParams
+  params: FetchParams,
+  spenderAddressType?: SpenderAddressType
 ) => {
   const { chainId, tokenAddresses, walletAddress, tokenIds = [] } = params;
 
@@ -98,36 +103,44 @@ const getFetchBalancesOrAllowancesArgs = (
     return [walletAddress, tokenAddresses, tokenIds];
   }
 
-  const allowanceSpenderAddress = getAllowanceSpenderAddress(
-    spenderAddressType,
-    chainId
-  );
+  const allowanceSpenderAddress = spenderAddressType
+    ? getAllowanceSpenderAddress(spenderAddressType, chainId)
+    : ADDRESS_ZERO;
 
   return [walletAddress, allowanceSpenderAddress, tokenAddresses, tokenIds];
 };
 
 /**
- * Fetches balances or allowances for a wallet using the airswap utility
- * contract `BalanceChecker.sol`. Balances are returned in base units.
+ * Fetches either balances or allowances for a given set of tokens
+ * @param fetchType - Whether to fetch balances or allowances
+ * @param params - Parameters including chainId, provider, token details, and wallet address
+ * @param spenderType - Optional: Which contract to check allowances for (if fetching allowances)
+ * @returns Promise resolving to an array of balance/allowance amounts as strings
  */
-const fetchBalancesOrAllowances: (
-  type: FetchMethodType,
-  spenderAddressType: SpenderAddressType,
-  params: WalletParams
-) => Promise<string[]> = async (type, spenderAddressType, params) => {
+async function fetchBalancesOrAllowances(
+  fetchType: FetchMethodType,
+  params: FetchParams,
+  spenderType?: SpenderAddressType
+): Promise<string[]> {
   const { chainId, provider, tokenKind } = params;
+
+  // Get the BatchCall contract instance
   const contract = BatchCall.getContract(provider, chainId);
 
-  const args = getFetchBalancesOrAllowancesArgs(
-    type,
-    spenderAddressType,
-    params
+  // Prepare arguments for the contract call
+  const callArgs = getFetchBalancesOrAllowancesArgs(
+    fetchType,
+    params,
+    spenderType
   );
-  const method = getMethod(type, tokenKind);
 
-  const amounts: BigNumber[] = await contract[method].apply(null, args);
+  // Get the appropriate method name based on token kind and fetch type
+  const methodName = getMethod(fetchType, tokenKind);
+
+  // Execute the contract call and convert BigNumber results to strings
+  const amounts: BigNumber[] = await contract[methodName].apply(null, callArgs);
   return amounts.map((amount) => amount.toString());
-};
+}
 
 export const getSetInFlightRequestTokensAction = (type: BalanceRequestType) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
@@ -142,7 +155,7 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
 > = (type: BalanceRequestType) => {
   const methods: Record<
     BalanceRequestType,
-    (params: WalletParams) => Promise<string[]>
+    (params: FetchParams) => Promise<string[]>
   > = {
     balances: fetchBalances,
     "allowances.swap": fetchAllowancesSwap,
@@ -284,19 +297,11 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
   );
 };
 
-const fetchBalances = fetchBalancesOrAllowances.bind(null, "balances", "None");
-const fetchAllowancesSwap = fetchBalancesOrAllowances.bind(
-  null,
-  "allowances",
-  "Swap"
-);
-const fetchAllowancesWrapper = fetchBalancesOrAllowances.bind(
-  null,
-  "allowances",
-  "Wrapper"
-);
-const fetchAllowancesDelegate = fetchBalancesOrAllowances.bind(
-  null,
-  "allowances",
-  "Delegate"
-);
+const fetchBalances = (params: FetchParams) =>
+  fetchBalancesOrAllowances("balances", params);
+const fetchAllowancesSwap = (params: FetchParams) =>
+  fetchBalancesOrAllowances("allowances", params, "Swap");
+const fetchAllowancesWrapper = (params: FetchParams) =>
+  fetchBalancesOrAllowances("allowances", params, "Wrapper");
+const fetchAllowancesDelegate = (params: FetchParams) =>
+  fetchBalancesOrAllowances("allowances", params, "Delegate");
