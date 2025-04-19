@@ -146,6 +146,49 @@ export const getSetInFlightRequestTokensAction = (type: BalanceRequestType) => {
   return createAction<string[]>(`${type}/setInFlightRequestTokens`);
 };
 
+/**
+ * Processes active tokens and categorizes them by token type
+ * @param activeTokens - Array of active token identifiers
+ * @param allTokens - Array of all token information
+ * @param chainId - Current chain ID
+ * @returns Object containing categorized token addresses
+ */
+const processActiveTokens = (
+  activeTokens: string[],
+  allTokens: AppTokenInfo[],
+  chainId: number
+) => {
+  const nftTokens = allTokens.filter((token) =>
+    isCollectionTokenInfo(token)
+  ) as CollectionTokenInfo[];
+  const erc721Tokens = nftTokens.filter(
+    (token) => token.kind === TokenKinds.ERC721
+  );
+  const erc1155Tokens = nftTokens.filter(
+    (token) => token.kind === TokenKinds.ERC1155
+  );
+
+  const wrappedNativeToken = chainId ? getWethAddress(chainId) : undefined;
+  const activeErc20Addresses = [
+    ...activeTokens,
+    ...(wrappedNativeToken ? [wrappedNativeToken] : []),
+    ADDRESS_ZERO,
+  ].filter(isAddress);
+
+  const activeErc721Addresses = activeTokens.filter((token) =>
+    erc721Tokens.some((t) => getTokenIdentifier(t.address, t.id) === token)
+  );
+  const activeErc1155Addresses = activeTokens.filter((token) =>
+    erc1155Tokens.some((t) => getTokenIdentifier(t.address, t.id) === token)
+  );
+
+  return {
+    activeErc20Addresses,
+    activeErc721Addresses,
+    activeErc1155Addresses,
+  };
+};
+
 export const getThunk: (type: BalanceRequestType) => AsyncThunk<
   { address: string; amount: string }[],
   {
@@ -168,7 +211,6 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
       provider: ethers.providers.Web3Provider;
     },
     {
-      // Optional fields for defining thunkApi field types
       dispatch: AppDispatch;
       state: RootState;
     }
@@ -183,40 +225,12 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           ...Object.values(knownTokens),
           ...Object.values(unknownTokens),
         ];
-        const nftTokens = allTokens.filter((token) =>
-          isCollectionTokenInfo(token)
-        ) as CollectionTokenInfo[];
-        const erc721Tokens = nftTokens.filter(
-          (token) => token.kind === TokenKinds.ERC721
-        );
-        const erc1155Tokens = nftTokens.filter(
-          (token) => token.kind === TokenKinds.ERC1155
-        );
 
-        const wrappedNativeToken = chainId
-          ? getWethAddress(chainId)
-          : undefined;
-        const activeErc20Addresses = [
-          ...activeTokens,
-          ...(wrappedNativeToken ? [wrappedNativeToken] : []),
-          ADDRESS_ZERO,
-        ].filter(isAddress);
-
-        const activeErc721Addresses = activeTokens.filter((token) =>
-          erc721Tokens.some(
-            (t) => getTokenIdentifier(t.address, t.id) === token
-          )
-        );
-        const activeErc1155Addresses = activeTokens.filter((token) =>
-          erc1155Tokens.some(
-            (t) => getTokenIdentifier(t.address, t.id) === token
-          )
-        );
-
-        // TODO: this is probably not needed.
-        // if (state.takeOtc.activeOrder) {
-        //   activeErc20Addresses.push(state.takeOtc.activeOrder.sender.token);
-        // }
+        const {
+          activeErc20Addresses,
+          activeErc721Addresses,
+          activeErc1155Addresses,
+        } = processActiveTokens(activeTokens, allTokens, chainId!);
 
         dispatch(
           getSetInFlightRequestTokensAction(type)([
