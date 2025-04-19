@@ -252,23 +252,23 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           tokenKind: TokenKinds.ERC20,
         })) as string[];
 
-        const erc721Amounts = await methods[type]({
-          ...methodParams,
-          tokenAddresses: activeErc721Addresses.map(
-            getAddressFromTokenIdentifier
-          ),
-          tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
-          tokenKind: TokenKinds.ERC721,
-        });
+        // const erc721Amounts = await methods[type]({
+        //   ...methodParams,
+        //   tokenAddresses: activeErc721Addresses.map(
+        //     getAddressFromTokenIdentifier
+        //   ),
+        //   tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
+        //   tokenKind: TokenKinds.ERC721,
+        // });
 
-        const erc1155Amounts = await methods[type]({
-          ...methodParams,
-          tokenAddresses: activeErc1155Addresses.map(
-            getAddressFromTokenIdentifier
-          ),
-          tokenIds: activeErc1155Addresses.map(getIdFromTokenIdentifier),
-          tokenKind: TokenKinds.ERC1155,
-        });
+        // const erc1155Amounts = await methods[type]({
+        //   ...methodParams,
+        //   tokenAddresses: activeErc1155Addresses.map(
+        //     getAddressFromTokenIdentifier
+        //   ),
+        //   tokenIds: activeErc1155Addresses.map(getIdFromTokenIdentifier),
+        //   tokenKind: TokenKinds.ERC1155,
+        // });
 
         const tokenBalances = activeErc20Addresses.map((address, i) => ({
           address,
