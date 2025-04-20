@@ -135,21 +135,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     "showLimitNotice",
     true
   );
-
+  // NFT's are not supported for limit orders
+  const isNftSupported = !isLimitOrder;
   // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
 
-  // User input states
-  const [state, setState] = useState<MakeWidgetState>(MakeWidgetState.list);
-  const [expiry, setExpiry] = useState(new Date().getTime());
-  const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
-  const [orderScopeTypeOption, setOrderScopeTypeOption] =
-    useState<SelectOption>(orderTypeSelectOptions[0]);
-  const [takerAddress, setTakerAddress] = useState("");
-  const [makerAmount, setMakerAmount] = useState("");
-  const [takerAmount, setTakerAmount] = useState("");
-
-  // States derived from user input
+  // Selected tokens
   const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
   const makerTokenInfo = useTokenInfo(
     userTokens.tokenFrom?.address,
@@ -168,11 +159,25 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const makerTokenSymbol = makerTokenInfo
     ? getTokenSymbol(makerTokenInfo)
     : undefined;
-  const makerAmountPlusFee = useAmountPlusFee(makerAmount, makerTokenDecimals);
+  const makerTokenKind = makerTokenInfo
+    ? getTokenKind(makerTokenInfo)
+    : undefined;
+  const defaultMakerAmount =
+    isNftSupported && makerTokenKind === TokenKinds.ERC721 ? "1" : "";
 
-  // TODO: Remove this once we have a way to check allowance
-  const hasSufficientAllowance = true;
-  const { readableAllowance } = useAllowance(
+  // User input states
+  const [state, setState] = useState<MakeWidgetState>(MakeWidgetState.list);
+  const [expiry, setExpiry] = useState(new Date().getTime());
+  const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
+  const [orderScopeTypeOption, setOrderScopeTypeOption] =
+    useState<SelectOption>(orderTypeSelectOptions[0]);
+  const [takerAddress, setTakerAddress] = useState("");
+  const [makerAmount, setMakerAmount] = useState(defaultMakerAmount);
+  const [takerAmount, setTakerAmount] = useState("");
+
+  // States derived from user input
+  const makerAmountPlusFee = useAmountPlusFee(makerAmount, makerTokenDecimals);
+  const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     isLimitOrder ? makerAmount : makerAmountPlusFee,
     { spenderAddressType: isLimitOrder ? "Delegate" : "Swap" }
@@ -232,6 +237,15 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   // useEffects
   useEffect(() => {
     dispatch(reset());
+
+    if (!isNftSupported && makerTokenKind !== TokenKinds.ERC20) {
+      const defaultToken = {
+        address: defaultTokenToAddress,
+        kind: TokenKinds.ERC20,
+      };
+
+      handleSetToken("base", defaultToken);
+    }
   }, []);
 
   useEffect(() => {

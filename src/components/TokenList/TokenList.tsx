@@ -100,6 +100,10 @@ const TokenList = ({
     isQuoteToken
   );
 
+  const activeAndQuoteTokens = Array.from(
+    new Set([...activeTokens, ...quoteTokens])
+  );
+
   const [, isLoadingCollectionToken] = useCollectionTokenById(
     selectedNftCollection,
     tokenQuery,
@@ -209,10 +213,7 @@ const TokenList = ({
             <TokensAndCollectionsList
               editMode={editMode}
               isScrapeTokensLoading={isScrapeTokensLoading}
-              activeTokens={[
-                ...activeTokens,
-                ...(isQuoteToken ? quoteTokens : []),
-              ]}
+              activeTokens={isQuoteToken ? activeAndQuoteTokens : activeTokens}
               allTokens={allTokens}
               balances={balances}
               scrapedTokens={scrapedTokens}

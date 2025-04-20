@@ -276,11 +276,11 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         }));
         const erc721Balances = activeErc721Addresses.map((address, i) => ({
           address,
-          amount: "1",
+          amount: type === "balances" ? "1" : "0",
         }));
         const erc1155Balances = activeErc1155Addresses.map((address, i) => ({
           address,
-          amount: "1",
+          amount: "0",
         }));
 
         return [...tokenBalances, ...erc721Balances, ...erc1155Balances];
