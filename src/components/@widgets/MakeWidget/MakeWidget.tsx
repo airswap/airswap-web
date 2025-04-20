@@ -168,6 +168,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const makerTokenKind = makerTokenInfo
     ? getTokenKind(makerTokenInfo)
     : undefined;
+  const takerTokenKind = takerTokenInfo
+    ? getTokenKind(takerTokenInfo)
+    : undefined;
   const defaultMakerAmount =
     isNftSupported && makerTokenKind === TokenKinds.ERC721 ? "1" : "";
 
@@ -244,14 +247,21 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   useEffect(() => {
     dispatch(reset());
 
-    if (!isNftSupported && makerTokenKind !== TokenKinds.ERC20) {
-      const defaultToken = {
-        address: defaultTokenToAddress,
-        kind: TokenKinds.ERC20,
-      };
-
-      handleSetToken("base", defaultToken);
+    if (isNftSupported) {
+      return;
     }
+
+    const defaultToken = {
+      address: defaultTokenToAddress,
+      kind: TokenKinds.ERC20,
+    };
+
+    dispatch(
+      setUserTokens({
+        ...(makerTokenKind !== TokenKinds.ERC20 && { tokenFrom: defaultToken }),
+        ...(takerTokenKind !== TokenKinds.ERC20 && { tokenTo: defaultToken }),
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -318,8 +328,10 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
       userTokens.tokenFrom || undefined
     );
 
-    if (tokenFrom?.kind !== TokenKinds.ERC20) {
-      type === "base" ? setMakerAmount("1") : setTakerAmount("1");
+    if (tokenFrom?.kind !== TokenKinds.ERC20 && type === "base") {
+      setMakerAmount("1");
+    } else if (tokenTo?.kind !== TokenKinds.ERC20 && type === "quote") {
+      setTakerAmount("1");
     }
 
     dispatch(
