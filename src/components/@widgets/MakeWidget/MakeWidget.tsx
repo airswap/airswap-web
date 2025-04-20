@@ -37,9 +37,12 @@ import {
   setError,
 } from "../../../features/makeOrder/makeOrderSlice";
 import {
+  selectActiveErc20Tokens,
   selectActiveTokens,
   selectAllTokenInfo,
+  selectErc20Tokens,
   selectProtocolFee,
+  selectQuoteErc20Tokens,
   selectQuoteTokens,
 } from "../../../features/metadata/metadataSlice";
 import { approve, deposit } from "../../../features/orders/ordersActions";
@@ -117,8 +120,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   const balances = useAppSelector(selectBalances);
   const activeTokens = useAppSelector(selectActiveTokens);
+  const activeErc20Tokens = useAppSelector(selectActiveErc20Tokens);
   const quoteTokens = useAppSelector(selectQuoteTokens);
+  const quoteErc20Tokens = useAppSelector(selectQuoteErc20Tokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
+  const erc20Tokens = useAppSelector(selectErc20Tokens);
   const userTokens = useAppSelector(selectUserTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
@@ -738,11 +744,10 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
       >
         <TokenList
           isQuoteToken={showTokenSelectModal === "quote"}
-          activeTokens={activeTokens}
-          allTokens={allTokens}
-          quoteTokens={quoteTokens}
+          activeTokens={isNftSupported ? activeTokens : activeErc20Tokens}
+          allTokens={isNftSupported ? allTokens : erc20Tokens}
+          quoteTokens={isNftSupported ? quoteTokens : quoteErc20Tokens}
           balances={balances}
-          supportedTokenAddresses={[]}
           onSelectToken={handleTokenSelect}
         />
       </ModalOverlay>

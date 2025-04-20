@@ -56,7 +56,7 @@ export type TokenListProps = {
   /**
    * Supported tokens according to registry
    */
-  supportedTokenAddresses: string[];
+  supportedTokenAddresses?: string[];
   /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
@@ -77,7 +77,7 @@ const TokenList = ({
   allTokens,
   activeTokens = [],
   quoteTokens = [],
-  supportedTokenAddresses,
+  supportedTokenAddresses = [],
   onAfterAddActiveToken,
   onAfterRemoveActiveToken,
   onSelectToken,

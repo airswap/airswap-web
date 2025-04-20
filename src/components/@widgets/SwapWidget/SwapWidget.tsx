@@ -31,8 +31,10 @@ import {
 } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
+  selectActiveErc20Tokens,
   selectActiveTokens,
   selectAllTokenInfo,
+  selectErc20Tokens,
 } from "../../../features/metadata/metadataSlice";
 import {
   approve,
@@ -117,8 +119,8 @@ const SwapWidget: FC = () => {
   const balances = useAppSelector(selectBalances);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
-  const activeTokens = useAppSelector(selectActiveTokens);
-  const allTokens = useAppSelector(selectAllTokenInfo);
+  const activeTokens = useAppSelector(selectActiveErc20Tokens);
+  const allTokens = useAppSelector(selectErc20Tokens);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const {

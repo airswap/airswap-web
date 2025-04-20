@@ -2,7 +2,11 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
-import { getTokenId } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import {
+  getTokenId,
+  isCollectionTokenInfo,
+  isTokenInfo,
+} from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   chainIdChanged,
   walletChanged,
@@ -143,6 +147,12 @@ export const selectAllTokenInfo = createSelector(
     return allTokenInfo.filter((tokenInfo) => tokenInfo.chainId === chainId);
   }
 );
+export const selectErc20Tokens = createSelector(
+  [selectAllTokenInfo],
+  (allTokenInfo) => {
+    return allTokenInfo.filter(isTokenInfo);
+  }
+);
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
@@ -151,12 +161,24 @@ export const selectActiveTokens = createSelector(
     );
   }
 );
+export const selectActiveErc20Tokens = createSelector(
+  [selectActiveTokens],
+  (activeTokens) => {
+    return activeTokens.filter(isTokenInfo);
+  }
+);
 export const selectQuoteTokens = createSelector(
   [selectQuoteTokenAddresses, selectAllTokenInfo],
   (quoteTokenAddresses, allTokenInfo) => {
     return Object.values(allTokenInfo).filter((tokenInfo) =>
       quoteTokenAddresses.includes(getTokenId(tokenInfo))
     );
+  }
+);
+export const selectQuoteErc20Tokens = createSelector(
+  [selectQuoteTokens],
+  (quoteTokens) => {
+    return quoteTokens.filter(isTokenInfo);
   }
 );
 export const selectMetaDataReducer = (state: RootState) => state.metadata;
