@@ -55,7 +55,7 @@ export const ContainingButton = styled.button<{ isNft?: boolean }>`
   display: flex;
   flex-direction: row;
   position: relative;
-  width: ${(props) => (props.isNft ? "76%" : "40%")};
+  width: ${(props) => (props.isNft ? "74%" : "40%")};
   height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};

@@ -1,13 +1,14 @@
 import { useState, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CollectionTokenInfo } from "@airswap/utils";
+import { CollectionTokenInfo, TokenKinds } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import {
+  getTokenId,
   isCollectionTokenInfo,
   isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
@@ -116,11 +117,20 @@ const TokenList = ({
       return [];
     }
 
-    return (isQuoteToken ? allTokens : activeTokens)
-      .filter((token) =>
-        compareAddresses(token.address, selectedNftCollection.address)
-      )
-      .filter(isCollectionTokenInfo);
+    return (
+      (isQuoteToken ? allTokens : activeTokens)
+        .filter((token) =>
+          compareAddresses(token.address, selectedNftCollection.address)
+        )
+        .filter(isCollectionTokenInfo)
+        // Since ERC721 tokens are unique, we can filter out ERC721 tokens that have no balance for quote and vice versa
+        .filter(
+          (token) =>
+            token.kind === TokenKinds.ERC1155 ||
+            (!isQuoteToken && balances.values[getTokenId(token)] === "1") ||
+            (isQuoteToken && balances.values[getTokenId(token)] === "0")
+        )
+    );
   }, [selectedNftCollection, allTokens]);
 
   const handleAddToken = async (tokenInfo: AppTokenInfo) => {

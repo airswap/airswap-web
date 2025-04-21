@@ -6,7 +6,11 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
 import { AppTokenInfo } from "../entities/AppTokenInfo/AppTokenInfo";
-import { isCollectionTokenInfo } from "../entities/AppTokenInfo/AppTokenInfoHelpers";
+import {
+  getTokenId,
+  getTokenIdentifier,
+  isCollectionTokenInfo,
+} from "../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
@@ -69,11 +73,11 @@ const useAllowance = (
 
     const justifiedAddress =
       token.address === ADDRESS_ZERO ? getWethAddress(chainId) : token.address;
-
     const justifiedToken = findEthOrTokenByAddress(
       justifiedAddress,
       allTokens,
-      chainId
+      chainId,
+      isCollectionTokenInfo(token) ? token.id : undefined
     );
 
     if (!justifiedToken) {
@@ -82,11 +86,13 @@ const useAllowance = (
       return;
     }
 
+    const tokenAddress = getTokenId(justifiedToken);
+
     const values =
       spenderAddressType === "Swap"
         ? allowances.swap.values
         : allowances.delegate.values;
-    const tokenAllowance = values[justifiedToken.address];
+    const tokenAllowance = values[tokenAddress];
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the

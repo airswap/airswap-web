@@ -293,7 +293,7 @@ export const approve =
     amount: string,
     token: AppTokenInfo,
     library: Web3Provider,
-    contractType: "Wrapper" | "Swap" | "Delegate"
+    contractType: "Wrapper" | "Swap" | "SwapERC20" | "Delegate"
   ) =>
   async (dispatch: AppDispatch): Promise<void> => {
     dispatch(setStatus("signing"));
@@ -314,8 +314,6 @@ export const approve =
             tokenKind,
             tokenId!
           ));
-
-      console.log("tx", tx);
 
       if (isAppError(tx)) {
         const appError = tx;
@@ -359,7 +357,7 @@ export const takeErc20 =
     signerToken: TokenInfo,
     senderToken: TokenInfo,
     library: Web3Provider,
-    contractType: "Swap" | "Wrapper"
+    contractType: "SwapERC20" | "Wrapper"
   ) =>
   async (dispatch: AppDispatch): Promise<SubmittedOrder | undefined> => {
     dispatch(setStatus("signing"));
@@ -402,7 +400,7 @@ export const takeErc20 =
     // When dealing with the Wrapper, since the "actual" swap is ETH <-> ERC20,
     // we should change the order tokens to WETH -> ETH
     const updatedOrder =
-      contractType === "Swap"
+      contractType === "SwapERC20"
         ? order
         : refactorOrder(order, library._network.chainId);
 
@@ -505,6 +503,9 @@ interface TakeParams {
 export const takeFullOrder =
   (params: TakeParams) => async (dispatch: AppDispatch) => {
     const { order, library, senderWallet, signerToken, senderToken } = params;
+
+    console.log(params.order);
+    console.log(senderWallet);
 
     const tx = await takeFullOrderHelper(
       params.order,

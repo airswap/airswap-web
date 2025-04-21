@@ -1,4 +1,11 @@
-import { Server, Wrapper, WETH, Delegate, Swap } from "@airswap/libraries";
+import {
+  Server,
+  Wrapper,
+  WETH,
+  Delegate,
+  Swap,
+  SwapERC20,
+} from "@airswap/libraries";
 import {
   toAtomicString,
   parseCheckResult,
@@ -121,11 +128,15 @@ export async function requestOrders(
 }
 
 const getSpenderAddress = (
-  contractType: "Swap" | "Wrapper" | "Delegate",
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   provider: ethers.providers.Web3Provider
 ) => {
   if (contractType === "Swap") {
-    return getSwapErc20Address(provider.network.chainId);
+    return Swap.getAddress(provider.network.chainId);
+  }
+
+  if (contractType === "SwapERC20") {
+    return SwapERC20.getAddress(provider.network.chainId);
   }
 
   if (contractType === "Delegate") {
@@ -138,7 +149,7 @@ const getSpenderAddress = (
 export async function approveErc20Token(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper" | "Delegate",
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   amount: string | number
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
@@ -160,7 +171,7 @@ export async function approveErc20Token(
 export async function approveNftToken(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper" | "Delegate",
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   tokenKind: TokenKinds,
   tokenId: string
 ): Promise<Transaction | AppError> {
@@ -189,10 +200,10 @@ export async function approveNftToken(
 export async function takeErc20Order(
   order: OrderERC20 | FullOrderERC20,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper"
+  contractType: "SwapERC20" | "Wrapper"
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
-    if (contractType === "Swap") {
+    if (contractType === "SwapERC20") {
       swapOrderErc20(provider.network.chainId, provider, order)
         .then(resolve)
         .catch((error: any) => {

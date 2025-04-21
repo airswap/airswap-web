@@ -38,6 +38,7 @@ type SpenderAddressType = "Wrapper" | "Swap" | "SwapERC20" | "Delegate";
 type BalanceRequestType =
   | "balances"
   | "allowances.swap"
+  | "allowances.swapERC20"
   | "allowances.wrapper"
   | "allowances.delegate";
 
@@ -124,6 +125,10 @@ async function fetchBalancesOrAllowances(
 ): Promise<string[]> {
   const { chainId, provider, tokenKind } = params;
 
+  if (!params.tokenAddresses.length) {
+    return [];
+  }
+
   // Get the BatchCall contract instance
   const contract = BatchCall.getContract(provider, chainId);
 
@@ -202,6 +207,7 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
   > = {
     balances: fetchBalances,
     "allowances.swap": fetchAllowancesSwap,
+    "allowances.swapERC20": fetchAllowancesSwapERC20,
     "allowances.wrapper": fetchAllowancesWrapper,
     "allowances.delegate": fetchAllowancesDelegate,
   };
@@ -221,16 +227,33 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         const state = getState();
         const { chainId, account } = state.web3;
         const { activeTokens, unknownTokens, knownTokens } = state.metadata;
+        const { activeOrder } = state.takeOtc;
+        const { delegateRule } = state.takeLimit;
         const allTokens: AppTokenInfo[] = [
           ...Object.values(knownTokens),
           ...Object.values(unknownTokens),
         ];
 
+        const activeOtcOrderToken = activeOrder
+          ? getTokenIdentifier(activeOrder.sender.token, activeOrder.sender.id)
+          : undefined;
+        const activeDelegateOrderToken = delegateRule
+          ? delegateRule.senderToken
+          : undefined;
+
         const {
           activeErc20Addresses,
           activeErc721Addresses,
           activeErc1155Addresses,
-        } = processActiveTokens(activeTokens, allTokens, chainId!);
+        } = processActiveTokens(
+          [
+            ...activeTokens,
+            ...(activeOtcOrderToken ? [activeOtcOrderToken] : []),
+            ...(activeDelegateOrderToken ? [activeDelegateOrderToken] : []),
+          ],
+          allTokens,
+          chainId!
+        );
 
         dispatch(
           getSetInFlightRequestTokensAction(type)([
@@ -238,6 +261,12 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
             ...activeErc721Addresses,
             ...activeErc1155Addresses,
           ])
+        );
+
+        console.log(
+          activeErc20Addresses,
+          activeErc721Addresses,
+          activeErc1155Addresses
         );
 
         const methodParams = {
@@ -252,14 +281,16 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           tokenKind: TokenKinds.ERC20,
         })) as string[];
 
-        // const erc721Amounts = await methods[type]({
-        //   ...methodParams,
-        //   tokenAddresses: activeErc721Addresses.map(
-        //     getAddressFromTokenIdentifier
-        //   ),
-        //   tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
-        //   tokenKind: TokenKinds.ERC721,
-        // });
+        const erc721Amounts = await methods[type]({
+          ...methodParams,
+          tokenAddresses: activeErc721Addresses.map(
+            getAddressFromTokenIdentifier
+          ),
+          tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
+          tokenKind: TokenKinds.ERC721,
+        });
+
+        console.log(erc721Amounts);
 
         // const erc1155Amounts = await methods[type]({
         //   ...methodParams,
@@ -276,7 +307,8 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         }));
         const erc721Balances = activeErc721Addresses.map((address, i) => ({
           address,
-          amount: type === "balances" ? "1" : "0",
+          amount:
+            erc721Amounts[i] === "true" || erc721Amounts[i] === "1" ? "1" : "0",
         }));
         const erc1155Balances = activeErc1155Addresses.map((address, i) => ({
           address,
@@ -315,6 +347,8 @@ const fetchBalances = (params: FetchParams) =>
   fetchBalancesOrAllowances("balances", params);
 const fetchAllowancesSwap = (params: FetchParams) =>
   fetchBalancesOrAllowances("allowances", params, "Swap");
+const fetchAllowancesSwapERC20 = (params: FetchParams) =>
+  fetchBalancesOrAllowances("allowances", params, "SwapERC20");
 const fetchAllowancesWrapper = (params: FetchParams) =>
   fetchBalancesOrAllowances("allowances", params, "Wrapper");
 const fetchAllowancesDelegate = (params: FetchParams) =>

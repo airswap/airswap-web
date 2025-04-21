@@ -39,6 +39,7 @@ const getSlice = (
   type:
     | "balances"
     | "allowances.swap"
+    | "allowances.swapERC20"
     | "allowances.wrapper"
     | "allowances.delegate",
   asyncThunk: ReturnType<typeof getThunk>
@@ -136,6 +137,9 @@ export const selectAllowancesWrapper = (state: RootState) =>
 
 export const requestActiveTokenBalances = getThunk("balances");
 export const requestActiveTokenAllowancesSwap = getThunk("allowances.swap");
+export const requestActiveTokenAllowancesSwapERC20 = getThunk(
+  "allowances.swapERC20"
+);
 export const requestActiveTokenAllowancesWrapper =
   getThunk("allowances.wrapper");
 export const requestActiveTokenAllowancesDelegate = getThunk(
@@ -146,6 +150,10 @@ export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSwapSlice = getSlice(
   "allowances.swap",
   requestActiveTokenAllowancesSwap
+);
+export const allowancesSwapERC20Slice = getSlice(
+  "allowances.swapERC20",
+  requestActiveTokenAllowancesSwapERC20
 );
 export const allowancesWrapperSlice = getSlice(
   "allowances.wrapper",
@@ -158,14 +166,17 @@ export const allowancesDelegateSlice = getSlice(
 
 export const balancesActions = balancesSlice.actions;
 export const allowancesSwapActions = allowancesSwapSlice.actions;
+export const allowancesSwapERC20Actions = allowancesSwapERC20Slice.actions;
 export const allowancesWrapperActions = allowancesWrapperSlice.actions;
 export const allowancesDelegateActions = allowancesDelegateSlice.actions;
 export const balancesReducer = balancesSlice.reducer;
 export const allowancesSwapReducer = allowancesSwapSlice.reducer;
+export const allowancesSwapERC20Reducer = allowancesSwapERC20Slice.reducer;
 export const allowancesWrapperReducer = allowancesWrapperSlice.reducer;
 export const allowancesDelegateReducer = allowancesDelegateSlice.reducer;
 export const allowancesReducer = combineReducers({
   swap: allowancesSwapReducer,
+  swapERC20: allowancesSwapERC20Reducer,
   wrapper: allowancesWrapperReducer,
   delegate: allowancesDelegateReducer,
 });

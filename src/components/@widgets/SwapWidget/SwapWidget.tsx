@@ -363,7 +363,7 @@ const SwapWidget: FC = () => {
           quoteTokenInfo!,
           baseTokenInfo!,
           library,
-          swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+          swapType === SwapType.swapWithWrap ? "Wrapper" : "SwapERC20"
         )
       );
 
@@ -520,7 +520,7 @@ const SwapWidget: FC = () => {
         baseAmount,
         baseTokenInfo!,
         library!,
-        swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+        swapType === SwapType.swapWithWrap ? "Wrapper" : "SwapERC20"
       )
     );
     setIsApproving(false);

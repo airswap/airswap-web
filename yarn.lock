@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@airswap/batch-call@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@airswap/batch-call/-/batch-call-5.0.1.tgz#e0f95da0b65eecafa151cbbe84ce2698e46fa75b"
-  integrity sha512-+2FH4QicX7sXXqeaMEpNKYROoYffLcA0LZR1rSnKq5KJDgdqVHJGHmJ31bQqHom1aCALPXp6Uc5GnxeCdaqAwA==
+"@airswap/batch-call@5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@airswap/batch-call/-/batch-call-5.1.0.tgz#85e37297f159c44684a4954b8ca3373e0531fc50"
+  integrity sha512-zlvRY/KoHetDLVFboroyKU1UV+eYFDhzlE+Cw6BbEO6q0ivFBV22LjqtGsG/bQQ6bwA5sUdvVUs8wPQiQsT+XA==
   dependencies:
     ethers "^5.7.2"
 
@@ -28,12 +28,12 @@
   dependencies:
     get-parameter-names "^0.3.0"
 
-"@airswap/libraries@5.0.11":
-  version "5.0.11"
-  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.11.tgz#190173cc32aa2e5c3496af4e5e5e8f2d01449afc"
-  integrity sha512-L9xWLSpRE5oV5DpyA9kr5oktrbUd6RqgjghBMmufM+QtuoOtxWABlS69OEPj90GtY1IAV/Hd6i8BN4hMxgRwlQ==
+"@airswap/libraries@5.0.12":
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/@airswap/libraries/-/libraries-5.0.12.tgz#14201db011605cd9e5663e4b1ad0b3d3c2eb1b3a"
+  integrity sha512-s/0AcIk8LRzBiegDSFCWxbNBzyawa8urZpNKg2UUKswjGZowpMTdMVE3ESU2VlrWWNq+LJhqL7IgVgtwVOrnTQ==
   dependencies:
-    "@airswap/batch-call" "5.0.1"
+    "@airswap/batch-call" "5.1.0"
     "@airswap/delegate" "5.0.3-beta.0"
     "@airswap/jsonrpc-client-websocket" "0.0.1"
     "@airswap/pool" "5.0.1"
