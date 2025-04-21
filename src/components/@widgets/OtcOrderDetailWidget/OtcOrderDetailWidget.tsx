@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
+import { Swap } from "@airswap/libraries";
 import {
   FullOrderERC20,
   ADDRESS_ZERO,
@@ -152,8 +153,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  // const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
-  const hasSufficientAllowance = true;
+  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -221,11 +221,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const takeOrder = async () => {
     if (!library || !account) return;
 
-    console.log("takeOrder", order);
-
     const errors = await checkFullOrder(order, order.sender.wallet, library);
-
-    console.log("errors", errors);
 
     if (errors.length) {
       dispatch(setErrors(errors));

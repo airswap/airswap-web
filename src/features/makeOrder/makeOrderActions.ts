@@ -156,7 +156,8 @@ const createOtcOrder = async (
     protocolFee: Number(params.protocolFee),
     signer: {
       ...params.signer,
-      amount: signerAmount,
+      amount: params.signer.kind !== TokenKinds.ERC721 ? signerAmount : "0",
+      token: params.signer.token,
       type: signerTokenKind,
     },
     sender: {

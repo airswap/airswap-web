@@ -263,12 +263,6 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           ])
         );
 
-        console.log(
-          activeErc20Addresses,
-          activeErc721Addresses,
-          activeErc1155Addresses
-        );
-
         const methodParams = {
           ...params,
           chainId: chainId!,
@@ -289,8 +283,6 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           tokenIds: activeErc721Addresses.map(getIdFromTokenIdentifier),
           tokenKind: TokenKinds.ERC721,
         });
-
-        console.log(erc721Amounts);
 
         // const erc1155Amounts = await methods[type]({
         //   ...methodParams,

@@ -502,10 +502,7 @@ interface TakeParams {
 
 export const takeFullOrder =
   (params: TakeParams) => async (dispatch: AppDispatch) => {
-    const { order, library, senderWallet, signerToken, senderToken } = params;
-
-    console.log(params.order);
-    console.log(senderWallet);
+    const { order, senderWallet, signerToken, senderToken } = params;
 
     const tx = await takeFullOrderHelper(
       params.order,

@@ -176,8 +176,7 @@ export async function approveNftToken(
   tokenId: string
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
-    const spender = getSpenderAddress(contractType, provider);
-    const contractAddress = Swap.getAddress(provider.network.chainId);
+    const contractAddress = getSpenderAddress(contractType, provider);
     const contract = new ethers.Contract(
       baseToken,
       tokenKind === TokenKinds.ERC1155 ? erc1155Interface : erc721Interface,
@@ -189,7 +188,7 @@ export async function approveNftToken(
     }
 
     return contract
-      .approve(spender, tokenId)
+      .approve(contractAddress, tokenId)
       .then(resolve)
       .catch((error: any) => {
         resolve(transformUnknownErrorToAppError(error));

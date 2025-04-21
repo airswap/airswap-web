@@ -58,7 +58,6 @@ const useTakerTokenInfo = ({
       findEthOrTokenByAddress(address, allTokens, chainId, tokenId) &&
       !activeAndQuoteTokenAddresses.includes(address)
     ) {
-      console.log("useEffect", address, tokenId, tokenKind);
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
       dispatch(isQuoteToken ? addQuoteTokens([id]) : addActiveTokens([id]));
     }
