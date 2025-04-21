@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useDebounce, useThrottle } from "react-use";
 
 import { CollectionTokenInfo, getCollectionTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -30,6 +31,15 @@ export const useCollectionTokenById = (
   const { provider: library } = useWeb3React<Web3Provider>();
   const [nft, setNft] = useState<CollectionTokenInfo>();
   const [isLoading, setIsLoading] = useState(false);
+  const [debouncedTokenId, setDebouncedTokenId] = useState(tokenId);
+
+  useDebounce(
+    () => {
+      setDebouncedTokenId(tokenId);
+    },
+    500,
+    [tokenId]
+  );
 
   useEffect(() => {
     if (nft) {
@@ -94,7 +104,7 @@ export const useCollectionTokenById = (
       }
     };
     fetchNft();
-  }, [collectionToken, tokenId, chainId]);
+  }, [collectionToken, debouncedTokenId, chainId]);
 
   return [nft, isLoading];
 };
