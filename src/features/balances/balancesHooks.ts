@@ -48,9 +48,9 @@ export const useBalances = () => {
 
     dispatch(requestActiveTokenBalances({ provider: library }));
     dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
-    // dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
-    // dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
-    // dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
+    dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
+    dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+    dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
   }, [account, chainId, library, activeTokens]);
 
   useEffect(() => {
@@ -78,9 +78,9 @@ export const useBalances = () => {
     ) {
       dispatch(requestActiveTokenBalances({ provider: library }));
       dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
-      // dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
-      // dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
-      // dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
+      dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
+      dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+      dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
     }
 
     if (

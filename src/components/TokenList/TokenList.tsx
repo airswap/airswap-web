@@ -123,12 +123,9 @@ const TokenList = ({
           compareAddresses(token.address, selectedNftCollection.address)
         )
         .filter(isCollectionTokenInfo)
-        // Since ERC721 tokens are unique, we can filter out ERC721 tokens that have no balance for quote and vice versa
+        // Don't show unowned NFT tokens for base side
         .filter(
-          (token) =>
-            token.kind === TokenKinds.ERC1155 ||
-            (!isQuoteToken && balances.values[getTokenId(token)] === "1") ||
-            (isQuoteToken && balances.values[getTokenId(token)] === "0")
+          (token) => isQuoteToken || balances.values[getTokenId(token)] === "1"
         )
     );
   }, [selectedNftCollection, allTokens]);

@@ -4,8 +4,8 @@ import { RootState } from "../../app/store";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import {
   getTokenId,
-  isCollectionTokenInfo,
   isTokenInfo,
+  splitTokenIdentifier,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   chainIdChanged,
@@ -53,7 +53,9 @@ export const metadataSlice = createSlice({
       return {
         ...state,
         isInitialized: true,
-        activeTokens: action.payload.map((token) => token.toLowerCase()),
+        activeTokens: action.payload
+          .sort(sortTokensById)
+          .map((token) => token.toLowerCase()),
       };
     },
     setUnknownTokens: (state, action: PayloadAction<MetadataTokenInfoMap>) => {
@@ -65,7 +67,9 @@ export const metadataSlice = createSlice({
     setQuoteTokens: (state, action: PayloadAction<string[]>) => {
       return {
         ...state,
-        quoteTokens: action.payload.map((token) => token.toLowerCase()),
+        quoteTokens: action.payload
+          .sort(sortTokensById)
+          .map((token) => token.toLowerCase()),
       };
     },
   },
@@ -130,6 +134,21 @@ export const metadataSlice = createSlice({
   },
 });
 
+const sortTokensById = (a: string, b: string) => {
+  const { address: aAddress, id: aId } = splitTokenIdentifier(a);
+  const { address: bAddress, id: bId } = splitTokenIdentifier(b);
+
+  if (aAddress === bAddress && aId && bId) {
+    return Number(aId) - Number(bId);
+  }
+
+  return aAddress.localeCompare(bAddress);
+};
+
+const sortTokenInfosById = (a: AppTokenInfo, b: AppTokenInfo) => {
+  return sortTokensById(getTokenId(a), getTokenId(b));
+};
+
 export const { setActiveTokens, setUnknownTokens, setQuoteTokens } =
   metadataSlice.actions;
 
@@ -137,10 +156,11 @@ export const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.activeTokens;
 export const selectQuoteTokenAddresses = (state: RootState) =>
   state.metadata.quoteTokens;
-export const selectAllTokens = (state: RootState) => [
-  ...Object.values(state.metadata.knownTokens),
-  ...Object.values(state.metadata.unknownTokens),
-];
+export const selectAllTokens = (state: RootState) =>
+  [
+    ...Object.values(state.metadata.knownTokens),
+    ...Object.values(state.metadata.unknownTokens),
+  ].sort(sortTokenInfosById);
 export const selectAllTokenInfo = createSelector(
   [selectAllTokens, selectChainId],
   (allTokenInfo, chainId) => {
@@ -150,35 +170,39 @@ export const selectAllTokenInfo = createSelector(
 export const selectErc20Tokens = createSelector(
   [selectAllTokenInfo],
   (allTokenInfo) => {
-    return allTokenInfo.filter(isTokenInfo);
+    return allTokenInfo.filter(isTokenInfo).sort(sortTokenInfosById);
   }
 );
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
-    return Object.values(allTokenInfo).filter((tokenInfo) =>
-      activeTokenAddresses.includes(getTokenId(tokenInfo))
-    );
+    return Object.values(allTokenInfo)
+      .filter((tokenInfo) =>
+        activeTokenAddresses.includes(getTokenId(tokenInfo))
+      )
+      .sort(sortTokenInfosById);
   }
 );
 export const selectActiveErc20Tokens = createSelector(
   [selectActiveTokens],
   (activeTokens) => {
-    return activeTokens.filter(isTokenInfo);
+    return activeTokens.filter(isTokenInfo).sort(sortTokenInfosById);
   }
 );
 export const selectQuoteTokens = createSelector(
   [selectQuoteTokenAddresses, selectAllTokenInfo],
   (quoteTokenAddresses, allTokenInfo) => {
-    return Object.values(allTokenInfo).filter((tokenInfo) =>
-      quoteTokenAddresses.includes(getTokenId(tokenInfo))
-    );
+    return Object.values(allTokenInfo)
+      .filter((tokenInfo) =>
+        quoteTokenAddresses.includes(getTokenId(tokenInfo))
+      )
+      .sort(sortTokenInfosById);
   }
 );
 export const selectQuoteErc20Tokens = createSelector(
   [selectQuoteTokens],
   (quoteTokens) => {
-    return quoteTokens.filter(isTokenInfo);
+    return quoteTokens.filter(isTokenInfo).sort(sortTokenInfosById);
   }
 );
 export const selectMetaDataReducer = (state: RootState) => state.metadata;

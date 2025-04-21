@@ -6,9 +6,17 @@ import { CollectionTokenInfo, getCollectionTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import { useAppSelector } from "../../../app/hooks";
 import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
-import { isCollectionTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
-import { addUnknownTokenInfo } from "../../../features/metadata/metadataActions";
+import {
+  getTokenIdentifier,
+  isCollectionTokenInfo,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { getOwnedNftsOfWallet } from "../../../entities/BatchCall/BatchCallService";
+import {
+  addActiveTokens,
+  addUnknownTokenInfo,
+} from "../../../features/metadata/metadataActions";
 import { compareAddresses } from "../../../helpers/string";
 
 export const useCollectionTokenById = (
@@ -18,6 +26,7 @@ export const useCollectionTokenById = (
   allTokens: AppTokenInfo[]
 ): [CollectionTokenInfo | undefined, boolean] => {
   const dispatch = useDispatch();
+  const { account } = useAppSelector((state) => state.web3);
   const { provider: library } = useWeb3React<Web3Provider>();
   const [nft, setNft] = useState<CollectionTokenInfo>();
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +35,24 @@ export const useCollectionTokenById = (
     if (nft) {
       dispatch(addUnknownTokenInfo([nft]));
     }
+
+    const callGetOwnedNfts = async () => {
+      if (nft && library && account) {
+        const ownedNfts = await getOwnedNftsOfWallet(
+          account,
+          nft.address,
+          [nft.id],
+          library
+        );
+        const nftTokenId = getTokenIdentifier(nft.address, nft.id);
+
+        if (ownedNfts[nftTokenId]) {
+          dispatch(addActiveTokens([nftTokenId]));
+        }
+      }
+    };
+
+    callGetOwnedNfts();
   }, [nft]);
 
   useEffect(() => {
