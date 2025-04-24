@@ -7,13 +7,13 @@ import useLatestCancelFromEvents from "./useLatestCancelFromEvents";
 import useLatestDelegatedSwapFromEvents from "./useLatestDelegateSwapFromEvents";
 import useLatestDepositOrWithdrawFromEvents from "./useLatestDepositOrWithdrawFromEvents";
 import useLatestSetRuleFromEvents from "./useLatestSetRuleFromEvents";
-import useLatestSwapFromEvents from "./useLatestSwapFromEvents";
+import useLatestSwapErc20FromEvents from "./useLatestSwapErc20FromEvents";
 import useLatestUnsetRuleFromEvents from "./useLatestUnsetRuleFromEvents";
 
 const useLatestTransactionEvent = () => {
   const { account, chainId } = useAppSelector((state) => state.web3);
 
-  const latestSwapEvent = useLatestSwapFromEvents(chainId, account);
+  const latestSwapErc20Event = useLatestSwapErc20FromEvents(chainId, account);
   const latestApproveEvent = useLatestApproveFromEvents(chainId, account);
   const latestDepositOrWithdrawEvent = useLatestDepositOrWithdrawFromEvents(
     chainId,
@@ -30,10 +30,10 @@ const useLatestTransactionEvent = () => {
   const [latestEvent, setLatestEvent] = useState<TransactionEvent>();
 
   useEffect(() => {
-    if (latestSwapEvent) {
-      setLatestEvent(latestSwapEvent);
+    if (latestSwapErc20Event) {
+      setLatestEvent(latestSwapErc20Event);
     }
-  }, [latestSwapEvent]);
+  }, [latestSwapErc20Event]);
 
   useEffect(() => {
     if (latestApproveEvent) {

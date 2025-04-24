@@ -9,6 +9,7 @@ import {
   ADDRESS_ZERO,
   TokenInfo,
   FullOrder,
+  TokenKinds,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -143,7 +144,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     senderTokenDecimals
   );
   const signerAmount = useFormattedTokenAmount(
-    order.signer.amount,
+    order.signer.kind !== TokenKinds.ERC721 ? order.signer.amount : "1",
     signerTokenDecimals
   );
   const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(

@@ -516,7 +516,8 @@ export const takeFullOrder =
       throw tx;
     }
 
-    // TODO: refactor to use FullOrder
+    // TODO: SubmittedTransactionWithOrder should be able to take FullOrder. For the time being we
+    // transform the FullOrder to an OrderERC20.
     const transaction = transformToSubmittedTransactionWithOrder(
       tx.hash,
       {

@@ -11,7 +11,7 @@ import { compareAddresses } from "../../../helpers/string";
 import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
-const useLatestSwapFromEvents = (
+const useLatestSwapErc20FromEvents = (
   chainId?: number,
   account?: string | null
 ): FullSwapERC20Event | undefined => {
@@ -86,4 +86,4 @@ const useLatestSwapFromEvents = (
   return latestSwapEvent;
 };
 
-export default useLatestSwapFromEvents;
+export default useLatestSwapErc20FromEvents;
