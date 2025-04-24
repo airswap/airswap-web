@@ -185,7 +185,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
-  const makerAmountPlusFee = useAmountPlusFee(makerAmount, makerTokenDecimals);
+  const makerAmountPlusFee = useAmountPlusFee(
+    makerAmount,
+    makerTokenDecimals,
+    makerTokenKind
+  );
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     isLimitOrder ? makerAmount : makerAmountPlusFee,
@@ -376,6 +380,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
       tokenId,
       kind: tokenKind,
     });
+
+    if (tokenKind === TokenKinds.ERC721) {
+      setMakerAmount("1");
+    }
+
     setShowTokenSelectModal(null);
   };
 

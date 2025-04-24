@@ -54,6 +54,7 @@ export const metadataSlice = createSlice({
         ...state,
         isInitialized: true,
         activeTokens: action.payload
+          .slice()
           .sort(sortTokensById)
           .map((token) => token.toLowerCase()),
       };
@@ -68,6 +69,7 @@ export const metadataSlice = createSlice({
       return {
         ...state,
         quoteTokens: action.payload
+          .slice()
           .sort(sortTokensById)
           .map((token) => token.toLowerCase()),
       };

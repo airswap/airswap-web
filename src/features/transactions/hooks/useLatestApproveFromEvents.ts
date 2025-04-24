@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Delegate, SwapERC20, Wrapper } from "@airswap/libraries";
+import { Delegate, Swap, SwapERC20, Wrapper } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
 import erc20Abi from "erc-20-abi";
@@ -70,12 +70,18 @@ const useLatestApproveFromEvents = (
       )
         return;
 
+      const swapAddress = Swap.getAddress(chainId);
       const swapErc20Address = SwapERC20.getAddress(chainId);
       const delegateErc20Address = Delegate.getAddress(chainId);
       const wrapperErc20Address = Wrapper.getAddress(chainId);
 
       if (
-        ![swapErc20Address, delegateErc20Address, wrapperErc20Address]
+        ![
+          swapAddress,
+          swapErc20Address,
+          delegateErc20Address,
+          wrapperErc20Address,
+        ]
           .filter(Boolean)
           .some((address) =>
             compareAddresses(address as string, spenderAddress)

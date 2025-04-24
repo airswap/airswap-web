@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 
+import { TokenKinds } from "@airswap/utils";
+
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
@@ -8,12 +10,21 @@ import toMaxAllowedDecimalsNumberString from "../helpers/toMaxAllowedDecimalsNum
 
 export const useAmountPlusFee = (
   amount?: string,
-  tokenDecimals?: number
+  tokenDecimals?: number,
+  tokenKind?: TokenKinds
 ): string => {
   const protocolFee = useAppSelector(selectProtocolFee);
 
   return useMemo(() => {
-    if (!amount || !tokenDecimals) {
+    if (!amount) {
+      return "0";
+    }
+
+    if (tokenKind === TokenKinds.ERC721 || tokenKind === TokenKinds.ERC1155) {
+      return amount;
+    }
+
+    if (!tokenDecimals) {
       return "0";
     }
 
@@ -22,5 +33,5 @@ export const useAmountPlusFee = (
       .toString();
 
     return toMaxAllowedDecimalsNumberString(amountPlusFee, tokenDecimals);
-  }, [amount, protocolFee, tokenDecimals]);
+  }, [amount, protocolFee, tokenDecimals, tokenKind]);
 };
