@@ -1,4 +1,4 @@
-import { FullOrder } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
@@ -7,7 +7,7 @@ import { AppError } from "../../errors/appError";
 
 export interface MakeOrderState {
   lastDelegateRule?: DelegateRule;
-  lastOtcOrder?: FullOrder;
+  lastOtcOrder?: FullOrder | FullOrderERC20;
   status: "idle" | "signing" | "failed" | "reset";
   error?: AppError;
 }
@@ -38,7 +38,10 @@ export const makeOrderSlice = createSlice({
         lastDelegateRule: action.payload,
       };
     },
-    setOtcOrder: (state, action: PayloadAction<FullOrder>): MakeOrderState => {
+    setOtcOrder: (
+      state,
+      action: PayloadAction<FullOrder | FullOrderERC20>
+    ): MakeOrderState => {
       return {
         ...state,
         lastOtcOrder: action.payload,

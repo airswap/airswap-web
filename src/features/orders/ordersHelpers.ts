@@ -24,6 +24,9 @@ import erc1155Contract from "@openzeppelin/contracts/build/contracts/ERC1155.jso
 import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
+import { getFullOrderNonceUsed } from "../../entities/FullOrder/FullOrderService";
+import { getOrderErc20NonceUsed } from "../../entities/OrderERC20/OrderERC20Service";
 import { AppError } from "../../errors/appError";
 import {
   SwapError,
@@ -316,11 +319,12 @@ export async function checkOrderErc20(
 }
 
 export async function getNonceUsed(
-  order: FullOrder,
+  order: FullOrder | FullOrderERC20,
   provider: ethers.providers.BaseProvider
 ): Promise<boolean> {
-  return (await getSwapContract(provider, order.chainId)).nonceUsed(
-    order.signer.wallet,
-    order.nonce
-  );
+  if (isFullOrder(order)) {
+    return getFullOrderNonceUsed(order, provider);
+  }
+
+  return getOrderErc20NonceUsed(order, provider);
 }

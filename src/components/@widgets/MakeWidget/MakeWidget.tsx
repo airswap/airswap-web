@@ -8,6 +8,7 @@ import {
   TokenInfo,
   TokenKinds,
   compressFullOrder,
+  compressFullOrderERC20,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -25,6 +26,7 @@ import {
   getTokenSymbol,
   isCollectionTokenInfo,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { AppErrorType } from "../../../errors/appError";
 import { selectBalances } from "../../../features/balances/balancesSlice";
 import { fetchIndexerUrls } from "../../../features/indexer/indexerActions";
@@ -291,7 +293,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   useEffect(() => {
     if (lastUserOrder) {
-      const compressedOrder = compressFullOrder(lastUserOrder);
+      const compressedOrder = isFullOrder(lastUserOrder)
+        ? compressFullOrder(lastUserOrder)
+        : compressFullOrderERC20(lastUserOrder);
       dispatch(clearLastUserOrder());
       history.push(routes.otcOrder(compressedOrder));
 
@@ -482,7 +486,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
         justifiedToken!,
         library!,
-        isLimitOrder ? "Delegate" : "Swap"
+        isLimitOrder
+          ? "Delegate"
+          : makerTokenKind === TokenKinds.ERC20
+          ? "SwapERC20"
+          : "Swap"
       )
     );
   };

@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CollectionTokenInfo, TokenKinds } from "@airswap/utils";
+import { CollectionTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 

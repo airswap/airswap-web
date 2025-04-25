@@ -1,8 +1,9 @@
-import { Server } from "@airswap/libraries";
+import { Server, Swap, SwapERC20 } from "@airswap/libraries";
 import { OrderERC20, toAtomicString, UnsignedOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import { BigNumber } from "bignumber.js";
+import { ContractTransaction, ethers } from "ethers";
 
 import { isAppError } from "../../errors/appError";
 import { createOrderERC20Signature } from "../../helpers/createSwapSignature";
@@ -79,4 +80,23 @@ export const signOrderERC20AndSendForConsideration = async (
   );
 
   server.considerOrderERC20(order);
+};
+
+export const getOrderErc20NonceUsed = async (
+  order: OrderERC20,
+  provider: ethers.providers.BaseProvider
+) => {
+  return SwapERC20.getContract(provider, provider.network.chainId).nonceUsed(
+    order.signerWallet,
+    order.nonce
+  );
+};
+
+export const cancelOrderErc20 = async (
+  order: OrderERC20,
+  provider: ethers.providers.BaseProvider
+): Promise<ContractTransaction> => {
+  return SwapERC20.getContract(provider, provider.network.chainId).cancel([
+    order.nonce,
+  ]);
 };

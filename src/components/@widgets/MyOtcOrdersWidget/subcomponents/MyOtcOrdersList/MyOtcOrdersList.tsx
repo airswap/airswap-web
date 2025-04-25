@@ -16,10 +16,10 @@ interface MyOtcOrdersListProps {
   activeCancellationId?: string;
   activeSortType: OrdersSortType;
   activeTokens: AppTokenInfo[];
-  erc20Orders: FullOrder[];
+  fullOrders: (FullOrder | FullOrderERC20)[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   library: ethers.providers.BaseProvider;
-  onDeleteOrderButtonClick: (order: FullOrder) => void;
+  onDeleteOrderButtonClick: (order: FullOrder | FullOrderERC20) => void;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
 }
@@ -27,7 +27,7 @@ interface MyOtcOrdersListProps {
 const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   activeCancellationId,
   activeSortType,
-  erc20Orders,
+  fullOrders,
   library,
   sortTypeDirection,
   onDeleteOrderButtonClick,
@@ -41,17 +41,17 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
 
   const callGetOrders = useCallback(async () => {
     const newOrders = await Promise.all(
-      erc20Orders.map((order) =>
+      fullOrders.map((order) =>
         getFullOrderDataAndTransformToOrder(order, activeTokens, library)
       )
     );
 
     setOrders(newOrders);
     setIsLoading(false);
-  }, [erc20Orders, activeTokens, activeCancellationId]);
+  }, [fullOrders, activeTokens, activeCancellationId]);
 
   const handleDeleteOrderButtonClick = (order: MyOrder): void => {
-    const orderToDelete = erc20Orders.find((o) => o.nonce === order.id);
+    const orderToDelete = fullOrders.find((o) => o.nonce === order.id);
 
     if (orderToDelete) {
       onDeleteOrderButtonClick(orderToDelete);

@@ -1,14 +1,15 @@
-import { FullOrder } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
 import { OrdersSortType } from "../../types/ordersSortType";
 import { setOtcOrder } from "../makeOrder/makeOrderSlice";
 import { walletChanged, walletDisconnected } from "../web3/web3Actions";
 import { writeOtcUserOrdersToLocalStorage } from "./myOtcOrdersHelpers";
 
 export interface MyOtcOrdersState {
-  userOrders: FullOrder[];
+  userOrders: (FullOrder | FullOrderERC20)[];
   activeSortType: OrdersSortType;
   sortTypeDirection: Record<OrdersSortType, boolean>;
 }
@@ -31,14 +32,17 @@ export const myOtcOrdersSlice = createSlice({
   reducers: {
     removeOtcUserOrder: (
       state,
-      action: PayloadAction<FullOrder>
+      action: PayloadAction<FullOrder | FullOrderERC20>
     ): MyOtcOrdersState => {
       const userOrders = [...state.userOrders].filter(
         (order) => order.nonce !== action.payload.nonce
       );
+      const signerWallet = isFullOrder(action.payload)
+        ? action.payload.signer.wallet
+        : action.payload.signerWallet;
       writeOtcUserOrdersToLocalStorage(
         userOrders,
-        action.payload.signer.wallet,
+        signerWallet,
         action.payload.chainId
       );
 
@@ -66,7 +70,7 @@ export const myOtcOrdersSlice = createSlice({
     },
     setOtcUserOrders: (
       state,
-      action: PayloadAction<FullOrder[]>
+      action: PayloadAction<(FullOrder | FullOrderERC20)[]>
     ): MyOtcOrdersState => {
       return {
         ...state,
@@ -86,8 +90,11 @@ export const myOtcOrdersSlice = createSlice({
 
     builder.addCase(setOtcOrder, (state, action) => {
       const userOrders = [action.payload, ...state.userOrders];
-      const { signer, chainId } = action.payload;
-      writeOtcUserOrdersToLocalStorage(userOrders, signer.wallet, chainId);
+      const signer = isFullOrder(action.payload)
+        ? action.payload.signer.wallet
+        : action.payload.signerWallet;
+      const chainId = action.payload.chainId;
+      writeOtcUserOrdersToLocalStorage(userOrders, signer, chainId);
 
       return {
         ...state,

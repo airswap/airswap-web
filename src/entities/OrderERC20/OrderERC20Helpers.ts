@@ -1,4 +1,4 @@
-import { OrderERC20 } from "@airswap/utils";
+import { FullOrderERC20, OrderERC20 } from "@airswap/utils";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
 
@@ -21,3 +21,16 @@ export const getOrderExpiryWithBufferInSeconds = (
 ) => {
   return parseInt(expiry) - RFQ_EXPIRY_BUFFER_MS / 1000;
 };
+export const isFullOrderERC20 = (value: any): value is FullOrderERC20 =>
+  typeof value === "object" &&
+  value !== null &&
+  "signerWallet" in value &&
+  "senderWallet" in value &&
+  "signerToken" in value &&
+  "senderToken" in value &&
+  "signerAmount" in value &&
+  "senderAmount" in value &&
+  "protocolFee" in value &&
+  "v" in value &&
+  "r" in value &&
+  "s" in value;

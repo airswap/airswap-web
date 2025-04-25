@@ -21,6 +21,7 @@ import {
   isCollectionTokenInfo,
   getTokenKind,
   getTokenDecimals,
+  isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { transformToDelegateRule } from "../../entities/DelegateRule/DelegateRuleTransformers";
 import { SubmittedSetRuleTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -43,7 +44,7 @@ const getJustifiedAddress = async (library: Web3Provider, address: string) => {
     : await library.resolveName(address);
 };
 
-type CreateOrderParams = {
+type CreateFullOrderParams = {
   isLimitOrder: boolean;
   activeIndexers: string[] | null;
   chainId: number;
@@ -53,8 +54,12 @@ type CreateOrderParams = {
   shouldSendToIndexers: boolean;
 } & Omit<UnsignedOrder, "affiliateWallet" | "affiliateAmount">;
 
+type CreateErc20OrderParams = CreateFullOrderParams & {
+  signerTokenInfo: TokenInfo;
+  senderTokenInfo: TokenInfo;
+};
 const createDelegateRule = async (
-  params: CreateOrderParams,
+  params: CreateFullOrderParams,
   dispatch: AppDispatch
 ): Promise<SubmittedSetRuleTransaction | undefined> => {
   if (
@@ -130,8 +135,8 @@ const createDelegateRule = async (
   }
 };
 
-const createOtcOrder = async (
-  params: CreateOrderParams,
+const createOtcFullOrder = async (
+  params: CreateFullOrderParams,
   dispatch: AppDispatch
 ): Promise<undefined> => {
   const signerTokenDecimals = getTokenDecimals(params.signerTokenInfo);
@@ -204,8 +209,72 @@ const createOtcOrder = async (
   return;
 };
 
+const createOtcErc20Order = async (
+  params: CreateErc20OrderParams,
+  dispatch: AppDispatch
+): Promise<undefined> => {
+  const signerAmount = toAtomicString(
+    params.signer.amount,
+    params.signerTokenInfo.decimals
+  );
+
+  const senderAmount = toAtomicString(
+    params.sender.amount,
+    params.senderTokenInfo.decimals
+  );
+
+  const unsignedOrder = createOrderERC20({
+    expiry: params.expiry,
+    nonce: Date.now().toString(),
+    senderWallet: params.sender.wallet,
+    signerWallet: params.signer.wallet,
+    signerToken: params.signer.token,
+    senderToken: params.sender.token,
+    protocolFee: params.protocolFee,
+    signerAmount,
+    senderAmount,
+    chainId: params.chainId,
+  });
+
+  dispatch(setStatus("signing"));
+
+  const signature = await createOrderERC20Signature(
+    unsignedOrder,
+    params.library.getSigner(),
+    getSwapErc20Address(params.chainId) || "",
+    params.chainId
+  );
+
+  if (isAppError(signature)) {
+    if (signature.type === AppErrorType.rejectedByUser) {
+      dispatch(setStatus("idle"));
+      notifyRejectedByUserError();
+    } else {
+      dispatch(setStatus("failed"));
+      dispatch(setError(signature));
+    }
+    return;
+  }
+
+  const fullOrder: FullOrderERC20 = {
+    ...unsignedOrder,
+    ...signature,
+    chainId: params.chainId,
+    swapContract: getSwapErc20Address(params.chainId) || "",
+  };
+
+  if (params.shouldSendToIndexers && params.activeIndexers) {
+    sendOrderToIndexers(fullOrder, params.activeIndexers);
+  }
+
+  dispatch(setStatus("idle"));
+  dispatch(setOtcOrder(fullOrder));
+
+  return;
+};
+
 export const createOtcOrDelegateOrder =
-  (params: CreateOrderParams) =>
+  (params: CreateFullOrderParams) =>
   async (
     dispatch: AppDispatch
   ): Promise<SubmittedSetRuleTransaction | undefined> => {
@@ -226,7 +295,7 @@ export const createOtcOrDelegateOrder =
         return;
       }
 
-      const justifiedParams: CreateOrderParams = {
+      const justifiedParams: CreateFullOrderParams = {
         ...params,
         signer: {
           ...params.signer,
@@ -242,7 +311,17 @@ export const createOtcOrDelegateOrder =
         return createDelegateRule(justifiedParams, dispatch as AppDispatch);
       }
 
-      return createOtcOrder(justifiedParams, dispatch as AppDispatch);
+      if (
+        isTokenInfo(params.signerTokenInfo) &&
+        isTokenInfo(params.senderTokenInfo)
+      ) {
+        return createOtcErc20Order(
+          justifiedParams as CreateErc20OrderParams,
+          dispatch as AppDispatch
+        );
+      }
+
+      return createOtcFullOrder(justifiedParams, dispatch as AppDispatch);
     } catch (error) {
       console.error(error);
       dispatch(setStatus("failed"));

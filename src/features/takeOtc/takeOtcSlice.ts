@@ -1,11 +1,11 @@
-import { FullOrder } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import { AppError } from "../../errors/appError";
 
 export interface TakeOtcState {
-  activeOrder?: FullOrder;
+  activeOrder?: FullOrder | FullOrderERC20;
   status: "idle" | "invalid" | "open" | "taken" | "signing" | "failed";
   errors: AppError[];
 }
@@ -19,7 +19,10 @@ export const takeOtcSlice = createSlice({
   name: "take-otc",
   initialState,
   reducers: {
-    setActiveOrder: (state, action: PayloadAction<FullOrder>): TakeOtcState => {
+    setActiveOrder: (
+      state,
+      action: PayloadAction<FullOrder | FullOrderERC20>
+    ): TakeOtcState => {
       return {
         ...state,
         activeOrder: action.payload,

@@ -1,8 +1,10 @@
 import { Server } from "@airswap/libraries";
-import { FullOrder } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
+
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
 
 export const sendOrderToIndexers = async (
-  order: FullOrder,
+  order: FullOrder | FullOrderERC20,
   indexerArray: string[]
 ) => {
   const indexers = indexerArray.map(async (url) => await Server.at(url));
@@ -16,8 +18,12 @@ export const sendOrderToIndexers = async (
     )
     .map((value) => {
       const server = value.value;
-      return server
-        .addOrder(order)
+
+      const addOrder = isFullOrder(order)
+        ? server.addOrder(order)
+        : server.addOrderERC20(order);
+
+      return addOrder
         .then(() => console.log(`Order added to ${server.getUrl()}`))
         .catch((e: any) => {
           console.log(

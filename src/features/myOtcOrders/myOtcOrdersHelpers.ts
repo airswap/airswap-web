@@ -1,46 +1,85 @@
 import {
   compressFullOrderERC20,
+  compressFullOrder,
   decompressFullOrderERC20,
   FullOrder,
   FullOrderERC20,
+  decompressFullOrder,
 } from "@airswap/utils";
+
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
+import { isFullOrderERC20 } from "../../entities/OrderERC20/OrderERC20Helpers";
 
 export const getUserOtcOrdersLocalStorageKey: (
   account: string,
-  chainId: string | number
-) => string = (account, chainId) =>
-  `airswap/userOtcOrders/${account}/${chainId}`;
+  chainId: string | number,
+  isErc20?: boolean
+) => string = (account, chainId, isErc20) => {
+  const type = isErc20 ? "erc20" : "full";
+  return `airswap/userOtcOrders/${type}/${account.toLowerCase()}/${chainId}}`;
+};
 
 export const writeOtcUserOrdersToLocalStorage = (
-  orders: FullOrder[],
+  orders: (FullOrder | FullOrderERC20)[],
   address: string,
   chainId: string | number
 ): void => {
-  const key = getUserOtcOrdersLocalStorageKey(address, chainId);
+  const fullOrdersKey = getUserOtcOrdersLocalStorageKey(
+    address.toLowerCase(),
+    chainId
+  );
+  const erc20OrdersKey = getUserOtcOrdersLocalStorageKey(
+    address.toLowerCase(),
+    chainId,
+    true
+  );
+
+  const fullOrders = orders.filter((order) =>
+    isFullOrder(order)
+  ) as FullOrder[];
+  const erc20Orders = orders.filter((order) =>
+    isFullOrderERC20(order)
+  ) as FullOrderERC20[];
+
   localStorage.setItem(
-    key,
-    // TODO: Need a compressFullOrder function that works with FullOrder
-    JSON.stringify(
-      orders.map((order) =>
-        compressFullOrderERC20(order as unknown as FullOrderERC20)
-      )
-    )
+    fullOrdersKey,
+    JSON.stringify(fullOrders.map(compressFullOrder))
+  );
+  localStorage.setItem(
+    erc20OrdersKey,
+    JSON.stringify(erc20Orders.map(compressFullOrderERC20))
   );
 };
 
 export const getUserOrdersFromLocalStorage = (
   address: string,
   chainId: string | number
-): FullOrder[] => {
-  const localStorageUserOrders = localStorage.getItem(
+): (FullOrder | FullOrderERC20)[] => {
+  const localStorageUserFullOrders = localStorage.getItem(
     getUserOtcOrdersLocalStorageKey(address, chainId)
   );
-  const userOrderStrings: string[] = localStorageUserOrders
-    ? JSON.parse(localStorageUserOrders)
+  const localStorageUserErc20Orders = localStorage.getItem(
+    getUserOtcOrdersLocalStorageKey(address, chainId, true)
+  );
+  const userFullOrderStrings: string[] = localStorageUserFullOrders
+    ? JSON.parse(localStorageUserFullOrders)
+    : [];
+  const userErc20OrderStrings: string[] = localStorageUserErc20Orders
+    ? JSON.parse(localStorageUserErc20Orders)
     : [];
 
-  // TODO: Need a decompressFullOrder function that works with FullOrder
-  return userOrderStrings.map(
-    (order) => decompressFullOrderERC20(order) as unknown as FullOrder
-  );
+  const orders = [
+    ...userFullOrderStrings.map(
+      (order) => decompressFullOrder(order) as unknown as FullOrder
+    ),
+    ...userErc20OrderStrings.map(
+      (order) => decompressFullOrderERC20(order) as unknown as FullOrderERC20
+    ),
+  ];
+
+  console.log(localStorageUserFullOrders);
+  console.log(localStorageUserErc20Orders);
+  console.log(orders);
+
+  return orders;
 };

@@ -20,6 +20,7 @@ import {
   getTokenIdentifier,
   isCollectionTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
 import getWethAddress from "../../helpers/getWethAddress";
 
 /**
@@ -235,7 +236,9 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         ];
 
         const activeOtcOrderToken = activeOrder
-          ? activeOrder.sender.token
+          ? isFullOrder(activeOrder)
+            ? activeOrder.sender.token
+            : activeOrder.senderToken
           : undefined;
         const activeDelegateOrderToken = delegateRule
           ? delegateRule.senderToken

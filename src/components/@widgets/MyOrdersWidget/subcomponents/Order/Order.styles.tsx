@@ -143,7 +143,7 @@ export const Tokens = styled.div`
 export const TokenIcon = styled(TokenLogo)`
   min-width: 1.125rem;
   aspect-ratio: 1;
-  background: ${({ theme }) => theme.colors.darkGrey};
+  background-color: ${({ theme }) => theme.colors.darkGrey};
   z-index: 3;
   pointer-events: none;
 `;
