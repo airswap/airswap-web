@@ -141,9 +141,6 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     "showLimitNotice",
     true
   );
-  // NFT's are not supported for limit orders
-  const isNftSupported = !isLimitOrder;
-  // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
 
   // Selected tokens
@@ -171,6 +168,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const takerTokenKind = takerTokenInfo
     ? getTokenKind(takerTokenInfo)
     : undefined;
+
+  // NFT's are not supported for limit orders
+  const isNftSupported = !isLimitOrder;
+  const signerShouldPayProtocolFee =
+    !isLimitOrder && makerTokenKind === TokenKinds.ERC20;
   const defaultMakerAmount =
     isNftSupported && makerTokenKind === TokenKinds.ERC721 ? "1" : "";
 
@@ -192,13 +194,13 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   );
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
-    isLimitOrder ? makerAmount : makerAmountPlusFee,
+    signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
     { spenderAddressType: isLimitOrder ? "Delegate" : "Swap" }
   );
 
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
-    isLimitOrder ? makerAmount : makerAmountPlusFee,
+    signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
     true
   );
   const isBalanceLoading = useBalanceLoading();
@@ -223,11 +225,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
     makerAmount,
-    isLimitOrder ? false : true
+    signerShouldPayProtocolFee
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const shouldPayProtocolFee =
-    !isLimitOrder && userTokens.tokenFrom?.kind === TokenKinds.ERC20;
   const isValidAddress = useValidAddress(takerAddress);
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const isNetworkSupported = useNetworkSupported();
@@ -479,7 +479,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
     dispatch(
       approve(
-        shouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
+        signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
         justifiedToken!,
         library!,
         isLimitOrder ? "Delegate" : "Swap"
@@ -583,7 +583,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             isLoading={!!approvalTransaction}
             amount={makerAmount}
             amountPlusFee={
-              shouldPayProtocolFee ? makerAmountPlusFee : undefined
+              signerShouldPayProtocolFee ? makerAmountPlusFee : undefined
             }
             readableAllowance={readableAllowance}
             token={makerTokenInfo}
@@ -608,7 +608,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             senderToken={takerTokenInfo}
             signerAmount={makerAmount}
             signerAmountPlusFee={
-              shouldPayProtocolFee ? makerAmountPlusFee : undefined
+              signerShouldPayProtocolFee ? makerAmountPlusFee : undefined
             }
             signerToken={makerTokenInfo}
             wrappedNativeToken={wrappedNativeToken}
