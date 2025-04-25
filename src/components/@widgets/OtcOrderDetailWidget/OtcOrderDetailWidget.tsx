@@ -245,8 +245,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       return;
     }
 
-    // TODO: Support AppTokenInfo
-    dispatch(approve(senderAmount, senderToken as TokenInfo, library, "Swap"));
+    dispatch(approve(senderAmount, senderToken, library, "Swap"));
   };
 
   const depositNativeToken = async () => {

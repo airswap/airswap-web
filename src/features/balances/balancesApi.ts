@@ -235,7 +235,7 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         ];
 
         const activeOtcOrderToken = activeOrder
-          ? getTokenIdentifier(activeOrder.sender.token, activeOrder.sender.id)
+          ? activeOrder.sender.token
           : undefined;
         const activeDelegateOrderToken = delegateRule
           ? delegateRule.senderToken

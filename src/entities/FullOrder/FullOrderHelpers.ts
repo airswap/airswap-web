@@ -30,7 +30,6 @@ export async function checkFullOrder(
     provider.getSigner(),
     chainId
   ).check(senderWallet, order);
-  console.log("count", count, checkErrors);
   const errors =
     count && checkErrors
       ? (parseCheckResult([checkErrors]) as SwapError[])
