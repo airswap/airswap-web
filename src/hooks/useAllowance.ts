@@ -26,11 +26,13 @@ import getWethAddress from "../helpers/getWethAddress";
  * @returns An object with the allowance, whether it has sufficient allowance, and the readable allowance.
  */
 
+type AllowancesType = "swap" | "swapERC20" | "delegate";
+
 const useAllowance = (
   token: AppTokenInfo | null,
   amount?: string,
   options?: {
-    spenderAddressType?: "Swap" | "Delegate";
+    spenderAddressType?: AllowancesType;
     wrapNativeToken?: boolean;
   }
 ): {
@@ -38,7 +40,7 @@ const useAllowance = (
   allowance: string;
   readableAllowance: string;
 } => {
-  const spenderAddressType = options?.spenderAddressType || "Swap";
+  const spenderAddressType = options?.spenderAddressType || "swap";
   const wrapNativeToken = options?.wrapNativeToken || true;
   const { chainId } = useAppSelector((state) => state.web3);
   const allTokens = useAppSelector(selectAllTokenInfo);
@@ -88,10 +90,7 @@ const useAllowance = (
 
     const tokenAddress = getTokenId(justifiedToken);
 
-    const values =
-      spenderAddressType === "Swap"
-        ? allowances.swap.values
-        : allowances.delegate.values;
+    const { values } = allowances[spenderAddressType];
     const tokenAllowance = values[tokenAddress];
 
     if (!tokenAllowance) {

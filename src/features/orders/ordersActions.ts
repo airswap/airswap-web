@@ -511,9 +511,21 @@ export const takeFullOrder =
     );
 
     if (isAppError(tx)) {
-      dispatch(setErrors([tx]));
+      const appError = tx;
 
-      throw tx;
+      if (appError.type === AppErrorType.rejectedByUser) {
+        notifyRejectedByUserError();
+      } else {
+        dispatch(setErrors([appError]));
+      }
+
+      if (appError.error && "message" in appError.error) {
+        dispatch(declineTransaction(appError.error.message));
+      }
+
+      dispatch(setStatus("failed"));
+
+      return;
     }
 
     // TODO: SubmittedTransactionWithOrder should be able to take FullOrder. For the time being we

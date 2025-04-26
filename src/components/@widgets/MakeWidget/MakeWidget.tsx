@@ -193,7 +193,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
-    { spenderAddressType: isLimitOrder ? "Delegate" : "Swap" }
+    { spenderAddressType: isLimitOrder ? "delegate" : "swap" }
   );
 
   const hasInsufficientBalance = useInsufficientBalance(

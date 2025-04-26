@@ -195,7 +195,11 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
+  const { hasSufficientAllowance, readableAllowance } = useAllowance(
+    senderToken,
+    senderAmount,
+    { spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20" }
+  );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -387,7 +391,9 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           errors={errors}
           expiry={+order.expiry}
           senderAmount={originalSenderAmount}
-          senderAmountPlusFee={senderAmountPlusFee}
+          senderAmountPlusFee={
+            senderShouldPayProtocolFee ? senderAmountPlusFee : undefined
+          }
           senderToken={senderToken}
           signerAmount={signerAmount}
           signerToken={signerToken}
