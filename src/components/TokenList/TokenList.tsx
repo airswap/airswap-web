@@ -15,9 +15,7 @@ import {
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveTokens,
-  addQuoteTokens,
   removeActiveTokens,
-  removeQuoteTokens,
 } from "../../features/metadata/metadataActions";
 import { compareAddresses } from "../../helpers/string";
 import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
@@ -35,10 +33,6 @@ import TokensAndCollectionsList from "./subcomponents/TokensAndCollectionsList/T
 
 export type TokenListProps = {
   /**
-   * Whether the token list is for a quote token. This will determine if the nft selector lists the user's token or all tokens.
-   */
-  isQuoteToken?: boolean;
-  /**
    * Balances for current tokens in wallet
    */
   balances: BalancesState;
@@ -50,10 +44,6 @@ export type TokenListProps = {
    * All active tokens.
    */
   activeTokens: AppTokenInfo[];
-  /**
-   * All quote tokens.
-   */
-  quoteTokens?: AppTokenInfo[];
   /**
    * Supported tokens according to registry
    */
@@ -73,11 +63,9 @@ export type TokenListProps = {
 };
 
 const TokenList = ({
-  isQuoteToken,
   balances,
   allTokens,
   activeTokens = [],
-  quoteTokens = [],
   supportedTokenAddresses = [],
   onAfterAddActiveToken,
   onAfterRemoveActiveToken,
@@ -97,12 +85,7 @@ const TokenList = ({
   const [tokenQuery, setTokenQuery] = useState<string>("");
   const [scrapedTokens, isScrapeTokensLoading] = useScrapeToken(
     tokenQuery,
-    allTokens,
-    isQuoteToken
-  );
-
-  const activeAndQuoteTokens = Array.from(
-    new Set([...activeTokens, ...quoteTokens])
+    allTokens
   );
 
   const [, isLoadingCollectionToken] = useCollectionTokenById(
@@ -117,28 +100,19 @@ const TokenList = ({
       return [];
     }
 
-    return (
-      (isQuoteToken ? allTokens : activeTokens)
-        .filter((token) =>
-          compareAddresses(token.address, selectedNftCollection.address)
-        )
-        .filter(isCollectionTokenInfo)
-        // Don't show unowned NFT tokens for base side
-        .filter(
-          (token) => isQuoteToken || balances.values[getTokenId(token)] === "1"
-        )
-    );
+    return activeTokens
+      .filter((token) =>
+        compareAddresses(token.address, selectedNftCollection.address)
+      )
+      .filter(isCollectionTokenInfo)
+      .filter((token) => balances.values[getTokenId(token)] === "1");
   }, [selectedNftCollection, allTokens]);
 
   const handleAddToken = async (tokenInfo: AppTokenInfo) => {
     if (library && account) {
       const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, allTokens);
 
-      if (isQuoteToken) {
-        dispatch(addQuoteTokens(tokenIds));
-      } else {
-        dispatch(addActiveTokens(tokenIds));
-      }
+      dispatch(addActiveTokens(tokenIds));
 
       setTokenQuery("");
       onAfterAddActiveToken && onAfterAddActiveToken(tokenIds[0]);
@@ -149,7 +123,6 @@ const TokenList = ({
     if (library) {
       const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, allTokens);
 
-      dispatch(removeQuoteTokens(tokenIds));
       dispatch(removeActiveTokens(tokenIds));
 
       onAfterRemoveActiveToken && onAfterRemoveActiveToken(tokenIds[0]);
@@ -163,6 +136,7 @@ const TokenList = ({
       return;
     }
 
+    // TODO: Fetch owned tokens here
     setTokenQuery("");
     setSelectedNftCollection(tokenInfo);
   };
@@ -220,7 +194,7 @@ const TokenList = ({
             <TokensAndCollectionsList
               editMode={editMode}
               isScrapeTokensLoading={isScrapeTokensLoading}
-              activeTokens={isQuoteToken ? activeAndQuoteTokens : activeTokens}
+              activeTokens={activeTokens}
               allTokens={allTokens}
               balances={balances}
               scrapedTokens={scrapedTokens}

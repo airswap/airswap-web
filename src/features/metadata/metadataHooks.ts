@@ -13,14 +13,12 @@ import {
 } from "./metadataActions";
 import {
   getActiveTokensFromLocalStorage,
-  getQuoteTokensFromLocalStorage,
   getUnknownTokensFromLocalStorage,
 } from "./metadataApi";
 import {
   selectActiveTokenAddresses,
   selectAllTokens,
   setActiveTokens,
-  setQuoteTokens,
   setUnknownTokens,
 } from "./metadataSlice";
 
@@ -65,13 +63,8 @@ const useMetadata = () => {
     setActiveSupportedTokens(supportedTokenAddresses);
 
     const newActiveTokens = getActiveTokensFromLocalStorage(account, chainId);
-    const newQuoteTokens = getQuoteTokensFromLocalStorage(account, chainId);
 
     dispatch(setActiveTokens(newActiveTokens || supportedTokenAddresses));
-
-    if (newQuoteTokens?.length) {
-      dispatch(setQuoteTokens(newQuoteTokens));
-    }
   }, [account, chainId, provider, isFetchingSupportedTokensSuccess]);
 
   // TODO: Fetch unknown when active tokens are added

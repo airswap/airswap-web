@@ -156,15 +156,3 @@ export const getOwnedNftsOfWallet = async (
 
   throw new Error("Unknown nft interface. Could not fetch token ids.");
 };
-
-export const getFirstNftIdCollection = async (
-  collectionToken: string,
-  chainId: number
-): Promise<string[]> => {
-  const alchemy = getAlchemyClient(chainId);
-  const response = await alchemy.nft.getNftsForContract(collectionToken, {
-    pageSize: 1,
-  });
-
-  return response.nfts.map((nft: Nft) => nft.tokenId);
-};

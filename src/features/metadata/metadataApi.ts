@@ -6,9 +6,8 @@ import * as ethers from "ethers";
 import { getSwapErc20Contract } from "../../helpers/swapErc20";
 import {
   getActiveTokensLocalStorageKey,
-  getQuoteTokensLocalStorageKey,
+  getUnknownTokensLocalStorageKey,
 } from "./metadataHelpers";
-import { getUnknownTokensLocalStorageKey } from "./metadataHelpers";
 import { MetadataTokenInfoMap } from "./metadataSlice";
 
 export const getUnknownTokens = async (
@@ -35,22 +34,6 @@ export const getActiveTokensFromLocalStorage = (
 ): string[] | undefined => {
   const savedTokenString = localStorage.getItem(
     getActiveTokensLocalStorageKey(account, chainId)
-  );
-
-  try {
-    return savedTokenString ? JSON.parse(savedTokenString) : undefined;
-  } catch (e) {
-    console.error(e);
-    return undefined;
-  }
-};
-
-export const getQuoteTokensFromLocalStorage = (
-  account: string,
-  chainId: number
-): string[] | undefined => {
-  const savedTokenString = localStorage.getItem(
-    getQuoteTokensLocalStorageKey(account, chainId)
   );
 
   try {

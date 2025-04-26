@@ -7,13 +7,11 @@ import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
 import { getTokenIdentifierWithKind } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   addActiveTokens,
-  addQuoteTokens,
   fetchUnkownTokens,
 } from "../../../../features/metadata/metadataActions";
 import {
   selectActiveTokenAddresses,
   selectAllTokens,
-  selectQuoteTokenAddresses,
 } from "../../../../features/metadata/metadataSlice";
 import { selectTakeOtcReducer } from "../../../../features/takeOtc/takeOtcSlice";
 import findEthOrTokenByAddress from "../../../../helpers/findEthOrTokenByAddress";
@@ -43,11 +41,6 @@ const useTakerTokenInfo = ({
 
   const allTokens = useAppSelector(selectAllTokens);
   const activeTokenAddresses = useAppSelector(selectActiveTokenAddresses);
-  const quoteTokenAddresses = useAppSelector(selectQuoteTokenAddresses);
-  const activeAndQuoteTokenAddresses = [
-    ...activeTokenAddresses,
-    ...quoteTokenAddresses,
-  ];
   const { activeOrder } = useAppSelector(selectTakeOtcReducer);
 
   const [token, setToken] = useState<AppTokenInfo>();
@@ -56,10 +49,10 @@ const useTakerTokenInfo = ({
     if (
       address &&
       findEthOrTokenByAddress(address, allTokens, chainId, tokenId) &&
-      !activeAndQuoteTokenAddresses.includes(address)
+      !activeTokenAddresses.includes(address)
     ) {
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
-      dispatch(isQuoteToken ? addQuoteTokens([id]) : addActiveTokens([id]));
+      dispatch(addActiveTokens([id]));
     }
   }, [address, allTokens]);
 
@@ -79,7 +72,7 @@ const useTakerTokenInfo = ({
       setToken(tokenFromStore);
     } else {
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
-      dispatch(isQuoteToken ? addQuoteTokens([id]) : addActiveTokens([id]));
+      dispatch(addActiveTokens([id]));
       // Add nft to fetchUnkownTokens
       dispatch(fetchUnkownTokens({ provider: library, tokens: [address] }));
     }

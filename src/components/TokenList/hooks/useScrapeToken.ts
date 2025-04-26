@@ -39,11 +39,7 @@ const useScrapeToken = (
 
     const callScrapeToken = async () => {
       setIsLoading(true);
-      const result = await scrapeToken(
-        library,
-        address,
-        isQuoteToken ? undefined : account
-      );
+      const result = await scrapeToken(library, address, account);
       setScrapedTokens(result);
       setIsLoading(false);
     };
