@@ -10,6 +10,7 @@ import {
   FullOrder,
   TokenKinds,
   OrderERC20,
+  getTokenKind,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
@@ -53,6 +54,7 @@ import {
 import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
 import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
+import { useAmountPlusFee } from "../../../hooks/useAmountPlusFee";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import { useBalanceLoading } from "../../../hooks/useBalanceLoading";
 import useDepositPending from "../../../hooks/useDepositPending";
@@ -169,16 +171,24 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const signerTokenSymbol = signerToken
     ? getTokenSymbol(signerToken)
     : undefined;
+  const senderShouldPayProtocolFee = isFullOrder(order);
 
-  const senderAmount = useFormattedTokenAmount(
+  const originalSenderAmount = useFormattedTokenAmount(
     senderTokenAmount,
     senderTokenDecimals
   );
+  const senderAmountPlusFee = useAmountPlusFee(
+    originalSenderAmount,
+    senderTokenDecimals
+  );
+  const senderAmount = senderShouldPayProtocolFee
+    ? senderAmountPlusFee
+    : originalSenderAmount;
   const signerAmount = useFormattedTokenAmount(
     signerTokenKind !== TokenKinds.ERC721 ? signerTokenAmount : "1",
     signerTokenDecimals
   );
-  const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
+  const tokenExchangeRate = new BigNumber(senderAmount).dividedBy(
     signerAmount!
   );
   const approvalTransaction = useApprovalPending(senderTokenAddress, true);
@@ -189,7 +199,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
-    senderAmount!
+    senderAmount
   );
 
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
@@ -283,7 +293,14 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       return;
     }
 
-    dispatch(approve(senderAmount, senderToken, library, "Swap"));
+    dispatch(
+      approve(
+        senderAmount,
+        senderToken,
+        library,
+        isFullOrder(order) ? "Swap" : "SwapERC20"
+      )
+    );
   };
 
   const depositNativeToken = async () => {
@@ -354,7 +371,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       return (
         <WrapReview
           isLoading={hasDepositPending}
-          amount={senderAmount || "0"}
+          amount={senderAmount}
           errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
@@ -369,9 +386,10 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
         <TakeOrderReview
           errors={errors}
           expiry={+order.expiry}
-          senderAmount={senderAmount || "0"}
+          senderAmount={originalSenderAmount}
+          senderAmountPlusFee={senderAmountPlusFee}
           senderToken={senderToken}
-          signerAmount={signerAmount || "0"}
+          signerAmount={signerAmount}
           signerToken={signerToken}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={backToOverview}
@@ -392,12 +410,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           isRequestingQuoteAmount={isSenderTokenLoading}
           isRequestingQuoteToken={isSenderTokenLoading}
           showTokenContractLink
-          baseAmount={signerAmount || "0.00"}
+          baseAmount={signerAmount}
           baseTokenInfo={signerToken}
           maxAmount={null}
           side={userIsMakerOfSwap ? "sell" : "buy"}
           tradeNotAllowed={walletChainIdIsDifferentThanOrderChainId}
-          quoteAmount={senderAmount || "0.00"}
+          quoteAmount={senderAmount}
           quoteTokenInfo={senderToken}
           onBaseAmountChange={() => {}}
           onChangeTokenClick={() => {}}

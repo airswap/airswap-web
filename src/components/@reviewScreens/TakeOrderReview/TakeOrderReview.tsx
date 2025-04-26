@@ -41,6 +41,7 @@ interface TakeOrderReviewProps {
   errors: AppError[];
   expiry: number;
   senderAmount: string;
+  senderAmountPlusFee?: string;
   senderToken: AppTokenInfo | null;
   signerAmount: string;
   signerAmountPlusFee?: string;
@@ -57,6 +58,7 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
   errors,
   expiry,
   senderAmount,
+  senderAmountPlusFee,
   senderToken,
   signerAmount,
   signerAmountPlusFee,
@@ -106,24 +108,30 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
     [expiry]
   );
 
+  const amountPlusFee = signerAmountPlusFee || senderAmountPlusFee;
+  const amountPlusFeeDecimals = signerAmountPlusFee
+    ? signerTokenDecimals
+    : senderTokenDecimals;
+  const amountPlusFeeSymbol = signerAmountPlusFee
+    ? signerTokenSymbol
+    : senderTokenSymbol;
+
   const roundedFeeAmount = useMemo(() => {
-    if (!signerAmountPlusFee) {
+    if (!amountPlusFee) {
       return undefined;
     }
 
-    const amount = new BigNumber(signerAmountPlusFee)
-      .minus(signerAmount)
-      .toString();
-    return toRoundedNumberString(amount, signerTokenDecimals);
-  }, [signerAmount, signerAmountPlusFee, signerTokenDecimals]);
+    const amount = new BigNumber(amountPlusFee).minus(signerAmount).toString();
+    return toRoundedNumberString(amount, amountPlusFeeDecimals);
+  }, [signerAmount, amountPlusFee, amountPlusFeeDecimals]);
 
-  const roundedSignerAmountPlusFee = useMemo(() => {
-    if (!signerAmountPlusFee) {
+  const roundedAmountPlusFee = useMemo(() => {
+    if (!amountPlusFee) {
       return undefined;
     }
 
-    return toRoundedNumberString(signerAmountPlusFee, signerTokenDecimals);
-  }, [signerAmountPlusFee, signerTokenDecimals]);
+    return toRoundedNumberString(amountPlusFee, amountPlusFeeDecimals);
+  }, [amountPlusFee, amountPlusFeeDecimals]);
 
   return (
     <Container isSigner={isSigner} className={className}>
@@ -167,7 +175,7 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
           </ReviewListItemValue>
         </ReviewListItem>
 
-        {!!signerAmountPlusFee && (
+        {!!amountPlusFee && (
           <>
             <ReviewListItem>
               <ReviewListItemLabel>
@@ -178,14 +186,14 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
                 />
               </ReviewListItemLabel>
               <ReviewListItemValue>
-                {roundedFeeAmount} {signerTokenSymbol}
+                {roundedFeeAmount} {amountPlusFeeSymbol}
               </ReviewListItemValue>
             </ReviewListItem>
 
             <ReviewListItem>
               <ReviewListItemLabel>{t("orders.total")}</ReviewListItemLabel>
               <ReviewListItemValue>
-                {roundedSignerAmountPlusFee} {signerTokenSymbol}
+                {roundedAmountPlusFee} {amountPlusFeeSymbol}
               </ReviewListItemValue>
             </ReviewListItem>
           </>
