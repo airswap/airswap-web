@@ -11,22 +11,21 @@ import { compareAddresses } from "../../../helpers/string";
 
 const useScrapeToken = (
   address: string,
-  tokens: AppTokenInfo[],
-  isQuoteToken = false
-): [AppTokenInfo[], boolean] => {
+  tokens: AppTokenInfo[]
+): [AppTokenInfo | undefined, boolean] => {
   const dispatch = useDispatch();
   const { account } = useWeb3React();
   const { provider: library } = useWeb3React<Web3Provider>();
 
-  const [scrapedTokens, setScrapedTokens] = useState<AppTokenInfo[]>([]);
+  const [scrapedToken, setScrapedToken] = useState<AppTokenInfo | undefined>();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (scrapedTokens?.length) {
-      dispatch(addUnknownTokenInfo(scrapedTokens));
+    if (scrapedToken) {
+      dispatch(addUnknownTokenInfo([scrapedToken]));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrapedTokens.length]);
+  }, [scrapedToken]);
 
   useEffect(() => {
     if (!library || !account) {
@@ -39,15 +38,15 @@ const useScrapeToken = (
 
     const callScrapeToken = async () => {
       setIsLoading(true);
-      const result = await scrapeToken(library, address, account);
-      setScrapedTokens(result);
+      const result = await scrapeToken(library, address);
+      setScrapedToken(result);
       setIsLoading(false);
     };
 
     callScrapeToken();
   }, [address, account, tokens, library]);
 
-  return [scrapedTokens, isLoading];
+  return [scrapedToken, isLoading];
 };
 
 export default useScrapeToken;

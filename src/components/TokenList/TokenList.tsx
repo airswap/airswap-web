@@ -83,7 +83,7 @@ const TokenList = ({
   const [selectedNftCollection, setSelectedNftCollection] =
     useState<CollectionTokenInfo>();
   const [tokenQuery, setTokenQuery] = useState<string>("");
-  const [scrapedTokens, isScrapeTokensLoading] = useScrapeToken(
+  const [scrapedToken, isScrapeTokensLoading] = useScrapeToken(
     tokenQuery,
     allTokens
   );
@@ -197,7 +197,7 @@ const TokenList = ({
               activeTokens={activeTokens}
               allTokens={allTokens}
               balances={balances}
-              scrapedTokens={scrapedTokens}
+              scrapedToken={scrapedToken}
               supportedTokenAddresses={supportedTokenAddresses}
               tokenQuery={tokenQuery}
               chainId={chainId}

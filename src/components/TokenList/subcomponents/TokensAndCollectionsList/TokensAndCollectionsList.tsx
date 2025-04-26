@@ -33,7 +33,7 @@ type TokensAndCollectionsListProps = {
   activeTokens: AppTokenInfo[];
   allTokens: AppTokenInfo[];
   balances: BalancesState;
-  scrapedTokens: AppTokenInfo[];
+  scrapedToken?: AppTokenInfo;
   supportedTokenAddresses: string[];
   tokenQuery: string;
   chainId?: number;
@@ -49,7 +49,7 @@ export const TokensAndCollectionsList = ({
   activeTokens,
   allTokens,
   balances,
-  scrapedTokens,
+  scrapedToken,
   supportedTokenAddresses,
   tokenQuery,
   chainId = 1,
@@ -84,8 +84,8 @@ export const TokensAndCollectionsList = ({
 
   const inactiveTokens = useMemo(() => {
     // if a scraped token is found, only show that one
-    if (scrapedTokens.length) {
-      return reduceNftTokens(scrapedTokens);
+    if (scrapedToken) {
+      return [scrapedToken];
     }
 
     // else only take the top 100 tokens
@@ -93,7 +93,7 @@ export const TokensAndCollectionsList = ({
       0,
       100
     );
-  }, [sortedInactiveTokens, tokenQuery, scrapedTokens.length]);
+  }, [sortedInactiveTokens, tokenQuery, scrapedToken]);
 
   return (
     <Container className={className}>
