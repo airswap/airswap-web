@@ -186,16 +186,14 @@ export async function approveNftToken(
       provider.getSigner()
     );
 
-    if (tokenKind === TokenKinds.ERC1155) {
-      return contract.setApprovalForAll(contractAddress, true);
-    }
+    const method =
+      tokenKind === TokenKinds.ERC721
+        ? contract.approve(contractAddress, tokenId)
+        : contract.setApprovalForAll(contractAddress, true);
 
-    return contract
-      .approve(contractAddress, tokenId)
-      .then(resolve)
-      .catch((error: any) => {
-        resolve(transformUnknownErrorToAppError(error));
-      });
+    return method.then(resolve).catch((error: any) => {
+      resolve(transformUnknownErrorToAppError(error));
+    });
   });
 }
 

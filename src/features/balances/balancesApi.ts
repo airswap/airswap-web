@@ -315,7 +315,7 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           amount:
             // ERC1155 uses isApprovedForAll, so we need to check for true/false
             erc1155Amounts[i] === "true"
-              ? "0" // "99999"
+              ? "99999"
               : erc1155Amounts[i] === "false"
               ? "0"
               : // Else it's a number for balance
