@@ -307,16 +307,19 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         const erc721Balances = activeErc721Addresses.map((address, i) => ({
           address,
           amount:
+            // ERC721 approve is either true or false, balance is either 1 or 0.
             erc721Amounts[i] === "true" || erc721Amounts[i] === "1" ? "1" : "0",
         }));
         const erc1155Balances = activeErc1155Addresses.map((address, i) => ({
           address,
           amount:
+            // ERC1155 uses isApprovedForAll, so we need to check for true/false
             erc1155Amounts[i] === "true"
-              ? "99999"
+              ? "0" // "99999"
               : erc1155Amounts[i] === "false"
               ? "0"
-              : erc1155Amounts[i],
+              : // Else it's a number for balance
+                erc1155Amounts[i],
         }));
 
         return [...tokenBalances, ...erc721Balances, ...erc1155Balances];
