@@ -101,7 +101,7 @@ const TokenList = ({
         compareAddresses(token.address, selectedNftCollection.address)
       )
       .filter(isCollectionTokenInfo)
-      .filter((token) => balances.values[getTokenId(token)] === "1");
+      .filter((token) => balances.values[getTokenId(token)] !== "0");
   }, [selectedNftCollection, allTokens]);
 
   const handleAddToken = async (tokenInfo: AppTokenInfo) => {

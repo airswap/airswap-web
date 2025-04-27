@@ -182,7 +182,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
         )}
         {!isRequestingToken ? (
           <ContainingButton
-            isNft={isNft}
+            tokenKind={tokenKind}
             disabled={isSelectTokenDisabled || readOnly}
             onClick={onChangeTokenClicked}
             onBlur={handleTokenBlur}

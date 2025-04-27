@@ -109,6 +109,10 @@ const getFetchBalancesOrAllowancesArgs = (
     ? getAllowanceSpenderAddress(spenderAddressType, chainId)
     : ADDRESS_ZERO;
 
+  if (params.tokenKind === TokenKinds.ERC1155) {
+    return [walletAddress, allowanceSpenderAddress, tokenAddresses];
+  }
+
   return [walletAddress, allowanceSpenderAddress, tokenAddresses, tokenIds];
 };
 
@@ -287,14 +291,14 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
           tokenKind: TokenKinds.ERC721,
         });
 
-        // const erc1155Amounts = await methods[type]({
-        //   ...methodParams,
-        //   tokenAddresses: activeErc1155Addresses.map(
-        //     getAddressFromTokenIdentifier
-        //   ),
-        //   tokenIds: activeErc1155Addresses.map(getIdFromTokenIdentifier),
-        //   tokenKind: TokenKinds.ERC1155,
-        // });
+        const erc1155Amounts = await methods[type]({
+          ...methodParams,
+          tokenAddresses: activeErc1155Addresses.map(
+            getAddressFromTokenIdentifier
+          ),
+          tokenIds: activeErc1155Addresses.map(getIdFromTokenIdentifier),
+          tokenKind: TokenKinds.ERC1155,
+        });
 
         const tokenBalances = activeErc20Addresses.map((address, i) => ({
           address,
@@ -307,7 +311,12 @@ export const getThunk: (type: BalanceRequestType) => AsyncThunk<
         }));
         const erc1155Balances = activeErc1155Addresses.map((address, i) => ({
           address,
-          amount: "0",
+          amount:
+            erc1155Amounts[i] === "true"
+              ? "99999"
+              : erc1155Amounts[i] === "false"
+              ? "0"
+              : erc1155Amounts[i],
         }));
 
         return [...tokenBalances, ...erc721Balances, ...erc1155Balances];

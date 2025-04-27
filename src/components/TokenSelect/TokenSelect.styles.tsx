@@ -1,5 +1,7 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
 
+import { TokenKinds } from "@airswap/utils";
+
 import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
@@ -51,11 +53,23 @@ const fontTransition = css`
   }
 `;
 
-export const ContainingButton = styled.button<{ isNft?: boolean }>`
+const getContainingButtonWidth = (tokenKind?: TokenKinds) => {
+  if (tokenKind === TokenKinds.ERC721) {
+    return "74%";
+  }
+
+  if (tokenKind === TokenKinds.ERC1155) {
+    return "65%";
+  }
+
+  return "40%";
+};
+
+export const ContainingButton = styled.button<{ tokenKind?: TokenKinds }>`
   display: flex;
   flex-direction: row;
   position: relative;
-  width: ${(props) => (props.isNft ? "74%" : "40%")};
+  width: ${(props) => getContainingButtonWidth(props.tokenKind)};
   height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
