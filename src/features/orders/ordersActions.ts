@@ -533,12 +533,17 @@ export const takeFullOrder =
     const transaction = transformToSubmittedTransactionWithOrder(
       tx.hash,
       {
-        ...order,
         signerWallet: senderWallet,
         signerToken: signerToken.address,
         senderToken: senderToken.address,
-        signerAmount: order.signer.amount,
+        signerAmount:
+          order.signer.kind === TokenKinds.ERC721 ? "1" : order.signer.amount,
         senderAmount: order.sender.amount,
+        expiry: order.expiry,
+        nonce: order.nonce,
+        v: order.v,
+        r: order.r,
+        s: order.s,
       },
       signerToken,
       senderToken
