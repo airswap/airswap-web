@@ -9,6 +9,7 @@ import { getTokenBalance } from "../../../../entities/AppTokenInfo/AppTokenInfoH
 import { getTokenDecimals } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getTokenId } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { BalancesState } from "../../../../features/balances/balancesSlice";
+import { compareAddresses } from "../../../../helpers/string";
 import { InfoHeading } from "../../../Typography/Typography";
 import { reduceNftTokens } from "../../helpers/filter";
 import { filterTokens } from "../../helpers/filter";
@@ -77,7 +78,10 @@ export const TokensAndCollectionsList = ({
   // sort inactive tokens based on symbol
   const sortedInactiveTokens: AppTokenInfo[] = useMemo(() => {
     return sortTokenByExactMatch(
-      allTokens.filter((token) => !activeTokens.includes(token)),
+      allTokens.filter(
+        (token) =>
+          !activeTokens.some((t) => compareAddresses(t.address, token.address))
+      ),
       tokenQuery
     );
   }, [allTokens, activeTokens, tokenQuery]);

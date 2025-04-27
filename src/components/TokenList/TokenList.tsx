@@ -12,9 +12,11 @@ import {
   isCollectionTokenInfo,
   isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { getOwnedNftsOfCollection } from "../../entities/AppTokenInfo/AppTokenService";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveTokens,
+  addUnknownTokenInfo,
   removeActiveTokens,
 } from "../../features/metadata/metadataActions";
 import { compareAddresses } from "../../helpers/string";
@@ -26,7 +28,6 @@ import {
   SizingContainer,
 } from "./TokenList.styles";
 import { getActionButtonText, getTokenIdsFromTokenInfo } from "./helpers";
-import { useCollectionTokenById } from "./hooks/useCollectionTokenById";
 import useScrapeToken from "./hooks/useScrapeToken";
 import { CollectionNftsList } from "./subcomponents/CollectionNftsList/CollectionNftsList";
 import TokensAndCollectionsList from "./subcomponents/TokensAndCollectionsList/TokensAndCollectionsList";
@@ -51,11 +52,11 @@ export type TokenListProps = {
   /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
-  onAfterAddActiveToken?: (val: string) => void;
+  onAfterAddActiveToken?: (tokenInfo: AppTokenInfo) => void;
   /**
    * function to handle removing active tokens (dispatches removeActiveToken).
    */
-  onAfterRemoveActiveToken?: (val: string) => void;
+  onAfterRemoveActiveToken?: (tokenInfo: AppTokenInfo) => void;
   /**
    * Called when a token has been seleced.
    */
@@ -88,12 +89,7 @@ const TokenList = ({
     allTokens
   );
 
-  const [, isLoadingCollectionToken] = useCollectionTokenById(
-    selectedNftCollection,
-    tokenQuery,
-    chainId,
-    allTokens
-  );
+  const [isLoadingOwnedNfts, setIsLoadingOwnedNfts] = useState(false);
 
   const activeCollectionTokens = useMemo(() => {
     if (!selectedNftCollection) {
@@ -109,14 +105,32 @@ const TokenList = ({
   }, [selectedNftCollection, allTokens]);
 
   const handleAddToken = async (tokenInfo: AppTokenInfo) => {
-    if (library && account) {
-      const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, allTokens);
+    if (!library || !account) {
+      return;
+    }
 
+    setTokenQuery("");
+
+    if (isCollectionTokenInfo(tokenInfo)) {
+      setIsLoadingOwnedNfts(true);
+
+      const [ownedNfts] = await getOwnedNftsOfCollection(
+        library,
+        account,
+        tokenInfo.address
+      );
+
+      const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, ownedNfts);
+
+      dispatch(addUnknownTokenInfo(ownedNfts));
       dispatch(addActiveTokens(tokenIds));
 
-      setTokenQuery("");
-      onAfterAddActiveToken && onAfterAddActiveToken(tokenIds[0]);
+      setIsLoadingOwnedNfts(false);
+    } else {
+      dispatch(addActiveTokens([tokenInfo.address]));
     }
+
+    onAfterAddActiveToken && onAfterAddActiveToken(tokenInfo);
   };
 
   const handleRemoveActiveToken = (tokenInfo: AppTokenInfo) => {
@@ -125,7 +139,7 @@ const TokenList = ({
 
       dispatch(removeActiveTokens(tokenIds));
 
-      onAfterRemoveActiveToken && onAfterRemoveActiveToken(tokenIds[0]);
+      onAfterRemoveActiveToken && onAfterRemoveActiveToken(tokenInfo);
     }
   };
 
@@ -136,7 +150,6 @@ const TokenList = ({
       return;
     }
 
-    // TODO: Fetch owned tokens here
     setTokenQuery("");
     setSelectedNftCollection(tokenInfo);
   };
@@ -185,7 +198,6 @@ const TokenList = ({
 
           {selectedNftCollection ? (
             <CollectionNftsList
-              isLoading={isLoadingCollectionToken}
               tokens={activeCollectionTokens}
               tokenQuery={tokenQuery}
               onSelectToken={handleSelectCollectionToken}
@@ -193,7 +205,9 @@ const TokenList = ({
           ) : (
             <TokensAndCollectionsList
               editMode={editMode}
-              isScrapeTokensLoading={isScrapeTokensLoading}
+              isScrapeTokensLoading={
+                isScrapeTokensLoading || isLoadingOwnedNfts
+              }
               activeTokens={activeTokens}
               allTokens={allTokens}
               balances={balances}

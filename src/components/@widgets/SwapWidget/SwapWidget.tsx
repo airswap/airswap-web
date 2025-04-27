@@ -24,6 +24,7 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import { selectBalances } from "../../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -322,11 +323,11 @@ const SwapWidget: FC = () => {
 
   const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
-  const handleRemoveActiveToken = (address: string) => {
-    if (address === baseToken) {
+  const handleRemoveActiveToken = (tokenInfo: AppTokenInfo) => {
+    if (tokenInfo.address === baseToken) {
       history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
       setBaseAmount("");
-    } else if (address === quoteToken) {
+    } else if (tokenInfo.address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
