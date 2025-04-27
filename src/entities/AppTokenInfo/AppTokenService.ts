@@ -15,8 +15,6 @@ export const getFirstNftOfCollection = async (
     pageSize: 1,
   });
 
-  console.log("[response]", response);
-
   const nft = response.nfts[0];
 
   if (

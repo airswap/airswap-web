@@ -143,7 +143,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     ? order.signer.amount
     : order.signerAmount;
   const signerTokenKind = isFullOrder(order)
-    ? order.signer.kind
+    ? (order.signer.kind as TokenKinds)
     : TokenKinds.ERC20;
 
   const [orderStatus, isOrderStatusLoading] = useOtcOrderStatus(order);
@@ -156,7 +156,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     address: signerTokenAddress,
     chainId: order.chainId,
     tokenId: signerTokenId,
-    isQuoteToken: true,
+    tokenKind: signerTokenKind,
   });
   const isBalanceLoading = useBalanceLoading();
   const senderTokenDecimals = senderToken

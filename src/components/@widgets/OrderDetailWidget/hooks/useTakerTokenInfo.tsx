@@ -25,7 +25,7 @@ type UseTakerTokenInfoProps = {
   chainId: number;
   tokenId?: string;
   tokenKind?: TokenKinds;
-  isQuoteToken?: boolean;
+  isUserToken?: boolean;
 };
 
 const useTakerTokenInfo = ({
@@ -33,7 +33,6 @@ const useTakerTokenInfo = ({
   chainId,
   tokenId,
   tokenKind = TokenKinds.ERC20,
-  isQuoteToken = false,
 }: UseTakerTokenInfoProps): [AppTokenInfo | null, boolean] => {
   const dispatch = useAppDispatch();
   // Using JsonRpcProvider for unconnected wallets or for wallets connected to a different chain
@@ -54,7 +53,7 @@ const useTakerTokenInfo = ({
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
       dispatch(addActiveTokens([id]));
     }
-  }, [address, allTokens]);
+  }, [address, allTokens.length]);
 
   useEffect(() => {
     if (!address || !allTokens.length || token || !library) {
@@ -72,9 +71,12 @@ const useTakerTokenInfo = ({
       setToken(tokenFromStore);
     } else {
       const id = getTokenIdentifierWithKind(address, tokenId, tokenKind);
-      dispatch(addActiveTokens([id]));
-      // Add nft to fetchUnkownTokens
-      dispatch(fetchUnkownTokens({ provider: library, tokens: [address] }));
+
+      if (tokenKind === TokenKinds.ERC20) {
+        dispatch(addActiveTokens([id]));
+      }
+
+      dispatch(fetchUnkownTokens({ provider: library, tokens: [id] }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, activeOrder, allTokens.length]);
