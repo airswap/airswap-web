@@ -7,7 +7,7 @@ export const getFullOrderNonceUsed = async (
   order: FullOrder,
   provider: ethers.providers.BaseProvider
 ) => {
-  return Swap.getContract(provider, provider.network.chainId).nonceUsed(
+  return Swap.getContract(provider, order.chainId).nonceUsed(
     order.signer.wallet,
     order.nonce
   );

@@ -4,6 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { isAddress } from "ethers/lib/utils";
 
 import { BalancesState } from "../../features/balances/balancesSlice";
+import { compareAddresses } from "../../helpers/string";
 import { AppTokenInfo } from "./AppTokenInfo";
 
 export const isTokenInfo = (
@@ -101,9 +102,11 @@ export const getTokenBalance = (
     return balances.values[getTokenId(tokenInfo)] || "0";
   }
 
-  const balancesForTokenIds = Object.keys(balances.values).filter((tokenId) =>
-    tokenId.startsWith(tokenInfo.address)
-  );
+  const balancesForTokenIds = Object.keys(balances.values).filter((tokenId) => {
+    const { address, id } = splitTokenIdentifier(tokenId);
+
+    return !!id && compareAddresses(address, tokenInfo.address);
+  });
 
   const balance = balancesForTokenIds.reduce((acc, tokenId) => {
     return acc.plus(balances.values[tokenId] || "0");

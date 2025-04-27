@@ -1,5 +1,10 @@
 import { Server, Swap, SwapERC20 } from "@airswap/libraries";
-import { OrderERC20, toAtomicString, UnsignedOrderERC20 } from "@airswap/utils";
+import {
+  FullOrderERC20,
+  OrderERC20,
+  toAtomicString,
+  UnsignedOrderERC20,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import { BigNumber } from "bignumber.js";
@@ -83,10 +88,10 @@ export const signOrderERC20AndSendForConsideration = async (
 };
 
 export const getOrderErc20NonceUsed = async (
-  order: OrderERC20,
+  order: FullOrderERC20,
   provider: ethers.providers.BaseProvider
 ) => {
-  return SwapERC20.getContract(provider, provider.network.chainId).nonceUsed(
+  return SwapERC20.getContract(provider, order.chainId).nonceUsed(
     order.signerWallet,
     order.nonce
   );

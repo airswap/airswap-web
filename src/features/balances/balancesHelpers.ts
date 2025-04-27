@@ -1,13 +1,11 @@
 import { CollectionTokenInfo, TokenKinds } from "@airswap/utils";
 
-import { Nft, OwnedBaseNft } from "alchemy-sdk";
-import { BigNumber, ethers, Event } from "ethers";
+import { ethers } from "ethers";
 
 import erc721AbiContract from "../../abis/erc721.json";
 import { transformNftToCollectionTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfoTransformers";
 import { getOwnedNftsOfCollection } from "../../entities/AppTokenInfo/AppTokenService";
 import { getAlchemyClient } from "../../helpers/alchemy";
-import { getUniqueSingleDimensionArray } from "../../helpers/array";
 
 export const getCollectionTokenInfoByAlchemy = async (
   collectionToken: string,

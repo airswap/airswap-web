@@ -3,6 +3,7 @@ import {
   compressFullOrderERC20,
   FullOrder,
   FullOrderERC20,
+  TokenKinds,
 } from "@airswap/utils";
 
 import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
@@ -10,6 +11,16 @@ import { isFullOrder } from "../../../../entities/FullOrder/FullOrderHelpers";
 import { routes } from "../../../../routes";
 import { OrderStatus } from "../../../../types/orderStatus";
 import { MyOrder } from "./MyOrder";
+
+const getFullOrderAmount = (
+  party: FullOrder["signer"] | FullOrder["sender"]
+): string => {
+  if (party.kind === TokenKinds.ERC721) {
+    return "1";
+  }
+
+  return party.amount;
+};
 
 export const transformFullOrderToMyOrder = (
   order: FullOrder | FullOrderERC20,
@@ -27,9 +38,13 @@ export const transformFullOrderToMyOrder = (
     status: status,
     chainId: order.chainId,
     senderToken,
-    senderAmount: isFullOrder(order) ? order.sender.amount : order.senderAmount,
+    senderAmount: isFullOrder(order)
+      ? getFullOrderAmount(order.sender)
+      : order.senderAmount,
     signerToken,
-    signerAmount: isFullOrder(order) ? order.signer.amount : order.signerAmount,
+    signerAmount: isFullOrder(order)
+      ? getFullOrderAmount(order.signer)
+      : order.signerAmount,
     expiry: new Date(Number(order.expiry) * 1000),
   };
 };
