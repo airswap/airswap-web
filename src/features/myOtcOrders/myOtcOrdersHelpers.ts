@@ -77,9 +77,5 @@ export const getUserOrdersFromLocalStorage = (
     ),
   ];
 
-  console.log(localStorageUserFullOrders);
-  console.log(localStorageUserErc20Orders);
-  console.log(orders);
-
   return orders;
 };

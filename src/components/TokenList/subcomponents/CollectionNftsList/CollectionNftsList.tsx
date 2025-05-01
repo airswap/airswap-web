@@ -3,6 +3,7 @@ import { FC } from "react";
 import { CollectionTokenInfo } from "@airswap/utils";
 
 import { getTokenId } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { getUniqueArrayChildren } from "../../../../helpers/array";
 import { CollectionNftButton } from "../CollectionNftButton/CollectionNftButton";
 import { ScrollContainer } from "../ScrollContainer/ScrollContainer";
 import {
@@ -24,7 +25,7 @@ export const CollectionNftsList: FC<CollectionNftsListProps> = ({
   tokenQuery,
   onSelectToken,
 }) => {
-  const filteredTokens = tokens.filter(
+  const filteredTokens = getUniqueArrayChildren(tokens, "id").filter(
     (token) =>
       token.name?.toLowerCase().includes(tokenQuery.toLowerCase()) ||
       token.id?.toString().includes(tokenQuery)

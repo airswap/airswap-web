@@ -21,6 +21,10 @@ export const getAlchemyChain = (chainId: number): Network => {
 };
 
 export const getAlchemyClient = (chainId: number) => {
+  if (!process.env.REACT_APP_ALCHEMY_API_KEY) {
+    throw new Error("REACT_APP_ALCHEMY_API_KEY is not set");
+  }
+
   return new Alchemy({
     apiKey: process.env.REACT_APP_ALCHEMY_API_KEY,
     network: getAlchemyChain(chainId),
