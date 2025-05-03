@@ -17,7 +17,7 @@ export interface FullSwapErc20Log {
   timestamp: number;
 }
 
-export const getOrdersFromLogs = async (
+export const getOrdersFromErc20Logs = async (
   chainId: number,
   logs: Event[]
 ): Promise<FullSwapErc20Log[]> => {

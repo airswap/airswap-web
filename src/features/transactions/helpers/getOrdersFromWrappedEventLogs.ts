@@ -2,7 +2,7 @@ import { ADDRESS_ZERO, FullSwapERC20, OrderERC20 } from "@airswap/utils";
 
 import { Event } from "ethers";
 
-import { FullSwapErc20Log } from "./getOrdersFromLogs";
+import { FullSwapErc20Log } from "./getOrdersFromSwapErc20Logs";
 
 export const getOrdersFromWrappedEventLogs = (
   logs: FullSwapErc20Log[],

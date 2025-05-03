@@ -7,7 +7,7 @@ import { Event } from "ethers";
 import { DelegatedSwapEvent } from "../../../entities/DelegateRule/DelegateRule";
 import { transformToDelegatedSwapEvent } from "../../../entities/DelegateRule/DelegateRuleTransformers";
 import { compareAddresses } from "../../../helpers/string";
-import { FullSwapErc20Log } from "./getOrdersFromLogs";
+import { FullSwapErc20Log } from "./getOrdersFromSwapErc20Logs";
 
 /**
  * Gets orders where the delegate contract is the sender wallet and transforms them

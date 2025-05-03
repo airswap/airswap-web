@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Delegate, SwapERC20, Wrapper } from "@airswap/libraries";
+import { Delegate, Swap, SwapERC20, Wrapper } from "@airswap/libraries";
 import { Contract } from "@ethersproject/contracts";
 import { useAsync } from "@react-hookz/web/esm";
 import { IAsyncState } from "@react-hookz/web/esm/useAsync/useAsync";
@@ -9,11 +9,11 @@ import { useWeb3React } from "@web3-react/core";
 import { Event } from "ethers";
 
 import getContractEvents from "../../../helpers/getContractEvents";
-import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 interface SwapLogs {
   swapLogs: Event[];
+  swapErc20Logs: Event[];
   wrappedSwapLogs: Event[];
   delegatedSwapLogs: Event[];
   chainId: number;
@@ -33,17 +33,23 @@ const useSwapLogs = (
   const [state, actions] = useAsync(
     async (
       swapContract: Contract,
+      swapErc20Contract: Contract,
       wrapperContract: Contract,
       delegatedSwapContract: Contract,
       account: string
     ) => {
-      const signerSwapFilter = swapContract.filters.SwapERC20(null);
+      const swapFilter = swapContract.filters.Swap(null);
+      const erc20SwapFilter = swapErc20Contract.filters.SwapERC20(null);
       const wrapperSwapFilter = wrapperContract.filters.WrappedSwapFor(null);
       const delegatedSwapFilter =
         delegatedSwapContract.filters.DelegatedSwapFor(null);
 
-      const firstTxBlockSwapContract =
+      const firstTxBlockSwapErc20Contract =
         chainId && SwapERC20.deployedBlocks[chainId];
+      const firstTxBlockSwapContract =
+        // TODO: Swap.deployedBlocks is empty right now, replace later
+        (chainId && Swap.deployedBlocks[chainId]) ||
+        firstTxBlockSwapErc20Contract;
       const firstTxBlockWrapperContract =
         chainId && Wrapper.deployedBlocks[chainId];
       const firstTxBlockDelegatedSwapContract =
@@ -52,6 +58,7 @@ const useSwapLogs = (
 
       if (
         !firstTxBlockSwapContract ||
+        !firstTxBlockSwapErc20Contract ||
         !firstTxBlockWrapperContract ||
         !firstTxBlockDelegatedSwapContract ||
         !currentBlock
@@ -61,8 +68,15 @@ const useSwapLogs = (
 
       const swapLogs = await getContractEvents(
         swapContract,
-        signerSwapFilter,
+        swapFilter,
         firstTxBlockSwapContract,
+        currentBlock
+      );
+
+      const swapErc20Logs = await getContractEvents(
+        swapErc20Contract,
+        erc20SwapFilter,
+        firstTxBlockSwapErc20Contract,
         currentBlock
       );
       const wrappedSwapLogs = await getContractEvents(
@@ -81,6 +95,7 @@ const useSwapLogs = (
 
       return {
         swapLogs,
+        swapErc20Logs,
         wrappedSwapLogs,
         delegatedSwapLogs,
         chainId,
@@ -95,11 +110,14 @@ const useSwapLogs = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const swapContract = SwapERC20.getContract(provider, chainId);
+    const swapContract = Swap.getContract(provider, chainId);
+    const swapErc20Contract = SwapERC20.getContract(provider, chainId);
     const wrapperContract = Wrapper.getContract(provider, chainId);
     const delegatedSwapContract = Delegate.getContract(provider, chainId);
+
     actions.execute(
       swapContract,
+      swapErc20Contract,
       wrapperContract,
       delegatedSwapContract,
       account
