@@ -1,7 +1,10 @@
 import {
   ADDRESS_ZERO,
+  FullOrder,
+  FullSwapERC20,
   OrderERC20,
   TokenInfo,
+  TokenKinds,
   UnsignedOrderERC20,
 } from "@airswap/utils";
 import { formatUnits } from "@ethersproject/units";
@@ -16,6 +19,7 @@ import {
   getTokenDecimals,
   getTokenSymbol,
 } from "../AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../FullOrder/FullOrderHelpers";
 import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
@@ -164,19 +168,45 @@ const isSenderWalletAccount = (
   return false;
 };
 
-export const getAdjustedAmount = (
-  order: OrderERC20 | UnsignedOrderERC20,
+const getAmountPlusProtocolFee = (amount: string, protocolFee: number) => {
+  return new BigNumber(amount)
+    .multipliedBy(1 + protocolFee / 10000)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .toString();
+};
+
+const getAdjustedSignerAmount = (
+  order: OrderERC20 | UnsignedOrderERC20 | FullOrder,
   protocolFee: number,
   account: string
 ) => {
+  // FullOrder signer does not pay protocol fees
+  if (isFullOrder(order)) {
+    return order.signer.kind === TokenKinds.ERC721 ? "1" : order.signer.amount;
+  }
+
+  // OrderERC20 signer pays protocol fees
   if (compareAddresses(order.signerWallet, account)) {
-    return new BigNumber(order.signerAmount)
-      .multipliedBy(1 + protocolFee / 10000)
-      .integerValue(BigNumber.ROUND_FLOOR)
-      .toString();
+    return getAmountPlusProtocolFee(order.signerAmount, protocolFee);
   }
 
   return order.signerAmount;
+};
+
+const getAdjustedSenderAmount = (
+  order: OrderERC20 | UnsignedOrderERC20 | FullOrder,
+  swap: FullSwapERC20 | undefined,
+  protocolFee: number,
+  account: string
+) => {
+  // FullOrder sender pays protocol fees
+  if (isFullOrder(order) && compareAddresses(order.sender.wallet, account)) {
+    return getAmountPlusProtocolFee(order.sender.amount, protocolFee);
+  }
+
+  return isFullOrder(order)
+    ? order.sender.amount
+    : (swap || order).senderAmount;
 };
 
 export const getOrderTransactionLabel = (
@@ -189,20 +219,26 @@ export const getOrderTransactionLabel = (
   const { order } = transaction;
   const swap = isSubmittedOrder(transaction) ? transaction.swap : undefined;
 
-  // TODO: Fix signerToken and senderToken sometimes reversed?
-  const adjustedSignerToken = signerToken;
-  const adjustedSenderToken = senderToken;
+  const adjustedSignerAmount = getAdjustedSignerAmount(
+    order,
+    protocolFee,
+    account
+  );
+  const adjustedSenderAmount = getAdjustedSenderAmount(
+    order,
+    swap,
+    protocolFee,
+    account
+  );
 
-  const adjustedSignerAmount = getAdjustedAmount(order, protocolFee, account);
-
-  const signerDecimals = getTokenDecimals(adjustedSignerToken);
+  const signerDecimals = getTokenDecimals(signerToken);
   const signerAmount = parseFloat(
     Number(formatUnits(adjustedSignerAmount, signerDecimals)).toFixed(5)
   );
 
-  const senderDecimals = getTokenDecimals(adjustedSenderToken);
+  const senderDecimals = getTokenDecimals(senderToken);
   const senderAmount = parseFloat(
-    Number(formatUnits((swap || order).senderAmount, senderDecimals)).toFixed(5)
+    Number(formatUnits(adjustedSenderAmount, senderDecimals)).toFixed(5)
   );
 
   const accountIsSender = isSenderWalletAccount(transaction, account);
@@ -210,17 +246,17 @@ export const getOrderTransactionLabel = (
   if (accountIsSender) {
     return i18n.t("wallet.transaction", {
       signerAmount,
-      signerToken: getTokenSymbol(adjustedSignerToken),
+      signerToken: getTokenSymbol(signerToken),
       senderAmount,
-      senderToken: getTokenSymbol(adjustedSenderToken),
+      senderToken: getTokenSymbol(senderToken),
     });
   }
 
   return i18n.t("wallet.transaction", {
     signerAmount: senderAmount,
-    signerToken: getTokenSymbol(adjustedSenderToken),
+    signerToken: getTokenSymbol(senderToken),
     senderAmount: signerAmount,
-    senderToken: getTokenSymbol(adjustedSignerToken),
+    senderToken: getTokenSymbol(signerToken),
   });
 };
 
