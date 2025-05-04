@@ -528,23 +528,9 @@ export const takeFullOrder =
       return;
     }
 
-    // TODO: SubmittedTransactionWithOrder should be able to take FullOrder. For the time being we
-    // transform the FullOrder to an OrderERC20.
     const transaction = transformToSubmittedTransactionWithOrder(
       tx.hash,
-      {
-        signerWallet: senderWallet,
-        signerToken: signerToken.address,
-        senderToken: senderToken.address,
-        signerAmount:
-          order.signer.kind === TokenKinds.ERC721 ? "1" : order.signer.amount,
-        senderAmount: order.sender.amount,
-        expiry: order.expiry,
-        nonce: order.nonce,
-        v: order.v,
-        r: order.r,
-        s: order.s,
-      },
+      order,
       signerToken,
       senderToken
     );
