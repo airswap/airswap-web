@@ -192,7 +192,10 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
 
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     signerToken,
-    customSignerAmountPlusFee
+    customSignerAmountPlusFee,
+    {
+      spenderAddressType: "swapERC20",
+    }
   );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
@@ -313,7 +316,7 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
         customSignerAmountPlusFee,
         signerToken as TokenInfo,
         library,
-        "Swap"
+        "SwapERC20"
       )
     );
   };
