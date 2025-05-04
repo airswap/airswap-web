@@ -310,14 +310,8 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       return;
     }
 
-    // TODO: Support AppTokenInfo
     dispatch(
-      approve(
-        customSignerAmountPlusFee,
-        signerToken as TokenInfo,
-        library,
-        "SwapERC20"
-      )
+      approve(customSignerAmountPlusFee, signerToken, library, "SwapERC20")
     );
   };
 
@@ -538,7 +532,7 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
           isExpired={orderStatus === OrderStatus.expired}
           isCanceled={orderStatus === OrderStatus.canceled}
           isLimitOrder={true}
-          isTaken={orderStatus === OrderStatus.taken}
+          isTaken={orderStatus === OrderStatus.filled}
           isDifferentChainId={walletChainIdIsDifferentThanOrderChainId}
           isIntendedRecipient={true}
           isLoading={isBalanceLoading}
