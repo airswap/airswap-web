@@ -1,11 +1,16 @@
-import { FullOrder, FullOrderERC20, getTokenInfo } from "@airswap/utils";
+import {
+  FullOrder,
+  FullOrderERC20,
+  getTokenInfo,
+  TokenKinds,
+} from "@airswap/utils";
 
 import * as ethers from "ethers";
 
 import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
+import { findTokenByAddressAndId } from "../../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../../../../entities/FullOrder/FullOrderHelpers";
 import { getNonceUsed } from "../../../../../../features/orders/ordersHelpers";
-import { compareAddresses } from "../../../../../../helpers/string";
 import { OrderStatus } from "../../../../../../types/orderStatus";
 import { MyOrder } from "../../../../MyOrdersWidget/entities/MyOrder";
 import { transformFullOrderToMyOrder } from "../../../../MyOrdersWidget/entities/MyOrderTransformers";
@@ -13,11 +18,10 @@ import { transformFullOrderToMyOrder } from "../../../../MyOrdersWidget/entities
 export const findTokenInfo = async (
   token: string,
   activeTokens: AppTokenInfo[],
-  provider: ethers.providers.BaseProvider
+  provider: ethers.providers.BaseProvider,
+  tokenId?: string
 ): Promise<AppTokenInfo | undefined> => {
-  const activeToken = activeTokens.find((activeToken) =>
-    compareAddresses(token, activeToken.address)
-  );
+  const activeToken = findTokenByAddressAndId(activeTokens, token, tokenId);
 
   if (activeToken) {
     return activeToken;
@@ -78,7 +82,10 @@ export const getFullOrderDataAndTransformToOrder = async (
   const signerToken = await findTokenInfo(
     isFullOrder(order) ? order.signer.token : order.signerToken,
     activeTokens,
-    provider
+    provider,
+    isFullOrder(order) && order.signer.kind !== TokenKinds.ERC20
+      ? order.signer.id
+      : undefined
   );
   const senderToken = await findTokenInfo(
     isFullOrder(order) ? order.sender.token : order.senderToken,
