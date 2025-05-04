@@ -189,6 +189,7 @@ const SwapWidget: FC = () => {
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
   const { hasSufficientAllowance } = useAllowance(baseTokenInfo, baseAmount, {
     wrapNativeToken: false,
+    spenderAddressType: "swapERC20",
   });
   const isBalanceLoading = useBalanceLoading();
 
