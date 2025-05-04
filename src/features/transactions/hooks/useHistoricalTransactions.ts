@@ -1,6 +1,15 @@
 import { useMemo, useState } from "react";
 
 import { useAppSelector } from "../../../app/hooks";
+import { findTokenByAddressAndId } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
+import {
+  getOrderSenderTokenId,
+  getOrderSignerToken,
+  getOrderSignerTokenId,
+  getOrderSignerWallet,
+} from "../../../entities/OrderERC20/OrderERC20Helpers";
+import { getOrderSenderToken } from "../../../entities/OrderERC20/OrderERC20Helpers";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
@@ -86,27 +95,39 @@ const useHistoricalTransactions = (): [
         ...wrappedLogs,
         ...delegatedSwapLogs,
       ]
-        .filter(
-          (order) =>
-            compareAddresses(order.order.signerWallet, account) ||
-            compareAddresses(order.swap.senderWallet, account)
-        )
-        .map((log) => {
-          const signerToken = allTokens.find((token) =>
-            compareAddresses(token.address, log.order.signerToken)
+        .filter((order) => {
+          return (
+            compareAddresses(getOrderSignerWallet(order.order), account) ||
+            (isFullOrder(order.order) &&
+              compareAddresses(order.order.sender.wallet, account)) ||
+            ("swap" in order &&
+              compareAddresses(order.swap.senderWallet, account))
           );
-          const senderToken = allTokens.find((token) =>
-            compareAddresses(token.address, log.order.senderToken)
+        })
+        .map((log) => {
+          const signerToken = getOrderSignerToken(log.order);
+          const senderToken = getOrderSenderToken(log.order);
+          const signerTokenId = getOrderSignerTokenId(log.order);
+          const senderTokenId = getOrderSenderTokenId(log.order);
+          const signerTokenInfo = findTokenByAddressAndId(
+            allTokens,
+            signerToken,
+            signerTokenId
+          );
+          const senderTokenInfo = findTokenByAddressAndId(
+            allTokens,
+            senderToken,
+            senderTokenId
           );
 
-          if (!signerToken || !senderToken) return;
+          if (!signerTokenInfo || !senderTokenInfo) return;
 
           return transformToSubmittedTransactionWithOrder(
             log.hash,
             log.order,
-            signerToken,
-            senderToken,
-            log.swap,
+            signerTokenInfo,
+            senderTokenInfo,
+            "swap" in log ? log.swap : undefined,
             TransactionStatusType.succeeded,
             log.timestamp
           );

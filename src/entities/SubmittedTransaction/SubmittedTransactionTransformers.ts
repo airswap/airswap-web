@@ -87,7 +87,7 @@ export const transformToSubmittedWithdrawTransaction = (
 
 export const transformToSubmittedTransactionWithOrder = (
   hash: string,
-  order: OrderERC20,
+  order: OrderERC20 | FullOrder,
   signerToken: AppTokenInfo,
   senderToken: AppTokenInfo,
   swap?: FullSwapERC20,

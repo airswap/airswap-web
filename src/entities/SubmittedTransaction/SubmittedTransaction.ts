@@ -1,4 +1,5 @@
 import {
+  FullOrder,
   FullOrderERC20,
   FullSwapERC20,
   OrderERC20,
@@ -34,7 +35,7 @@ export interface SubmittedTransactionWithHash extends SubmittedTransaction {
 export interface SubmittedOrder extends SubmittedTransactionWithHash {
   isLastLook?: boolean;
   type: TransactionTypes.order;
-  order: OrderERC20 | FullOrderERC20;
+  order: OrderERC20 | FullOrderERC20 | FullOrder;
   swap?: FullSwapERC20;
   senderToken: AppTokenInfo;
   signerToken: AppTokenInfo;

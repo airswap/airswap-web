@@ -122,9 +122,9 @@ export const findTokenByAddressAndId = (
 ) => {
   return tokens.find((token) => {
     if (!id || isTokenInfo(token)) {
-      return token.address === address;
+      return compareAddresses(token.address, address);
     }
 
-    return token.address === address && token.id === id;
+    return compareAddresses(token.address, address) && token.id === id;
   });
 };

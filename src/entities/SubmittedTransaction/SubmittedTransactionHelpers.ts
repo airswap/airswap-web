@@ -102,7 +102,11 @@ export const getSubmittedTransactionKey = (
   transaction: SubmittedTransaction
 ) => {
   if (isSubmittedOrderUnderConsideration(transaction)) {
-    return `${transaction.order.signerWallet}-${transaction.order.nonce}-${transaction.timestamp}`;
+    const signerWallet = isFullOrder(transaction.order)
+      ? transaction.order.signer.wallet
+      : transaction.order.signerWallet;
+
+    return `${signerWallet}-${transaction.order.nonce}-${transaction.timestamp}`;
   }
 
   return transaction.hash;
@@ -156,13 +160,18 @@ const isSenderWalletAccount = (
   // So the account must be the senderWallet.
   if (
     isSubmittedOrder(transaction) &&
+    !isFullOrder(transaction.order) &&
     transaction.order.senderToken === ADDRESS_ZERO
   ) {
     return true;
   }
 
   if (isSubmittedOrder(transaction)) {
-    return !compareAddresses(transaction.order.signerWallet, account);
+    const signerWallet = isFullOrder(transaction.order)
+      ? transaction.order.signer.wallet
+      : transaction.order.signerWallet;
+
+    return !compareAddresses(signerWallet, account);
   }
 
   return false;
