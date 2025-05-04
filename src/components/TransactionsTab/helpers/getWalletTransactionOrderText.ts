@@ -1,5 +1,6 @@
 import { TokenInfo } from "@airswap/utils";
 
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import {
   SubmittedDelegatedSwapTransaction,
   SubmittedDepositTransaction,
@@ -19,16 +20,16 @@ const getWalletTransactionOrderText = (
     | SubmittedWithdrawTransaction
     | SubmittedDepositTransaction
     | SubmittedDelegatedSwapTransaction,
-  signerToken: TokenInfo,
-  senderToken: TokenInfo,
+  signerToken: AppTokenInfo,
+  senderToken: AppTokenInfo,
   account: string,
   protocolFee: number
 ): string => {
   if (isWithdrawTransaction(transaction) || isDepositTransaction(transaction)) {
     return getDepositOrWithdrawalTransactionLabel(
       transaction,
-      signerToken,
-      senderToken
+      signerToken as TokenInfo,
+      senderToken as TokenInfo
     );
   }
 

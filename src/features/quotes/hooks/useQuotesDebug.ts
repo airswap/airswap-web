@@ -8,6 +8,7 @@ import BigNumber from "bignumber.js";
 
 import { useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { getTokenDecimals } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
 
 const useQuotesDebug = () => {
@@ -104,7 +105,7 @@ const useQuotesDebug = () => {
     ) {
       const lastLookQuote = formatUnits(
         bestLastLookOrder.senderAmount,
-        senderToken.decimals
+        getTokenDecimals(senderToken)
       );
       const justifiedLastLookQuote = new BigNumber(lastLookQuote)
         .plus(swapTransactionCost)
@@ -125,7 +126,7 @@ const useQuotesDebug = () => {
     if (isDebugMode && bestRfqOrder && signerToken) {
       const lastLookQuote = formatUnits(
         bestRfqOrder.signerAmount,
-        signerToken.decimals
+        getTokenDecimals(signerToken)
       );
 
       console.log("bestRfqQuote:", lastLookQuote);

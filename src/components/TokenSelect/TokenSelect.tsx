@@ -7,8 +7,10 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
+import { TokenInfo, TokenKinds } from "@airswap/utils";
 
+import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenImage } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   AmountInput,
   AmountAndDetailsContainer,
@@ -52,7 +54,11 @@ export type TokenSelectProps = {
   /**
    * Metadata for currently selected token
    */
-  selectedToken: TokenInfo | null;
+  selectedToken: AppTokenInfo | null;
+  /**
+   * The kind of token (ERC20, ERC721, ERC1155)
+   */
+  tokenKind?: TokenKinds;
   /**
    * Called when the user has clicked on the token dropdown to change token
    */
@@ -124,6 +130,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
   isSelectTokenDisabled = false,
   isQuote = false,
   hasError = false,
+  tokenKind,
   showMaxButton = false,
   showMaxInfoButton = false,
   showTokenContractLink = false,
@@ -137,6 +144,12 @@ const TokenSelect: FC<TokenSelectProps> = ({
   const tokenText = useMemo(() => {
     return getTokenText(selectedToken, readOnly);
   }, [selectedToken, readOnly]);
+  const tokenLogoImage = selectedToken
+    ? getTokenImage(selectedToken)
+    : undefined;
+
+  const isNft =
+    tokenKind === TokenKinds.ERC721 || tokenKind === TokenKinds.ERC1155;
 
   const handleAmountFocus = () => setIsAmountFocused(true);
   const handleAmountBlur = () => setIsAmountFocused(false);
@@ -169,6 +182,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
         )}
         {!isRequestingToken ? (
           <ContainingButton
+            tokenKind={tokenKind}
             disabled={isSelectTokenDisabled || readOnly}
             onClick={onChangeTokenClicked}
             onBlur={handleTokenBlur}
@@ -176,10 +190,10 @@ const TokenSelect: FC<TokenSelectProps> = ({
             onMouseEnter={handleTokenFocus}
             onMouseLeave={handleTokenBlur}
           >
-            <TokenLogoLeft logoURI={selectedToken?.logoURI} />
+            <TokenLogoLeft logoURI={tokenLogoImage} />
             <StyledSelector>
               <StyledLabel>{label}</StyledLabel>
-              <StyledSelectItem>
+              <StyledSelectItem isNft={isNft}>
                 <StyledSelectButtonContent>
                   {tokenText}
                 </StyledSelectButtonContent>
@@ -209,7 +223,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
                 maxLength={79}
                 spellCheck={false}
                 value={amount}
-                disabled={readOnly}
+                disabled={readOnly || tokenKind === TokenKinds.ERC721}
                 onBlur={handleAmountBlur}
                 onChange={onAmountChange}
                 onFocus={handleAmountFocus}
@@ -240,7 +254,7 @@ const TokenSelect: FC<TokenSelectProps> = ({
                 i
               </InfoLabel>
             )}
-            <TokenLogoRight logoURI={selectedToken?.logoURI} />
+            <TokenLogoRight logoURI={tokenLogoImage} />
           </InputAndMaxButtonWrapper>
         ) : (
           <PlaceholderContainer>

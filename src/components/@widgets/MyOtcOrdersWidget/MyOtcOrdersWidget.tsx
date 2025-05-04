@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -58,7 +58,7 @@ const MyOtcOrdersWidget: FC = () => {
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
 
-  const cancelOrderOnChain = async (order: FullOrderERC20) => {
+  const cancelOrderOnChain = async (order: FullOrder | FullOrderERC20) => {
     const expiry = parseInt(order.expiry) * 1000;
     const isExpired = new Date().getTime() > expiry;
     const nonceUsed = await getNonceUsed(order, library!);
@@ -86,7 +86,9 @@ const MyOtcOrdersWidget: FC = () => {
     }
   };
 
-  const handleDeleteOrderButtonClick = async (order: FullOrderERC20) => {
+  const handleDeleteOrderButtonClick = async (
+    order: FullOrder | FullOrderERC20
+  ) => {
     await cancelOrderOnChain(order);
   };
 
@@ -126,7 +128,7 @@ const MyOtcOrdersWidget: FC = () => {
           activeCancellationId={activeCancellationNonce}
           activeSortType={activeSortType}
           activeTokens={allTokens}
-          erc20Orders={userOrders}
+          fullOrders={userOrders}
           sortTypeDirection={sortTypeDirection}
           library={library!}
           onDeleteOrderButtonClick={handleDeleteOrderButtonClick}

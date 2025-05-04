@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FullOrderERC20 } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 
 import { useAppSelector } from "../../../../app/hooks";
 import { getNonceUsed } from "../../../../features/orders/ordersHelpers";
@@ -10,7 +10,7 @@ import useDefaultLibrary from "../../../../hooks/useDefaultLibrary";
 import { OrderStatus } from "../../../../types/orderStatus";
 
 export const useOtcOrderStatus = (
-  order: FullOrderERC20
+  order: FullOrder | FullOrderERC20
 ): [OrderStatus, boolean] => {
   const library = useDefaultLibrary(order.chainId);
   const pendingTransactions = useAppSelector(selectPendingTransactions);
@@ -22,7 +22,7 @@ export const useOtcOrderStatus = (
   const isCanceled = useCancellationSuccess(order.nonce);
 
   const asyncGetTakenState = useCallback(
-    async (order: FullOrderERC20) => {
+    async (order: FullOrder | FullOrderERC20) => {
       if (library) {
         const response = await getNonceUsed(order, library);
 

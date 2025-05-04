@@ -5,14 +5,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as ethers from "ethers";
 
 import { AppDispatch, RootState } from "../../app/store";
+import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenId } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getUniqueSingleDimensionArray } from "../../helpers/array";
+import { compareAddresses } from "../../helpers/string";
 import { Web3State } from "../web3/web3Slice";
+import { getProtocolFee, getUnknownTokens } from "./metadataApi";
 import {
   getActiveTokensLocalStorageKey,
-  getProtocolFee,
-  getUnknownTokens,
   getUnknownTokensLocalStorageKey,
-} from "./metadataApi";
+} from "./metadataHelpers";
 import {
   setActiveTokens,
   MetadataTokenInfoMap,
@@ -104,63 +106,61 @@ const writeUnknownTokensToLocalStorage = (
   localStorage.setItem(localStorageKey, JSON.stringify(unknownTokens));
 };
 
-export const addActiveToken = createAsyncThunk<
-  void,
-  string,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("metadata/addActiveToken", async (token, { dispatch, getState }) => {
-  const { metadata, web3 } = getState();
+export const addActiveTokens =
+  (tokens: string[]) =>
+  (dispatch: AppDispatch, getState: () => RootState): void => {
+    const { metadata, web3 } = getState();
 
-  const activeTokens = [...metadata.activeTokens, token.toLowerCase()].filter(
-    getUniqueSingleDimensionArray
-  );
+    const newTokens = tokens.map((token) => token.toLowerCase());
+    const activeTokens = [...metadata.activeTokens, ...newTokens].filter(
+      getUniqueSingleDimensionArray
+    );
 
-  writeActiveTokensToLocalStorage(activeTokens, web3);
-  dispatch(setActiveTokens(activeTokens));
-});
+    writeActiveTokensToLocalStorage(activeTokens, web3);
+    dispatch(setActiveTokens(activeTokens));
+  };
 
-export const removeActiveToken = createAsyncThunk<
-  void,
-  string,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("metadata/removeActiveToken", async (token, { dispatch, getState }) => {
-  const { metadata, web3 } = getState();
+export const removeActiveTokens =
+  (tokens: string[]) =>
+  (dispatch: AppDispatch, getState: () => RootState): void => {
+    const { metadata, web3 } = getState();
 
-  const activeTokens = metadata.activeTokens.filter(
-    (t) => t !== token.toLowerCase()
-  );
+    const activeTokens = metadata.activeTokens.filter(
+      (activeToken) =>
+        !tokens.some((token) => compareAddresses(activeToken, token))
+    );
 
-  writeActiveTokensToLocalStorage(activeTokens, web3);
-  dispatch(setActiveTokens(activeTokens));
-});
+    writeActiveTokensToLocalStorage(activeTokens, web3);
+    dispatch(setActiveTokens(activeTokens));
+  };
 
 export const addUnknownTokenInfo = createAsyncThunk<
   void,
-  TokenInfo,
+  AppTokenInfo[],
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->("metadata/addUnknownTokenInfo", async (tokenInfo, { dispatch, getState }) => {
-  const { metadata, web3 } = getState();
+>(
+  "metadata/addUnknownTokenInfo",
+  async (tokenInfos, { dispatch, getState }) => {
+    const { metadata, web3 } = getState();
 
-  const unknownToken = {
-    ...tokenInfo,
-    address: tokenInfo.address.toLowerCase(),
-  };
+    const unknownTokens = tokenInfos.reduce((acc, tokenInfo) => {
+      const id = getTokenId(tokenInfo);
+      const unknownToken = {
+        ...tokenInfo,
+        address: tokenInfo.address.toLowerCase(),
+      };
 
-  const unknownTokens = {
-    ...metadata.unknownTokens,
-    [unknownToken.address]: unknownToken,
-  };
+      return {
+        ...acc,
+        [id]: unknownToken,
+      };
+    }, metadata.unknownTokens as MetadataTokenInfoMap);
 
-  writeUnknownTokensToLocalStorage(unknownTokens, web3);
+    writeUnknownTokensToLocalStorage(unknownTokens, web3);
 
-  dispatch(setUnknownTokens(unknownTokens));
-});
+    dispatch(setUnknownTokens(unknownTokens));
+  }
+);

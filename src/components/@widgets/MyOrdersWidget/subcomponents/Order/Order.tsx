@@ -1,5 +1,10 @@
 import { FC, PropsWithChildren, useMemo, useState } from "react";
 
+import {
+  getTokenDecimals,
+  getTokenImage,
+  getTokenSymbol,
+} from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
 import { OrderStatus } from "../../../../../types/orderStatus";
@@ -53,13 +58,32 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 }) => {
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
 
+  const senderTokenDecimals = order.senderToken
+    ? getTokenDecimals(order.senderToken)
+    : undefined;
+  const signerTokenDecimals = order.signerToken
+    ? getTokenDecimals(order.signerToken)
+    : undefined;
+  const senderTokenSymbol = order.senderToken
+    ? getTokenSymbol(order.senderToken)
+    : undefined;
+  const signerTokenSymbol = order.signerToken
+    ? getTokenSymbol(order.signerToken)
+    : undefined;
+  const senderTokenImage = order.senderToken
+    ? getTokenImage(order.senderToken)
+    : undefined;
+  const signerTokenImage = order.signerToken
+    ? getTokenImage(order.signerToken)
+    : undefined;
+
   const senderAmount = useMemo(
     () =>
       order.senderToken
         ? getHumanReadableNumber(
             getTokenAmountWithDecimals(
               order.senderAmount,
-              order.senderToken.decimals
+              senderTokenDecimals
             ).toString()
           )
         : "",
@@ -72,7 +96,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         ? getHumanReadableNumber(
             getTokenAmountWithDecimals(
               order.signerAmount,
-              order.signerToken.decimals
+              signerTokenDecimals
             ).toString()
           )
         : "",
@@ -90,7 +114,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const filledAmount = useFormattedTokenAmount(
     order.senderFilledAmount,
-    order.senderToken?.decimals
+    senderTokenDecimals
   );
 
   const handleDeleteOrderButtonClick = () => {
@@ -121,19 +145,19 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <Circle />
       </StatusIndicator>
       <Tokens>
-        <TokenIcon logoURI={order.signerToken?.logoURI} />
-        <TokenIcon logoURI={order.senderToken?.logoURI} />
+        <TokenIcon logoURI={signerTokenImage} />
+        <TokenIcon logoURI={senderTokenImage} />
       </Tokens>
       {hasFilledColumn && (
         <FilledAmount>{`${filledAmount} ${
-          order.signerToken?.symbol || ""
+          signerTokenSymbol || ""
         }`}</FilledAmount>
       )}
       <SignerAmount>{`${signerAmount} ${
-        order.signerToken?.symbol || ""
+        signerTokenSymbol || ""
       }`}</SignerAmount>
       <SenderAmount>{`${senderAmount} ${
-        order.senderToken?.symbol || ""
+        senderTokenSymbol || ""
       }`}</SenderAmount>
       <OrderStatusLabel>
         {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}

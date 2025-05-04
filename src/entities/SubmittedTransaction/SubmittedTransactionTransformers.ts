@@ -1,4 +1,5 @@
 import {
+  FullOrder,
   FullSwapERC20,
   OrderERC20,
   TokenInfo,
@@ -9,6 +10,7 @@ import {
   TransactionStatusType,
   TransactionTypes,
 } from "../../types/transactionTypes";
+import { AppTokenInfo } from "../AppTokenInfo/AppTokenInfo";
 import { DelegateRule } from "../DelegateRule/DelegateRule";
 import {
   SubmittedApprovalTransaction,
@@ -22,7 +24,7 @@ import {
 
 export const transformToSubmittedApprovalTransaction = (
   hash: string,
-  token: TokenInfo,
+  token: AppTokenInfo,
   amount: string,
   status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedApprovalTransaction => {
@@ -85,9 +87,9 @@ export const transformToSubmittedWithdrawTransaction = (
 
 export const transformToSubmittedTransactionWithOrder = (
   hash: string,
-  order: OrderERC20,
-  signerToken: TokenInfo,
-  senderToken: TokenInfo,
+  order: OrderERC20 | FullOrder,
+  signerToken: AppTokenInfo,
+  senderToken: AppTokenInfo,
   swap?: FullSwapERC20,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()

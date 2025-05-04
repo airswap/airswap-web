@@ -1,6 +1,6 @@
 import { TokenInfo } from "@airswap/utils";
 
-import { BalancesState } from "../../features/balances/balancesSlice";
+import { BalancesState } from "../../../features/balances/balancesSlice";
 import {
   sortTokenByExactMatch,
   sortTokensBySymbol,
@@ -91,7 +91,10 @@ describe("Sort Tokens", () => {
     it("should sort WBTC on top when the rest has no balance", () => {
       balances.values[activeTokens[2].address] = "240000000000000000";
 
-      const sortedTokens = sortTokensBySymbolAndBalance(activeTokens, balances);
+      const sortedTokens = sortTokensBySymbolAndBalance(
+        activeTokens,
+        balances
+      ) as TokenInfo[];
       expect(sortedTokens[0].symbol).toBe("WBTC");
       expect(sortedTokens[1].symbol).toBe("cLINK");
       expect(sortedTokens[2].symbol).toBe("cUSDC");
@@ -102,7 +105,10 @@ describe("Sort Tokens", () => {
       balances.values[activeTokens[0].address] = "300000000000000000";
       balances.values[activeTokens[2].address] = "240000000000000000";
 
-      const sortedTokens = sortTokensBySymbolAndBalance(activeTokens, balances);
+      const sortedTokens = sortTokensBySymbolAndBalance(
+        activeTokens,
+        balances
+      ) as TokenInfo[];
       expect(sortedTokens[0].symbol).toBe("WBTC");
       expect(sortedTokens[1].symbol).toBe("ZRX");
       expect(sortedTokens[2].symbol).toBe("cLINK");
@@ -112,26 +118,35 @@ describe("Sort Tokens", () => {
 
   describe("sortTokensByExactMatch", () => {
     it("should sort UNI to the top when query is UNI", () => {
-      const sortedTokens = sortTokenByExactMatch(activeTokens, "UNI");
+      const sortedTokens = sortTokenByExactMatch(
+        activeTokens,
+        "UNI"
+      ) as TokenInfo[];
       expect(sortedTokens[0].symbol).toBe("UNI");
       expect(sortedTokens[1].symbol).toBe("UNISOCK");
       expect(sortedTokens[2].symbol).toBe("UNIMOCK");
     });
 
     it("should sort WBTC to the top when query is WBTC", () => {
-      const sortedTokens = sortTokenByExactMatch(activeTokens, "WBTC");
+      const sortedTokens = sortTokenByExactMatch(
+        activeTokens,
+        "WBTC"
+      ) as TokenInfo[];
       expect(sortedTokens[0].symbol).toBe("WBTC");
       expect(sortedTokens[1].symbol).toBe("ZRX");
       expect(sortedTokens[2].symbol).toBe("cUSDC");
     });
 
     it("should return original activeTokens when query is empty", () => {
-      const sortedTokens = sortTokenByExactMatch(activeTokens, "");
+      const sortedTokens = sortTokenByExactMatch(
+        activeTokens,
+        ""
+      ) as TokenInfo[];
       expect(sortedTokens.length).toBe(7);
     });
 
     it("should return [] when activeTokens is not empty", () => {
-      const sortedTokens = sortTokenByExactMatch([], "");
+      const sortedTokens = sortTokenByExactMatch([], "") as TokenInfo[];
       expect(sortedTokens.length).toBe(0);
     });
   });

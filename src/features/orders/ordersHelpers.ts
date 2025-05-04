@@ -1,4 +1,11 @@
-import { Server, Wrapper, WETH, Delegate } from "@airswap/libraries";
+import {
+  Server,
+  Wrapper,
+  WETH,
+  Delegate,
+  Swap,
+  SwapERC20,
+} from "@airswap/libraries";
 import {
   toAtomicString,
   parseCheckResult,
@@ -6,18 +13,27 @@ import {
   FullOrderERC20,
   OrderERC20,
   ADDRESS_ZERO,
+  FullOrder,
+  TokenKinds,
+  fullOrderToParams,
 } from "@airswap/utils";
+import erc20Contract from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import erc721Contract from "@openzeppelin/contracts/build/contracts/ERC721.json";
+import erc1155Contract from "@openzeppelin/contracts/build/contracts/ERC1155.json";
 
-import erc20Abi from "erc-20-abi";
 import { BigNumber, ethers, Transaction } from "ethers";
 
 import { RFQ_EXPIRY_BUFFER_MS } from "../../constants/configParams";
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
+import { getFullOrderNonceUsed } from "../../entities/FullOrder/FullOrderService";
+import { getOrderErc20NonceUsed } from "../../entities/OrderERC20/OrderERC20Service";
 import { AppError } from "../../errors/appError";
 import {
   SwapError,
   transformSwapErrorToAppError,
 } from "../../errors/swapError";
 import transformUnknownErrorToAppError from "../../errors/transformUnknownErrorToAppError";
+import { checkSwapOrder, getSwapContract } from "../../helpers/swap";
 import {
   checkSwapErc20Order,
   getSwapErc20Address,
@@ -26,9 +42,11 @@ import {
 
 const REQUEST_ORDER_TIMEOUT_MS = 5000;
 
-const erc20Interface = new ethers.utils.Interface(erc20Abi);
+const erc20Interface = new ethers.utils.Interface(erc20Contract.abi);
+const erc721Interface = new ethers.utils.Interface(erc721Contract.abi);
+const erc1155Interface = new ethers.utils.Interface(erc1155Contract.abi);
 
-async function swap(
+async function swapOrderErc20(
   chainId: number,
   provider: ethers.providers.Web3Provider,
   order: OrderERC20 | FullOrderERC20
@@ -43,6 +61,24 @@ async function swap(
   return contract.swap(
     await (await provider.getSigner()).getAddress(),
     ...orderERC20ToParams(order)
+  );
+}
+
+async function swapFullOrder(
+  chainId: number,
+  provider: ethers.providers.Web3Provider,
+  order: FullOrder
+) {
+  const contract = await getSwapContract(provider, chainId);
+  if (order.sender.wallet === ADDRESS_ZERO) {
+    return contract.swapAnySender(
+      await (await provider.getSigner()).getAddress(),
+      ...fullOrderToParams(order)
+    );
+  }
+  return contract.swap(
+    await (await provider.getSigner()).getAddress(),
+    ...fullOrderToParams(order)
   );
 }
 
@@ -95,11 +131,15 @@ export async function requestOrders(
 }
 
 const getSpenderAddress = (
-  contractType: "Swap" | "Wrapper" | "Delegate",
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   provider: ethers.providers.Web3Provider
 ) => {
   if (contractType === "Swap") {
-    return getSwapErc20Address(provider.network.chainId);
+    return Swap.getAddress(provider.network.chainId);
+  }
+
+  if (contractType === "SwapERC20") {
+    return SwapERC20.getAddress(provider.network.chainId);
   }
 
   if (contractType === "Delegate") {
@@ -109,10 +149,10 @@ const getSpenderAddress = (
   return Wrapper.getAddress(provider.network.chainId);
 };
 
-export async function approveToken(
+export async function approveErc20Token(
   baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper" | "Delegate",
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   amount: string | number
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
@@ -120,7 +160,6 @@ export async function approveToken(
     const erc20Contract = new ethers.Contract(
       baseToken,
       erc20Interface,
-      // @ts-ignore
       provider.getSigner()
     );
     erc20Contract
@@ -132,14 +171,40 @@ export async function approveToken(
   });
 }
 
-export async function takeOrder(
-  order: OrderERC20 | FullOrderERC20,
+export async function approveNftToken(
+  baseToken: string,
   provider: ethers.providers.Web3Provider,
-  contractType: "Swap" | "Wrapper"
+  contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
+  tokenKind: TokenKinds,
+  tokenId: string
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
-    if (contractType === "Swap") {
-      swap(provider.network.chainId, provider, order)
+    const contractAddress = getSpenderAddress(contractType, provider);
+    const contract = new ethers.Contract(
+      baseToken,
+      tokenKind === TokenKinds.ERC1155 ? erc1155Interface : erc721Interface,
+      provider.getSigner()
+    );
+
+    const method =
+      tokenKind === TokenKinds.ERC721
+        ? contract.approve(contractAddress, tokenId)
+        : contract.setApprovalForAll(contractAddress, true);
+
+    return method.then(resolve).catch((error: any) => {
+      resolve(transformUnknownErrorToAppError(error));
+    });
+  });
+}
+
+export async function takeErc20Order(
+  order: OrderERC20 | FullOrderERC20,
+  provider: ethers.providers.Web3Provider,
+  contractType: "SwapERC20" | "Wrapper"
+): Promise<Transaction | AppError> {
+  return new Promise<Transaction | AppError>((resolve) => {
+    if (contractType === "SwapERC20") {
+      swapOrderErc20(provider.network.chainId, provider, order)
         .then(resolve)
         .catch((error: any) => {
           resolve(transformUnknownErrorToAppError(error));
@@ -219,7 +284,7 @@ export async function withdrawETH(
   return tx as any as Transaction;
 }
 
-export async function check(
+export async function checkOrderErc20(
   order: OrderERC20,
   senderWallet: string,
   chainId: number,
@@ -252,11 +317,12 @@ export async function check(
 }
 
 export async function getNonceUsed(
-  order: FullOrderERC20,
+  order: FullOrder | FullOrderERC20,
   provider: ethers.providers.BaseProvider
 ): Promise<boolean> {
-  return (await getSwapErc20Contract(provider, order.chainId)).nonceUsed(
-    order.signerWallet,
-    order.nonce
-  );
+  if (isFullOrder(order)) {
+    return getFullOrderNonceUsed(order, provider);
+  }
+
+  return getOrderErc20NonceUsed(order, provider);
 }

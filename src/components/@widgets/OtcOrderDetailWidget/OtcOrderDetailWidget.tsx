@@ -3,7 +3,15 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { FullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
+import {
+  FullOrderERC20,
+  ADDRESS_ZERO,
+  TokenInfo,
+  FullOrder,
+  TokenKinds,
+  OrderERC20,
+  getTokenKind,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
@@ -13,12 +21,26 @@ import { BigNumber } from "bignumber.js";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import {
+  getTokenDecimals,
+  getTokenSymbol,
+  isTokenInfo,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import {
+  checkFullOrder,
+  isFullOrder,
+} from "../../../entities/FullOrder/FullOrderHelpers";
+import {
   fetchIndexerUrls,
   getFilteredOrders,
 } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
-import { approve, deposit, take } from "../../../features/orders/ordersActions";
-import { check } from "../../../features/orders/ordersHelpers";
+import {
+  approve,
+  deposit,
+  takeErc20,
+  takeFullOrder,
+} from "../../../features/orders/ordersActions";
+import { checkOrderErc20 } from "../../../features/orders/ordersHelpers";
 import {
   clear,
   selectOrdersErrors,
@@ -32,6 +54,7 @@ import {
 import { compareAddresses } from "../../../helpers/string";
 import useAllowance from "../../../hooks/useAllowance";
 import useAllowancesOrBalancesFailed from "../../../hooks/useAllowancesOrBalancesFailed";
+import { useAmountPlusFee } from "../../../hooks/useAmountPlusFee";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import { useBalanceLoading } from "../../../hooks/useBalanceLoading";
 import useDepositPending from "../../../hooks/useDepositPending";
@@ -68,7 +91,7 @@ import { useOtcOrderStatus } from "./hooks/useOtcOrderStatus";
 import useSessionOrderTransaction from "./hooks/useSessionOrderTransaction";
 
 interface OtcOrderDetailWidgetProps {
-  order: FullOrderERC20;
+  order: FullOrder | FullOrderERC20;
 }
 
 export enum OtcOrderDetailWidgetState {
@@ -97,38 +120,90 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const [state, setState] = useState<OtcOrderDetailWidgetState>(
     OtcOrderDetailWidgetState.overview
   );
+
+  const senderWallet = isFullOrder(order)
+    ? order.sender.wallet
+    : order.senderWallet;
+  const senderTokenAddress = isFullOrder(order)
+    ? order.sender.token
+    : order.senderToken;
+  const senderTokenId = isFullOrder(order) ? order.sender.id : undefined;
+  const senderTokenAmount = isFullOrder(order)
+    ? order.sender.amount
+    : order.senderAmount;
+
+  const signerWallet = isFullOrder(order)
+    ? order.signer.wallet
+    : order.signerWallet;
+  const signerTokenAddress = isFullOrder(order)
+    ? order.signer.token
+    : order.signerToken;
+  const signerTokenId = isFullOrder(order) ? order.signer.id : undefined;
+  const signerTokenAmount = isFullOrder(order)
+    ? order.signer.amount
+    : order.signerAmount;
+  const signerTokenKind = isFullOrder(order)
+    ? (order.signer.kind as TokenKinds)
+    : TokenKinds.ERC20;
+
   const [orderStatus, isOrderStatusLoading] = useOtcOrderStatus(order);
-  const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
-    order.senderToken,
-    order.chainId
-  );
-  const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
-    order.signerToken,
-    order.chainId
-  );
+  const [senderToken, isSenderTokenLoading] = useTakerTokenInfo({
+    address: senderTokenAddress,
+    chainId: order.chainId,
+    tokenId: senderTokenId,
+  });
+  const [signerToken, isSignerTokenLoading] = useTakerTokenInfo({
+    address: signerTokenAddress,
+    chainId: order.chainId,
+    tokenId: signerTokenId,
+    tokenKind: signerTokenKind,
+  });
   const isBalanceLoading = useBalanceLoading();
-  const senderAmount = useFormattedTokenAmount(
-    order.senderAmount,
-    senderToken?.decimals
+  const senderTokenDecimals = senderToken
+    ? getTokenDecimals(senderToken)
+    : undefined;
+  const signerTokenDecimals = signerToken
+    ? getTokenDecimals(signerToken)
+    : undefined;
+  const senderTokenSymbol = senderToken
+    ? getTokenSymbol(senderToken)
+    : undefined;
+  const signerTokenSymbol = signerToken
+    ? getTokenSymbol(signerToken)
+    : undefined;
+  const senderShouldPayProtocolFee = isFullOrder(order);
+
+  const originalSenderAmount = useFormattedTokenAmount(
+    senderTokenAmount,
+    senderTokenDecimals
   );
+  const senderAmountPlusFee = useAmountPlusFee(
+    originalSenderAmount,
+    senderTokenDecimals
+  );
+  const senderAmount = senderShouldPayProtocolFee
+    ? senderAmountPlusFee
+    : originalSenderAmount;
   const signerAmount = useFormattedTokenAmount(
-    order.signerAmount,
-    signerToken?.decimals
+    signerTokenKind !== TokenKinds.ERC721 ? signerTokenAmount : "1",
+    signerTokenDecimals
   );
-  const senderTokenSymbol = senderToken?.symbol;
-  const signerTokenSymbol = signerToken?.symbol;
-  const tokenExchangeRate = new BigNumber(senderAmount!).dividedBy(
+  const tokenExchangeRate = new BigNumber(senderAmount).dividedBy(
     signerAmount!
   );
-  const approvalTransaction = useApprovalPending(order.senderToken, true);
+  const approvalTransaction = useApprovalPending(senderTokenAddress, true);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount);
+  const { hasSufficientAllowance, readableAllowance } = useAllowance(
+    senderToken,
+    senderAmount,
+    { spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20" }
+  );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
-    senderAmount!
+    senderAmount
   );
 
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
@@ -144,13 +219,14 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     !!chainId && orderChainId !== chainId;
 
   const orderType =
-    order.senderWallet === ADDRESS_ZERO
+    senderWallet === ADDRESS_ZERO
       ? OrderType.publicUnlisted
       : OrderType.private;
-  const userIsMakerOfSwap = order.signerWallet === account;
+  const userIsMakerOfSwap = compareAddresses(signerWallet, account || "");
   const userIsIntendedRecipient =
-    compareAddresses(order.senderWallet, account || "") ||
-    order.senderWallet === ADDRESS_ZERO;
+    compareAddresses(senderWallet, account || "") ||
+    senderWallet === ADDRESS_ZERO;
+
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
   }, [order]);
@@ -186,25 +262,34 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   };
 
   const takeOrder = async () => {
-    if (!library) return;
+    if (!library || !account || !chainId) return;
 
-    const errors = await check(
-      order,
-      order.senderWallet,
-      order.chainId,
-      library
-    );
+    const errors = await (isFullOrder(order)
+      ? checkFullOrder(order as FullOrder, senderWallet, library)
+      : checkOrderErc20(order as OrderERC20, senderWallet, chainId, library));
 
     if (errors.length) {
       dispatch(setErrors(errors));
       return;
     }
 
-    await dispatch(take(order, signerToken!, senderToken!, library, "Swap"));
-  };
-
-  const openTransactionsTab = () => {
-    setTransactionsTabIsOpen(true);
+    await dispatch(
+      isFullOrder(order)
+        ? takeFullOrder({
+            order,
+            senderWallet: account!,
+            signerToken: signerToken!,
+            senderToken: senderToken!,
+            library,
+          })
+        : takeErc20(
+            order,
+            signerToken! as TokenInfo,
+            senderToken! as TokenInfo,
+            library,
+            "SwapERC20"
+          )
+    );
   };
 
   const approveToken = () => {
@@ -212,14 +297,21 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       return;
     }
 
-    dispatch(approve(senderAmount, senderToken, library, "Swap"));
+    dispatch(
+      approve(
+        senderAmount,
+        senderToken,
+        library,
+        isFullOrder(order) ? "Swap" : "SwapERC20"
+      )
+    );
   };
 
   const depositNativeToken = async () => {
     dispatch(
       deposit(
         shouldDepositNativeTokenAmount!,
-        senderToken!,
+        senderToken as TokenInfo,
         wrappedNativeToken!,
         chainId!,
         library!
@@ -266,7 +358,10 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       takeOrder();
     }
 
-    if (action === ButtonActions.back) {
+    if (
+      action === ButtonActions.back ||
+      action === ButtonActions.makeNewOrder
+    ) {
       history.push(routes.makeOtcOrder());
     }
   };
@@ -280,7 +375,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       return (
         <WrapReview
           isLoading={hasDepositPending}
-          amount={senderAmount || "0"}
+          amount={senderAmount}
           errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
           wrappedNativeToken={wrappedNativeToken}
@@ -295,9 +390,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
         <TakeOrderReview
           errors={errors}
           expiry={+order.expiry}
-          senderAmount={senderAmount || "0"}
+          senderAmount={originalSenderAmount}
+          senderAmountPlusFee={
+            senderShouldPayProtocolFee ? senderAmountPlusFee : undefined
+          }
           senderToken={senderToken}
-          signerAmount={signerAmount || "0"}
+          signerAmount={signerAmount}
           signerToken={signerToken}
           wrappedNativeToken={wrappedNativeToken}
           onEditButtonClick={backToOverview}
@@ -318,12 +416,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           isRequestingQuoteAmount={isSenderTokenLoading}
           isRequestingQuoteToken={isSenderTokenLoading}
           showTokenContractLink
-          baseAmount={signerAmount || "0.00"}
+          baseAmount={signerAmount}
           baseTokenInfo={signerToken}
           maxAmount={null}
           side={userIsMakerOfSwap ? "sell" : "buy"}
           tradeNotAllowed={walletChainIdIsDifferentThanOrderChainId}
-          quoteAmount={senderAmount || "0.00"}
+          quoteAmount={senderAmount}
           quoteTokenInfo={senderToken}
           onBaseAmountChange={() => {}}
           onChangeTokenClick={() => {}}
@@ -335,7 +433,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           expiry={parsedExpiry}
           link={orderTransactionLink}
           orderType={orderType}
-          recipient={order.senderWallet}
+          recipient={senderWallet}
           status={orderStatus}
           userAddress={account || undefined}
         />

@@ -6,6 +6,7 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
 import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
+import { isTokenInfo } from "../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
   selectActiveTokens,
@@ -57,7 +58,11 @@ const useShouldDepositNativeTokenAmount = (
       chainId
     );
 
-    if (!nativeTokenInfo || !wrappedNativeToken) {
+    if (
+      !nativeTokenInfo ||
+      !wrappedNativeToken ||
+      !isTokenInfo(nativeTokenInfo)
+    ) {
       return undefined;
     }
 

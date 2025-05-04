@@ -1,9 +1,8 @@
-import React, { FC, useEffect } from "react";
+import { FC, useEffect } from "react";
 import { useParams } from "react-router";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import OtcOrderDetailWidget from "../../components/@widgets/OtcOrderDetailWidget/OtcOrderDetailWidget";
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import Page from "../../components/Page/Page";
 import { fetchAllTokens } from "../../features/metadata/metadataActions";
 import { selectMetaDataReducer } from "../../features/metadata/metadataSlice";

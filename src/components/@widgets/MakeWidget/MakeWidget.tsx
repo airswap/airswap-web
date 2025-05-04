@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
-import { compressFullOrderERC20, ADDRESS_ZERO } from "@airswap/utils";
+import {
+  ADDRESS_ZERO,
+  TokenInfo,
+  TokenKinds,
+  compressFullOrder,
+  compressFullOrderERC20,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
@@ -13,11 +19,19 @@ import nativeCurrency, {
   nativeCurrencySafeTransactionFee,
 } from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenDecimals,
+  getTokenKind,
+  getTokenSymbol,
+  isCollectionTokenInfo,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { AppErrorType } from "../../../errors/appError";
 import { selectBalances } from "../../../features/balances/balancesSlice";
 import { fetchIndexerUrls } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
-import { createOrder as createOrderAction } from "../../../features/makeOrder/makeOrderActions";
+import { createOtcOrDelegateOrder } from "../../../features/makeOrder/makeOrderActions";
 import {
   clearLastUserOrder,
   reset,
@@ -25,8 +39,10 @@ import {
   setError,
 } from "../../../features/makeOrder/makeOrderSlice";
 import {
+  selectActiveErc20Tokens,
   selectActiveTokens,
   selectAllTokenInfo,
+  selectErc20Tokens,
   selectProtocolFee,
 } from "../../../features/metadata/metadataSlice";
 import { approve, deposit } from "../../../features/orders/ordersActions";
@@ -34,6 +50,7 @@ import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
   selectUserTokens,
   setUserTokens,
+  UserToken,
 } from "../../../features/userSettings/userSettingsSlice";
 import getWethAddress from "../../../helpers/getWethAddress";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
@@ -103,7 +120,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   const balances = useAppSelector(selectBalances);
   const activeTokens = useAppSelector(selectActiveTokens);
+  const activeErc20Tokens = useAppSelector(selectActiveErc20Tokens);
   const allTokens = useAppSelector(selectAllTokenInfo);
+  const erc20Tokens = useAppSelector(selectErc20Tokens);
   const userTokens = useAppSelector(selectUserTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
@@ -120,9 +139,40 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     "showLimitNotice",
     true
   );
-
-  // Input options
   const orderTypeSelectOptions = useOrderTypeSelectOptions();
+
+  // Selected tokens
+  const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
+  const makerTokenInfo = useTokenInfo(
+    userTokens.tokenFrom?.address,
+    userTokens.tokenFrom?.tokenId
+  );
+  const takerTokenInfo = useTokenInfo(
+    userTokens.tokenTo?.address || defaultTokenToAddress,
+    userTokens.tokenTo?.tokenId
+  );
+  const makerTokenDecimals = makerTokenInfo
+    ? getTokenDecimals(makerTokenInfo)
+    : undefined;
+  const takerTokenDecimals = takerTokenInfo
+    ? getTokenDecimals(takerTokenInfo)
+    : undefined;
+  const makerTokenSymbol = makerTokenInfo
+    ? getTokenSymbol(makerTokenInfo)
+    : undefined;
+  const makerTokenKind = makerTokenInfo
+    ? getTokenKind(makerTokenInfo)
+    : undefined;
+  const takerTokenKind = takerTokenInfo
+    ? getTokenKind(takerTokenInfo)
+    : undefined;
+
+  // NFT's are not supported for limit orders
+  const isNftSupported = !isLimitOrder;
+  const signerShouldPayProtocolFee =
+    !isLimitOrder && makerTokenKind === TokenKinds.ERC20;
+  const defaultMakerAmount =
+    isNftSupported && makerTokenKind === TokenKinds.ERC721 ? "1" : "";
 
   // User input states
   const [state, setState] = useState<MakeWidgetState>(MakeWidgetState.list);
@@ -131,28 +181,24 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
   const [takerAddress, setTakerAddress] = useState("");
-  const [makerAmount, setMakerAmount] = useState("");
+  const [makerAmount, setMakerAmount] = useState(defaultMakerAmount);
   const [takerAmount, setTakerAmount] = useState("");
 
   // States derived from user input
-  const defaultTokenToAddress = nativeCurrency[chainId!]?.address;
-  const makerTokenInfo = useTokenInfo(userTokens.tokenFrom || null);
-  const takerTokenInfo = useTokenInfo(
-    userTokens.tokenTo || defaultTokenToAddress || null
-  );
   const makerAmountPlusFee = useAmountPlusFee(
     makerAmount,
-    makerTokenInfo?.decimals
+    makerTokenDecimals,
+    makerTokenKind
   );
-
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
-    isLimitOrder ? makerAmount : makerAmountPlusFee,
-    { spenderAddressType: isLimitOrder ? "Delegate" : "Swap" }
+    signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
+    { spenderAddressType: isLimitOrder ? "delegate" : "swap" }
   );
+
   const hasInsufficientBalance = useInsufficientBalance(
     makerTokenInfo,
-    isLimitOrder ? makerAmount : makerAmountPlusFee,
+    signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
     true
   );
   const isBalanceLoading = useBalanceLoading();
@@ -160,8 +206,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     !makerAmount.length || parseFloat(makerAmount) === 0 || makerAmount === ".";
   const hasMissingTakerAmount =
     !takerAmount.length || parseFloat(takerAmount) === 0 || takerAmount === ".";
-  const maxAmount = useMaxAmount(makerTokenInfo?.address || null, true);
-  const showMaxButton = !!maxAmount && makerAmount !== maxAmount;
+  const maxAmount = useMaxAmount(makerTokenInfo || null, true);
+  const showMaxButton =
+    !!maxAmount &&
+    makerAmount !== maxAmount &&
+    userTokens.tokenFrom?.kind !== TokenKinds.ERC721;
   const showMaxInfoButton =
     !!maxAmount &&
     makerTokenInfo?.address === ADDRESS_ZERO &&
@@ -174,7 +223,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const shouldDepositNativeTokenAmount = useShouldDepositNativeToken(
     makerTokenInfo?.address,
     makerAmount,
-    isLimitOrder ? false : true
+    signerShouldPayProtocolFee
   );
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
   const isValidAddress = useValidAddress(takerAddress);
@@ -200,6 +249,22 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   // useEffects
   useEffect(() => {
     dispatch(reset());
+
+    if (isNftSupported) {
+      return;
+    }
+
+    const defaultToken = {
+      address: defaultTokenToAddress,
+      kind: TokenKinds.ERC20,
+    };
+
+    dispatch(
+      setUserTokens({
+        ...(makerTokenKind !== TokenKinds.ERC20 && { tokenFrom: defaultToken }),
+        ...(takerTokenKind !== TokenKinds.ERC20 && { tokenTo: defaultToken }),
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -224,7 +289,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   useEffect(() => {
     if (lastUserOrder) {
-      const compressedOrder = compressFullOrderERC20(lastUserOrder);
+      const compressedOrder = isFullOrder(lastUserOrder)
+        ? compressFullOrder(lastUserOrder)
+        : compressFullOrderERC20(lastUserOrder);
       dispatch(clearLastUserOrder());
       history.push(routes.otcOrder(compressedOrder));
 
@@ -254,13 +321,23 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     }
   }, [isActive]);
 
-  const handleSetToken = (type: TokenSelectModalTypes, value: string) => {
+  const handleSetToken = (type: TokenSelectModalTypes, newToken: UserToken) => {
+    const defaultToken = {
+      address: defaultTokenToAddress,
+      kind: TokenKinds.ERC20,
+    };
     const { tokenFrom, tokenTo } = getNewTokenPair(
       type,
-      value,
-      userTokens.tokenTo || defaultTokenToAddress || undefined,
+      newToken,
+      userTokens.tokenTo || defaultToken || undefined,
       userTokens.tokenFrom || undefined
     );
+
+    if (tokenFrom?.kind !== TokenKinds.ERC20 && type === "base") {
+      setMakerAmount("1");
+    } else if (tokenTo?.kind !== TokenKinds.ERC20 && type === "quote") {
+      setTakerAmount("1");
+    }
 
     dispatch(
       setUserTokens({
@@ -272,20 +349,43 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   const handleMakerAmountChange = (amount: string) => {
     setMakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, makerTokenInfo?.decimals)
+      toMaxAllowedDecimalsNumberString(amount, makerTokenDecimals)
     );
   };
 
   const handleTakerAmountChange = (amount: string) => {
     setTakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, takerTokenInfo?.decimals)
+      toMaxAllowedDecimalsNumberString(amount, takerTokenDecimals)
     );
   };
 
   const handleSwitchTokensButtonClick = () => {
-    handleSetToken("base", userTokens.tokenTo || defaultTokenToAddress);
+    handleSetToken(
+      "base",
+      userTokens.tokenTo || {
+        address: defaultTokenToAddress,
+        kind: TokenKinds.ERC20,
+      }
+    );
     setMakerAmount(takerAmount);
     setTakerAmount(makerAmount);
+  };
+
+  const handleTokenSelect = (newToken: AppTokenInfo) => {
+    const tokenId = isCollectionTokenInfo(newToken) ? newToken.id : undefined;
+    const tokenKind = getTokenKind(newToken);
+
+    handleSetToken(showTokenSelectModal, {
+      address: newToken.address,
+      tokenId,
+      kind: tokenKind,
+    });
+
+    if (tokenKind === TokenKinds.ERC721) {
+      setMakerAmount("1");
+    }
+
+    setShowTokenSelectModal(null);
   };
 
   const reviewOrder = () => {
@@ -297,11 +397,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
     const formattedMakerAmount = toRoundedNumberString(
       makerAmount,
-      makerTokenInfo?.decimals
+      makerTokenDecimals
     );
     const formattedTakerAmount = toRoundedNumberString(
       takerAmount,
-      takerTokenInfo?.decimals
+      takerTokenDecimals
     );
 
     setMakerAmount(formattedMakerAmount);
@@ -311,9 +411,13 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   };
 
   const createOrder = async () => {
+    if (!makerTokenInfo || !takerTokenInfo) {
+      throw new Error("Maker or taker token info is not set");
+    }
+
     const expiryDate = Date.now() + expiry;
-    const makerTokenAddress = makerTokenInfo?.address || "";
-    const takerTokenAddress = takerTokenInfo?.address || "";
+    const makerTokenAddress = makerTokenInfo.address;
+    const takerTokenAddress = takerTokenInfo.address;
 
     const signerToken =
       makerTokenAddress === ADDRESS_ZERO
@@ -324,21 +428,37 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         ? getWethAddress(chainId!)
         : takerTokenAddress;
 
+    const signerTokenId = isCollectionTokenInfo(makerTokenInfo!)
+      ? makerTokenInfo.id
+      : "0";
+
+    const senderTokenId = isCollectionTokenInfo(takerTokenInfo!)
+      ? takerTokenInfo.id
+      : "0";
+
     const transaction = await dispatch(
-      createOrderAction({
+      createOtcOrDelegateOrder({
         isLimitOrder,
         nonce: expiryDate.toString(),
         expiry: Math.floor(expiryDate / 1000).toString(),
-        signerWallet: account!,
-        signerToken,
         signerTokenInfo: makerTokenInfo!,
-        signerAmount: makerAmount,
-        protocolFee: protocolFee.toString(),
-        senderWallet:
-          orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
-        senderToken,
         senderTokenInfo: takerTokenInfo!,
-        senderAmount: takerAmount,
+        signer: {
+          wallet: account!,
+          token: signerToken,
+          amount: makerAmount,
+          id: signerTokenId,
+          kind: getTokenKind(makerTokenInfo!),
+        },
+        sender: {
+          wallet:
+            orderType === OrderType.private ? takerAddress! : ADDRESS_ZERO,
+          token: senderToken,
+          amount: takerAmount,
+          id: senderTokenId,
+          kind: getTokenKind(takerTokenInfo!),
+        },
+        protocolFee: protocolFee.toString(),
         chainId: chainId!,
         library: library!,
         activeIndexers: indexerUrls,
@@ -359,10 +479,14 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
     dispatch(
       approve(
-        makerAmountPlusFee,
+        signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
         justifiedToken!,
         library!,
-        isLimitOrder ? "Delegate" : "Swap"
+        isLimitOrder
+          ? "Delegate"
+          : makerTokenKind === TokenKinds.ERC20
+          ? "SwapERC20"
+          : "Swap"
       )
     );
   };
@@ -371,7 +495,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     dispatch(
       deposit(
         shouldDepositNativeTokenAmount!,
-        makerTokenInfo!,
+        makerTokenInfo! as TokenInfo,
         wrappedNativeToken!,
         chainId!,
         library!
@@ -462,7 +586,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             hasEditButton
             isLoading={!!approvalTransaction}
             amount={makerAmount}
-            amountPlusFee={isLimitOrder ? undefined : makerAmountPlusFee}
+            amountPlusFee={
+              signerShouldPayProtocolFee ? makerAmountPlusFee : undefined
+            }
             readableAllowance={readableAllowance}
             token={makerTokenInfo}
             wrappedNativeToken={wrappedNativeToken}
@@ -485,7 +611,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             senderAmount={takerAmount}
             senderToken={takerTokenInfo}
             signerAmount={makerAmount}
-            signerAmountPlusFee={isLimitOrder ? undefined : makerAmountPlusFee}
+            signerAmountPlusFee={
+              signerShouldPayProtocolFee ? makerAmountPlusFee : undefined
+            }
             signerToken={makerTokenInfo}
             wrappedNativeToken={wrappedNativeToken}
             onEditButtonClick={handleEditButtonClick}
@@ -572,7 +700,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
           shouldDepositNativeToken={shouldDepositNativeToken}
           shouldRefresh={isAllowancesOrBalancesFailed}
           walletIsNotConnected={!isActive}
-          makerTokenSymbol={makerTokenInfo?.symbol}
+          makerTokenSymbol={makerTokenSymbol}
           onBackButtonClick={handleBackButtonClick}
           onActionButtonClick={handleActionButtonClick}
         />
@@ -641,14 +769,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         isHidden={!showTokenSelectModal}
       >
         <TokenList
-          activeTokens={activeTokens}
-          allTokens={allTokens}
+          activeTokens={
+            isNftSupported && showTokenSelectModal === "base"
+              ? activeTokens
+              : activeErc20Tokens
+          }
+          allTokens={
+            isNftSupported && showTokenSelectModal === "base"
+              ? allTokens
+              : erc20Tokens
+          }
           balances={balances}
-          supportedTokenAddresses={[]}
-          onSelectToken={(newTokenAddress) => {
-            handleSetToken(showTokenSelectModal, newTokenAddress);
-            setShowTokenSelectModal(null);
-          }}
+          onSelectToken={handleTokenSelect}
         />
       </ModalOverlay>
       <ModalOverlay

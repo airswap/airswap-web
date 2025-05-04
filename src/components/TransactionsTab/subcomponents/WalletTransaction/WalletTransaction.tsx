@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { HTMLMotionProps } from "framer-motion";
 
+import { getTokenSymbol } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { SubmittedTransaction } from "../../../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   getSetRuleTransactionLabel,
@@ -60,6 +61,7 @@ const WalletTransaction = ({
       new Date(transaction.timestamp),
       t
     );
+    const tokenSymbol = getTokenSymbol(transaction.token);
 
     return (
       <Container
@@ -69,9 +71,7 @@ const WalletTransaction = ({
         initial={initial}
       >
         <TextContainer>
-          <SpanTitle>
-            {t("wallet.approve", { symbol: transaction.token.symbol })}
-          </SpanTitle>
+          <SpanTitle>{t("wallet.approve", { symbol: tokenSymbol })}</SpanTitle>
 
           <SpanSubtitle>
             {statusText} · {timeBetween}

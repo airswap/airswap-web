@@ -2,9 +2,11 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { FullOrderERC20, OrderERC20, TokenInfo } from "@airswap/utils";
+import { FullOrderERC20, OrderERC20 } from "@airswap/utils";
 
 import { useAppSelector } from "../../app/hooks";
+import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenSymbol } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectIndexerReducer } from "../../features/indexer/indexerSlice";
 import { selectBestOrder } from "../../features/orders/ordersSlice";
 import { AppRoutes } from "../../routes";
@@ -16,8 +18,8 @@ import AvailableOrdersList from "./subcomponents/AvailableOrdersList/AvailableOr
 export type AvailableOrdersSortType = "senderAmount" | "signerAmount" | "rate";
 
 export type AvailableOrdersWidgetProps = {
-  senderToken: TokenInfo;
-  signerToken: TokenInfo;
+  senderToken: AppTokenInfo;
+  signerToken: AppTokenInfo;
   onSwapLinkClick: () => void;
   onFullOrderLinkClick?: () => void;
 };
@@ -42,6 +44,9 @@ const AvailableOrdersWidget = ({
     signerAmount: false,
     rate: false,
   });
+
+  const senderTokenSymbol = getTokenSymbol(senderToken);
+  const signerTokenSymbol = getTokenSymbol(signerToken);
 
   const sortedOrders = useMemo(() => {
     const ordersToSort: (FullOrderERC20 | OrderERC20)[] = [...orders];
@@ -117,8 +122,8 @@ const AvailableOrdersWidget = ({
       <AvailableOrdersList
         orders={sortedOrders}
         helperText={helperText}
-        senderToken={senderToken.symbol}
-        signerToken={signerToken.symbol}
+        senderToken={senderTokenSymbol}
+        signerToken={signerTokenSymbol}
         activeSortType={sortType}
         sortTypeDirection={sortTypeDirection}
         invertRate={invertRate}

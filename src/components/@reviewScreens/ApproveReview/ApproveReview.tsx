@@ -6,6 +6,13 @@ import { useToggle } from "@react-hookz/web";
 
 import { BigNumber } from "bignumber.js";
 
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenDecimals,
+  getTokenImage,
+  getTokenKind,
+  getTokenSymbol,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { AppError } from "../../../errors/appError";
 import toRoundedNumberString from "../../../helpers/toRoundedNumberString";
 import { ReviewList } from "../../../styled-components/ReviewList/ReviewList";
@@ -34,7 +41,7 @@ interface ApproveReviewProps {
   backButtonText?: string;
   errors?: AppError[];
   readableAllowance: string;
-  token: TokenInfo | null;
+  token: AppTokenInfo | null;
   wrappedNativeToken: TokenInfo | null;
   onEditButtonClick?: () => void;
   onRestartButtonClick?: () => void;
@@ -60,7 +67,11 @@ const ApproveReview: FC<ApproveReviewProps> = ({
   const [showFeeInfo, toggleShowFeeInfo] = useToggle(false);
   const isTokenNativeToken = token?.address === ADDRESS_ZERO;
   const justifiedToken = isTokenNativeToken ? wrappedNativeToken : token;
-  const tokenSymbol = justifiedToken?.symbol || "?";
+  const tokenSymbol =
+    (justifiedToken ? getTokenSymbol(justifiedToken) : undefined) || "?";
+  const tokenDecimals =
+    (justifiedToken ? getTokenDecimals(justifiedToken) : undefined) || 18;
+  const tokenImage = justifiedToken ? getTokenImage(justifiedToken) : undefined;
 
   const roundedFeeAmount = useMemo(() => {
     if (!amountPlusFee) {
@@ -68,7 +79,7 @@ const ApproveReview: FC<ApproveReviewProps> = ({
     }
 
     const feeAmount = new BigNumber(amountPlusFee).minus(amount).toString();
-    return toRoundedNumberString(feeAmount, justifiedToken?.decimals);
+    return toRoundedNumberString(feeAmount, tokenDecimals);
   }, [amount, amountPlusFee, justifiedToken]);
 
   const roundedAmountPlusFee = useMemo(() => {
@@ -76,8 +87,8 @@ const ApproveReview: FC<ApproveReviewProps> = ({
       return undefined;
     }
 
-    return toRoundedNumberString(amountPlusFee, justifiedToken?.decimals);
-  }, [amountPlusFee, justifiedToken]);
+    return toRoundedNumberString(amountPlusFee, tokenDecimals);
+  }, [amountPlusFee, tokenDecimals]);
 
   const handleEditOrBackButtonClick = () => {
     if (!isLoading && hasEditButton && onEditButtonClick) {
@@ -102,7 +113,8 @@ const ApproveReview: FC<ApproveReviewProps> = ({
         amount={amount}
         label={t("common.send")}
         tokenSymbol={tokenSymbol}
-        tokenUri={justifiedToken?.logoURI}
+        tokenKind={token ? getTokenKind(token) : undefined}
+        tokenUri={tokenImage}
       />
       <ReviewList>
         {!!amountPlusFee && (

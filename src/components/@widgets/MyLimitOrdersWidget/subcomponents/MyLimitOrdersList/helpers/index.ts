@@ -1,7 +1,6 @@
-import { TokenInfo } from "@airswap/utils";
-
 import { ethers } from "ethers";
 
+import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
 import { DelegateRule } from "../../../../../../entities/DelegateRule/DelegateRule";
 import { routes } from "../../../../../../routes";
 import { OrderStatus } from "../../../../../../types/orderStatus";
@@ -22,7 +21,7 @@ const getOrderStatus = (delegateRule: DelegateRule): OrderStatus => {
 
 export const getDelegateRuleDataAndTransformToMyOrder = async (
   delegateRule: DelegateRule,
-  activeTokens: TokenInfo[],
+  activeTokens: AppTokenInfo[],
   provider: ethers.providers.BaseProvider
 ): Promise<MyOrder> => {
   const link = routes.limitOrder(

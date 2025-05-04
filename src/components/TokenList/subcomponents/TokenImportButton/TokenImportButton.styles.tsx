@@ -53,20 +53,3 @@ export const UnsupportedTokenText = styled(Metadata)`
   text-align: center;
   justify-self: center;
 `;
-
-export const ImportButton = styled.button`
-  border: 1px solid ${(props) => props.theme.colors.borderGrey};
-  font-size: 0.8rem;
-  font-weight: bold;
-  padding: 0.5rem 1.5rem;
-  justify-self: center;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-    color: ${(props) => props.theme.colors.black};
-    transition: 0.25s ease-in-out;
-  }
-`;

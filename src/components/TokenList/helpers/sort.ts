@@ -1,7 +1,13 @@
 import { TokenInfo } from "@airswap/utils";
 import { formatUnits } from "@ethersproject/units";
 
-import { BalancesState } from "../../features/balances/balancesSlice";
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenDecimals,
+  getTokenId,
+  getTokenSymbol,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { BalancesState } from "../../../features/balances/balancesSlice";
 
 export function sortTokensByBalance(
   tokens: TokenInfo[],
@@ -26,20 +32,19 @@ export function sortTokensBySymbol(tokens: TokenInfo[]) {
   );
 }
 
-function getTokenBalance(token: TokenInfo, balances: BalancesState): number {
-  const balance = balances.values[token.address];
+function getTokenBalance(token: AppTokenInfo, balances: BalancesState): number {
+  const tokenId = getTokenId(token);
+  const balance = balances.values[tokenId];
 
   if (!balance) {
     return 0;
   }
 
-  return parseFloat(
-    formatUnits(balances.values[token.address]!, token.decimals)
-  );
+  return parseFloat(formatUnits(balance, getTokenDecimals(token)));
 }
 
 export function sortTokensBySymbolAndBalance(
-  tokens: TokenInfo[],
+  tokens: AppTokenInfo[],
   balances: BalancesState
 ) {
   return tokens.sort((a, b) => {
@@ -52,12 +57,15 @@ export function sortTokensBySymbolAndBalance(
       return -1;
     }
 
-    return a.symbol.toLocaleLowerCase() < b.symbol.toLocaleLowerCase() ? -1 : 1;
+    const aSymbol = getTokenSymbol(a).toLowerCase();
+    const bSymbol = getTokenSymbol(b).toLowerCase();
+
+    return aSymbol < bSymbol ? -1 : 1;
   });
 }
 
 export function sortTokenByExactMatch(
-  filteredTokens: TokenInfo[],
+  filteredTokens: AppTokenInfo[],
   tokenQuery: string
 ) {
   if (!filteredTokens.length) return [];
@@ -73,19 +81,19 @@ export function sortTokenByExactMatch(
   if (symbolMatch.length > 1) return filteredTokens;
 
   // filter based off symbol match -> substring match -> remainder of filtered tokens
-  const exactMatches: TokenInfo[] = [];
-  const symbolSubtrings: TokenInfo[] = [];
-  const remainder: TokenInfo[] = [];
+  const exactMatches: AppTokenInfo[] = [];
+  const symbolSubtrings: AppTokenInfo[] = [];
+  const remainder: AppTokenInfo[] = [];
 
   filteredTokens.forEach((token) => {
     // add exact matches
-    if (token.symbol?.toLowerCase() === symbolMatch[0]) {
+    const tokenSymbol = getTokenSymbol(token).toLowerCase();
+
+    if (tokenSymbol === symbolMatch[0]) {
       return exactMatches.push(token);
     }
     // add matches with starting values
-    else if (
-      token.symbol?.toLowerCase().startsWith(tokenQuery.toLowerCase().trim())
-    ) {
+    else if (tokenSymbol.startsWith(tokenQuery.toLowerCase().trim())) {
       return symbolSubtrings.push(token);
     }
     // add remaining filtered tokens

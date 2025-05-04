@@ -21,6 +21,10 @@ $ yarn install
 $ yarn start
 ```
 
+### NFT discoverability
+
+To enable creation of NFT OTC orders. Use REACT_APP_ALCHEMY_API_KEY to add a alchemy key.
+
 This repo is a peer-to-peer web frontend for AirSwap. AirSwap is an open developer community focused on decentralized trading systems. Designers and developers earn for contributing; check [CONTRIBUTING](CONTRIBUTING.md) and join the [Discord](https://chat.airswap.io/) server to learn more.
 
 Let's build stuff! 🛠️

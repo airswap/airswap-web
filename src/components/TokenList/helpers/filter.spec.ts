@@ -1,3 +1,4 @@
+import { getTokenSymbol } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { filterTokens } from "./filter";
 
 const activeTokens = [
@@ -35,7 +36,7 @@ describe("Filter Tokens", () => {
   it("should filter tokens by words (0x)", () => {
     const filteredTokens = filterTokens(activeTokens, "0x");
     expect(filteredTokens.length).toBe(1);
-    expect(filteredTokens[0].symbol).toBe("ZRX");
+    expect(getTokenSymbol(filteredTokens[0])).toBe("ZRX");
   });
 
   it("should filter tokens by token address (0x2260fac5e5542a773aa44fbcfedf7c193bc2c599)", () => {
@@ -44,27 +45,27 @@ describe("Filter Tokens", () => {
       "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
     );
     expect(filteredTokens.length).toBe(1);
-    expect(filteredTokens[0].symbol).toBe("WBTC");
+    expect(getTokenSymbol(filteredTokens[0])).toBe("WBTC");
   });
 
   it("should not filter if search is nothing", () => {
     const filteredTokens = filterTokens(activeTokens, "");
     expect(filteredTokens.length).toBe(4);
-    expect(filteredTokens[0].symbol).toBe("ZRX");
-    expect(filteredTokens[1].symbol).toBe("cUSDC");
-    expect(filteredTokens[2].symbol).toBe("WBTC");
-    expect(filteredTokens[3].symbol).toBe("cLINK");
+    expect(getTokenSymbol(filteredTokens[0])).toBe("ZRX");
+    expect(getTokenSymbol(filteredTokens[1])).toBe("cUSDC");
+    expect(getTokenSymbol(filteredTokens[2])).toBe("WBTC");
+    expect(getTokenSymbol(filteredTokens[3])).toBe("cLINK");
   });
 
   it("should filter with one character", () => {
     const filteredTokens = filterTokens(activeTokens, "b");
     expect(filteredTokens.length).toBe(1);
-    expect(filteredTokens[0].symbol).toBe("WBTC");
+    expect(getTokenSymbol(filteredTokens[0])).toBe("WBTC");
   });
 
   it("should match characters in the middle of the symbol", () => {
     const filteredTokens = filterTokens(activeTokens, "cL");
     expect(filteredTokens.length).toBe(1);
-    expect(filteredTokens[0].symbol).toBe("cLINK");
+    expect(getTokenSymbol(filteredTokens[0])).toBe("cLINK");
   });
 });

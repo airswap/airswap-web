@@ -22,13 +22,10 @@ export const ScrollContainer: FC<PropsWithChildren<ScrollContainerProps>> = ({
   const [hasTokenListScrolledToBottom, setHasTokenListScrolledToBottom] =
     useState(false);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>): void => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
-    const paddingBottom = 10;
 
-    setHasTokenListScrolledToBottom(
-      scrollTop + clientHeight + paddingBottom >= scrollHeight
-    );
+    setHasTokenListScrolledToBottom(scrollTop + clientHeight >= scrollHeight);
   };
 
   useEffect(() => {

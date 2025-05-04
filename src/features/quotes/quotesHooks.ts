@@ -5,6 +5,7 @@ import {
   ADDRESS_ZERO,
   OrderERC20,
   ProtocolIds,
+  TokenInfo,
   UnsignedOrderERC20,
 } from "@airswap/utils";
 import { noop } from "@react-hookz/web/esnext/util/const";
@@ -78,8 +79,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   } = useAppSelector((state) => state.quotes);
 
   const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
-  const baseTokenInfo = useTokenInfo(baseToken.address);
-  const quoteTokenInfo = useTokenInfo(quoteToken.address);
+  const baseTokenInfo = useTokenInfo(baseToken.address) as TokenInfo;
+  const quoteTokenInfo = useTokenInfo(quoteToken.address) as TokenInfo;
   const wrappedTokenInfo = useNativeWrappedToken(chainId);
 
   const error =

@@ -1,5 +1,7 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
 
+import { TokenKinds } from "@airswap/utils";
+
 import styled, { css, keyframes } from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
@@ -51,11 +53,23 @@ const fontTransition = css`
   }
 `;
 
-export const ContainingButton = styled.button`
+const getContainingButtonWidth = (tokenKind?: TokenKinds) => {
+  if (tokenKind === TokenKinds.ERC721) {
+    return "74%";
+  }
+
+  if (tokenKind === TokenKinds.ERC1155) {
+    return "65%";
+  }
+
+  return "40%";
+};
+
+export const ContainingButton = styled.button<{ tokenKind?: TokenKinds }>`
   display: flex;
   flex-direction: row;
   position: relative;
-  width: 40%;
+  width: ${(props) => getContainingButtonWidth(props.tokenKind)};
   height: 3.125rem;
   cursor: ${(props) => (props.disabled ? "initial" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "inherit")};
@@ -187,7 +201,7 @@ export const StyledSelector = styled.div`
   height: 100%;
 `;
 
-export const StyledSelectItem = styled(SelectItem)`
+export const StyledSelectItem = styled(SelectItem)<{ isNft?: boolean }>`
   ${fontTransition};
   display: flex;
   flex-direction: row;
@@ -197,14 +211,14 @@ export const StyledSelectItem = styled(SelectItem)`
   font-family: ${fontWide};
   font-weight: 700;
   gap: 0.375rem;
-  max-width: 9rem;
+  max-width: ${(props) => (props.isNft ? "17rem" : "9rem")};
   color: ${(props) =>
     props.theme.name === "dark"
       ? props.theme.colors.white
       : props.theme.colors.primary};
 
   @media ${breakPoints.phoneOnly} {
-    max-width: 7rem;
+    max-width: ${(props) => (props.isNft ? "15rem" : "7rem")};
   }
 `;
 

@@ -6,6 +6,7 @@ import { TokenInfo } from "@airswap/utils";
 
 import { formatUnits } from "ethers/lib/utils";
 
+import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import {
   isApprovalTransaction,
@@ -100,17 +101,24 @@ const TransactionToast = ({
                 translationKey = "wallet.lastLookTransaction";
               }
 
+              const senderAmount = isFullOrder(order)
+                ? order.sender.amount
+                : order.senderAmount;
+              const signerAmount = isFullOrder(order)
+                ? order.signer.amount
+                : order.signerAmount;
+
               // @ts-ignore dynamic translation key
               return t(translationKey, {
                 senderAmount: parseFloat(
                   Number(
-                    formatUnits(order.senderAmount, senderToken.decimals)
+                    formatUnits(senderAmount, senderToken.decimals)
                   ).toFixed(5)
                 ),
                 senderToken: senderToken.symbol,
                 signerAmount: parseFloat(
                   Number(
-                    formatUnits(order.signerAmount, signerToken.decimals)
+                    formatUnits(signerAmount, signerToken.decimals)
                   ).toFixed(5)
                 ),
                 signerToken: signerToken.symbol,

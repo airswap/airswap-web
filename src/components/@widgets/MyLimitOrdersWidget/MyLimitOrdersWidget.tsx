@@ -1,6 +1,7 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -98,11 +99,12 @@ const MyLimitOrdersWidget: FC = () => {
     }
 
     dispatch(
+      // TODO: fix action for AppTokenInfo
       cancelLimitOrder({
         chainId: delegateRule.chainId,
         senderWallet: delegateRule.senderWallet,
-        senderTokenInfo: order.senderToken,
-        signerTokenInfo: order.signerToken,
+        senderTokenInfo: order.senderToken as TokenInfo,
+        signerTokenInfo: order.signerToken as TokenInfo,
         library: library!,
       })
     );

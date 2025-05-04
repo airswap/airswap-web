@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 
 import { useAppSelector } from "../app/hooks";
+import { AppTokenInfo } from "../entities/AppTokenInfo/AppTokenInfo";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
   selectActiveTokens,
   selectProtocolFee,
 } from "../features/metadata/metadataSlice";
-import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import getTokenMaxAmount from "../helpers/getTokenMaxAmount";
 
 const useMaxAmount = (
-  token: string | null,
+  token: AppTokenInfo | null,
   deductProtocolFee = false
 ): string | null => {
   const balances = useAppSelector(selectBalances);
@@ -23,16 +23,9 @@ const useMaxAmount = (
       return null;
     }
 
-    const tokenInfo = findEthOrTokenByAddress(token, activeTokens, chainId);
-
-    if (!tokenInfo) {
-      return null;
-    }
-
     return getTokenMaxAmount(
-      token,
       balances,
-      tokenInfo,
+      token,
       deductProtocolFee ? protocolFee / 10000 : undefined
     );
   }, [activeTokens, token, balances, protocolFee, deductProtocolFee, chainId]);

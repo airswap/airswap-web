@@ -1,5 +1,12 @@
+import { Alchemy } from "alchemy-sdk";
+
 declare module "@airswap/balances/deploys";
 
-interface Window {
-  ethereum: any;
+declare global {
+  interface Window {
+    ethereum: any;
+    alchemy: Alchemy;
+  }
+
+  const alchemy: typeof alchemy;
 }

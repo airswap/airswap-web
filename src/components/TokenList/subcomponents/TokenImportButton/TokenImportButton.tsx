@@ -1,14 +1,18 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
-
-import TokenLogo from "../../../TokenLogo/TokenLogo";
+import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getCollectionTokenName,
+  getTokenImage,
+  getTokenSymbol,
+  isTokenInfo,
+} from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { ImportButton } from "../../TokenList.styles";
 import {
   Container,
   TextContainer,
   Symbol,
   TokenName,
-  ImportButton,
   UnsupportedTokenText,
   StyledTokenLogo,
 } from "./TokenImportButton.styles";
@@ -17,7 +21,7 @@ export type TokenImportRowProps = {
   /**
    * TokenInfo object
    */
-  token: TokenInfo;
+  token: AppTokenInfo;
   /**
    * True if the token isn't currently supported by makers.
    */
@@ -35,14 +39,18 @@ const TokenImportButton = ({
 }: TokenImportRowProps) => {
   const { t } = useTranslation();
 
+  const isErc20 = isTokenInfo(token);
+  const name = isErc20 ? token.name : getCollectionTokenName(token);
+
   return (
     <Container>
-      <StyledTokenLogo logoURI={token.logoURI} />
+      <StyledTokenLogo logoURI={getTokenImage(token)} />
 
       <TextContainer>
-        <Symbol>{token.symbol}</Symbol>
-        <TokenName>{token.name}</TokenName>
+        {isErc20 && <Symbol>{getTokenSymbol(token)}</Symbol>}
+        <TokenName>{name}</TokenName>
       </TextContainer>
+
       {isUnsupported ? (
         <UnsupportedTokenText>
           {t("balances.unsupportedToken")}

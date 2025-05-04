@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { getOrderSignerWallet } from "../../entities/OrderERC20/OrderERC20Helpers";
 import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
@@ -58,7 +59,7 @@ function updateTransaction(params: {
       (s) =>
         isSubmittedOrder(s) &&
         s.order.nonce === nonce &&
-        compareAddresses(s.order.signerWallet, signerWallet)
+        compareAddresses(getOrderSignerWallet(s.order), signerWallet)
     );
     if (swap) {
       swap.timestamp = Date.now();

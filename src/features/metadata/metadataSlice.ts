@@ -1,7 +1,12 @@
-import { TokenInfo } from "@airswap/utils";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenId,
+  isTokenInfo,
+  splitTokenIdentifier,
+} from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   chainIdChanged,
   walletChanged,
@@ -15,7 +20,7 @@ import {
 } from "./metadataActions";
 
 export type MetadataTokenInfoMap = {
-  [address: string]: TokenInfo;
+  [address: string]: AppTokenInfo;
 };
 
 export interface MetadataState {
@@ -44,7 +49,10 @@ export const metadataSlice = createSlice({
       return {
         ...state,
         isInitialized: true,
-        activeTokens: action.payload.map((token) => token.toLowerCase()),
+        activeTokens: action.payload
+          .slice()
+          .sort(sortTokensById)
+          .map((token) => token.toLowerCase()),
       };
     },
     setUnknownTokens: (state, action: PayloadAction<MetadataTokenInfoMap>) => {
@@ -115,26 +123,56 @@ export const metadataSlice = createSlice({
   },
 });
 
+const sortTokensById = (a: string, b: string) => {
+  const { address: aAddress, id: aId } = splitTokenIdentifier(a);
+  const { address: bAddress, id: bId } = splitTokenIdentifier(b);
+
+  if (aAddress === bAddress && aId && bId) {
+    return Number(aId) - Number(bId);
+  }
+
+  return aAddress.localeCompare(bAddress);
+};
+
+const sortTokenInfosById = (a: AppTokenInfo, b: AppTokenInfo) => {
+  return sortTokensById(getTokenId(a), getTokenId(b));
+};
+
 export const { setActiveTokens, setUnknownTokens } = metadataSlice.actions;
 
 export const selectActiveTokenAddresses = (state: RootState) =>
   state.metadata.activeTokens;
-export const selectAllTokens = (state: RootState) => [
-  ...Object.values(state.metadata.knownTokens),
-  ...Object.values(state.metadata.unknownTokens),
-];
+export const selectAllTokens = (state: RootState) =>
+  [
+    ...Object.values(state.metadata.knownTokens),
+    ...Object.values(state.metadata.unknownTokens),
+  ].sort(sortTokenInfosById);
 export const selectAllTokenInfo = createSelector(
   [selectAllTokens, selectChainId],
   (allTokenInfo, chainId) => {
     return allTokenInfo.filter((tokenInfo) => tokenInfo.chainId === chainId);
   }
 );
+export const selectErc20Tokens = createSelector(
+  [selectAllTokenInfo],
+  (allTokenInfo) => {
+    return allTokenInfo.filter(isTokenInfo).sort(sortTokenInfosById);
+  }
+);
 export const selectActiveTokens = createSelector(
   [selectActiveTokenAddresses, selectAllTokenInfo],
   (activeTokenAddresses, allTokenInfo) => {
-    return Object.values(allTokenInfo).filter((tokenInfo) =>
-      activeTokenAddresses.includes(tokenInfo.address)
-    );
+    return Object.values(allTokenInfo)
+      .filter((tokenInfo) =>
+        activeTokenAddresses.includes(getTokenId(tokenInfo))
+      )
+      .sort(sortTokenInfosById);
+  }
+);
+export const selectActiveErc20Tokens = createSelector(
+  [selectActiveTokens],
+  (activeTokens) => {
+    return activeTokens.filter(isTokenInfo).sort(sortTokenInfosById);
   }
 );
 export const selectMetaDataReducer = (state: RootState) => state.metadata;

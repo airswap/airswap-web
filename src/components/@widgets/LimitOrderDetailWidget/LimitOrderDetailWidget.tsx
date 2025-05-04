@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
@@ -10,6 +11,10 @@ import { BigNumber } from "bignumber.js";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import {
+  getTokenDecimals,
+  getTokenSymbol,
+} from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { DelegateRule } from "../../../entities/DelegateRule/DelegateRule";
 import { cancelLimitOrder } from "../../../features/cancelLimit/cancelLimitActions";
 import { selectCancelLimitStatus } from "../../../features/cancelLimit/cancelLimitSlice";
@@ -120,22 +125,34 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
   const [showCancelReview, toggleShowCancelReview] = useToggle(false);
 
   const orderStatus = useLimitOrderStatus(delegateRule);
-  const [senderToken, isSenderTokenLoading] = useTakerTokenInfo(
-    delegateRule.senderToken,
-    delegateRule.chainId
-  );
+  const [senderToken, isSenderTokenLoading] = useTakerTokenInfo({
+    address: delegateRule.senderToken,
+    chainId: delegateRule.chainId,
+  });
+  const [signerToken, isSignerTokenLoading] = useTakerTokenInfo({
+    address: delegateRule.signerToken,
+    chainId: delegateRule.chainId,
+  });
+  const senderTokenDecimals = senderToken
+    ? getTokenDecimals(senderToken)
+    : undefined;
+  const signerTokenDecimals = signerToken
+    ? getTokenDecimals(signerToken)
+    : undefined;
+  const senderTokenSymbol = senderToken
+    ? getTokenSymbol(senderToken)
+    : undefined;
+  const signerTokenSymbol = signerToken
+    ? getTokenSymbol(signerToken)
+    : undefined;
 
-  const [signerToken, isSignerTokenLoading] = useTakerTokenInfo(
-    delegateRule.signerToken,
-    delegateRule.chainId
-  );
   const isBalanceLoading = useBalanceLoading();
 
   const { availableSenderAmount, availableSignerAmount } =
     useAvailableSenderAndSignerAmount(
       delegateRule,
-      senderToken?.decimals,
-      signerToken?.decimals
+      senderTokenDecimals,
+      signerTokenDecimals
     );
 
   const [customSignerAmount, setCustomSignerAmount] = useState<string>();
@@ -143,21 +160,19 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
 
   const [filledAmount, filledPercentage] = useFilledStatus(
     delegateRule,
-    senderToken?.decimals
+    senderTokenDecimals
   );
 
-  const senderTokenSymbol = senderToken?.symbol;
-  const signerTokenSymbol = signerToken?.symbol;
   const tokenExchangeRate = getDelegateRuleTokensExchangeRate(
     delegateRule,
-    senderToken?.decimals,
-    signerToken?.decimals
+    senderTokenDecimals,
+    signerTokenDecimals
   );
 
   const customSignerAmountPlusFee = useCustomSignerAmountPlusFee(
     tokenExchangeRate,
     customSenderAmount,
-    signerToken?.decimals
+    signerTokenDecimals
   );
 
   const approvalTransaction = useApprovalPending(
@@ -229,8 +244,8 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       tokenExchangeRate,
       value,
       availableSignerAmount,
-      signerToken?.decimals,
-      senderToken?.decimals
+      signerTokenDecimals,
+      senderTokenDecimals
     );
 
     setCustomSignerAmount(newCustomSignerAmount);
@@ -249,8 +264,8 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       tokenExchangeRate,
       value,
       availableSenderAmount,
-      senderToken?.decimals,
-      signerToken?.decimals
+      signerTokenDecimals,
+      senderTokenDecimals
     );
 
     setCustomSignerAmount(newCustomSignerAmount);
@@ -280,8 +295,8 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
         signerWallet: account,
         signerAmount: customSignerAmount,
         senderAmount: customSenderAmount,
-        signerTokenInfo: signerToken,
-        senderTokenInfo: senderToken,
+        signerTokenInfo: signerToken as TokenInfo,
+        senderTokenInfo: senderToken as TokenInfo,
         library,
       })
     );
@@ -292,14 +307,23 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       return;
     }
 
-    dispatch(approve(customSignerAmountPlusFee, signerToken, library, "Swap"));
+    // TODO: Support AppTokenInfo
+    dispatch(
+      approve(
+        customSignerAmountPlusFee,
+        signerToken as TokenInfo,
+        library,
+        "Swap"
+      )
+    );
   };
 
   const depositNativeToken = async () => {
     dispatch(
       deposit(
         shouldDepositNativeTokenAmount!,
-        senderToken!,
+        // TODO: Support AppTokenInfo
+        senderToken as TokenInfo,
         wrappedNativeToken!,
         chainId!,
         library!
@@ -316,8 +340,9 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       cancelLimitOrder({
         chainId: delegateRule.chainId,
         senderWallet: delegateRule.senderWallet,
-        senderTokenInfo: senderToken!,
-        signerTokenInfo: signerToken!,
+        // TODO: Support AppTokenInfo
+        senderTokenInfo: senderToken! as TokenInfo,
+        signerTokenInfo: signerToken! as TokenInfo,
         library: library!,
       })
     );

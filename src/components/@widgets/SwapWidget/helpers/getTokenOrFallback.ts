@@ -17,7 +17,7 @@ export default function getTokenOrFallback(
   }
 
   // Check if the paired token is not already the default token address
-  if (pairedUserToken === defaultTokenAddress) {
+  if (pairedUserToken?.address === defaultTokenAddress) {
     return defaultPairedTokenAddress;
   }
 

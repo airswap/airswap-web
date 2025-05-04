@@ -1,15 +1,14 @@
-import { TokenInfo } from "@airswap/utils";
-
+import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
 import { OrderStatus } from "../../../../types/orderStatus";
 
 export interface MyOrder {
   id: string;
   isLoading?: boolean;
   chainId: number;
-  senderToken?: TokenInfo;
+  senderToken?: AppTokenInfo;
   senderAmount: string;
   senderFilledAmount?: string;
-  signerToken?: TokenInfo;
+  signerToken?: AppTokenInfo;
   signerAmount: string;
   status: OrderStatus;
   expiry: Date;

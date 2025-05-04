@@ -1,10 +1,17 @@
-import { FullSwapERC20, OrderERC20, TokenInfo } from "@airswap/utils";
+import {
+  FullOrder,
+  FullOrderERC20,
+  FullSwapERC20,
+  OrderERC20,
+  TokenInfo,
+} from "@airswap/utils";
 import { UnsignedOrderERC20 } from "@airswap/utils";
 
 import {
   TransactionStatusType,
   TransactionTypes,
 } from "../../types/transactionTypes";
+import { AppTokenInfo } from "../AppTokenInfo/AppTokenInfo";
 import { DelegateRule } from "../DelegateRule/DelegateRule";
 
 export interface DepositOrWithdrawOrder {
@@ -28,10 +35,10 @@ export interface SubmittedTransactionWithHash extends SubmittedTransaction {
 export interface SubmittedOrder extends SubmittedTransactionWithHash {
   isLastLook?: boolean;
   type: TransactionTypes.order;
-  order: OrderERC20;
+  order: OrderERC20 | FullOrderERC20 | FullOrder;
   swap?: FullSwapERC20;
-  senderToken: TokenInfo;
-  signerToken: TokenInfo;
+  senderToken: AppTokenInfo;
+  signerToken: AppTokenInfo;
 }
 
 export interface SubmittedOrderUnderConsideration
@@ -48,7 +55,7 @@ export interface SubmittedApprovalTransaction
   type: TransactionTypes.approval;
   hash: string;
   amount: string;
-  token: TokenInfo;
+  token: AppTokenInfo;
   tokenAddress: string;
 }
 
