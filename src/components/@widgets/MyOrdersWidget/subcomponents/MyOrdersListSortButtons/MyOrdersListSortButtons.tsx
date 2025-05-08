@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OrdersSortType } from "../../../../../types/ordersSortType";
-import SortButton from "../SortButton/SortButton";
+import SortButton from "../../../../SortButton/SortButton";
 import { Container, PairButtonWrapper } from "./MyOrdersListSortButtons.styles";
 
 interface MyOrdersListProps {

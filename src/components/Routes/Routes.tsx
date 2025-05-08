@@ -9,6 +9,7 @@ import useMetadata from "../../features/metadata/metadataHooks";
 import useMyOrders from "../../features/myOtcOrders/myOtcOrdersHooks";
 import { useTransactions } from "../../features/transactions/transactionsHooks";
 import useWeb3 from "../../features/web3/web3Hooks";
+import Approvals from "../../pages/Approvals/Approvals";
 import Cancel from "../../pages/Cancel/Cancel";
 import LimitOrderDetail from "../../pages/LimitOrderDetail/LimitOrderDetail";
 import MakePage from "../../pages/Make/Make";
@@ -66,6 +67,11 @@ const Routes: FC = () => {
         path={`/${AppRoutes.otcOrder}/:compressedOrder/cancel`}
         component={Cancel}
         key="cancel"
+      />
+      <Route
+        path={`/${AppRoutes.approvals}`}
+        component={Approvals}
+        key="approvals"
       />
       <Route path="/*" component={SwapPage} key="swap" />
     </Switch>
