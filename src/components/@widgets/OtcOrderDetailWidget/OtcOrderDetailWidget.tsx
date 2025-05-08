@@ -65,11 +65,13 @@ import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTo
 import { AppRoutes, routes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrderType } from "../../../types/orderTypes";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
+import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
@@ -212,7 +214,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   );
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const hasDepositPending = !!useDepositPending();
+  const depositTransaction = useDepositPending(true);
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
   const orderChainId = useMemo(() => order.chainId, [order]);
   const walletChainIdIsDifferentThanOrderChainId =
@@ -252,6 +254,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       );
     }
   }, [indexerUrls, senderToken, signerToken]);
+
+  useEffect(() => {
+    if (depositTransaction?.status === TransactionStatusType.succeeded) {
+      setState(OtcOrderDetailWidgetState.overview);
+    }
+  }, [depositTransaction?.status]);
 
   // button handlers
   const backToSwapPage = () => {
@@ -370,11 +378,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     if (
       state === OtcOrderDetailWidgetState.review &&
       shouldDepositNativeToken &&
+      !depositTransaction &&
       !orderTransaction
     ) {
       return (
         <WrapReview
-          isLoading={hasDepositPending}
+          isLoading={!!depositTransaction}
           amount={senderAmount}
           errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
@@ -518,6 +527,17 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           <ApprovalSubmittedScreen
             chainId={chainId}
             transaction={approvalTransaction}
+          />
+        )}
+      </TransactionOverlay>
+
+      <TransactionOverlay
+        isHidden={ordersStatus === "signing" || !depositTransaction}
+      >
+        {depositTransaction && (
+          <DepositSubmittedScreen
+            chainId={chainId}
+            transaction={depositTransaction}
           />
         )}
       </TransactionOverlay>
