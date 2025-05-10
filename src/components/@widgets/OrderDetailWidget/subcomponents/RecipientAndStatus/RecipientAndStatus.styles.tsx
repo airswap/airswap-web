@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { InfoSectionHeading } from "../../../../../styled-components/InfoSection/InfoSection";
 import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
 
-export const Container = styled(InfoSectionHeading)`
+export const Container = styled(InfoSectionHeading)<{ isTaken?: boolean }>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ isTaken }) => (isTaken ? "center" : "space-between")};
   align-items: center;
   gap: 0.5rem;
   height: 3rem;

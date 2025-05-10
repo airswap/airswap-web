@@ -27,12 +27,14 @@ export const RecipientAndStatus: FC<RecipientAndStatusProps> = ({
   className,
 }) => {
   return (
-    <Container className={className}>
-      <OrderRecipientInfo
-        orderType={orderType}
-        recipientAddress={recipient}
-        userAddress={userAddress}
-      />
+    <Container isTaken={status === OrderStatus.taken} className={className}>
+      {status !== OrderStatus.taken && (
+        <OrderRecipientInfo
+          orderType={orderType}
+          recipientAddress={recipient}
+          userAddress={userAddress}
+        />
+      )}
 
       <StyledOrderStatusInfo
         isLoading={isLoading}
