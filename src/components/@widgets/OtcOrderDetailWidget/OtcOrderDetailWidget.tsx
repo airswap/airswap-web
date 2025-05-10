@@ -122,6 +122,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const [state, setState] = useState<OtcOrderDetailWidgetState>(
     OtcOrderDetailWidgetState.overview
   );
+  const [hideTransactionOverlay, setHideTransactionOverlay] = useState(false);
 
   const senderWallet = isFullOrder(order)
     ? order.sender.wallet
@@ -197,11 +198,9 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  const { hasSufficientAllowance, readableAllowance } = useAllowance(
-    senderToken,
-    senderAmount,
-    { spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20" }
-  );
+  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount, {
+    spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20",
+  });
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -257,7 +256,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
 
   useEffect(() => {
     if (depositTransaction?.status === TransactionStatusType.succeeded) {
-      setState(OtcOrderDetailWidgetState.overview);
+      backToOverview();
     }
   }, [depositTransaction?.status]);
 
@@ -335,6 +334,11 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
 
   const backToOverview = () => {
     setState(OtcOrderDetailWidgetState.overview);
+  };
+
+  const returnToOrder = () => {
+    setState(OtcOrderDetailWidgetState.overview);
+    setHideTransactionOverlay(true);
   };
 
   const handleActionButtonClick = async (action: ButtonActions) => {
@@ -542,13 +546,17 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
         )}
       </TransactionOverlay>
 
-      <TransactionOverlay isHidden={!orderTransaction}>
+      <TransactionOverlay
+        isHidden={!orderTransaction || hideTransactionOverlay}
+      >
         {orderTransaction && (
           <OrderSubmittedScreen
             showTrackTransactionButton
+            showReturnToOrderButton
             chainId={chainId}
             transaction={orderTransaction}
             onMakeNewOrderButtonClick={restart}
+            onReturnToOrderButtonClick={returnToOrder}
           />
         )}
       </TransactionOverlay>
