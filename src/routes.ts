@@ -9,6 +9,13 @@ export enum AppRoutes {
   swap = "swap",
 }
 
+// Routes that don't have a navigation bar
+export const standAloneRoutes = [
+  AppRoutes.approvals,
+  AppRoutes.otcOrder,
+  AppRoutes.limitOrder,
+];
+
 export interface SwapRouteType {
   tokenFrom?: string;
   tokenTo?: string;

@@ -1,13 +1,13 @@
 import { FC } from "react";
 
 import { ApprovalsWidget } from "../../components/@widgets/ApprovalsWidget/ApprovalsWidget";
-import Page from "../../components/Page/Page";
+import { StyledPage } from "./Approvals.styles";
 
 const Approvals: FC = () => {
   return (
-    <Page>
+    <StyledPage>
       <ApprovalsWidget />
-    </Page>
+    </StyledPage>
   );
 };
 

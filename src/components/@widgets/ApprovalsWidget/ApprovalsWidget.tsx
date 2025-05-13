@@ -1,10 +1,25 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useMemo, useState } from "react";
 
+import { useAppSelector } from "../../../app/hooks";
+import { transformAllowancesToApprovalEntities } from "../../../entities/ApprovalEntity/ApprovalEntityTransformers";
+import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
 import { Container, ApprovalsGrid } from "./ApprovalsWidget.styles";
+import { ApprovalsList } from "./subcomponents/ApprovalsList/ApprovalsList";
 import ApprovalsListSortButtons from "./subcomponents/ApprovalsListSortButtons/ApprovalsListSortButtons";
-import { ApprovalSortType } from "./types/ApprovalSortType";
+import { ApprovalSortType } from "./types";
 
 export const ApprovalsWidget: FC = () => {
+  const allowances = useAppSelector((state) => state.allowances);
+  const balances = useAppSelector((state) => state.balances);
+  const tokens = useAppSelector(selectAllTokenInfo);
+
+  const approvalEntities = useMemo(
+    () => transformAllowancesToApprovalEntities(allowances, balances, tokens),
+    [allowances, balances, tokens]
+  );
+
+  console.log(approvalEntities);
+
   const [activeSortType, setActiveSortType] =
     useState<ApprovalSortType>("token");
 
@@ -37,6 +52,7 @@ export const ApprovalsWidget: FC = () => {
           sortTypeDirection={sortTypeDirection}
           onSortButtonClick={handleSortButtonClick}
         />
+        <ApprovalsList approvals={approvalEntities} />
       </ApprovalsGrid>
     </Container>
   );

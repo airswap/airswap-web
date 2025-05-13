@@ -31,7 +31,7 @@ type FetchMethodType = "balances" | "allowances";
 /**
  * Type for the spender address - which contract we're checking allowances for
  */
-type SpenderAddressType = "Wrapper" | "Swap" | "SwapERC20" | "Delegate";
+export type SpenderAddressType = "Wrapper" | "Swap" | "SwapERC20" | "Delegate";
 
 /**
  * Type for balance request operations

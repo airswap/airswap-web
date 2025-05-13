@@ -8,7 +8,7 @@ import { clear, setResetStatus } from "../../features/orders/ordersSlice";
 import { Wallet } from "../../features/wallet/Wallet";
 import useAppRouteParams from "../../hooks/useAppRouteParams";
 import { useKeyPress } from "../../hooks/useKeyPress";
-import { AppRoutes } from "../../routes";
+import { AppRoutes, standAloneRoutes } from "../../routes";
 import WalletConnector from "../@widgets/WalletConnector/WalletConnector";
 import HelmetContainer from "../HelmetContainer/HelmetContainer";
 import PageNavigation from "../PageNavigation/PageNavigation";
@@ -102,8 +102,9 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
           isOverlayOpen={showModalOverlay}
         >
           {children}
-          {appRouteParams.route !== AppRoutes.otcOrder &&
-            appRouteParams.route !== AppRoutes.limitOrder && <PageNavigation />}
+          {!standAloneRoutes.includes(appRouteParams.route as AppRoutes) && (
+            <PageNavigation />
+          )}
           <WalletConnector />
         </WidgetFrame>
 

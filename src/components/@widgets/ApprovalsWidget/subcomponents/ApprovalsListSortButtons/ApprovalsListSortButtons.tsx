@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import SortButton from "../../../../SortButton/SortButton";
-import { ApprovalSortType } from "../../types/ApprovalSortType";
+import { ApprovalSortType } from "../../types";
 import { Container } from "./ApprovalsListSortButtons.styles";
 
 interface ApprovalsListSortButtonsProps {
@@ -46,7 +46,7 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
         isDescending={sortTypeDirection.approval}
         onClick={() => onSortButtonClick("approval")}
       >
-        Approvals
+        Allowance
       </SortButton>
       <SortButton
         isSortable

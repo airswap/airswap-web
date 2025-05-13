@@ -1,14 +1,11 @@
 import styled from "styled-components/macro";
 
-import { ApprovalsGridStyle } from "../../ApprovalsWidget.styles";
-
 export const Container = styled.div<{
   hasOverflow: boolean;
-  hasFilledColumn?: boolean;
 }>`
-  ${ApprovalsGridStyle};
-
-  padding-right: ${({ hasOverflow }) => (hasOverflow ? "2.5rem" : "2rem")};
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 `;
 
 export const PairButtonWrapper = styled.div`

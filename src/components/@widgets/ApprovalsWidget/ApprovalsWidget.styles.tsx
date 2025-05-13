@@ -12,16 +12,14 @@ export const Container = styled.div`
 
 export const ApprovalsGridStyle = css`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 5rem 1fr 1fr 1fr 1fr;
   grid-column-gap: 1rem;
   width: 100%;
-  padding: 0 1rem;
-
-  @media ${breakPoints.tabletPortraitUp} {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  }
 `;
 
 export const ApprovalsGrid = styled.div`
   ${ApprovalsGridStyle};
+
+  grid-row-gap: 1rem;
+  padding: 0 1rem;
 `;
