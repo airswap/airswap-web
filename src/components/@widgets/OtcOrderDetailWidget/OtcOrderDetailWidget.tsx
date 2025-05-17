@@ -65,11 +65,13 @@ import useShouldDepositNativeToken from "../../../hooks/useShouldDepositNativeTo
 import { AppRoutes, routes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrderType } from "../../../types/orderTypes";
+import { TransactionStatusType } from "../../../types/transactionTypes";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
+import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
@@ -120,6 +122,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const [state, setState] = useState<OtcOrderDetailWidgetState>(
     OtcOrderDetailWidgetState.overview
   );
+  const [hideTransactionOverlay, setHideTransactionOverlay] = useState(false);
 
   const senderWallet = isFullOrder(order)
     ? order.sender.wallet
@@ -195,11 +198,9 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
 
-  const { hasSufficientAllowance, readableAllowance } = useAllowance(
-    senderToken,
-    senderAmount,
-    { spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20" }
-  );
+  const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount, {
+    spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20",
+  });
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -212,7 +213,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   );
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const shouldDepositNativeToken = !!shouldDepositNativeTokenAmount;
-  const hasDepositPending = !!useDepositPending();
+  const depositTransaction = useDepositPending(true);
   const orderTransactionLink = useOrderTransactionLink(order.nonce);
   const orderChainId = useMemo(() => order.chainId, [order]);
   const walletChainIdIsDifferentThanOrderChainId =
@@ -252,6 +253,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
       );
     }
   }, [indexerUrls, senderToken, signerToken]);
+
+  useEffect(() => {
+    if (depositTransaction?.status === TransactionStatusType.succeeded) {
+      backToOverview();
+    }
+  }, [depositTransaction?.status]);
 
   // button handlers
   const backToSwapPage = () => {
@@ -329,6 +336,11 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     setState(OtcOrderDetailWidgetState.overview);
   };
 
+  const returnToOrder = () => {
+    setState(OtcOrderDetailWidgetState.overview);
+    setHideTransactionOverlay(true);
+  };
+
   const handleActionButtonClick = async (action: ButtonActions) => {
     if (action === ButtonActions.connectWallet) {
       setShowWalletList(true);
@@ -370,11 +382,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
     if (
       state === OtcOrderDetailWidgetState.review &&
       shouldDepositNativeToken &&
+      !depositTransaction &&
       !orderTransaction
     ) {
       return (
         <WrapReview
-          isLoading={hasDepositPending}
+          isLoading={!!depositTransaction}
           amount={senderAmount}
           errors={errors}
           shouldDepositNativeTokenAmount={shouldDepositNativeTokenAmount}
@@ -522,13 +535,28 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
         )}
       </TransactionOverlay>
 
-      <TransactionOverlay isHidden={!orderTransaction}>
+      <TransactionOverlay
+        isHidden={ordersStatus === "signing" || !depositTransaction}
+      >
+        {depositTransaction && (
+          <DepositSubmittedScreen
+            chainId={chainId}
+            transaction={depositTransaction}
+          />
+        )}
+      </TransactionOverlay>
+
+      <TransactionOverlay
+        isHidden={!orderTransaction || hideTransactionOverlay}
+      >
         {orderTransaction && (
           <OrderSubmittedScreen
             showTrackTransactionButton
+            showReturnToOrderButton
             chainId={chainId}
             transaction={orderTransaction}
             onMakeNewOrderButtonClick={restart}
+            onReturnToOrderButtonClick={returnToOrder}
           />
         )}
       </TransactionOverlay>
