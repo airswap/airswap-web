@@ -8,14 +8,24 @@ import {
   getTokenSymbol,
 } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalEntity";
+import { SpenderAddressType } from "../../../../../features/balances/balancesApi";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import {
+  ActionButton,
+  ActionButtonContainer,
   Amount,
   Container,
   TokenImage,
   TokenImageAndNameContainer,
   TokenName,
 } from "./ApprovalListItem.styles";
+
+const contractLabels: Record<SpenderAddressType, string> = {
+  Wrapper: "Wrapper",
+  Swap: "Swap (NFTS)",
+  SwapERC20: "Swap ERC-20",
+  Delegate: "Delegate",
+};
 
 type ApprovalListItemProps = {
   approval: ApprovalEntity;
@@ -49,7 +59,11 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
       </TokenImageAndNameContainer>
       <Amount>{roundedBalance}</Amount>
       <Amount>{roundedAllowance}</Amount>
-      <Amount>{approval.contract}</Amount>
+      <Amount>{contractLabels[approval.contract]}</Amount>
+      <ActionButtonContainer>
+        <ActionButton>Edit</ActionButton>
+        <ActionButton>Revoke</ActionButton>
+      </ActionButtonContainer>
     </Container>
   );
 };

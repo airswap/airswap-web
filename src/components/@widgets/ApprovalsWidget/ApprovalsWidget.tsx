@@ -18,8 +18,6 @@ export const ApprovalsWidget: FC = () => {
     [allowances, balances, tokens]
   );
 
-  console.log(approvalEntities);
-
   const [activeSortType, setActiveSortType] =
     useState<ApprovalSortType>("token");
 

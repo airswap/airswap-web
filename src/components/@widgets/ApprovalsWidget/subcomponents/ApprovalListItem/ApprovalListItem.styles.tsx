@@ -1,11 +1,17 @@
 import styled from "styled-components/macro";
 
-import { TextEllipsis } from "../../../../../style/mixins";
+import {
+  InputOrButtonBorderStyle,
+  TextEllipsis,
+} from "../../../../../style/mixins";
+import { fontWide } from "../../../../../style/themes";
 
 export const Container = styled.div`
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
+  font-size: 1.25rem;
+  font-weight: 400;
 `;
 
 export const TokenImageAndNameContainer = styled.div`
@@ -30,12 +36,33 @@ export const TokenImage = styled.div<{ backgroundImage?: string }>`
 export const TokenName = styled.div`
   ${TextEllipsis};
 
-  max-width: 4rem;
+  max-width: 6rem;
   color: ${({ theme }) => theme.colors.white};
 `;
 
 export const Amount = styled.div`
   word-break: break-all;
-  font-size: 1.25rem;
-  font-weight: 400;
+`;
+
+export const ActionButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const ActionButton = styled.button`
+  ${InputOrButtonBorderStyle};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding-inline: 0.5rem;
+  min-width: 5.125rem;
+  height: 1.5625rem;
+  font-family: ${fontWide};
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.lightGrey};
+  background: ${({ theme }) => theme.colors.darkGrey};
 `;

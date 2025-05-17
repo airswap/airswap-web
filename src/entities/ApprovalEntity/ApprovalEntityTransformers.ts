@@ -7,14 +7,14 @@ import {
 } from "../AppTokenInfo/AppTokenInfoHelpers";
 import { ApprovalEntity } from "./ApprovalEntity";
 
-type Allowances = {
+export type Allowances = {
   swap: BalancesState;
   swapERC20: BalancesState;
   wrapper: BalancesState;
   delegate: BalancesState;
 };
 
-type AllowanceKey = keyof Allowances;
+export type AllowanceKey = keyof Allowances;
 
 type AllowanceMap = {
   [K in AllowanceKey]: SpenderAddressType;
