@@ -4,12 +4,11 @@ import { CollectionTokenInfo } from "@airswap/utils";
 
 import { getTokenId } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getUniqueArrayChildren } from "../../../../helpers/array";
+import { FadedScrollContainer } from "../../../FadedScrollContainer/FadedScrollContainer";
 import { CollectionNftButton } from "../CollectionNftButton/CollectionNftButton";
-import { ScrollContainer } from "../ScrollContainer/ScrollContainer";
 import {
   TokensScrollContainer,
   TokensContainer,
-  TokenListLoader,
 } from "./CollectionNftsList.styles";
 
 type CollectionNftsListProps = {
@@ -33,7 +32,7 @@ export const CollectionNftsList: FC<CollectionNftsListProps> = ({
 
   return (
     <TokensScrollContainer className={className}>
-      <ScrollContainer resizeDependencies={[filteredTokens]}>
+      <FadedScrollContainer resizeDependencies={[filteredTokens]}>
         <TokensContainer>
           {filteredTokens.map((token) => (
             <CollectionNftButton
@@ -43,7 +42,7 @@ export const CollectionNftsList: FC<CollectionNftsListProps> = ({
             />
           ))}
         </TokensContainer>
-      </ScrollContainer>
+      </FadedScrollContainer>
     </TokensScrollContainer>
   );
 };

@@ -1,14 +1,14 @@
 import { css } from "styled-components/macro";
 import styled from "styled-components/macro";
 
-import { ScrollContainer } from "../../../ModalOverlay/ModalOverlay.styles";
+import { ScrollContainer } from "../ModalOverlay/ModalOverlay.styles";
 
-type ContainerProps = {
+type FadedScrollContainerProps = {
   $overflow: boolean;
   hasScrolledToBottom: boolean;
 };
 
-export const Container = styled(ScrollContainer)<ContainerProps>`
+export const Container = styled(ScrollContainer)<FadedScrollContainerProps>`
   position: relative;
   margin-block-start: 0.625rem;
   margin-inline-start: -0.875rem;

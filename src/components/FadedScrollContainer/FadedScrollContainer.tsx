@@ -1,19 +1,17 @@
 import { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 
-import useElementSize from "../../../../hooks/useElementSize";
-import useWindowSize from "../../../../hooks/useWindowSize";
-import { Container } from "./ScrollContainer.styles";
+import useElementSize from "../../hooks/useElementSize";
+import useWindowSize from "../../hooks/useWindowSize";
+import { Container } from "./FadedScrollContainer.styles";
 
-type ScrollContainerProps = {
+type FadedScrollContainerProps = {
   className?: string;
   resizeDependencies: any[];
 };
 
-export const ScrollContainer: FC<PropsWithChildren<ScrollContainerProps>> = ({
-  className,
-  children,
-  resizeDependencies,
-}) => {
+export const FadedScrollContainer: FC<
+  PropsWithChildren<FadedScrollContainerProps>
+> = ({ className, children, resizeDependencies }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useWindowSize();
   const { height: scrollContainerHeight } = useElementSize(ref);

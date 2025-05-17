@@ -1,15 +1,14 @@
 import styled from "styled-components/macro";
 
-import {
-  InputOrButtonBorderStyle,
-  TextEllipsis,
-} from "../../../../../style/mixins";
+import breakPoints from "../../../../../style/breakpoints";
+import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import { fontWide } from "../../../../../style/themes";
 
 export const Container = styled.div`
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
+  align-items: center;
   font-size: 1.25rem;
   font-weight: 400;
 `;
@@ -34,9 +33,7 @@ export const TokenImage = styled.div<{ backgroundImage?: string }>`
 `;
 
 export const TokenName = styled.div`
-  ${TextEllipsis};
-
-  max-width: 6rem;
+  word-break: break-all;
   color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -46,8 +43,14 @@ export const Amount = styled.div`
 
 export const ActionButtonContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.5rem;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 export const ActionButton = styled.button`

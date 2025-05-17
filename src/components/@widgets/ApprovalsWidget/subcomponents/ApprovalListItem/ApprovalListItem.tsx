@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 
 import { formatUnits } from "ethers/lib/utils";
 
@@ -10,6 +10,7 @@ import {
 import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalEntity";
 import { SpenderAddressType } from "../../../../../features/balances/balancesApi";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
+import useElementSize from "../../../../../hooks/useElementSize";
 import {
   ActionButton,
   ActionButtonContainer,
@@ -36,6 +37,8 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
   approval,
   className,
 }) => {
+  const tokenContainerRef = useRef<HTMLDivElement>(null);
+  const { width: tokenContainerWidth } = useElementSize(tokenContainerRef);
   const image = approval.tokenInfo
     ? getTokenImage(approval.tokenInfo)
     : undefined;
@@ -51,11 +54,20 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
   const roundedAllowance = stringToSignificantDecimals(allowance);
   const roundedBalance = stringToSignificantDecimals(balance);
 
+  const minFontSize = 16;
+  const maxFontSize = 20;
+  const tokenNameFontSize = Math.max(
+    minFontSize,
+    Math.min(maxFontSize, 30 - (name?.length || 0) * 1.2)
+  );
+
   return (
     <Container className={className}>
-      <TokenImageAndNameContainer>
+      <TokenImageAndNameContainer ref={tokenContainerRef}>
         <TokenImage backgroundImage={image} />
-        <TokenName>{name}</TokenName>
+        <TokenName style={{ fontSize: `${tokenNameFontSize}px` }}>
+          {name}
+        </TokenName>
       </TokenImageAndNameContainer>
       <Amount>{roundedBalance}</Amount>
       <Amount>{roundedAllowance}</Amount>
