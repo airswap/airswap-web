@@ -6,15 +6,23 @@ import { Container } from "./ApprovalsList.styles";
 
 type ApprovalsListProps = {
   approvals: ApprovalEntity[];
+  onEditButtonClick: (approval: ApprovalEntity) => void;
+  onRevokeButtonClick: (approval: ApprovalEntity) => void;
 };
 
-export const ApprovalsList: FC<ApprovalsListProps> = ({ approvals }) => {
+export const ApprovalsList: FC<ApprovalsListProps> = ({
+  approvals,
+  onEditButtonClick,
+  onRevokeButtonClick,
+}) => {
   return (
     <Container>
       {approvals.map((approval) => (
         <ApprovalListItem
           key={`${approval.tokenId}-${approval.contract}`}
           approval={approval}
+          onEditButtonClick={onEditButtonClick}
+          onRevokeButtonClick={onRevokeButtonClick}
         />
       ))}
     </Container>

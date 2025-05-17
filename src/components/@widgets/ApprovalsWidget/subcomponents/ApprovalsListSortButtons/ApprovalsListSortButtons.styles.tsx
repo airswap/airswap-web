@@ -1,5 +1,8 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../../../../style/breakpoints";
+import SortButton from "../../../../SortButton/SortButton";
+
 export const Container = styled.div<{
   hasOverflow: boolean;
 }>`
@@ -11,4 +14,10 @@ export const Container = styled.div<{
 export const PairButtonWrapper = styled.div`
   margin-left: -0.25rem;
   overflow: hidden;
+`;
+
+export const ActionsButton = styled(SortButton)`
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
 `;

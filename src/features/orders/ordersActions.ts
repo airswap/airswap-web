@@ -312,7 +312,8 @@ export const approve =
             library,
             contractType,
             tokenKind,
-            tokenId!
+            tokenId!,
+            approveAmount
           ));
 
       if (isAppError(tx)) {

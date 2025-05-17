@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import SortButton from "../../../../SortButton/SortButton";
 import { ApprovalSortType } from "../../types";
-import { Container } from "./ApprovalsListSortButtons.styles";
+import { ActionsButton, Container } from "./ApprovalsListSortButtons.styles";
 
 interface ApprovalsListSortButtonsProps {
   activeSortType: ApprovalSortType;
@@ -56,14 +56,14 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
       >
         Contract
       </SortButton>
-      <SortButton
+      <ActionsButton
         isSortable
         isActive={activeSortType === "actions"}
         isDescending={sortTypeDirection.actions}
         onClick={() => onSortButtonClick("actions")}
       >
         Actions
-      </SortButton>
+      </ActionsButton>
     </Container>
   );
 };

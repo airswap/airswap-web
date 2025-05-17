@@ -3,14 +3,20 @@ import styled from "styled-components/macro";
 import breakPoints from "../../../../../style/breakpoints";
 import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
 import { fontWide } from "../../../../../style/themes";
+import { TooltipStyle } from "../../../../../styled-components/Tooltip/Tooltip";
+import AccountLink from "../../../../AccountLink/AccountLink";
 
 export const Container = styled.div`
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
   align-items: center;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 400;
+
+  @media ${breakPoints.tabletPortraitUp} {
+    font-size: 1.25rem;
+  }
 `;
 
 export const TokenImageAndNameContainer = styled.div`
@@ -68,4 +74,28 @@ export const ActionButton = styled.button`
   font-weight: 500;
   color: ${({ theme }) => theme.colors.lightGrey};
   background: ${({ theme }) => theme.colors.darkGrey};
+
+  @media ${breakPoints.phoneOnly} {
+    display: none;
+  }
+`;
+
+export const Tooltip = styled.div`
+  display: none;
+
+  ${TooltipStyle};
+`;
+
+export const TokenLink = styled(AccountLink)`
+  display: flex;
+  position: relative;
+  translate: -0.5rem 0.0625rem;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white};
+  }
+
+  &:hover + ${Tooltip} {
+    display: block;
+  }
 `;

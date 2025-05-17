@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
 
+import breakPoints from "../../style/breakpoints";
 import { InputOrButtonBorderStyleType2 } from "../../style/mixins";
 
 export const Container = styled.div`
@@ -55,5 +56,9 @@ export const Button = styled.button<{
     margin-left: ${({ hasText }) => (hasText ? "0.5rem" : "0")};
     border-bottom-color: ${({ theme, isActive }) =>
       isActive ? theme.colors.white : theme.colors.lightGrey};
+  }
+
+  @media ${breakPoints.phoneOnly} {
+    font-size: 0.875rem;
   }
 `;

@@ -71,5 +71,6 @@ export const transformAllowancesToApprovalEntities = (
         tokens
       );
     })
-    .flat();
+    .flat()
+    .filter((approval) => approval.balance !== "0");
 };

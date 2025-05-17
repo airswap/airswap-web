@@ -176,15 +176,19 @@ export async function approveNftToken(
   provider: ethers.providers.Web3Provider,
   contractType: "Swap" | "SwapERC20" | "Wrapper" | "Delegate",
   tokenKind: TokenKinds,
-  tokenId: string
+  tokenId: string,
+  amount: string | number
 ): Promise<Transaction | AppError> {
   return new Promise<Transaction | AppError>((resolve) => {
-    const contractAddress = getSpenderAddress(contractType, provider);
+    const contractAddress =
+      +amount === 0 ? ADDRESS_ZERO : getSpenderAddress(contractType, provider);
     const contract = new ethers.Contract(
       baseToken,
       tokenKind === TokenKinds.ERC1155 ? erc1155Interface : erc721Interface,
       provider.getSigner()
     );
+
+    console.log("contractAddress", contractAddress);
 
     const method =
       tokenKind === TokenKinds.ERC721
