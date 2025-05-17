@@ -34,14 +34,12 @@ const contractLabels: Record<SpenderAddressType, string> = {
 type ApprovalListItemProps = {
   approval: ApprovalEntity;
   onEditButtonClick: (approval: ApprovalEntity) => void;
-  onRevokeButtonClick: (approval: ApprovalEntity) => void;
   className?: string;
 };
 
 export const ApprovalListItem: FC<ApprovalListItemProps> = ({
   approval,
   onEditButtonClick,
-  onRevokeButtonClick,
   className,
 }) => {
   const { chainId } = useWeb3React();

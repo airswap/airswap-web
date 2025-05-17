@@ -3,9 +3,7 @@ import styled from "styled-components/macro";
 import breakPoints from "../../../../../style/breakpoints";
 import SortButton from "../../../../SortButton/SortButton";
 
-export const Container = styled.div<{
-  hasOverflow: boolean;
-}>`
+export const Container = styled.div`
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;

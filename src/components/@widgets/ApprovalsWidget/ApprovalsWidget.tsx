@@ -25,6 +25,7 @@ import {
   ApprovalsGrid,
   StyledScrollContainer,
 } from "./ApprovalsWidget.styles";
+import { sortApprovalEntities } from "./helpers";
 import { ApprovalsList } from "./subcomponents/ApprovalsList/ApprovalsList";
 import ApprovalsListSortButtons from "./subcomponents/ApprovalsListSortButtons/ApprovalsListSortButtons";
 import { ApprovalSortType } from "./types";
@@ -41,6 +42,18 @@ export const ApprovalsWidget: FC = () => {
   const [activeApproval, setActiveApproval] = useState<ApprovalEntity | null>(
     null
   );
+  const [activeSortType, setActiveSortType] =
+    useState<ApprovalSortType>("token");
+  const [sortTypeDirection, setSortTypeDirection] = useState<
+    Record<ApprovalSortType, boolean>
+  >({
+    token: true,
+    balance: true,
+    approval: true,
+    contract: true,
+    actions: true,
+  });
+
   const approvalTransaction = useApprovalPending(
     activeApproval?.tokenInfo?.address,
     true
@@ -51,18 +64,11 @@ export const ApprovalsWidget: FC = () => {
     [allowances, balances, tokens]
   );
 
-  const [activeSortType, setActiveSortType] =
-    useState<ApprovalSortType>("token");
-
-  const [sortTypeDirection, setSortTypeDirection] = useState<
-    Record<ApprovalSortType, boolean>
-  >({
-    token: true,
-    balance: true,
-    approval: true,
-    contract: true,
-    actions: true,
-  });
+  const sortedApprovalEntities = sortApprovalEntities(
+    approvalEntities,
+    activeSortType,
+    sortTypeDirection[activeSortType]
+  );
 
   const handleSortButtonClick = (sortType: ApprovalSortType) => {
     const currentSorting = sortTypeDirection[sortType];
@@ -75,7 +81,6 @@ export const ApprovalsWidget: FC = () => {
   };
 
   const handleEditButtonClick = (approval: ApprovalEntity) => {
-    console.log("handleEditButtonClick", approval);
     if (!approval.tokenInfo) {
       console.error("Approval tokenInfo is undefined");
       return;
@@ -98,27 +103,21 @@ export const ApprovalsWidget: FC = () => {
     );
   };
 
-  const handleRevokeButtonClick = (approval: ApprovalEntity) => {
-    console.log(approval);
-  };
-
   return (
     <Container>
       <Title type="h2" as="h1">
         Approvals
       </Title>
-      <StyledScrollContainer resizeDependencies={[approvalEntities]}>
+      <StyledScrollContainer resizeDependencies={[sortedApprovalEntities]}>
         <ApprovalsGrid>
           <ApprovalsListSortButtons
             activeSortType={activeSortType}
-            hasOverflow={false}
             sortTypeDirection={sortTypeDirection}
             onSortButtonClick={handleSortButtonClick}
           />
           <ApprovalsList
-            approvals={approvalEntities}
+            approvals={sortedApprovalEntities}
             onEditButtonClick={handleEditButtonClick}
-            onRevokeButtonClick={handleRevokeButtonClick}
           />
         </ApprovalsGrid>
       </StyledScrollContainer>

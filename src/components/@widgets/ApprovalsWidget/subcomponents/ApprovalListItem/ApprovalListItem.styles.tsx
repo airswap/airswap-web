@@ -1,7 +1,10 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../../../style/breakpoints";
-import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
+import {
+  InputOrButtonBorderStyle,
+  TextEllipsis,
+} from "../../../../../style/mixins";
 import { fontWide } from "../../../../../style/themes";
 import { TooltipStyle } from "../../../../../styled-components/Tooltip/Tooltip";
 import AccountLink from "../../../../AccountLink/AccountLink";
@@ -39,8 +42,10 @@ export const TokenImage = styled.div<{ backgroundImage?: string }>`
 `;
 
 export const TokenName = styled.div`
+  max-height: 3.375rem;
   word-break: break-all;
   color: ${({ theme }) => theme.colors.white};
+  overflow: hidden;
 `;
 
 export const Amount = styled.div`
@@ -87,7 +92,7 @@ export const Tooltip = styled.div`
 `;
 
 export const TokenLink = styled(AccountLink)`
-  display: flex;
+  display: none;
   position: relative;
   translate: -0.5rem 0.0625rem;
 
@@ -97,5 +102,9 @@ export const TokenLink = styled(AccountLink)`
 
   &:hover + ${Tooltip} {
     display: block;
+  }
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    display: flex;
   }
 `;

@@ -7,7 +7,6 @@ import { ActionsButton, Container } from "./ApprovalsListSortButtons.styles";
 
 interface ApprovalsListSortButtonsProps {
   activeSortType: ApprovalSortType;
-  hasOverflow: boolean;
   sortTypeDirection: Record<ApprovalSortType, boolean>;
   onSortButtonClick: (type: ApprovalSortType) => void;
   className?: string;
@@ -15,7 +14,6 @@ interface ApprovalsListSortButtonsProps {
 
 const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
   activeSortType,
-  hasOverflow,
   sortTypeDirection,
   onSortButtonClick,
   className,
@@ -23,7 +21,7 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container className={className} hasOverflow={hasOverflow}>
+    <Container className={className}>
       <SortButton
         isSortable
         isActive={activeSortType === "token"}
@@ -56,14 +54,7 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
       >
         Contract
       </SortButton>
-      <ActionsButton
-        isSortable
-        isActive={activeSortType === "actions"}
-        isDescending={sortTypeDirection.actions}
-        onClick={() => onSortButtonClick("actions")}
-      >
-        Actions
-      </ActionsButton>
+      <ActionsButton isDisabled>Actions</ActionsButton>
     </Container>
   );
 };
