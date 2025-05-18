@@ -25,6 +25,7 @@ import {
   getTokenKind,
   getTokenSymbol,
   isCollectionTokenInfo,
+  isTokenInfo,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { AppErrorType } from "../../../errors/appError";
@@ -190,10 +191,16 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     makerTokenDecimals,
     makerTokenKind
   );
+
+  const spenderAddressType = isLimitOrder
+    ? "delegate"
+    : makerTokenKind === TokenKinds.ERC20
+    ? "swapERC20"
+    : "swap";
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
-    { spenderAddressType: isLimitOrder ? "delegate" : "swap" }
+    { spenderAddressType }
   );
 
   const hasInsufficientBalance = useInsufficientBalance(
