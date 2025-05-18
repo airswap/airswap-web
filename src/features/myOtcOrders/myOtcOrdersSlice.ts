@@ -21,6 +21,7 @@ const initialState: MyOtcOrdersState = {
     active: true,
     expiry: true,
     filled: true,
+    for: true,
     senderToken: true,
     signerToken: true,
   },

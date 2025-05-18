@@ -33,6 +33,12 @@ export const getSortedOrders = (
     });
   }
 
+  if (sortType === "for") {
+    array.sort((a, b) => {
+      return a.for.localeCompare(b.for);
+    });
+  }
+
   if (isReverse) {
     array.reverse();
   }

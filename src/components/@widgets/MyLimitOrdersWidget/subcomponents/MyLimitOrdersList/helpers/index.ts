@@ -1,3 +1,5 @@
+import { ADDRESS_ZERO } from "@airswap/utils";
+
 import { ethers } from "ethers";
 
 import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
@@ -51,6 +53,7 @@ export const getDelegateRuleDataAndTransformToMyOrder = async (
     signerToken: signerToken,
     senderFilledAmount: delegateRule.senderFilledAmount,
     chainId: delegateRule.chainId,
+    for: ADDRESS_ZERO,
     senderAmount: delegateRule.senderAmount,
     signerAmount: delegateRule.signerAmount,
     expiry: new Date(delegateRule.expiry * 1000),

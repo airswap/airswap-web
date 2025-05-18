@@ -45,7 +45,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 }) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { width: windowWidth } = useWindowSize();
 
   const [activeDeleteButtonTooltipIndex, setActiveDeleteButtonTooltipIndex] =
     useState<number>();
@@ -55,7 +54,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   ] = useState<number>();
   const [tooltipText, setTooltipText] = useState("");
   const [containerScrollTop, setContainerScrollTop] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
 
   const sortedOrders = useMemo(() => {
     return getSortedOrders(
@@ -114,10 +112,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       );
     };
   }, [containerRef]);
-
-  useEffect(() => {
-    setContainerWidth(containerRef.current?.scrollWidth || 0);
-  }, [containerRef, windowWidth]);
 
   if (isLoading) {
     return (

@@ -49,7 +49,16 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
           {t("common.filled")}
         </SortButton>
       )}
-      {hasForColumn && <SortButton>For</SortButton>}
+      {hasForColumn && (
+        <SortButton
+          isSortable
+          isActive={activeSortType === "for"}
+          isDescending={sortTypeDirection.for}
+          onClick={() => onSortButtonClick("for")}
+        >
+          {t("common.for")}
+        </SortButton>
+      )}
       <SortButton
         isSortable
         isActive={activeSortType === "signerToken"}

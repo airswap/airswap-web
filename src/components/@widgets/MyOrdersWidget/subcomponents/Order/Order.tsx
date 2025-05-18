@@ -1,6 +1,8 @@
 import { FC, PropsWithChildren, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ADDRESS_ZERO } from "@airswap/utils";
+
 import {
   getTokenDecimals,
   getTokenImage,
@@ -160,7 +162,11 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           {`${filledAmount} ${signerTokenSymbol || ""}`}
         </FilledAmount>
       )}
-      {hasForColumn && <FilledAmount>Anyone</FilledAmount>}
+      {hasForColumn && (
+        <FilledAmount>
+          {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
+        </FilledAmount>
+      )}
       <SignerAmount>{`${signerAmount} ${
         signerTokenSymbol || ""
       }`}</SignerAmount>

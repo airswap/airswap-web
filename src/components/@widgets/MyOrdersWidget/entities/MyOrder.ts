@@ -6,6 +6,7 @@ export interface MyOrder {
   hasAllowanceWarning?: boolean;
   isLoading?: boolean;
   chainId: number;
+  for: string;
   senderToken?: AppTokenInfo;
   senderAmount: string;
   senderFilledAmount?: string;

@@ -38,6 +38,7 @@ export const transformFullOrderToMyOrder = (
     link: routes.otcOrder(compressedOrder),
     status: status,
     chainId: order.chainId,
+    for: isFullOrder(order) ? order.sender.wallet : order.senderWallet,
     senderToken,
     senderAmount: isFullOrder(order)
       ? getFullOrderAmount(order.sender)
