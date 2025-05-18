@@ -2,12 +2,11 @@ import styled from "styled-components/macro";
 
 import breakpoints from "../../../../../style/breakpoints";
 import SortButton from "../../../../SortButton/SortButton";
-import { MyOrdersGrid } from "../../../MyOrdersWidget/MyOrdersWidget.styles";
 
 export const Container = styled.div`
-  ${MyOrdersGrid}
-
-  padding-right: 1rem;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 `;
 
 export const PairButtonWrapper = styled.div`

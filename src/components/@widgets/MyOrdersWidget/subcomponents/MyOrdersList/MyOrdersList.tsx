@@ -123,7 +123,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
     return (
       <Container className={className}>
         <StyledMyOrdersListSortButtons
-          width={containerWidth}
           activeSortType={activeSortType}
           hasFilledColumn={hasFilledColumn}
           hasForColumn={hasForColumn}
@@ -142,7 +141,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       <StyledMyOrdersListSortButtons
         hasFilledColumn={hasFilledColumn}
         hasForColumn={hasForColumn}
-        width={containerWidth}
         activeSortType={activeSortType}
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={onSortButtonClick}

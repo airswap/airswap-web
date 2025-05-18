@@ -9,7 +9,6 @@ import { OrderStatus } from "../../../../../types/orderStatus";
 import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
 import TokenLogo from "../../../../TokenLogo/TokenLogo";
-import { MyOrdersGrid } from "../../../MyOrdersWidget/MyOrdersWidget.styles";
 
 export const Circle = styled.div`
   border-radius: 50%;
@@ -36,7 +35,9 @@ const getIndicatorColor = (
 export const Container = styled.div<{
   orderStatus: OrderStatus;
 }>`
-  ${MyOrdersGrid}
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 
   position: relative;
   align-items: center;
@@ -114,9 +115,10 @@ export const StyledNavLink = styled(NavLink)<{
 }>`
   position: absolute;
   top: -1px;
-  left: ${({ hasWarning }) => (hasWarning ? "-1.25rem" : "0")};
+  left: ${({ hasWarning }) => (hasWarning ? "-2.25rem" : "-0.5rem")};
   border-radius: 0.5rem;
-  width: ${({ hasWarning }) => (hasWarning ? "calc(100% + 1.25rem)" : "100%")};
+  width: ${({ hasWarning }) =>
+    hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
   opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
@@ -151,7 +153,7 @@ export const TokenIcon = styled(TokenLogo)`
 export const StyledTooltip = styled(Tooltip)`
   display: none;
   position: absolute;
-  top: -0.5rem;
+  top: 0.5rem;
   left: 0.625rem;
   height: 2rem;
   padding-block: 0.5rem;
@@ -163,7 +165,7 @@ export const StyledTooltip = styled(Tooltip)`
 export const Warning = styled(IconWarning)`
   position: absolute;
   top: 0.75rem;
-  left: -0.75rem;
+  left: -1.75rem;
   width: 1.5rem;
   height: 1.5rem;
   z-index: 3;

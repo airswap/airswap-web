@@ -20,7 +20,7 @@ export const InnerContainer = styled.div<{ $isScrollLocked?: boolean }>`
 
   @media ${breakPoints.phoneOnly} {
     height: 100%;
-    padding-bottom: 2rem;
+    padding: 0 ${sizes.pageMobilePadding} 2rem;
   }
 
   &:before {
@@ -57,7 +57,6 @@ export const StyledPage = styled.div`
     width: 100%;
     height: 100vh;
     min-height: ${sizes.widgetMobileSize};
-    padding: 0 ${sizes.pageMobilePadding};
   }
 `;
 
