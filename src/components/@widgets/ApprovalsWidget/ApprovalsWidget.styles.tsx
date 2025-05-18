@@ -10,11 +10,8 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const StyledScrollContainer = styled(FadedScrollContainer)`
+export const StyledScrollContainer = styled.div`
   margin-block-start: 2.5rem;
-  padding-inline-end: 1rem;
-  min-height: 15rem;
-  max-height: 25rem;
 `;
 
 export const ApprovalsGridStyle = css`
@@ -29,9 +26,18 @@ export const ApprovalsGridStyle = css`
   }
 `;
 
+export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 15rem;
+  max-height: 25rem;
+`;
+
 export const ApprovalsGrid = styled.div`
   ${ApprovalsGridStyle};
 
-  grid-row-gap: 1.5rem;
+  grid-row-gap: 0.5rem;
   padding: 0 1rem;
 `;

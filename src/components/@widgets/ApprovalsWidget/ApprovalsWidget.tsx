@@ -24,6 +24,7 @@ import {
   Container,
   ApprovalsGrid,
   StyledScrollContainer,
+  StyledFadedScrollContainer,
 } from "./ApprovalsWidget.styles";
 import { sortApprovalEntities } from "./helpers";
 import { ApprovalsList } from "./subcomponents/ApprovalsList/ApprovalsList";
@@ -108,17 +109,21 @@ export const ApprovalsWidget: FC = () => {
       <Title type="h2" as="h1">
         Approvals
       </Title>
-      <StyledScrollContainer resizeDependencies={[sortedApprovalEntities]}>
+      <StyledScrollContainer>
         <ApprovalsGrid>
           <ApprovalsListSortButtons
             activeSortType={activeSortType}
             sortTypeDirection={sortTypeDirection}
             onSortButtonClick={handleSortButtonClick}
           />
-          <ApprovalsList
-            approvals={sortedApprovalEntities}
-            onEditButtonClick={handleEditButtonClick}
-          />
+          <StyledFadedScrollContainer
+            resizeDependencies={[sortedApprovalEntities]}
+          >
+            <ApprovalsList
+              approvals={sortedApprovalEntities}
+              onEditButtonClick={handleEditButtonClick}
+            />
+          </StyledFadedScrollContainer>
         </ApprovalsGrid>
       </StyledScrollContainer>
 
