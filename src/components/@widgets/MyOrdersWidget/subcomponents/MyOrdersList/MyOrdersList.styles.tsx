@@ -22,6 +22,7 @@ export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
   width: number;
 }>`
   width: ${({ width }) => (width ? `${width}px` : "100%")};
+  padding-left: 2.25rem;
 `;
 
 export const OrdersContainer = styled.div`
@@ -30,6 +31,7 @@ export const OrdersContainer = styled.div`
   margin-top: 1rem;
   width: 100%;
   max-height: 20rem;
+  padding-left: 1.25rem;
   padding-right: 1rem;
   overflow-y: auto;
   overflow-x: visible;

@@ -3,6 +3,7 @@ import { OrderStatus } from "../../../../types/orderStatus";
 
 export interface MyOrder {
   id: string;
+  hasAllowanceWarning?: boolean;
   isLoading?: boolean;
   chainId: number;
   senderToken?: AppTokenInfo;

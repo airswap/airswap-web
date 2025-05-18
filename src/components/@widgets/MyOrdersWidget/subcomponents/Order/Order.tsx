@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getTokenDecimals,
@@ -26,9 +27,10 @@ import {
   SignerAmount,
   StatusIndicator,
   StyledNavLink,
-  Text,
+  StyledTooltip,
   TokenIcon,
   Tokens,
+  Warning,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -56,6 +58,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onStatusIndicatorMouseLeave,
   className,
 }) => {
+  const { t } = useTranslation();
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
 
   const senderTokenDecimals = order.senderToken
@@ -138,6 +141,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       orderStatus={order.status}
       className={className}
     >
+      {order.hasAllowanceWarning && (
+        <>
+          <Warning />
+          <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
+        </>
+      )}
       <StatusIndicator
         onMouseEnter={() => onStatusIndicatorMouseEnter(index, order.status)}
         onMouseLeave={onStatusIndicatorMouseLeave}
@@ -164,7 +173,11 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <OrderStatusLabel>
         {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}
       </OrderStatusLabel>
-      <StyledNavLink $isHovered={isHoveredActionButton} to={order.link} />
+      <StyledNavLink
+        $isHovered={isHoveredActionButton}
+        hasWarning={order.hasAllowanceWarning}
+        to={order.link}
+      />
 
       <ActionButtonContainer>
         {isCancelInProgress ? (

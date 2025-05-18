@@ -4,7 +4,9 @@ import styled, { DefaultTheme } from "styled-components/macro";
 
 import breakPoints from "../../../../../style/breakpoints";
 import { fontMono } from "../../../../../style/themes";
+import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
+import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
 import TokenLogo from "../../../../TokenLogo/TokenLogo";
 import {
@@ -111,12 +113,15 @@ export const ActionButton = styled(IconButton)`
   }
 `;
 
-export const StyledNavLink = styled(NavLink)<{ $isHovered?: boolean }>`
+export const StyledNavLink = styled(NavLink)<{
+  $isHovered?: boolean;
+  hasWarning?: boolean;
+}>`
   position: absolute;
   top: -1px;
-  left: 0;
+  left: ${({ hasWarning }) => (hasWarning ? "-1.25rem" : "0")};
   border-radius: 0.5rem;
-  width: 100%;
+  width: ${({ hasWarning }) => (hasWarning ? "calc(100% + 1.25rem)" : "100%")};
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
   opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
@@ -146,4 +151,32 @@ export const TokenIcon = styled(TokenLogo)`
   background-color: ${({ theme }) => theme.colors.darkGrey};
   z-index: 3;
   pointer-events: none;
+`;
+
+export const StyledTooltip = styled(Tooltip)`
+  display: none;
+  position: absolute;
+  top: -0.5rem;
+  left: 0.625rem;
+  height: 2rem;
+  padding-block: 0.5rem;
+  z-index: 5;
+  pointer-events: none;
+  color: ${({ theme }) => theme.colors.darkSubText};
+`;
+
+export const Warning = styled(IconWarning)`
+  position: absolute;
+  top: 0.75rem;
+  left: -0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  z-index: 3;
+  cursor: pointer;
+
+  &:hover {
+    & + ${StyledTooltip} {
+      display: block;
+    }
+  }
 `;

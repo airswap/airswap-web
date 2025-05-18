@@ -104,6 +104,7 @@
     "actionCannotBeReversed": "This will cancel the order on-chain",
     "actions": "Actions",
     "afterFee": "After {{fee}} fee",
+    "allowanceWarning": "Allowance confict. This order might fail.",
     "amount": "Amount",
     "anyone": "Anyone",
     "approve": "Approve",

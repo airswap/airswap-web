@@ -3,7 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import SortButton from "../../../../SortButton/SortButton";
-import { Container, PairButtonWrapper } from "./MyOrdersListSortButtons.styles";
+import {
+  ActionsButton,
+  Container,
+  PairButtonWrapper,
+} from "./MyOrdersListSortButtons.styles";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
@@ -75,7 +79,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       >
         {t("common.status")}
       </SortButton>
-      <SortButton isDisabled>{t("orders.actions")}</SortButton>
+      <ActionsButton isDisabled>{t("orders.actions")}</ActionsButton>
     </Container>
   );
 };

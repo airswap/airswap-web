@@ -34,7 +34,6 @@ import InfoSection from "../MyOrdersWidget/subcomponents/InfoSection/InfoSection
 import MyOtcOrdersList from "./subcomponents/MyOtcOrdersList/MyOtcOrdersList";
 
 const MyOtcOrdersWidget: FC = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const { provider: library } = useWeb3React<Web3Provider>();
