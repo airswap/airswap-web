@@ -9,10 +9,7 @@ import { OrderStatus } from "../../../../../types/orderStatus";
 import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
 import TokenLogo from "../../../../TokenLogo/TokenLogo";
-import {
-  MyLimitOrderGrid,
-  MyOrdersGrid,
-} from "../../../MyOrdersWidget/MyOrdersWidget.styles";
+import { MyOrdersGrid } from "../../../MyOrdersWidget/MyOrdersWidget.styles";
 
 export const Circle = styled.div`
   border-radius: 50%;
@@ -38,10 +35,8 @@ const getIndicatorColor = (
 
 export const Container = styled.div<{
   orderStatus: OrderStatus;
-  hasFilledColumn?: boolean;
 }>`
-  ${({ hasFilledColumn }) =>
-    hasFilledColumn ? MyLimitOrderGrid : MyOrdersGrid};
+  ${MyOrdersGrid}
 
   position: relative;
   align-items: center;

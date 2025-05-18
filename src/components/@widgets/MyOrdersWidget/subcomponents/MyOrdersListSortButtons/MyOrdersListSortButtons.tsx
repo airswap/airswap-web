@@ -12,6 +12,7 @@ import {
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
   hasFilledColumn?: boolean;
+  hasForColumn?: boolean;
   hasOverflow: boolean;
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onSortButtonClick: (type: OrdersSortType) => void;
@@ -21,6 +22,7 @@ interface MyOrdersListProps {
 const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   activeSortType,
   hasFilledColumn,
+  hasForColumn,
   hasOverflow,
   sortTypeDirection,
   onSortButtonClick,
@@ -29,11 +31,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container
-      className={className}
-      hasOverflow={hasOverflow}
-      hasFilledColumn={hasFilledColumn}
-    >
+    <Container className={className} hasOverflow={hasOverflow}>
       <SortButton
         isSortable
         isActive={activeSortType === "active"}
@@ -43,7 +41,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       <PairButtonWrapper>
         <SortButton isDisabled>{t("common.pair")}</SortButton>
       </PairButtonWrapper>
-      {hasFilledColumn ? (
+      {hasFilledColumn && (
         <SortButton
           isSortable
           isActive={activeSortType === "filled"}
@@ -52,9 +50,8 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
         >
           {t("common.filled")}
         </SortButton>
-      ) : (
-        <SortButton>For</SortButton>
       )}
+      {hasForColumn && <SortButton>For</SortButton>}
       <SortButton
         isSortable
         isActive={activeSortType === "signerToken"}

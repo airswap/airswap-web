@@ -1,7 +1,6 @@
 import { css } from "styled-components";
 import styled from "styled-components/macro";
 
-import breakPoints from "../../../style/breakpoints";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 
 export const Container = styled.div`
@@ -17,10 +16,6 @@ export const MyOrdersGrid = css`
   grid-column-gap: 1rem;
   width: 100%;
   padding: 0 1rem;
-`;
-
-export const MyLimitOrderGrid = css`
-  ${MyOrdersGrid};
 `;
 
 export const InfoSectionContainer = styled.div`

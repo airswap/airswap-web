@@ -35,6 +35,7 @@ import {
 
 interface OrderProps {
   hasFilledColumn?: boolean;
+  hasForColumn?: boolean;
   isCancelInProgress: boolean;
   order: MyOrderInterface;
   index: number;
@@ -48,6 +49,7 @@ interface OrderProps {
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   hasFilledColumn,
+  hasForColumn,
   isCancelInProgress,
   order,
   index,
@@ -136,11 +138,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   };
 
   return (
-    <Container
-      hasFilledColumn={hasFilledColumn}
-      orderStatus={order.status}
-      className={className}
-    >
+    <Container orderStatus={order.status} className={className}>
       {order.hasAllowanceWarning && (
         <>
           <Warning />
@@ -157,13 +155,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <TokenIcon logoURI={signerTokenImage} />
         <TokenIcon logoURI={senderTokenImage} />
       </Tokens>
-      {hasFilledColumn ? (
-        <FilledAmount>{`${filledAmount} ${
-          signerTokenSymbol || ""
-        }`}</FilledAmount>
-      ) : (
-        <FilledAmount>Anyone</FilledAmount>
+      {hasFilledColumn && (
+        <FilledAmount>
+          {`${filledAmount} ${signerTokenSymbol || ""}`}
+        </FilledAmount>
       )}
+      {hasForColumn && <FilledAmount>Anyone</FilledAmount>}
       <SignerAmount>{`${signerAmount} ${
         signerTokenSymbol || ""
       }`}</SignerAmount>

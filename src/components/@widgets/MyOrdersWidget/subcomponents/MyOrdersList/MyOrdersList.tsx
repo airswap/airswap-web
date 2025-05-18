@@ -21,6 +21,7 @@ import { getSortedOrders } from "./helpers";
 
 interface MyOrdersListProps {
   hasFilledColumn?: boolean;
+  hasForColumn?: boolean;
   isLoading: boolean;
   activeSortType: OrdersSortType;
   orders: MyOrder[];
@@ -32,6 +33,7 @@ interface MyOrdersListProps {
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
   hasFilledColumn,
+  hasForColumn,
   isLoading,
   activeSortType,
   orders,
@@ -124,6 +126,8 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         <StyledMyOrdersListSortButtons
           width={containerWidth}
           activeSortType={activeSortType}
+          hasFilledColumn={hasFilledColumn}
+          hasForColumn={hasForColumn}
           hasOverflow={hasOverflow}
           sortTypeDirection={sortTypeDirection}
           onSortButtonClick={onSortButtonClick}
@@ -139,6 +143,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
     <Container className={className} hasOverflow={hasOverflow}>
       <StyledMyOrdersListSortButtons
         hasFilledColumn={hasFilledColumn}
+        hasForColumn={hasForColumn}
         hasOverflow={hasOverflow}
         width={containerWidth}
         activeSortType={activeSortType}
@@ -150,6 +155,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           <Order
             key={order.id}
             hasFilledColumn={hasFilledColumn}
+            hasForColumn={hasForColumn}
             order={order}
             index={index}
             onDeleteOrderButtonClick={handleDeleteOrderButtonClick}

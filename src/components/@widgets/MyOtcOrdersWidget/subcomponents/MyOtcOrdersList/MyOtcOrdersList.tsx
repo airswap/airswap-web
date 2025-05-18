@@ -77,6 +77,7 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
 
   return (
     <MyOrdersList
+      hasForColumn
       isLoading={isLoading}
       activeSortType={activeSortType}
       orders={orders}

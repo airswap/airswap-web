@@ -2,18 +2,12 @@ import styled from "styled-components/macro";
 
 import breakpoints from "../../../../../style/breakpoints";
 import SortButton from "../../../../SortButton/SortButton";
-import {
-  MyLimitOrderGrid,
-  MyOrdersGrid,
-} from "../../../MyOrdersWidget/MyOrdersWidget.styles";
+import { MyOrdersGrid } from "../../../MyOrdersWidget/MyOrdersWidget.styles";
 
 export const Container = styled.div<{
   hasOverflow: boolean;
-  hasFilledColumn?: boolean;
 }>`
-  ${({ hasFilledColumn }) =>
-    hasFilledColumn ? MyLimitOrderGrid : MyOrdersGrid};
-
+  ${MyOrdersGrid}
   padding-right: ${({ hasOverflow }) => (hasOverflow ? "2.5rem" : "2rem")};
 `;
 
