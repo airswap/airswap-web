@@ -34,7 +34,7 @@ export const transformFullOrderToMyOrder = (
 
   return {
     id: order.nonce,
-    hasAllowanceWarning: status === OrderStatus.open,
+    hasAllowanceWarning: false,
     link: routes.otcOrder(compressedOrder),
     status: status,
     chainId: order.chainId,

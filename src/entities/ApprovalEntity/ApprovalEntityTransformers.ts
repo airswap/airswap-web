@@ -1,18 +1,12 @@
 import { SpenderAddressType } from "../../features/balances/balancesApi";
 import { BalancesState } from "../../features/balances/balancesSlice";
+import { Allowances } from "../../features/balances/balancesTypes";
 import { AppTokenInfo } from "../AppTokenInfo/AppTokenInfo";
 import {
   findTokenByAddressAndId,
   splitTokenIdentifier,
 } from "../AppTokenInfo/AppTokenInfoHelpers";
 import { ApprovalEntity } from "./ApprovalEntity";
-
-export type Allowances = {
-  swap: BalancesState;
-  swapERC20: BalancesState;
-  wrapper: BalancesState;
-  delegate: BalancesState;
-};
 
 export type AllowanceKey = keyof Allowances;
 

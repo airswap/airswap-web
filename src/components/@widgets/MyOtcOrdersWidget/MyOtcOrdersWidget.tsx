@@ -42,6 +42,7 @@ const MyOtcOrdersWidget: FC = () => {
   );
   const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
+  const allowances = useAppSelector((state) => state.allowances);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOtcOrdersReducer
   );
@@ -127,6 +128,7 @@ const MyOtcOrdersWidget: FC = () => {
           activeCancellationId={activeCancellationNonce}
           activeSortType={activeSortType}
           activeTokens={allTokens}
+          allowances={allowances}
           fullOrders={userOrders}
           sortTypeDirection={sortTypeDirection}
           library={library!}

@@ -6,16 +6,21 @@ import * as ethers from "ethers";
 
 import { useAppSelector } from "../../../../../app/hooks";
 import { AppTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfo";
+import { Allowances } from "../../../../../features/balances/balancesTypes";
 import { selectAllTokenInfo } from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
 import MyOrdersList from "../../../MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
-import { getFullOrderDataAndTransformToOrder } from "./helpers";
+import {
+  getFullOrderDataAndTransformToOrder,
+  getOrdersWithApprovalWarnings,
+} from "./helpers";
 
 interface MyOtcOrdersListProps {
   activeCancellationId?: string;
   activeSortType: OrdersSortType;
   activeTokens: AppTokenInfo[];
+  allowances: Allowances;
   fullOrders: (FullOrder | FullOrderERC20)[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   library: ethers.providers.BaseProvider;
@@ -27,6 +32,7 @@ interface MyOtcOrdersListProps {
 const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   activeCancellationId,
   activeSortType,
+  allowances,
   fullOrders,
   library,
   sortTypeDirection,
@@ -46,7 +52,12 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       )
     );
 
-    setOrders(newOrders);
+    const newOrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
+      newOrders,
+      [allowances.swap.values, allowances.swapERC20.values]
+    );
+
+    setOrders(newOrdersWithApprovalWarnings);
     setIsLoading(false);
   }, [fullOrders, activeTokens, activeCancellationId]);
 

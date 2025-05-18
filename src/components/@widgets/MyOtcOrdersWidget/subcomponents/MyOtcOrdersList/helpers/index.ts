@@ -6,10 +6,15 @@ import {
 } from "@airswap/utils";
 
 import * as ethers from "ethers";
+import { BigNumber } from "ethers";
 
 import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
-import { findTokenByAddressAndId } from "../../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import {
+  findTokenByAddressAndId,
+  getTokenId,
+} from "../../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../../../../entities/FullOrder/FullOrderHelpers";
+import { BalanceValues } from "../../../../../../features/balances/balancesSlice";
 import { getNonceUsed } from "../../../../../../features/orders/ordersHelpers";
 import { OrderStatus } from "../../../../../../types/orderStatus";
 import { MyOrder } from "../../../../MyOrdersWidget/entities/MyOrder";
@@ -98,4 +103,46 @@ export const getFullOrderDataAndTransformToOrder = async (
   const status = transformToOrderStatus(isTaken, isExpired, false);
 
   return transformFullOrderToMyOrder(order, status, signerToken, senderToken);
+};
+
+export const getOrdersWithApprovalWarnings = (
+  orders: MyOrder[],
+  allowances: BalanceValues[]
+) => {
+  const tokenApprovals = orders.reduce((acc, order) => {
+    if (!order.signerToken || order.status !== OrderStatus.open) {
+      return acc;
+    }
+
+    const tokenId = getTokenId(order.signerToken);
+
+    const currentAmount = acc[tokenId] || "0";
+    acc[tokenId] = BigNumber.from(currentAmount)
+      .add(BigNumber.from(order.signerAmount))
+      .toString();
+
+    return acc;
+  }, {} as BalanceValues);
+
+  return orders.map((order) => {
+    if (!order.signerToken) {
+      return order;
+    }
+
+    const tokenId = getTokenId(order.signerToken);
+    const allowance = allowances.find(
+      (allowance) => allowance[tokenId] && allowance[tokenId] !== "0"
+    );
+    const approvedAmount = allowance ? allowance[tokenId] : "0";
+    const tokensAmount = tokenApprovals[tokenId] || "0";
+
+    const hasAllowanceWarning = BigNumber.from(approvedAmount).lt(
+      BigNumber.from(tokensAmount)
+    );
+
+    return {
+      ...order,
+      hasAllowanceWarning,
+    } as MyOrder;
+  });
 };

@@ -6,6 +6,10 @@ import { RootState } from "../../app/store";
 import { walletChanged, walletDisconnected } from "../web3/web3Actions";
 import { getThunk, getSetInFlightRequestTokensAction } from "./balancesApi";
 
+export type BalanceValues = {
+  [tokenId: string]: string | null; // null while fetching
+};
+
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
   /** Timestamp of last successful fetch */
@@ -17,9 +21,7 @@ export interface BalancesState {
   inFlightFetchTokens: string[] | null; // used to prevent duplicate fetches
   /** Token balances, where the key is the tokenId (e.g. "0x1234567890123456789012345678901234567890"
    * for ERC-20 and "0x1234567890123456789012345678901234567890-1" for ERC-721) */
-  values: {
-    [tokenId: string]: string | null; // null while fetching
-  };
+  values: BalanceValues;
 }
 
 // Initially empty.
