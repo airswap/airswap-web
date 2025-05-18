@@ -6,6 +6,6 @@ import { WidgetFrameWrapper } from "../../components/WidgetFrame/WidgetFrame.sty
 export const Container = styled(Page)`
   ${WidgetFrameWrapper} {
     width: 100%;
-    max-width: 52rem;
+    max-width: 65rem;
   }
 `;

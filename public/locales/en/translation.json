@@ -102,6 +102,7 @@
   },
   "orders": {
     "actionCannotBeReversed": "This will cancel the order on-chain",
+    "actions": "Actions",
     "afterFee": "After {{fee}} fee",
     "amount": "Amount",
     "anyone": "Anyone",

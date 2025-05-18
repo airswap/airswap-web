@@ -39,7 +39,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       <PairButtonWrapper>
         <SortButton isDisabled>{t("common.pair")}</SortButton>
       </PairButtonWrapper>
-      {hasFilledColumn && (
+      {hasFilledColumn ? (
         <SortButton
           isSortable
           isActive={activeSortType === "filled"}
@@ -48,6 +48,8 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
         >
           {t("common.filled")}
         </SortButton>
+      ) : (
+        <SortButton>For</SortButton>
       )}
       <SortButton
         isSortable
@@ -73,6 +75,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       >
         {t("common.status")}
       </SortButton>
+      <SortButton isDisabled>{t("orders.actions")}</SortButton>
     </Container>
   );
 };

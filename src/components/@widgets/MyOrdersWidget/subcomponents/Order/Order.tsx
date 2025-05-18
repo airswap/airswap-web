@@ -148,10 +148,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <TokenIcon logoURI={signerTokenImage} />
         <TokenIcon logoURI={senderTokenImage} />
       </Tokens>
-      {hasFilledColumn && (
+      {hasFilledColumn ? (
         <FilledAmount>{`${filledAmount} ${
           signerTokenSymbol || ""
         }`}</FilledAmount>
+      ) : (
+        <FilledAmount>Anyone</FilledAmount>
       )}
       <SignerAmount>{`${signerAmount} ${
         signerTokenSymbol || ""
