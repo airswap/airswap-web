@@ -16,6 +16,7 @@ import {
   StyledLoadingSpinner,
   StyledMyOrdersListSortButtons,
   LoadingSpinnerContainer,
+  StyledFadedScrollContainer,
 } from "./MyOrdersList.styles";
 import { getSortedOrders } from "./helpers";
 
@@ -55,8 +56,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const [tooltipText, setTooltipText] = useState("");
   const [containerScrollTop, setContainerScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
-
-  const [, hasOverflow] = useIsOverflowing(containerRef);
 
   const sortedOrders = useMemo(() => {
     return getSortedOrders(
@@ -128,7 +127,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
           activeSortType={activeSortType}
           hasFilledColumn={hasFilledColumn}
           hasForColumn={hasForColumn}
-          hasOverflow={hasOverflow}
           sortTypeDirection={sortTypeDirection}
           onSortButtonClick={onSortButtonClick}
         />
@@ -140,49 +138,50 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   }
 
   return (
-    <Container className={className} hasOverflow={hasOverflow}>
+    <Container className={className}>
       <StyledMyOrdersListSortButtons
         hasFilledColumn={hasFilledColumn}
         hasForColumn={hasForColumn}
-        hasOverflow={hasOverflow}
         width={containerWidth}
         activeSortType={activeSortType}
         sortTypeDirection={sortTypeDirection}
         onSortButtonClick={onSortButtonClick}
       />
-      <OrdersContainer ref={containerRef}>
-        {sortedOrders.map((order, index) => (
-          <Order
-            key={order.id}
-            hasFilledColumn={hasFilledColumn}
-            hasForColumn={hasForColumn}
-            order={order}
-            index={index}
-            onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-            onDeleteOrderButtonMouseEnter={handleDeleteOrderButtonMouseEnter}
-            onDeleteOrderButtonMouseLeave={handleDeleteOrderButtonMouseLeave}
-            onStatusIndicatorMouseEnter={handleStatusIndicatorMouseEnter}
-            onStatusIndicatorMouseLeave={handleStatusIndicatorMouseLeave}
-            isCancelInProgress={false}
-          />
-        ))}
-        {activeDeleteButtonTooltipIndex !== undefined && (
-          <DeleteButtonTooltip
-            orderIndex={activeDeleteButtonTooltipIndex || 0}
-            containerScrollTop={containerScrollTop}
-          >
-            {tooltipText}
-          </DeleteButtonTooltip>
-        )}
-        {activeOrderIndicatorTooltipIndex !== undefined && (
-          <OrderIndicatorTooltip
-            orderIndex={activeOrderIndicatorTooltipIndex || 0}
-            containerScrollTop={containerScrollTop}
-          >
-            {tooltipText}
-          </OrderIndicatorTooltip>
-        )}
-      </OrdersContainer>
+      <StyledFadedScrollContainer resizeDependencies={[sortedOrders]}>
+        <OrdersContainer ref={containerRef}>
+          {sortedOrders.map((order, index) => (
+            <Order
+              key={order.id}
+              hasFilledColumn={hasFilledColumn}
+              hasForColumn={hasForColumn}
+              order={order}
+              index={index}
+              onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
+              onDeleteOrderButtonMouseEnter={handleDeleteOrderButtonMouseEnter}
+              onDeleteOrderButtonMouseLeave={handleDeleteOrderButtonMouseLeave}
+              onStatusIndicatorMouseEnter={handleStatusIndicatorMouseEnter}
+              onStatusIndicatorMouseLeave={handleStatusIndicatorMouseLeave}
+              isCancelInProgress={false}
+            />
+          ))}
+          {activeDeleteButtonTooltipIndex !== undefined && (
+            <DeleteButtonTooltip
+              orderIndex={activeDeleteButtonTooltipIndex || 0}
+              containerScrollTop={containerScrollTop}
+            >
+              {tooltipText}
+            </DeleteButtonTooltip>
+          )}
+          {activeOrderIndicatorTooltipIndex !== undefined && (
+            <OrderIndicatorTooltip
+              orderIndex={activeOrderIndicatorTooltipIndex || 0}
+              containerScrollTop={containerScrollTop}
+            >
+              {tooltipText}
+            </OrderIndicatorTooltip>
+          )}
+        </OrdersContainer>
+      </StyledFadedScrollContainer>
     </Container>
   );
 };

@@ -13,7 +13,6 @@ interface MyOrdersListProps {
   activeSortType: OrdersSortType;
   hasFilledColumn?: boolean;
   hasForColumn?: boolean;
-  hasOverflow: boolean;
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
@@ -23,7 +22,6 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   activeSortType,
   hasFilledColumn,
   hasForColumn,
-  hasOverflow,
   sortTypeDirection,
   onSortButtonClick,
   className,
@@ -31,7 +29,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container className={className} hasOverflow={hasOverflow}>
+    <Container className={className}>
       <SortButton
         isSortable
         isActive={activeSortType === "active"}

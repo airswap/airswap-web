@@ -2,6 +2,7 @@ import styled from "styled-components/macro";
 
 import { ScrollBarStyle } from "../../../../../style/mixins";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
+import { FadedScrollContainer } from "../../../../FadedScrollContainer/FadedScrollContainer";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
 
@@ -25,16 +26,18 @@ export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)<{
   padding-left: 2.25rem;
 `;
 
-export const OrdersContainer = styled.div`
-  ${ScrollBarStyle};
-
+export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   margin-top: 1rem;
-  width: 100%;
+  min-height: 15rem;
   max-height: 20rem;
+`;
+
+export const OrdersContainer = styled.div`
+  width: 100%;
   padding-left: 1.25rem;
-  padding-right: 1rem;
-  overflow-y: auto;
-  overflow-x: visible;
 `;
 
 export const TooltipContainer = styled.div`

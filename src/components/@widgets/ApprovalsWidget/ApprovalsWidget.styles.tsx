@@ -32,7 +32,7 @@ export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
   grid-column: 1 / -1;
   width: 100%;
   min-height: 15rem;
-  max-height: 25rem;
+  max-height: 20rem;
 `;
 
 export const ApprovalsGrid = styled.div`

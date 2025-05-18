@@ -16,6 +16,7 @@ export const Container = styled(ScrollContainer)<FadedScrollContainerProps>`
   max-height: 20rem;
   padding-inline: 0.875rem 2.25rem;
   padding-block-start: 0.125rem;
+  padding-block-end: 1rem;
 
   ${(props) =>
     props.hasScrolledToBottom &&

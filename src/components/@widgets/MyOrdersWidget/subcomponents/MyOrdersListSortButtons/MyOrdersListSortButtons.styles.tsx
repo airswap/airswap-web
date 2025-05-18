@@ -4,11 +4,10 @@ import breakpoints from "../../../../../style/breakpoints";
 import SortButton from "../../../../SortButton/SortButton";
 import { MyOrdersGrid } from "../../../MyOrdersWidget/MyOrdersWidget.styles";
 
-export const Container = styled.div<{
-  hasOverflow: boolean;
-}>`
+export const Container = styled.div`
   ${MyOrdersGrid}
-  padding-right: ${({ hasOverflow }) => (hasOverflow ? "2.5rem" : "2rem")};
+
+  padding-right: 1rem;
 `;
 
 export const PairButtonWrapper = styled.div`
