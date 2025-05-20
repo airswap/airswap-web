@@ -14,7 +14,7 @@ import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalE
 import { SpenderAddressType } from "../../../../../features/balances/balancesApi";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import {
-  ActionButton,
+  StyledActionButton,
   ActionButtonContainer,
   Amount,
   Container,
@@ -87,9 +87,9 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
       <Amount>{contractLabels[approval.contract]}</Amount>
       <ActionButtonContainer>
         {approval.tokenInfo && (
-          <ActionButton onClick={handleEditButtonClick}>
+          <StyledActionButton onClick={handleEditButtonClick}>
             {isTokenInfo(approval.tokenInfo) ? "Edit" : "Revoke"}
-          </ActionButton>
+          </StyledActionButton>
         )}
       </ActionButtonContainer>
     </Container>

@@ -105,11 +105,8 @@ export const getFullOrderDataAndTransformToOrder = async (
   return transformFullOrderToMyOrder(order, status, signerToken, senderToken);
 };
 
-export const getOrdersWithApprovalWarnings = (
-  orders: MyOrder[],
-  allowances: BalanceValues[]
-) => {
-  const tokenApprovals = orders.reduce((acc, order) => {
+export const getOrdersTotalApprovalAmount = (orders: MyOrder[]) => {
+  return orders.reduce((acc, order) => {
     if (!order.signerToken || order.status !== OrderStatus.open) {
       return acc;
     }
@@ -123,6 +120,14 @@ export const getOrdersWithApprovalWarnings = (
 
     return acc;
   }, {} as BalanceValues);
+};
+
+export const getOrdersWithApprovalWarnings = (
+  orders: MyOrder[],
+  allowances: BalanceValues[]
+) => {
+  const tokenApprovals = getOrdersTotalApprovalAmount(orders);
+  console.log(tokenApprovals);
 
   return orders.map((order) => {
     if (!order.signerToken) {

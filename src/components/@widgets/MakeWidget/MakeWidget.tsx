@@ -77,6 +77,7 @@ import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
+import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { SelectOption } from "../../Dropdown/Dropdown";
@@ -710,6 +711,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
           makerTokenSymbol={makerTokenSymbol}
           onBackButtonClick={handleBackButtonClick}
           onActionButtonClick={handleActionButtonClick}
+        />
+
+        <ApprovalNotice
+          amount={signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount}
+          spenderAddressType={spenderAddressType}
+          tokenInfo={makerTokenInfo}
         />
 
         {showLimitNotice && isLimitOrder && (

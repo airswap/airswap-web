@@ -6,6 +6,7 @@ import { ApprovalSortType } from "../../types";
 import { ActionsButton, Container } from "./ApprovalsListSortButtons.styles";
 
 interface ApprovalsListSortButtonsProps {
+  isDisabled: boolean;
   activeSortType: ApprovalSortType;
   sortTypeDirection: Record<ApprovalSortType, boolean>;
   onSortButtonClick: (type: ApprovalSortType) => void;
@@ -13,6 +14,7 @@ interface ApprovalsListSortButtonsProps {
 }
 
 const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
+  isDisabled,
   activeSortType,
   sortTypeDirection,
   onSortButtonClick,
@@ -23,38 +25,42 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
   return (
     <Container className={className}>
       <SortButton
+        isDisabled={isDisabled}
         isSortable
         isActive={activeSortType === "token"}
         isDescending={sortTypeDirection.token}
         onClick={() => onSortButtonClick("token")}
       >
-        Token
+        {t("common.token")}
       </SortButton>
       <SortButton
+        isDisabled={isDisabled}
         isSortable
         isActive={activeSortType === "balance"}
         isDescending={sortTypeDirection.balance}
         onClick={() => onSortButtonClick("balance")}
       >
-        Balance
+        {t("common.balance")}
       </SortButton>
       <SortButton
+        isDisabled={isDisabled}
         isSortable
         isActive={activeSortType === "approval"}
         isDescending={sortTypeDirection.approval}
         onClick={() => onSortButtonClick("approval")}
       >
-        Allowance
+        {t("common.allowance")}
       </SortButton>
       <SortButton
+        isDisabled={isDisabled}
         isSortable
         isActive={activeSortType === "contract"}
         isDescending={sortTypeDirection.contract}
         onClick={() => onSortButtonClick("contract")}
       >
-        Contract
+        {t("common.contract")}
       </SortButton>
-      <ActionsButton isDisabled>Actions</ActionsButton>
+      <ActionsButton isDisabled>{t("orders.actions")}</ActionsButton>
     </Container>
   );
 };

@@ -1,6 +1,6 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { ADDRESS_ZERO } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { formatUnits } from "ethers/lib/utils";
@@ -25,6 +25,8 @@ import {
   ApprovalsGrid,
   StyledScrollContainer,
   StyledFadedScrollContainer,
+  StyledLoadingSpinner,
+  NoApprovalsFound,
 } from "./ApprovalsWidget.styles";
 import { sortApprovalEntities } from "./helpers";
 import { ApprovalsList } from "./subcomponents/ApprovalsList/ApprovalsList";
@@ -32,6 +34,7 @@ import ApprovalsListSortButtons from "./subcomponents/ApprovalsListSortButtons/A
 import { ApprovalSortType } from "./types";
 
 export const ApprovalsWidget: FC = () => {
+  const { t } = useTranslation();
   const allowances = useAppSelector((state) => state.allowances);
   const balances = useAppSelector((state) => state.balances);
   const tokens = useAppSelector(selectAllTokenInfo);
@@ -60,9 +63,17 @@ export const ApprovalsWidget: FC = () => {
     true
   );
 
-  const approvalEntities = useMemo(
-    () => transformAllowancesToApprovalEntities(allowances, balances, tokens),
-    [allowances, balances, tokens]
+  const isLoading =
+    allowances.delegate.status === "fetching" ||
+    allowances.swap.status === "fetching" ||
+    allowances.wrapper.status === "fetching" ||
+    allowances.swapERC20.status === "fetching" ||
+    balances.status === "fetching";
+
+  const approvalEntities = transformAllowancesToApprovalEntities(
+    allowances,
+    balances,
+    tokens
   );
 
   const sortedApprovalEntities = sortApprovalEntities(
@@ -107,11 +118,12 @@ export const ApprovalsWidget: FC = () => {
   return (
     <Container>
       <Title type="h2" as="h1">
-        Approvals
+        {t("common.approvals")}
       </Title>
       <StyledScrollContainer>
-        <ApprovalsGrid>
+        <ApprovalsGrid isLoading={isLoading}>
           <ApprovalsListSortButtons
+            isDisabled={isLoading || !sortedApprovalEntities.length}
             activeSortType={activeSortType}
             sortTypeDirection={sortTypeDirection}
             onSortButtonClick={handleSortButtonClick}
@@ -124,6 +136,11 @@ export const ApprovalsWidget: FC = () => {
               onEditButtonClick={handleEditButtonClick}
             />
           </StyledFadedScrollContainer>
+
+          {isLoading && <StyledLoadingSpinner />}
+          {!isLoading && !sortedApprovalEntities.length && (
+            <NoApprovalsFound>{t("orders.noApprovalsFound")}</NoApprovalsFound>
+          )}
         </ApprovalsGrid>
       </StyledScrollContainer>
 

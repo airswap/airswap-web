@@ -26,7 +26,7 @@ import getWethAddress from "../helpers/getWethAddress";
  * @returns An object with the allowance, whether it has sufficient allowance, and the readable allowance.
  */
 
-type AllowancesType = "swap" | "swapERC20" | "delegate";
+export type AllowancesType = "swap" | "swapERC20" | "delegate";
 
 const useAllowance = (
   token: AppTokenInfo | null,

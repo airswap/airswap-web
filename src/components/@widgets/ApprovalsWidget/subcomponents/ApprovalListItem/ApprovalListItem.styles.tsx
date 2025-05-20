@@ -6,6 +6,7 @@ import {
   TextEllipsis,
 } from "../../../../../style/mixins";
 import { fontWide } from "../../../../../style/themes";
+import { CompactActionButton } from "../../../../../styled-components/CompactActionButton/CompactActionButton";
 import { TooltipStyle } from "../../../../../styled-components/Tooltip/Tooltip";
 import AccountLink from "../../../../AccountLink/AccountLink";
 
@@ -64,22 +65,7 @@ export const ActionButtonContainer = styled.div`
   }
 `;
 
-export const ActionButton = styled.button`
-  ${InputOrButtonBorderStyle};
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  padding-inline: 0.5rem;
-  min-width: 5.125rem;
-  height: 1.5625rem;
-  font-family: ${fontWide};
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.lightGrey};
-  background: ${({ theme }) => theme.colors.darkGrey};
-
+export const StyledActionButton = styled(CompactActionButton)`
   @media ${breakPoints.phoneOnly} {
     display: none;
   }
