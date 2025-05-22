@@ -715,6 +715,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
         <ApprovalNotice
           amount={signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount}
+          chainId={chainId}
           spenderAddressType={spenderAddressType}
           tokenInfo={makerTokenInfo}
         />

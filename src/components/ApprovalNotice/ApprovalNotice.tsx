@@ -1,32 +1,30 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ADDRESS_ZERO, FullOrder, FullOrderERC20 } from "@airswap/utils";
+import { TokenKinds } from "@airswap/utils";
+import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
 
-import { useAppSelector } from "../../app/hooks";
-import { MyOrder } from "../../components/@widgets/MyOrdersWidget/entities/MyOrder";
+import { useAppDispatch } from "../../app/hooks";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import {
   getTokenDecimals,
-  getTokenId,
-  isTokenInfo,
+  getTokenKind,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
-import { DelegateRule } from "../../entities/DelegateRule/DelegateRule";
 import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
-import { selectDelegateRulesReducer } from "../../features/delegateRules/delegateRulesSlice";
-import { selectMyOtcOrdersReducer } from "../../features/myOtcOrders/myOtcOrdersSlice";
-import { compareAddresses } from "../../helpers/string";
+import { approve } from "../../features/orders/ordersActions";
 import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import useAllowance, { AllowancesType } from "../../hooks/useAllowance";
 import { CompactActionButton } from "../../styled-components/CompactActionButton/CompactActionButton";
 import { Notice } from "../Notice/Notice";
 import { ButtonsContainer } from "./ApprovalNotice.styles";
+import { useTotalTokenAllowanceFromOrders } from "./hooks/useTotalTokenAllowanceFromOrders";
 
 type ApprovalNoticeProps = {
   amount: string;
+  chainId?: number;
   spenderAddressType: AllowancesType;
   tokenInfo: AppTokenInfo | null;
   className?: string;
@@ -34,59 +32,96 @@ type ApprovalNoticeProps = {
 
 export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   amount,
+  chainId,
   spenderAddressType,
   tokenInfo,
   className,
 }) => {
   const { t } = useTranslation();
-  const allowances = useAppSelector((state) => state.allowances);
-  const { userOrders } = useAppSelector(selectMyOtcOrdersReducer);
-  const { delegateRules } = useAppSelector((state) => state.delegateRules);
-  const orders = (
-    spenderAddressType === "delegate" ? delegateRules : userOrders
-  ) as (FullOrder | FullOrderERC20 | DelegateRule)[];
+  const dispatch = useAppDispatch();
+  const { provider: library } = useWeb3React();
 
-  console.log(orders);
-  const tokenOrders = orders.filter((order) => {
-    const token = isFullOrder(order) ? order.signer.token : order.signerToken;
-    // filter by swapContract, expiry, taken and then add all the amounts together
-    return tokenInfo ? compareAddresses(token, tokenInfo?.address) : false;
-  });
-  console.log(tokenOrders);
+  const [totalTokenAllowance] = useTotalTokenAllowanceFromOrders(
+    spenderAddressType,
+    tokenInfo,
+    chainId
+  );
 
-  const tokenId = tokenInfo ? getTokenId(tokenInfo) : ADDRESS_ZERO;
-  const allowanceAmount = tokenId
-    ? allowances[spenderAddressType].values[tokenId] || "0"
-    : "0";
   const tokenDecimals = tokenInfo ? getTokenDecimals(tokenInfo) : 0;
   const tokenAmount =
     tokenInfo && amount && tokenDecimals
       ? toRoundedAtomicString(amount, tokenDecimals)
       : "0";
-  const totalAmount = new BigNumber(allowanceAmount)
+  const totalNeededAllowance = new BigNumber(totalTokenAllowance || "0")
     .plus(tokenAmount)
     .toString();
-  const formattedTotalAmount = formatUnits(totalAmount, tokenDecimals);
+  const formattedTotalNeededAllowance = formatUnits(
+    totalNeededAllowance,
+    tokenDecimals
+  );
 
   const { hasSufficientAllowance } = useAllowance(
     tokenInfo,
-    formattedTotalAmount,
+    formattedTotalNeededAllowance,
     { spenderAddressType }
   );
 
-  if (hasSufficientAllowance) {
+  const handleEditButtonClick = () => {
+    if (!tokenInfo) {
+      console.error("Approval tokenInfo is undefined");
+      return;
+    }
+
+    if (!library) {
+      console.error("library is undefined");
+      return;
+    }
+
+    if (!spenderAddressType) {
+      console.error("spenderAddressType is undefined");
+      return;
+    }
+
+    // TODO: clean this up
+    const contract =
+      spenderAddressType === "delegate"
+        ? "Delegate"
+        : spenderAddressType === "swapERC20"
+        ? "SwapERC20"
+        : "Swap";
+
+    dispatch(
+      approve(formattedTotalNeededAllowance, tokenInfo, library, contract)
+    );
+  };
+
+  const handleDismissButtonClick = () => {
+    console.log("dismiss");
+  };
+
+  if (!amount || amount === "0" || !tokenInfo || hasSufficientAllowance) {
     return null;
   }
+
+  const isNFT = getTokenKind(tokenInfo) !== TokenKinds.ERC20;
 
   return (
     <Notice
       className={className}
       text={
         <>
-          {t("orders.approvalExtraAmountWarning")}
+          {isNFT
+            ? t("orders.approvalExtraAmountWarningNFT")
+            : t("orders.approvalExtraAmountWarningERC20")}
           <ButtonsContainer>
-            <CompactActionButton>Approve</CompactActionButton>
-            <CompactActionButton>Cancel</CompactActionButton>
+            {!isNFT && (
+              <CompactActionButton onClick={handleEditButtonClick}>
+                {t("orders.approve")}
+              </CompactActionButton>
+            )}
+            <CompactActionButton onClick={handleDismissButtonClick}>
+              {t("orders.dismiss")}
+            </CompactActionButton>
           </ButtonsContainer>
         </>
       }
