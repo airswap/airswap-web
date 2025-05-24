@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenKinds } from "@airswap/utils";
@@ -23,7 +23,7 @@ import { ButtonsContainer } from "./ApprovalNotice.styles";
 import { useTotalTokenAllowanceFromOrders } from "./hooks/useTotalTokenAllowanceFromOrders";
 
 type ApprovalNoticeProps = {
-  amount: string;
+  orderAmount?: string;
   chainId?: number;
   spenderAddressType: AllowancesType;
   tokenInfo: AppTokenInfo | null;
@@ -31,7 +31,7 @@ type ApprovalNoticeProps = {
 };
 
 export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
-  amount,
+  orderAmount,
   chainId,
   spenderAddressType,
   tokenInfo,
@@ -41,6 +41,8 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   const dispatch = useAppDispatch();
   const { provider: library } = useWeb3React();
 
+  const [isHidden, setIsHidden] = useState(false);
+
   const [totalTokenAllowance] = useTotalTokenAllowanceFromOrders(
     spenderAddressType,
     tokenInfo,
@@ -49,8 +51,8 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
 
   const tokenDecimals = tokenInfo ? getTokenDecimals(tokenInfo) : 0;
   const tokenAmount =
-    tokenInfo && amount && tokenDecimals
-      ? toRoundedAtomicString(amount, tokenDecimals)
+    tokenInfo && orderAmount && tokenDecimals
+      ? toRoundedAtomicString(orderAmount, tokenDecimals)
       : "0";
   const totalNeededAllowance = new BigNumber(totalTokenAllowance || "0")
     .plus(tokenAmount)
@@ -96,10 +98,10 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   };
 
   const handleDismissButtonClick = () => {
-    console.log("dismiss");
+    setIsHidden(true);
   };
 
-  if (!amount || amount === "0" || !tokenInfo || hasSufficientAllowance) {
+  if (!tokenInfo || hasSufficientAllowance || isHidden) {
     return null;
   }
 

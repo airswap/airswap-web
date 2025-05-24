@@ -68,6 +68,7 @@ import { OrderType } from "../../../types/orderTypes";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
+import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
@@ -480,6 +481,14 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           shouldDepositNativeToken={shouldDepositNativeToken}
           onActionButtonClick={handleActionButtonClick}
         />
+
+        {userIsMakerOfSwap && (
+          <ApprovalNotice
+            chainId={chainId}
+            spenderAddressType={isFullOrder(order) ? "swap" : "swapERC20"}
+            tokenInfo={signerToken}
+          />
+        )}
       </>
     );
   };
