@@ -547,6 +547,7 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
 
         {userIsMakerOfSwap && (
           <ApprovalNotice
+            activeState="orderDetail"
             chainId={chainId}
             spenderAddressType="delegate"
             tokenInfo={signerToken}

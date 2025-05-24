@@ -129,6 +129,7 @@ export const getTotalTokenAllowanceFromOrders = async (
   allowanceType: AllowancesType,
   provider: ethers.providers.BaseProvider,
   chainId: number,
+  protocolFee: number,
   tokenId?: string
 ): Promise<string> => {
   if (!tokenAddress) {
@@ -155,7 +156,13 @@ export const getTotalTokenAllowanceFromOrders = async (
 
   return tokenOrders.reduce((acc, order) => {
     const signerAmount = getOrderSignerAmount(order);
+    const signerAmountPlusFee = new BigNumber(signerAmount)
+      .multipliedBy(1 + protocolFee / 10000)
+      .toString();
+    const shouldPayProtocolFee = isFullOrderERC20(order);
 
-    return new BigNumber(acc).plus(signerAmount).toString();
+    return new BigNumber(acc)
+      .plus(shouldPayProtocolFee ? signerAmountPlusFee : signerAmount)
+      .toString();
   }, "0");
 };

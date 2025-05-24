@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 import { TokenKinds } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
+import { BigNumber } from "ethers";
+import i18n from "i18next";
+
 import { useAppDispatch } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
@@ -16,7 +19,11 @@ import { ButtonsContainer } from "./ApprovalNotice.styles";
 import { getTotalNeededAllowance } from "./helpers";
 import { useTotalTokenAllowanceFromOrders } from "./hooks/useTotalTokenAllowanceFromOrders";
 
+type ActiveState = "approvalReview" | "orderDetail" | "orderReview";
+
 type ApprovalNoticeProps = {
+  signerDoesNotHaveEnoughAllowanceForActiveOrder?: boolean;
+  activeState: ActiveState;
   orderAmount?: string;
   chainId?: number;
   spenderAddressType: AllowancesType;
@@ -25,6 +32,8 @@ type ApprovalNoticeProps = {
 };
 
 export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
+  signerDoesNotHaveEnoughAllowanceForActiveOrder = false,
+  activeState,
   orderAmount,
   chainId,
   spenderAddressType,
@@ -45,7 +54,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   );
 
   const totalNeededAllowance = getTotalNeededAllowance(
-    orderAmount || "0",
+    activeState !== "orderDetail" ? orderAmount || "0" : "0",
     totalTokenAllowance || "0",
     tokenInfo
   );
@@ -90,15 +99,17 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   }
 
   const isNFT = getTokenKind(tokenInfo) !== TokenKinds.ERC20;
+  const erc20Warning = getErc20Warning(
+    activeState,
+    signerDoesNotHaveEnoughAllowanceForActiveOrder
+  );
 
   return (
     <Notice
       className={className}
       text={
         <>
-          {isNFT
-            ? t("orders.approvalExtraAmountWarningNFT")
-            : t("orders.approvalExtraAmountWarningERC20")}
+          {isNFT ? t("orders.duplicateOrderWarningNFT") : erc20Warning}
           <ButtonsContainer>
             {!isNFT && (
               <CompactActionButton onClick={handleEditButtonClick}>
@@ -113,4 +124,22 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
       }
     />
   );
+};
+
+const getErc20Warning = (
+  activeState: ActiveState,
+  signerDoesNotHaveEnoughAllowanceForActiveOrder: boolean
+) => {
+  if (activeState === "approvalReview") {
+    return i18n.t("orders.insufficientApprovalWarningERC20");
+  }
+
+  if (
+    activeState === "orderDetail" &&
+    signerDoesNotHaveEnoughAllowanceForActiveOrder
+  ) {
+    return i18n.t("orders.insufficientApprovalWarning2ERC20");
+  }
+
+  return i18n.t("orders.sufficientApprovalWarningERC20");
 };

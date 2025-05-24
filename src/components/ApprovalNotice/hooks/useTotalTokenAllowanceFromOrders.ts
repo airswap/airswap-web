@@ -10,6 +10,7 @@ import {
   splitTokenIdentifier,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { DelegateRule } from "../../../entities/DelegateRule/DelegateRule";
+import { selectProtocolFee } from "../../../features/metadata/metadataSlice";
 import { selectMyOtcOrdersReducer } from "../../../features/myOtcOrders/myOtcOrdersSlice";
 import { AllowancesType } from "../../../hooks/useAllowance";
 import useNativeWrappedToken from "../../../hooks/useNativeWrappedToken";
@@ -23,6 +24,7 @@ export const useTotalTokenAllowanceFromOrders = (
   const { provider } = useWeb3React();
   const { userOrders } = useAppSelector(selectMyOtcOrdersReducer);
   const { delegateRules } = useAppSelector((state) => state.delegateRules);
+  const protocolFee = useAppSelector(selectProtocolFee);
   const wrappedNativeToken = useNativeWrappedToken(chainId);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +55,7 @@ export const useTotalTokenAllowanceFromOrders = (
           spenderAddressType,
           provider,
           chainId,
+          protocolFee,
           tokenId
         );
         setTotalTokenAllowance(newTotalTokenAllowance);

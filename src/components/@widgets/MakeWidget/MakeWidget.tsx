@@ -614,6 +614,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
           {shouldShowApprovalNotice && (
             <ApprovalNotice
+              activeState="approvalReview"
               orderAmount={
                 signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
               }
@@ -648,6 +649,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
           {shouldShowApprovalNotice && (
             <ApprovalNotice
+              activeState="orderReview"
               orderAmount={
                 signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
               }

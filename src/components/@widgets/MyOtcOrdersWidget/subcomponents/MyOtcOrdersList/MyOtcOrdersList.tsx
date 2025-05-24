@@ -8,7 +8,10 @@ import { useAppSelector } from "../../../../../app/hooks";
 import { AppTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfo";
 import { isTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { Allowances } from "../../../../../features/balances/balancesTypes";
-import { selectAllTokenInfo } from "../../../../../features/metadata/metadataSlice";
+import {
+  selectAllTokenInfo,
+  selectProtocolFee,
+} from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
 import { getOrdersWithApprovalWarnings } from "../../../MyOrdersWidget/helpers";
@@ -45,7 +48,7 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const activeTokens = useAppSelector(selectAllTokenInfo);
-
+  const protocolFee = useAppSelector(selectProtocolFee);
   const callGetOrders = useCallback(async () => {
     const newOrders = await Promise.all(
       fullOrders.map((order) =>
@@ -57,7 +60,8 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       newOrders.filter(
         (order) => order.signerToken && isTokenInfo(order.signerToken)
       ),
-      allowances.swapERC20.values
+      allowances.swapERC20.values,
+      protocolFee
     );
     const fullOrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
       newOrders.filter(

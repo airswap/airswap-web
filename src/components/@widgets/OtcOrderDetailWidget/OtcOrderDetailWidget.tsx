@@ -69,6 +69,7 @@ import { TransactionStatusType } from "../../../types/transactionTypes";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
+import { useShouldShowApprovalNotice } from "../../ApprovalNotice/hooks/useShouldShowApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
@@ -195,13 +196,34 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const tokenExchangeRate = new BigNumber(senderAmount).dividedBy(
     signerAmount!
   );
-  const approvalTransaction = useApprovalPending(senderTokenAddress, true);
+  const senderTokenApprovalTransaction = useApprovalPending(
+    senderTokenAddress,
+    true
+  );
+  const signerTokenApprovalTransaction = useApprovalPending(
+    signerTokenAddress,
+    true
+  );
+  const approvalTransaction =
+    senderTokenApprovalTransaction || signerTokenApprovalTransaction;
   const wrappedNativeToken = useNativeWrappedToken(chainId);
   const orderTransaction = useSessionOrderTransaction(order.nonce);
-
+  const signerShouldPayProtocolFee =
+    !isFullOrder(order) && signerTokenKind === TokenKinds.ERC20;
+  const signerAmountPlusFee = useAmountPlusFee(
+    signerAmount,
+    signerTokenDecimals
+  );
   const { hasSufficientAllowance } = useAllowance(senderToken, senderAmount, {
     spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20",
   });
+  const { hasSufficientAllowance: signerHasSufficientAllowance } = useAllowance(
+    signerToken,
+    signerShouldPayProtocolFee ? signerAmountPlusFee : signerAmount,
+    {
+      spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20",
+    }
+  );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     senderToken,
@@ -228,6 +250,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
   const userIsIntendedRecipient =
     compareAddresses(senderWallet, account || "") ||
     senderWallet === ADDRESS_ZERO;
+  const shouldShowApprovalNotice =
+    useShouldShowApprovalNotice({
+      chainId,
+      spenderAddressType: isFullOrder(order) ? "swap" : "swapERC20",
+      tokenInfo: signerToken,
+    }) && userIsMakerOfSwap;
 
   const parsedExpiry = useMemo(() => {
     return new Date(parseInt(order.expiry) * 1000);
@@ -482,8 +510,12 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
           onActionButtonClick={handleActionButtonClick}
         />
 
-        {userIsMakerOfSwap && (
+        {shouldShowApprovalNotice && (
           <ApprovalNotice
+            signerDoesNotHaveEnoughAllowanceForActiveOrder={
+              !signerHasSufficientAllowance
+            }
+            activeState="orderDetail"
             chainId={chainId}
             spenderAddressType={isFullOrder(order) ? "swap" : "swapERC20"}
             tokenInfo={signerToken}
