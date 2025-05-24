@@ -11,11 +11,9 @@ import { Allowances } from "../../../../../features/balances/balancesTypes";
 import { selectAllTokenInfo } from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
+import { getOrdersWithApprovalWarnings } from "../../../MyOrdersWidget/helpers";
 import MyOrdersList from "../../../MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
-import {
-  getFullOrderDataAndTransformToOrder,
-  getOrdersWithApprovalWarnings,
-} from "./helpers";
+import { getFullOrderDataAndTransformToOrder } from "./helpers";
 
 interface MyOtcOrdersListProps {
   isAllowancesLoading: boolean;
