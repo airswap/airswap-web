@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 
-import {
-  ADDRESS_ZERO,
-  FullOrder,
-  FullOrderERC20,
-  TokenKinds,
-} from "@airswap/utils";
+import { ADDRESS_ZERO, FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppSelector } from "../../../app/hooks";
 import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import {
-  getIdFromTokenIdentifier,
   getTokenId,
   splitTokenIdentifier,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";

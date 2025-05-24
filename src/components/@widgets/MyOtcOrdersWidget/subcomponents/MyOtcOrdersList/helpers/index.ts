@@ -124,10 +124,9 @@ export const getOrdersTotalApprovalAmount = (orders: MyOrder[]) => {
 
 export const getOrdersWithApprovalWarnings = (
   orders: MyOrder[],
-  allowances: BalanceValues[]
+  allowances: BalanceValues
 ) => {
   const tokenApprovals = getOrdersTotalApprovalAmount(orders);
-  console.log(tokenApprovals);
 
   return orders.map((order) => {
     if (!order.signerToken) {
@@ -135,10 +134,7 @@ export const getOrdersWithApprovalWarnings = (
     }
 
     const tokenId = getTokenId(order.signerToken);
-    const allowance = allowances.find(
-      (allowance) => allowance[tokenId] && allowance[tokenId] !== "0"
-    );
-    const approvedAmount = allowance ? allowance[tokenId] : "0";
+    const approvedAmount = allowances[tokenId] || "0";
     const tokensAmount = tokenApprovals[tokenId] || "0";
 
     const hasAllowanceWarning = BigNumber.from(approvedAmount).lt(

@@ -6,6 +6,7 @@ import * as ethers from "ethers";
 
 import { useAppSelector } from "../../../../../app/hooks";
 import { AppTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfo";
+import { isTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { Allowances } from "../../../../../features/balances/balancesTypes";
 import { selectAllTokenInfo } from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
@@ -52,12 +53,24 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       )
     );
 
-    const newOrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
-      newOrders,
-      [allowances.swap.values, allowances.swapERC20.values]
+    const erc20OrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
+      newOrders.filter(
+        (order) => order.signerToken && isTokenInfo(order.signerToken)
+      ),
+      allowances.swapERC20.values
     );
+    const fullOrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
+      newOrders.filter(
+        (order) => !order.signerToken || !isTokenInfo(order.signerToken)
+      ),
+      allowances.swap.values
+    );
+    const ordersWithApprovalWarnings = [
+      ...erc20OrdersWithApprovalWarnings,
+      ...fullOrdersWithApprovalWarnings,
+    ];
 
-    setOrders(newOrdersWithApprovalWarnings);
+    setOrders(ordersWithApprovalWarnings);
     setIsLoading(false);
   }, [fullOrders, activeTokens, activeCancellationId]);
 
