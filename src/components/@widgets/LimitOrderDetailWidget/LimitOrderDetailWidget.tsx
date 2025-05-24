@@ -16,6 +16,7 @@ import {
   getTokenSymbol,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { DelegateRule } from "../../../entities/DelegateRule/DelegateRule";
+import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { cancelLimitOrder } from "../../../features/cancelLimit/cancelLimitActions";
 import { selectCancelLimitStatus } from "../../../features/cancelLimit/cancelLimitSlice";
 import { approve, deposit } from "../../../features/orders/ordersActions";
@@ -51,6 +52,7 @@ import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import CancelReview from "../../@reviewScreens/CancelReview/CancelReview";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
+import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
 import { ErrorList } from "../../ErrorList/ErrorList";
@@ -542,6 +544,14 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
           shouldDepositNativeToken={shouldDepositNativeToken}
           onActionButtonClick={handleActionButtonClick}
         />
+
+        {userIsMakerOfSwap && (
+          <ApprovalNotice
+            chainId={chainId}
+            spenderAddressType="delegate"
+            tokenInfo={signerToken}
+          />
+        )}
       </>
     );
   };

@@ -4,23 +4,16 @@ import { useTranslation } from "react-i18next";
 import { TokenKinds } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
-import { BigNumber } from "bignumber.js";
-import { formatUnits } from "ethers/lib/utils";
-
 import { useAppDispatch } from "../../app/hooks";
 import { InterfaceContext } from "../../contexts/interface/Interface";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
-import {
-  getTokenDecimals,
-  getTokenKind,
-} from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
-import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
+import { getTokenKind } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { approve } from "../../features/orders/ordersActions";
-import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
-import useAllowance, { AllowancesType } from "../../hooks/useAllowance";
+import { AllowancesType } from "../../hooks/useAllowance";
 import { CompactActionButton } from "../../styled-components/CompactActionButton/CompactActionButton";
 import { Notice } from "../Notice/Notice";
 import { ButtonsContainer } from "./ApprovalNotice.styles";
+import { getTotalNeededAllowance } from "./helpers";
 import { useTotalTokenAllowanceFromOrders } from "./hooks/useTotalTokenAllowanceFromOrders";
 
 type ApprovalNoticeProps = {
@@ -51,23 +44,10 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
     chainId
   );
 
-  const tokenDecimals = tokenInfo ? getTokenDecimals(tokenInfo) : 0;
-  const tokenAmount =
-    tokenInfo && orderAmount && tokenDecimals
-      ? toRoundedAtomicString(orderAmount, tokenDecimals)
-      : "0";
-  const totalNeededAllowance = new BigNumber(totalTokenAllowance || "0")
-    .plus(tokenAmount)
-    .toString();
-  const formattedTotalNeededAllowance = formatUnits(
-    totalNeededAllowance,
-    tokenDecimals
-  );
-
-  const { hasSufficientAllowance } = useAllowance(
-    tokenInfo,
-    formattedTotalNeededAllowance,
-    { spenderAddressType }
+  const totalNeededAllowance = getTotalNeededAllowance(
+    orderAmount || "0",
+    totalTokenAllowance || "0",
+    tokenInfo
   );
 
   const handleEditButtonClick = () => {
@@ -94,9 +74,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
         ? "SwapERC20"
         : "Swap";
 
-    dispatch(
-      approve(formattedTotalNeededAllowance, tokenInfo, library, contract)
-    );
+    dispatch(approve(totalNeededAllowance, tokenInfo, library, contract));
   };
 
   const handleDismissButtonClick = () => {
@@ -105,9 +83,9 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
 
   useEffect(() => {
     resize();
-  }, [isHidden, hasSufficientAllowance]);
+  }, [isHidden]);
 
-  if (!tokenInfo || hasSufficientAllowance || isHidden) {
+  if (!tokenInfo || isHidden) {
     return null;
   }
 

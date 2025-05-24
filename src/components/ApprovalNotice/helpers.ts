@@ -2,8 +2,10 @@ import { FullOrder, FullOrderERC20, TokenKinds } from "@airswap/utils";
 
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenDecimals } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { DelegateRule } from "../../entities/DelegateRule/DelegateRule";
 import { isDelegateRule } from "../../entities/DelegateRule/DelegateRuleHelpers";
 import { isFullOrder } from "../../entities/FullOrder/FullOrderHelpers";
@@ -11,7 +13,25 @@ import { getFullOrderNonceUsed } from "../../entities/FullOrder/FullOrderService
 import { isFullOrderERC20 } from "../../entities/OrderERC20/OrderERC20Helpers";
 import { getOrderErc20NonceUsed } from "../../entities/OrderERC20/OrderERC20Service";
 import { compareAddresses } from "../../helpers/string";
+import toRoundedAtomicString from "../../helpers/toRoundedAtomicString";
 import { AllowancesType } from "../../hooks/useAllowance";
+
+export const getTotalNeededAllowance = (
+  orderAmount: string,
+  totalTokenAllowance: string,
+  tokenInfo: AppTokenInfo | null
+) => {
+  const tokenDecimals = tokenInfo ? getTokenDecimals(tokenInfo) : 0;
+  const tokenAmount =
+    tokenInfo && orderAmount && tokenDecimals
+      ? toRoundedAtomicString(orderAmount, tokenDecimals)
+      : "0";
+  const totalNeededAllowance = new BigNumber(totalTokenAllowance || "0")
+    .plus(tokenAmount)
+    .toString();
+
+  return formatUnits(totalNeededAllowance, tokenDecimals);
+};
 
 const filterTokenByType = (
   order: FullOrder | FullOrderERC20 | DelegateRule,

@@ -78,6 +78,7 @@ import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
+import { useShouldShowApprovalNotice } from "../../ApprovalNotice/hooks/useShouldShowApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { SelectOption } from "../../Dropdown/Dropdown";
@@ -237,6 +238,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const isValidAddress = useValidAddress(takerAddress);
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const isNetworkSupported = useNetworkSupported();
+  const shouldShowApprovalNotice = useShouldShowApprovalNotice({
+    chainId,
+    orderAmount: signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
+    spenderAddressType,
+    tokenInfo: makerTokenInfo,
+  });
 
   // Modal states
   const { setShowWalletList, transactionsTabIsOpen } =
@@ -534,7 +541,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     }
 
     if (action === ButtonActions.restart) {
-      restart();
+      setState(MakeWidgetState.list);
     }
   };
 
@@ -604,6 +611,17 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onRestartButtonClick={restart}
             onSignButtonClick={approveToken}
           />
+
+          {shouldShowApprovalNotice && (
+            <ApprovalNotice
+              orderAmount={
+                signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
+              }
+              chainId={chainId}
+              spenderAddressType={spenderAddressType}
+              tokenInfo={makerTokenInfo}
+            />
+          )}
         </>
       );
     }
@@ -627,6 +645,17 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onEditButtonClick={handleEditButtonClick}
             onSignButtonClick={createOrder}
           />
+
+          {shouldShowApprovalNotice && (
+            <ApprovalNotice
+              orderAmount={
+                signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
+              }
+              chainId={chainId}
+              spenderAddressType={spenderAddressType}
+              tokenInfo={makerTokenInfo}
+            />
+          )}
         </>
       );
     }
@@ -711,15 +740,6 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
           makerTokenSymbol={makerTokenSymbol}
           onBackButtonClick={handleBackButtonClick}
           onActionButtonClick={handleActionButtonClick}
-        />
-
-        <ApprovalNotice
-          orderAmount={
-            signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
-          }
-          chainId={chainId}
-          spenderAddressType={spenderAddressType}
-          tokenInfo={makerTokenInfo}
         />
 
         {showLimitNotice && isLimitOrder && (

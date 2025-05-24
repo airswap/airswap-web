@@ -1,0 +1,45 @@
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import useAllowance, { AllowancesType } from "../../../hooks/useAllowance";
+import { getTotalNeededAllowance } from "../helpers";
+import { useTotalTokenAllowanceFromOrders } from "./useTotalTokenAllowanceFromOrders";
+
+type UseShouldShowApprovalNoticeProps = {
+  orderAmount?: string;
+  chainId?: number;
+  spenderAddressType: AllowancesType;
+  tokenInfo: AppTokenInfo | null;
+  className?: string;
+};
+
+export const useShouldShowApprovalNotice = ({
+  orderAmount,
+  chainId,
+  spenderAddressType,
+  tokenInfo,
+}: UseShouldShowApprovalNoticeProps): boolean => {
+  const [totalTokenAllowance, isLoadingTotalTokenAllowance] =
+    useTotalTokenAllowanceFromOrders(spenderAddressType, tokenInfo, chainId);
+
+  const totalNeededAllowance = getTotalNeededAllowance(
+    orderAmount || "0",
+    totalTokenAllowance || "0",
+    tokenInfo
+  );
+
+  const { hasSufficientAllowance } = useAllowance(
+    tokenInfo,
+    totalNeededAllowance,
+    { spenderAddressType }
+  );
+
+  if (
+    hasSufficientAllowance ||
+    isLoadingTotalTokenAllowance ||
+    !totalTokenAllowance ||
+    !tokenInfo
+  ) {
+    return false;
+  }
+
+  return true;
+};
