@@ -111,14 +111,14 @@ export const ActionButton = styled(IconButton)`
 
 export const StyledNavLink = styled(NavLink)<{
   $isHovered?: boolean;
-  hasWarning?: boolean;
+  $hasWarning?: boolean;
 }>`
   position: absolute;
   top: -1px;
-  left: ${({ hasWarning }) => (hasWarning ? "-2.25rem" : "-0.5rem")};
+  left: ${({ $hasWarning }) => ($hasWarning ? "-2.25rem" : "-0.5rem")};
   border-radius: 0.5rem;
-  width: ${({ hasWarning }) =>
-    hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
+  width: ${({ $hasWarning }) =>
+    $hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
   opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};

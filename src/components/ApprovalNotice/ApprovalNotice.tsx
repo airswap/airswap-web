@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenKinds } from "@airswap/utils";
@@ -8,6 +8,7 @@ import { BigNumber } from "bignumber.js";
 import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch } from "../../app/hooks";
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import {
   getTokenDecimals,
@@ -40,6 +41,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { provider: library } = useWeb3React();
+  const { resize } = useContext(InterfaceContext);
 
   const [isHidden, setIsHidden] = useState(false);
 
@@ -100,6 +102,10 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   const handleDismissButtonClick = () => {
     setIsHidden(true);
   };
+
+  useEffect(() => {
+    resize();
+  }, [isHidden, hasSufficientAllowance]);
 
   if (!tokenInfo || hasSufficientAllowance || isHidden) {
     return null;

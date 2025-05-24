@@ -178,7 +178,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </OrderStatusLabel>
       <StyledNavLink
         $isHovered={isHoveredActionButton}
-        hasWarning={order.hasAllowanceWarning}
+        $hasWarning={order.hasAllowanceWarning}
         to={order.link}
       />
 

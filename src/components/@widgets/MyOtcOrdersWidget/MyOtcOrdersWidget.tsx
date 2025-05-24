@@ -18,6 +18,7 @@ import { getNonceUsed } from "../../../features/orders/ordersHelpers";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import useCancellationPending from "../../../hooks/useCancellationPending";
 import { AppRoutes } from "../../../routes";
 import { OrdersSortType } from "../../../types/ordersSortType";
@@ -54,6 +55,7 @@ const MyOtcOrdersWidget: FC = () => {
     activeCancellationNonce || null,
     true
   );
+  const isAllowancesLoading = useAllowancesLoading();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -125,6 +127,7 @@ const MyOtcOrdersWidget: FC = () => {
 
       {!!userOrders.length && (
         <MyOtcOrdersList
+          isAllowancesLoading={isAllowancesLoading}
           activeCancellationId={activeCancellationNonce}
           activeSortType={activeSortType}
           activeTokens={allTokens}

@@ -15,6 +15,7 @@ import { transformAllowancesToApprovalEntities } from "../../../entities/Approva
 import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
 import { approve } from "../../../features/orders/ordersActions";
 import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
+import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import useApprovalPending from "../../../hooks/useApprovalPending";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
@@ -63,13 +64,7 @@ export const ApprovalsWidget: FC = () => {
     true
   );
 
-  const isLoading =
-    allowances.delegate.status === "fetching" ||
-    allowances.swap.status === "fetching" ||
-    allowances.wrapper.status === "fetching" ||
-    allowances.swapERC20.status === "fetching" ||
-    balances.status === "fetching";
-
+  const isLoading = useAllowancesLoading();
   const approvalEntities = transformAllowancesToApprovalEntities(
     allowances,
     balances,

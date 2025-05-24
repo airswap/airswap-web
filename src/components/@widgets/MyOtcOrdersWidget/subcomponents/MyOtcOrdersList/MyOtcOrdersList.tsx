@@ -18,6 +18,7 @@ import {
 } from "./helpers";
 
 interface MyOtcOrdersListProps {
+  isAllowancesLoading: boolean;
   activeCancellationId?: string;
   activeSortType: OrdersSortType;
   activeTokens: AppTokenInfo[];
@@ -31,6 +32,7 @@ interface MyOtcOrdersListProps {
 }
 
 const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
+  isAllowancesLoading,
   activeCancellationId,
   activeSortType,
   allowances,
@@ -65,6 +67,7 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       ),
       allowances.swap.values
     );
+
     const ordersWithApprovalWarnings = [
       ...erc20OrdersWithApprovalWarnings,
       ...fullOrdersWithApprovalWarnings,
@@ -72,7 +75,7 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
 
     setOrders(ordersWithApprovalWarnings);
     setIsLoading(false);
-  }, [fullOrders, activeTokens, activeCancellationId]);
+  }, [fullOrders, activeTokens]);
 
   const handleDeleteOrderButtonClick = (order: MyOrder): void => {
     const orderToDelete = fullOrders.find((o) => o.nonce === order.id);
@@ -96,13 +99,18 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   }, [activeCancellationId]);
 
   useEffect(() => {
-    callGetOrders();
-  }, []);
+    if (
+      allowances.swapERC20.status === "idle" &&
+      allowances.swap.status === "idle"
+    ) {
+      callGetOrders();
+    }
+  }, [allowances]);
 
   return (
     <MyOrdersList
       hasForColumn
-      isLoading={isLoading}
+      isLoading={isLoading || isAllowancesLoading}
       activeSortType={activeSortType}
       orders={orders}
       sortTypeDirection={sortTypeDirection}
