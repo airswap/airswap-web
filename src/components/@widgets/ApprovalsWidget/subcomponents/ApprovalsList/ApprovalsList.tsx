@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useTranslation } from "react-i18next";
 
 import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalEntity";
 import { ApprovalListItem } from "../ApprovalListItem/ApprovalListItem";

@@ -1,5 +1,9 @@
 import { FC, useRef } from "react";
 
+import { Contract, Swap } from "@airswap/libraries";
+import { Delegate, Wrapper } from "@airswap/libraries";
+import { SwapERC20 } from "@airswap/libraries";
+import { getAccountUrl } from "@airswap/utils";
 import { useWeb3React } from "@web3-react/core";
 
 import { formatUnits } from "ethers/lib/utils";
@@ -22,6 +26,7 @@ import {
   TokenImageAndNameContainer,
   TokenLink,
   TokenName,
+  ContractContainer,
 } from "./ApprovalListItem.styles";
 
 const contractLabels: Record<SpenderAddressType, string> = {
@@ -43,6 +48,7 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
   className,
 }) => {
   const { chainId } = useWeb3React();
+  const contractAddress = getContractAddress(chainId || 1, approval.contract);
   const tokenContainerRef = useRef<HTMLDivElement>(null);
   const image = approval.tokenInfo
     ? getTokenImage(approval.tokenInfo)
@@ -84,7 +90,12 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
       </TokenImageAndNameContainer>
       <Amount>{roundedBalance}</Amount>
       <Amount>{roundedAllowance}</Amount>
-      <Amount>{contractLabels[approval.contract]}</Amount>
+      <ContractContainer>
+        <Amount>{contractLabels[approval.contract]}</Amount>
+        {contractAddress && chainId && (
+          <TokenLink address={contractAddress} chainId={chainId} />
+        )}
+      </ContractContainer>
       <ActionButtonContainer>
         {approval.tokenInfo && (
           <StyledActionButton onClick={handleEditButtonClick}>
@@ -94,4 +105,19 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
       </ActionButtonContainer>
     </Container>
   );
+};
+
+const getContractAddress = (chainId: number, contract: SpenderAddressType) => {
+  switch (contract) {
+    case "Swap":
+      return Swap.getAddress(chainId);
+    case "SwapERC20":
+      return SwapERC20.getAddress(chainId);
+    case "Wrapper":
+      return Wrapper.getAddress(chainId);
+    case "Delegate":
+      return Delegate.getAddress(chainId);
+    default:
+      return null;
+  }
 };

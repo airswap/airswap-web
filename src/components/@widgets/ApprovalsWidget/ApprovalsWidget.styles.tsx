@@ -34,7 +34,7 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   position: relative;
   display: grid;
   grid-template-columns: 3fr 3fr 3fr 3fr 1fr;
-  grid-column-gap: 1rem;
+  grid-column-gap: 0.5rem;
   grid-row-gap: 0.5rem;
   width: 100%;
   min-height: 15rem;
@@ -44,6 +44,10 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   @media ${breakPoints.phoneOnly} {
     grid-template-columns: 1fr 1fr 1r 1fr;
     width: calc(100% + 1rem);
+  }
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    grid-column-gap: 1rem;
   }
 `;
 

@@ -18,7 +18,11 @@ export const Container = styled.div`
   font-size: 1rem;
   font-weight: 400;
 
-  @media ${breakPoints.tabletPortraitUp} {
+  @media ${breakPoints.tabletLandscapeUp} {
+    font-size: 1.125rem;
+  }
+
+  @media ${breakPoints.desktopUp} {
     font-size: 1.25rem;
   }
 `;
@@ -51,6 +55,12 @@ export const TokenName = styled.div`
 
 export const Amount = styled.div`
   word-break: break-all;
+`;
+
+export const ContractContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 export const ActionButtonContainer = styled.div`
@@ -90,7 +100,7 @@ export const TokenLink = styled(AccountLink)`
     display: block;
   }
 
-  @media ${breakPoints.tabletLandscapeUp} {
+  @media ${breakPoints.tabletPortraitUp} {
     display: flex;
   }
 `;
