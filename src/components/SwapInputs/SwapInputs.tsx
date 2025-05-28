@@ -1,11 +1,10 @@
 import { FC, FormEvent, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
-
 import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
 import { getTokenKind } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { AppError } from "../../errors/appError";
+import { sanitizeInput } from "../../helpers/string";
 import TokenSelect from "../TokenSelect/TokenSelect";
 import {
   BaseAmountErrorTooltip,
@@ -17,8 +16,6 @@ import {
 import getSwitchTokensButtonIcon from "./helpers/getSwapInputIcon";
 import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
 import useErrorTranslation from "./hooks/useErrorTranslation";
-
-const floatRegExp = new RegExp("^([0-9])*[.,]?([0-9])*$");
 
 const SwapInputs: FC<{
   disabled?: boolean;
@@ -103,13 +100,8 @@ const SwapInputs: FC<{
     e: FormEvent<HTMLInputElement>,
     callback: (value: string) => void
   ) => {
-    let value = e.currentTarget.value;
-    if (value === "" || floatRegExp.test(value)) {
-      if (value[value.length - 1] === ",")
-        value = value.slice(0, value.length - 1) + ".";
-      value = value.replace(/^0+/, "0");
-      callback(value);
-    }
+    const value = sanitizeInput(e.currentTarget.value);
+    callback(value || "");
   };
 
   const handleMaxButtonClick = () => {

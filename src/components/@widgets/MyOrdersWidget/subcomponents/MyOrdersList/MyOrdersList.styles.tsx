@@ -20,6 +20,7 @@ export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
+  align-items: flex-start;
   margin-top: 1rem;
   min-height: 15rem;
   max-height: 20rem;

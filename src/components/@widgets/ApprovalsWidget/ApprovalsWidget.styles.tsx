@@ -1,12 +1,14 @@
-import { css } from "styled-components";
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../style/breakpoints";
-import { sizes } from "../../../style/sizes";
 import { FadedScrollContainer } from "../../FadedScrollContainer/FadedScrollContainer";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import { SpinningIcon } from "../../LoadingSpinner/LoadingSpinner.styles";
-import { Notice } from "../../Notice/Notice";
+import ModalOverlay from "../../ModalOverlay/ModalOverlay";
+import {
+  Container as ModalContainer,
+  ContentContainer,
+} from "../../ModalOverlay/ModalOverlay.styles";
 
 export const Container = styled.div`
   display: flex;
@@ -68,4 +70,16 @@ export const NoApprovalsFound = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+`;
+
+export const StyledModalOverlay = styled(ModalOverlay)`
+  height: 100%;
+
+  ${ContentContainer} {
+    min-height: unset;
+  }
+
+  ${ModalContainer} {
+    height: 100svh;
+  }
 `;
