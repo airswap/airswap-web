@@ -3,6 +3,7 @@ import { OrderStatus } from "../../../../types/orderStatus";
 
 export interface MyOrder {
   id: string;
+  type: "full" | "fullERC20" | "delegate";
   hasAllowanceWarning?: boolean;
   isLoading?: boolean;
   chainId: number;

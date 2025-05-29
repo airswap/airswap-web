@@ -512,7 +512,7 @@ const OtcOrderDetailWidget: FC<OtcOrderDetailWidgetProps> = ({ order }) => {
 
         {shouldShowApprovalNotice && (
           <ApprovalNotice
-            signerDoesNotHaveEnoughAllowanceForActiveOrder={
+            makerDoesNotHaveEnoughAllowanceForActiveOrder={
               !signerHasSufficientAllowance
             }
             activeState="orderDetail"

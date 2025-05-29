@@ -67,14 +67,32 @@ export const getOrderNonceUsed = async (
   return order.senderFilledAmount === order.senderAmount;
 };
 
-export const getOrderSignerAmount = (
+export const getOrderMakerAmount = (
   order: FullOrder | FullOrderERC20 | DelegateRule
 ): string => {
   if (isFullOrder(order)) {
     return order.signer.kind === TokenKinds.ERC721 ? "1" : order.signer.amount;
   }
 
-  return order.signerAmount;
+  if (isFullOrderERC20(order)) {
+    return order.signerToken;
+  }
+
+  return order.senderAmount;
+};
+
+export const getOrderMakerToken = (
+  order: FullOrder | FullOrderERC20 | DelegateRule
+): string => {
+  if (isFullOrder(order)) {
+    return order.signer.token;
+  }
+
+  if (isFullOrderERC20(order)) {
+    return order.signerToken;
+  }
+
+  return order.senderToken;
 };
 
 const filterTokenOrder = async (
@@ -103,7 +121,7 @@ const filterTokenOrder = async (
     return false;
   }
 
-  const token = isFullOrder(order) ? order.signer.token : order.signerToken;
+  const token = getOrderMakerToken(order);
   const expiry = +order.expiry;
 
   if (!compareAddresses(token, tokenAddress)) {
@@ -155,7 +173,7 @@ export const getTotalTokenAllowanceFromOrders = async (
     .map((result) => result.order);
 
   return tokenOrders.reduce((acc, order) => {
-    const signerAmount = getOrderSignerAmount(order);
+    const signerAmount = getOrderMakerAmount(order);
     const signerAmountPlusFee = new BigNumber(signerAmount)
       .multipliedBy(1 + protocolFee / 10000)
       .toString();

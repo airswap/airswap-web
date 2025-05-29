@@ -48,6 +48,7 @@ export const getDelegateRuleDataAndTransformToMyOrder = async (
 
   return {
     id: delegateRule.id,
+    type: "delegate",
     status,
     senderToken: senderToken,
     signerToken: signerToken,

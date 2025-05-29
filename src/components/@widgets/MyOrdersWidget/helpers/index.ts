@@ -1,10 +1,13 @@
 import { BigNumber } from "bignumber.js";
 import i18n from "i18next";
 
+import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
 import {
   getTokenId,
   isTokenInfo,
 } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../../../entities/FullOrder/FullOrderHelpers";
+import { isFullOrderERC20 } from "../../../../entities/OrderERC20/OrderERC20Helpers";
 import { BalanceValues } from "../../../../features/balances/balancesSlice";
 import { OrderStatus } from "../../../../types/orderStatus";
 import { MyOrder } from "../entities/MyOrder";
@@ -41,24 +44,35 @@ const getOrdersTotalApprovalAmount = (
   protocolFee?: number
 ) => {
   return orders.reduce((acc, order) => {
-    if (!order.signerToken || order.status !== OrderStatus.open) {
+    const makerToken = getOrderMakerToken(order);
+    if (!makerToken || order.status !== OrderStatus.open) {
       return acc;
     }
 
-    const tokenId = getTokenId(order.signerToken);
+    const tokenId = getTokenId(makerToken);
+    const makerAmount =
+      order.type === "delegate" ? order.senderAmount : order.signerAmount;
 
     const currentAmount = acc[tokenId] || "0";
-    const shouldPayProtocolFee = protocolFee && isTokenInfo(order.signerToken);
+    const shouldPayProtocolFee = protocolFee && order.type === "fullERC20";
     const orderAmount = shouldPayProtocolFee
-      ? new BigNumber(order.signerAmount)
+      ? new BigNumber(makerAmount)
           .multipliedBy(1 + protocolFee / 10000)
           .toString()
-      : order.signerAmount;
+      : makerAmount;
 
     acc[tokenId] = new BigNumber(currentAmount).plus(orderAmount).toString();
 
     return acc;
   }, {} as BalanceValues);
+};
+
+const getOrderMakerToken = (order: MyOrder): AppTokenInfo | undefined => {
+  if (order.type === "delegate") {
+    return order.senderToken;
+  }
+
+  return order.signerToken;
 };
 
 export const getOrdersWithApprovalWarnings = (
@@ -69,17 +83,18 @@ export const getOrdersWithApprovalWarnings = (
   const tokenApprovals = getOrdersTotalApprovalAmount(orders, protocolFee);
 
   return orders.map((order) => {
-    if (!order.signerToken) {
+    const makerToken = getOrderMakerToken(order);
+    if (!makerToken) {
       return order;
     }
 
-    const tokenId = getTokenId(order.signerToken);
+    const tokenId = getTokenId(makerToken);
     const approvedAmount = allowances[tokenId] || "0";
     const tokensAmount = tokenApprovals[tokenId] || "0";
 
-    const hasAllowanceWarning = new BigNumber(approvedAmount).lt(
-      new BigNumber(tokensAmount)
-    );
+    const hasAllowanceWarning =
+      order.status === OrderStatus.open &&
+      new BigNumber(approvedAmount).lt(new BigNumber(tokensAmount));
 
     return {
       ...order,

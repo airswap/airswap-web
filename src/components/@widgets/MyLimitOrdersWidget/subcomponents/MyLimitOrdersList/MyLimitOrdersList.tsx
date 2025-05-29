@@ -54,9 +54,7 @@ const MyLimitOrdersList: FC<MyLimitOrdersListProps> = ({
     );
 
     const ordersWithApprovalWarnings = getOrdersWithApprovalWarnings(
-      newOrders.filter(
-        (order) => order.signerToken && isTokenInfo(order.signerToken)
-      ),
+      newOrders.filter((order) => order.senderToken),
       allowances.delegate.values
     );
 

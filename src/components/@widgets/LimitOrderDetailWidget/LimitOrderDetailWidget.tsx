@@ -53,6 +53,7 @@ import CancelReview from "../../@reviewScreens/CancelReview/CancelReview";
 import TakeOrderReview from "../../@reviewScreens/TakeOrderReview/TakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
 import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
+import { useShouldShowApprovalNotice } from "../../ApprovalNotice/hooks/useShouldShowApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import addAndSwitchToChain from "../../ChainSelectionPopover/helpers/addAndSwitchToChain";
 import { ErrorList } from "../../ErrorList/ErrorList";
@@ -199,6 +200,13 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
       spenderAddressType: "swapERC20",
     }
   );
+  const { hasSufficientAllowance: senderHasSufficientAllowance } = useAllowance(
+    senderToken,
+    customSenderAmount,
+    {
+      spenderAddressType: "delegate",
+    }
+  );
 
   const hasInsufficientTokenBalance = useInsufficientBalance(
     signerToken,
@@ -221,6 +229,12 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
   const userIsMakerOfSwap = account
     ? compareAddresses(delegateRule.senderWallet, account)
     : false;
+  const shouldShowApprovalNotice =
+    useShouldShowApprovalNotice({
+      chainId,
+      spenderAddressType: "delegate",
+      tokenInfo: senderToken,
+    }) && userIsMakerOfSwap;
   const parsedExpiry = useMemo(() => {
     return new Date(delegateRule.expiry * 1000);
   }, [delegateRule]);
@@ -545,12 +559,15 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
           onActionButtonClick={handleActionButtonClick}
         />
 
-        {userIsMakerOfSwap && (
+        {shouldShowApprovalNotice && (
           <ApprovalNotice
+            makerDoesNotHaveEnoughAllowanceForActiveOrder={
+              !senderHasSufficientAllowance
+            }
             activeState="orderDetail"
             chainId={chainId}
             spenderAddressType="delegate"
-            tokenInfo={signerToken}
+            tokenInfo={senderToken}
           />
         )}
       </>

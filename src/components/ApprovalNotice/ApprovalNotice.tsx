@@ -22,7 +22,7 @@ import { useTotalTokenAllowanceFromOrders } from "./hooks/useTotalTokenAllowance
 type ActiveState = "approvalReview" | "orderDetail" | "orderReview";
 
 type ApprovalNoticeProps = {
-  signerDoesNotHaveEnoughAllowanceForActiveOrder?: boolean;
+  makerDoesNotHaveEnoughAllowanceForActiveOrder?: boolean;
   activeState: ActiveState;
   orderAmount?: string;
   chainId?: number;
@@ -32,7 +32,7 @@ type ApprovalNoticeProps = {
 };
 
 export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
-  signerDoesNotHaveEnoughAllowanceForActiveOrder = false,
+  makerDoesNotHaveEnoughAllowanceForActiveOrder = false,
   activeState,
   orderAmount,
   chainId,
@@ -92,6 +92,8 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
 
   useEffect(() => {
     resize();
+
+    return () => resize();
   }, [isHidden]);
 
   if (!tokenInfo || isHidden) {
@@ -101,7 +103,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   const isNFT = getTokenKind(tokenInfo) !== TokenKinds.ERC20;
   const erc20Warning = getErc20Warning(
     activeState,
-    signerDoesNotHaveEnoughAllowanceForActiveOrder
+    makerDoesNotHaveEnoughAllowanceForActiveOrder
   );
 
   return (
