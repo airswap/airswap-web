@@ -75,7 +75,7 @@ export const getOrderMakerAmount = (
   }
 
   if (isFullOrderERC20(order)) {
-    return order.signerToken;
+    return order.signerAmount;
   }
 
   return order.senderAmount;
