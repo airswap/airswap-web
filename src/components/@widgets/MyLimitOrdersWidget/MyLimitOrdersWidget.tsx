@@ -16,6 +16,7 @@ import {
   setActiveSortType,
 } from "../../../features/myOtcOrders/myOtcOrdersSlice";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import { OrdersSortType } from "../../../types/ordersSortType";
@@ -44,6 +45,7 @@ const MyLimitOrdersWidget: FC = () => {
     isInitialized: isDelegateRulesInitialized,
     dismissedDelegateRuleIds,
   } = useAppSelector((state) => state.delegateRules);
+  const allowances = useAppSelector((state) => state.allowances);
   const filteredDelegateRules = delegateRules.filter(
     (rule) => !dismissedDelegateRuleIds.includes(rule.id)
   );
@@ -53,6 +55,7 @@ const MyLimitOrdersWidget: FC = () => {
   );
 
   const cancelLimitStatus = useAppSelector(selectCancelLimitStatus);
+  const isAllowancesLoading = useAllowancesLoading();
   const isSigning = cancelLimitStatus === "signing";
   const [activeUnsetDelegateRule, setActiveUnsetDelegateRule] =
     useState<DelegateRule>();
@@ -143,9 +146,11 @@ const MyLimitOrdersWidget: FC = () => {
 
       {!!filteredDelegateRules.length && (
         <MyLimitOrdersList
+          isAllowancesLoading={isAllowancesLoading}
           activeCancellationId={activeUnsetDelegateRule?.id}
           activeSortType={activeSortType}
           activeTokens={[]}
+          allowances={allowances}
           delegateRules={filteredDelegateRules}
           sortTypeDirection={sortTypeDirection}
           library={library!}

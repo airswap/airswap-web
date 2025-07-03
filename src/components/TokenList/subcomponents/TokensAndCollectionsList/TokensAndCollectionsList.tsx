@@ -10,13 +10,12 @@ import { getTokenDecimals } from "../../../../entities/AppTokenInfo/AppTokenInfo
 import { getTokenId } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { BalancesState } from "../../../../features/balances/balancesSlice";
 import { compareAddresses } from "../../../../helpers/string";
+import { FadedScrollContainer } from "../../../FadedScrollContainer/FadedScrollContainer";
 import { InfoHeading } from "../../../Typography/Typography";
-import { reduceNftTokens } from "../../helpers/filter";
 import { filterTokens } from "../../helpers/filter";
 import { sortTokenByExactMatch } from "../../helpers/sort";
 import { sortTokensBySymbolAndBalance } from "../../helpers/sort";
 import InactiveTokensList from "../InactiveTokensList/InactiveTokensList";
-import { ScrollContainer } from "../ScrollContainer/ScrollContainer";
 import TokenButton from "../TokenButton/TokenButton";
 import {
   Container,
@@ -107,7 +106,7 @@ export const TokensAndCollectionsList = ({
       </Legend>
 
       <TokensScrollContainer>
-        <ScrollContainer
+        <FadedScrollContainer
           resizeDependencies={[
             activeTokens,
             sortedTokens,
@@ -152,7 +151,7 @@ export const TokensAndCollectionsList = ({
                 <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
               </NoResultsContainer>
             )}
-        </ScrollContainer>
+        </FadedScrollContainer>
 
         {isScrapeTokensLoading && <TokenListLoader />}
       </TokensScrollContainer>

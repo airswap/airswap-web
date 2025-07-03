@@ -2,7 +2,7 @@ import { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
 import useAppRouteParams from "../../../hooks/useAppRouteParams";
-import { AppRoutes } from "../../../routes";
+import { AppRoutes, standAloneRoutes } from "../../../routes";
 import {
   Container,
   NavigationLink,
@@ -19,8 +19,7 @@ const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
 
   return (
     <Container className={className}>
-      {(appRouteParams.route === AppRoutes.otcOrder ||
-        appRouteParams.route === AppRoutes.limitOrder) && (
+      {standAloneRoutes.includes(appRouteParams.route as AppRoutes) && (
         <>
           <NavigationNavLink to="/">{t("common.trade")}</NavigationNavLink>|
         </>

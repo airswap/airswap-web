@@ -5,6 +5,7 @@ import Icon from "../Icon/Icon";
 export const Container = styled.div`
   display: flex;
   gap: 1rem;
+  margin-block-start: 1.75rem;
   padding: 1rem 1.5rem;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 0.5rem;

@@ -1,4 +1,5 @@
 export enum AppRoutes {
+  approvals = "approvals",
   makeOtcOrder = "make-otc-order",
   makeLimitOrder = "make-limit-order",
   myOtcOrders = "my-otc-orders",
@@ -7,6 +8,13 @@ export enum AppRoutes {
   limitOrder = "limit-order",
   swap = "swap",
 }
+
+// Routes that don't have a navigation bar
+export const standAloneRoutes = [
+  AppRoutes.approvals,
+  AppRoutes.otcOrder,
+  AppRoutes.limitOrder,
+];
 
 export interface SwapRouteType {
   tokenFrom?: string;
@@ -19,6 +27,7 @@ export enum SwapRoutes {
 }
 
 export const routes = {
+  approvals: () => `/${AppRoutes.approvals}`,
   makeOtcOrder: () => `/${AppRoutes.makeOtcOrder}`,
   makeLimitOrder: () => `/${AppRoutes.makeLimitOrder}`,
   myOtcOrders: () => `/${AppRoutes.myOtcOrders}`,

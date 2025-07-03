@@ -25,6 +25,7 @@ import {
   getTokenKind,
   getTokenSymbol,
   isCollectionTokenInfo,
+  isTokenInfo,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { AppErrorType } from "../../../errors/appError";
@@ -76,6 +77,8 @@ import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import ApproveReview from "../../@reviewScreens/ApproveReview/ApproveReview";
 import MakeOrderReview from "../../@reviewScreens/MakeOrderReview/MakeOrderReview";
 import WrapReview from "../../@reviewScreens/WrapReview/WrapReview";
+import { ApprovalNotice } from "../../ApprovalNotice/ApprovalNotice";
+import { useShouldShowApprovalNotice } from "../../ApprovalNotice/hooks/useShouldShowApprovalNotice";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
 import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmittedScreen";
 import { SelectOption } from "../../Dropdown/Dropdown";
@@ -190,10 +193,16 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     makerTokenDecimals,
     makerTokenKind
   );
+
+  const spenderAddressType = isLimitOrder
+    ? "delegate"
+    : makerTokenKind === TokenKinds.ERC20
+    ? "swapERC20"
+    : "swap";
   const { hasSufficientAllowance, readableAllowance } = useAllowance(
     makerTokenInfo,
     signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
-    { spenderAddressType: isLimitOrder ? "delegate" : "swap" }
+    { spenderAddressType }
   );
 
   const hasInsufficientBalance = useInsufficientBalance(
@@ -229,6 +238,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const isValidAddress = useValidAddress(takerAddress);
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
   const isNetworkSupported = useNetworkSupported();
+  const shouldShowApprovalNotice = useShouldShowApprovalNotice({
+    chainId,
+    orderAmount: signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
+    spenderAddressType,
+    tokenInfo: makerTokenInfo,
+  });
 
   // Modal states
   const { setShowWalletList, transactionsTabIsOpen } =
@@ -526,7 +541,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     }
 
     if (action === ButtonActions.restart) {
-      restart();
+      setState(MakeWidgetState.list);
     }
   };
 
@@ -596,6 +611,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onRestartButtonClick={restart}
             onSignButtonClick={approveToken}
           />
+
+          {shouldShowApprovalNotice && (
+            <ApprovalNotice
+              activeState="approvalReview"
+              orderAmount={
+                signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
+              }
+              chainId={chainId}
+              spenderAddressType={spenderAddressType}
+              tokenInfo={makerTokenInfo}
+            />
+          )}
         </>
       );
     }
@@ -619,6 +646,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onEditButtonClick={handleEditButtonClick}
             onSignButtonClick={createOrder}
           />
+
+          {shouldShowApprovalNotice && (
+            <ApprovalNotice
+              activeState="orderReview"
+              orderAmount={
+                signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount
+              }
+              chainId={chainId}
+              spenderAddressType={spenderAddressType}
+              tokenInfo={makerTokenInfo}
+            />
+          )}
         </>
       );
     }

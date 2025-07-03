@@ -14,6 +14,12 @@ import {
   DelegatedSwapEvent,
 } from "./DelegateRule";
 
+export const isDelegateRule = (value: any): value is DelegateRule =>
+  typeof value === "object" &&
+  "senderWallet" in value &&
+  "senderToken" in value &&
+  "signerToken" in value;
+
 export const isDelegateSetRuleEvent = (
   event: TransactionEvent
 ): event is DelegateSetRuleEvent =>

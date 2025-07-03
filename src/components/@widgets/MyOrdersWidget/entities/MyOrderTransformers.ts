@@ -34,9 +34,12 @@ export const transformFullOrderToMyOrder = (
 
   return {
     id: order.nonce,
+    type: isFullOrder(order) ? "full" : "fullERC20",
+    hasAllowanceWarning: false,
     link: routes.otcOrder(compressedOrder),
     status: status,
     chainId: order.chainId,
+    for: isFullOrder(order) ? order.sender.wallet : order.senderWallet,
     senderToken,
     senderAmount: isFullOrder(order)
       ? getFullOrderAmount(order.sender)

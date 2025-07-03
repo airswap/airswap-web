@@ -18,6 +18,7 @@ import { getNonceUsed } from "../../../features/orders/ordersHelpers";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
+import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import useCancellationPending from "../../../hooks/useCancellationPending";
 import { AppRoutes } from "../../../routes";
 import { OrdersSortType } from "../../../types/ordersSortType";
@@ -34,7 +35,6 @@ import InfoSection from "../MyOrdersWidget/subcomponents/InfoSection/InfoSection
 import MyOtcOrdersList from "./subcomponents/MyOtcOrdersList/MyOtcOrdersList";
 
 const MyOtcOrdersWidget: FC = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const { provider: library } = useWeb3React<Web3Provider>();
@@ -43,6 +43,7 @@ const MyOtcOrdersWidget: FC = () => {
   );
   const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
+  const allowances = useAppSelector((state) => state.allowances);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(
     selectMyOtcOrdersReducer
   );
@@ -54,6 +55,7 @@ const MyOtcOrdersWidget: FC = () => {
     activeCancellationNonce || null,
     true
   );
+  const isAllowancesLoading = useAllowancesLoading();
 
   // Modal states
   const { setShowWalletList } = useContext(InterfaceContext);
@@ -125,9 +127,11 @@ const MyOtcOrdersWidget: FC = () => {
 
       {!!userOrders.length && (
         <MyOtcOrdersList
+          isAllowancesLoading={isAllowancesLoading}
           activeCancellationId={activeCancellationNonce}
           activeSortType={activeSortType}
           activeTokens={allTokens}
+          allowances={allowances}
           fullOrders={userOrders}
           sortTypeDirection={sortTypeDirection}
           library={library!}

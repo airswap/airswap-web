@@ -24,7 +24,7 @@ const SortButton: FC<PropsWithChildren<SortButtonProps>> = ({
     <Container className={className}>
       <Button
         as={isDisabled ? "div" : "button"}
-        isActive={!!isActive}
+        isActive={!!isActive && !isDisabled}
         isDescending={!!isDescending}
         hasText={!!children}
         onClick={onClick}

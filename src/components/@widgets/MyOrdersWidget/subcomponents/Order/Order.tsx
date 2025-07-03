@@ -1,4 +1,7 @@
 import { FC, PropsWithChildren, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { ADDRESS_ZERO } from "@airswap/utils";
 
 import {
   getTokenDecimals,
@@ -26,13 +29,15 @@ import {
   SignerAmount,
   StatusIndicator,
   StyledNavLink,
-  Text,
+  StyledTooltip,
   TokenIcon,
   Tokens,
+  Warning,
 } from "./Order.styles";
 
 interface OrderProps {
   hasFilledColumn?: boolean;
+  hasForColumn?: boolean;
   isCancelInProgress: boolean;
   order: MyOrderInterface;
   index: number;
@@ -46,6 +51,7 @@ interface OrderProps {
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
   hasFilledColumn,
+  hasForColumn,
   isCancelInProgress,
   order,
   index,
@@ -56,6 +62,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onStatusIndicatorMouseLeave,
   className,
 }) => {
+  const { t } = useTranslation();
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
 
   const senderTokenDecimals = order.senderToken
@@ -133,11 +140,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   };
 
   return (
-    <Container
-      hasFilledColumn={hasFilledColumn}
-      orderStatus={order.status}
-      className={className}
-    >
+    <Container orderStatus={order.status} className={className}>
+      {order.hasAllowanceWarning && (
+        <>
+          <Warning />
+          <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
+        </>
+      )}
       <StatusIndicator
         onMouseEnter={() => onStatusIndicatorMouseEnter(index, order.status)}
         onMouseLeave={onStatusIndicatorMouseLeave}
@@ -149,9 +158,14 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         <TokenIcon logoURI={senderTokenImage} />
       </Tokens>
       {hasFilledColumn && (
-        <FilledAmount>{`${filledAmount} ${
-          signerTokenSymbol || ""
-        }`}</FilledAmount>
+        <FilledAmount>
+          {`${filledAmount} ${signerTokenSymbol || ""}`}
+        </FilledAmount>
+      )}
+      {hasForColumn && (
+        <FilledAmount>
+          {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
+        </FilledAmount>
       )}
       <SignerAmount>{`${signerAmount} ${
         signerTokenSymbol || ""
@@ -162,7 +176,11 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       <OrderStatusLabel>
         {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}
       </OrderStatusLabel>
-      <StyledNavLink $isHovered={isHoveredActionButton} to={order.link} />
+      <StyledNavLink
+        $isHovered={isHoveredActionButton}
+        $hasWarning={order.hasAllowanceWarning}
+        to={order.link}
+      />
 
       <ActionButtonContainer>
         {isCancelInProgress ? (

@@ -2,13 +2,17 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OrdersSortType } from "../../../../../types/ordersSortType";
-import SortButton from "../SortButton/SortButton";
-import { Container, PairButtonWrapper } from "./MyOrdersListSortButtons.styles";
+import SortButton from "../../../../SortButton/SortButton";
+import {
+  ActionsButton,
+  Container,
+  PairButtonWrapper,
+} from "./MyOrdersListSortButtons.styles";
 
 interface MyOrdersListProps {
   activeSortType: OrdersSortType;
   hasFilledColumn?: boolean;
-  hasOverflow: boolean;
+  hasForColumn?: boolean;
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
@@ -17,7 +21,7 @@ interface MyOrdersListProps {
 const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   activeSortType,
   hasFilledColumn,
-  hasOverflow,
+  hasForColumn,
   sortTypeDirection,
   onSortButtonClick,
   className,
@@ -25,11 +29,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Container
-      className={className}
-      hasOverflow={hasOverflow}
-      hasFilledColumn={hasFilledColumn}
-    >
+    <Container className={className}>
       <SortButton
         isSortable
         isActive={activeSortType === "active"}
@@ -47,6 +47,16 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
           onClick={() => onSortButtonClick("filled")}
         >
           {t("common.filled")}
+        </SortButton>
+      )}
+      {hasForColumn && (
+        <SortButton
+          isSortable
+          isActive={activeSortType === "for"}
+          isDescending={sortTypeDirection.for}
+          onClick={() => onSortButtonClick("for")}
+        >
+          {t("common.for")}
         </SortButton>
       )}
       <SortButton
@@ -73,6 +83,7 @@ const MyOrdersListSortButtons: FC<MyOrdersListProps> = ({
       >
         {t("common.status")}
       </SortButton>
+      <ActionsButton isDisabled>{t("orders.actions")}</ActionsButton>
     </Container>
   );
 };

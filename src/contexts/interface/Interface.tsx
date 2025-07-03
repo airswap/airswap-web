@@ -16,6 +16,7 @@ export interface InterfaceContextContextProps {
   pageHeight?: number;
   overlayHeight?: number;
 
+  resize: () => void;
   setIsConnecting: Dispatch<React.SetStateAction<boolean>>;
   setIsDebugMode: Dispatch<React.SetStateAction<boolean>>;
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ export const InterfaceContext =
     showTransactionOverlay: false,
     showWalletList: false,
     transactionsTabIsOpen: false,
+    resize: () => {},
     setIsConnecting: () => {},
     setIsDebugMode: () => {},
     setShowMobileToolbar: () => {},
@@ -101,6 +103,7 @@ const InterfaceProvider: FC = ({ children }) => {
         transactionsTabIsOpen,
         pageHeight,
         overlayHeight,
+        resize: calculateAndSetPageHeight,
         setIsConnecting,
         setIsDebugMode,
         setShowMobileToolbar,

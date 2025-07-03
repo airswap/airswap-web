@@ -6,10 +6,15 @@ import {
 } from "@airswap/utils";
 
 import * as ethers from "ethers";
+import { BigNumber } from "ethers";
 
 import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
-import { findTokenByAddressAndId } from "../../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import {
+  findTokenByAddressAndId,
+  getTokenId,
+} from "../../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../../../../entities/FullOrder/FullOrderHelpers";
+import { BalanceValues } from "../../../../../../features/balances/balancesSlice";
 import { getNonceUsed } from "../../../../../../features/orders/ordersHelpers";
 import { OrderStatus } from "../../../../../../types/orderStatus";
 import { MyOrder } from "../../../../MyOrdersWidget/entities/MyOrder";
