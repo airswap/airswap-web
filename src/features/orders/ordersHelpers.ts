@@ -188,8 +188,6 @@ export async function approveNftToken(
       provider.getSigner()
     );
 
-    console.log("contractAddress", contractAddress);
-
     const method =
       tokenKind === TokenKinds.ERC721
         ? contract.approve(contractAddress, tokenId)
