@@ -87,6 +87,8 @@ export const ApprovalsWidget: FC = () => {
     sortTypeDirection[activeSortType]
   );
 
+  const showNoApprovalsFound = !isLoading && !sortedApprovalEntities.length;
+
   const handleSortButtonClick = (sortType: ApprovalSortType) => {
     const currentSorting = sortTypeDirection[sortType];
 
@@ -166,7 +168,7 @@ export const ApprovalsWidget: FC = () => {
           </StyledFadedScrollContainer>
 
           {isLoading && <StyledLoadingSpinner />}
-          {!isLoading && !sortedApprovalEntities.length && (
+          {showNoApprovalsFound && (
             <NoApprovalsFound>{t("orders.noApprovalsFound")}</NoApprovalsFound>
           )}
         </ApprovalsGrid>

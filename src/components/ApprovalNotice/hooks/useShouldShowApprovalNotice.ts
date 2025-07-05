@@ -20,6 +20,7 @@ export const useShouldShowApprovalNotice = ({
   const [totalTokenAllowance, isLoadingTotalTokenAllowance] =
     useTotalTokenAllowanceFromOrders(spenderAddressType, tokenInfo, chainId);
 
+  const userHasNoOrders = totalTokenAllowance === "0";
   const totalNeededAllowance = getTotalNeededAllowance(
     orderAmount || "0",
     totalTokenAllowance || "0",
@@ -33,6 +34,7 @@ export const useShouldShowApprovalNotice = ({
   );
 
   if (
+    userHasNoOrders ||
     hasSufficientAllowance ||
     isLoadingTotalTokenAllowance ||
     !totalTokenAllowance ||
