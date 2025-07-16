@@ -14,6 +14,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 23.25rem;
 `;
 
 export const StyledScrollContainer = styled.div`
@@ -26,7 +27,6 @@ export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
   width: 100%;
-  min-height: 15rem;
   max-height: 20rem;
 `;
 
@@ -37,7 +37,6 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   grid-column-gap: 0.5rem;
   grid-row-gap: 0.5rem;
   width: 100%;
-  min-height: 15rem;
   padding: 0 1rem;
   opacity: ${(props) => (props.isLoading ? 0.5 : 1)};
 
@@ -74,6 +73,7 @@ export const NoApprovalsFound = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+  min-height: 15rem;
 `;
 
 export const StyledModalOverlay = styled(ModalOverlay)`
