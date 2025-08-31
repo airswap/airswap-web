@@ -245,6 +245,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     orderAmount: signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
     spenderAddressType,
     tokenInfo: makerTokenInfo,
+    takerTokenInfo,
   });
   const shouldShowOverwriteLimitOrderNotice =
     useShouldShowOverwriteLimitOrderNotice({
@@ -620,7 +621,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onSignButtonClick={approveToken}
           />
 
-          {shouldShowApprovalNotice && !shouldShowOverwriteLimitOrderNotice && (
+          {shouldShowApprovalNotice && (
             <ApprovalNotice
               activeState="approvalReview"
               orderAmount={
@@ -629,6 +630,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
               chainId={chainId}
               spenderAddressType={spenderAddressType}
               tokenInfo={makerTokenInfo}
+              takerTokenInfo={takerTokenInfo}
             />
           )}
         </>
@@ -656,7 +658,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
           />
           {shouldShowOverwriteLimitOrderNotice && <OverwriteLimitOrderNotice />}
 
-          {shouldShowApprovalNotice && !shouldShowOverwriteLimitOrderNotice && (
+          {shouldShowApprovalNotice && (
             <ApprovalNotice
               activeState="orderReview"
               orderAmount={

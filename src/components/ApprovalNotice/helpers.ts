@@ -101,7 +101,8 @@ const filterTokenOrder = async (
   allowanceType: AllowancesType,
   provider: ethers.providers.BaseProvider,
   chainId: number,
-  tokenId?: string
+  tokenId?: string,
+  takerTokenAddress?: string
 ): Promise<boolean> => {
   const now = Math.floor(new Date().getTime() / 1000);
 
@@ -128,6 +129,17 @@ const filterTokenOrder = async (
     return false;
   }
 
+  console.log(takerTokenAddress, isDelegateRule(order) && order.signerToken);
+
+  // If delegate rule, exclude orders that are for the same pair because they will be overwritten
+  if (
+    takerTokenAddress &&
+    isDelegateRule(order) &&
+    compareAddresses(order.signerToken, takerTokenAddress)
+  ) {
+    return false;
+  }
+
   if (expiry < now) {
     return false;
   }
@@ -148,7 +160,8 @@ export const getTotalTokenAllowanceFromOrders = async (
   provider: ethers.providers.BaseProvider,
   chainId: number,
   protocolFee: number,
-  tokenId?: string
+  tokenId?: string,
+  takerTokenAddress?: string
 ): Promise<string> => {
   if (!tokenAddress) {
     return "0";
@@ -163,7 +176,8 @@ export const getTotalTokenAllowanceFromOrders = async (
         allowanceType,
         provider,
         chainId,
-        tokenId
+        tokenId,
+        takerTokenAddress
       ),
     }))
   );

@@ -8,6 +8,7 @@ type UseShouldShowApprovalNoticeProps = {
   chainId?: number;
   spenderAddressType: AllowancesType;
   tokenInfo: AppTokenInfo | null;
+  takerTokenInfo?: AppTokenInfo | null;
   className?: string;
 };
 
@@ -16,9 +17,15 @@ export const useShouldShowApprovalNotice = ({
   chainId,
   spenderAddressType,
   tokenInfo,
+  takerTokenInfo,
 }: UseShouldShowApprovalNoticeProps): boolean => {
   const [totalTokenAllowance, isLoadingTotalTokenAllowance] =
-    useTotalTokenAllowanceFromOrders(spenderAddressType, tokenInfo, chainId);
+    useTotalTokenAllowanceFromOrders(
+      spenderAddressType,
+      tokenInfo,
+      takerTokenInfo,
+      chainId
+    );
 
   const userHasNoOrders = totalTokenAllowance === "0";
   const totalNeededAllowance = getTotalNeededAllowance(
