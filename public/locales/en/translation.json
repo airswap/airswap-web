@@ -172,6 +172,7 @@
     "noIndexerOrdersFound": "No orders found for this token pair",
     "noIndexersFound": "No indexer nodes found",
     "orderSuccessfullyCreated": "Order successfully created.",
+    "overwriteLimitOrderWarning": "Pair already has a limit order; it will be replaced.",
     "pendingWallet": "Waiting for wallet",
     "pendingConfirmation": "Confirm to sign transaction",
     "pendingSignature": "Confirm to sign signature",

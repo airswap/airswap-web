@@ -84,6 +84,8 @@ import DepositSubmittedScreen from "../../DepositSubmittedScreen/DepositSubmitte
 import { SelectOption } from "../../Dropdown/Dropdown";
 import OrderTypesModal from "../../InformationModals/subcomponents/OrderTypesModal/OrderTypesModal";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
+import { OverwriteLimitOrderNotice } from "../../OverwriteLimitOrderNotice/OverwriteLimitOrderNotice";
+import { useShouldShowOverwriteLimitOrderNotice } from "../../OverwriteLimitOrderNotice/hooks/useShouldShowOverwriteLimitOrderNotice";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import SetRuleSubmittedScreen from "../../SetRuleSubmittedScreen/SetRuleSubmittedScreen";
 import { notifyOrderCreated } from "../../Toasts/ToastController";
@@ -243,7 +245,14 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     orderAmount: signerShouldPayProtocolFee ? makerAmountPlusFee : makerAmount,
     spenderAddressType,
     tokenInfo: makerTokenInfo,
+    takerTokenInfo,
   });
+  const shouldShowOverwriteLimitOrderNotice =
+    useShouldShowOverwriteLimitOrderNotice({
+      chainId,
+      makerTokenInfo,
+      takerTokenInfo,
+    });
 
   // Modal states
   const { setShowWalletList, transactionsTabIsOpen } =
@@ -621,6 +630,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
               chainId={chainId}
               spenderAddressType={spenderAddressType}
               tokenInfo={makerTokenInfo}
+              takerTokenInfo={takerTokenInfo}
             />
           )}
         </>
@@ -646,6 +656,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             onEditButtonClick={handleEditButtonClick}
             onSignButtonClick={createOrder}
           />
+          {shouldShowOverwriteLimitOrderNotice && <OverwriteLimitOrderNotice />}
 
           {shouldShowApprovalNotice && (
             <ApprovalNotice

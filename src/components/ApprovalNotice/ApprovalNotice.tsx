@@ -28,6 +28,7 @@ type ApprovalNoticeProps = {
   chainId?: number;
   spenderAddressType: AllowancesType;
   tokenInfo: AppTokenInfo | null;
+  takerTokenInfo?: AppTokenInfo | null;
   className?: string;
 };
 
@@ -38,6 +39,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   chainId,
   spenderAddressType,
   tokenInfo,
+  takerTokenInfo,
   className,
 }) => {
   const { t } = useTranslation();
@@ -50,6 +52,7 @@ export const ApprovalNotice: FC<ApprovalNoticeProps> = ({
   const [totalTokenAllowance] = useTotalTokenAllowanceFromOrders(
     spenderAddressType,
     tokenInfo,
+    takerTokenInfo,
     chainId
   );
 

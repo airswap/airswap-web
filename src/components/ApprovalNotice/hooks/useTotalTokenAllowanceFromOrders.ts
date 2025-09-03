@@ -19,6 +19,7 @@ import { getTotalTokenAllowanceFromOrders } from "../helpers";
 export const useTotalTokenAllowanceFromOrders = (
   spenderAddressType: AllowancesType,
   tokenInfo: AppTokenInfo | null,
+  takerTokenInfo?: AppTokenInfo | null,
   chainId?: number
 ): [string | undefined, boolean] => {
   const { provider } = useWeb3React();
@@ -44,6 +45,10 @@ export const useTotalTokenAllowanceFromOrders = (
         tokenInfo.address === ADDRESS_ZERO
           ? wrappedNativeToken.address
           : tokenInfo.address;
+      const justifiedTakerTokenAddress =
+        takerTokenInfo?.address === ADDRESS_ZERO
+          ? wrappedNativeToken.address
+          : takerTokenInfo?.address;
       const tokenId = splitTokenIdentifier(getTokenId(tokenInfo)).id;
 
       setIsLoading(true);
@@ -56,7 +61,8 @@ export const useTotalTokenAllowanceFromOrders = (
           provider,
           chainId,
           protocolFee,
-          tokenId
+          tokenId,
+          justifiedTakerTokenAddress
         );
         setTotalTokenAllowance(newTotalTokenAllowance);
       } catch (error) {
