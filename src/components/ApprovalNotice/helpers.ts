@@ -129,8 +129,6 @@ const filterTokenOrder = async (
     return false;
   }
 
-  console.log(takerTokenAddress, isDelegateRule(order) && order.signerToken);
-
   // If delegate rule, exclude orders that are for the same pair because they will be overwritten
   if (
     takerTokenAddress &&
