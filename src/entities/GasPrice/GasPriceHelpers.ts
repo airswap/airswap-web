@@ -1,6 +1,6 @@
 import {
-  GasPriceBeaconChaResource,
   GasPriceDefisaverResource,
+  GasPriceEtherscanResource,
 } from "./GasPrice";
 
 export const isGasPriceDefisaverResource = (
@@ -12,15 +12,13 @@ export const isGasPriceDefisaverResource = (
   "regular" in resource &&
   "cheap" in resource;
 
-export const isGasPriceBeaconChaResource = (
+export const isGasPriceEtherscanResource = (
   resource: any
-): resource is GasPriceBeaconChaResource =>
+): resource is GasPriceEtherscanResource =>
   typeof resource === "object" &&
   resource !== null &&
-  "code" in resource &&
-  "data" in resource &&
-  "rapid" in resource.data &&
-  "fast" in resource.data &&
-  "standard" in resource.data &&
-  "slow" in resource.data &&
-  "timestamp" in resource.data;
+  "LastBlock" in resource &&
+  "SafeGasPrice" in resource &&
+  "ProposeGasPrice" in resource &&
+  "FastGasPrice" in resource &&
+  "UsdPrice" in resource;

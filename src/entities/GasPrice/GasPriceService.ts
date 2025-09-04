@@ -1,66 +1,64 @@
+import { ChainIds } from "@airswap/utils";
+
 import { BigNumber } from "bignumber.js";
 
-import { GasPriceEndpoint, GasPriceEndpointType } from "./GasPrice";
 import {
-  isGasPriceBeaconChaResource,
   isGasPriceDefisaverResource,
+  isGasPriceEtherscanResource,
 } from "./GasPriceHelpers";
 
-export const geDefisaverGasPriceApiCall = async (
-  url: string
-): Promise<BigNumber> => {
+const safeFallbackGasPrice = new BigNumber(0.004).dividedBy(10 ** 10);
+
+export const geDefisaverGasPriceApiCall = async (): Promise<BigNumber> => {
   try {
+    const url = "https://app.defisaver.com/api/gas-price/current";
     const response = await fetch(url);
     const data = await response.json();
 
     if (!response.ok || !isGasPriceDefisaverResource(data)) {
       console.error("[getMainnetGasPrice] Error in response", response);
 
-      return new BigNumber(0);
+      return safeFallbackGasPrice;
     }
 
     return new BigNumber(data.fast).dividedBy(10 ** 10);
   } catch (e: any) {
     console.error(
-      "[getMainnetGasPrice] Error getting gas price from ethgas.watch API: ",
+      "[geDefisaverGasPriceApiCall] Error getting gas price from ethgas.watch API: ",
       e.message
     );
 
-    return new BigNumber(0);
+    return safeFallbackGasPrice;
   }
 };
 
-export const getBeaconchaGasPriceApiCall = async (
-  url: string
+export const getEtherscanGasPriceApiCall = async (
+  _chainId: number
 ): Promise<BigNumber> => {
   try {
+    // Etherscan does not have Sepolia available, using BNB Chain as alternative.
+    const chainId = _chainId === ChainIds.SEPOLIA ? 56 : _chainId;
+    const url = `https://api.etherscan.io/v2/api?chainid=${chainId}&module=gastracker&action=gasoracle&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
+    const result = data.result;
 
-    if (!response.ok || !isGasPriceBeaconChaResource(data)) {
-      console.error("[getBeaconchaGasPrice] Error in response", response);
+    if (!response.ok || !isGasPriceEtherscanResource(result)) {
+      console.error(
+        "[getEtherscanGasPriceApiCall] Error in response",
+        response
+      );
 
-      return new BigNumber(0);
+      return safeFallbackGasPrice;
     }
 
-    return new BigNumber(data.data.fast).dividedBy(10 ** 18);
+    return new BigNumber(result.FastGasPrice).dividedBy(10 ** 10);
   } catch (e: any) {
     console.error(
-      "[getBeaconchaGasPrice] Error getting gas price from ethgas.watch API: ",
+      "[getEtherscanGasPriceApiCall] Error getting gas price from ethgas.watch API: ",
       e.message
     );
 
-    return new BigNumber(0);
+    return safeFallbackGasPrice;
   }
-};
-
-export const getGasPriceApiCall = async (
-  url: string,
-  type: GasPriceEndpointType
-): Promise<BigNumber> => {
-  if (type === GasPriceEndpointType.defisaver) {
-    return geDefisaverGasPriceApiCall(url);
-  }
-
-  return getBeaconchaGasPriceApiCall(url);
 };

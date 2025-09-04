@@ -5,26 +5,10 @@ export interface GasPriceDefisaverResource {
   cheap: number;
 }
 
-// https://sepolia.beaconcha.in/api/v1/execution/gasnow
-export interface GasPriceBeaconChaResource {
-  code: number;
-  data: {
-    rapid: number;
-    fast: number;
-    standard: number;
-    slow: number;
-    timestamp: number;
-    price: number;
-    priceUSD: number;
-  };
-}
-
-export enum GasPriceEndpointType {
-  beaconCha = "beaconCha",
-  defisaver = "defisaver",
-}
-
-export interface GasPriceEndpoint {
-  type: GasPriceEndpointType;
-  url: string;
+export interface GasPriceEtherscanResource {
+  LastBlock: string;
+  SafeGasPrice: string;
+  ProposeGasPrice: string;
+  FastGasPrice: string;
+  UsdPrice: string;
 }
