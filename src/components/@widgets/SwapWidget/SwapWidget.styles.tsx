@@ -41,7 +41,7 @@ export const StyledSwapWidget = styled.div`
 export const StyledWalletProviderList = styled(WalletProviderList)``;
 
 export const StyledDebugMenu = styled(DebugMenu)`
-  margin-top: 1.5rem;
+  margin-block: 1.5rem;
 `;
 
 export default StyledSwapWidget;

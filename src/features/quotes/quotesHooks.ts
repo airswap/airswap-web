@@ -25,6 +25,7 @@ import { ConnectionType } from "../../web3-connectors/connections";
 import { getGasPrice } from "../gasCost/gasCostApi";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import { selectTradeTerms } from "../tradeTerms/tradeTermsSlice";
+import { getPricingErrorWithHighestPriority } from "./helpers/getPricingErrorWithHighestPriority";
 import useQuotesDebug from "./hooks/useQuotesDebug";
 import {
   compareOrdersAndSetBestOrder,
@@ -84,7 +85,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const wrappedTokenInfo = useNativeWrappedToken(chainId);
 
   const error =
-    !isLoading && !bestOrder ? lastLookError || rfqError : undefined;
+    !isLoading && !bestOrder && (lastLookError || rfqError)
+      ? getPricingErrorWithHighestPriority([lastLookError, rfqError])
+      : undefined;
 
   const [fetchCount, setFetchCount] = useState(0);
 
