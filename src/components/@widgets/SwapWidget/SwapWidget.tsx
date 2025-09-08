@@ -20,9 +20,7 @@ import {
   transformAddressAliasToAddress,
   transformAddressToAddressAlias,
 } from "../../../constants/addressAliases";
-import nativeCurrency, {
-  nativeCurrencySafeTransactionFee,
-} from "../../../constants/nativeCurrency";
+import nativeCurrency from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import { selectBalances } from "../../../features/balances/balancesSlice";
@@ -33,8 +31,6 @@ import {
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
   selectActiveErc20Tokens,
-  selectActiveTokens,
-  selectAllTokenInfo,
   selectErc20Tokens,
 } from "../../../features/metadata/metadataSlice";
 import {
@@ -216,9 +212,7 @@ const SwapWidget: FC = () => {
   const maxAmount = useMaxAmount(baseTokenInfo);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
-    !!maxAmount &&
-    baseTokenInfo?.address === ADDRESS_ZERO &&
-    !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
+    !!maxAmount && baseTokenInfo?.address === ADDRESS_ZERO;
 
   useEffect(() => {
     if (transactionsTabIsOpen) {

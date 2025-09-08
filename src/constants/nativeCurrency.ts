@@ -21,11 +21,4 @@ for (const chainId in ChainIds) {
   };
 }
 
-export const nativeCurrencySafeTransactionFee: Partial<Record<number, number>> =
-  {
-    1: 0.01,
-    4: 0.001,
-    5: 0.001,
-  };
-
 export default nativeCurrency;

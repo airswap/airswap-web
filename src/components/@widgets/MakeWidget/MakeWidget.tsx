@@ -15,9 +15,7 @@ import { useToggle } from "@react-hookz/web";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import nativeCurrency, {
-  nativeCurrencySafeTransactionFee,
-} from "../../../constants/nativeCurrency";
+import nativeCurrency from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import {
@@ -25,7 +23,6 @@ import {
   getTokenKind,
   getTokenSymbol,
   isCollectionTokenInfo,
-  isTokenInfo,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
 import { AppErrorType } from "../../../errors/appError";
@@ -223,9 +220,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     makerAmount !== maxAmount &&
     userTokens.tokenFrom?.kind !== TokenKinds.ERC721;
   const showMaxInfoButton =
-    !!maxAmount &&
-    makerTokenInfo?.address === ADDRESS_ZERO &&
-    !!nativeCurrencySafeTransactionFee[makerTokenInfo.chainId];
+    !!maxAmount && makerTokenInfo?.address === ADDRESS_ZERO;
   const [activeSetRuleHash, setActiveSetRuleHash] = useState<string>();
   const approvalTransaction = useApprovalPending(makerTokenInfo?.address, true);
   const depositTransaction = useDepositPending(true);

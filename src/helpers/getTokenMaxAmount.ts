@@ -1,8 +1,7 @@
-import { TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
+import { ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
-import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { AppTokenInfo } from "../entities/AppTokenInfo/AppTokenInfo";
 import {
   getTokenId,
@@ -14,7 +13,8 @@ import stringToSignificantDecimals from "./stringToSignificantDecimals";
 const getTokenMaxAmount = (
   balances: BalancesState,
   baseTokenInfo: AppTokenInfo,
-  protocolFeePercentage?: number
+  protocolFeePercentage?: number,
+  swapTransactionCost = "0"
 ): string | null => {
   const { address } = baseTokenInfo;
   const tokenId = getTokenId(baseTokenInfo);
@@ -28,8 +28,7 @@ const getTokenMaxAmount = (
   }
 
   const transactionFee =
-    baseTokenInfo.address === ADDRESS_ZERO &&
-    nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
+    baseTokenInfo.address === ADDRESS_ZERO && swapTransactionCost;
 
   let totalAmount = new BigNumber(balances.values[address] || "0").div(
     10 ** baseTokenInfo.decimals

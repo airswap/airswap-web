@@ -17,6 +17,7 @@ const useMaxAmount = (
   const activeTokens = useAppSelector(selectActiveTokens);
   const protocolFee = useAppSelector(selectProtocolFee);
   const { chainId } = useAppSelector((state) => state.web3);
+  const { swapTransactionCost } = useAppSelector((state) => state.gasCost);
 
   return useMemo(() => {
     if (!token || !balances || !chainId) {
@@ -26,7 +27,8 @@ const useMaxAmount = (
     return getTokenMaxAmount(
       balances,
       token,
-      deductProtocolFee ? protocolFee / 10000 : undefined
+      deductProtocolFee ? protocolFee / 10000 : undefined,
+      swapTransactionCost
     );
   }, [activeTokens, token, balances, protocolFee, deductProtocolFee, chainId]);
 };

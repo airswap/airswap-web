@@ -140,8 +140,8 @@ export const InfoLabel = styled.div`
 
   border-radius: 50%;
   text-align: center;
-  min-width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   cursor: pointer;
 `;
 
