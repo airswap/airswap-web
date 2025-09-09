@@ -9,7 +9,10 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, Event } from "ethers";
 
 import { DelegateRule } from "../../../entities/DelegateRule/DelegateRule";
-import { getUniqueDelegateRules } from "../../../entities/DelegateRule/DelegateRuleHelpers";
+import {
+  getDelegateContract,
+  getUniqueDelegateRules,
+} from "../../../entities/DelegateRule/DelegateRuleHelpers";
 import { transformToDelegateRule } from "../../../entities/DelegateRule/DelegateRuleTransformers";
 import getContractEvents from "../../../helpers/getContractEvents";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
@@ -84,7 +87,13 @@ const useSetRuleLogs = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const delegateContract = Delegate.getContract(provider, chainId);
+    const delegateContract = getDelegateContract(provider, chainId);
+
+    // TODO: #1047, remove this once we have a contract for all chains
+    if (!delegateContract) {
+      return;
+    }
+
     actions.execute(delegateContract, account);
 
     setAccountState(account);

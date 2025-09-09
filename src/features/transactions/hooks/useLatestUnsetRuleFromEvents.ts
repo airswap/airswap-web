@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { Event } from "ethers";
 
 import { DelegateUnsetRuleEvent } from "../../../entities/DelegateRule/DelegateRule";
+import { getDelegateContract } from "../../../entities/DelegateRule/DelegateRuleHelpers";
 import { transformToDelegateUnsetRuleEvent } from "../../../entities/DelegateRule/DelegateRuleTransformers";
 import { compareAddresses } from "../../../helpers/string";
 import useDebounce from "../../../hooks/useDebounce";
@@ -38,10 +39,13 @@ const useLatestUnsetRuleFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const delegateContract = Delegate.getContract(
-      provider.getSigner(),
-      chainId
-    );
+    const delegateContract = getDelegateContract(provider.getSigner(), chainId);
+
+    // TODO: #1047, remove this once we have a contract for all chains
+    if (!delegateContract) {
+      return;
+    }
+
     const eventName: DelegateUnsetRuleEvent["name"] = "UnsetRule";
 
     const handleEvent = async (
@@ -50,16 +54,11 @@ const useLatestUnsetRuleFromEvents = (
       signerToken: string,
       event: Event
     ) => {
-      console.log("senderWallet", senderWallet);
-      console.log("senderToken", senderToken);
-      console.log("signerToken", signerToken);
-      console.log("event", event);
       if (!compareAddresses(senderWallet, account)) {
         return;
       }
 
       const receipt = await event.getTransactionReceipt();
-      console.log("receipt", receipt);
 
       setLatestUnsetRule(
         transformToDelegateUnsetRuleEvent(
