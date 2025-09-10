@@ -14,8 +14,8 @@ import {
   SwitchTokensButton,
 } from "./SwapInputs.styles";
 import getSwitchTokensButtonIcon from "./helpers/getSwapInputIcon";
-import getTokenMaxInfoText from "./helpers/getTokenMaxInfoText";
 import useErrorTranslation from "./hooks/useErrorTranslation";
+import { useTokenMaxInfoText } from "./hooks/useTokenMaxInfoText";
 
 const SwapInputs: FC<{
   disabled?: boolean;
@@ -88,10 +88,10 @@ const SwapInputs: FC<{
     ? getTokenKind(quoteTokenInfo)
     : undefined;
 
-  const maxAmountInfoText = useMemo(
-    () => getTokenMaxInfoText(baseTokenInfo, maxAmount, t),
-    [baseTokenInfo, maxAmount, t]
-  );
+  const maxAmountInfoText = useTokenMaxInfoText({
+    tokenInfo: baseTokenInfo,
+    maxAmount,
+  });
   const isQuote = !!baseAmount && !!quoteAmount && readOnly;
   const baseAmountErrorText = useErrorTranslation(baseAmountError);
   const quoteAmountErrorText = useErrorTranslation(quoteAmountError);

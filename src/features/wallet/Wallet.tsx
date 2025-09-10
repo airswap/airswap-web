@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TransactionsTab from "../../components/TransactionsTab/TransactionsTab";
 import { InterfaceContext } from "../../contexts/interface/Interface";
-import useNetworkSupported from "../../hooks/useNetworkSupported";
 import {
   AirswapButtonAndNavigationContainer,
   StyledAirswapButton,
@@ -17,10 +16,8 @@ import {
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
 import { ClearOrderType } from "../../types/clearOrderType";
-import { TransactionTypes } from "../../types/transactionTypes";
 import { getConnection } from "../../web3-connectors/connections";
 import { tryDeactivateConnector } from "../../web3-connectors/helpers";
-import { selectBalances } from "../balances/balancesSlice";
 import { selectProtocolFee } from "../metadata/metadataSlice";
 import {
   selectFilteredTransactions,

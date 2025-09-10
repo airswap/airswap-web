@@ -5,7 +5,6 @@ import { toAtomicString, ADDRESS_ZERO } from "@airswap/utils";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
-import { nativeCurrencySafeTransactionFee } from "../constants/nativeCurrency";
 import { isTokenInfo } from "../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectBalances } from "../features/balances/balancesSlice";
 import {
@@ -23,6 +22,7 @@ const useShouldDepositNativeTokenAmount = (
   const activeTokens = useAppSelector(selectActiveTokens);
   const balances = useAppSelector(selectBalances);
   const protocolFee = useAppSelector(selectProtocolFee);
+  const { swapTransactionCost } = useAppSelector((state) => state.gasCost);
 
   const { chainId } = useAppSelector((state) => state.web3);
 
@@ -78,7 +78,7 @@ const useShouldDepositNativeTokenAmount = (
 
     const totalBigNumber = nativeTokenBigNumber
       .plus(wrappedTokenBigNumber)
-      .minus(nativeCurrencySafeTransactionFee[chainId] || 0);
+      .minus(swapTransactionCost || 0);
 
     // If user has the required WETH amount then it's not necessary to wrap: we'll just use the WETH
     if (wrappedTokenBigNumber.isGreaterThanOrEqualTo(tokenAmount)) {

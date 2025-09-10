@@ -138,10 +138,12 @@ export const MaxButton = styled.button`
 export const InfoLabel = styled.div`
   ${MaxButtonStyle};
 
+  text-transform: none;
+  font-size: 0.875rem;
   border-radius: 50%;
   text-align: center;
-  min-width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   cursor: pointer;
 `;
 
