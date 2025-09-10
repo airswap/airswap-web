@@ -8,6 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { Event } from "ethers";
 
+import { getDelegateContract } from "../../../entities/DelegateRule/DelegateRuleHelpers";
 import getContractEvents from "../../../helpers/getContractEvents";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
@@ -113,7 +114,17 @@ const useSwapLogs = (
     const swapContract = Swap.getContract(provider, chainId);
     const swapErc20Contract = SwapERC20.getContract(provider, chainId);
     const wrapperContract = Wrapper.getContract(provider, chainId);
-    const delegatedSwapContract = Delegate.getContract(provider, chainId);
+    const delegatedSwapContract = getDelegateContract(provider, chainId);
+
+    // TODO: #1047, remove this once we have a contract for all chains
+    if (
+      !swapContract ||
+      !swapErc20Contract ||
+      !wrapperContract ||
+      !delegatedSwapContract
+    ) {
+      return;
+    }
 
     actions.execute(
       swapContract,

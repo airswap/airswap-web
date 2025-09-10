@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { Event } from "ethers";
 
 import { DelegatedSwapEvent } from "../../../entities/DelegateRule/DelegateRule";
+import { getDelegateContract } from "../../../entities/DelegateRule/DelegateRuleHelpers";
 import { transformToDelegatedSwapEvent } from "../../../entities/DelegateRule/DelegateRuleTransformers";
 import { compareAddresses } from "../../../helpers/string";
 import useDebounce from "../../../hooks/useDebounce";
@@ -39,10 +40,13 @@ const useLatestDelegatedSwapFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const delegateContract = Delegate.getContract(
-      provider.getSigner(),
-      chainId
-    );
+    const delegateContract = getDelegateContract(provider.getSigner(), chainId);
+
+    // TODO: #1047, remove this once we have a contract for all chains
+    if (!delegateContract) {
+      return;
+    }
+
     const eventName: DelegatedSwapEvent["name"] = "DelegatedSwapFor";
 
     const handleEvent = async (

@@ -1,4 +1,9 @@
 import { Delegate } from "@airswap/libraries";
+import {
+  JsonRpcProvider,
+  JsonRpcSigner,
+  Web3Provider,
+} from "@ethersproject/providers";
 
 import { compareAddresses } from "../../helpers/string";
 import { TransactionEvent } from "../../types/transactionTypes";
@@ -100,4 +105,19 @@ export const getUniqueDelegateRules = (rules: DelegateRule[]) => {
       return acc;
     }, {} as Record<string, DelegateRule>)
   );
+};
+
+export const getDelegateContract = (
+  provider: Web3Provider | JsonRpcSigner,
+  chainId: number
+) => {
+  try {
+    return Delegate.getContract(provider, chainId);
+  } catch {
+    console.error(
+      `[getDelegateContract]: Missing contract for chainId ${chainId}`
+    );
+
+    return null;
+  }
 };

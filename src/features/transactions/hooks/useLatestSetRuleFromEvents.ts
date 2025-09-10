@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, Event } from "ethers";
 
 import { DelegateSetRuleEvent } from "../../../entities/DelegateRule/DelegateRule";
+import { getDelegateContract } from "../../../entities/DelegateRule/DelegateRuleHelpers";
 import { transformToDelegateSetRuleEvent } from "../../../entities/DelegateRule/DelegateRuleTransformers";
 import { compareAddresses } from "../../../helpers/string";
 import useDebounce from "../../../hooks/useDebounce";
@@ -37,10 +38,13 @@ const useLatestSetRuleFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const delegateContract = Delegate.getContract(
-      provider.getSigner(),
-      chainId
-    );
+    const delegateContract = getDelegateContract(provider.getSigner(), chainId);
+
+    // TODO: #1047, remove this once we have a contract for all chains
+    if (!delegateContract) {
+      return;
+    }
+
     const eventName: DelegateSetRuleEvent["name"] = "SetRule";
 
     const handleEvent = async (
