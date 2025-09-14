@@ -58,9 +58,10 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   } = useAppSelector(selectTradeTerms);
   const protocolFee = useAppSelector(selectProtocolFee);
   const {
+    chainId: gasCostChainId,
+    swapTransactionCost,
     isLoading: isGasCostLoading,
     isSuccessful: isGasCostSuccessful,
-    swapTransactionCost,
   } = useAppSelector((state) => state.gasCost);
   const {
     disableLastLook,
@@ -139,7 +140,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       return;
     }
 
-    dispatch(getGasPrice({ chainId }));
+    if (!swapTransactionCost && gasCostChainId !== chainId) {
+      dispatch(getGasPrice({ chainId }));
+    }
 
     dispatch(
       fetchBestPricing({
