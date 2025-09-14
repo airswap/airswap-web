@@ -79,6 +79,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
 
+  const isCalculatingBestOrder =
+    !!(bestRfqOrder || bestLastLookOrder) && !bestOrder;
   const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address) as TokenInfo;
   const quoteTokenInfo = useTokenInfo(quoteToken.address) as TokenInfo;
@@ -276,7 +278,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   return {
     isFailed: !isLoading && !!error,
-    isLoading: isLastLookLoading || isRfqLoading,
+    isLoading: isLoading || isCalculatingBestOrder,
     bestPricing: streamedBestPricing || bestPricing,
     bestOrder: streamedLastLookOrder || bestOrder,
     bestOrderType,
