@@ -65,6 +65,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   const {
     disableLastLook,
     disableRfq,
+    isComparingBestOrder,
     isLastLookLoading,
     isRfqLoading,
     bestPricing,
@@ -79,15 +80,13 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
 
-  const isCalculatingBestOrder =
-    !!(bestRfqOrder || bestLastLookOrder) && !bestOrder;
-  const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
+  const isOrderLoading = isLastLookLoading || isRfqLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address) as TokenInfo;
   const quoteTokenInfo = useTokenInfo(quoteToken.address) as TokenInfo;
   const wrappedTokenInfo = useNativeWrappedToken(chainId);
 
   const error =
-    !isLoading && !bestOrder && (lastLookError || rfqError)
+    !isOrderLoading && !bestOrder && (lastLookError || rfqError)
       ? getPricingErrorWithHighestPriority([lastLookError, rfqError])
       : undefined;
 
@@ -194,7 +193,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   useEffect(() => {
     if (
-      isLoading ||
+      isOrderLoading ||
       !justifiedQuoteTokenInfo ||
       !isSubmitted ||
       !isGasCostSuccessful
@@ -212,7 +211,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     );
   }, [
     isGasCostSuccessful,
-    isLoading,
+    isOrderLoading,
     disableLastLook,
     disableRfq,
     bestLastLookOrder,
@@ -277,8 +276,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   }
 
   return {
-    isFailed: !isLoading && !!error,
-    isLoading: isLoading || isCalculatingBestOrder,
+    isFailed: !isOrderLoading && !!error,
+    isLoading: isOrderLoading || isComparingBestOrder || isGasCostLoading,
     bestPricing: streamedBestPricing || bestPricing,
     bestOrder: streamedLastLookOrder || bestOrder,
     bestOrderType,
