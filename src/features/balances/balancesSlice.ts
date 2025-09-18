@@ -80,6 +80,9 @@ const getSlice = (
         state.values[action.payload.tokenAddress.toLowerCase()] =
           action.payload.amount;
       },
+      setBalances: (state, action: PayloadAction<BalanceValues>) => {
+        state.values = action.payload;
+      },
     },
     extraReducers: (builder) => {
       builder

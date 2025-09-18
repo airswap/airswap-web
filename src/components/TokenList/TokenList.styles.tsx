@@ -1,8 +1,9 @@
 import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
-import { InputTextStyle } from "../../style/mixins";
+import { InputOrButtonBorderStyle, InputTextStyle } from "../../style/mixins";
 import Icon from "../Icon/Icon";
+import IconButton from "../IconButton/IconButton";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
 
@@ -79,4 +80,14 @@ export const ImportButton = styled.button`
     color: ${(props) => props.theme.colors.black};
     transition: 0.25s ease-in-out;
   }
+`;
+
+export const RefreshButton = styled(IconButton)`
+  ${InputOrButtonBorderStyle};
+
+  position: absolute;
+  top: -3.5rem;
+  right: 0;
+  width: 1.75rem;
+  height: 1.75rem;
 `;

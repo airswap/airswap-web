@@ -47,7 +47,7 @@ export const getTokenIdentifierWithKind = (
 // token id is the identifier for the token in the store
 export const getTokenId = (tokenInfo: AppTokenInfo): string => {
   return getTokenIdentifier(
-    tokenInfo.address,
+    tokenInfo.address.toLowerCase(),
     isCollectionTokenInfo(tokenInfo) ? tokenInfo.id : undefined
   );
 };

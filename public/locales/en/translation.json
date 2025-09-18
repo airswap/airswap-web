@@ -192,6 +192,7 @@
     "revokeComplete": "Approval revoked",
     "revokeProcessing": "Revoking approval...",
     "scanningPeers": "Scanning peers on the network",
+    "searchById": "Search by ID",
     "searchByNameOrAddress": "Search name or paste address",
     "selectedServer": "Selected {{serverUrl}} as custom server",
     "setLimitOrderComplete": "Set limit order complete",

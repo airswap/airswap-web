@@ -13,6 +13,7 @@ import {
   isTokenInfo,
 } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getOwnedNftsOfCollection } from "../../entities/AppTokenInfo/AppTokenService";
+import { updateNftBalances } from "../../features/balances/balancesActions";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
   addActiveTokens,
@@ -26,6 +27,7 @@ import {
   SearchInput,
   ContentContainer,
   SizingContainer,
+  RefreshButton,
 } from "./TokenList.styles";
 import { getActionButtonText, getTokenIdsFromTokenInfo } from "./helpers";
 import useScrapeToken from "./hooks/useScrapeToken";
@@ -171,6 +173,44 @@ const TokenList = ({
     setEditMode(!editMode);
   };
 
+  const handleRefreshButtonClick = async () => {
+    if (!library || !account || !selectedNftCollection) {
+      return;
+    }
+
+    setIsLoadingOwnedNfts(true);
+
+    const [ownedNfts] = await getOwnedNftsOfCollection(
+      library,
+      account,
+      selectedNftCollection.address
+    );
+
+    const storedOwnedNfts = allTokens
+      .filter(isCollectionTokenInfo)
+      .filter((token) =>
+        compareAddresses(token.address, selectedNftCollection.address)
+      )
+      .map((token) => getTokenId(token));
+    const tokenIds = getTokenIdsFromTokenInfo(selectedNftCollection, ownedNfts);
+    const tokensToAdd = tokenIds.filter(
+      (token) => !storedOwnedNfts.includes(token)
+    );
+
+    if (tokensToAdd.length > 0) {
+      dispatch(
+        addUnknownTokenInfo(
+          ownedNfts.filter((token) => tokensToAdd.includes(getTokenId(token)))
+        )
+      );
+      dispatch(addActiveTokens(tokensToAdd));
+    }
+
+    dispatch(updateNftBalances(selectedNftCollection.address, tokenIds));
+
+    setIsLoadingOwnedNfts(false);
+  };
+
   return (
     <Container>
       <ContentContainer>
@@ -182,13 +222,13 @@ const TokenList = ({
             type="text"
             label={
               selectedNftCollection
-                ? "Search by ID"
+                ? t("orders.searchById")
                 : t("orders.searchByNameOrAddress")
             }
             value={tokenQuery}
             placeholder={
               selectedNftCollection
-                ? "Search by ID"
+                ? t("orders.searchById")
                 : t("orders.searchByNameOrAddress")
             }
             onChange={(e) => {
@@ -196,8 +236,13 @@ const TokenList = ({
             }}
           />
 
+          {selectedNftCollection && (
+            <RefreshButton icon="swap" onClick={handleRefreshButtonClick} />
+          )}
+
           {selectedNftCollection ? (
             <CollectionNftsList
+              isLoading={isLoadingOwnedNfts}
               tokens={activeCollectionTokens}
               tokenQuery={tokenQuery}
               onSelectToken={handleSelectCollectionToken}
