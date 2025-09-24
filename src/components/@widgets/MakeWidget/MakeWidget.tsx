@@ -752,7 +752,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
         {showLimitNotice && isLimitOrder && (
           <StyledNotice
-            text="Limit orders are OTC orders are partially fillable, meaning they can be filled by multiple users. There is no guarantee your order will be taken at a certain price"
+            text={t("information.limitOrder")}
             onCloseButtonClick={() => setShowLimitNotice(false)}
           />
         )}

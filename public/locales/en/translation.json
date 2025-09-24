@@ -100,6 +100,7 @@
     "gasFreeSwaps.paragraph": "You found a gasless swap!",
     "gasFreeSwaps.paragraph2": "Some swaps do not require you to pay gas because the transaction is handled by the maker. You'll still need to sign the swap using your wallet to proceed.",
     "gasFreeSwaps.title": "Gasless swap",
+    "limitOrder": "Limit orders are on-chain OTC orders. A limit order can be partially filled by multiple takers. There is no guarantee your order will be filled.",
     "protocolFee.paragraph": "A protocol fee is processed on each swap and distributed to AirSwap contributors and active participants in the decentralized governance process. Using AirSwap supports the development and stewardship of decentralized protocols.",
     "protocolFee.title": "Protocol Fee"
   },
