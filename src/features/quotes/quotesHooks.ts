@@ -58,13 +58,15 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   } = useAppSelector(selectTradeTerms);
   const protocolFee = useAppSelector(selectProtocolFee);
   const {
+    chainId: gasCostChainId,
+    swapTransactionCost,
     isLoading: isGasCostLoading,
     isSuccessful: isGasCostSuccessful,
-    swapTransactionCost,
   } = useAppSelector((state) => state.gasCost);
   const {
     disableLastLook,
     disableRfq,
+    isComparingBestOrder,
     isLastLookLoading,
     isRfqLoading,
     bestPricing,
@@ -79,13 +81,13 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     streamedLastLookOrder,
   } = useAppSelector((state) => state.quotes);
 
-  const isLoading = isLastLookLoading || isRfqLoading || isGasCostLoading;
+  const isOrderLoading = isLastLookLoading || isRfqLoading;
   const baseTokenInfo = useTokenInfo(baseToken.address) as TokenInfo;
   const quoteTokenInfo = useTokenInfo(quoteToken.address) as TokenInfo;
   const wrappedTokenInfo = useNativeWrappedToken(chainId);
 
   const error =
-    !isLoading && !bestOrder && (lastLookError || rfqError)
+    !isOrderLoading && !bestOrder && (lastLookError || rfqError)
       ? getPricingErrorWithHighestPriority([lastLookError, rfqError])
       : undefined;
 
@@ -138,7 +140,9 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
       return;
     }
 
-    dispatch(getGasPrice({ chainId }));
+    if (!swapTransactionCost && gasCostChainId !== chainId) {
+      dispatch(getGasPrice({ chainId }));
+    }
 
     dispatch(
       fetchBestPricing({
@@ -192,7 +196,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
 
   useEffect(() => {
     if (
-      isLoading ||
+      isOrderLoading ||
       !justifiedQuoteTokenInfo ||
       !isSubmitted ||
       !isGasCostSuccessful
@@ -210,7 +214,7 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
     );
   }, [
     isGasCostSuccessful,
-    isLoading,
+    isOrderLoading,
     disableLastLook,
     disableRfq,
     bestLastLookOrder,
@@ -275,8 +279,8 @@ const useQuotes = (isSubmitted: boolean): UseQuotesValues => {
   }
 
   return {
-    isFailed: !isLoading && !!error,
-    isLoading: isLastLookLoading || isRfqLoading,
+    isFailed: !isOrderLoading && !!error,
+    isLoading: isOrderLoading || isComparingBestOrder || isGasCostLoading,
     bestPricing: streamedBestPricing || bestPricing,
     bestOrder: streamedLastLookOrder || bestOrder,
     bestOrderType,
