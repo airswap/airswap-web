@@ -62,7 +62,10 @@ export const TokensAndCollectionsList = ({
 
   // sort tokens based on symbol
   const sortedTokens: AppTokenInfo[] = useMemo(() => {
-    return sortTokensBySymbolAndBalance(activeTokens, balances);
+    return [
+      nativeCurrency[chainId],
+      ...sortTokensBySymbolAndBalance(activeTokens, balances),
+    ];
   }, [activeTokens, balances]);
 
   // filter token
@@ -115,7 +118,7 @@ export const TokensAndCollectionsList = ({
           ]}
         >
           <TokensContainer>
-            {[nativeCurrency[chainId], ...sortedFilteredTokens].map((token) => {
+            {sortedFilteredTokens.map((token) => {
               const tokenId = getTokenId(token);
               const tokenDecimals = getTokenDecimals(token);
               const tokenBalance = getTokenBalance(token, balances);

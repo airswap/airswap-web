@@ -1,4 +1,8 @@
-import { CollectionTokenInfo } from "@airswap/utils";
+import {
+  ADDRESS_ZERO,
+  CollectionTokenInfo,
+  wrappedNativeTokenAddresses,
+} from "@airswap/utils";
 
 import { ethers } from "ethers";
 
@@ -47,10 +51,18 @@ export function createTokenFilterFunction<T extends AppTokenInfo>(
 
   return (token: T): boolean => {
     const symbol = getTokenSymbol(token);
-    const { name } = token;
+    const { address, chainId, name } = token;
+    const isNativeToken = compareAddresses(address, ADDRESS_ZERO);
+    const isWrappedNativeToken = compareAddresses(
+      address,
+      wrappedNativeTokenAddresses[chainId]
+    );
 
     return Boolean(
-      (symbol && matchesSearch(symbol)) || (name && matchesSearch(name))
+      (symbol && matchesSearch(symbol)) ||
+        (name && matchesSearch(name)) ||
+        ((isNativeToken || isWrappedNativeToken) && matchesSearch("eth")) ||
+        (isWrappedNativeToken && matchesSearch("weth"))
     );
   };
 }
