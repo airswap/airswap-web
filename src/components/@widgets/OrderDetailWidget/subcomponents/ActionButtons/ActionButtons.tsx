@@ -10,8 +10,10 @@ import {
 
 export enum ButtonActions {
   approve = "approve",
+  back = "back",
   cancel = "cancel",
   connectWallet = "connectWallet",
+  makeNewOrder = "makeNewOrder",
   reloadPage = "reloadPage",
   restart = "restart",
   review = "review",
@@ -24,6 +26,7 @@ type ActionButtonsProps = {
   hasInsufficientBalance: boolean;
   isCanceled: boolean;
   isExpired: boolean;
+  isLimitOrder?: boolean;
   isTaken: boolean;
   isDifferentChainId: boolean;
   isIntendedRecipient: boolean;
@@ -41,6 +44,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   hasInsufficientBalance,
   isCanceled,
   isExpired,
+  isLimitOrder,
   isTaken,
   isDifferentChainId,
   isIntendedRecipient,
@@ -77,7 +81,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (isDifferentChainId) {
     return (
-      <Container center className={className}>
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.switchNetwork)}
@@ -106,7 +113,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
       <Container center className={className}>
         <SignButton
           intent="primary"
-          onClick={() => onActionButtonClick(ButtonActions.restart)}
+          onClick={() => onActionButtonClick(ButtonActions.makeNewOrder)}
         >
           {t("orders.makeNewOrder")}
         </SignButton>
@@ -127,7 +134,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (!isIntendedRecipient) {
     return (
-      <Container center className={className}>
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+          {t("common.back")}
+        </BackButton>
         <SignButton disabled intent="neutral">
           {t("orders.unableTake")}
         </SignButton>
@@ -137,7 +147,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (shouldDepositNativeToken) {
     return (
-      <Container center className={className}>
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.review)}
@@ -150,7 +163,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientBalance) {
     return (
-      <Container center className={className}>
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+          {t("common.back")}
+        </BackButton>
         <SignButton disabled intent="neutral" isFilled={true}>
           {t("orders.insufficientBalance")}
         </SignButton>
@@ -160,7 +176,10 @@ const ActionButtons: FC<ActionButtonsProps> = ({
 
   if (hasInsufficientAllowance) {
     return (
-      <Container center className={className}>
+      <Container className={className}>
+        <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+          {t("common.back")}
+        </BackButton>
         <SignButton
           intent="primary"
           onClick={() => onActionButtonClick(ButtonActions.approve)}
@@ -172,10 +191,17 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   }
 
   return (
-    <Container center className={className}>
+    <Container className={className}>
+      <BackButton onClick={() => onActionButtonClick(ButtonActions.back)}>
+        {t("common.back")}
+      </BackButton>
       <SignButton
         intent="primary"
-        onClick={() => onActionButtonClick(ButtonActions.take)}
+        onClick={() =>
+          isLimitOrder
+            ? onActionButtonClick(ButtonActions.review)
+            : onActionButtonClick(ButtonActions.take)
+        }
       >
         {t("orders.takeSwap")}
       </SignButton>

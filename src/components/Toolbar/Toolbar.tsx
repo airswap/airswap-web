@@ -75,7 +75,7 @@ const Toolbar: FC<ToolbarProps> = ({
           iconName="plus"
           iconSize={0.875}
           text={t("common.otc")}
-          link={`/${AppRoutes.myOrders}`}
+          link={`/${AppRoutes.myOtcOrders}`}
         />
         <ToolbarButton
           iconName="bars"

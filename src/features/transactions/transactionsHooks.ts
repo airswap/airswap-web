@@ -21,7 +21,11 @@ import {
   handleTransactionResolved,
   handleTransactionEvent,
 } from "./transactionsHelpers";
-import { selectTransactions, setTransactions } from "./transactionsSlice";
+import {
+  selectTransactions,
+  setIsInitialized,
+  setTransactions,
+} from "./transactionsSlice";
 import {
   getLocalStorageTransactions,
   getTransactionReceipt,
@@ -82,6 +86,7 @@ export const useTransactions = (): void => {
     processingTransactions.forEach(getTransactionReceiptAndUpdateTransaction);
 
     dispatch(setTransactions(localStorageTransactions));
+    dispatch(setIsInitialized(true));
   }, [account, chainId]);
 
   // Historical transactions are loaded from the contract logs and merged into the transaction store if needed.
@@ -134,7 +139,7 @@ export const useTransactions = (): void => {
   // If a transaction is successful, we want to handle it here.
   useEffect(() => {
     if (latestSuccessfulTransaction) {
-      handleTransactionResolved(latestSuccessfulTransaction);
+      handleTransactionResolved(latestSuccessfulTransaction, dispatch);
     }
   }, [latestSuccessfulTransaction]);
 };

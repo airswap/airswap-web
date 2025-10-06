@@ -1,9 +1,10 @@
 import styled from "styled-components/macro";
 
 import { sizes } from "../../../style/sizes";
-import { RecipientAndStatus } from "../SwapWidget/subcomponents/RecipientAndStatus/RecipientAndStatus";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
+import { FilledAndStatus } from "./subcomponents/FilledAndStatus/FilledAndStatus";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
+import { RecipientAndStatus } from "./subcomponents/RecipientAndStatus/RecipientAndStatus";
 
 export const Container = styled.div`
   display: flex;
@@ -13,6 +14,10 @@ export const Container = styled.div`
 `;
 
 export const StyledRecipientAndStatus = styled(RecipientAndStatus)`
+  margin-block-start: ${sizes.widgetGutter};
+`;
+
+export const StyledFilledAndStatus = styled(FilledAndStatus)`
   margin-block-start: ${sizes.widgetGutter};
 `;
 

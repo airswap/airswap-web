@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { findTokensBySymbol } from "@airswap/utils";
+import { findTokensBySymbol, TokenInfo } from "@airswap/utils";
 
 import { useAppSelector } from "../app/hooks";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
@@ -13,7 +13,10 @@ const useTokenAddress = (tokenSymbol: string): string | null => {
       return null;
     }
 
-    return findTokensBySymbol(tokenSymbol, allTokens)[0]?.address || null;
+    return (
+      findTokensBySymbol(tokenSymbol, allTokens as TokenInfo[])[0]?.address ||
+      null
+    );
   }, [allTokens, tokenSymbol]);
 };
 

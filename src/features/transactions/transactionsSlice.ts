@@ -1,13 +1,21 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { getOrderSignerWallet } from "../../entities/OrderERC20/OrderERC20Helpers";
 import {
   SubmittedApprovalTransaction,
   SubmittedCancellation,
   SubmittedDepositTransaction,
+  SubmittedSetRuleTransaction,
   SubmittedTransaction,
+  SubmittedUnsetRuleTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
-import { isSubmittedOrder } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import {
+  isDelegatedSwapTransaction,
+  isSetRuleTransaction,
+  isSubmittedOrder,
+  isUnsetRuleTransaction,
+} from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { compareAddresses } from "../../helpers/string";
 import { ClearOrderType } from "../../types/clearOrderType";
 import {
@@ -24,6 +32,7 @@ import {
 import { filterTransactionByDate } from "./transactionsUtils";
 
 export interface TransactionsState {
+  isInitialized: boolean;
   transactions: SubmittedTransaction[];
   filter: {
     [ClearOrderType.failed]?: number;
@@ -32,6 +41,7 @@ export interface TransactionsState {
 }
 
 const initialState: TransactionsState = {
+  isInitialized: false,
   transactions: [],
   filter: {},
 };
@@ -49,7 +59,7 @@ function updateTransaction(params: {
       (s) =>
         isSubmittedOrder(s) &&
         s.order.nonce === nonce &&
-        compareAddresses(s.order.signerWallet, signerWallet)
+        compareAddresses(getOrderSignerWallet(s.order), signerWallet)
     );
     if (swap) {
       swap.timestamp = Date.now();
@@ -90,6 +100,9 @@ export const transactionsSlice = createSlice({
     setTransactions: (state, action: PayloadAction<SubmittedTransaction[]>) => {
       state.transactions = action.payload.slice(0, 20);
     },
+    setIsInitialized: (state, action: PayloadAction<boolean>) => {
+      state.isInitialized = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(submitTransaction, (state, action) => {
@@ -124,8 +137,13 @@ export const transactionsSlice = createSlice({
   },
 });
 
-export const { clear, setFilter, setFilters, setTransactions } =
-  transactionsSlice.actions;
+export const {
+  clear,
+  setIsInitialized,
+  setFilter,
+  setFilters,
+  setTransactions,
+} = transactionsSlice.actions;
 
 export const selectTransactions = (state: RootState): SubmittedTransaction[] =>
   state.transactions.transactions;
@@ -223,5 +241,21 @@ export const selectPendingCancellations = (state: RootState) =>
 export const selectTransactionsFilter = (state: RootState) => {
   return state.transactions.filter;
 };
+
+export const selectSetRuleTransactions = (state: RootState) =>
+  state.transactions.transactions.filter(isSetRuleTransaction);
+
+export const selectUnsetRuleTransactions = (state: RootState) =>
+  state.transactions.transactions.filter(isUnsetRuleTransaction);
+
+export const selectDelegateSwapTransactions = (state: RootState) =>
+  state.transactions.transactions.filter(isDelegatedSwapTransaction);
+
+export const selectPendingUnsetRuleTransactions = (state: RootState) =>
+  state.transactions.transactions.filter(
+    (tx) =>
+      tx.status === TransactionStatusType.processing &&
+      tx.type === TransactionTypes.unsetRule
+  ) as SubmittedUnsetRuleTransaction[];
 
 export default transactionsSlice.reducer;

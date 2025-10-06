@@ -1,35 +1,47 @@
-import React, { FC, PropsWithChildren, useMemo, useState } from "react";
+import { FC, PropsWithChildren, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { compressFullOrderERC20, FullOrderERC20 } from "@airswap/utils";
+import { ADDRESS_ZERO } from "@airswap/utils";
 
+import {
+  getTokenDecimals,
+  getTokenImage,
+  getTokenSymbol,
+} from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
-import useCancelPending from "../../../../../hooks/useCancellationPending";
-import useTokenInfo from "../../../../../hooks/useTokenInfo";
-import { AppRoutes } from "../../../../../routes";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
-import { useOrderStatus } from "../../../OrderDetailWidget/hooks/useOrderStatus";
+import { MyOrder as MyOrderInterface } from "../../../MyOrdersWidget/entities/MyOrder";
 import {
   getOrderStatusTranslation,
   getTokenAmountWithDecimals,
-} from "../../helpers";
+} from "../../../MyOrdersWidget/helpers";
+import useFormattedTokenAmount from "../../../OrderDetailWidget/hooks/useFormattedTokenAmount";
 import {
   ActionButton,
   ActionButtonContainer,
   Circle,
   Container,
+  FilledAmount,
+  OrderStatusLabel,
+  SenderAmount,
+  SignerAmount,
   StatusIndicator,
   StyledNavLink,
-  Text,
+  StyledTooltip,
   TokenIcon,
   Tokens,
+  Warning,
 } from "./Order.styles";
 
 interface OrderProps {
-  order: FullOrderERC20;
+  hasFilledColumn?: boolean;
+  hasForColumn?: boolean;
+  isCancelInProgress: boolean;
+  order: MyOrderInterface;
   index: number;
-  onDeleteOrderButtonClick: (order: FullOrderERC20) => void;
+  onDeleteOrderButtonClick: (order: MyOrderInterface) => void;
   onDeleteOrderButtonMouseEnter: (index: number, orderIsOpen: boolean) => void;
   onDeleteOrderButtonMouseLeave: () => void;
   onStatusIndicatorMouseEnter: (index: number, status: OrderStatus) => void;
@@ -38,6 +50,9 @@ interface OrderProps {
 }
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
+  hasFilledColumn,
+  hasForColumn,
+  isCancelInProgress,
   order,
   index,
   onDeleteOrderButtonClick,
@@ -47,44 +62,66 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   onStatusIndicatorMouseLeave,
   className,
 }) => {
-  const senderTokenInfo = useTokenInfo(order.senderToken);
-  const signerTokenInfo = useTokenInfo(order.signerToken);
-  const cancelInProgress = useCancelPending(order.nonce);
-  const [orderStatus] = useOrderStatus(order);
-
+  const { t } = useTranslation();
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
+
+  const senderTokenDecimals = order.senderToken
+    ? getTokenDecimals(order.senderToken)
+    : undefined;
+  const signerTokenDecimals = order.signerToken
+    ? getTokenDecimals(order.signerToken)
+    : undefined;
+  const senderTokenSymbol = order.senderToken
+    ? getTokenSymbol(order.senderToken)
+    : undefined;
+  const signerTokenSymbol = order.signerToken
+    ? getTokenSymbol(order.signerToken)
+    : undefined;
+  const senderTokenImage = order.senderToken
+    ? getTokenImage(order.senderToken)
+    : undefined;
+  const signerTokenImage = order.signerToken
+    ? getTokenImage(order.signerToken)
+    : undefined;
 
   const senderAmount = useMemo(
     () =>
-      getHumanReadableNumber(
-        getTokenAmountWithDecimals(
-          order.senderAmount,
-          senderTokenInfo?.decimals
-        ).toString()
-      ),
-    [order, senderTokenInfo]
+      order.senderToken
+        ? getHumanReadableNumber(
+            getTokenAmountWithDecimals(
+              order.senderAmount,
+              senderTokenDecimals
+            ).toString()
+          )
+        : "",
+    [order]
   );
 
   const signerAmount = useMemo(
     () =>
-      getHumanReadableNumber(
-        getTokenAmountWithDecimals(
-          order.signerAmount,
-          signerTokenInfo?.decimals
-        ).toString()
-      ),
-    [order, signerTokenInfo]
+      order.signerToken
+        ? getHumanReadableNumber(
+            getTokenAmountWithDecimals(
+              order.signerAmount,
+              signerTokenDecimals
+            ).toString()
+          )
+        : "",
+    [order]
   );
 
   const timeLeft = useMemo(() => {
-    const expiry = new Date(parseInt(order.expiry) * 1000);
-    return getExpiryTranslation(new Date(), expiry);
+    return getExpiryTranslation(new Date(), order.expiry);
   }, [order]);
 
-  const orderString = useMemo(() => compressFullOrderERC20(order), [order]);
   const orderStatusTranslation = useMemo(
-    () => getOrderStatusTranslation(orderStatus),
-    [orderStatus]
+    () => getOrderStatusTranslation(order.status),
+    [order.status]
+  );
+
+  const filledAmount = useFormattedTokenAmount(
+    order.senderFilledAmount,
+    senderTokenDecimals
   );
 
   const handleDeleteOrderButtonClick = () => {
@@ -94,7 +131,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
   const handleActionButtonMouseEnter = () => {
     setIsHoveredActionButton(true);
-    onDeleteOrderButtonMouseEnter(index, orderStatus === OrderStatus.open);
+    onDeleteOrderButtonMouseEnter(index, order.status === OrderStatus.open);
   };
 
   const handleActionButtonMouseLeave = () => {
@@ -103,34 +140,55 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   };
 
   return (
-    <Container orderStatus={orderStatus} className={className}>
+    <Container orderStatus={order.status} className={className}>
+      {order.hasAllowanceWarning && (
+        <>
+          <Warning />
+          <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
+        </>
+      )}
       <StatusIndicator
-        onMouseEnter={() => onStatusIndicatorMouseEnter(index, orderStatus)}
+        onMouseEnter={() => onStatusIndicatorMouseEnter(index, order.status)}
         onMouseLeave={onStatusIndicatorMouseLeave}
       >
         <Circle />
       </StatusIndicator>
       <Tokens>
-        <TokenIcon logoURI={signerTokenInfo?.logoURI} />
-        <TokenIcon logoURI={senderTokenInfo?.logoURI} />
+        <TokenIcon logoURI={signerTokenImage} />
+        <TokenIcon logoURI={senderTokenImage} />
       </Tokens>
-      <Text>{`${signerAmount} ${signerTokenInfo?.symbol || ""}`}</Text>
-      <Text>{`${senderAmount} ${senderTokenInfo?.symbol || ""}`}</Text>
-      <Text>
-        {orderStatus === OrderStatus.open ? timeLeft : orderStatusTranslation}
-      </Text>
+      {hasFilledColumn && (
+        <FilledAmount>
+          {`${filledAmount} ${signerTokenSymbol || ""}`}
+        </FilledAmount>
+      )}
+      {hasForColumn && (
+        <FilledAmount>
+          {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
+        </FilledAmount>
+      )}
+      <SignerAmount>{`${signerAmount} ${
+        signerTokenSymbol || ""
+      }`}</SignerAmount>
+      <SenderAmount>{`${senderAmount} ${
+        senderTokenSymbol || ""
+      }`}</SenderAmount>
+      <OrderStatusLabel>
+        {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}
+      </OrderStatusLabel>
       <StyledNavLink
         $isHovered={isHoveredActionButton}
-        to={`/${AppRoutes.order}/${orderString}`}
+        $hasWarning={order.hasAllowanceWarning}
+        to={order.link}
       />
 
       <ActionButtonContainer>
-        {cancelInProgress ? (
+        {isCancelInProgress ? (
           <LoadingSpinner />
         ) : (
           <ActionButton
-            icon={orderStatus !== OrderStatus.open ? "bin" : "button-x"}
-            iconSize={orderStatus === OrderStatus.open ? 0.5625 : 0.675}
+            icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
+            iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
             onClick={handleDeleteOrderButtonClick}
             onMouseEnter={handleActionButtonMouseEnter}
             onMouseLeave={handleActionButtonMouseLeave}

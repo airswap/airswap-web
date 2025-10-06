@@ -23,13 +23,10 @@ export const notifyError = (props: { heading: string; cta: string }) => {
   );
 };
 
-export const notifyOrderCreated = (order: FullOrderERC20) => {
-  toast(
-    (t) => <OrderToast onClose={() => toast.dismiss(t.id)} order={order} />,
-    {
-      duration: 3000,
-    }
-  );
+export const notifyOrderCreated = () => {
+  toast((t) => <OrderToast onClose={() => toast.dismiss(t.id)} />, {
+    duration: 3000,
+  });
 };
 
 export const notifyOrderExpiry = () => {

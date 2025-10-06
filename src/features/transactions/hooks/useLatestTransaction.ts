@@ -15,7 +15,9 @@ const useLatestTransaction = (storeTransactions: SubmittedTransaction[]) => {
   const [activeChainId, setActiveChainId] = useState<number>();
 
   useEffect(() => {
-    if (!account || !chainId || !storeTransactions.length) {
+    if (!account || !chainId) {
+      setActiveAccount(undefined);
+      setActiveChainId(undefined);
       setStateTransactions([]);
 
       return;
@@ -25,7 +27,10 @@ const useLatestTransaction = (storeTransactions: SubmittedTransaction[]) => {
       return;
     }
 
-    if (storeTransactions[0]?.hash === stateTransactions[0]?.hash) {
+    if (
+      stateTransactions.length &&
+      storeTransactions[0]?.hash === stateTransactions[0]?.hash
+    ) {
       return;
     }
 

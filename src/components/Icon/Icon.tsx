@@ -1,7 +1,11 @@
 import { FC, ReactElement } from "react";
 import { BiCheck } from "react-icons/bi";
 import { HiX } from "react-icons/hi";
-import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
+import {
+  IoMdInformationCircle,
+  IoMdInformationCircleOutline,
+  IoMdSettings,
+} from "react-icons/io";
 
 import { StyledIcon } from "./Icon.styles";
 import {
@@ -86,6 +90,7 @@ export const icons: IconSet = {
   forbidden: IconForbidden,
   github: IconGithub,
   "information-circle-outline": IoMdInformationCircleOutline,
+  "information-circle": IoMdInformationCircle,
   menu: IconMenu,
   medium: IconMedium,
   plus: IconPlus,

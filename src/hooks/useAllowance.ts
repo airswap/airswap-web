@@ -1,24 +1,47 @@
 import { useEffect, useState } from "react";
 
-import { TokenInfo, ADDRESS_ZERO } from "@airswap/utils";
+import { ADDRESS_ZERO } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
+import { AppTokenInfo } from "../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenId,
+  getTokenIdentifier,
+  isCollectionTokenInfo,
+} from "../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectAllowances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
 import getWethAddress from "../helpers/getWethAddress";
 
+/**
+ * Hook to get the allowance of a token.
+ * @param token - The token to get the allowance of.
+ * @param amount - The amount of the token to get the allowance of.
+ * @param options - The options to get the allowance of.
+ * @param options.wrapNativeToken - Whether to wrap the native token.
+ * @param options.spenderAddressType - The type of spender address to get the allowance of.
+ * @returns An object with the allowance, whether it has sufficient allowance, and the readable allowance.
+ */
+
+export type AllowancesType = "swap" | "swapERC20" | "delegate";
+
 const useAllowance = (
-  token: TokenInfo | null,
+  token: AppTokenInfo | null,
   amount?: string,
-  wrapNativeToken?: boolean
+  options?: {
+    spenderAddressType?: AllowancesType;
+    wrapNativeToken?: boolean;
+  }
 ): {
   hasSufficientAllowance: boolean;
   allowance: string;
   readableAllowance: string;
 } => {
+  const spenderAddressType = options?.spenderAddressType || "swap";
+  const wrapNativeToken = options?.wrapNativeToken || true;
   const { chainId } = useAppSelector((state) => state.web3);
   const allTokens = useAppSelector(selectAllTokenInfo);
   const allowances = useAppSelector(selectAllowances);
@@ -52,11 +75,11 @@ const useAllowance = (
 
     const justifiedAddress =
       token.address === ADDRESS_ZERO ? getWethAddress(chainId) : token.address;
-
     const justifiedToken = findEthOrTokenByAddress(
       justifiedAddress,
       allTokens,
-      chainId
+      chainId,
+      isCollectionTokenInfo(token) ? token.id : undefined
     );
 
     if (!justifiedToken) {
@@ -65,7 +88,10 @@ const useAllowance = (
       return;
     }
 
-    const tokenAllowance = allowances.swap.values[justifiedToken.address];
+    const tokenAddress = getTokenId(justifiedToken);
+
+    const { values } = allowances[spenderAddressType];
+    const tokenAllowance = values[tokenAddress];
 
     if (!tokenAllowance) {
       // safer to return true here (has allowance) as validator will catch the
@@ -79,12 +105,15 @@ const useAllowance = (
       return;
     }
 
+    const decimals = isCollectionTokenInfo(justifiedToken)
+      ? 0
+      : justifiedToken.decimals;
     const newReadableTokenAllowance = new BigNumber(tokenAllowance)
-      .div(10 ** justifiedToken.decimals)
+      .div(10 ** decimals)
       .toString();
 
     const newHasSufficientAllowance = new BigNumber(tokenAllowance)
-      .div(10 ** justifiedToken.decimals)
+      .div(10 ** decimals)
       .gte(amount);
 
     setHasSufficientAllowance(newHasSufficientAllowance);

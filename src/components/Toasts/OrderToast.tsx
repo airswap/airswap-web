@@ -14,7 +14,6 @@ import {
 } from "./Toast.styles";
 
 export type OrderToastProps = {
-  order: FullOrderERC20;
   onClose: () => void;
 };
 

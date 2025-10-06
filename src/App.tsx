@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { HashRouter as Router } from "react-router-dom";
 
-import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import BigNumber from "bignumber.js";
@@ -16,6 +15,7 @@ import { selectTheme } from "./features/userSettings/userSettingsSlice";
 import useCustomServer from "./hooks/useCustomServer";
 import useSystemTheme from "./hooks/useSystemTheme";
 import "./i18n/i18n";
+import "./sentry";
 import GlobalStyle from "./style/GlobalStyle";
 import { darkTheme, lightTheme } from "./style/themes";
 import { prioritizedConnectors } from "./web3-connectors/connections";

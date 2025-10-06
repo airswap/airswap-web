@@ -7,6 +7,8 @@ import {
   ADDRESS_ZERO,
   OrderERC20,
   ProtocolIds,
+  TokenInfo,
+  TokenKinds,
   UnsignedOrderERC20,
 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
@@ -18,10 +20,9 @@ import {
   transformAddressAliasToAddress,
   transformAddressToAddressAlias,
 } from "../../../constants/addressAliases";
-import nativeCurrency, {
-  nativeCurrencySafeTransactionFee,
-} from "../../../constants/nativeCurrency";
+import nativeCurrency from "../../../constants/nativeCurrency";
 import { InterfaceContext } from "../../../contexts/interface/Interface";
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import { selectBalances } from "../../../features/balances/balancesSlice";
 import {
   fetchIndexerUrls,
@@ -29,17 +30,17 @@ import {
 } from "../../../features/indexer/indexerActions";
 import { selectIndexerReducer } from "../../../features/indexer/indexerSlice";
 import {
-  selectActiveTokens,
-  selectAllTokenInfo,
+  selectActiveErc20Tokens,
+  selectErc20Tokens,
 } from "../../../features/metadata/metadataSlice";
 import {
   approve,
   deposit,
-  take,
+  takeErc20,
   takeLastLookOrder,
   withdraw,
 } from "../../../features/orders/ordersActions";
-import { check } from "../../../features/orders/ordersHelpers";
+import { checkOrderErc20 } from "../../../features/orders/ordersHelpers";
 import {
   clear,
   selectOrdersErrors,
@@ -81,7 +82,6 @@ import { SwapType } from "../../../types/swapType";
 import { TokenSelectModalTypes } from "../../../types/tokenSelectModalTypes";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
-import AvailableOrdersWidget from "../../AvailableOrdersWidget/AvailableOrdersWidget";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import GasFreeSwapsModal from "../../InformationModals/subcomponents/GasFreeSwapsModal/GasFreeSwapsModal";
 import ProtocolFeeModal from "../../InformationModals/subcomponents/ProtocolFeeModal/ProtocolFeeModal";
@@ -93,7 +93,6 @@ import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import StyledSwapWidget, {
   InfoContainer,
   StyledDebugMenu,
-  StyledHeader,
   StyledActionButtons,
   StyledSwapInputs,
 } from "./SwapWidget.styles";
@@ -117,8 +116,8 @@ const SwapWidget: FC = () => {
   const balances = useAppSelector(selectBalances);
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const ordersErrors = useAppSelector(selectOrdersErrors);
-  const activeTokens = useAppSelector(selectActiveTokens);
-  const allTokens = useAppSelector(selectAllTokenInfo);
+  const activeTokens = useAppSelector(selectActiveErc20Tokens);
+  const allTokens = useAppSelector(selectErc20Tokens);
   const supportedTokens = useAppSelector(selectAllSupportedTokens);
   const tradeTerms = useAppSelector(selectTradeTerms);
   const {
@@ -175,12 +174,19 @@ const SwapWidget: FC = () => {
   const baseToken = useTokenOrFallback(tokenFrom, tokenTo, true);
   const quoteToken = useTokenOrFallback(tokenFrom, tokenTo);
 
-  const baseTokenInfo = useTokenInfo(baseToken);
-  const quoteTokenInfo = useTokenInfo(quoteToken);
+  const baseTokenInfo = useTokenInfo(
+    baseToken || undefined
+  ) as TokenInfo | null;
+  const quoteTokenInfo = useTokenInfo(
+    quoteToken || undefined
+  ) as TokenInfo | null;
   const swapType = useSwapType(baseTokenInfo, quoteTokenInfo);
   const nativeTokenInfo = useNativeToken(chainId);
   const wrappedNativeTokenInfo = useNativeWrappedToken(chainId);
-  const { hasSufficientAllowance } = useAllowance(baseTokenInfo, baseAmount);
+  const { hasSufficientAllowance } = useAllowance(baseTokenInfo, baseAmount, {
+    wrapNativeToken: false,
+    spenderAddressType: "swapERC20",
+  });
   const isBalanceLoading = useBalanceLoading();
 
   const activeOrderTransaction = useOrderTransaction(
@@ -203,12 +209,10 @@ const SwapWidget: FC = () => {
   const isNetworkSupported = useNetworkSupported();
   const isAllowancesOrBalancesFailed = useAllowancesOrBalancesFailed();
 
-  const maxAmount = useMaxAmount(baseToken);
+  const maxAmount = useMaxAmount(baseTokenInfo);
   const showMaxButton = !!maxAmount && baseAmount !== maxAmount;
   const showMaxInfoButton =
-    !!maxAmount &&
-    baseTokenInfo?.address === ADDRESS_ZERO &&
-    !!nativeCurrencySafeTransactionFee[baseTokenInfo.chainId];
+    !!maxAmount && baseTokenInfo?.address === ADDRESS_ZERO;
 
   useEffect(() => {
     if (transactionsTabIsOpen) {
@@ -292,7 +296,12 @@ const SwapWidget: FC = () => {
     }
 
     if (tokenFrom && tokenTo) {
-      dispatch(setUserTokens({ tokenFrom, tokenTo }));
+      dispatch(
+        setUserTokens({
+          tokenFrom: { address: tokenFrom, kind: TokenKinds.ERC20 },
+          tokenTo: { address: tokenTo, kind: TokenKinds.ERC20 },
+        })
+      );
     }
     history.push({
       pathname: `/${baseRoute}/${tokenFromAlias || tokenFrom}/${
@@ -309,11 +318,11 @@ const SwapWidget: FC = () => {
 
   const insufficientBalance = useInsufficientBalance(baseTokenInfo, baseAmount);
 
-  const handleRemoveActiveToken = (address: string) => {
-    if (address === baseToken) {
+  const handleRemoveActiveToken = (tokenInfo: AppTokenInfo) => {
+    if (tokenInfo.address === baseToken) {
       history.push({ pathname: `/${AppRoutes.swap}/-/${quoteToken || "-"}` });
       setBaseAmount("");
-    } else if (address === quoteToken) {
+    } else if (tokenInfo.address === quoteToken) {
       history.push({ pathname: `/${AppRoutes.swap}/${baseToken || "-"}/-` });
     }
   };
@@ -331,7 +340,7 @@ const SwapWidget: FC = () => {
 
       if (!senderWallet) return;
 
-      const errors = await check(
+      const errors = await checkOrderErc20(
         order,
         senderWallet,
         chainId,
@@ -345,12 +354,12 @@ const SwapWidget: FC = () => {
       }
 
       const transaction = await dispatch(
-        take(
+        takeErc20(
           order,
           quoteTokenInfo!,
           baseTokenInfo!,
           library,
-          swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+          swapType === SwapType.swapWithWrap ? "Wrapper" : "SwapERC20"
         )
       );
 
@@ -507,7 +516,7 @@ const SwapWidget: FC = () => {
         baseAmount,
         baseTokenInfo!,
         library!,
-        swapType === SwapType.swapWithWrap ? "Wrapper" : "Swap"
+        swapType === SwapType.swapWithWrap ? "Wrapper" : "SwapERC20"
       )
     );
     setIsApproving(false);
@@ -520,8 +529,6 @@ const SwapWidget: FC = () => {
   return (
     <>
       <StyledSwapWidget>
-        <StyledHeader />
-
         {isDebugMode && <StyledDebugMenu />}
 
         <StyledSwapInputs
@@ -606,9 +613,9 @@ const SwapWidget: FC = () => {
           onClose={() => setShowTokenSelectModalFor(null)}
         >
           <TokenList
-            onSelectToken={(newTokenAddress) => {
+            onSelectToken={(newToken) => {
               // e.g. handleSetToken("base", "0x123")
-              handleSetToken(showTokenSelectModalFor, newTokenAddress);
+              handleSetToken(showTokenSelectModalFor, newToken.address);
               // Close the modal
               setShowTokenSelectModalFor(null);
             }}
@@ -674,9 +681,6 @@ const SwapWidget: FC = () => {
             transaction={activeOrderTransaction}
             onMakeNewOrderButtonClick={() =>
               handleActionButtonClick(ButtonActions.restart)
-            }
-            onTrackTransactionButtonClick={() =>
-              handleActionButtonClick(ButtonActions.trackTransaction)
             }
           />
         </TransactionOverlay>

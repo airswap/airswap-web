@@ -1,9 +1,10 @@
-import { TokenInfo } from "@airswap/utils";
-
 import i18n from "i18next";
 
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenSymbol } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+
 export const getTokenText = (
-  token: TokenInfo | null,
+  token: AppTokenInfo | null,
   readOnly: boolean
 ): string => {
   if (readOnly && token === null) {
@@ -14,5 +15,5 @@ export const getTokenText = (
     return i18n.t("common.select");
   }
 
-  return token.symbol;
+  return getTokenSymbol(token);
 };

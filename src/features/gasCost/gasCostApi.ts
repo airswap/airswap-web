@@ -5,27 +5,15 @@ import { BigNumber } from "bignumber.js";
 import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
 
 import {
-  GasPriceEndpoint,
-  GasPriceEndpointType,
-} from "../../entities/GasPrice/GasPrice";
-import { getGasPriceApiCall } from "../../entities/GasPrice/GasPriceService";
+  geDefisaverGasPriceApiCall,
+  getEtherscanGasPriceApiCall,
+} from "../../entities/GasPrice/GasPriceService";
 import getWethAddress from "../../helpers/getWethAddress";
 import uniswapFactoryAbi from "../../uniswap/abis/factory.json";
 import uniswapPairAbi from "../../uniswap/abis/pair.json";
 import uniswapDeploys from "../../uniswap/deployments";
 
 export const gasUsedPerSwap = 185555;
-
-const endpoints: Partial<Record<ChainIds, GasPriceEndpoint>> = {
-  [ChainIds.MAINNET]: {
-    type: GasPriceEndpointType.defisaver,
-    url: "https://app.defisaver.com/api/gas-price/current",
-  },
-  [ChainIds.SEPOLIA]: {
-    type: GasPriceEndpointType.beaconCha,
-    url: "https://sepolia.beaconcha.in/api/v1/execution/gasnow",
-  },
-};
 
 interface GetGasPriceResponse {
   gasPrice: string;
@@ -36,16 +24,10 @@ export const getGasPrice = createAsyncThunk<
   GetGasPriceResponse,
   { chainId: ChainIds }
 >("gasPrice/getGasPrice", async ({ chainId }) => {
-  const endpoint = endpoints[chainId];
-
-  if (!endpoint) {
-    return {
-      gasPrice: "0",
-      swapTransactionCost: "0",
-    };
-  }
-
-  const gasPrice = await getGasPriceApiCall(endpoint.url, endpoint.type);
+  // Use Defisaver for Mainnet since it has been very reliable, use etherscan for everything else.
+  const gasPrice = await (chainId === ChainIds.MAINNET
+    ? geDefisaverGasPriceApiCall()
+    : getEtherscanGasPriceApiCall(chainId));
   const swapTransactionCost = new BigNumber(gasPrice).multipliedBy(
     gasUsedPerSwap
   );

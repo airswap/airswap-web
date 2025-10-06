@@ -15,7 +15,7 @@ const ButtonStyle = css`
   min-height: 3rem;
   line-height: 1.375;
   padding: 0.375rem 1rem;
-  white-space: inherit;
+  white-space: normal;
 
   @supports (-moz-appearance: none) {
     padding-top: 0.4375rem;

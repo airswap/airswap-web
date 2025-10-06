@@ -1,7 +1,9 @@
-import { FC } from "react";
+import { FC, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { InterfaceContext } from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
+import useDebounce from "../../hooks/useDebounce";
 import {
   OverlayContainer,
   OverlaySubHeading,
@@ -13,31 +15,55 @@ import OverlayLoader from "../OverlayLoader/OverlayLoader";
 import {
   ButtonsContainer,
   MakeNewOrderButton,
+  ReturnToOrderButton,
   TrackTransactionButton,
 } from "./OrderSubmittedScreen.styles";
 
 interface OrderSubmittedInfoProps {
   isSendingOrder?: boolean;
+  showReturnToOrderButton?: boolean;
   showTrackTransactionButton?: boolean;
   chainId?: number;
   transaction?: SubmittedTransaction;
   onMakeNewOrderButtonClick: () => void;
-  onTrackTransactionButtonClick?: () => void;
+  onReturnToOrderButtonClick?: () => void;
   className?: string;
 }
 
 const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
   isSendingOrder,
+  showReturnToOrderButton,
   showTrackTransactionButton,
   chainId,
   transaction,
   onMakeNewOrderButtonClick,
-  onTrackTransactionButtonClick,
+  onReturnToOrderButtonClick,
   className = "",
 }) => {
   const { t } = useTranslation();
+  const { transactionsTabIsOpen, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
 
   const isSucceeded = transaction?.status === TransactionStatusType.succeeded;
+  const isProcessing = transaction?.status === TransactionStatusType.processing;
+  const [isClickedTrackTransactionButton, setIsClickedTrackTransactionButton] =
+    useState(false);
+
+  const handleTrackTransactionButtonClick = () => {
+    setIsClickedTrackTransactionButton(true);
+  };
+
+  // Hacky hack to delay click to circomvent the useClickOutsideTransactionsTab hook
+  useDebounce(
+    () => {
+      if (isClickedTrackTransactionButton) {
+        setIsClickedTrackTransactionButton(false);
+        setTransactionsTabIsOpen(true);
+      }
+    },
+    1,
+    [isClickedTrackTransactionButton]
+  );
 
   return (
     <OverlayContainer className={className}>
@@ -48,7 +74,7 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
           <OverlaySubHeading>{t("orders.orderSentToMaker")}</OverlaySubHeading>
         </>
       )}
-      {transaction?.status === TransactionStatusType.processing && (
+      {isProcessing && (
         <>
           <OverlayTitle type="h2">{t("orders.orderSubmitted")}</OverlayTitle>
           <OverlaySubHeading>
@@ -60,6 +86,17 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
             )) ||
               t("orders.orderSubmittedByMaker")}
           </OverlaySubHeading>
+
+          <ButtonsContainer>
+            {showTrackTransactionButton && !transactionsTabIsOpen && (
+              <TrackTransactionButton
+                intent="neutral"
+                onClick={handleTrackTransactionButtonClick}
+              >
+                {t("orders.track")}
+              </TrackTransactionButton>
+            )}
+          </ButtonsContainer>
         </>
       )}
       {isSucceeded && (
@@ -77,13 +114,13 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
             {t("orders.makeNewSwap")}
           </MakeNewOrderButton>
 
-          {showTrackTransactionButton && (
-            <TrackTransactionButton
+          {showReturnToOrderButton && (
+            <ReturnToOrderButton
               intent="neutral"
-              onClick={onTrackTransactionButtonClick}
+              onClick={onReturnToOrderButtonClick}
             >
-              {t("orders.track")}
-            </TrackTransactionButton>
+              {t("orders.returnToOrder")}
+            </ReturnToOrderButton>
           )}
         </ButtonsContainer>
       )}

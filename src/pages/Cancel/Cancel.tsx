@@ -9,7 +9,7 @@ import { CancelWidget } from "../../components/@widgets/CancelWidget/CancelWidge
 import Page from "../../components/Page/Page";
 import { decompressAndSetActiveOrder } from "../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcReducer } from "../../features/takeOtc/takeOtcSlice";
-import { InvalidOrder } from "../OrderDetail/subcomponents";
+import { InvalidOrder } from "../OtcOrderDetail/subcomponents";
 
 const Cancel: FC = () => {
   const dispatch = useAppDispatch();
@@ -24,16 +24,16 @@ const Cancel: FC = () => {
     }
   }, [dispatch, compressedOrder]);
 
-  if (status === "idle" || !activeOrder || !library) {
-    return <Page />;
-  }
-
-  if (status === "not-found") {
+  if (status === "invalid") {
     return (
       <Page>
         <InvalidOrder />
       </Page>
     );
+  }
+
+  if (status === "idle" || !activeOrder || !library) {
+    return <Page />;
   }
 
   return (

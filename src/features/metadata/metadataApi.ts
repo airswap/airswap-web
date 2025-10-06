@@ -1,26 +1,33 @@
-import { TokenInfo, getTokenInfo } from "@airswap/utils";
+import {
+  TokenInfo,
+  getTokenInfo,
+  getCollectionTokenInfo,
+} from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import * as ethers from "ethers";
 
+import { splitTokenIdentifier } from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getSwapErc20Contract } from "../../helpers/swapErc20";
+import {
+  getActiveTokensLocalStorageKey,
+  getUnknownTokensLocalStorageKey,
+} from "./metadataHelpers";
 import { MetadataTokenInfoMap } from "./metadataSlice";
-
-export const getActiveTokensLocalStorageKey: (
-  account: string,
-  chainId: number
-) => string = (account, chainId) =>
-  `airswap/activeTokens/${account}/${chainId}`;
-
-export const getUnknownTokensLocalStorageKey: (chainId: number) => string = (
-  chainId
-) => `airswap/unknownTokens/${chainId}`;
 
 export const getUnknownTokens = async (
   provider: ethers.providers.BaseProvider,
   tokens: string[]
 ): Promise<TokenInfo[]> => {
-  const scrapePromises = tokens.map((t) => getTokenInfo(provider, t));
+  const scrapePromises = tokens.map((token) => {
+    const { address, id } = splitTokenIdentifier(token);
+
+    if (id) {
+      return getCollectionTokenInfo(provider, address, id);
+    }
+
+    return getTokenInfo(provider, address);
+  });
   const results = await Promise.allSettled(scrapePromises);
 
   return results

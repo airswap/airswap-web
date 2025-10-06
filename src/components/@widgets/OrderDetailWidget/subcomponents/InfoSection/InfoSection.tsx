@@ -4,9 +4,8 @@ import BigNumber from "bignumber.js";
 
 import { PriceConverter } from "../../../../PriceConverter/PriceConverter";
 import { InfoSubHeading } from "../../../../Typography/Typography";
-import { RateField } from "../../../MakeWidget/subcomponents/RateField/RateField";
-import { getFullOrderERC20WarningTranslation } from "../../helpers";
 import { Container } from "./InfoSection.styles";
+import { getOrderDetailWarningTranslation } from "./helpers";
 
 type ActionButtonsProps = {
   isAllowancesFailed: boolean;
@@ -37,7 +36,7 @@ const InfoSection: FC<ActionButtonsProps> = ({
   className,
 }) => {
   const warningText = useMemo(() => {
-    return getFullOrderERC20WarningTranslation(
+    return getOrderDetailWarningTranslation(
       isAllowancesFailed,
       isDifferentChainId,
       isExpired,

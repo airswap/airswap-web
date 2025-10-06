@@ -44,6 +44,7 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
       <InfoWrapper className={className}>
         {status === OrderStatus.canceled && t("common.canceled")}
         {status === OrderStatus.taken && t("common.taken")}
+        {status === OrderStatus.filled && t("common.taken")}
       </InfoWrapper>
     );
   }
@@ -52,6 +53,7 @@ const OrderStatusInfo: FC<OrderStatusInfoProps> = ({
     <Button as="a" href={link} target="_blank" className={className}>
       {status === OrderStatus.canceled && t("common.canceled")}
       {status === OrderStatus.taken && t("common.taken")}
+      {status === OrderStatus.filled && t("common.taken")}
       <StyledIcon iconSize={0.875} name="transaction-link" />
     </Button>
   );

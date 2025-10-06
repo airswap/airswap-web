@@ -1,43 +1,38 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
+import { CollectionTokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
-import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import nativeCurrency from "../../constants/nativeCurrency";
+import { AppTokenInfo } from "../../entities/AppTokenInfo/AppTokenInfo";
+import {
+  getTokenId,
+  isCollectionTokenInfo,
+  isTokenInfo,
+} from "../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { getOwnedNftsOfCollection } from "../../entities/AppTokenInfo/AppTokenService";
 import { BalancesState } from "../../features/balances/balancesSlice";
 import {
-  addActiveToken,
-  removeActiveToken,
+  addActiveTokens,
+  addUnknownTokenInfo,
+  removeActiveTokens,
 } from "../../features/metadata/metadataActions";
-import useWindowSize from "../../hooks/useWindowSize";
+import { compareAddresses } from "../../helpers/string";
 import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
-import { InfoHeading } from "../Typography/Typography";
 import {
   Container,
   SearchInput,
-  TokenContainer,
-  Legend,
-  LegendItem,
-  StyledScrollContainer,
   ContentContainer,
-  NoResultsContainer,
   SizingContainer,
 } from "./TokenList.styles";
-import { filterTokens } from "./filter";
+import { getActionButtonText, getTokenIdsFromTokenInfo } from "./helpers";
 import useScrapeToken from "./hooks/useScrapeToken";
-import { sortTokenByExactMatch, sortTokensBySymbolAndBalance } from "./sort";
-import InactiveTokensList from "./subcomponents/InactiveTokensList/InactiveTokensList";
-import TokenButton from "./subcomponents/TokenButton/TokenButton";
+import { CollectionNftsList } from "./subcomponents/CollectionNftsList/CollectionNftsList";
+import TokensAndCollectionsList from "./subcomponents/TokensAndCollectionsList/TokensAndCollectionsList";
 
 export type TokenListProps = {
-  /**
-   * Called when a token has been seleced.
-   */
-  onSelectToken: (val: string) => void;
   /**
    * Balances for current tokens in wallet
    */
@@ -45,118 +40,135 @@ export type TokenListProps = {
   /**
    * all Token addresses in metadata.
    */
-  allTokens: TokenInfo[];
+  allTokens: AppTokenInfo[];
   /**
    * All active tokens.
    */
-  activeTokens: TokenInfo[];
+  activeTokens: AppTokenInfo[];
   /**
    * Supported tokens according to registry
    */
-  supportedTokenAddresses: string[];
+  supportedTokenAddresses?: string[];
   /**
    * function to handle adding active tokens (dispatches addActiveToken).
    */
-  onAfterAddActiveToken?: (val: string) => void;
+  onAfterAddActiveToken?: (tokenInfo: AppTokenInfo) => void;
   /**
    * function to handle removing active tokens (dispatches removeActiveToken).
    */
-  onAfterRemoveActiveToken?: (val: string) => void;
+  onAfterRemoveActiveToken?: (tokenInfo: AppTokenInfo) => void;
+  /**
+   * Called when a token has been seleced.
+   */
+  onSelectToken: (val: AppTokenInfo) => void;
 };
 
 const TokenList = ({
-  onSelectToken,
   balances,
   allTokens,
   activeTokens = [],
-  supportedTokenAddresses,
+  supportedTokenAddresses = [],
   onAfterAddActiveToken,
   onAfterRemoveActiveToken,
+  onSelectToken,
 }: TokenListProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const { width, height } = useWindowSize();
   const { provider: library } = useWeb3React<Web3Provider>();
   const { account, chainId } = useAppSelector((state) => state.web3);
 
   const sizingContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState(false);
+  const [selectedNftCollection, setSelectedNftCollection] =
+    useState<CollectionTokenInfo>();
   const [tokenQuery, setTokenQuery] = useState<string>("");
-
-  const scrapedToken = useScrapeToken(tokenQuery, allTokens);
-
-  // sort tokens based on symbol
-  const sortedTokens: TokenInfo[] = useMemo(() => {
-    return sortTokensBySymbolAndBalance(activeTokens, balances);
-  }, [activeTokens, balances]);
-
-  // filter token
-  const filteredTokens: TokenInfo[] = useMemo(() => {
-    return filterTokens(Object.values(sortedTokens), tokenQuery);
-  }, [sortedTokens, tokenQuery]);
-
-  const sortedFilteredTokens: TokenInfo[] = useMemo(() => {
-    return sortTokenByExactMatch(filteredTokens, tokenQuery);
-  }, [filteredTokens, tokenQuery]);
-
-  // sort inactive tokens based on symbol
-  const sortedInactiveTokens: TokenInfo[] = useMemo(() => {
-    return sortTokenByExactMatch(
-      allTokens.filter((token) => !activeTokens.includes(token)),
-      tokenQuery
-    );
-  }, [allTokens, activeTokens, tokenQuery]);
-
-  const inactiveTokens: TokenInfo[] = useMemo(() => {
-    // if a scraped token is found, only show that one
-    if (scrapedToken) {
-      return [scrapedToken];
-    }
-
-    // else only take the top 100 tokens
-    return filterTokens(Object.values(sortedInactiveTokens), tokenQuery!).slice(
-      0,
-      100
-    );
-  }, [sortedInactiveTokens, tokenQuery, scrapedToken]);
-
-  useEffect(() => {
-    if (
-      sizingContainerRef.current &&
-      scrollContainerRef.current &&
-      buttonRef.current
-    ) {
-      const { offsetTop, scrollHeight } = scrollContainerRef.current;
-      const { clientHeight: buttonHeight } = buttonRef.current;
-    }
-  }, [
-    sizingContainerRef,
-    scrollContainerRef,
-    activeTokens,
-    sortedTokens,
-    allTokens,
+  const [scrapedToken, isScrapeTokensLoading] = useScrapeToken(
     tokenQuery,
-    width,
-    height,
-  ]);
+    allTokens
+  );
 
-  const handleAddToken = async (address: string) => {
-    if (library && account) {
-      await dispatch(addActiveToken(address));
+  const [isLoadingOwnedNfts, setIsLoadingOwnedNfts] = useState(false);
 
-      onAfterAddActiveToken && onAfterAddActiveToken(address);
+  const activeCollectionTokens = useMemo(() => {
+    if (!selectedNftCollection) {
+      return [];
+    }
+
+    return activeTokens
+      .filter((token) =>
+        compareAddresses(token.address, selectedNftCollection.address)
+      )
+      .filter(isCollectionTokenInfo)
+      .filter((token) => balances.values[getTokenId(token)] !== "0");
+  }, [selectedNftCollection, allTokens]);
+
+  const handleAddToken = async (tokenInfo: AppTokenInfo) => {
+    if (!library || !account) {
+      return;
+    }
+
+    setTokenQuery("");
+
+    if (isCollectionTokenInfo(tokenInfo)) {
+      setIsLoadingOwnedNfts(true);
+
+      const [ownedNfts] = await getOwnedNftsOfCollection(
+        library,
+        account,
+        tokenInfo.address
+      );
+
+      const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, ownedNfts);
+
+      dispatch(addUnknownTokenInfo(ownedNfts));
+      dispatch(addActiveTokens(tokenIds));
+
+      setIsLoadingOwnedNfts(false);
+    } else {
+      dispatch(addActiveTokens([tokenInfo.address]));
+    }
+
+    onAfterAddActiveToken && onAfterAddActiveToken(tokenInfo);
+  };
+
+  const handleRemoveActiveToken = (tokenInfo: AppTokenInfo) => {
+    if (library) {
+      const tokenIds = getTokenIdsFromTokenInfo(tokenInfo, allTokens);
+
+      dispatch(removeActiveTokens(tokenIds));
+
+      onAfterRemoveActiveToken && onAfterRemoveActiveToken(tokenInfo);
     }
   };
 
-  const handleRemoveActiveToken = (address: string) => {
-    if (library) {
-      dispatch(removeActiveToken(address));
+  const handleSelectToken = (tokenInfo: AppTokenInfo) => {
+    if (isTokenInfo(tokenInfo)) {
+      onSelectToken(tokenInfo);
 
-      onAfterRemoveActiveToken && onAfterRemoveActiveToken(address);
+      return;
     }
+
+    setTokenQuery("");
+    setSelectedNftCollection(tokenInfo);
+  };
+
+  const handleSelectCollectionToken = (tokenInfo: CollectionTokenInfo) => {
+    setTokenQuery("");
+    onSelectToken(tokenInfo);
+  };
+
+  const handleActionButtonClick = () => {
+    setTokenQuery("");
+
+    if (selectedNftCollection) {
+      setSelectedNftCollection(undefined);
+
+      return;
+    }
+
+    setEditMode(!editMode);
   };
 
   return (
@@ -166,64 +178,55 @@ const TokenList = ({
           <SearchInput
             hideLabel
             id="tokenQuery"
+            autoComplete="off"
             type="text"
-            label={t("orders.searchByNameOrAddress")}
+            label={
+              selectedNftCollection
+                ? "Search by ID"
+                : t("orders.searchByNameOrAddress")
+            }
             value={tokenQuery}
-            placeholder={t("orders.searchByNameOrAddress")}
+            placeholder={
+              selectedNftCollection
+                ? "Search by ID"
+                : t("orders.searchByNameOrAddress")
+            }
             onChange={(e) => {
               setTokenQuery(e.currentTarget.value);
             }}
           />
 
-          <Legend>
-            <LegendItem>{t("common.token")}</LegendItem>
-            <LegendItem>{t("balances.balance")}</LegendItem>
-          </Legend>
+          {selectedNftCollection ? (
+            <CollectionNftsList
+              tokens={activeCollectionTokens}
+              tokenQuery={tokenQuery}
+              onSelectToken={handleSelectCollectionToken}
+            />
+          ) : (
+            <TokensAndCollectionsList
+              editMode={editMode}
+              isScrapeTokensLoading={
+                isScrapeTokensLoading || isLoadingOwnedNfts
+              }
+              activeTokens={activeTokens}
+              allTokens={allTokens}
+              balances={balances}
+              scrapedToken={scrapedToken}
+              supportedTokenAddresses={supportedTokenAddresses}
+              tokenQuery={tokenQuery}
+              chainId={chainId}
+              onSelectToken={handleSelectToken}
+              onRemoveActiveToken={handleRemoveActiveToken}
+              onAddToken={handleAddToken}
+            />
+          )}
 
-          <StyledScrollContainer ref={scrollContainerRef}>
-            <TokenContainer>
-              {[nativeCurrency[chainId || 1], ...sortedFilteredTokens].map(
-                (token) => (
-                  <TokenButton
-                    showDeleteButton={
-                      editMode &&
-                      token.address !== nativeCurrency[chainId || 1].address
-                    }
-                    token={token}
-                    balance={formatUnits(
-                      balances.values[token.address] || 0,
-                      token.decimals
-                    )}
-                    setToken={onSelectToken}
-                    removeActiveToken={handleRemoveActiveToken}
-                    key={token.address}
-                  />
-                )
-              )}
-            </TokenContainer>
-
-            {inactiveTokens.length !== 0 && (
-              <InactiveTokensList
-                inactiveTokens={inactiveTokens}
-                supportedTokenAddresses={supportedTokenAddresses}
-                onTokenClick={(tokenAddress) => {
-                  handleAddToken(tokenAddress);
-                  setTokenQuery("");
-                }}
-              />
-            )}
-            {sortedFilteredTokens.length === 0 && inactiveTokens.length === 0 && (
-              <NoResultsContainer>
-                <InfoHeading>{t("common.noResultsFound")}</InfoHeading>
-              </NoResultsContainer>
-            )}
-          </StyledScrollContainer>
           <OverlayActionButton
             intent="primary"
             ref={buttonRef}
-            onClick={() => setEditMode(!editMode)}
+            onClick={handleActionButtonClick}
           >
-            {editMode ? t("common.done") : t("orders.editCustomTokens")}
+            {getActionButtonText(editMode, selectedNftCollection)}
           </OverlayActionButton>
         </SizingContainer>
       </ContentContainer>

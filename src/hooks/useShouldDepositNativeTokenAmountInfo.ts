@@ -5,6 +5,7 @@ import { ADDRESS_ZERO } from "@airswap/utils";
 import { BigNumber } from "bignumber.js";
 
 import { useAppSelector } from "../app/hooks";
+import { isTokenInfo } from "../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { selectBalances } from "../features/balances/balancesSlice";
 import { selectAllTokenInfo } from "../features/metadata/metadataSlice";
 import findEthOrTokenByAddress from "../helpers/findEthOrTokenByAddress";
@@ -52,7 +53,12 @@ const useShouldDepositNativeTokenAmountInfo =
         chainId
       );
 
-      if (!wrappedNativeTokenInfo || !nativeTokenInfo) {
+      if (
+        !wrappedNativeTokenInfo ||
+        !nativeTokenInfo ||
+        !isTokenInfo(nativeTokenInfo) ||
+        !isTokenInfo(wrappedNativeTokenInfo)
+      ) {
         return;
       }
 

@@ -1,12 +1,18 @@
-import React, { FC, useEffect } from "react";
+import { FC, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import { useAppDispatch } from "../../app/hooks";
 import MakeWidget from "../../components/@widgets/MakeWidget/MakeWidget";
 import { reset } from "../../features/takeOtc/takeOtcSlice";
 import { StyledPage } from "./Make.styles";
 
-const MakePage: FC = () => {
+interface MakePageProps {
+  isLimitOrder?: boolean;
+}
+
+const MakePage: FC<MakePageProps> = ({ isLimitOrder = false }) => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(reset());
@@ -14,7 +20,7 @@ const MakePage: FC = () => {
 
   return (
     <StyledPage>
-      <MakeWidget />
+      <MakeWidget isLimitOrder={isLimitOrder} />
     </StyledPage>
   );
 };

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { Delegate, Swap, SwapERC20, Wrapper } from "@airswap/libraries";
 import { useWeb3React } from "@web3-react/core";
 
 import erc20Abi from "erc-20-abi";
@@ -12,7 +13,6 @@ import { transformToApproveEvent } from "../../../entities/ApproveEvent/ApproveE
 import { isApprovalTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { getTransactionReceiptMined } from "../../../helpers/ethers";
 import { compareAddresses } from "../../../helpers/string";
-import { getSwapErc20Address } from "../../../helpers/swapErc20";
 import { selectActiveTokens } from "../../metadata/metadataSlice";
 import useLatestPendingTransaction from "./useLatestPendingTransaction";
 
@@ -56,6 +56,7 @@ const useLatestApproveFromEvents = (
       const receipt = await provider.getTransactionReceipt(
         event.transactionHash
       );
+
       const tokenAddress = event.address;
       const parsedEvent = erc20Interface.parseLog(event);
       const spenderAddress = parsedEvent.args[1];
@@ -69,8 +70,25 @@ const useLatestApproveFromEvents = (
       )
         return;
 
-      if (!compareAddresses(spenderAddress, getSwapErc20Address(chainId) || ""))
+      const swapAddress = Swap.getAddress(chainId);
+      const swapErc20Address = SwapERC20.getAddress(chainId);
+      const delegateErc20Address = Delegate.getAddress(chainId);
+      const wrapperErc20Address = Wrapper.getAddress(chainId);
+
+      if (
+        ![
+          swapAddress,
+          swapErc20Address,
+          delegateErc20Address,
+          wrapperErc20Address,
+        ]
+          .filter(Boolean)
+          .some((address) =>
+            compareAddresses(address as string, spenderAddress)
+          )
+      ) {
         return;
+      }
 
       setLatestApprove(
         transformToApproveEvent(

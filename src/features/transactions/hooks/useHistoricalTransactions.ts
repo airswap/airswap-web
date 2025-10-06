@@ -1,6 +1,15 @@
 import { useMemo, useState } from "react";
 
 import { useAppSelector } from "../../../app/hooks";
+import { findTokenByAddressAndId } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { isFullOrder } from "../../../entities/FullOrder/FullOrderHelpers";
+import {
+  getOrderSenderTokenId,
+  getOrderSignerToken,
+  getOrderSignerTokenId,
+  getOrderSignerWallet,
+} from "../../../entities/OrderERC20/OrderERC20Helpers";
+import { getOrderSenderToken } from "../../../entities/OrderERC20/OrderERC20Helpers";
 import { SubmittedTransaction } from "../../../entities/SubmittedTransaction/SubmittedTransaction";
 import { sortSubmittedTransactionsByExpiry } from "../../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { transformToSubmittedTransactionWithOrder } from "../../../entities/SubmittedTransaction/SubmittedTransactionTransformers";
@@ -9,7 +18,9 @@ import { compareAddresses } from "../../../helpers/string";
 import useNativeToken from "../../../hooks/useNativeToken";
 import { TransactionStatusType } from "../../../types/transactionTypes";
 import { selectAllTokenInfo } from "../../metadata/metadataSlice";
-import { getOrdersFromLogs } from "../helpers/getOrdersFromLogs";
+import { getOrdersFromDelegatedSwapLogs } from "../helpers/getOrdersFromDelegatedSwapLogs";
+import { getOrdersFromErc20Logs } from "../helpers/getOrdersFromSwapErc20Logs";
+import { getOrdersFromSwapLogs } from "../helpers/getOrdersFromSwapLogs";
 import { getOrdersFromWrappedEventLogs } from "../helpers/getOrdersFromWrappedEventLogs";
 import useSwapLogs from "./useSwapLogs";
 
@@ -58,34 +69,65 @@ const useHistoricalTransactions = (): [
     setTransactions(undefined);
 
     const getTransactionsFromLogs = async () => {
-      const logs = await getOrdersFromLogs(chainId, swapLogs.swapLogs);
+      const fullSwapLogs = await getOrdersFromSwapLogs(
+        chainId,
+        swapLogs.swapLogs
+      );
+      const swapErc20Logs = await getOrdersFromErc20Logs(
+        chainId,
+        swapLogs.swapErc20Logs
+      );
       const wrappedLogs = getOrdersFromWrappedEventLogs(
-        logs,
+        swapErc20Logs,
         swapLogs.wrappedSwapLogs
       );
 
-      const submittedTransactions = [...logs, ...wrappedLogs]
-        .filter(
-          (order) =>
-            compareAddresses(order.order.signerWallet, account) ||
-            compareAddresses(order.swap.senderWallet, account)
-        )
-        .map((log) => {
-          const signerToken = allTokens.find(
-            (token) => token.address === log.order.signerToken
+      const delegatedSwapLogs = getOrdersFromDelegatedSwapLogs(
+        account,
+        chainId,
+        swapErc20Logs,
+        swapLogs.delegatedSwapLogs
+      );
+
+      const submittedTransactions = [
+        ...fullSwapLogs,
+        ...swapErc20Logs,
+        ...wrappedLogs,
+        ...delegatedSwapLogs,
+      ]
+        .filter((order) => {
+          return (
+            compareAddresses(getOrderSignerWallet(order.order), account) ||
+            (isFullOrder(order.order) &&
+              compareAddresses(order.order.sender.wallet, account)) ||
+            ("swap" in order &&
+              compareAddresses(order.swap.senderWallet, account))
           );
-          const senderToken = allTokens.find(
-            (token) => token.address === log.order.senderToken
+        })
+        .map((log) => {
+          const signerToken = getOrderSignerToken(log.order);
+          const senderToken = getOrderSenderToken(log.order);
+          const signerTokenId = getOrderSignerTokenId(log.order);
+          const senderTokenId = getOrderSenderTokenId(log.order);
+          const signerTokenInfo = findTokenByAddressAndId(
+            allTokens,
+            signerToken,
+            signerTokenId
+          );
+          const senderTokenInfo = findTokenByAddressAndId(
+            allTokens,
+            senderToken,
+            senderTokenId
           );
 
-          if (!signerToken || !senderToken) return;
+          if (!signerTokenInfo || !senderTokenInfo) return;
 
           return transformToSubmittedTransactionWithOrder(
             log.hash,
             log.order,
-            signerToken,
-            senderToken,
-            log.swap,
+            signerTokenInfo,
+            senderTokenInfo,
+            "swap" in log ? log.swap : undefined,
             TransactionStatusType.succeeded,
             log.timestamp
           );

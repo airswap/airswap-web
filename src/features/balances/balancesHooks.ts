@@ -8,7 +8,9 @@ import { TransactionTypes } from "../../types/transactionTypes";
 import { selectActiveTokens } from "../metadata/metadataSlice";
 import useLatestSucceededTransaction from "../transactions/hooks/useLatestSucceededTransaction";
 import {
+  requestActiveTokenAllowancesDelegate,
   requestActiveTokenAllowancesSwap,
+  requestActiveTokenAllowancesSwapERC20,
   requestActiveTokenAllowancesWrapper,
   requestActiveTokenBalances,
 } from "./balancesSlice";
@@ -46,7 +48,9 @@ export const useBalances = () => {
 
     dispatch(requestActiveTokenBalances({ provider: library }));
     dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+    dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
     dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+    dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
   }, [account, chainId, library, activeTokens]);
 
   useEffect(() => {
@@ -68,10 +72,15 @@ export const useBalances = () => {
 
     const { type } = latestSuccessfulTransaction;
 
-    if (type === TransactionTypes.order) {
+    if (
+      type === TransactionTypes.order ||
+      type === TransactionTypes.delegatedSwap
+    ) {
       dispatch(requestActiveTokenBalances({ provider: library }));
       dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+      dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+      dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
     }
 
     if (
@@ -83,7 +92,9 @@ export const useBalances = () => {
 
     if (type === TransactionTypes.approval) {
       dispatch(requestActiveTokenAllowancesSwap({ provider: library }));
+      dispatch(requestActiveTokenAllowancesSwapERC20({ provider: library }));
       dispatch(requestActiveTokenAllowancesWrapper({ provider: library }));
+      dispatch(requestActiveTokenAllowancesDelegate({ provider: library }));
     }
   }, [latestSuccessfulTransaction]);
 };

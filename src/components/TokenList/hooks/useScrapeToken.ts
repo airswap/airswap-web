@@ -1,51 +1,52 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { TokenInfo } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
 import { addUnknownTokenInfo } from "../../../features/metadata/metadataActions";
 import scrapeToken from "../../../helpers/scrapeToken";
+import { compareAddresses } from "../../../helpers/string";
 
 const useScrapeToken = (
   address: string,
-  tokens: TokenInfo[]
-): TokenInfo | undefined => {
+  tokens: AppTokenInfo[]
+): [AppTokenInfo | undefined, boolean] => {
   const dispatch = useDispatch();
+  const { account } = useWeb3React();
   const { provider: library } = useWeb3React<Web3Provider>();
 
-  const [scrapedToken, setScrapedToken] = useState<TokenInfo | undefined>();
+  const [scrapedToken, setScrapedToken] = useState<AppTokenInfo | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (scrapedToken) {
-      dispatch(addUnknownTokenInfo(scrapedToken));
+      dispatch(addUnknownTokenInfo([scrapedToken]));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrapedToken]);
 
   useEffect(() => {
-    if (!library) {
+    if (!library || !account) {
       return;
     }
 
-    if (
-      tokens.some(
-        (token) => token.address.toLowerCase() === address.toLowerCase()
-      )
-    ) {
+    if (tokens.some((token) => compareAddresses(token.address, address))) {
       return;
     }
 
     const callScrapeToken = async () => {
-      const result = await scrapeToken(address, library);
+      setIsLoading(true);
+      const result = await scrapeToken(library, address);
       setScrapedToken(result);
+      setIsLoading(false);
     };
 
     callScrapeToken();
-  }, [address, tokens, library]);
+  }, [address, account, tokens, library]);
 
-  return scrapedToken;
+  return [scrapedToken, isLoading];
 };
 
 export default useScrapeToken;

@@ -41,7 +41,7 @@ export const Amount = styled.div`
     theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
 `;
 
-export const Symbol = styled.div`
+export const Symbol = styled.div<{ isNft?: boolean }>`
   ${TextEllipsis};
 
   margin-left: 0.5rem;
@@ -51,7 +51,7 @@ export const Symbol = styled.div`
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.darkGrey};
   min-width: 3rem;
-  max-width: 4rem;
+  max-width: ${(props) => (props.isNft ? "60%" : "4rem")};
   text-align: right;
 `;
 

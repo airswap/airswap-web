@@ -1,19 +1,19 @@
 import { useTranslation } from "react-i18next";
 
-import { TokenInfo } from "@airswap/utils";
-
+import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
+import { getTokenId } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import {
   InactiveTitle,
   InactiveTitleContainer,
   InformationIcon,
-  TokenContainer,
+  TokensContainer,
 } from "../../TokenList.styles";
 import TokenImportButton from "../TokenImportButton/TokenImportButton";
 
 type InactiveTokensListProps = {
-  inactiveTokens: TokenInfo[];
+  inactiveTokens: AppTokenInfo[];
   supportedTokenAddresses: string[];
-  onTokenClick: (tokenAddress: string) => void;
+  onTokenClick: (tokenInfo: AppTokenInfo) => void;
 };
 
 const InactiveTokensList = ({
@@ -31,19 +31,19 @@ const InactiveTokensList = ({
           <InformationIcon name="information-circle-outline" />
         </InactiveTitle>
       </InactiveTitleContainer>
-      <TokenContainer>
+      <TokensContainer>
         {inactiveTokens.map((token) => (
           <TokenImportButton
+            key={getTokenId(token)}
             token={token}
             isUnsupported={
               supportedTokenAddresses.length !== 0 &&
               !supportedTokenAddresses.includes(token.address)
             }
-            onClick={() => onTokenClick(token.address)}
-            key={`${token.address}`}
+            onClick={() => onTokenClick(token)}
           />
         ))}
-      </TokenContainer>
+      </TokensContainer>
     </>
   );
 };

@@ -36,6 +36,7 @@ import IconTelegram from "./IconTelegram";
 import IconTransaction from "./IconTransaction";
 import IconTwitter from "./IconTwitter";
 import IconVote from "./IconVote";
+import IconWarning from "./IconWarning";
 import IconX from "./IconX";
 
 export {
@@ -74,6 +75,7 @@ export {
   IconTwitter,
   IconStar,
   IconVote,
+  IconWarning,
   IconX,
   IconSwap,
   IconSwapHorizontal,

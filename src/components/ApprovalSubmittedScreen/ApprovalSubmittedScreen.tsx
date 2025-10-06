@@ -27,6 +27,14 @@ const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
   const [isAnimatedToCenter, setIsAnimatedToCenter] = useState(false);
 
   const isSucceeded = transaction?.status === TransactionStatusType.succeeded;
+  const isRevoke = transaction?.amount === "0";
+
+  const approvalCompleteText = isRevoke
+    ? t("orders.revokeComplete")
+    : t("orders.approvalComplete");
+  const approvalProcessingText = isRevoke
+    ? t("orders.revokeProcessing")
+    : t("orders.approvalProcessing");
 
   useDebounce(
     () => {
@@ -47,9 +55,7 @@ const ApprovalSubmittedScreen: FC<ApprovalSubmittedScreenProps> = ({
     >
       <OverlayLoader isSucceeded={isSucceeded} />
       <OverlayTitle type="h2">
-        {isSucceeded
-          ? t("orders.approvalComplete")
-          : t("orders.approvalProcessing")}
+        {isSucceeded ? approvalCompleteText : approvalProcessingText}
       </OverlayTitle>
       <OverlaySubHeading isHidden={isSucceeded}>
         {transaction?.hash && chainId && (

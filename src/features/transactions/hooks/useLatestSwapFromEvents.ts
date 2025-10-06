@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { Swap } from "@airswap/libraries";
+import { FullSwapERC20 } from "@airswap/utils/build/src/swap-erc20";
 import { useWeb3React } from "@web3-react/core";
 
 import { BigNumber, Event } from "ethers";
 
 import { FullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20Event";
 import { transformToFullSwapERC20Event } from "../../../entities/FullSwapERC20Event/FullSwapERC20EventTransformers";
-import { getFullSwapERC20 } from "../../../helpers/getFullSwapERC20";
 import { compareAddresses } from "../../../helpers/string";
-import { getSwapErc20Contract } from "../../../helpers/swapErc20";
 import useNetworkSupported from "../../../hooks/useNetworkSupported";
 
 const useLatestSwapFromEvents = (
@@ -27,40 +27,50 @@ const useLatestSwapFromEvents = (
 
     if (account === accountState && chainId === chainIdState) return;
 
-    const swapContract = getSwapErc20Contract(provider, chainId);
-    const swapEvent = "SwapERC20";
+    const swapContract = Swap.getContract(provider, chainId);
+    const swapEvent = "Swap";
 
-    swapContract.protocolFeeWallet().then((feeReceiver: string) => {
+    swapContract.protocolFeeWallet().then(() => {
       const handleSwapEvent = async (
         nonce: BigNumber,
-        signerAddress: string,
+        signerWallet: string,
+        signerAmount: BigNumber,
+        signerId: BigNumber,
+        signerToken: string,
+        senderWallet: string,
+        senderAmount: BigNumber,
+        senderId: BigNumber,
+        senderToken: string,
+        affiliateWallet: string,
+        affiliateAmount: BigNumber,
         swapEvent: Event
       ) => {
         const receipt = await swapEvent.getTransactionReceipt();
-        const swap = await getFullSwapERC20(
-          nonce.toString(),
-          signerAddress,
-          feeReceiver,
-          receipt.logs
-        );
-
-        if (!swap) return;
 
         if (
-          !compareAddresses(swap.signerWallet, account) &&
-          !compareAddresses(swap.senderWallet, account) &&
-          // When the senderWallet is the wrapper contract, we can still use the receipt to lead the transaction back
-          // to the original sender wallet
-          !compareAddresses(receipt.from, account)
+          !compareAddresses(signerWallet, account) &&
+          !compareAddresses(senderWallet, account)
         ) {
           return;
         }
+
+        // TODO: This needs to be swapped to FullOrder, convert to ERC20 for now
+        const swap: FullSwapERC20 = {
+          signerToken: signerToken,
+          signerAmount: signerAmount.toString(),
+          senderWallet: senderWallet,
+          senderToken: senderToken,
+          senderAmount: senderAmount.toString(),
+          feeAmount: affiliateAmount.toString(),
+          nonce: nonce.toString(),
+          signerWallet: signerWallet,
+        };
 
         setLatestSwapEvent(
           transformToFullSwapERC20Event(
             swap,
             swapEvent.transactionHash,
-            signerAddress,
+            signerWallet,
             swapEvent.blockNumber,
             receipt.status
           )

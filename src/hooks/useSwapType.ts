@@ -1,16 +1,15 @@
 import { useMemo } from "react";
 
-import { TokenInfo } from "@airswap/utils";
-
 import { useAppSelector } from "../app/hooks";
 import nativeCurrency from "../constants/nativeCurrency";
+import { AppTokenInfo } from "../entities/AppTokenInfo/AppTokenInfo";
 import getWethAddress from "../helpers/getWethAddress";
 import { SwapType } from "../types/swapType";
 import useNetworkSupported from "./useNetworkSupported";
 
 const useSwapType = (
-  token1: TokenInfo | null,
-  token2: TokenInfo | null
+  token1: AppTokenInfo | null,
+  token2: AppTokenInfo | null
 ): SwapType => {
   const { chainId } = useAppSelector((state) => state.web3);
   const isNetworkSupported = useNetworkSupported();

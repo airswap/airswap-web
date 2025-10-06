@@ -2,24 +2,37 @@ import styled from "styled-components/macro";
 
 import breakPoints from "../../../style/breakpoints";
 import { sizes } from "../../../style/sizes";
+import { SelectLabel } from "../../../styled-components/Select/Select";
+import { SelectButtonText } from "../../Dropdown/Dropdown.styles";
+import { Notice } from "../../Notice/Notice";
+import { Container as PageNavigation } from "../../PageNavigation/PageNavigation.styles";
 import SwapInputs from "../../SwapInputs/SwapInputs";
 import Tooltip from "../../SwapInputs/subcomponents/Tooltip/Tooltip";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import AddressInput from "./subcomponents/AddressInput/AddressInput";
 import { ExpirySelector } from "./subcomponents/ExpirySelector/ExpirySelector";
+import {
+  Input,
+  StyledDropdown,
+} from "./subcomponents/ExpirySelector/ExpirySelector.styles";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
 import { RateField } from "./subcomponents/RateField/RateField";
 
-export const Container = styled.div`
+export const Container = styled.div<{ hidePageNavigation: boolean }>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  ${({ hidePageNavigation }) =>
+    hidePageNavigation &&
+    `& + ${PageNavigation} {
+      display: none;
+    }
+  `}
 `;
 
-export const StyledSwapInputs = styled(SwapInputs)`
-  margin-block-start: 2rem;
-`;
+export const StyledSwapInputs = styled(SwapInputs)``;
 
 export const StyledOrderTypeSelector = styled(OrderTypeSelector)`
   margin-bottom: ${sizes.widgetGutter};
@@ -34,14 +47,32 @@ export const OrderTypeSelectorAndExpirySelectorWrapper = styled.div`
 `;
 
 export const StyledExpirySelector = styled(ExpirySelector)<{
+  fullWidth: boolean;
   hideExpirySelector: boolean;
 }>`
-  width: 54%;
+  width: ${({ fullWidth }) => (fullWidth ? "100%" : "54%")};
   transition: opacity 0.3s ease-out;
-
-  margin-left: ${sizes.widgetGutter};
+  ${({ fullWidth }) => fullWidth && "margin-inline-start: 0;"};
+  margin-block-end 1rem;
   visibility: ${({ hideExpirySelector }) =>
     hideExpirySelector ? "hidden" : "visible"};
+
+  ${SelectLabel} {
+    ${({ fullWidth }) => fullWidth && "flex-grow: 1;"};
+  }
+
+  ${Input} {
+    ${({ fullWidth }) => fullWidth && "width: 3rem;"};
+  }
+
+  ${StyledDropdown} {
+    ${({ fullWidth }) => fullWidth && "flex-grow: 0;"};
+    ${({ fullWidth }) => fullWidth && "width: 10rem;"};
+  }
+
+  ${SelectButtonText} {
+    ${({ fullWidth }) => fullWidth && "width: 100%;"};
+  }
 `;
 
 export const StyledAddressInput = styled(AddressInput)`
@@ -50,7 +81,7 @@ export const StyledAddressInput = styled(AddressInput)`
 `;
 
 export const StyledActionButtons = styled(ActionButtons)`
-  margin-block-start: 0.5rem;
+  margin-block-start: 1rem;
 `;
 
 export const StyledInfoSection = styled(InfoSection)`
@@ -85,4 +116,8 @@ export const StyledRateField = styled(RateField)`
   @media ${breakPoints.phoneOnly} {
     width: auto;
   }
+`;
+
+export const StyledNotice = styled(Notice)`
+  margin-block-start: ${sizes.widgetGutter};
 `;

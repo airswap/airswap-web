@@ -7,6 +7,7 @@ import {
   OrderERC20,
 } from "@airswap/utils";
 
+import { getTokenDecimals } from "../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import useTokenInfo from "../../../../hooks/useTokenInfo";
 import { getTokenAmountWithDecimals } from "../../../@widgets/MyOrdersWidget/helpers";
 import { Container, Text } from "./Order.styles";
@@ -35,23 +36,29 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const history = useHistory();
   const senderTokenInfo = useTokenInfo(order.senderToken);
   const signerTokenInfo = useTokenInfo(order.signerToken);
+  const senderTokenDecimals = senderTokenInfo
+    ? getTokenDecimals(senderTokenInfo)
+    : undefined;
+  const signerTokenDecimals = signerTokenInfo
+    ? getTokenDecimals(signerTokenInfo)
+    : undefined;
 
   const senderAmount = useMemo(
     () =>
       getTokenAmountWithDecimals(
         order.senderAmount,
-        senderTokenInfo?.decimals
+        senderTokenDecimals
       ).toString(),
-    [order, senderTokenInfo]
+    [order, senderTokenDecimals]
   );
 
   const signerAmount = useMemo(
     () =>
       getTokenAmountWithDecimals(
         order.signerAmount,
-        signerTokenInfo?.decimals
+        signerTokenDecimals
       ).toString(),
-    [order, signerTokenInfo]
+    [order, signerTokenDecimals]
   );
 
   const displayRate = useMemo(

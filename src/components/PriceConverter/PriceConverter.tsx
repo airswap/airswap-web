@@ -25,10 +25,13 @@ export const PriceConverter: FC<PriceConverterProps> = ({
 
   const [isPriceInverted, toggleIsPriceInverted] = useToggle(false);
 
+  const invertedPrice = new BigNumber(1).dividedBy(price);
+  const chosenPrice = isPriceInverted ? invertedPrice : price;
+
   return (
     <InfoSectionHeading className={className}>
       1 {isPriceInverted ? quoteTokenSymbol : baseTokenSymbol} ={" "}
-      {stringToSignificantDecimals(price.toString())}{" "}
+      {stringToSignificantDecimals(chosenPrice.toString())}{" "}
       {isPriceInverted ? baseTokenSymbol : quoteTokenSymbol}
       <RevertPriceButton
         icon="swap"

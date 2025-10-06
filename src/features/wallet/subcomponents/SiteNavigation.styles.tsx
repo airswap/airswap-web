@@ -31,4 +31,13 @@ export const NavigationLink = styled.a`
 
 export const NavigationNavLink = styled(NavLink)`
   ${ButtonStyle};
+
+  &.active {
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  &:hover,
+  &:focus {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;

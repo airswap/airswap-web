@@ -3,13 +3,8 @@ import styled from "styled-components/macro";
 import { BorderlessButtonStyle } from "../../../style/mixins";
 import { WidgetHeader } from "../../../styled-components/WidgetHeader/WidgetHeader";
 import IconButton from "../../IconButton/IconButton";
+import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
 import ActionButtons from "../../ReviewActionButtons/ReviewActionButtons";
-
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`;
 
 export const StyledWidgetHeader = styled(WidgetHeader)`
   margin-bottom: 0.75rem;
@@ -30,4 +25,25 @@ export const StyledIconButton = styled(IconButton)`
 export const StyledActionButtons = styled(ActionButtons)`
   justify-self: flex-end;
   margin-top: auto;
+`;
+
+export const OrderReviewSenderToken = styled(OrderReviewToken)``;
+export const OrderReviewSignerToken = styled(OrderReviewToken)``;
+
+export const Container = styled.div<{ isSigner?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  ${StyledWidgetHeader} {
+    order: -2;
+  }
+
+  ${OrderReviewSignerToken} {
+    order: ${({ isSigner }) => (isSigner ? -1 : "inherit")};
+  }
+
+  ${OrderReviewSenderToken} {
+    order: ${({ isSigner }) => (isSigner ? 0 : "inherit")};
+  }
 `;

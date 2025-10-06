@@ -4,10 +4,11 @@ import styled, { DefaultTheme } from "styled-components/macro";
 
 import breakPoints from "../../../../../style/breakpoints";
 import { fontMono } from "../../../../../style/themes";
+import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
+import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
 import TokenLogo from "../../../../TokenLogo/TokenLogo";
-import { MyOrdersGrid } from "../../MyOrdersWidget.styles";
 
 export const Circle = styled.div`
   border-radius: 50%;
@@ -31,8 +32,12 @@ const getIndicatorColor = (
   return theme.colors.borderGrey;
 };
 
-export const Container = styled.div<{ orderStatus: OrderStatus }>`
-  ${MyOrdersGrid};
+export const Container = styled.div<{
+  orderStatus: OrderStatus;
+}>`
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 
   position: relative;
   align-items: center;
@@ -75,6 +80,11 @@ export const Text = styled.div`
   }
 `;
 
+export const SignerAmount = styled(Text)``;
+export const SenderAmount = styled(Text)``;
+export const FilledAmount = styled(Text)``;
+export const OrderStatusLabel = styled(Text)``;
+
 export const ActionButtonContainer = styled.div`
   position: relative;
 `;
@@ -99,12 +109,16 @@ export const ActionButton = styled(IconButton)`
   }
 `;
 
-export const StyledNavLink = styled(NavLink)<{ $isHovered?: boolean }>`
+export const StyledNavLink = styled(NavLink)<{
+  $isHovered?: boolean;
+  $hasWarning?: boolean;
+}>`
   position: absolute;
   top: -1px;
-  left: 0;
+  left: ${({ $hasWarning }) => ($hasWarning ? "-2.25rem" : "-0.5rem")};
   border-radius: 0.5rem;
-  width: 100%;
+  width: ${({ $hasWarning }) =>
+    $hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
   opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
@@ -125,15 +139,41 @@ export const Tokens = styled.div`
   display: flex;
   align-items: center;
   overflow: hidden;
+  gap: 0.25rem;
 `;
 
 export const TokenIcon = styled(TokenLogo)`
-  min-width: 1.875rem;
+  min-width: 1.125rem;
   aspect-ratio: 1;
-  background: ${({ theme }) => theme.colors.darkGrey};
+  background-color: ${({ theme }) => theme.colors.darkGrey};
   z-index: 3;
-  &:not(:first-child) {
-    margin-left: -1rem;
-    z-index: 2;
+  pointer-events: none;
+`;
+
+export const StyledTooltip = styled(Tooltip)`
+  display: none;
+  position: absolute;
+  top: 0.5rem;
+  left: 0.625rem;
+  height: 2rem;
+  padding-block: 0.5rem;
+  z-index: 5;
+  pointer-events: none;
+  color: ${({ theme }) => theme.colors.darkSubText};
+`;
+
+export const Warning = styled(IconWarning)`
+  position: absolute;
+  top: 0.75rem;
+  left: -1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  z-index: 3;
+  cursor: pointer;
+
+  &:hover {
+    & + ${StyledTooltip} {
+      display: block;
+    }
   }
 `;

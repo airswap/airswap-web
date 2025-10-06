@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import i18n from "i18next";
 
+import { UserToken } from "../../../../features/userSettings/userSettingsSlice";
 import stringToSignificantDecimals from "../../../../helpers/stringToSignificantDecimals";
 import { TokenSelectModalTypes } from "../../../../types/tokenSelectModalTypes";
 
@@ -68,17 +69,17 @@ export const getActionButtonTranslation = (
 
 export const getNewTokenPair = (
   type: TokenSelectModalTypes,
-  newToken: string,
-  tokenTo?: string,
-  tokenFrom?: string
-): { tokenFrom?: string; tokenTo?: string } => {
+  newToken: UserToken,
+  tokenTo?: UserToken,
+  tokenFrom?: UserToken
+): { tokenFrom?: UserToken; tokenTo?: UserToken } => {
   let newTokenTo = type === "quote" ? newToken : tokenTo;
   let newTokenFrom = type === "base" ? newToken : tokenFrom;
 
   if (newTokenTo === newTokenFrom && type === "quote") {
-    newTokenFrom = tokenTo as string;
+    newTokenFrom = tokenTo as UserToken;
   } else if (newTokenTo === newTokenFrom && type === "base") {
-    newTokenTo = tokenFrom as string;
+    newTokenTo = tokenFrom as UserToken;
   }
 
   return {

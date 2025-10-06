@@ -5,11 +5,6 @@ import SwapInputs from "../../SwapInputs/SwapInputs";
 import WalletProviderList from "../../WalletProviderList/WalletProviderList";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
 import DebugMenu from "./subcomponents/DebugMenu/DebugMenu";
-import SwapWidgetHeader from "./subcomponents/SwapWidgetHeader/SwapWidgetHeader";
-
-export const StyledHeader = styled(SwapWidgetHeader)`
-  order: -2;
-`;
 
 export const WelcomeMessage = styled.h2`
   margin-block-start: 0.75rem;
@@ -30,9 +25,7 @@ export const InfoContainer = styled.div<{ hasQuoteText: boolean }>`
   text-align: center;
 `;
 
-export const StyledSwapInputs = styled(SwapInputs)`
-  margin-block-start: 2rem;
-`;
+export const StyledSwapInputs = styled(SwapInputs)``;
 
 export const StyledActionButtons = styled(ActionButtons)`
   margin-block-start: 2rem;
@@ -48,7 +41,7 @@ export const StyledSwapWidget = styled.div`
 export const StyledWalletProviderList = styled(WalletProviderList)``;
 
 export const StyledDebugMenu = styled(DebugMenu)`
-  margin-top: 1.5rem;
+  margin-block: 1.5rem;
 `;
 
 export default StyledSwapWidget;

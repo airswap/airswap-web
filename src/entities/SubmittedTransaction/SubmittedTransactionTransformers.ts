@@ -1,20 +1,30 @@
-import { FullSwapERC20, OrderERC20, TokenInfo } from "@airswap/utils";
+import {
+  FullOrder,
+  FullSwapERC20,
+  OrderERC20,
+  TokenInfo,
+  UnsignedOrderERC20,
+} from "@airswap/utils";
 
 import {
   TransactionStatusType,
   TransactionTypes,
 } from "../../types/transactionTypes";
+import { AppTokenInfo } from "../AppTokenInfo/AppTokenInfo";
+import { DelegateRule } from "../DelegateRule/DelegateRule";
 import {
   SubmittedApprovalTransaction,
+  SubmittedDelegatedSwapTransaction,
   SubmittedDepositTransaction,
   SubmittedOrder,
   SubmittedOrderUnderConsideration,
+  SubmittedUnsetRuleTransaction,
   SubmittedWithdrawTransaction,
 } from "./SubmittedTransaction";
 
 export const transformToSubmittedApprovalTransaction = (
   hash: string,
-  token: TokenInfo,
+  token: AppTokenInfo,
   amount: string,
   status: TransactionStatusType = TransactionStatusType.processing
 ): SubmittedApprovalTransaction => {
@@ -77,9 +87,9 @@ export const transformToSubmittedWithdrawTransaction = (
 
 export const transformToSubmittedTransactionWithOrder = (
   hash: string,
-  order: OrderERC20,
-  signerToken: TokenInfo,
-  senderToken: TokenInfo,
+  order: OrderERC20 | FullOrder,
+  signerToken: AppTokenInfo,
+  senderToken: AppTokenInfo,
   swap?: FullSwapERC20,
   status: TransactionStatusType = TransactionStatusType.processing,
   timestamp = Date.now()
@@ -108,4 +118,43 @@ export const transformToSubmittedTransactionWithOrderUnderConsideration = (
   signerToken,
   status,
   timestamp,
+});
+
+export const transformToSubmittedDelegateSwapTransaction = (
+  hash: string,
+  order: UnsignedOrderERC20,
+  delegateRule: DelegateRule,
+  senderToken: TokenInfo,
+  signerToken: TokenInfo,
+  status: TransactionStatusType = TransactionStatusType.processing,
+  timestamp = Date.now()
+): SubmittedDelegatedSwapTransaction => ({
+  type: TransactionTypes.delegatedSwap,
+  hash,
+  order,
+  delegateRule,
+  senderToken,
+  signerToken,
+  status,
+  timestamp,
+});
+
+export const transformToSubmittedUnsetRuleTransaction = (
+  hash: string,
+  senderToken: TokenInfo,
+  signerToken: TokenInfo,
+  senderWallet: string,
+  status: TransactionStatusType = TransactionStatusType.processing,
+  timestamp = Date.now()
+): SubmittedUnsetRuleTransaction => ({
+  type: TransactionTypes.unsetRule,
+  id: `${senderToken.chainId}-${senderWallet}-${senderToken.address}-${signerToken.address}`,
+  isOverridden: false,
+  hash,
+  senderToken,
+  signerToken,
+  senderWallet,
+  status,
+  timestamp,
+  chainId: senderToken.chainId,
 });

@@ -1,4 +1,4 @@
-import { calculateCostFromLevels, Pricing } from "@airswap/utils";
+import { getCostByLevels, Pricing } from "@airswap/utils";
 
 import { BigNumber } from "bignumber.js";
 
@@ -39,7 +39,7 @@ export const getPricingQuoteAmount = (
   }
 
   // NOTE: this can throw if requested amount exceeds available.
-  return calculateCostFromLevels(signerAmount.toString(), levels);
+  return getCostByLevels(signerAmount.toString(), levels);
 };
 
 export const getBestPricing = (

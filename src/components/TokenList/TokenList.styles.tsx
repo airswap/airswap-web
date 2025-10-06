@@ -2,22 +2,9 @@ import styled from "styled-components/macro";
 
 import isActiveLanguageLogographic from "../../helpers/isActiveLanguageLogographic";
 import { InputTextStyle } from "../../style/mixins";
-import { fontWide } from "../../style/themes";
 import Icon from "../Icon/Icon";
-import { ScrollContainer } from "../ModalOverlay/ModalOverlay.styles";
 import TextInput from "../TextInput/TextInput";
 import { StyledInput } from "../TextInput/TextInput.styles";
-
-export const StyledScrollContainer = styled(ScrollContainer)`
-  position: relative;
-  margin-block-start: 0.625rem;
-  margin-inline-start: -0.875rem;
-  width: calc(100% + 3.25rem);
-  max-height: 20rem;
-  padding-inline: 0.875rem 2.25rem;
-  padding-block-start: 0.125rem;
-  overflow-y: auto;
-`;
 
 export const ContentContainer = styled.div`
   position: relative;
@@ -54,24 +41,6 @@ export const SearchInput = styled(TextInput)`
   }
 `;
 
-export const TokenContainer = styled.div``;
-
-export const Legend = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 1.5rem;
-  margin-block-start: 2rem;
-`;
-
-export const LegendItem = styled.div`
-  word-break: keep-all;
-  font-family: ${fontWide};
-  font-weight: 500;
-  font-size: ${() => (isActiveLanguageLogographic() ? "0.875rem" : "1rem")};
-  color: ${(props) => props.theme.colors.lightGrey};
-`;
-
 export const InactiveTitleContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderGrey};
   border-radius: 2px;
@@ -93,7 +62,21 @@ export const InformationIcon = styled(Icon)`
   margin-left: 0.25rem;
 `;
 
-export const NoResultsContainer = styled.div`
-  margin-block-start: 1rem;
-  text-align: center;
+export const TokensContainer = styled.div``;
+
+export const ImportButton = styled.button`
+  border: 1px solid ${(props) => props.theme.colors.borderGrey};
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0.5rem 1.5rem;
+  justify-self: center;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) =>
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
+    color: ${(props) => props.theme.colors.black};
+    transition: 0.25s ease-in-out;
+  }
 `;

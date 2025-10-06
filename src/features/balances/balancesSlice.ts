@@ -1,24 +1,14 @@
-import { ADDRESS_ZERO } from "@airswap/utils";
-import {
-  AsyncThunk,
-  combineReducers,
-  createAction,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { combineReducers, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
-import { AppDispatch, RootState } from "../../app/store";
-import getWethAddress from "../../helpers/getWethAddress";
+import { RootState } from "../../app/store";
 import { walletChanged, walletDisconnected } from "../web3/web3Actions";
-import { setWeb3Data } from "../web3/web3Slice";
-import {
-  fetchAllowancesSwap,
-  fetchAllowancesWrapper,
-  fetchBalances,
-} from "./balancesApi";
+import { getThunk, getSetInFlightRequestTokensAction } from "./balancesApi";
+
+export type BalanceValues = {
+  [tokenId: string]: string | null; // null while fetching
+};
 
 export interface BalancesState {
   status: "idle" | "fetching" | "failed";
@@ -29,10 +19,9 @@ export interface BalancesState {
    * largest request.
    */
   inFlightFetchTokens: string[] | null; // used to prevent duplicate fetches
-  /** Token balances */
-  values: {
-    [tokenAddress: string]: string | null; // null while fetching
-  };
+  /** Token balances, where the key is the tokenId (e.g. "0x1234567890123456789012345678901234567890"
+   * for ERC-20 and "0x1234567890123456789012345678901234567890-1" for ERC-721) */
+  values: BalanceValues;
 }
 
 // Initially empty.
@@ -43,96 +32,18 @@ export const initialState: BalancesState = {
   values: {},
 };
 
-const getSetInFlightRequestTokensAction = (
-  type: "balances" | "allowances.swap" | "allowances.wrapper"
-) => {
-  return createAction<string[]>(`${type}/setInFlightRequestTokens`);
-};
-
-const getThunk: (
-  type: "balances" | "allowances.swap" | "allowances.wrapper"
-) => AsyncThunk<
-  { address: string; amount: string }[],
-  {
-    provider: ethers.providers.Web3Provider;
-  },
-  object
-> = (type: "balances" | "allowances.swap" | "allowances.wrapper") => {
-  const methods = {
-    balances: fetchBalances,
-    "allowances.swap": fetchAllowancesSwap,
-    "allowances.wrapper": fetchAllowancesWrapper,
-  };
-  return createAsyncThunk<
-    { address: string; amount: string }[],
-    {
-      provider: ethers.providers.Web3Provider;
-    },
-    {
-      // Optional fields for defining thunkApi field types
-      dispatch: AppDispatch;
-      state: RootState;
-    }
-  >(
-    `${type}/requestForActiveTokens`,
-    async (params, { getState, dispatch }) => {
-      try {
-        const state = getState();
-        const { chainId, account } = state.web3;
-
-        const wrappedNativeToken = chainId
-          ? getWethAddress(chainId)
-          : undefined;
-        const activeTokensAddresses = [
-          ...state.metadata.activeTokens,
-          ...(wrappedNativeToken ? [wrappedNativeToken] : []),
-          ADDRESS_ZERO,
-        ];
-        if (state.takeOtc.activeOrder) {
-          activeTokensAddresses.push(state.takeOtc.activeOrder.senderToken);
-        }
-        dispatch(
-          getSetInFlightRequestTokensAction(type)(activeTokensAddresses)
-        );
-        const amounts = await methods[type]({
-          ...params,
-          chainId: chainId!,
-          walletAddress: account!,
-          tokenAddresses: activeTokensAddresses,
-        });
-        return activeTokensAddresses.map((address, i) => ({
-          address,
-          amount: amounts[i],
-        }));
-      } catch (e: any) {
-        console.error(`Error fetching ${type}: ` + e.message);
-        throw e;
-      }
-    },
-    {
-      // Logic to prevent fetching again if we're already fetching the same or more tokens.
-      condition: (params, { getState }) => {
-        const pathParts = type.split(".");
-        const sliceState =
-          pathParts.length > 1
-            ? // @ts-ignore
-              getState()[pathParts[0]][pathParts[1]]
-            : // @ts-ignore
-              getState()[type];
-        // If we're not fetching, definitely continue
-        if (sliceState.status !== "fetching") return true;
-        if (sliceState.inFlightFetchTokens) {
-          const tokensToFetch = getState().metadata.activeTokens;
-          // only fetch if new list is larger.
-          return tokensToFetch.length > sliceState.inFlightFetchTokens.length;
-        }
-      },
-    }
-  );
-};
+interface TokenBalance {
+  address: string;
+  amount: string;
+}
 
 const getSlice = (
-  type: "balances" | "allowances.swap" | "allowances.wrapper",
+  type:
+    | "balances"
+    | "allowances.swap"
+    | "allowances.swapERC20"
+    | "allowances.wrapper"
+    | "allowances.delegate",
   asyncThunk: ReturnType<typeof getThunk>
 ) => {
   return createSlice({
@@ -181,9 +92,9 @@ const getSlice = (
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
           state.lastFetch = Date.now();
-          const tokenBalances = action.payload;
+          const tokenBalances = action.payload as TokenBalance[];
 
-          tokenBalances?.forEach(({ address, amount }) => {
+          tokenBalances?.forEach(({ address, amount }: TokenBalance) => {
             state.values[address] = amount;
           });
 
@@ -228,27 +139,46 @@ export const selectAllowancesWrapper = (state: RootState) =>
 
 export const requestActiveTokenBalances = getThunk("balances");
 export const requestActiveTokenAllowancesSwap = getThunk("allowances.swap");
+export const requestActiveTokenAllowancesSwapERC20 = getThunk(
+  "allowances.swapERC20"
+);
 export const requestActiveTokenAllowancesWrapper =
   getThunk("allowances.wrapper");
+export const requestActiveTokenAllowancesDelegate = getThunk(
+  "allowances.delegate"
+);
 
 export const balancesSlice = getSlice("balances", requestActiveTokenBalances);
 export const allowancesSwapSlice = getSlice(
   "allowances.swap",
   requestActiveTokenAllowancesSwap
 );
+export const allowancesSwapERC20Slice = getSlice(
+  "allowances.swapERC20",
+  requestActiveTokenAllowancesSwapERC20
+);
 export const allowancesWrapperSlice = getSlice(
   "allowances.wrapper",
   requestActiveTokenAllowancesWrapper
 );
+export const allowancesDelegateSlice = getSlice(
+  "allowances.delegate",
+  requestActiveTokenAllowancesDelegate
+);
 
 export const balancesActions = balancesSlice.actions;
 export const allowancesSwapActions = allowancesSwapSlice.actions;
+export const allowancesSwapERC20Actions = allowancesSwapERC20Slice.actions;
 export const allowancesWrapperActions = allowancesWrapperSlice.actions;
-
+export const allowancesDelegateActions = allowancesDelegateSlice.actions;
 export const balancesReducer = balancesSlice.reducer;
 export const allowancesSwapReducer = allowancesSwapSlice.reducer;
+export const allowancesSwapERC20Reducer = allowancesSwapERC20Slice.reducer;
 export const allowancesWrapperReducer = allowancesWrapperSlice.reducer;
+export const allowancesDelegateReducer = allowancesDelegateSlice.reducer;
 export const allowancesReducer = combineReducers({
   swap: allowancesSwapReducer,
+  swapERC20: allowancesSwapERC20Reducer,
   wrapper: allowancesWrapperReducer,
+  delegate: allowancesDelegateReducer,
 });

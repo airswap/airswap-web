@@ -10,6 +10,14 @@ import {
   isCancelEvent,
 } from "../../entities/CancelEvent/CancelEventHelpers";
 import {
+  findMatchingDelegateSetRuleTransaction,
+  findMatchingDelegatedSwapTransaction,
+  findMatchingUnsetRuleTransaction,
+  isDelegateSetRuleEvent,
+  isDelegatedSwapEvent,
+  isUnsetRuleEvent,
+} from "../../entities/DelegateRule/DelegateRuleHelpers";
+import {
   findMatchingOrderTransaction,
   isFullSwapERC20Event,
 } from "../../entities/FullSwapERC20Event/FullSwapERC20EventHelpers";
@@ -17,6 +25,7 @@ import {
   SubmittedDepositTransaction,
   SubmittedOrder,
   SubmittedOrderUnderConsideration,
+  SubmittedSetRuleTransaction,
   SubmittedTransaction,
   SubmittedWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -24,9 +33,12 @@ import {
   doTransactionsMatch,
   isApprovalTransaction,
   isCancelTransaction,
+  isDelegatedSwapTransaction,
   isDepositTransaction,
+  isSetRuleTransaction,
   isSubmittedOrder,
   isSubmittedOrderUnderConsideration,
+  isUnsetRuleTransaction,
   isWithdrawTransaction,
 } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import {
@@ -43,6 +55,8 @@ import {
   handleSubmittedCancelOrder,
   handleSubmittedDepositOrder,
   handleSubmittedOrder,
+  handleSubmittedSetRuleOrder,
+  handleSubmittedUnsetRuleOrder,
   handleSubmittedWithdrawOrder,
 } from "../orders/ordersActions";
 import { setTransactions } from "./transactionsSlice";
@@ -111,6 +125,30 @@ const getMatchingTransaction = (
       .find((transaction) => findMatchingCancelTransaction(transaction, event));
   }
 
+  if (isDelegateSetRuleEvent(event)) {
+    return transactions
+      .filter(isSetRuleTransaction)
+      .find((transaction) =>
+        findMatchingDelegateSetRuleTransaction(transaction, event)
+      );
+  }
+
+  if (isUnsetRuleEvent(event)) {
+    return transactions
+      .filter(isUnsetRuleTransaction)
+      .find((transaction) =>
+        findMatchingUnsetRuleTransaction(transaction, event)
+      );
+  }
+
+  if (isDelegatedSwapEvent(event)) {
+    return transactions
+      .filter(isDelegatedSwapTransaction)
+      .find((transaction) =>
+        findMatchingDelegatedSwapTransaction(transaction, event)
+      );
+  }
+
   return undefined;
 };
 
@@ -121,6 +159,7 @@ export const handleTransactionEvent =
     const pendingTransactions = transactions.filter(
       (transaction) => transaction.status === TransactionStatusType.processing
     );
+
     const matchingTransaction = getMatchingTransaction(
       event,
       pendingTransactions
@@ -147,7 +186,8 @@ export const handleTransactionEvent =
   };
 
 export const handleTransactionResolved = (
-  transaction: SubmittedTransaction
+  transaction: SubmittedTransaction,
+  dispatch: AppDispatch
 ) => {
   if (isApprovalTransaction(transaction)) {
     handleApproveTransaction(transaction.status);
@@ -167,6 +207,14 @@ export const handleTransactionResolved = (
 
   if (isCancelTransaction(transaction)) {
     handleSubmittedCancelOrder(transaction.status);
+  }
+
+  if (isSetRuleTransaction(transaction)) {
+    handleSubmittedSetRuleOrder(transaction, dispatch);
+  }
+
+  if (isUnsetRuleTransaction(transaction)) {
+    handleSubmittedUnsetRuleOrder(transaction, dispatch);
   }
 };
 

@@ -5,7 +5,7 @@ export const sizes = {
   tradeContainerPadding: "3.75rem",
   tradeContainerMobilePadding: "1.25rem",
   widgetGutter: "1rem",
-  widgetHeight: "34.5rem",
+  widgetHeight: "33.5rem",
   widgetWidth: "37.5rem",
   widgetMobileSize: "27.75rem",
 };

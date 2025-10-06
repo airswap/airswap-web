@@ -8,6 +8,10 @@ export const Header = styled.div`
   justify-self: flex-start;
   margin-bottom: auto;
   width: 100%;
+
+  h1 {
+    text-align: center;
+  }
 `;
 
 export const Container = styled.div`

@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 import styled from "styled-components/macro";
 
 import breakPoints from "../../style/breakpoints";
@@ -11,7 +13,7 @@ import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
 export const Container = styled.div`
   position: absolute;
   display: grid;
-  grid-template-rows: 5rem auto 5.125rem;
+  grid-template-rows: auto auto auto 1rem;
   width: 16rem;
   height: 24.125rem;
   top: 5rem;
@@ -115,4 +117,18 @@ export const LocaleButton = styled.button<ButtonStyleProps>`
 export const BottomPopoverSection = styled(PopoverSection)`
   border-top: 1px solid ${(props) => props.theme.colors.borderGrey};
   padding-top: 1rem;
+`;
+
+export const StyledNavLink = styled(NavLink)`
+  ${BorderlessButtonStyle};
+
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 0.8125rem;
+  font-weight: 400;
+  opacity: 0.6;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
 `;

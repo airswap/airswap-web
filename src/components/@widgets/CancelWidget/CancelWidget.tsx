@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
-import { FullOrderERC20 } from "@airswap/utils";
+import { FullOrder, FullOrderERC20 } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -10,15 +10,15 @@ import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
 import useCancellationPending from "../../../hooks/useCancellationPending";
 import useCancellationSuccess from "../../../hooks/useCancellationSuccess";
-import { AppRoutes } from "../../../routes";
+import { routes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
 import Icon from "../../Icon/Icon";
-import SubmittedCancellationScreen from "../../SubmittedCancellationScreen";
+import SubmittedCancellationScreen from "../../SubmittedCancellationScreen/SubmittedCancellationScreen";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import { Title } from "../../Typography/Typography";
 import { InfoSubHeading } from "../../Typography/Typography";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import { useOrderStatus } from "../OrderDetailWidget/hooks/useOrderStatus";
+import { useOtcOrderStatus } from "../OtcOrderDetailWidget/hooks/useOtcOrderStatus";
 import {
   Container,
   StyledInfoHeading,
@@ -31,7 +31,7 @@ import {
 
 interface CancelWidgetProps {
   library: Web3Provider;
-  order: FullOrderERC20;
+  order: FullOrder | FullOrderERC20;
 }
 
 export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
@@ -43,7 +43,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   const status = useAppSelector(selectTakeOtcStatus);
 
   const params = useParams<{ compressedOrder: string }>();
-  const [orderStatus] = useOrderStatus(order);
+  const [orderStatus] = useOtcOrderStatus(order);
   const isCancelSuccess = useCancellationSuccess(order.nonce);
   const pendingCancelTranssaction = useCancellationPending(order.nonce, true);
   const isExpired = new Date().getTime() > parseInt(order.expiry) * 1000;
@@ -59,9 +59,7 @@ export const CancelWidget: FC<CancelWidgetProps> = ({ order, library }) => {
   useEffect(() => {
     // If success and the delayed pending cancellation is cleared, then route.
     if (isCancelSuccess && !pendingCancelTranssaction) {
-      history.push({
-        pathname: `/${AppRoutes.order}/${params.compressedOrder}`,
-      });
+      history.push(routes.otcOrder(params.compressedOrder));
     }
   }, [isCancelSuccess, pendingCancelTranssaction]);
 

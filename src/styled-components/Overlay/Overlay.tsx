@@ -3,6 +3,7 @@ import { keyframes } from "styled-components";
 
 import TransactionLink from "../../components/TransactionLink/TransactionLink";
 import { InfoSubHeading, Title } from "../../components/Typography/Typography";
+import { sizes } from "../../style/sizes";
 
 export const OverlayContainer = styled.div`
   display: flex;
@@ -11,6 +12,8 @@ export const OverlayContainer = styled.div`
   align-items: center;
   flex-grow: 1;
   transition: transform 0.3s cubic-bezier(0.68, 0.007, 0.488, 0.997);
+  width: 100%;
+  max-width: ${sizes.widgetWidth}px;
 `;
 
 export const OverlayTitle = styled(Title)<{ isFocused?: boolean }>`

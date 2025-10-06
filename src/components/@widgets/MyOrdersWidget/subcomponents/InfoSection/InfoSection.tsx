@@ -2,14 +2,13 @@ import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { InfoSubHeading } from "../../../../Typography/Typography";
-import { StyledInfoHeading } from "./InfoSection.styles";
 
-type ActionButtonsProps = {
+type InfoSectionProps = {
   userHasNoOrders: boolean;
   walletIsNotConnected: boolean;
 };
 
-const InfoSection: FC<ActionButtonsProps> = ({
+const InfoSection: FC<InfoSectionProps> = ({
   userHasNoOrders,
   walletIsNotConnected,
 }) => {

@@ -15,6 +15,7 @@ import {
   setTheme,
 } from "../../features/userSettings/userSettingsSlice";
 import useWindowSize from "../../hooks/useWindowSize";
+import { routes } from "../../routes";
 import {
   Container,
   ThemeContainer,
@@ -22,6 +23,7 @@ import {
   LocaleContainer,
   LocaleButton,
   BottomPopoverSection,
+  StyledNavLink,
 } from "./SettingsPopover.styles";
 import GithubInfo from "./subcomponents/GithubInfo/GithubInfo";
 import PopoverSection from "./subcomponents/PopoverSection/PopoverSection";
@@ -68,7 +70,13 @@ const SettingsPopover = ({
 
   return (
     <Container ref={popoverRef} className={className}>
-      <PopoverSection title={t("common.theme")}>
+      <PopoverSection title="Settings">
+        <StyledNavLink to={routes.approvals()}>
+          Manage token approvals
+        </StyledNavLink>
+      </PopoverSection>
+      {/* Enable when light mode is implemented */}
+      {/* <PopoverSection title={t("common.theme")}>
         <ThemeContainer>
           <ThemeButton
             $isActive={selectedTheme === "system"}
@@ -90,7 +98,7 @@ const SettingsPopover = ({
             {t("common.dark")}
           </ThemeButton>
         </ThemeContainer>
-      </PopoverSection>
+      </PopoverSection> */}
       <PopoverSection title={t("common.language")}>
         <LocaleContainer ref={scrollContainerRef} $overflow={overflow}>
           {SUPPORTED_LOCALES.map((locale) => {

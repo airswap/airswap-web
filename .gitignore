@@ -27,3 +27,6 @@ yarn-error.log*
 
 # pem files used for local https
 *.pem
+
+# Sentry Config File
+.sentryclirc

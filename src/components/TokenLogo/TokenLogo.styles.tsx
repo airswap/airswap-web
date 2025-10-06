@@ -13,7 +13,7 @@ const StyledTokenLogo = styled.div<StyledTokenLogoProps>`
   border-radius: 50%;
   border-color: ${(props) => props.theme.colors.lightGrey};
   border-style: ${(props) => (props.logoURI ? "none" : "solid")};
-  border-width: 1px;
+  border-width: ${(props) => (props.logoURI ? 0 : 1)}px;
 `;
 
 export default StyledTokenLogo;

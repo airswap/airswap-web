@@ -7,6 +7,7 @@ export interface GasCostState {
   isFailed: boolean;
   isLoading: boolean;
   isSuccessful: boolean;
+  chainId?: number;
   /**
    * "Fast" gas price **in WETH**
    */
@@ -50,6 +51,7 @@ const gasCostSlice = createSlice({
         isFailed: false,
         isLoading: true,
         isSuccessful: false,
+        chainId: undefined,
         gasPrice: undefined,
         swapTransactionCost: undefined,
       };
@@ -70,6 +72,7 @@ const gasCostSlice = createSlice({
         ...state,
         isLoading: false,
         isSuccessful: true,
+        chainId: action.meta.arg.chainId,
         gasPrice: action.payload.gasPrice,
         swapTransactionCost: action.payload.swapTransactionCost,
       };

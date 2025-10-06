@@ -7,9 +7,11 @@ import {
   transformAddressAliasToAddress,
 } from "../constants/addressAliases";
 import { AppRoutes, SwapRoutes } from "../routes";
+import useSearchParams from "./useSearchParams";
 
 export interface AppRouteParams {
   route?: AppRoutes;
+  isLimitOrder?: boolean;
   tokenFrom?: string;
   tokenTo?: string;
   tokenFromAlias?: string;
@@ -20,8 +22,11 @@ export interface AppRouteParams {
   url: string;
 }
 
+// TODO: Add isLimitOrder to AppRouteParams
+
 const useAppRouteParams = (): AppRouteParams => {
-  const routeMatch = useRouteMatch<{ routeOrLang?: string }>(`/:routeOrLang`);
+  const routeMatch = useRouteMatch<{ route?: string }>(`/:route`);
+  const isLimitOrder = !!useSearchParams("limit");
   const { chainId } = useAppSelector((state) => state.web3);
 
   const swapMatch = useRouteMatch<{
@@ -50,6 +55,7 @@ const useAppRouteParams = (): AppRouteParams => {
         tokenToAlias: tokenToAlias,
         route: swapMatch.params.route,
         url: swapMatch.url,
+        isLimitOrder,
         justifiedBaseUrl: "",
       };
     }
@@ -58,8 +64,9 @@ const useAppRouteParams = (): AppRouteParams => {
   const routeMatchData = useMemo(() => {
     if (routeMatch) {
       return {
-        route: routeMatch.params.routeOrLang as AppRoutes,
+        route: routeMatch.params.route as AppRoutes,
         url: routeMatch.url,
+        isLimitOrder,
       };
     }
   }, [routeMatch]);

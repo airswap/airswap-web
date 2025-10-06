@@ -1,9 +1,18 @@
-import { FullSwapERC20, OrderERC20, TokenInfo } from "@airswap/utils";
+import {
+  FullOrder,
+  FullOrderERC20,
+  FullSwapERC20,
+  OrderERC20,
+  TokenInfo,
+} from "@airswap/utils";
+import { UnsignedOrderERC20 } from "@airswap/utils";
 
 import {
   TransactionStatusType,
   TransactionTypes,
 } from "../../types/transactionTypes";
+import { AppTokenInfo } from "../AppTokenInfo/AppTokenInfo";
+import { DelegateRule } from "../DelegateRule/DelegateRule";
 
 export interface DepositOrWithdrawOrder {
   signerToken: string;
@@ -26,10 +35,10 @@ export interface SubmittedTransactionWithHash extends SubmittedTransaction {
 export interface SubmittedOrder extends SubmittedTransactionWithHash {
   isLastLook?: boolean;
   type: TransactionTypes.order;
-  order: OrderERC20;
+  order: OrderERC20 | FullOrderERC20 | FullOrder;
   swap?: FullSwapERC20;
-  senderToken: TokenInfo;
-  signerToken: TokenInfo;
+  senderToken: AppTokenInfo;
+  signerToken: AppTokenInfo;
 }
 
 export interface SubmittedOrderUnderConsideration
@@ -46,11 +55,12 @@ export interface SubmittedApprovalTransaction
   type: TransactionTypes.approval;
   hash: string;
   amount: string;
-  token: TokenInfo;
+  token: AppTokenInfo;
   tokenAddress: string;
 }
 
 export interface SubmittedCancellation extends SubmittedTransactionWithHash {
+  type: TransactionTypes.cancel;
   hash: string;
   nonce: string;
 }
@@ -69,6 +79,35 @@ export interface SubmittedWithdrawTransaction
   type: TransactionTypes.withdraw;
   hash: string;
   order: DepositOrWithdrawOrder;
+  senderToken: TokenInfo;
+  signerToken: TokenInfo;
+}
+
+export interface SubmittedSetRuleTransaction
+  extends SubmittedTransactionWithHash {
+  type: TransactionTypes.setDelegateRule;
+  rule: DelegateRule;
+  signerToken: TokenInfo;
+  senderToken: TokenInfo;
+}
+
+export interface SubmittedUnsetRuleTransaction
+  extends SubmittedTransactionWithHash {
+  type: TransactionTypes.unsetRule;
+  id: string;
+  // True when a delegate rule is set after the timestamp of the transaction
+  isOverridden: boolean;
+  chainId: number;
+  senderWallet: string;
+  senderToken: TokenInfo;
+  signerToken: TokenInfo;
+}
+
+export interface SubmittedDelegatedSwapTransaction
+  extends SubmittedTransactionWithHash {
+  type: TransactionTypes.delegatedSwap;
+  delegateRule: DelegateRule;
+  order: UnsignedOrderERC20;
   senderToken: TokenInfo;
   signerToken: TokenInfo;
 }

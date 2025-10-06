@@ -41,7 +41,7 @@ interface WrapReviewProps {
   className?: string;
 }
 
-const ApproveReview: FC<WrapReviewProps> = ({
+const WrapReview: FC<WrapReviewProps> = ({
   hasEditButton,
   isLoading,
   amount,
@@ -173,4 +173,4 @@ const ApproveReview: FC<WrapReviewProps> = ({
   );
 };
 
-export default ApproveReview;
+export default WrapReview;

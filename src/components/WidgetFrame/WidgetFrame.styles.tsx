@@ -6,6 +6,7 @@ import { sizes } from "../../style/sizes";
 export const WidgetFrameWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   border-radius: 0.25rem;
   margin: 0 ${sizes.pageMobilePadding};
   width: ${sizes.widgetWidth};
@@ -24,11 +25,13 @@ export const WidgetFrameWrapper = styled.div`
 type StyledTradeContainerProps = {
   $isConnected?: boolean;
   $isOverlayOpen?: boolean;
+  $isOverflowing?: boolean;
 };
 
-export const StyledWidgetFrame = styled.div<StyledTradeContainerProps>`
+export const Container = styled.div<StyledTradeContainerProps>`
   display: flex;
-  align-items: center;
+  align-items: ${({ $isOverflowing }) =>
+    $isOverflowing ? "flex-start" : "center"};
   justify-content: center;
   width: 100%;
   height: 100%;

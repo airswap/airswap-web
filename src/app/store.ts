@@ -1,7 +1,5 @@
 import {
   configureStore,
-  ThunkAction,
-  Action,
   ThunkDispatch,
   AnyAction,
   Store,
@@ -12,14 +10,17 @@ import {
   balancesReducer,
   allowancesReducer,
 } from "../features/balances/balancesSlice";
+import cancelLimitReducer from "../features/cancelLimit/cancelLimitSlice";
+import delegateRulesReducer from "../features/delegateRules/delegateRulesSlice";
 import gasCostReducer from "../features/gasCost/gasCostSlice";
 import indexerReducer from "../features/indexer/indexerSlice";
-import makeOtcReducer from "../features/makeOtc/makeOtcSlice";
+import makeOrderReducer from "../features/makeOrder/makeOrderSlice";
 import metadataReducer from "../features/metadata/metadataSlice";
-import myOrdersReducer from "../features/myOrders/myOrdersSlice";
+import myOtcOrdersReducer from "../features/myOtcOrders/myOtcOrdersSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import quotesReducer from "../features/quotes/quotesSlice";
 import registryReducer from "../features/registry/registrySlice";
+import takeLimitReducer from "../features/takeLimit/takeLimitSlice";
 import takeOtcReducer from "../features/takeOtc/takeOtcSlice";
 import tradeTermsReducer from "../features/tradeTerms/tradeTermsSlice";
 import transactionsReducer from "../features/transactions/transactionsSlice";
@@ -30,6 +31,8 @@ const reducers = {
   allowances: allowancesReducer,
   transactions: transactionsReducer,
   balances: balancesReducer,
+  cancelLimit: cancelLimitReducer,
+  delegateRules: delegateRulesReducer,
   metadata: metadataReducer,
   tradeTerms: tradeTermsReducer,
   indexer: indexerReducer,
@@ -37,9 +40,10 @@ const reducers = {
   gasCost: gasCostReducer,
   registry: registryReducer,
   userSettings: userSettingsReducer,
-  makeOtc: makeOtcReducer,
-  myOrders: myOrdersReducer,
+  makeOrder: makeOrderReducer,
+  myOtcOrders: myOtcOrdersReducer,
   takeOtc: takeOtcReducer,
+  takeLimit: takeLimitReducer,
   web3: web3Reducer,
   quotes: quotesReducer,
 };

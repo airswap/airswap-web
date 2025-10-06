@@ -10,6 +10,7 @@ import { fetchBestPricing, fetchBestRfqOrder } from "./quotesApi";
 interface QuotesState {
   disableLastLook: boolean;
   disableRfq: boolean;
+  isComparingBestOrder: boolean;
   isLastLookLoading: boolean;
   isRfqLoading: boolean;
   bestPricing?: ExtendedPricing;
@@ -27,6 +28,7 @@ interface QuotesState {
 const initialState: QuotesState = {
   disableLastLook: false,
   disableRfq: false,
+  isComparingBestOrder: false,
   isLastLookLoading: false,
   isRfqLoading: false,
 };
@@ -61,6 +63,7 @@ const quotesSlice = createSlice({
       if (!action.payload) {
         return {
           ...state,
+          isComparingBestOrder: false,
           bestOrder: undefined,
           bestOrderType: undefined,
           bestQuote: undefined,
@@ -69,6 +72,7 @@ const quotesSlice = createSlice({
 
       return {
         ...state,
+        isComparingBestOrder: false,
         bestOrder: action.payload.order,
         bestOrderType: action.payload.type,
         bestQuote: action.payload.quote,
@@ -134,6 +138,7 @@ const quotesSlice = createSlice({
 
         return {
           ...state,
+          isComparingBestOrder: true,
           isLastLookLoading: false,
           bestPricing: action.payload,
         };
@@ -171,6 +176,7 @@ const quotesSlice = createSlice({
 
         return {
           ...state,
+          isComparingBestOrder: true,
           isRfqLoading: false,
           bestRfqOrder: action.payload,
         };

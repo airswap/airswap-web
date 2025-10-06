@@ -5,10 +5,10 @@ import { ethers } from "ethers";
 const useFormattedTokenAmount = (
   amount?: string,
   decimals?: number
-): string | undefined => {
+): string => {
   return useMemo(() => {
     if (!amount || decimals === undefined) {
-      return undefined;
+      return "0";
     }
 
     return ethers.utils.formatUnits(amount, decimals);

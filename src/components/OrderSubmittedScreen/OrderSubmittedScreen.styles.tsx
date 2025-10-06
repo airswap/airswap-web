@@ -7,16 +7,27 @@ export const ButtonsContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   padding-top: 2rem;
+  width: 100%;
+  max-width: 30rem;
 `;
 
 const ButtonStyle = css`
-  width: fit-content;
-  padding-inline: 3.5rem;
+  width: calc(50% - 0.5rem);
+  height: auto;
+  min-height: 3rem;
+  line-height: 1.375;
+  padding: 0.375rem 1rem;
+  white-space: normal;
 `;
 
 export const MakeNewOrderButton = styled(Button)`
   ${ButtonStyle};
 `;
+
+export const ReturnToOrderButton = styled(Button)`
+  ${ButtonStyle};
+`;
+
 export const TrackTransactionButton = styled(Button)`
   ${ButtonStyle};
 `;

@@ -16,12 +16,14 @@ export const StyledIcon = styled(Icon)`
 export const Button = styled.button`
   display: flex;
   align-items: center;
+  color: ${({ theme }) =>
+    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
 
   ${StyledIcon} {
     margin-top: 0.125rem;
     margin-left: 0.375rem;
     color: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.lightGrey : theme.colors.primary};
+      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
   }
 
   &:hover {

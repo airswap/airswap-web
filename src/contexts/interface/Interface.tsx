@@ -16,6 +16,7 @@ export interface InterfaceContextContextProps {
   pageHeight?: number;
   overlayHeight?: number;
 
+  resize: () => void;
   setIsConnecting: Dispatch<React.SetStateAction<boolean>>;
   setIsDebugMode: Dispatch<React.SetStateAction<boolean>>;
   setShowMobileToolbar: Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ export const InterfaceContext =
     showTransactionOverlay: false,
     showWalletList: false,
     transactionsTabIsOpen: false,
+    resize: () => {},
     setIsConnecting: () => {},
     setIsDebugMode: () => {},
     setShowMobileToolbar: () => {},
@@ -59,13 +61,14 @@ const InterfaceProvider: FC = ({ children }) => {
   const [pageHeight, setPageHeight] = useState(windowHeight);
   const [overlayHeight, setOverlayHeight] = useState(0);
 
-  useDebounce(
-    () => {
-      setPageHeight(windowHeight);
-    },
-    100,
-    [windowHeight]
-  );
+  const calculateAndSetPageHeight = () => {
+    const widgetFrameWrapper = document.getElementById("widget-frame-wrapper");
+    const widgetFrameWrapperHeight = widgetFrameWrapper?.clientHeight;
+
+    setPageHeight(Math.max(windowHeight || 0, widgetFrameWrapperHeight || 0));
+  };
+
+  useDebounce(calculateAndSetPageHeight, 100, [windowHeight]);
 
   useEffect(() => {
     if (!showModalOverlay) {
@@ -85,7 +88,8 @@ const InterfaceProvider: FC = ({ children }) => {
     setShowTransactionOverlay(false);
     setTransactionsTabIsOpen(false);
     setShowModalOverlay(false);
-  }, [appRouteParams.route]);
+    calculateAndSetPageHeight();
+  }, [appRouteParams.route, appRouteParams.isLimitOrder]);
 
   return (
     <InterfaceContext.Provider
@@ -99,6 +103,7 @@ const InterfaceProvider: FC = ({ children }) => {
         transactionsTabIsOpen,
         pageHeight,
         overlayHeight,
+        resize: calculateAndSetPageHeight,
         setIsConnecting,
         setIsDebugMode,
         setShowMobileToolbar,
