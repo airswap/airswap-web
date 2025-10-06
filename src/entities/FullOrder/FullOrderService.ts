@@ -15,9 +15,10 @@ export const getFullOrderNonceUsed = async (
 
 export const cancelFullOrder = async (
   order: FullOrder,
-  provider: ethers.providers.BaseProvider
+  library: ethers.providers.Web3Provider
 ): Promise<ContractTransaction> => {
-  return Swap.getContract(provider, provider.network.chainId).cancel([
+  const signer = library.getSigner();
+  return Swap.getContract(signer, library.network.chainId).cancel([
     order.nonce,
   ]);
 };

@@ -99,9 +99,10 @@ export const getOrderErc20NonceUsed = async (
 
 export const cancelOrderErc20 = async (
   order: OrderERC20,
-  provider: ethers.providers.BaseProvider
+  library: ethers.providers.Web3Provider
 ): Promise<ContractTransaction> => {
-  return SwapERC20.getContract(provider, provider.network.chainId).cancel([
+  const signer = library.getSigner();
+  return SwapERC20.getContract(signer, library.network.chainId).cancel([
     order.nonce,
   ]);
 };
