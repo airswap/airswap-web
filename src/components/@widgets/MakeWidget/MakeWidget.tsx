@@ -527,6 +527,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   };
 
   const restart = () => {
+    setActiveSetRuleHash(undefined);
     setState(MakeWidgetState.list);
     dispatch(reset());
   };
