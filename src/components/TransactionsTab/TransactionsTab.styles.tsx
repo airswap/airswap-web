@@ -63,7 +63,8 @@ export const LegendContainer = styled.div<{ $isVisible?: boolean }>`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ $isVisible }) => ($isVisible ? ".75rem" : "0")};
-  padding-inline: 1.5rem;
+  padding-inline-start: 1.5rem;
+  padding-inline-end: 1.25rem;
   width: 100%;
   height: ${({ $isVisible }) => ($isVisible ? "1rem" : "0")};
   visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};

@@ -33,8 +33,8 @@ export const ClearListButton = styled(IconButton)`
   color: ${(props) => props.theme.colors.lightGrey};
 
   svg {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 1rem;
+    height: 1rem;
   }
 
   &:hover {
