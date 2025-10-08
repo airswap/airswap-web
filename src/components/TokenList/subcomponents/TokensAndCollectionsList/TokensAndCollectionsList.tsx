@@ -123,6 +123,7 @@ export const TokensAndCollectionsList = ({
               return (
                 <TokenButton
                   key={tokenId}
+                  isButton={!editMode}
                   showDeleteButton={
                     editMode &&
                     token.address !== nativeCurrency[chainId || 1].address

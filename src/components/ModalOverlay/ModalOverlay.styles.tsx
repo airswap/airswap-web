@@ -7,6 +7,7 @@ import { ScrollBarStyle } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import CloseButton from "../../styled-components/CloseButton/CloseButton";
 import Button from "../Button/Button";
+import { Text } from "../Button/Button.styles";
 import { InfoSubHeading } from "../Typography/Typography";
 import { StyledH3 } from "../Typography/Typography.styles";
 
@@ -136,6 +137,17 @@ const OverlayActionButtonStyle = css`
 
 export const OverlayActionButton = styled(Button)`
   ${OverlayActionButtonStyle};
+
+  ${Text} {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 `;
 
 const containerDynamicHeightStyle = css`
