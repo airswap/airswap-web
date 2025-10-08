@@ -5,11 +5,12 @@ import breakPoints from "../../../../style/breakpoints";
 import { BorderlessButtonStyle, TextEllipsis } from "../../../../style/mixins";
 import { fontMono } from "../../../../style/themes";
 import AccountLink from "../../../AccountLink/AccountLink";
-import Icon from "../../../Icon/Icon";
+import IconButton from "../../../IconButton/IconButton";
 import TokenLogo from "../../../TokenLogo/TokenLogo";
 
 type ContainerProps = {
   disabled: boolean;
+  isButton: boolean;
   showDeleteButton: boolean;
 };
 
@@ -59,7 +60,7 @@ const scaleInAnimation = keyframes`
   }
 `;
 
-export const DeleteIcon = styled(Icon)`
+export const DeleteButton = styled(IconButton)`
   margin-left: auto;
   padding: 0.25rem;
   color: ${(props) => props.theme.colors.lightGrey};
@@ -104,13 +105,14 @@ export const Container = styled.button<ContainerProps>`
   width: 100%;
   padding-block: 0.625rem;
   opacity: ${(props) => (props.disabled ? 0.6 : 1)};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  cursor: ${(props) =>
+    props.disabled ? "not-allowed" : props.isButton ? "pointer" : "default"};
 
   &:hover,
   &:focus-within {
     &::before {
       content: "";
-      display: block;
+      display: ${(props) => (!props.isButton ? "none" : "block")};
       position: absolute;
       top: -0.125rem;
       left: -0.75rem;
@@ -122,8 +124,8 @@ export const Container = styled.button<ContainerProps>`
     }
 
     ${TokenName} {
-      color: ${({ theme, disabled }) =>
-        disabled
+      color: ${({ isButton, theme, disabled }) =>
+        disabled || !isButton
           ? theme.colors.lightGrey
           : theme.name === "dark"
           ? theme.colors.white
@@ -134,18 +136,22 @@ export const Container = styled.button<ContainerProps>`
       color: ${({ theme }) =>
         theme.name === "dark" ? theme.colors.white : theme.colors.primary};
     }
+  }
 
-    ${DeleteIcon} {
+  ${DeleteButton} {
+    &:hover,
+    &:focus {
       color: ${(props) =>
         props.disabled
           ? props.theme.colors.lightGrey
           : props.theme.colors.white};
+      }
     }
   }
 
   @media ${breakPoints.phoneOnly} {
     grid-template-columns: ${(props) =>
-      props.showDeleteButton
+      !props.isButton
         ? "1.25rem calc(100% - 7.5rem) 4.25rem"
         : "1.25rem calc(50% - 2rem) calc(50% - 1.5rem)"};
     gap: 1rem;

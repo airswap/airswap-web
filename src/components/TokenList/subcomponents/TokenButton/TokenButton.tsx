@@ -14,7 +14,7 @@ import {
   TokenNameContainer,
   TokenName,
   Balance,
-  DeleteIcon,
+  DeleteButton,
   TokenSymbolAndName,
   StyledIcon,
   Tooltip,
@@ -22,6 +22,10 @@ import {
 } from "./TokenButton.styles";
 
 export type TokenRowProps = {
+  /**
+   * Whether the button is a button or a div
+   */
+  isButton: boolean;
   /**
    * TokenInfo object
    */
@@ -49,6 +53,7 @@ export type TokenRowProps = {
 };
 
 const TokenButton = ({
+  isButton,
   token,
   balance,
   setToken,
@@ -69,16 +74,18 @@ const TokenButton = ({
       return;
     }
 
-    if (!showDeleteButton) {
-      setToken(token);
-    } else {
-      removeActiveToken(token);
-    }
+    setToken(token);
+  };
+
+  const onDeleteButtonClick = () => {
+    removeActiveToken(token);
   };
 
   return (
     <Container
-      onClick={onClickHandler}
+      as={isButton ? "button" : "div"}
+      isButton={isButton}
+      onClick={!showDeleteButton && isButton ? onClickHandler : undefined}
       disabled={disabled}
       showDeleteButton={showDeleteButton}
     >
@@ -94,7 +101,7 @@ const TokenButton = ({
       </TokenSymbolAndName>
 
       {showDeleteButton ? (
-        <DeleteIcon name="deny" />
+        <DeleteButton icon="deny" onClick={onDeleteButtonClick} />
       ) : (
         <Balance>{stringToSignificantDecimals(balance)}</Balance>
       )}

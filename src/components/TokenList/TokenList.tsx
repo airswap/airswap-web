@@ -20,6 +20,7 @@ import {
   removeActiveTokens,
 } from "../../features/metadata/metadataActions";
 import { compareAddresses } from "../../helpers/string";
+import Icon from "../Icon/Icon";
 import { OverlayActionButton } from "../ModalOverlay/ModalOverlay.styles";
 import {
   Container,
@@ -227,6 +228,7 @@ const TokenList = ({
             onClick={handleActionButtonClick}
           >
             {getActionButtonText(editMode, selectedNftCollection)}
+            {!editMode && !selectedNftCollection && <Icon name="edit" />}
           </OverlayActionButton>
         </SizingContainer>
       </ContentContainer>
