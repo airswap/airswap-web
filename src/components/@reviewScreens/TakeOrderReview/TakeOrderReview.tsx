@@ -21,10 +21,9 @@ import {
   ReviewListItemLabel,
   ReviewListItemValue,
 } from "../../../styled-components/ReviewListItem/ReviewListItem";
-import { getTokenPairTranslation } from "../../@widgets/MakeWidget/helpers";
+import { RateField } from "../../@widgets/MakeWidget/subcomponents/RateField/RateField";
 import { ErrorList } from "../../ErrorList/ErrorList";
 import ModalOverlay from "../../ModalOverlay/ModalOverlay";
-import OrderReviewToken from "../../OrderReviewToken/OrderReviewToken";
 import ProtocolFeeOverlay from "../../ProtocolFeeOverlay/ProtocolFeeOverlay";
 import { Title } from "../../Typography/Typography";
 import {
@@ -95,14 +94,6 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
   const signerTokenImage = signerToken ? getTokenImage(signerToken) : undefined;
   const senderTokenImage = senderToken ? getTokenImage(senderToken) : undefined;
 
-  const rate = useMemo(() => {
-    return getTokenPairTranslation(
-      signerTokenSymbol,
-      signerAmount,
-      senderTokenSymbol,
-      senderAmount
-    );
-  }, [signerAmount, senderAmount]);
   const expiryTranslation = useMemo(
     () => getExpiryTranslation(new Date(), new Date(expiry * 1000)),
     [expiry]
@@ -164,7 +155,13 @@ const TakeOrderReview: FC<TakeOrderReviewProps> = ({
 
         <ReviewListItem>
           <ReviewListItemLabel>{t("orders.exchangeRate")}</ReviewListItemLabel>
-          <ReviewListItemValue>{rate}</ReviewListItemValue>
+          <ReviewListItemValue>
+            <RateField
+              token1={signerTokenSymbol || "?"}
+              token2={senderTokenSymbol || "?"}
+              rate={new BigNumber(senderAmount).dividedBy(signerAmount)}
+            />
+          </ReviewListItemValue>
         </ReviewListItem>
 
         <ReviewListItem>

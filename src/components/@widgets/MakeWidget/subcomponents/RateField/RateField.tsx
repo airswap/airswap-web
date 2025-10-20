@@ -61,7 +61,7 @@ export const RateField: FC<RateFieldProps> = ({
       ) : (
         <StyledIconButton
           icon="swap-horizontal"
-          iconSize={0.75}
+          iconSize={0.875}
           onClick={handleClick}
         />
       )}
