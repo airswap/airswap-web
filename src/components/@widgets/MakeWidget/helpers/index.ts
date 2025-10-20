@@ -87,17 +87,3 @@ export const getNewTokenPair = (
     tokenTo: newTokenTo,
   };
 };
-
-export const getTokenPairTranslation = (
-  token1 = "?",
-  token1Amount: string,
-  token2 = "?",
-  token2Amount: string
-) => {
-  const amount = new BigNumber(token2Amount).dividedBy(
-    new BigNumber(token1Amount)
-  );
-  const readableAmount = stringToSignificantDecimals(amount.toString(), 6);
-
-  return `1 ${token1} = ${readableAmount} ${token2}`;
-};
