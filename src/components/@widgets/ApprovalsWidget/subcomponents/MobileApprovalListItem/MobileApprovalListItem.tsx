@@ -17,38 +17,31 @@ import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalE
 import { SpenderAddressType } from "../../../../../features/balances/balancesApi";
 import stringToSignificantDecimals from "../../../../../helpers/stringToSignificantDecimals";
 import {
+  contractLabels,
+  featureLabels,
+} from "../ApprovalListItem/ApprovalListItem";
+import {
   StyledActionButton,
-  ActionButtonContainer,
-  Amount,
+  ItemValue,
   Container,
   TokenImage,
   TokenImageAndNameContainer,
   TokenLink,
   TokenName,
-  ContractContainer,
-} from "./ApprovalListItem.styles";
+  ItemLabel,
+  Divider,
+  ItemContainer,
+  ItemSubContainer,
+  ContractLink,
+} from "./MobileApprovalListItem.styles";
 
-export const contractLabels: Record<SpenderAddressType, string> = {
-  Wrapper: "Wrapper",
-  Swap: "Swap NFT",
-  SwapERC20: "Swap ERC-20",
-  Delegate: "Delegate",
-};
-
-export const featureLabels: Record<SpenderAddressType, string> = {
-  Wrapper: "Swap",
-  Swap: "OTC NFT",
-  SwapERC20: "Swap, OTC",
-  Delegate: "OTC Partial Fill",
-};
-
-type ApprovalListItemProps = {
+type MobileApprovalListItemProps = {
   approval: ApprovalEntity;
   onEditButtonClick: (approval: ApprovalEntity) => void;
   className?: string;
 };
 
-export const ApprovalListItem: FC<ApprovalListItemProps> = ({
+export const MobileApprovalListItem: FC<MobileApprovalListItemProps> = ({
   approval,
   onEditButtonClick,
   className,
@@ -72,13 +65,6 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
   const roundedAllowance = stringToSignificantDecimals(allowance);
   const roundedBalance = stringToSignificantDecimals(balance);
 
-  const minFontSize = 16;
-  const maxFontSize = 20;
-  const tokenNameFontSize = Math.max(
-    minFontSize,
-    Math.min(maxFontSize, 30 - (name?.length || 0) * 1.2)
-  );
-
   const handleEditButtonClick = () => {
     onEditButtonClick(approval);
   };
@@ -87,31 +73,51 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
     <Container className={className}>
       <TokenImageAndNameContainer ref={tokenContainerRef}>
         <TokenImage backgroundImage={image} />
-        <TokenName style={{ fontSize: `${tokenNameFontSize}px` }}>
+        <TokenName>
+          <ItemLabel>Token</ItemLabel>
           {name}
         </TokenName>
         {tokenAddress && chainId && (
           <TokenLink address={tokenAddress} chainId={chainId} />
         )}
       </TokenImageAndNameContainer>
-      <Amount>{roundedBalance}</Amount>
-      <Amount>{roundedAllowance}</Amount>
-      <ContractContainer>
-        <Amount>{contractLabels[approval.contract]}</Amount>
-        {contractAddress && chainId && (
-          <TokenLink address={contractAddress} chainId={chainId} />
-        )}
-      </ContractContainer>
-      <ContractContainer>
-        <Amount>{featureLabels[approval.contract]}</Amount>
-      </ContractContainer>
-      <ActionButtonContainer>
-        {approval.tokenInfo && (
-          <StyledActionButton onClick={handleEditButtonClick}>
-            {isTokenInfo(approval.tokenInfo) ? "Edit" : "Revoke"}
-          </StyledActionButton>
-        )}
-      </ActionButtonContainer>
+
+      <Divider />
+
+      <ItemContainer>
+        <ItemSubContainer>
+          <ItemLabel>Balance</ItemLabel>
+          <ItemValue>{roundedBalance}</ItemValue>
+        </ItemSubContainer>
+        <ItemSubContainer>
+          <ItemLabel>Allowance</ItemLabel>
+          <ItemValue>{roundedAllowance}</ItemValue>
+        </ItemSubContainer>
+      </ItemContainer>
+
+      <Divider />
+
+      <ItemContainer>
+        <ItemSubContainer>
+          <ItemLabel>Contract</ItemLabel>
+          <ItemValue>
+            {contractLabels[approval.contract]}
+            {contractAddress && chainId && (
+              <ContractLink address={contractAddress} chainId={chainId} />
+            )}
+          </ItemValue>
+        </ItemSubContainer>
+        <ItemSubContainer>
+          <ItemLabel>Feature</ItemLabel>
+          <ItemValue>{featureLabels[approval.contract]}</ItemValue>
+        </ItemSubContainer>
+      </ItemContainer>
+
+      {approval.tokenInfo && (
+        <StyledActionButton onClick={handleEditButtonClick}>
+          {isTokenInfo(approval.tokenInfo) ? "Edit" : "Revoke"}
+        </StyledActionButton>
+      )}
     </Container>
   );
 };

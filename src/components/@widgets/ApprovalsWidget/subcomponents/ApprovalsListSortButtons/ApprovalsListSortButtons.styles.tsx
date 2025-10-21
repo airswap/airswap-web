@@ -4,9 +4,13 @@ import breakPoints from "../../../../../style/breakpoints";
 import SortButton from "../../../../SortButton/SortButton";
 
 export const Container = styled.div`
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
+  display: none;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+  }
 `;
 
 export const PairButtonWrapper = styled.div`

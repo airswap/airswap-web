@@ -37,6 +37,7 @@ import { sortApprovalEntities } from "./helpers";
 import { ApprovalsList } from "./subcomponents/ApprovalsList/ApprovalsList";
 import ApprovalsListSortButtons from "./subcomponents/ApprovalsListSortButtons/ApprovalsListSortButtons";
 import EditApprovalModal from "./subcomponents/EditApprovalModal.tsx/EditApprovalModal";
+import { MobileApprovalsList } from "./subcomponents/MobileApprovalsList/MobileApprovalsList";
 import { ApprovalSortType } from "./types";
 
 export const ApprovalsWidget: FC = () => {
@@ -167,6 +168,11 @@ export const ApprovalsWidget: FC = () => {
               onEditButtonClick={handleEditButtonClick}
             />
           </StyledFadedScrollContainer>
+
+          <MobileApprovalsList
+            approvals={approvalEntities}
+            onEditButtonClick={handleEditButtonClick}
+          />
 
           {isLoading && <StyledLoadingSpinner />}
           {showNoApprovalsFound && (

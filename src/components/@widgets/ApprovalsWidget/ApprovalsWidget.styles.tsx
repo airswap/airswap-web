@@ -19,15 +19,20 @@ export const Container = styled.div`
 
 export const StyledScrollContainer = styled.div`
   margin-block-start: 2.5rem;
+  width: 100%;
 `;
 
 export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
-  position: relative;
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  width: 100%;
-  max-height: 20rem;
+  display: none;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    position: relative;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    width: 100%;
+    max-height: 20rem;
+  }
 `;
 
 export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
