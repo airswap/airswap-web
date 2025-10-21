@@ -272,7 +272,8 @@ export const TokenSelectContainer = styled.div<{
   }
 
   ${ContainingButton} ${StyledTokenLogo} {
-    ${(props) => (props.showTokenContractLink ? "visibility: hidden" : "")};
+    ${(props) =>
+      props.isQuote && props.showTokenContractLink ? "visibility: hidden" : ""};
   }
 
   ${TokenLogoLeft} {
