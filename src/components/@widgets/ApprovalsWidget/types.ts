@@ -3,4 +3,5 @@ export type ApprovalSortType =
   | "balance"
   | "approval"
   | "contract"
+  | "feature"
   | "actions";

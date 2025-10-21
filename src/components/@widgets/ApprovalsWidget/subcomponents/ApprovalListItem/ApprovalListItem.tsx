@@ -31,9 +31,16 @@ import {
 
 const contractLabels: Record<SpenderAddressType, string> = {
   Wrapper: "Wrapper",
-  Swap: "Swap (NFTS)",
+  Swap: "Swap NFT",
   SwapERC20: "Swap ERC-20",
   Delegate: "Delegate",
+};
+
+const featureLabels: Record<SpenderAddressType, string> = {
+  Wrapper: "Swap",
+  Swap: "OTC NFT",
+  SwapERC20: "Swap, OTC",
+  Delegate: "OTC Partial Fill",
 };
 
 type ApprovalListItemProps = {
@@ -95,6 +102,9 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
         {contractAddress && chainId && (
           <TokenLink address={contractAddress} chainId={chainId} />
         )}
+      </ContractContainer>
+      <ContractContainer>
+        <Amount>{featureLabels[approval.contract]}</Amount>
       </ContractContainer>
       <ActionButtonContainer>
         {approval.tokenInfo && (

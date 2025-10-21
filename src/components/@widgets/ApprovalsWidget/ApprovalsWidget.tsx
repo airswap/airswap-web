@@ -61,6 +61,7 @@ export const ApprovalsWidget: FC = () => {
     balance: true,
     approval: true,
     contract: true,
+    feature: true,
     actions: true,
   });
   const [showEditApprovalModal, setShowEditApprovalModal] = useState(false);

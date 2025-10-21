@@ -33,7 +33,7 @@ export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
 export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   position: relative;
   display: grid;
-  grid-template-columns: 3fr 3fr 3fr 3fr 1fr;
+  grid-template-columns: 3fr 3fr 3fr 3fr 3fr 1fr;
   grid-column-gap: 0.5rem;
   grid-row-gap: 0.5rem;
   width: 100%;
@@ -41,7 +41,7 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   opacity: ${(props) => (props.isLoading ? 0.5 : 1)};
 
   @media ${breakPoints.phoneOnly} {
-    grid-template-columns: 1fr 1fr 1r 1fr;
+    grid-template-columns: 1fr 1fr 1r 1fr 1fr;
     width: calc(100% + 1rem);
   }
 
