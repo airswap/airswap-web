@@ -15,6 +15,15 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 23.25rem;
+  padding-top: 3rem;
+
+  @media ${breakPoints.phoneOnly} {
+    padding-top: 0;
+  }
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    padding-top: 0;
+  }
 `;
 
 export const StyledScrollContainer = styled.div`
@@ -46,8 +55,9 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   opacity: ${(props) => (props.isLoading ? 0.5 : 1)};
 
   @media ${breakPoints.phoneOnly} {
+    padding: 0;
     grid-template-columns: 1fr 1fr 1r 1fr 1fr;
-    width: calc(100% + 1rem);
+    width: 100%;
   }
 
   @media ${breakPoints.tabletLandscapeUp} {

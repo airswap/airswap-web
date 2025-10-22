@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useWeb3React } from "@web3-react/core";
@@ -6,10 +6,9 @@ import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { AppTokenInfo } from "../../../entities/AppTokenInfo/AppTokenInfo";
+import { InterfaceContext } from "../../../contexts/interface/Interface";
 import {
   getTokenDecimals,
-  isCollectionTokenInfo,
   isTokenInfo,
 } from "../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { ApprovalEntity } from "../../../entities/ApprovalEntity/ApprovalEntity";
@@ -19,8 +18,9 @@ import { approve } from "../../../features/orders/ordersActions";
 import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import useApprovalPending from "../../../hooks/useApprovalPending";
+import useMediaQuery from "../../../hooks/useMediaQuery";
+import breakPoints from "../../../style/breakpoints";
 import ApprovalSubmittedScreen from "../../ApprovalSubmittedScreen/ApprovalSubmittedScreen";
-import ModalOverlay from "../../ModalOverlay/ModalOverlay";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import { Title } from "../../Typography/Typography";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
@@ -49,6 +49,8 @@ export const ApprovalsWidget: FC = () => {
   const { provider: library } = useWeb3React();
   const ordersStatus = useAppSelector(selectOrdersStatus);
   const isSigning = ordersStatus === "signing";
+  const isMobile = useMediaQuery(breakPoints.tabletLandscapeUp);
+  const { resize } = useContext(InterfaceContext);
 
   const [activeApproval, setActiveApproval] = useState<ApprovalEntity | null>(
     null
@@ -132,20 +134,25 @@ export const ApprovalsWidget: FC = () => {
 
     setActiveApproval(approval);
 
-    if (isTokenInfo(approval.tokenInfo)) {
-      const allowance = formatUnits(
-        approval.allowance,
-        getTokenDecimals(approval.tokenInfo)
-      );
-      setEditApprovalAmount(allowance);
-      setEditApproval(approval);
-      setShowEditApprovalModal(true);
-      return;
-    }
+    // Disable edit approval for now
+    // if (isTokenInfo(approval.tokenInfo)) {
+    //   const allowance = formatUnits(
+    //     approval.allowance,
+    //     getTokenDecimals(approval.tokenInfo)
+    //   );
+    //   setEditApprovalAmount(allowance);
+    //   setEditApproval(approval);
+    //   setShowEditApprovalModal(true);
+    //   return;
+    // }
 
     // If the token is a collection, we set the allowance to 0 because we simply revoke the approval
     dispatch(approve("0", approval.tokenInfo, library, approval.contract));
   };
+
+  useEffect(() => {
+    resize();
+  }, [isMobile, sortedApprovalEntities]);
 
   return (
     <Container>

@@ -108,7 +108,8 @@ export const ApprovalListItem: FC<ApprovalListItemProps> = ({
       <ActionButtonContainer>
         {approval.tokenInfo && (
           <StyledActionButton onClick={handleEditButtonClick}>
-            {isTokenInfo(approval.tokenInfo) ? "Edit" : "Revoke"}
+            {/* {isTokenInfo(approval.tokenInfo) ? "Edit" : "Revoke"} */}
+            Revoke
           </StyledActionButton>
         )}
       </ActionButtonContainer>

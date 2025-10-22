@@ -1,6 +1,9 @@
 import styled from "styled-components/macro";
 
-import { InputOrButtonBorderStyle } from "../../../../../style/mixins";
+import {
+  InputOrButtonBorderStyle,
+  TextEllipsis,
+} from "../../../../../style/mixins";
 import { CompactActionButton } from "../../../../../styled-components/CompactActionButton/CompactActionButton";
 import AccountLink from "../../../../AccountLink/AccountLink";
 
@@ -48,14 +51,11 @@ export const Divider = styled.div`
 `;
 
 export const TokenName = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-height: 3.375rem;
+  ${TextEllipsis};
+
   font-size: 1.125rem;
   font-weight: 500;
-  word-break: break-all;
   color: ${({ theme }) => theme.colors.white};
-  overflow: hidden;
 `;
 
 export const ItemContainer = styled.div`
@@ -64,21 +64,24 @@ export const ItemContainer = styled.div`
   width: 100%;
 `;
 
-export const ItemSubContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-
-  &:last-child {
-    text-align: right;
-  }
-`;
-
 export const ItemValue = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   word-break: break-all;
+`;
+
+export const ItemSubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  &:last-child {
+    ${ItemLabel},
+    ${ItemValue} {
+      justify-content: flex-end;
+      text-align: right;
+    }
+  }
 `;
 
 export const ContractContainer = styled.div`
@@ -105,7 +108,6 @@ export const TokenLink = styled(AccountLink)`
   border-radius: 50%;
   width: 2.375rem;
   height: 2.375rem;
-  translate: -0.5rem 0.0625rem;
 
   &:focus,
   &:hover {
