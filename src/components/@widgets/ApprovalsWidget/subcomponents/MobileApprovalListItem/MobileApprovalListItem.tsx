@@ -1,4 +1,5 @@
 import { FC, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Swap } from "@airswap/libraries";
 import { Delegate, Wrapper } from "@airswap/libraries";
@@ -11,7 +12,6 @@ import {
   getTokenDecimals,
   getTokenImage,
   getTokenSymbol,
-  isTokenInfo,
 } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { ApprovalEntity } from "../../../../../entities/ApprovalEntity/ApprovalEntity";
 import { SpenderAddressType } from "../../../../../features/balances/balancesApi";
@@ -46,6 +46,7 @@ export const MobileApprovalListItem: FC<MobileApprovalListItemProps> = ({
   onEditButtonClick,
   className,
 }) => {
+  const { t } = useTranslation();
   const { chainId } = useWeb3React();
   const contractAddress = getContractAddress(chainId || 1, approval.contract);
   const tokenContainerRef = useRef<HTMLDivElement>(null);
@@ -86,11 +87,11 @@ export const MobileApprovalListItem: FC<MobileApprovalListItemProps> = ({
 
       <ItemContainer>
         <ItemSubContainer>
-          <ItemLabel>Balance</ItemLabel>
+          <ItemLabel>{t("common.balance")}</ItemLabel>
           <ItemValue>{roundedBalance}</ItemValue>
         </ItemSubContainer>
         <ItemSubContainer>
-          <ItemLabel>Allowance</ItemLabel>
+          <ItemLabel>{t("common.approval")}</ItemLabel>
           <ItemValue>{roundedAllowance}</ItemValue>
         </ItemSubContainer>
       </ItemContainer>
@@ -99,7 +100,7 @@ export const MobileApprovalListItem: FC<MobileApprovalListItemProps> = ({
 
       <ItemContainer>
         <ItemSubContainer>
-          <ItemLabel>Contract</ItemLabel>
+          <ItemLabel>{t("common.contract")}</ItemLabel>
           <ItemValue>
             {contractLabels[approval.contract]}
             {contractAddress && chainId && (
@@ -108,7 +109,7 @@ export const MobileApprovalListItem: FC<MobileApprovalListItemProps> = ({
           </ItemValue>
         </ItemSubContainer>
         <ItemSubContainer>
-          <ItemLabel>Feature</ItemLabel>
+          <ItemLabel>{t("common.feature")}</ItemLabel>
           <ItemValue>{featureLabels[approval.contract]}</ItemValue>
         </ItemSubContainer>
       </ItemContainer>
