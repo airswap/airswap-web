@@ -1,11 +1,6 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../../../style/breakpoints";
-import {
-  InputOrButtonBorderStyle,
-  TextEllipsis,
-} from "../../../../../style/mixins";
-import { fontWide } from "../../../../../style/themes";
 import { CompactActionButton } from "../../../../../styled-components/CompactActionButton/CompactActionButton";
 import { TooltipStyle } from "../../../../../styled-components/Tooltip/Tooltip";
 import AccountLink from "../../../../AccountLink/AccountLink";

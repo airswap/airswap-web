@@ -49,7 +49,7 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
         isDescending={sortTypeDirection.approval}
         onClick={() => onSortButtonClick("approval")}
       >
-        {t("common.allowance")}
+        {t("common.approval")}
       </SortButton>
       <SortButton
         isDisabled={isDisabled}
@@ -59,6 +59,15 @@ const ApprovalsListSortButtons: FC<ApprovalsListSortButtonsProps> = ({
         onClick={() => onSortButtonClick("contract")}
       >
         {t("common.contract")}
+      </SortButton>
+      <SortButton
+        isDisabled={isDisabled}
+        isSortable
+        isActive={activeSortType === "feature"}
+        isDescending={sortTypeDirection.feature}
+        onClick={() => onSortButtonClick("feature")}
+      >
+        {t("common.feature")}
       </SortButton>
       <ActionsButton isDisabled>{t("orders.actions")}</ActionsButton>
     </Container>

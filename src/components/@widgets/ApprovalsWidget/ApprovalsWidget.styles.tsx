@@ -15,25 +15,39 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 23.25rem;
+  padding-top: 3rem;
+
+  @media ${breakPoints.phoneOnly} {
+    padding-top: 0;
+  }
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    padding-top: 0;
+  }
 `;
 
 export const StyledScrollContainer = styled.div`
   margin-block-start: 2.5rem;
+  width: 100%;
 `;
 
 export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
-  position: relative;
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  width: 100%;
-  max-height: 20rem;
+  display: none;
+
+  @media ${breakPoints.tabletLandscapeUp} {
+    position: relative;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    width: 100%;
+    max-height: 20rem;
+  }
 `;
 
 export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   position: relative;
   display: grid;
-  grid-template-columns: 3fr 3fr 3fr 3fr 1fr;
+  grid-template-columns: 3fr 3fr 3fr 3fr 3fr 1fr;
   grid-column-gap: 0.5rem;
   grid-row-gap: 0.5rem;
   width: 100%;
@@ -41,8 +55,9 @@ export const ApprovalsGrid = styled.div<{ isLoading: boolean }>`
   opacity: ${(props) => (props.isLoading ? 0.5 : 1)};
 
   @media ${breakPoints.phoneOnly} {
-    grid-template-columns: 1fr 1fr 1r 1fr;
-    width: calc(100% + 1rem);
+    padding: 0;
+    grid-template-columns: 1fr 1fr 1r 1fr 1fr;
+    width: 100%;
   }
 
   @media ${breakPoints.tabletLandscapeUp} {
