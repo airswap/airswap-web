@@ -69,8 +69,10 @@ import { useLimitOrderStatus } from "../MyLimitOrdersWidget/hooks/useLimitOrderS
 import {
   Container,
   StyledActionButtons,
-  StyledFilledAndStatus,
+  StyledRecipientAndStatus,
   StyledInfoSection,
+  StyledRecipientAndStatusBar,
+  StyledFilledBar,
 } from "../OrderDetailWidget/OrderDetailWidget.styles";
 import useTakerTokenInfo from "../OrderDetailWidget/hooks/useTakerTokenInfo";
 import { ButtonActions } from "../OrderDetailWidget/subcomponents/ActionButtons/ActionButtons";
@@ -517,15 +519,16 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
           onMaxButtonClick={handleMaxButtonClick}
         />
 
-        <StyledFilledAndStatus
+        <StyledRecipientAndStatusBar
           expiry={parsedExpiry}
-          isOwner={userIsMakerOfSwap}
+          status={orderStatus}
+          link={orderTransactionLink}
+        />
+
+        <StyledFilledBar
           filledAmount={filledAmount}
           filledPercentage={filledPercentage}
-          orderType={orderType}
-          status={orderStatus}
           tokenSymbol={senderTokenSymbol}
-          link={orderTransactionLink}
         />
 
         <StyledInfoSection
