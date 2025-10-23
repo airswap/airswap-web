@@ -2,8 +2,9 @@ import styled from "styled-components/macro";
 
 import { sizes } from "../../../style/sizes";
 import ActionButtons from "./subcomponents/ActionButtons/ActionButtons";
-import { FilledAndStatus } from "./subcomponents/FilledAndStatus/FilledAndStatus";
+import { FilledBar } from "./subcomponents/FilledBar/FilledBar";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
+import { LimitOrderStatusBar } from "./subcomponents/LimitOrderStatusBar/LimitOrderStatusBar";
 import { RecipientAndStatus } from "./subcomponents/RecipientAndStatus/RecipientAndStatus";
 
 export const Container = styled.div`
@@ -17,7 +18,11 @@ export const StyledRecipientAndStatus = styled(RecipientAndStatus)`
   margin-block-start: ${sizes.widgetGutter};
 `;
 
-export const StyledFilledAndStatus = styled(FilledAndStatus)`
+export const StyledRecipientAndStatusBar = styled(LimitOrderStatusBar)`
+  margin-block-start: ${sizes.widgetGutter};
+`;
+
+export const StyledFilledBar = styled(FilledBar)`
   margin-block-start: ${sizes.widgetGutter};
 `;
 
