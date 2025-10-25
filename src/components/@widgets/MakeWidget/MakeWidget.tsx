@@ -53,6 +53,9 @@ import {
   setTokenFromAmount,
   setTokenToAmount,
   UserToken,
+  selectExpiry,
+  setExpiry,
+  UserOrderExpiry,
 } from "../../../features/userSettings/userSettingsSlice";
 import getWethAddress from "../../../helpers/getWethAddress";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
@@ -132,6 +135,8 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const erc20Tokens = useAppSelector(selectErc20Tokens);
   const userTokens = useAppSelector(selectUserTokens);
   const userTokenAmounts = useAppSelector(selectUserTokenAmounts);
+  const userOrderExpiry = useAppSelector(selectExpiry);
+  const { expiry } = userOrderExpiry;
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const {
@@ -184,7 +189,6 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   // User input states
   const [state, setState] = useState<MakeWidgetState>(MakeWidgetState.list);
-  const [expiry, setExpiry] = useState(new Date().getTime());
   const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
@@ -272,6 +276,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const showOrderReview = state === MakeWidgetState.review;
 
   // useEffects
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only run on mount
   useEffect(() => {
     dispatch(reset());
 
@@ -298,6 +303,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     }
   }, [transactionsTabIsOpen]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: listen to library changes
   useEffect(() => {
     if (library) {
       dispatch(fetchIndexerUrls({ provider: library }));
@@ -402,6 +408,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         tokenTo: makerAmount,
       })
     );
+  };
+
+  const handleExpiryChange = (newExpiry: UserOrderExpiry) => {
+    if (newExpiry.expiry !== expiry) {
+      dispatch(setExpiry(newExpiry));
+    }
   };
 
   const handleTokenSelect = (newToken: AppTokenInfo) => {
@@ -719,9 +731,10 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
           <StyledExpirySelector
             fullWidth={isLimitOrder}
-            isDisabled={!isActive}
-            onChange={setExpiry}
             hideExpirySelector={!!showTokenSelectModal}
+            isDisabled={!isActive}
+            value={userOrderExpiry}
+            onChange={handleExpiryChange}
           />
         </OrderTypeSelectorAndExpirySelectorWrapper>
 
@@ -745,7 +758,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         )}
 
         {orderType === OrderType.publicListed &&
-          makerTokenKind === TokenKinds.ERC20 && (
+          (!makerTokenKind || makerTokenKind === TokenKinds.ERC20) && (
             <StyledPartialFillSwitch value={isLimitOrder} />
           )}
 

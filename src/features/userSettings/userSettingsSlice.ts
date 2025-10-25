@@ -21,11 +21,18 @@ export interface UserTokenAmounts {
   tokenTo?: string;
 }
 
+export interface UserOrderExpiry {
+  expiry: number;
+  unitIndex: number;
+  unitAmount: number;
+}
+
 export interface UserSettingsState {
   theme: ThemeType | "system";
   tokens: UserTokenPair;
   amounts: UserTokenAmounts;
   customServerUrl: string | null;
+  expiry: UserOrderExpiry;
 }
 
 export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
@@ -39,6 +46,11 @@ const initialState: UserSettingsState = {
   amounts: {
     tokenFrom: undefined,
     tokenTo: undefined,
+  },
+  expiry: {
+    expiry: 3600000,
+    unitIndex: 1,
+    unitAmount: 1,
   },
   customServerUrl: null,
 };
@@ -95,6 +107,12 @@ const userSettingsSlice = createSlice({
         amounts: action.payload,
       };
     },
+    setExpiry: (state, action: PayloadAction<UserOrderExpiry>) => {
+      return {
+        ...state,
+        expiry: action.payload,
+      };
+    },
     setCustomServerUrl: (state, action: PayloadAction<string | null>) => {
       state.customServerUrl = action.payload;
     },
@@ -111,7 +129,10 @@ export const selectUserTokenAmounts = (state: RootState) =>
 export const selectCustomServerUrl = (state: RootState) =>
   state.userSettings.customServerUrl;
 
+export const selectExpiry = (state: RootState) => state.userSettings.expiry;
+
 export const {
+  setExpiry,
   setTheme,
   setUserTokens,
   setCustomServerUrl,

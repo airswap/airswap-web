@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { UserOrderExpiry } from "../../../../../features/userSettings/userSettingsSlice";
 import {
   SelectLabel,
   SelectWrapper,
@@ -13,11 +14,13 @@ const floatRegExp = new RegExp("^([0-9])*$");
 
 export type ExpirySelectorProps = {
   isDisabled?: boolean;
-  onChange: (msToExpiry: number) => void;
+  value: UserOrderExpiry;
+  onChange: (expiry: UserOrderExpiry) => void;
   className?: string;
 };
 
 export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
+  value,
   isDisabled,
   onChange,
   className,
@@ -28,12 +31,15 @@ export const ExpirySelector: React.FC<ExpirySelectorProps> = ({
     return getExpirySelectOptions(t);
   }, [t]);
 
-  const [unit, setUnit] = useState(translatedOptions[1]);
-  const [amount, setAmount] = useState("1");
+  const [unit, setUnit] = useState(translatedOptions[value.unitIndex]);
+  const [amount, setAmount] = useState(value.unitAmount.toString());
 
   useEffect(() => {
     const msToExpiry = (parseInt(amount, 0) || 0) * parseInt(unit.value, 0);
-    onChange(msToExpiry);
+    const unitIndex = translatedOptions.findIndex(
+      (option) => option.value === unit.value
+    );
+    onChange({ expiry: msToExpiry, unitIndex: unitIndex, unitAmount: +amount });
   }, [unit, amount, onChange]);
 
   function handleUnitChange(option: SelectOption) {
