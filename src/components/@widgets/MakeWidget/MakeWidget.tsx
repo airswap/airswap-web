@@ -46,8 +46,12 @@ import {
 import { approve, deposit } from "../../../features/orders/ordersActions";
 import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
+  selectUserTokenAmounts,
   selectUserTokens,
   setUserTokens,
+  setAmounts,
+  setTokenFromAmount,
+  setTokenToAmount,
   UserToken,
 } from "../../../features/userSettings/userSettingsSlice";
 import getWethAddress from "../../../helpers/getWethAddress";
@@ -127,6 +131,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const erc20Tokens = useAppSelector(selectErc20Tokens);
   const userTokens = useAppSelector(selectUserTokens);
+  const userTokenAmounts = useAppSelector(selectUserTokenAmounts);
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const {
@@ -184,8 +189,8 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
   const [takerAddress, setTakerAddress] = useState("");
-  const [makerAmount, setMakerAmount] = useState(defaultMakerAmount);
-  const [takerAmount, setTakerAmount] = useState("");
+  const makerAmount = userTokenAmounts.tokenFrom || defaultMakerAmount;
+  const takerAmount = userTokenAmounts.tokenTo || "";
 
   // States derived from user input
   const makerAmountPlusFee = useAmountPlusFee(
@@ -354,9 +359,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     );
 
     if (tokenFrom?.kind !== TokenKinds.ERC20 && type === "base") {
-      setMakerAmount("1");
+      dispatch(setTokenFromAmount("1"));
     } else if (tokenTo?.kind !== TokenKinds.ERC20 && type === "quote") {
-      setTakerAmount("1");
+      dispatch(setTokenToAmount("1"));
     }
 
     dispatch(
@@ -368,14 +373,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   };
 
   const handleMakerAmountChange = (amount: string) => {
-    setMakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, makerTokenDecimals)
+    dispatch(
+      setTokenFromAmount(
+        toMaxAllowedDecimalsNumberString(amount, makerTokenDecimals)
+      )
     );
   };
 
   const handleTakerAmountChange = (amount: string) => {
-    setTakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, takerTokenDecimals)
+    dispatch(
+      setTokenToAmount(
+        toMaxAllowedDecimalsNumberString(amount, takerTokenDecimals)
+      )
     );
   };
 
@@ -387,8 +396,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         kind: TokenKinds.ERC20,
       }
     );
-    setMakerAmount(takerAmount);
-    setTakerAmount(makerAmount);
+    dispatch(
+      setAmounts({
+        tokenFrom: takerAmount,
+        tokenTo: makerAmount,
+      })
+    );
   };
 
   const handleTokenSelect = (newToken: AppTokenInfo) => {
@@ -402,7 +415,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     });
 
     if (tokenKind === TokenKinds.ERC721) {
-      setMakerAmount("1");
+      dispatch(setTokenFromAmount("1"));
     }
 
     setShowTokenSelectModal(null);
@@ -424,8 +437,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
       takerTokenDecimals
     );
 
-    setMakerAmount(formattedMakerAmount);
-    setTakerAmount(formattedTakerAmount);
+    dispatch(
+      setAmounts({
+        tokenFrom: formattedMakerAmount,
+        tokenTo: formattedTakerAmount,
+      })
+    );
 
     setState(MakeWidgetState.review);
   };
@@ -727,7 +744,10 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
           </TooltipContainer>
         )}
 
-        <StyledPartialFillSwitch value={isLimitOrder} />
+        {orderType === OrderType.publicListed &&
+          makerTokenKind === TokenKinds.ERC20 && (
+            <StyledPartialFillSwitch value={isLimitOrder} />
+          )}
 
         <StyledInfoSection
           isAllowancesFailed={isAllowancesOrBalancesFailed}

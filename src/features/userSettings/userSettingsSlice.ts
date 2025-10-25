@@ -16,9 +16,15 @@ export interface UserTokenPair {
   tokenTo?: UserToken;
 }
 
+export interface UserTokenAmounts {
+  tokenFrom?: string;
+  tokenTo?: string;
+}
+
 export interface UserSettingsState {
   theme: ThemeType | "system";
   tokens: UserTokenPair;
+  amounts: UserTokenAmounts;
   customServerUrl: string | null;
 }
 
@@ -27,6 +33,10 @@ export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
 const initialState: UserSettingsState = {
   theme: localStorage[THEME_LOCAL_STORAGE_KEY] || "dark",
   tokens: {
+    tokenFrom: undefined,
+    tokenTo: undefined,
+  },
+  amounts: {
     tokenFrom: undefined,
     tokenTo: undefined,
   },
@@ -58,6 +68,33 @@ const userSettingsSlice = createSlice({
         tokens,
       };
     },
+    setTokenFromAmount: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        amounts: {
+          ...state.amounts,
+          tokenFrom: action.payload,
+        },
+      };
+    },
+    setTokenToAmount: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        amounts: {
+          ...state.amounts,
+          tokenTo: action.payload,
+        },
+      };
+    },
+    setAmounts: (
+      state,
+      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>
+    ) => {
+      return {
+        ...state,
+        amounts: action.payload,
+      };
+    },
     setCustomServerUrl: (state, action: PayloadAction<string | null>) => {
       state.customServerUrl = action.payload;
     },
@@ -68,10 +105,19 @@ export const selectTheme = (state: RootState) => state.userSettings.theme;
 
 export const selectUserTokens = (state: RootState) => state.userSettings.tokens;
 
+export const selectUserTokenAmounts = (state: RootState) =>
+  state.userSettings.amounts;
+
 export const selectCustomServerUrl = (state: RootState) =>
   state.userSettings.customServerUrl;
 
-export const { setTheme, setUserTokens, setCustomServerUrl } =
-  userSettingsSlice.actions;
+export const {
+  setTheme,
+  setUserTokens,
+  setCustomServerUrl,
+  setTokenFromAmount,
+  setTokenToAmount,
+  setAmounts,
+} = userSettingsSlice.actions;
 
 export default userSettingsSlice.reducer;

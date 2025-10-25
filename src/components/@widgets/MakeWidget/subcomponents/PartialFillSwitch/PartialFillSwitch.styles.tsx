@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { fontWide } from "../../../../../style/themes";
 
-export const RadioContainer = styled(NavLink)`
+export const RadioContainer = styled(NavLink)<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   width: 2.75rem;
@@ -21,7 +21,7 @@ export const RadioCircle = styled.span`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-export const Container = styled.div<{ disabled?: boolean }>`
+export const Container = styled.div<{ active: boolean; disabled: boolean }>`
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -34,14 +34,25 @@ export const Container = styled.div<{ disabled?: boolean }>`
   font-weight: 500;
   background-color: ${({ theme }) => theme.colors.darkGrey};
 
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.5;
+      cursor: not-allowed;
+
+      ${RadioContainer} {
+        pointer-events: none;
+      }
+    `}
+
   ${RadioContainer} {
-    background-color: ${({ theme, disabled }) =>
-      disabled ? "rgba(121, 139, 173, 0.2)" : theme.colors.primary};
+    background-color: ${({ theme, active }) =>
+      active ? "rgba(121, 139, 173, 0.2)" : theme.colors.primary};
   }
 
   ${RadioCircle} {
-    transform: ${({ disabled }) =>
-      disabled ? "translateX(0)" : "translateX(1rem)"};
+    transform: ${({ active }) =>
+      active ? "translateX(0)" : "translateX(1rem)"};
   }
 `;
 

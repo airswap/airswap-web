@@ -81,7 +81,9 @@ export const StyledAddressInput = styled(AddressInput)`
   height: 3.5rem;
 `;
 
-export const StyledPartialFillSwitch = styled(PartialFillSwitch)``;
+export const StyledPartialFillSwitch = styled(PartialFillSwitch)`
+  margin-bottom: ${sizes.widgetGutter};
+`;
 
 export const StyledActionButtons = styled(ActionButtons)`
   margin-block-start: 1rem;
