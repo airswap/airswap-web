@@ -98,6 +98,7 @@ import {
   StyledInfoSection,
   StyledNotice,
   StyledOrderTypeSelector,
+  StyledPartialFillSwitch,
   StyledSwapInputs,
   StyledTooltip,
   TooltipContainer,
@@ -725,6 +726,8 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             )}
           </TooltipContainer>
         )}
+
+        <StyledPartialFillSwitch value={isLimitOrder} />
 
         <StyledInfoSection
           isAllowancesFailed={isAllowancesOrBalancesFailed}
