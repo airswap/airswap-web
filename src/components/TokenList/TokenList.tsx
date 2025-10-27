@@ -58,7 +58,7 @@ export type TokenListProps = {
    */
   onAfterRemoveActiveToken?: (tokenInfo: AppTokenInfo) => void;
   /**
-   * Called when a token has been seleced.
+   * Called when a token has been selected.
    */
   onSelectToken: (val: AppTokenInfo) => void;
 };

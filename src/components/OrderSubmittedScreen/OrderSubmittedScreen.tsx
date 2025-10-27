@@ -53,7 +53,7 @@ const OrderSubmittedScreen: FC<OrderSubmittedInfoProps> = ({
     setIsClickedTrackTransactionButton(true);
   };
 
-  // Hacky hack to delay click to circomvent the useClickOutsideTransactionsTab hook
+  // Hacky hack to delay click to circumvent the useClickOutsideTransactionsTab hook
   useDebounce(
     () => {
       if (isClickedTrackTransactionButton) {
