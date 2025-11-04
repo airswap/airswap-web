@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 
 import styled, { DefaultTheme } from "styled-components/macro";
 
-import breakPoints from "../../../../../style/breakpoints";
 import { fontMono } from "../../../../../style/themes";
 import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
@@ -35,13 +34,12 @@ const getIndicatorColor = (
 export const Container = styled.div<{
   orderStatus: OrderStatus;
 }>`
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-
   position: relative;
-  align-items: center;
-  height: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-block: 0.5rem;
+  height: auto;
 
   ${Circle} {
     background: ${({ theme, orderStatus }) =>
@@ -64,40 +62,75 @@ export const Text = styled.div`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   position: relative;
-  font-family: ${fontMono};
-  font-size: 0.75rem;
+  // font-family: ${fontMono};
+  font-size: 0.9375rem;
   font-weight: 500;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   word-break: break-all;
-  color: ${({ theme }) => theme.colors.carteBlanche};
+  color: ${({ theme }) => theme.colors.darkSubText};
   overflow: hidden;
   z-index: 2;
   pointer-events: none;
+`;
 
-  @media ${breakPoints.tabletPortraitUp} {
-    font-size: 1rem;
+export const SignerAmount = styled(Text)`
+  margin-top: -0.25rem;
+  font-size: 1.125rem;
+  color: ${({ theme }) => theme.colors.carteBlanche};
+`;
+export const SenderAmount = styled(SignerAmount)``;
+export const FilledAmount = styled(Text)`
+  font-size: 0.9375rem;
+  color: ${({ theme }) => theme.colors.white};
+`;
+export const MetaLabel = styled(Text)`
+  font-size: 0.75rem;
+  text-transform: uppercase;
+`;
+export const OrderStatusLabel = styled(Text)`
+  font-size: 0.9375rem;
+  color: ${({ theme }) => theme.colors.white};
+`;
+export const OrderStatusAndIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const MetaItems = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 1;
+`;
+
+export const MetaItemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  &:last-child {
+    align-items: flex-end;
   }
 `;
 
-export const SignerAmount = styled(Text)``;
-export const SenderAmount = styled(Text)``;
-export const FilledAmount = styled(Text)``;
-export const OrderStatusLabel = styled(Text)``;
-
 export const ActionButtonContainer = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0.9375rem;
+  right: 0rem;
+  z-index: 22;
 `;
 
 export const ActionButton = styled(IconButton)`
   position: relative;
+  z-index: 2;
+  display: none;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   color: ${({ theme }) =>
     theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  z-index: 2;
+  background: ${({ theme }) => theme.colors.darkGrey};
 
   &:hover,
   &:focus,
@@ -105,7 +138,6 @@ export const ActionButton = styled(IconButton)`
     border: 1px solid ${({ theme }) => theme.colors.borderGrey};
     color: ${({ theme }) =>
       theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-    background: ${({ theme }) => theme.colors.darkGrey};
   }
 `;
 
@@ -127,10 +159,35 @@ export const StyledNavLink = styled(NavLink)<{
   &:hover,
   &:focus,
   &:active {
-    opacity: 1;
+    opacity: 0.2;
 
     & + ${ActionButtonContainer} ${ActionButton} {
-      background: ${({ theme }) => theme.colors.darkGrey};
+      display: flex;
+    }
+  }
+`;
+
+export const TokensAndAmountContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+
+export const AmountContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TokenAndAmount = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:nth-child(2) {
+    flex-direction: row-reverse;
+
+    ${Text} {
+      text-align: right;
     }
   }
 `;
@@ -143,8 +200,10 @@ export const Tokens = styled.div`
 `;
 
 export const TokenIcon = styled(TokenLogo)`
-  min-width: 1.125rem;
-  aspect-ratio: 1;
+  min-width: 2rem;
+  max-width: 2rem;
+  min-height: 2rem;
+  max-height: 2rem;
   background-color: ${({ theme }) => theme.colors.darkGrey};
   z-index: 3;
   pointer-events: none;
@@ -176,4 +235,10 @@ export const Warning = styled(IconWarning)`
       display: block;
     }
   }
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  min-height: 1px;
+  background: rgba(53, 69, 98, 0.5);
 `;

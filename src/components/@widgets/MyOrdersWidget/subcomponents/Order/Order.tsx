@@ -21,17 +21,26 @@ import useFormattedTokenAmount from "../../../OrderDetailWidget/hooks/useFormatt
 import {
   ActionButton,
   ActionButtonContainer,
+  AmountContainer,
   Circle,
   Container,
+  Divider,
   FilledAmount,
+  MetaItemContainer,
+  MetaItems,
+  OrderStatusAndIndicator,
   OrderStatusLabel,
   SenderAmount,
   SignerAmount,
   StatusIndicator,
   StyledNavLink,
   StyledTooltip,
+  Text,
+  TokenAndAmount,
   TokenIcon,
   Tokens,
+  TokensAndAmountContainer,
+  MetaLabel,
   Warning,
 } from "./Order.styles";
 
@@ -147,35 +156,75 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
         </>
       )}
-      <StatusIndicator
-        onMouseEnter={() => onStatusIndicatorMouseEnter(index, order.status)}
-        onMouseLeave={onStatusIndicatorMouseLeave}
-      >
-        <Circle />
-      </StatusIndicator>
-      <Tokens>
-        <TokenIcon logoURI={signerTokenImage} />
-        <TokenIcon logoURI={senderTokenImage} />
-      </Tokens>
-      {hasFilledColumn && (
+      <TokensAndAmountContainer>
+        <TokenAndAmount>
+          <TokenIcon logoURI={signerTokenImage} />
+
+          <AmountContainer>
+            <Text>{t("orders.from")}</Text>
+            <SignerAmount>
+              {`${signerAmount} ${signerTokenSymbol || ""}`}
+            </SignerAmount>
+          </AmountContainer>
+        </TokenAndAmount>
+
+        <TokenAndAmount>
+          <TokenIcon logoURI={senderTokenImage} />
+
+          <AmountContainer>
+            <Text>{t("orders.to")}</Text>
+            <SenderAmount>
+              {`${senderAmount} ${senderTokenSymbol || ""}`}
+            </SenderAmount>
+          </AmountContainer>
+        </TokenAndAmount>
+      </TokensAndAmountContainer>
+
+      <Divider />
+
+      {/* {hasFilledColumn && (
         <FilledAmount>
           {`${filledAmount} ${signerTokenSymbol || ""}`}
         </FilledAmount>
-      )}
-      {hasForColumn && (
+      )} */}
+
+      {/* {hasForColumn && (
         <FilledAmount>
           {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
         </FilledAmount>
-      )}
-      <SignerAmount>{`${signerAmount} ${
-        signerTokenSymbol || ""
-      }`}</SignerAmount>
-      <SenderAmount>{`${senderAmount} ${
-        senderTokenSymbol || ""
-      }`}</SenderAmount>
-      <OrderStatusLabel>
-        {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}
-      </OrderStatusLabel>
+      )} */}
+
+      <MetaItems>
+        <MetaItemContainer>
+          <MetaLabel>{t("common.status")}</MetaLabel>
+          <OrderStatusAndIndicator>
+            <StatusIndicator
+              onMouseEnter={() =>
+                onStatusIndicatorMouseEnter(index, order.status)
+              }
+              onMouseLeave={onStatusIndicatorMouseLeave}
+            >
+              <Circle />
+            </StatusIndicator>
+
+            <OrderStatusLabel>
+              {order.status === OrderStatus.open
+                ? timeLeft
+                : orderStatusTranslation}
+            </OrderStatusLabel>
+          </OrderStatusAndIndicator>
+        </MetaItemContainer>
+
+        <MetaItemContainer>
+          <MetaLabel>{t("common.expiry")}</MetaLabel>
+          <OrderStatusAndIndicator>
+            <FilledAmount>
+              {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
+            </FilledAmount>
+          </OrderStatusAndIndicator>
+        </MetaItemContainer>
+      </MetaItems>
+
       <StyledNavLink
         $isHovered={isHoveredActionButton}
         $hasWarning={order.hasAllowanceWarning}

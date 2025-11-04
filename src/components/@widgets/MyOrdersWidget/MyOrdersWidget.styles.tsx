@@ -6,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 20rem;
+  height: 100%;
 `;
 
 export const InfoSectionContainer = styled.div`

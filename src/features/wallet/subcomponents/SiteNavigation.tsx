@@ -15,15 +15,14 @@ interface NavigationProps {
 
 const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
   const { t } = useTranslation();
-  const appRouteParams = useAppRouteParams();
 
   return (
     <Container className={className}>
-      {standAloneRoutes.includes(appRouteParams.route as AppRoutes) && (
-        <>
-          <NavigationNavLink to="/">{t("common.trade")}</NavigationNavLink>|
-        </>
-      )}
+      <NavigationNavLink to="/">{t("common.trade")}</NavigationNavLink>
+      <NavigationNavLink to="/my-otc-orders">
+        {t("common.myOrders")}
+      </NavigationNavLink>
+      |
       <NavigationLink href="https://github.com/airswap" target="_blank">
         {t("common.coders")}
       </NavigationLink>

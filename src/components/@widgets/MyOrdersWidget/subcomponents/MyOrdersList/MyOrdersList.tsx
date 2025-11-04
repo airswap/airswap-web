@@ -1,8 +1,6 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import useIsOverflowing from "../../../../../hooks/useIsOverflowing";
-import useWindowSize from "../../../../../hooks/useWindowSize";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
@@ -14,7 +12,6 @@ import {
   OrderIndicatorTooltip,
   OrdersContainer,
   StyledLoadingSpinner,
-  StyledMyOrdersListSortButtons,
   LoadingSpinnerContainer,
   StyledFadedScrollContainer,
 } from "./MyOrdersList.styles";
@@ -116,13 +113,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   if (isLoading) {
     return (
       <Container className={className}>
-        <StyledMyOrdersListSortButtons
-          activeSortType={activeSortType}
-          hasFilledColumn={hasFilledColumn}
-          hasForColumn={hasForColumn}
-          sortTypeDirection={sortTypeDirection}
-          onSortButtonClick={onSortButtonClick}
-        />
         <LoadingSpinnerContainer>
           <StyledLoadingSpinner />
         </LoadingSpinnerContainer>
@@ -132,13 +122,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 
   return (
     <Container className={className}>
-      <StyledMyOrdersListSortButtons
-        hasFilledColumn={hasFilledColumn}
-        hasForColumn={hasForColumn}
-        activeSortType={activeSortType}
-        sortTypeDirection={sortTypeDirection}
-        onSortButtonClick={onSortButtonClick}
-      />
       <StyledFadedScrollContainer resizeDependencies={[sortedOrders]}>
         <OrdersContainer ref={containerRef}>
           {sortedOrders.map((order, index) => (

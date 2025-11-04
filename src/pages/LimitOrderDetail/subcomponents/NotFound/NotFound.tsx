@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import Icon from "../../../../components/Icon/Icon";
-import { InfoSubHeading } from "../../../../components/Typography/Typography";
 import { routes } from "../../../../routes";
 import {
   Container,
@@ -18,7 +17,7 @@ const NotFound: FC = () => {
   const history = useHistory();
 
   const handleBackButtonClick = () => {
-    history.push({ pathname: routes.makeLimitOrder() });
+    history.push({ pathname: routes.makeOtcOrder() });
   };
 
   return (

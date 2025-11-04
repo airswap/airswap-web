@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   InputOrButtonBorderStyleType2,
+  BorderlessButtonStyle,
 } from "../../style/mixins";
 import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
@@ -96,6 +97,7 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
   overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
+  padding-top: 1rem;
   padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};
   padding-bottom: ${(props) => (props.hasOverflow ? "2rem" : "0")};
 
@@ -219,5 +221,44 @@ export const BackdropFilter = styled.button`
 
   @media ${breakPoints.phoneOnly} {
     display: block;
+  }
+`;
+
+export const TransactionsTabNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1.5rem;
+  width: calc(100% - 3rem);
+  height: 2.5rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderGrey};
+`;
+
+export const TransactionsTabNavigationButton = styled.button<{
+  isActive?: boolean;
+}>`
+  ${BorderlessButtonStyle};
+
+  display: flex;
+  height: calc(100% + 1px);
+  border-bottom: 1px solid transparent;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding-top: 0.25rem;
+  color: ${({ theme }) => theme.colors.lightGrey};
+  background-color: transparent;
+  cursor: pointer;
+
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      border-bottom: 1px solid ${({ theme }) => theme.colors.white} !important;
+      color: ${({ theme }) => theme.colors.white};
+    `}
+
+  &:hover,
+  &:focus {
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
