@@ -73,6 +73,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 }) => {
   const { t } = useTranslation();
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
+  const [hasEnteredElement, setHasEnteredElement] = useState(false);
 
   const senderTokenDecimals = order.senderToken
     ? getTokenDecimals(order.senderToken)
@@ -149,7 +150,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   };
 
   return (
-    <Container orderStatus={order.status} className={className}>
+    <Container
+      orderStatus={order.status}
+      className={className}
+      onMouseEnter={() => setHasEnteredElement(true)}
+      onMouseLeave={() => setHasEnteredElement(false)}
+    >
       {order.hasAllowanceWarning && (
         <>
           <Warning />
@@ -181,18 +187,6 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </TokensAndAmountContainer>
 
       <Divider />
-
-      {/* {hasFilledColumn && (
-        <FilledAmount>
-          {`${filledAmount} ${signerTokenSymbol || ""}`}
-        </FilledAmount>
-      )} */}
-
-      {/* {hasForColumn && (
-        <FilledAmount>
-          {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
-        </FilledAmount>
-      )} */}
 
       <MetaItems>
         <MetaItemContainer>
@@ -235,13 +229,15 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         {isCancelInProgress ? (
           <LoadingSpinner />
         ) : (
-          <ActionButton
-            icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
-            iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
-            onClick={handleDeleteOrderButtonClick}
-            onMouseEnter={handleActionButtonMouseEnter}
-            onMouseLeave={handleActionButtonMouseLeave}
-          />
+          hasEnteredElement && (
+            <ActionButton
+              icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
+              iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
+              onClick={handleDeleteOrderButtonClick}
+              onMouseEnter={handleActionButtonMouseEnter}
+              onMouseLeave={handleActionButtonMouseLeave}
+            />
+          )
         )}
       </ActionButtonContainer>
     </Container>

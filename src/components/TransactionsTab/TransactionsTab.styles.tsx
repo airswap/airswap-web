@@ -8,7 +8,6 @@ import {
   InputOrButtonBorderStyleType2,
   BorderlessButtonStyle,
 } from "../../style/mixins";
-import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
 import { InfoSubHeading } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
@@ -19,7 +18,7 @@ export const Container = styled(motion.div)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: ${sizes.widgetMobileSize};
+  max-width: 29.75rem;
   height: calc(100% - 5rem);
   padding: 1.5rem 1.5rem 0;
   top: 5rem;
@@ -96,6 +95,7 @@ type TransactionsContainerProps = {
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
+  overflow-x: hidden;
   overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
   padding-top: 1rem;
   padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};

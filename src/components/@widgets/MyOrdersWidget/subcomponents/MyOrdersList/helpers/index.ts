@@ -29,7 +29,7 @@ export const getSortedOrders = (
   // TODO: sort on order canceled or not
   if (sortType === "active" || sortType === "expiry") {
     array.sort((a, b) => {
-      return b.expiry.getTime() - a.expiry.getTime();
+      return a.expiry.getTime() - b.expiry.getTime();
     });
   }
 

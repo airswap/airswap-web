@@ -6,6 +6,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { selectMyOtcOrdersReducer } from "../../features/myOtcOrders/myOtcOrdersSlice";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -70,6 +71,11 @@ const TransactionsTab = ({
     "myActivity"
   );
 
+  const { userOrders } = useAppSelector(selectMyOtcOrdersReducer);
+  const { delegateRules, dismissedDelegateRuleIds } = useAppSelector(
+    (state) => state.delegateRules
+  );
+
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -96,6 +102,7 @@ const TransactionsTab = ({
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
       const containerHeight =
         containerRef.current.getBoundingClientRect().height;
+      console.log({ scrollHeight });
       const buttonHeight = buttonRef.current.getBoundingClientRect().height;
       setOverflow(scrollHeight + offsetTop > containerHeight - buttonHeight);
     }
@@ -107,6 +114,10 @@ const TransactionsTab = ({
     height,
     open,
     transactions,
+    userOrders,
+    delegateRules,
+    dismissedDelegateRuleIds,
+    activeTab,
   ]);
 
   // Every time a new transactions is added, scroll to top.

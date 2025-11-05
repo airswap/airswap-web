@@ -5,7 +5,6 @@ import { TokenInfo } from "@airswap/utils";
 import * as ethers from "ethers";
 
 import { useAppSelector } from "../../../../../app/hooks";
-import { isTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { DelegateRule } from "../../../../../entities/DelegateRule/DelegateRule";
 import { Allowances } from "../../../../../features/balances/balancesTypes";
 import { selectAllTokenInfo } from "../../../../../features/metadata/metadataSlice";
@@ -96,7 +95,7 @@ const MyLimitOrdersList: FC<MyLimitOrdersListProps> = ({
     <StyledMyLimitOrdersList
       hasFilledColumn
       isLoading={isLoading || isAllowancesLoading}
-      activeSortType={activeSortType}
+      activeSortType="expiry"
       orders={orders}
       sortTypeDirection={sortTypeDirection}
       className={className}

@@ -37,6 +37,12 @@ const Routes: FC = () => {
         key="make-otc-order"
       />
       <Route
+        path={`/${AppRoutes.makeLimitOrder}`}
+        render={() => <MakePage isLimitOrder={true} />}
+        key="make-limit-order"
+      />
+
+      <Route
         path={`/${AppRoutes.myOtcOrders}`}
         component={MyOtcOrdersPage}
         key="my-otc-orders"

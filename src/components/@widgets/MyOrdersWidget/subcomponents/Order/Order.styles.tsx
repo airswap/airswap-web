@@ -40,6 +40,7 @@ export const Container = styled.div<{
   gap: 1rem;
   padding-block: 0.5rem;
   height: auto;
+  opacity: ${({ orderStatus }) => (orderStatus === OrderStatus.open ? 1 : 0.5)};
 
   ${Circle} {
     background: ${({ theme, orderStatus }) =>
@@ -123,7 +124,6 @@ export const ActionButtonContainer = styled.div`
 export const ActionButton = styled(IconButton)`
   position: relative;
   z-index: 2;
-  display: none;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 50%;
   width: 2rem;
@@ -160,10 +160,6 @@ export const StyledNavLink = styled(NavLink)<{
   &:focus,
   &:active {
     opacity: 0.2;
-
-    & + ${ActionButtonContainer} ${ActionButton} {
-      display: flex;
-    }
   }
 `;
 

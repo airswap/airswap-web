@@ -187,7 +187,7 @@ const MyOtcOrdersWidget: FC = () => {
         )}
       </TransactionOverlay>
 
-      {!!userOrders.length && (
+      {(!!userOrders.length || !!filteredDelegateRules.length) && (
         <MyOtcOrdersList
           isAllowancesLoading={isAllowancesLoading}
           activeCancellationId={activeCancellationNonce}
@@ -206,10 +206,12 @@ const MyOtcOrdersWidget: FC = () => {
         />
       )}
 
-      {!userOrders.length && (
+      {!userOrders.length && !filteredDelegateRules.length && (
         <InfoSectionContainer>
           <InfoSection
-            userHasNoOrders={!userOrders.length}
+            userHasNoOrders={
+              !userOrders.length && !filteredDelegateRules.length
+            }
             walletIsNotConnected={!isActive}
           />
         </InfoSectionContainer>

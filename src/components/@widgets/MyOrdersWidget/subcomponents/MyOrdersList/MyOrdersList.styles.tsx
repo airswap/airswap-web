@@ -30,7 +30,10 @@ export const OrdersContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 100%;
+
+  > div:last-child {
+    margin-bottom: 5rem;
+  }
 `;
 
 export const TooltipContainer = styled.div`
