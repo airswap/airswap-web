@@ -1,6 +1,8 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { atom, useSetAtom } from "jotai";
+
 import { OrderStatus } from "../../../../../types/orderStatus";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
@@ -13,9 +15,10 @@ import {
   OrdersContainer,
   StyledLoadingSpinner,
   LoadingSpinnerContainer,
-  StyledFadedScrollContainer,
 } from "./MyOrdersList.styles";
 import { getSortedOrders } from "./helpers";
+
+export const myOrdersListLoadingAtom = atom(false);
 
 interface MyOrdersListProps {
   hasFilledColumn?: boolean;
@@ -42,6 +45,7 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
 }) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const setMyOrdersListLoading = useSetAtom(myOrdersListLoadingAtom);
 
   const [activeDeleteButtonTooltipIndex, setActiveDeleteButtonTooltipIndex] =
     useState<number>();
@@ -109,6 +113,10 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
       );
     };
   }, [containerRef]);
+
+  useEffect(() => {
+    setMyOrdersListLoading(isLoading);
+  }, [isLoading]);
 
   if (isLoading) {
     return (

@@ -230,7 +230,7 @@ export const TransactionsTabNavigation = styled.div`
   gap: 1rem;
   margin-left: 1.5rem;
   width: calc(100% - 3rem);
-  height: 2.5rem;
+  height: 2.75rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderGrey};
 `;
 
@@ -243,7 +243,7 @@ export const TransactionsTabNavigationButton = styled.button<{
   height: calc(100% + 1px);
   border-bottom: 1px solid transparent;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
   padding-top: 0.25rem;
   color: ${({ theme }) => theme.colors.lightGrey};

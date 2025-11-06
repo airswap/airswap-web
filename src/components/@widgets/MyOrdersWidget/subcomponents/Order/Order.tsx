@@ -1,5 +1,13 @@
-import { FC, PropsWithChildren, useMemo, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
+import { useMouse } from "react-use";
 
 import { ADDRESS_ZERO } from "@airswap/utils";
 
@@ -72,8 +80,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   className,
 }) => {
   const { t } = useTranslation();
+  const ref = useRef<HTMLAnchorElement>(null);
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
   const [hasEnteredElement, setHasEnteredElement] = useState(false);
+  const { elX, elY, elW, elH } = useMouse(ref);
 
   const senderTokenDecimals = order.senderToken
     ? getTokenDecimals(order.senderToken)
@@ -129,11 +139,6 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [order.status]
   );
 
-  const filledAmount = useFormattedTokenAmount(
-    order.senderFilledAmount,
-    senderTokenDecimals
-  );
-
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
     setIsHoveredActionButton(false);
@@ -149,13 +154,16 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     onDeleteOrderButtonMouseLeave();
   };
 
+  useEffect(() => {
+    if (elX > 0 && elY > 0 && elX < elW && elY < elH) {
+      setHasEnteredElement(true);
+    } else {
+      setHasEnteredElement(false);
+    }
+  }, [elX, elY]);
+
   return (
-    <Container
-      orderStatus={order.status}
-      className={className}
-      onMouseEnter={() => setHasEnteredElement(true)}
-      onMouseLeave={() => setHasEnteredElement(false)}
-    >
+    <Container className={className} orderStatus={order.status}>
       {order.hasAllowanceWarning && (
         <>
           <Warning />
@@ -220,8 +228,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </MetaItems>
 
       <StyledNavLink
-        $isHovered={isHoveredActionButton}
+        $isHovered={hasEnteredElement}
         $hasWarning={order.hasAllowanceWarning}
+        ref={ref}
         to={order.link}
       />
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { useAtomValue } from "jotai";
 
 import { useAppSelector } from "../../app/hooks";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
@@ -13,6 +14,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
 import { ClearOrderType } from "../../types/clearOrderType";
 import { TransactionStatusType } from "../../types/transactionTypes";
+import { myOrdersListLoadingAtom } from "../@widgets/MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
 import MyOtcOrdersWidget from "../@widgets/MyOtcOrdersWidget/MyOtcOrdersWidget";
 import Icon from "../Icon/Icon";
 import {
@@ -71,11 +73,7 @@ const TransactionsTab = ({
     "myActivity"
   );
 
-  const { userOrders } = useAppSelector(selectMyOtcOrdersReducer);
-  const { delegateRules, dismissedDelegateRuleIds } = useAppSelector(
-    (state) => state.delegateRules
-  );
-
+  const isLoadingOtcOrders = useAtomValue(myOrdersListLoadingAtom);
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -102,7 +100,6 @@ const TransactionsTab = ({
       const { offsetTop, scrollHeight } = transactionsScrollRef.current;
       const containerHeight =
         containerRef.current.getBoundingClientRect().height;
-      console.log({ scrollHeight });
       const buttonHeight = buttonRef.current.getBoundingClientRect().height;
       setOverflow(scrollHeight + offsetTop > containerHeight - buttonHeight);
     }
@@ -114,10 +111,8 @@ const TransactionsTab = ({
     height,
     open,
     transactions,
-    userOrders,
-    delegateRules,
-    dismissedDelegateRuleIds,
     activeTab,
+    isLoadingOtcOrders,
   ]);
 
   // Every time a new transactions is added, scroll to top.

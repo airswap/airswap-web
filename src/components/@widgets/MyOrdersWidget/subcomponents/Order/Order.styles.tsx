@@ -107,7 +107,6 @@ export const MetaItems = styled.div`
 export const MetaItemContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 
   &:last-child {
     align-items: flex-end;
@@ -153,14 +152,8 @@ export const StyledNavLink = styled(NavLink)<{
     $hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
   height: calc(100% + 1px);
   background: ${({ theme }) => theme.colors.darkBlue};
-  opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
+  opacity: ${({ $isHovered }) => ($isHovered ? 0.2 : 0)};
   z-index: 1;
-
-  &:hover,
-  &:focus,
-  &:active {
-    opacity: 0.2;
-  }
 `;
 
 export const TokensAndAmountContainer = styled.div`
