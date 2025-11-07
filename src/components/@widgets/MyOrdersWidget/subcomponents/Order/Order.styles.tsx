@@ -2,6 +2,10 @@ import { NavLink } from "react-router-dom";
 
 import styled, { DefaultTheme } from "styled-components/macro";
 
+import {
+  InputOrButtonBorderStyle,
+  InputOrButtonBorderStyleType2,
+} from "../../../../../style/mixins";
 import { fontMono } from "../../../../../style/themes";
 import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
@@ -33,6 +37,7 @@ const getIndicatorColor = (
 
 export const Container = styled.div<{
   orderStatus: OrderStatus;
+  $hasEnteredElement?: boolean;
 }>`
   position: relative;
   display: flex;
@@ -40,7 +45,8 @@ export const Container = styled.div<{
   gap: 1rem;
   padding-block: 0.5rem;
   height: auto;
-  opacity: ${({ orderStatus }) => (orderStatus === OrderStatus.open ? 1 : 0.5)};
+  opacity: ${({ orderStatus, $hasEnteredElement }) =>
+    $hasEnteredElement ? 1 : orderStatus === OrderStatus.open ? 1 : 0.5};
 
   ${Circle} {
     background: ${({ theme, orderStatus }) =>
@@ -111,6 +117,24 @@ export const MetaItemContainer = styled.div`
   &:last-child {
     align-items: flex-end;
   }
+`;
+
+export const ActionMenuButton = styled(IconButton)`
+  ${InputOrButtonBorderStyle};
+
+  position: absolute;
+  top: -1px;
+  right: 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+  width: 2rem;
+  height: 2rem;
+  padding-bottom: 0.325rem;
+  font-weight: 600;
+  background: rgba(18, 32, 62, 1);
 `;
 
 export const ActionButtonContainer = styled.div`
@@ -188,7 +212,7 @@ export const Tokens = styled.div`
   gap: 0.25rem;
 `;
 
-export const TokenIcon = styled(TokenLogo)`
+export const TokenIcon = styled(TokenLogo)<{ $invisible?: boolean }>`
   min-width: 2rem;
   max-width: 2rem;
   min-height: 2rem;
@@ -196,6 +220,7 @@ export const TokenIcon = styled(TokenLogo)`
   background-color: ${({ theme }) => theme.colors.darkGrey};
   z-index: 3;
   pointer-events: none;
+  opacity: ${({ $invisible }) => ($invisible ? 0 : 1)};
 `;
 
 export const StyledTooltip = styled(Tooltip)`
@@ -230,4 +255,45 @@ export const Divider = styled.div`
   width: 100%;
   min-height: 1px;
   background: rgba(53, 69, 98, 0.5);
+`;
+
+export const ActionMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  position: absolute;
+  top: 3.75rem;
+  right: 0;
+  width: 210px;
+  height: 85px;
+  border: 1px solid ${({ theme }) => theme.colors.borderGrey};
+  border-radius: 0.5rem;
+  padding-inline: 1rem;
+  background: rgba(18, 33, 61, 1);
+  z-index: 20;
+`;
+
+export const NewActionMenuButton = styled.button`
+  ${InputOrButtonBorderStyleType2};
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid transparent !important;
+  color: ${({ theme }) => theme.colors.white};
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: underline;
+  }
+`;
+
+export const NewActionMenuButtonIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
 `;

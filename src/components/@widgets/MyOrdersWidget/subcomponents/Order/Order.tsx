@@ -7,9 +7,11 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { useMouse } from "react-use";
+import { useMouse, useToggle } from "react-use";
 
 import { ADDRESS_ZERO } from "@airswap/utils";
+
+import { useClickAnyWhere } from "usehooks-ts";
 
 import {
   getTokenDecimals,
@@ -19,6 +21,7 @@ import {
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
 import { OrderStatus } from "../../../../../types/orderStatus";
+import Icon from "../../../../Icon/Icon";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 import { MyOrder as MyOrderInterface } from "../../../MyOrdersWidget/entities/MyOrder";
 import {
@@ -50,6 +53,10 @@ import {
   TokensAndAmountContainer,
   MetaLabel,
   Warning,
+  ActionMenuButton,
+  ActionMenu,
+  NewActionMenuButton,
+  NewActionMenuButtonIcon,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -83,7 +90,14 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const ref = useRef<HTMLAnchorElement>(null);
   const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
   const [hasEnteredElement, setHasEnteredElement] = useState(false);
+  const [isActionMenuOpen, toggleIsActionMenuOpen] = useToggle(false);
   const { elX, elY, elW, elH } = useMouse(ref);
+
+  useClickAnyWhere(() => {
+    if (!hasEnteredElement) {
+      toggleIsActionMenuOpen(false);
+    }
+  });
 
   const senderTokenDecimals = order.senderToken
     ? getTokenDecimals(order.senderToken)
@@ -139,6 +153,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [order.status]
   );
 
+  const handleActionMenuButtonClick = () => {
+    console.log("action menu button clicked");
+  };
+
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
     setIsHoveredActionButton(false);
@@ -163,7 +181,11 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   }, [elX, elY]);
 
   return (
-    <Container className={className} orderStatus={order.status}>
+    <Container
+      className={className}
+      orderStatus={order.status}
+      $hasEnteredElement={hasEnteredElement}
+    >
       {order.hasAllowanceWarning && (
         <>
           <Warning />
@@ -183,7 +205,10 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         </TokenAndAmount>
 
         <TokenAndAmount>
-          <TokenIcon logoURI={senderTokenImage} />
+          <TokenIcon
+            $invisible={hasEnteredElement}
+            logoURI={senderTokenImage}
+          />
 
           <AmountContainer>
             <Text>{t("orders.to")}</Text>
@@ -239,16 +264,44 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <LoadingSpinner />
         ) : (
           hasEnteredElement && (
-            <ActionButton
-              icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
-              iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
-              onClick={handleDeleteOrderButtonClick}
-              onMouseEnter={handleActionButtonMouseEnter}
-              onMouseLeave={handleActionButtonMouseLeave}
+            // <ActionButton
+            //   icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
+            //   iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
+            //   onClick={handleDeleteOrderButtonClick}
+            //   onMouseEnter={handleActionButtonMouseEnter}
+            //   onMouseLeave={handleActionButtonMouseLeave}
+            // />
+            <ActionMenuButton
+              icon="dots"
+              iconSize={0.6875}
+              onClick={toggleIsActionMenuOpen}
             />
           )
         )}
       </ActionButtonContainer>
+
+      {isActionMenuOpen && (
+        <ActionMenu>
+          <NewActionMenuButton>
+            <NewActionMenuButtonIcon>
+              <Icon name="copy" />
+            </NewActionMenuButtonIcon>
+            Copy link
+          </NewActionMenuButton>
+
+          <NewActionMenuButton>
+            <NewActionMenuButtonIcon>
+              <Icon
+                name={order.status !== OrderStatus.open ? "bin" : "button-x"}
+                iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
+              />
+            </NewActionMenuButtonIcon>
+            {order.status !== OrderStatus.open
+              ? "Delete order"
+              : "Cancel order"}
+          </NewActionMenuButton>
+        </ActionMenu>
+      )}
     </Container>
   );
 };

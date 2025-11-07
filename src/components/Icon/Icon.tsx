@@ -48,6 +48,7 @@ import {
   IconVote,
   IconX,
   IconCheckCircle,
+  IconDots,
 } from "./icons";
 
 type IconSet = {
@@ -85,6 +86,7 @@ export const icons: IconSet = {
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,
   discord: IconDiscord,
+  dots: IconDots,
   edit: IconEdit,
   "exit-modal": HiX,
   forbidden: IconForbidden,
