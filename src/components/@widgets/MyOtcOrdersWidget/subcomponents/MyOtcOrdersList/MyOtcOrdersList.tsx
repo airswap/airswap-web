@@ -38,7 +38,6 @@ interface MyOtcOrdersListProps {
     order: FullOrder | FullOrderERC20,
     myOrder: MyOrder
   ) => void;
-  onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
 }
 
@@ -53,7 +52,6 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   sortTypeDirection,
   onDeleteDelegateRuleOrderButtonClick,
   onDeleteOrderButtonClick,
-  onSortButtonClick,
   className,
 }) => {
   const [orders, setOrders] = useState<MyOrder[]>([]);
@@ -153,7 +151,6 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       sortTypeDirection={sortTypeDirection}
       className={className}
       onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-      onSortButtonClick={onSortButtonClick}
     />
   );
 };

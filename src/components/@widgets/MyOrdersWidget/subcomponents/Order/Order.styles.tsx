@@ -11,6 +11,7 @@ import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
+import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 import TokenLogo from "../../../../TokenLogo/TokenLogo";
 
 export const Circle = styled.div`
@@ -59,9 +60,9 @@ export const StatusIndicator = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  height: 1rem;
-  cursor: pointer;
   z-index: 2;
+  cursor: pointer;
+  transform: translateY(1px);
 `;
 
 export const Text = styled.div`
@@ -137,31 +138,20 @@ export const ActionMenuButton = styled(IconButton)`
   background: rgba(18, 32, 62, 1);
 `;
 
-export const ActionButtonContainer = styled.div`
-  position: absolute;
-  top: 0.9375rem;
-  right: 0rem;
-  z-index: 22;
-`;
-
-export const ActionButton = styled(IconButton)`
+export const ActionButtonLoader = styled(LoadingSpinner)`
   position: relative;
   z-index: 2;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 50%;
   width: 2rem;
   height: 2rem;
-  color: ${({ theme }) =>
-    theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  background: ${({ theme }) => theme.colors.darkGrey};
+`;
 
-  &:hover,
-  &:focus,
-  &:active {
-    border: 1px solid ${({ theme }) => theme.colors.borderGrey};
-    color: ${({ theme }) =>
-      theme.name === "dark" ? theme.colors.white : theme.colors.primary};
-  }
+export const ActionButtonContainer = styled.div`
+  position: absolute;
+  top: 0.9375rem;
+  right: 0rem;
+  z-index: 22;
 `;
 
 export const StyledNavLink = styled(NavLink)<{

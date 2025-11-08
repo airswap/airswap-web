@@ -17,27 +17,23 @@ import { getDelegateRuleDataAndTransformToMyOrder } from "./helpers";
 interface MyLimitOrdersListProps {
   isAllowancesLoading: boolean;
   activeCancellationId?: string;
-  activeSortType: OrdersSortType;
   activeTokens: TokenInfo[];
   allowances: Allowances;
   delegateRules: DelegateRule[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   library: ethers.providers.BaseProvider;
   onDeleteOrderButtonClick: (order: DelegateRule, myOrder: MyOrder) => void;
-  onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
 }
 
 const MyLimitOrdersList: FC<MyLimitOrdersListProps> = ({
   isAllowancesLoading,
   activeCancellationId,
-  activeSortType,
   allowances,
   delegateRules,
   library,
   sortTypeDirection,
   onDeleteOrderButtonClick,
-  onSortButtonClick,
   className,
 }) => {
   const [orders, setOrders] = useState<MyOrder[]>([]);
@@ -100,7 +96,6 @@ const MyLimitOrdersList: FC<MyLimitOrdersListProps> = ({
       sortTypeDirection={sortTypeDirection}
       className={className}
       onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-      onSortButtonClick={onSortButtonClick}
     />
   );
 };

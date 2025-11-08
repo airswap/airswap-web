@@ -115,10 +115,6 @@ const MyLimitOrdersWidget: FC = () => {
     setActiveUnsetDelegateRule(delegateRule);
   };
 
-  const handleSortButtonClick = (type: OrdersSortType) => {
-    dispatch(setActiveSortType(type));
-  };
-
   useEffect(() => {
     if (!pendingUnsetRuleTransaction) {
       setActiveUnsetDelegateRule(undefined);
@@ -148,14 +144,12 @@ const MyLimitOrdersWidget: FC = () => {
         <MyLimitOrdersList
           isAllowancesLoading={isAllowancesLoading}
           activeCancellationId={activeUnsetDelegateRule?.id}
-          activeSortType={activeSortType}
           activeTokens={[]}
           allowances={allowances}
           delegateRules={filteredDelegateRules}
           sortTypeDirection={sortTypeDirection}
           library={library!}
           onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-          onSortButtonClick={handleSortButtonClick}
         />
       )}
 

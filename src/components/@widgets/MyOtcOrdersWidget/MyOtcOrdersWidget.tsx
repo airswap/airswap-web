@@ -1,5 +1,5 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { FC, useContext, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useHistory } from "react-router-dom";
 
 import { FullOrder, FullOrderERC20, TokenInfo } from "@airswap/utils";
@@ -34,7 +34,6 @@ import useRuleUnsetPending from "../MyLimitOrdersWidget/hooks/useRuleUnsetPendin
 import {
   Container,
   InfoSectionContainer,
-  StyledActionButtons,
 } from "../MyOrdersWidget/MyOrdersWidget.styles";
 import { MyOrder } from "../MyOrdersWidget/entities/MyOrder";
 import { ButtonActions } from "../MyOrdersWidget/subcomponents/ActionButtons/ActionButtons";
@@ -95,19 +94,6 @@ const MyOtcOrdersWidget: FC = () => {
       );
     } else {
       dispatch(removeOtcUserOrder(order));
-    }
-  };
-
-  const handleActionButtonClick = (action: ButtonActions) => {
-    if (action === ButtonActions.connectWallet) {
-      setShowWalletList(true);
-    }
-
-    if (action === ButtonActions.switchNetwork) {
-      switchToDefaultChain();
-    }
-    if (action === ButtonActions.newOrder) {
-      history.push({ pathname: AppRoutes.makeOtcOrder });
     }
   };
 
@@ -174,19 +160,6 @@ const MyOtcOrdersWidget: FC = () => {
 
   return (
     <Container>
-      <TransactionOverlay isHidden={!isSigning}>
-        <WalletSignScreen type="signature" />
-      </TransactionOverlay>
-
-      <TransactionOverlay isHidden={isSigning || !pendingCancelTranssaction}>
-        {pendingCancelTranssaction && (
-          <SubmittedCancellationScreen
-            chainId={chainId}
-            transaction={pendingCancelTranssaction}
-          />
-        )}
-      </TransactionOverlay>
-
       {(!!userOrders.length || !!filteredDelegateRules.length) && (
         <MyOtcOrdersList
           isAllowancesLoading={isAllowancesLoading}
@@ -202,7 +175,6 @@ const MyOtcOrdersWidget: FC = () => {
           onDeleteDelegateRuleOrderButtonClick={
             handleDeleteDelegateRuleOrderButtonClick
           }
-          onSortButtonClick={handleSortButtonClick}
         />
       )}
 
@@ -215,6 +187,26 @@ const MyOtcOrdersWidget: FC = () => {
             walletIsNotConnected={!isActive}
           />
         </InfoSectionContainer>
+      )}
+
+      {createPortal(
+        <>
+          <TransactionOverlay isHidden={!isSigning}>
+            <WalletSignScreen type="signature" />
+          </TransactionOverlay>
+
+          <TransactionOverlay
+            isHidden={isSigning || !pendingCancelTranssaction}
+          >
+            {pendingCancelTranssaction && (
+              <SubmittedCancellationScreen
+                chainId={chainId}
+                transaction={pendingCancelTranssaction}
+              />
+            )}
+          </TransactionOverlay>
+        </>,
+        document.body
       )}
     </Container>
   );

@@ -28,19 +28,15 @@ interface MyOrdersListProps {
   orders: MyOrder[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   onDeleteOrderButtonClick: (order: MyOrder) => void;
-  onSortButtonClick: (type: OrdersSortType) => void;
   className?: string;
 }
 
 const MyOrdersList: FC<MyOrdersListProps> = ({
-  hasFilledColumn,
-  hasForColumn,
   isLoading,
   activeSortType,
   orders,
   sortTypeDirection,
   onDeleteOrderButtonClick,
-  onSortButtonClick,
   className,
 }) => {
   const { t } = useTranslation();
@@ -67,21 +63,6 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
   const handleDeleteOrderButtonClick = (order: MyOrder) => {
     setActiveDeleteButtonTooltipIndex(undefined);
     onDeleteOrderButtonClick(order);
-  };
-
-  const handleDeleteOrderButtonMouseEnter = (
-    index: number,
-    orderIsOpen: boolean
-  ) => {
-    setActiveDeleteButtonTooltipIndex(index);
-    const tooltipText = orderIsOpen
-      ? t("orders.cancelOrder")
-      : t("orders.dismiss");
-    setTooltipText(tooltipText);
-  };
-
-  const handleDeleteOrderButtonMouseLeave = () => {
-    setActiveDeleteButtonTooltipIndex(undefined);
   };
 
   const handleStatusIndicatorMouseEnter = (
@@ -134,13 +115,9 @@ const MyOrdersList: FC<MyOrdersListProps> = ({
         {sortedOrders.map((order, index) => (
           <Order
             key={order.id}
-            hasFilledColumn={hasFilledColumn}
-            hasForColumn={hasForColumn}
             order={order}
             index={index}
             onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-            onDeleteOrderButtonMouseEnter={handleDeleteOrderButtonMouseEnter}
-            onDeleteOrderButtonMouseLeave={handleDeleteOrderButtonMouseLeave}
             onStatusIndicatorMouseEnter={handleStatusIndicatorMouseEnter}
             onStatusIndicatorMouseLeave={handleStatusIndicatorMouseLeave}
             isCancelInProgress={false}

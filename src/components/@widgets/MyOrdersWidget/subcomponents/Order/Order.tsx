@@ -20,17 +20,15 @@ import {
 } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
+import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import Icon from "../../../../Icon/Icon";
-import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 import { MyOrder as MyOrderInterface } from "../../../MyOrdersWidget/entities/MyOrder";
 import {
   getOrderStatusTranslation,
   getTokenAmountWithDecimals,
 } from "../../../MyOrdersWidget/helpers";
-import useFormattedTokenAmount from "../../../OrderDetailWidget/hooks/useFormattedTokenAmount";
 import {
-  ActionButton,
   ActionButtonContainer,
   AmountContainer,
   Circle,
@@ -49,7 +47,6 @@ import {
   Text,
   TokenAndAmount,
   TokenIcon,
-  Tokens,
   TokensAndAmountContainer,
   MetaLabel,
   Warning,
@@ -57,45 +54,40 @@ import {
   ActionMenu,
   NewActionMenuButton,
   NewActionMenuButtonIcon,
+  ActionButtonLoader,
 } from "./Order.styles";
 
 interface OrderProps {
-  hasFilledColumn?: boolean;
-  hasForColumn?: boolean;
   isCancelInProgress: boolean;
   order: MyOrderInterface;
   index: number;
   onDeleteOrderButtonClick: (order: MyOrderInterface) => void;
-  onDeleteOrderButtonMouseEnter: (index: number, orderIsOpen: boolean) => void;
-  onDeleteOrderButtonMouseLeave: () => void;
   onStatusIndicatorMouseEnter: (index: number, status: OrderStatus) => void;
   onStatusIndicatorMouseLeave: () => void;
   className?: string;
 }
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
-  hasFilledColumn,
-  hasForColumn,
   isCancelInProgress,
   order,
   index,
   onDeleteOrderButtonClick,
-  onDeleteOrderButtonMouseEnter,
-  onDeleteOrderButtonMouseLeave,
   onStatusIndicatorMouseEnter,
   onStatusIndicatorMouseLeave,
   className,
 }) => {
   const { t } = useTranslation();
   const ref = useRef<HTMLAnchorElement>(null);
-  const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
   const [hasEnteredElement, setHasEnteredElement] = useState(false);
   const [isActionMenuOpen, toggleIsActionMenuOpen] = useToggle(false);
+  const [writeAddressToClipboardSuccess, setWriteAddressToClipboardSuccess] =
+    useState(false);
   const { elX, elY, elW, elH } = useMouse(ref);
 
   useClickAnyWhere(() => {
     if (!hasEnteredElement) {
       toggleIsActionMenuOpen(false);
+      setWriteAddressToClipboardSuccess(false);
     }
   });
 
@@ -153,23 +145,18 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [order.status]
   );
 
-  const handleActionMenuButtonClick = () => {
-    console.log("action menu button clicked");
-  };
-
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
-    setIsHoveredActionButton(false);
+    toggleIsActionMenuOpen(false);
   };
 
-  const handleActionButtonMouseEnter = () => {
-    setIsHoveredActionButton(true);
-    onDeleteOrderButtonMouseEnter(index, order.status === OrderStatus.open);
-  };
+  const handleCopyLinkButtonClick = async () => {
+    const link = window.location.origin + order.link;
+    const isCopySuccess = await writeTextToClipboard(link);
 
-  const handleActionButtonMouseLeave = () => {
-    setIsHoveredActionButton(false);
-    onDeleteOrderButtonMouseLeave();
+    if (isCopySuccess) {
+      setWriteAddressToClipboardSuccess(true);
+    }
   };
 
   useEffect(() => {
@@ -243,7 +230,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         </MetaItemContainer>
 
         <MetaItemContainer>
-          <MetaLabel>{t("common.expiry")}</MetaLabel>
+          <MetaLabel>{t("common.for")}</MetaLabel>
           <OrderStatusAndIndicator>
             <FilledAmount>
               {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
@@ -261,16 +248,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
       <ActionButtonContainer>
         {isCancelInProgress ? (
-          <LoadingSpinner />
+          <ActionButtonLoader />
         ) : (
           hasEnteredElement && (
-            // <ActionButton
-            //   icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
-            //   iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
-            //   onClick={handleDeleteOrderButtonClick}
-            //   onMouseEnter={handleActionButtonMouseEnter}
-            //   onMouseLeave={handleActionButtonMouseLeave}
-            // />
             <ActionMenuButton
               icon="dots"
               iconSize={0.6875}
@@ -282,14 +262,14 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
 
       {isActionMenuOpen && (
         <ActionMenu>
-          <NewActionMenuButton>
+          <NewActionMenuButton onClick={handleCopyLinkButtonClick}>
             <NewActionMenuButtonIcon>
-              <Icon name="copy" />
+              <Icon name={writeAddressToClipboardSuccess ? "check" : "copy"} />
             </NewActionMenuButtonIcon>
             Copy link
           </NewActionMenuButton>
 
-          <NewActionMenuButton>
+          <NewActionMenuButton onClick={handleDeleteOrderButtonClick}>
             <NewActionMenuButtonIcon>
               <Icon
                 name={order.status !== OrderStatus.open ? "bin" : "button-x"}
