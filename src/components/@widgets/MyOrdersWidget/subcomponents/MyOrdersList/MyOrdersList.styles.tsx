@@ -1,6 +1,5 @@
 import styled from "styled-components/macro";
 
-import breakpoints from "../../../../../style/breakpoints";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
 import { FadedScrollContainer } from "../../../../FadedScrollContainer/FadedScrollContainer";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
@@ -10,9 +9,10 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 0.5rem;
   width: 100%;
   height: 100%;
-  padding-left: 2rem;
+  padding-left: 1.375rem;
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)``;
@@ -29,7 +29,7 @@ export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
 export const OrdersContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2rem;
 
   > div:last-child {
     margin-bottom: 5rem;

@@ -44,7 +44,6 @@ export const Container = styled.div<{
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding-block: 0.5rem;
   height: auto;
   opacity: ${({ orderStatus, $hasEnteredElement }) =>
     $hasEnteredElement ? 1 : orderStatus === OrderStatus.open ? 1 : 0.5};
@@ -136,6 +135,11 @@ export const ActionMenuButton = styled(IconButton)`
   padding-bottom: 0.325rem;
   font-weight: 600;
   background: rgba(18, 32, 62, 1);
+
+  &:focus,
+  &:active {
+    border: 1px solid ${({ theme }) => theme.colors.primary} !important;
+  }
 `;
 
 export const ActionButtonLoader = styled(LoadingSpinner)`
@@ -159,13 +163,12 @@ export const StyledNavLink = styled(NavLink)<{
   $hasWarning?: boolean;
 }>`
   position: absolute;
-  top: -1px;
-  left: ${({ $hasWarning }) => ($hasWarning ? "-2.25rem" : "-0.5rem")};
+  top: -0.75rem;
+  left: -0.75rem;
   border-radius: 0.5rem;
-  width: ${({ $hasWarning }) =>
-    $hasWarning ? "calc(100% + 3rem)" : "calc(100% + 1.25rem)"};
-  height: calc(100% + 1px);
-  background: ${({ theme }) => theme.colors.darkBlue};
+  width: calc(100% + 1.5rem);
+  height: calc(100% + 1.5rem);
+  background: ${({ theme }) => theme.colors.primary};
   opacity: ${({ $isHovered }) => ($isHovered ? 0.2 : 0)};
   z-index: 1;
 `;
@@ -227,8 +230,8 @@ export const StyledTooltip = styled(Tooltip)`
 
 export const Warning = styled(IconWarning)`
   position: absolute;
-  top: 0.75rem;
-  left: -1.75rem;
+  top: 1.125rem;
+  left: -2rem;
   width: 1.5rem;
   height: 1.5rem;
   z-index: 3;

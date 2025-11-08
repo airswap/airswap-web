@@ -144,6 +144,8 @@ export const BottomButtonContainer = styled.div`
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
 
+  width: calc(100% - 1.25rem);
+
   @media ${breakPoints.phoneOnly} {
     display: none;
   }
@@ -229,7 +231,7 @@ export const TransactionsTabNavigation = styled.div`
   align-items: center;
   gap: 1rem;
   margin-left: 1.5rem;
-  width: calc(100% - 3rem);
+  width: calc(100% - 3.5rem);
   height: 2.75rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderGrey};
 `;
