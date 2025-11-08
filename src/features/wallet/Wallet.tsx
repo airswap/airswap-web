@@ -47,8 +47,13 @@ export const Wallet: FC<WalletProps> = ({
   const protocolFee = useAppSelector(selectProtocolFee);
 
   // Interface context
-  const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
-    useContext(InterfaceContext);
+  const {
+    transactionsTabMenu,
+    transactionsTabIsOpen,
+    setShowWalletList,
+    setTransactionsTabIsOpen,
+    setTransactionsTabMenu,
+  } = useContext(InterfaceContext);
 
   // Local component state
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
@@ -119,10 +124,12 @@ export const Wallet: FC<WalletProps> = ({
       </TopBar>
       <TransactionsTab
         account={account!}
+        activeTab={transactionsTabMenu}
         chainId={chainId!}
         open={transactionsTabIsOpen}
         protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
+        setTransactionsTabMenu={setTransactionsTabMenu}
         onClearTransactionsChange={handleClearTransactionsChange}
         onConnectButtonClick={handleConnectWalletClicked}
         onDisconnectButtonClick={handleDisconnectWalletClicked}

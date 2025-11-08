@@ -28,7 +28,6 @@ const PageNavigation: FC<PageNavigationProps> = ({ className }) => {
         to={routes.makeOtcOrder()}
         isActive={(match, location) => {
           return (
-            location.pathname.includes(AppRoutes.myOtcOrders) ||
             location.pathname.includes(AppRoutes.makeOtcOrder) ||
             location.pathname.includes(AppRoutes.otcOrder) ||
             location.pathname.includes(AppRoutes.limitOrder)

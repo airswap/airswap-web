@@ -21,6 +21,7 @@ import {
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
 import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
+import useAddressOrEnsName from "../../../../../hooks/useAddressOrEnsName";
 import { OrderStatus } from "../../../../../types/orderStatus";
 import Dropdown, { SelectOption } from "../../../../Dropdown/Dropdown";
 import Icon from "../../../../Icon/Icon";
@@ -85,6 +86,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
   const [writeAddressToClipboardSuccess, setWriteAddressToClipboardSuccess] =
     useState(false);
   const { elX, elY, elW, elH } = useMouse(ref);
+  const addressOrName = useAddressOrEnsName(order.for);
 
   const buttonOptions: SelectOption[] = [
     {
@@ -210,7 +212,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       orderStatus={order.status}
       $hasEnteredElement={hasEnteredElement}
     >
-      {!order.hasAllowanceWarning && (
+      {order.hasAllowanceWarning && (
         <>
           <Warning />
           <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
@@ -270,7 +272,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
           <MetaLabel>{t("common.for")}</MetaLabel>
           <OrderStatusAndIndicator>
             <FilledAmount>
-              {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
+              {order.for === ADDRESS_ZERO ? t("orders.anyone") : addressOrName}
             </FilledAmount>
           </OrderStatusAndIndicator>
         </MetaItemContainer>

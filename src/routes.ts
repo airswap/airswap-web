@@ -2,8 +2,6 @@ export enum AppRoutes {
   approvals = "approvals",
   makeOtcOrder = "make-otc-order",
   makeLimitOrder = "make-limit-order",
-  myOtcOrders = "my-otc-orders",
-  myLimitOrders = "my-limit-orders",
   otcOrder = "otc-order",
   limitOrder = "limit-order",
   swap = "swap",
@@ -30,8 +28,6 @@ export const routes = {
   approvals: () => `/${AppRoutes.approvals}`,
   makeOtcOrder: () => `/${AppRoutes.makeOtcOrder}`,
   makeLimitOrder: () => `/${AppRoutes.makeLimitOrder}`,
-  myOtcOrders: () => `/${AppRoutes.myOtcOrders}`,
-  myLimitOrders: () => `/${AppRoutes.myLimitOrders}`,
   otcOrder: (compressedOrder: string) =>
     `/${AppRoutes.otcOrder}/${compressedOrder}`,
   limitOrder: (

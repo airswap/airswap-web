@@ -5,6 +5,7 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAtomValue } from "jotai";
 
 import { useAppSelector } from "../../app/hooks";
+import { TransactionsTabMenu } from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { selectMyOtcOrdersReducer } from "../../features/myOtcOrders/myOtcOrdersSlice";
@@ -40,10 +41,12 @@ import { EmptyList } from "./subcomponents/EmptyList/EmptyList";
 
 interface TransactionsTabProps {
   account: string;
+  activeTab: TransactionsTabMenu;
   chainId: number;
   open: boolean;
   protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
+  setTransactionsTabMenu: (x: TransactionsTabMenu) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
   onConnectButtonClick: () => void;
   onDisconnectButtonClick: () => void;
@@ -52,10 +55,12 @@ interface TransactionsTabProps {
 
 const TransactionsTab = ({
   account = "",
+  activeTab,
   chainId,
   open,
   protocolFee,
   setTransactionsTabOpen,
+  setTransactionsTabMenu,
   onClearTransactionsChange,
   onConnectButtonClick,
   onDisconnectButtonClick,
@@ -70,9 +75,6 @@ const TransactionsTab = ({
 
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"myActivity" | "myOrders">(
-    "myActivity"
-  );
 
   const isLoadingOtcOrders = useAtomValue(myOrdersListLoadingAtom);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,7 +82,9 @@ const TransactionsTab = ({
   const buttonRef = useRef<HTMLDivElement>(null);
 
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
-  useClickOutsideTransactionsTab(() => setTransactionsTabOpen(false));
+  useClickOutsideTransactionsTab(() => {
+    setTransactionsTabOpen(false);
+  });
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
@@ -150,13 +154,13 @@ const TransactionsTab = ({
           <TransactionsTabNavigation>
             <TransactionsTabNavigationButton
               isActive={activeTab === "myActivity"}
-              onClick={() => setActiveTab("myActivity")}
+              onClick={() => setTransactionsTabMenu("myActivity")}
             >
               My activity
             </TransactionsTabNavigationButton>
             <TransactionsTabNavigationButton
               isActive={activeTab === "myOrders"}
-              onClick={() => setActiveTab("myOrders")}
+              onClick={() => setTransactionsTabMenu("myOrders")}
             >
               My orders
             </TransactionsTabNavigationButton>

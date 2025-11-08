@@ -1,8 +1,7 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
-import useAppRouteParams from "../../../hooks/useAppRouteParams";
-import { AppRoutes, standAloneRoutes } from "../../../routes";
+import { InterfaceContext } from "../../../contexts/interface/Interface";
 import {
   Container,
   NavigationLink,
@@ -16,10 +15,22 @@ interface NavigationProps {
 const SiteNavigation: FC<NavigationProps> = ({ className }): ReactElement => {
   const { t } = useTranslation();
 
+  // Interface context
+  const { setTransactionsTabMenu, setTransactionsTabIsOpen } =
+    useContext(InterfaceContext);
+
+  const handleMyOrdersButtonClick = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.stopPropagation();
+    setTransactionsTabMenu("myOrders");
+    setTransactionsTabIsOpen(true);
+  };
+
   return (
     <Container className={className}>
       <NavigationNavLink to="/">{t("common.trade")}</NavigationNavLink>
-      <NavigationNavLink to="/my-otc-orders">
+      <NavigationNavLink as="button" onClick={handleMyOrdersButtonClick}>
         {t("common.myOrders")}
       </NavigationNavLink>
       |
