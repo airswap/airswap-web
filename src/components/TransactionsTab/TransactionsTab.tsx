@@ -185,12 +185,14 @@ const TransactionsTab = ({
                     ))}
                   </AnimatePresence>
                 </TransactionContainer>
-                <LegendContainer $isVisible={isActive}>
-                  <Legend>{t("wallet.completedTransactions")}</Legend>
-                  <ClearTransactionsSelector
-                    onChange={onClearTransactionsChange}
-                  />
-                </LegendContainer>
+                {!!completedTransactions.length && (
+                  <LegendContainer $isVisible={isActive}>
+                    <Legend>{t("wallet.completedTransactions")}</Legend>
+                    <ClearTransactionsSelector
+                      onChange={onClearTransactionsChange}
+                    />
+                  </LegendContainer>
+                )}
                 <TransactionContainer>
                   <AnimatePresence initial={false}>
                     {completedTransactions.map((transaction) => (

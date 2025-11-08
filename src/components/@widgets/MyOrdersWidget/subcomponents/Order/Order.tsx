@@ -22,6 +22,7 @@ import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslatio
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
 import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
 import { OrderStatus } from "../../../../../types/orderStatus";
+import Dropdown, { SelectOption } from "../../../../Dropdown/Dropdown";
 import Icon from "../../../../Icon/Icon";
 import { MyOrder as MyOrderInterface } from "../../../MyOrdersWidget/entities/MyOrder";
 import {
@@ -55,6 +56,7 @@ import {
   NewActionMenuButton,
   NewActionMenuButtonIcon,
   ActionButtonLoader,
+  StyledDropdown,
 } from "./Order.styles";
 
 interface OrderProps {
@@ -84,12 +86,33 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     useState(false);
   const { elX, elY, elW, elH } = useMouse(ref);
 
-  useClickAnyWhere(() => {
-    if (!hasEnteredElement) {
-      toggleIsActionMenuOpen(false);
-      setWriteAddressToClipboardSuccess(false);
-    }
-  });
+  const buttonOptions: SelectOption[] = [
+    {
+      label: (
+        <NewActionMenuButton>
+          <NewActionMenuButtonIcon>
+            <Icon name={writeAddressToClipboardSuccess ? "check" : "copy"} />
+          </NewActionMenuButtonIcon>
+          Copy link
+        </NewActionMenuButton>
+      ),
+      value: "copy-link",
+    },
+    {
+      label: (
+        <NewActionMenuButton>
+          <NewActionMenuButtonIcon>
+            <Icon
+              name={order.status !== OrderStatus.open ? "bin" : "button-x"}
+              iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
+            />
+          </NewActionMenuButtonIcon>
+          {order.status !== OrderStatus.open ? "Delete order" : "Cancel order"}
+        </NewActionMenuButton>
+      ),
+      value: "delete-order",
+    },
+  ];
 
   const senderTokenDecimals = order.senderToken
     ? getTokenDecimals(order.senderToken)
@@ -159,6 +182,13 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     }
   };
 
+  const handleButtonClick = (option: SelectOption) => {
+    if (option.value === "copy-link") {
+      handleCopyLinkButtonClick();
+    } else if (option.value === "delete-order") {
+      handleDeleteOrderButtonClick();
+    }
+  };
   useEffect(() => {
     if (elX > 0 && elY > 0 && elX < elW && elY < elH) {
       setHasEnteredElement(true);
@@ -167,13 +197,20 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     }
   }, [elX, elY]);
 
+  useClickAnyWhere(() => {
+    if (!hasEnteredElement) {
+      toggleIsActionMenuOpen(false);
+      setWriteAddressToClipboardSuccess(false);
+    }
+  });
+
   return (
     <Container
       className={className}
       orderStatus={order.status}
       $hasEnteredElement={hasEnteredElement}
     >
-      {order.hasAllowanceWarning && (
+      {!order.hasAllowanceWarning && (
         <>
           <Warning />
           <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
@@ -261,26 +298,12 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
       </ActionButtonContainer>
 
       {isActionMenuOpen && (
-        <ActionMenu>
-          <NewActionMenuButton onClick={handleCopyLinkButtonClick}>
-            <NewActionMenuButtonIcon>
-              <Icon name={writeAddressToClipboardSuccess ? "check" : "copy"} />
-            </NewActionMenuButtonIcon>
-            Copy link
-          </NewActionMenuButton>
-
-          <NewActionMenuButton onClick={handleDeleteOrderButtonClick}>
-            <NewActionMenuButtonIcon>
-              <Icon
-                name={order.status !== OrderStatus.open ? "bin" : "button-x"}
-                iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
-              />
-            </NewActionMenuButtonIcon>
-            {order.status !== OrderStatus.open
-              ? "Delete order"
-              : "Cancel order"}
-          </NewActionMenuButton>
-        </ActionMenu>
+        <StyledDropdown
+          isMenuOpen
+          selectedOption={buttonOptions[0]}
+          options={buttonOptions}
+          onChange={handleButtonClick}
+        />
       )}
     </Container>
   );

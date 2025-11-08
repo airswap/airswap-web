@@ -9,6 +9,7 @@ import {
 import { fontMono } from "../../../../../style/themes";
 import { Tooltip } from "../../../../../styled-components/Tooltip/Tooltip";
 import { OrderStatus } from "../../../../../types/orderStatus";
+import Dropdown from "../../../../Dropdown/Dropdown";
 import IconWarning from "../../../../Icon/icons/IconWarning";
 import IconButton from "../../../../IconButton/IconButton";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
@@ -230,12 +231,13 @@ export const StyledTooltip = styled(Tooltip)`
 
 export const Warning = styled(IconWarning)`
   position: absolute;
-  top: 1.125rem;
-  left: -2rem;
+  top: -0.3125rem;
+  left: -0.625rem;
   width: 1.5rem;
   height: 1.5rem;
-  z-index: 3;
+  z-index: 5;
   cursor: pointer;
+  filter: drop-shadow(1px 4px 4px rgba(0, 0, 0, 1));
 
   &:hover {
     & + ${StyledTooltip} {
@@ -289,4 +291,12 @@ export const NewActionMenuButtonIcon = styled.div`
   justify-content: center;
   width: 1em;
   height: 1em;
+`;
+
+export const StyledDropdown = styled(Dropdown)`
+  position: absolute;
+  top: 3.75rem;
+  right: 0;
+  width: 13.125rem;
+  z-index: 10;
 `;

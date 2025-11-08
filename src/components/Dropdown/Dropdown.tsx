@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, ReactNode, useCallback, useState } from "react";
 
 import {
   Option,
@@ -16,7 +16,7 @@ import {
 } from "./Dropdown.styles";
 
 export type SelectOption = {
-  label: string;
+  label: ReactNode;
   value: string;
 };
 
