@@ -269,7 +269,7 @@ export const ActionMenu = styled.div`
   z-index: 20;
 `;
 
-export const NewActionMenuButton = styled.button`
+export const NewActionMenuButton = styled.div`
   ${InputOrButtonBorderStyleType2};
 
   display: flex;

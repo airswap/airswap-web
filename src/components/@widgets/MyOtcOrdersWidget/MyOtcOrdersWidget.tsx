@@ -1,5 +1,6 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { FullOrder, FullOrderERC20, TokenInfo } from "@airswap/utils";
@@ -7,7 +8,6 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { InterfaceContext } from "../../../contexts/interface/Interface";
 import { DelegateRule } from "../../../entities/DelegateRule/DelegateRule";
 import { cancelLimitOrder } from "../../../features/cancelLimit/cancelLimitActions";
 import { selectCancelLimitStatus } from "../../../features/cancelLimit/cancelLimitSlice";
@@ -16,32 +16,25 @@ import { selectAllTokenInfo } from "../../../features/metadata/metadataSlice";
 import {
   removeOtcUserOrder,
   selectMyOtcOrdersReducer,
-  setActiveSortType,
 } from "../../../features/myOtcOrders/myOtcOrdersSlice";
 import { getNonceUsed } from "../../../features/orders/ordersHelpers";
 import { cancelOrder } from "../../../features/takeOtc/takeOtcActions";
 import { selectTakeOtcStatus } from "../../../features/takeOtc/takeOtcSlice";
-import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
 import { useAllowancesLoading } from "../../../hooks/useAllowancesLoading";
 import useCancellationPending from "../../../hooks/useCancellationPending";
-import { AppRoutes } from "../../../routes";
 import { OrderStatus } from "../../../types/orderStatus";
-import { OrdersSortType } from "../../../types/ordersSortType";
 import SubmittedCancellationScreen from "../../SubmittedCancellationScreen/SubmittedCancellationScreen";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
+import { EmptyList } from "../../TransactionsTab/subcomponents/EmptyList/EmptyList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
 import useRuleUnsetPending from "../MyLimitOrdersWidget/hooks/useRuleUnsetPending";
-import {
-  Container,
-  InfoSectionContainer,
-} from "../MyOrdersWidget/MyOrdersWidget.styles";
+import { Container } from "../MyOrdersWidget/MyOrdersWidget.styles";
 import { MyOrder } from "../MyOrdersWidget/entities/MyOrder";
-import { ButtonActions } from "../MyOrdersWidget/subcomponents/ActionButtons/ActionButtons";
-import InfoSection from "../MyOrdersWidget/subcomponents/InfoSection/InfoSection";
 import MyOtcOrdersList from "./subcomponents/MyOtcOrdersList/MyOtcOrdersList";
 
 const MyOtcOrdersWidget: FC = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const { provider: library } = useWeb3React<Web3Provider>();
   const { isActive, isInitialized, chainId } = useAppSelector(
@@ -78,9 +71,6 @@ const MyOtcOrdersWidget: FC = () => {
     true
   );
   const isAllowancesLoading = useAllowancesLoading();
-
-  // Modal states
-  const { setShowWalletList } = useContext(InterfaceContext);
 
   const cancelOrderOnChain = async (order: FullOrder | FullOrderERC20) => {
     const expiry = parseInt(order.expiry) * 1000;
@@ -138,10 +128,6 @@ const MyOtcOrdersWidget: FC = () => {
     setActiveUnsetDelegateRule(delegateRule);
   };
 
-  const handleSortButtonClick = (type: OrdersSortType) => {
-    dispatch(setActiveSortType(type));
-  };
-
   useEffect(() => {
     if (!pendingCancelTranssaction) {
       setActiveCancellationNonce(undefined);
@@ -179,14 +165,11 @@ const MyOtcOrdersWidget: FC = () => {
       )}
 
       {!userOrders.length && !filteredDelegateRules.length && (
-        <InfoSectionContainer>
-          <InfoSection
-            userHasNoOrders={
-              !userOrders.length && !filteredDelegateRules.length
-            }
-            walletIsNotConnected={!isActive}
-          />
-        </InfoSectionContainer>
+        <EmptyList>
+          {t("orders.youHaveNoOpenOTCOrders")}
+          {` `}
+          {t("orders.startByCreatingANewOrder")}
+        </EmptyList>
       )}
 
       {createPortal(

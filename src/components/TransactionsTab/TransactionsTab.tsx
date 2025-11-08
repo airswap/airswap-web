@@ -36,6 +36,7 @@ import {
 import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
+import { EmptyList } from "./subcomponents/EmptyList/EmptyList";
 
 interface TransactionsTabProps {
   account: string;
@@ -185,14 +186,14 @@ const TransactionsTab = ({
                     ))}
                   </AnimatePresence>
                 </TransactionContainer>
-                {!!completedTransactions.length && (
-                  <LegendContainer $isVisible={isActive}>
-                    <Legend>{t("wallet.completedTransactions")}</Legend>
-                    <ClearTransactionsSelector
-                      onChange={onClearTransactionsChange}
-                    />
-                  </LegendContainer>
-                )}
+                <LegendContainer
+                  $isVisible={isActive && !!completedTransactions.length}
+                >
+                  <Legend>{t("wallet.completedTransactions")}</Legend>
+                  <ClearTransactionsSelector
+                    onChange={onClearTransactionsChange}
+                  />
+                </LegendContainer>
                 <TransactionContainer>
                   <AnimatePresence initial={false}>
                     {completedTransactions.map((transaction) => (
@@ -206,12 +207,7 @@ const TransactionsTab = ({
                     ))}
                   </AnimatePresence>
                   {isActive && !completedTransactions.length && (
-                    <NoTransactions>
-                      <IconContainer>
-                        <Icon name="transaction" />
-                      </IconContainer>
-                      {t("wallet.noCompletedTransactions")}
-                    </NoTransactions>
+                    <EmptyList>{t("wallet.noCompletedTransactions")}</EmptyList>
                   )}
                 </TransactionContainer>
               </>

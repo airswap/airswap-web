@@ -32,7 +32,7 @@ export const OrdersContainer = styled.div`
   gap: 2rem;
 
   > div:last-child {
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
   }
 `;
 
