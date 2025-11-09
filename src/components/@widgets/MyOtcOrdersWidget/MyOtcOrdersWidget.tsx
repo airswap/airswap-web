@@ -40,7 +40,6 @@ const MyOtcOrdersWidget: FC = () => {
   const { isActive, isInitialized, chainId } = useAppSelector(
     (state) => state.web3
   );
-  const history = useHistory();
   const allTokens = useAppSelector(selectAllTokenInfo);
   const allowances = useAppSelector((state) => state.allowances);
   const { userOrders, sortTypeDirection, activeSortType } = useAppSelector(

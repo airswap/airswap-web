@@ -159,6 +159,7 @@ export const MobileBackButton = styled(Button)`
 
   @media ${breakPoints.phoneOnly} {
     display: flex;
+    width: 100%;
   }
 `;
 

@@ -13,6 +13,7 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   padding-left: 1.375rem;
+  padding-right: 0.5rem;
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)``;
