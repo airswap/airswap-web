@@ -1,6 +1,7 @@
 import {
   FC,
   PropsWithChildren,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -13,6 +14,8 @@ import { ADDRESS_ZERO } from "@airswap/utils";
 
 import { useClickAnyWhere } from "usehooks-ts";
 
+import { useAppDispatch } from "../../../../../app/hooks";
+import { InterfaceContext } from "../../../../../contexts/interface/Interface";
 import {
   getTokenDecimals,
   getTokenImage,
@@ -87,6 +90,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     useState(false);
   const { elX, elY, elW, elH } = useMouse(ref);
   const addressOrName = useAddressOrEnsName(order.for);
+  const { setTransactionsTabIsOpen } = useContext(InterfaceContext);
 
   const buttonOptions: SelectOption[] = [
     {
@@ -283,6 +287,9 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         $hasWarning={order.hasAllowanceWarning}
         ref={ref}
         to={order.link}
+        onClick={() => {
+          setTransactionsTabIsOpen(false);
+        }}
       />
 
       <ActionButtonContainer>
