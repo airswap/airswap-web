@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { DelegateRule } from "../../../../entities/DelegateRule/DelegateRule";
 import { OrderStatus } from "../../../../types/orderStatus";
-import useDelegateRuleUnsetTransaction from "../../LimitOrderDetailWidget/hooks/useDelegateRuleUnsetTransaction";
+import useDelegateRuleUnsetTransaction from "./useDelegateRuleUnsetTransaction";
 
 export const useLimitOrderStatus = (order: DelegateRule): OrderStatus => {
   const expiry = useMemo(() => order.expiry * 1000, [order]);

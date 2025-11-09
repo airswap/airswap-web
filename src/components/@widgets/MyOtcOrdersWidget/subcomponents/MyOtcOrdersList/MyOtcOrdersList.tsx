@@ -14,7 +14,7 @@ import {
   selectProtocolFee,
 } from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
-import { getDelegateRuleDataAndTransformToMyOrder } from "../../../MyLimitOrdersWidget/subcomponents/MyLimitOrdersList/helpers";
+import { getDelegateRuleDataAndTransformToMyOrder } from "../../../LimitOrderDetailWidget/helpers/getDelegateRuleDataAndTransformToMyOrder";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
 import { getOrdersWithApprovalWarnings } from "../../../MyOrdersWidget/helpers";
 import MyOrdersList from "../../../MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";

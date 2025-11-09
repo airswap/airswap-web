@@ -27,7 +27,7 @@ import SubmittedCancellationScreen from "../../SubmittedCancellationScreen/Submi
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import { EmptyList } from "../../TransactionsTab/subcomponents/EmptyList/EmptyList";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import useRuleUnsetPending from "../MyLimitOrdersWidget/hooks/useRuleUnsetPending";
+import useRuleUnsetPending from "../LimitOrderDetailWidget/hooks/useRuleUnsetPending";
 import { Container } from "../MyOrdersWidget/MyOrdersWidget.styles";
 import { MyOrder } from "../MyOrdersWidget/entities/MyOrder";
 import MyOtcOrdersList from "./subcomponents/MyOtcOrdersList/MyOtcOrdersList";

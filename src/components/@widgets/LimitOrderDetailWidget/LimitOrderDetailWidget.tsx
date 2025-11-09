@@ -64,8 +64,6 @@ import SwapInputs from "../../SwapInputs/SwapInputs";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import UnsetRuleSubmittedScreen from "../../UnsetRuleScreen/UnsetRuleScreen";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import { useFilledStatus } from "../MyLimitOrdersWidget/hooks/useFilledStatus";
-import { useLimitOrderStatus } from "../MyLimitOrdersWidget/hooks/useLimitOrderStatus";
 import {
   Container,
   StyledActionButtons,
@@ -84,6 +82,8 @@ import {
 } from "./helpers";
 import { useAvailableSenderAndSignerAmount } from "./hooks/useAvailableSenderAndSignerAmount";
 import useCustomSignerAmountPlusFee from "./hooks/useCustomSignerAmountPlusFee";
+import { useFilledStatus } from "./hooks/useFilledStatus";
+import { useLimitOrderStatus } from "./hooks/useLimitOrderStatus";
 import useSessionDelegateSwapTransaction from "./hooks/useSessionDelegateSwapTransaction";
 import useSessionUnsetRuleTransaction from "./hooks/useSessionUnsetRuleTransaction";
 
