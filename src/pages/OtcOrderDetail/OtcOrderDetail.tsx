@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -18,6 +18,9 @@ const OtcOrderDetail: FC = () => {
   const dispatch = useAppDispatch();
   const { compressedOrder } = useParams<{ compressedOrder: string }>();
 
+  // Temporary state to force a re-render when the order is switched
+  const [isSwitchingOrder, setIsSwitchingOrder] = useState(false);
+
   const { status, activeOrder } = useAppSelector(selectTakeOtcReducer);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
 
@@ -34,9 +37,16 @@ const OtcOrderDetail: FC = () => {
   useEffect(() => {
     if (activeOrder && !isFetchingAllTokens) {
       dispatch(fetchAllTokens(activeOrder.chainId));
+      setIsSwitchingOrder(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeOrder]);
+
+  useEffect(() => {
+    if (isSwitchingOrder) {
+      setIsSwitchingOrder(false);
+    }
+  }, [isSwitchingOrder]);
 
   if (status === "invalid") {
     return (
@@ -46,7 +56,7 @@ const OtcOrderDetail: FC = () => {
     );
   }
 
-  if (status === "idle" || !activeOrder) {
+  if (status === "idle" || !activeOrder || isSwitchingOrder) {
     return (
       <Page>
         <StyledLoadingSpinner />
