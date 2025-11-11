@@ -8,7 +8,6 @@ import { useAppSelector } from "../../app/hooks";
 import { TransactionsTabMenu } from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
-import { selectMyOtcOrdersReducer } from "../../features/myOtcOrders/myOtcOrdersSlice";
 import { useActiveOrdersCount } from "../../hooks/useActiveOrdersCount";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
@@ -18,7 +17,6 @@ import { ClearOrderType } from "../../types/clearOrderType";
 import { TransactionStatusType } from "../../types/transactionTypes";
 import { myOrdersListLoadingAtom } from "../@widgets/MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
 import MyOtcOrdersWidget from "../@widgets/MyOtcOrdersWidget/MyOtcOrdersWidget";
-import Icon from "../Icon/Icon";
 import {
   Container,
   Legend,
@@ -26,8 +24,6 @@ import {
   TransactionsContainer,
   BottomButtonContainer,
   DisconnectButton,
-  NoTransactions,
-  IconContainer,
   LegendContainer,
   MobileBackButton,
   BackdropFilter,
@@ -84,9 +80,6 @@ const TransactionsTab = ({
   const activeOrdersCount = useActiveOrdersCount();
 
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
-  useClickOutsideTransactionsTab(() => {
-    setTransactionsTabOpen(false);
-  });
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
