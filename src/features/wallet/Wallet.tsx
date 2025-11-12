@@ -94,45 +94,20 @@ export const Wallet: FC<WalletProps> = ({
           />
           <StyledSiteNavigation />
         </AirswapButtonAndNavigationContainer>
-        {chainId && (
-          <StyledChainSelector
-            chainId={chainId}
-            chainSelectionOpen={chainsOpen}
-            setChainSelectionOpen={setChainsOpen}
-          />
-        )}
-        <StyledWalletButton
-          isConnected={isActive}
-          isUnsupportedNetwork={false}
-          address={account}
-          glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() =>
-            setTransactionsTabIsOpen(!transactionsTabIsOpen)
-          }
-          setShowWalletList={setShowWalletList}
-        />
-        <StyledSettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-        />
-        <StyledMenuButton
-          onClick={onMobileMenuButtonClick}
-          ariaLabel={t("common.select")}
-          icon="menu"
-          iconSize={1.5625}
-        />
       </TopBar>
       <TransactionsTab
         account={account!}
         activeTab={transactionsTabMenu}
         chainId={chainId!}
-        open={transactionsTabIsOpen}
+        // open={transactionsTabIsOpen}
+        open={true}
         protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
         setTransactionsTabMenu={setTransactionsTabMenu}
         onClearTransactionsChange={handleClearTransactionsChange}
         onConnectButtonClick={handleConnectWalletClicked}
         onDisconnectButtonClick={handleDisconnectWalletClicked}
+        onMobileMenuButtonClick={onMobileMenuButtonClick}
         transactions={transactions}
       />
     </>

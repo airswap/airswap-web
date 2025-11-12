@@ -1,11 +1,14 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAtomValue } from "jotai";
 
 import { useAppSelector } from "../../app/hooks";
-import { TransactionsTabMenu } from "../../contexts/interface/Interface";
+import {
+  InterfaceContext,
+  TransactionsTabMenu,
+} from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { useActiveOrdersCount } from "../../hooks/useActiveOrdersCount";
@@ -13,6 +16,13 @@ import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
+import {
+  StyledChainSelector,
+  StyledMenuButton,
+  StyledSettingsButton,
+  StyledToggleSidebarButton,
+  StyledWalletButton,
+} from "../../styled-components/TopBar/Topbar";
 import { ClearOrderType } from "../../types/clearOrderType";
 import { TransactionStatusType } from "../../types/transactionTypes";
 import { myOrdersListLoadingAtom } from "../@widgets/MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
@@ -30,6 +40,7 @@ import {
   ConnectButton,
   TransactionsTabNavigation,
   TransactionsTabNavigationButton,
+  TopBar,
 } from "./TransactionsTab.styles";
 import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
@@ -47,6 +58,7 @@ interface TransactionsTabProps {
   onClearTransactionsChange: (value: ClearOrderType) => void;
   onConnectButtonClick: () => void;
   onDisconnectButtonClick: () => void;
+  onMobileMenuButtonClick: () => void;
   transactions: SubmittedTransaction[];
 }
 
@@ -61,6 +73,7 @@ const TransactionsTab = ({
   onClearTransactionsChange,
   onConnectButtonClick,
   onDisconnectButtonClick,
+  onMobileMenuButtonClick,
   transactions,
 }: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
@@ -78,6 +91,10 @@ const TransactionsTab = ({
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const activeOrdersCount = useActiveOrdersCount();
+
+  // Local component state
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
 
@@ -146,6 +163,39 @@ const TransactionsTab = ({
           initial={{ x: isMobile ? "100%" : "27.75rem" }}
           exit={{ x: isMobile ? "100%" : "27.75rem" }}
         >
+          <TopBar>
+            <StyledToggleSidebarButton
+              onClick={() => setTransactionsTabOpen(false)}
+              ariaLabel={t("common.close")}
+              icon="double-arrow"
+              iconSize={1.5625}
+            />
+            {chainId && (
+              <StyledChainSelector
+                chainId={chainId}
+                chainSelectionOpen={chainsOpen}
+                setChainSelectionOpen={setChainsOpen}
+              />
+            )}
+            <StyledWalletButton
+              isConnected={isActive}
+              isUnsupportedNetwork={false}
+              address={account}
+              glow={!!pendingTransactions.length}
+              setTransactionsTabOpen={() => setTransactionsTabOpen(!open)}
+              setShowWalletList={() => {}}
+            />
+            <StyledSettingsButton
+              settingsOpen={settingsOpen}
+              setSettingsOpen={setSettingsOpen}
+            />
+            <StyledMenuButton
+              onClick={onMobileMenuButtonClick}
+              ariaLabel={t("common.select")}
+              icon="menu"
+              iconSize={1.5625}
+            />
+          </TopBar>
           <TransactionsTabNavigation>
             <TransactionsTabNavigationButton
               isActive={activeTab === "myActivity"}

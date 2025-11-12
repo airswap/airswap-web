@@ -50,6 +50,7 @@ import {
   IconCheckCircle,
   IconDots,
 } from "./icons";
+import IconDoubleArrow from "./icons/IconDoubleArrow";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -87,6 +88,7 @@ export const icons: IconSet = {
   deny: IconDeny,
   discord: IconDiscord,
   dots: IconDots,
+  "double-arrow": IconDoubleArrow,
   edit: IconEdit,
   "exit-modal": HiX,
   forbidden: IconForbidden,

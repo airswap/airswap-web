@@ -19,9 +19,9 @@ export const Container = styled(motion.div)`
   flex-direction: column;
   width: 100%;
   max-width: 29.75rem;
-  height: calc(100% - 5rem);
+  height: 100%;
   padding: 1.5rem 1.5rem 0;
-  top: 5rem;
+  top: 0;
   right: 0;
   z-index: 25;
   will-change: transform;
@@ -41,6 +41,14 @@ export const Container = styled(motion.div)`
     background-color: ${({ theme }) => theme.colors.black};
     z-index: 1000;
   }
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 5rem;
 `;
 
 export const WalletHeader = styled.div`
@@ -231,6 +239,7 @@ export const TransactionsTabNavigation = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 2.25rem;
   margin-left: 1.5rem;
   width: calc(100% - 3.5rem);
   height: 2.75rem;

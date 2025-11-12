@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-import { chainNames } from "@airswap/utils";
-
 import {
   Container,
   ChainSelectButton,
   ChainIcon,
   ArrowIcon,
-  ChainNameText,
   StyledChainSelectionPopover,
 } from "./ChainSelector.style";
 
@@ -66,7 +63,6 @@ const ChainSelector = ({
         }}
       >
         <ChainIcon src={`images/networks/${chainId}.png`} />
-        <ChainNameText>{chainNames[chainId]}</ChainNameText>
         <ArrowIcon isOpen={chainSelectionOpen}>
           <MdKeyboardArrowDown />
         </ArrowIcon>

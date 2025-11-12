@@ -110,6 +110,15 @@ export const StyledMenuButton = styled(IconButton)`
   }
 `;
 
+export const StyledToggleSidebarButton = styled(IconButton)`
+  ${BorderedPill};
+  ${InputOrButtonBorderStyle};
+
+  margin-right: 1rem;
+  width: 3rem;
+  height: 3rem;
+`;
+
 export const StyledWalletButton = styled(WalletButton)`
   @media ${breakPoints.tabletPortraitUp} {
     order: 2;
