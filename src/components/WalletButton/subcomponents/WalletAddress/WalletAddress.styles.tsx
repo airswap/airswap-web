@@ -14,7 +14,7 @@ export const Button = styled.div`
 `;
 
 export const StyledBorderedButton = styled(BorderedButton)`
-  padding-inline: 1.5rem;
+  padding-inline: 2rem;
 
   @media ${breakPoints.phoneOnly} {
     padding-inline: 1rem;

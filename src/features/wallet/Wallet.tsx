@@ -12,6 +12,7 @@ import {
   StyledMenuButton,
   StyledSettingsButton,
   StyledSiteNavigation,
+  StyledToggleSidebarButton,
   StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
@@ -94,13 +95,19 @@ export const Wallet: FC<WalletProps> = ({
           />
           <StyledSiteNavigation />
         </AirswapButtonAndNavigationContainer>
+
+        <StyledToggleSidebarButton
+          ariaLabel={t("common.close")}
+          icon="double-arrow"
+          iconSize={1.5625}
+          onClick={() => setTransactionsTabIsOpen(true)}
+        />
       </TopBar>
       <TransactionsTab
         account={account!}
         activeTab={transactionsTabMenu}
         chainId={chainId!}
-        // open={transactionsTabIsOpen}
-        open={true}
+        open={transactionsTabIsOpen}
         protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
         setTransactionsTabMenu={setTransactionsTabMenu}

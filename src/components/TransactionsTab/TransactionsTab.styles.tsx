@@ -15,17 +15,19 @@ import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu"
 
 export const Container = styled(motion.div)`
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 29.75rem;
-  height: 100%;
-  padding: 1.5rem 1.5rem 0;
   top: 0;
   right: 0;
-  z-index: 25;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(53, 69, 98, 0.5);
+  width: 100%;
+  max-width: 28.25rem;
+  height: 100%;
+  padding: 1.5rem 1rem 0 1rem;
   will-change: transform;
   backdrop-filter: drop-shadow(4px 4px 10px blue);
+  background: #0b1730;
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -47,8 +49,8 @@ export const TopBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 1rem;
   width: 100%;
-  height: 5rem;
 `;
 
 export const WalletHeader = styled.div`
@@ -104,10 +106,9 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
   overflow-x: hidden;
-  overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
+  overflow-y: auto;
   padding-top: 1rem;
-  padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};
-  padding-bottom: ${(props) => (props.hasOverflow ? "2rem" : "0")};
+  padding-right: 1rem;
 
   flex-grow: 99;
   height: 100%;
@@ -240,9 +241,9 @@ export const TransactionsTabNavigation = styled.div`
   align-items: center;
   gap: 1rem;
   margin-top: 2.25rem;
-  margin-left: 1.5rem;
+  margin-left: 1rem;
   width: calc(100% - 3.5rem);
-  height: 2.75rem;
+  min-height: 2.5rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderGrey};
 `;
 

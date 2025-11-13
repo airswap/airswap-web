@@ -169,8 +169,8 @@ export const StyledNavLink = styled(NavLink)<{
   border-radius: 0.5rem;
   width: calc(100% + 1.5rem);
   height: calc(100% + 1.5rem);
-  background: ${({ theme }) => theme.colors.primary};
-  opacity: ${({ $isHovered }) => ($isHovered ? 0.2 : 0)};
+  background: #14213f;
+  opacity: ${({ $isHovered }) => ($isHovered ? 1 : 0)};
   z-index: 1;
 `;
 

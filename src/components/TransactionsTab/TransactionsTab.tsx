@@ -5,13 +5,11 @@ import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAtomValue } from "jotai";
 
 import { useAppSelector } from "../../app/hooks";
-import {
-  InterfaceContext,
-  TransactionsTabMenu,
-} from "../../contexts/interface/Interface";
+import { TransactionsTabMenu } from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
 import { useActiveOrdersCount } from "../../hooks/useActiveOrdersCount";
+import useElementSize from "../../hooks/useElementSize";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -42,7 +40,6 @@ import {
   TransactionsTabNavigationButton,
   TopBar,
 } from "./TransactionsTab.styles";
-import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
 import { EmptyList } from "./subcomponents/EmptyList/EmptyList";
@@ -157,18 +154,18 @@ const TransactionsTab = ({
     <AnimatePresence initial={false}>
       {open && (
         <Container
-          ref={containerRef}
           animate={{ x: 0 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          initial={{ x: isMobile ? "100%" : "27.75rem" }}
-          exit={{ x: isMobile ? "100%" : "27.75rem" }}
+          initial={{ x: isMobile ? "100%" : "28.25rem" }}
+          exit={{ x: isMobile ? "100%" : "28.25rem" }}
         >
           <TopBar>
             <StyledToggleSidebarButton
-              onClick={() => setTransactionsTabOpen(false)}
+              isOpen
               ariaLabel={t("common.close")}
               icon="double-arrow"
               iconSize={1.5625}
+              onClick={() => setTransactionsTabOpen(false)}
             />
             {chainId && (
               <StyledChainSelector
@@ -190,10 +187,10 @@ const TransactionsTab = ({
               setSettingsOpen={setSettingsOpen}
             />
             <StyledMenuButton
-              onClick={onMobileMenuButtonClick}
               ariaLabel={t("common.select")}
               icon="menu"
               iconSize={1.5625}
+              onClick={onMobileMenuButtonClick}
             />
           </TopBar>
           <TransactionsTabNavigation>
