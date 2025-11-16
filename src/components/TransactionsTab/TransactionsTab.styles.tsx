@@ -24,7 +24,7 @@ export const Container = styled(motion.div)`
   width: 100%;
   max-width: 28.25rem;
   height: 100%;
-  padding: 1.5rem 1rem 0 1rem;
+  padding: 1.5rem 0.75rem 0 0.5rem;
   will-change: transform;
   backdrop-filter: drop-shadow(4px 4px 10px blue);
   background: #0b1730;
@@ -108,15 +108,11 @@ export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   overflow-x: hidden;
   overflow-y: auto;
   padding-top: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
 
   flex-grow: 99;
   height: 100%;
-
-  -webkit-mask-image: ${({ hasOverflow }) =>
-    hasOverflow
-      ? "-webkit-gradient(linear, 0 85%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
-      : ""};
 `;
 
 export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
@@ -127,6 +123,8 @@ export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
   flex-grow: 2;
   margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1.5rem")};
   width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.25rem;
   transition: margin-bottom ease-out 0.3s;
   overflow: hidden;
 
