@@ -46,9 +46,16 @@ import {
 import { approve, deposit } from "../../../features/orders/ordersActions";
 import { selectOrdersStatus } from "../../../features/orders/ordersSlice";
 import {
+  selectUserTokenAmounts,
   selectUserTokens,
   setUserTokens,
+  setAmounts,
+  setTokenFromAmount,
+  setTokenToAmount,
   UserToken,
+  selectExpiry,
+  setExpiry,
+  UserOrderExpiry,
 } from "../../../features/userSettings/userSettingsSlice";
 import getWethAddress from "../../../helpers/getWethAddress";
 import switchToDefaultChain from "../../../helpers/switchToDefaultChain";
@@ -98,6 +105,7 @@ import {
   StyledInfoSection,
   StyledNotice,
   StyledOrderTypeSelector,
+  StyledPartialFillSwitch,
   StyledSwapInputs,
   StyledTooltip,
   TooltipContainer,
@@ -126,6 +134,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const allTokens = useAppSelector(selectAllTokenInfo);
   const erc20Tokens = useAppSelector(selectErc20Tokens);
   const userTokens = useAppSelector(selectUserTokens);
+  const userTokenAmounts = useAppSelector(selectUserTokenAmounts);
+  const userOrderExpiry = useAppSelector(selectExpiry);
+  const { expiry } = userOrderExpiry;
   const protocolFee = useAppSelector(selectProtocolFee);
   const { indexerUrls } = useAppSelector(selectIndexerReducer);
   const {
@@ -178,13 +189,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
   // User input states
   const [state, setState] = useState<MakeWidgetState>(MakeWidgetState.list);
-  const [expiry, setExpiry] = useState(new Date().getTime());
   const [orderType, setOrderType] = useState<OrderType>(OrderType.publicListed);
   const [orderScopeTypeOption, setOrderScopeTypeOption] =
     useState<SelectOption>(orderTypeSelectOptions[0]);
   const [takerAddress, setTakerAddress] = useState("");
-  const [makerAmount, setMakerAmount] = useState(defaultMakerAmount);
-  const [takerAmount, setTakerAmount] = useState("");
+  const makerAmount = userTokenAmounts.tokenFrom || defaultMakerAmount;
+  const takerAmount = userTokenAmounts.tokenTo || "";
 
   // States derived from user input
   const makerAmountPlusFee = useAmountPlusFee(
@@ -266,6 +276,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   const showOrderReview = state === MakeWidgetState.review;
 
   // useEffects
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only run on mount
   useEffect(() => {
     dispatch(reset());
 
@@ -292,6 +303,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     }
   }, [transactionsTabIsOpen]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: listen to library changes
   useEffect(() => {
     if (library) {
       dispatch(fetchIndexerUrls({ provider: library }));
@@ -353,9 +365,9 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     );
 
     if (tokenFrom?.kind !== TokenKinds.ERC20 && type === "base") {
-      setMakerAmount("1");
+      dispatch(setTokenFromAmount("1"));
     } else if (tokenTo?.kind !== TokenKinds.ERC20 && type === "quote") {
-      setTakerAmount("1");
+      dispatch(setTokenToAmount("1"));
     }
 
     dispatch(
@@ -367,14 +379,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
   };
 
   const handleMakerAmountChange = (amount: string) => {
-    setMakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, makerTokenDecimals)
+    dispatch(
+      setTokenFromAmount(
+        toMaxAllowedDecimalsNumberString(amount, makerTokenDecimals)
+      )
     );
   };
 
   const handleTakerAmountChange = (amount: string) => {
-    setTakerAmount(
-      toMaxAllowedDecimalsNumberString(amount, takerTokenDecimals)
+    dispatch(
+      setTokenToAmount(
+        toMaxAllowedDecimalsNumberString(amount, takerTokenDecimals)
+      )
     );
   };
 
@@ -386,8 +402,18 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
         kind: TokenKinds.ERC20,
       }
     );
-    setMakerAmount(takerAmount);
-    setTakerAmount(makerAmount);
+    dispatch(
+      setAmounts({
+        tokenFrom: takerAmount,
+        tokenTo: makerAmount,
+      })
+    );
+  };
+
+  const handleExpiryChange = (newExpiry: UserOrderExpiry) => {
+    if (newExpiry.expiry !== expiry) {
+      dispatch(setExpiry(newExpiry));
+    }
   };
 
   const handleTokenSelect = (newToken: AppTokenInfo) => {
@@ -401,7 +427,7 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
     });
 
     if (tokenKind === TokenKinds.ERC721) {
-      setMakerAmount("1");
+      dispatch(setTokenFromAmount("1"));
     }
 
     setShowTokenSelectModal(null);
@@ -423,8 +449,12 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
       takerTokenDecimals
     );
 
-    setMakerAmount(formattedMakerAmount);
-    setTakerAmount(formattedTakerAmount);
+    dispatch(
+      setAmounts({
+        tokenFrom: formattedMakerAmount,
+        tokenTo: formattedTakerAmount,
+      })
+    );
 
     setState(MakeWidgetState.review);
   };
@@ -701,9 +731,10 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
 
           <StyledExpirySelector
             fullWidth={isLimitOrder}
-            isDisabled={!isActive}
-            onChange={setExpiry}
             hideExpirySelector={!!showTokenSelectModal}
+            isDisabled={!isActive}
+            value={userOrderExpiry}
+            onChange={handleExpiryChange}
           />
         </OrderTypeSelectorAndExpirySelectorWrapper>
 
@@ -725,6 +756,11 @@ const MakeWidget: FC<MakeWidgetProps> = ({ isLimitOrder = false }) => {
             )}
           </TooltipContainer>
         )}
+
+        {orderType === OrderType.publicListed &&
+          (!makerTokenKind || makerTokenKind === TokenKinds.ERC20) && (
+            <StyledPartialFillSwitch value={isLimitOrder} />
+          )}
 
         <StyledInfoSection
           isAllowancesFailed={isAllowancesOrBalancesFailed}

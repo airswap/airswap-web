@@ -48,7 +48,9 @@ import {
   IconVote,
   IconX,
   IconCheckCircle,
+  IconDots,
 } from "./icons";
+import IconDoubleArrow from "./icons/IconDoubleArrow";
 
 type IconSet = {
   [key: string]: FC<SvgIconProps>;
@@ -85,6 +87,8 @@ export const icons: IconSet = {
   "dark-mode-switch": IconDarkModeSwitch,
   deny: IconDeny,
   discord: IconDiscord,
+  dots: IconDots,
+  "double-arrow": IconDoubleArrow,
   edit: IconEdit,
   "exit-modal": HiX,
   forbidden: IconForbidden,

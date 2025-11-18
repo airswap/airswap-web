@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -27,6 +27,8 @@ const LimitOrderDetail: FC = () => {
 
   const { status, delegateRule } = useAppSelector((state) => state.takeLimit);
   const { isFetchingAllTokens } = useAppSelector(selectMetaDataReducer);
+  // Temporary state to force a re-render when the order is switched
+  const [isSwitchingOrder, setIsSwitchingOrder] = useState(false);
 
   useEffect(() => {
     if (
@@ -57,10 +59,17 @@ const LimitOrderDetail: FC = () => {
   useEffect(() => {
     if (delegateRule && !isFetchingAllTokens) {
       dispatch(fetchAllTokens(delegateRule.chainId));
+      setIsSwitchingOrder(true);
     }
   }, [delegateRule]);
 
-  if (status === "invalid" || status === "failed") {
+  useEffect(() => {
+    if (isSwitchingOrder) {
+      setIsSwitchingOrder(false);
+    }
+  }, [isSwitchingOrder]);
+
+  if (status === "invalid" || status === "failed" || isSwitchingOrder) {
     return (
       <Page>
         <InvalidOrder />

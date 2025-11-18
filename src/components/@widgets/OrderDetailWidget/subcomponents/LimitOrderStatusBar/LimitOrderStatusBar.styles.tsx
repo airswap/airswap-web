@@ -5,9 +5,9 @@ import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
 
 export const Container = styled(InfoSectionHeading)`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   min-height: 3rem;
   border: 1px solid ${({ theme }) => theme.colors.borderGrey};
   border-radius: 0.5rem;
@@ -32,4 +32,21 @@ export const Recipient = styled.div`
   color: ${({ theme }) => theme.colors.lightGrey};
 `;
 
-export const StyledOrderStatusInfo = styled(OrderStatusInfo)``;
+export const LiveIndicator = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: ${({ theme }) => theme.colors.white};
+`;
+
+export const LiveIndicatorLight = styled.span`
+  width: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.green};
+`;
+
+export const StyledOrderStatusInfo = styled(OrderStatusInfo)`
+  justify-self: flex-end;
+  margin-left: auto;
+`;

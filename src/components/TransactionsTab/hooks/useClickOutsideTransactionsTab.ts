@@ -26,6 +26,7 @@ const useClickOutsideTransactionsTab = (callback: () => void) => {
   useEffect(() => {
     if (clickedOutside) {
       callback();
+      setClickedOutside(false);
     }
   }, [clickedOutside]);
 

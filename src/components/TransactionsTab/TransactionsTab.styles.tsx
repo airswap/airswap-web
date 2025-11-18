@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import convertHexToRGBA from "../../helpers/transformHexToRgba";
 import breakPoints from "../../style/breakpoints";
 import {
   ScrollBarStyle,
   InputOrButtonBorderStyleType2,
+  BorderlessButtonStyle,
 } from "../../style/mixins";
-import { sizes } from "../../style/sizes";
 import Button from "../Button/Button";
 import { InfoSubHeading } from "../Typography/Typography";
 import WalletInfoButton from "./subcomponents/WalletInfoButton/WalletInfoButton";
@@ -15,17 +15,19 @@ import WalletMobileMenu from "./subcomponents/WalletMobileMenu/WalletMobileMenu"
 
 export const Container = styled(motion.div)`
   position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 30;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid rgba(53, 69, 98, 0.5);
   width: 100%;
-  max-width: ${sizes.widgetMobileSize};
-  height: calc(100% - 5rem);
-  padding: 1.5rem 1.5rem 0;
-  top: 5rem;
-  right: 0;
-  z-index: 25;
+  max-width: 28.25rem;
+  height: 100%;
+  padding: 1.5rem 0.75rem 0 0.5rem;
   will-change: transform;
   backdrop-filter: drop-shadow(4px 4px 10px blue);
+  background: #0b1730;
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -41,6 +43,14 @@ export const Container = styled(motion.div)`
     background-color: ${({ theme }) => theme.colors.black};
     z-index: 1000;
   }
+`;
+
+export const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  width: 100%;
 `;
 
 export const WalletHeader = styled.div`
@@ -95,17 +105,14 @@ type TransactionsContainerProps = {
 export const TransactionsContainer = styled.div<TransactionsContainerProps>`
   ${ScrollBarStyle};
 
-  overflow-y: ${(props) => (props.hasOverflow ? "scroll" : "hidden")};
-  padding-right: ${(props) => (props.hasOverflow ? "1rem" : "0")};
-  padding-bottom: ${(props) => (props.hasOverflow ? "2rem" : "0")};
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 1rem;
+  padding-left: 0;
+  padding-right: 0;
 
   flex-grow: 99;
   height: 100%;
-
-  -webkit-mask-image: ${({ hasOverflow }) =>
-    hasOverflow
-      ? "-webkit-gradient(linear, 0 85%, 0 100%, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))"
-      : ""};
 `;
 
 export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
@@ -116,6 +123,8 @@ export const TransactionContainer = styled.div<{ $isEmpty?: boolean }>`
   flex-grow: 2;
   margin-bottom: ${({ $isEmpty }) => ($isEmpty ? "0" : "1.5rem")};
   width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.25rem;
   transition: margin-bottom ease-out 0.3s;
   overflow: hidden;
 
@@ -142,6 +151,8 @@ export const BottomButtonContainer = styled.div`
 export const DisconnectButton = styled(Button)`
   ${InputOrButtonBorderStyleType2};
 
+  width: calc(100% - 1.25rem);
+
   @media ${breakPoints.phoneOnly} {
     display: none;
   }
@@ -155,6 +166,7 @@ export const MobileBackButton = styled(Button)`
 
   @media ${breakPoints.phoneOnly} {
     display: flex;
+    width: 100%;
   }
 `;
 
@@ -219,5 +231,45 @@ export const BackdropFilter = styled.button`
 
   @media ${breakPoints.phoneOnly} {
     display: block;
+  }
+`;
+
+export const TransactionsTabNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.25rem;
+  margin-left: 1rem;
+  width: calc(100% - 3.5rem);
+  min-height: 2.5rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderGrey};
+`;
+
+export const TransactionsTabNavigationButton = styled.button<{
+  isActive?: boolean;
+}>`
+  ${BorderlessButtonStyle};
+
+  display: flex;
+  height: calc(100% + 1px);
+  border-bottom: 1px solid transparent;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding-top: 0.25rem;
+  color: ${({ theme }) => theme.colors.lightGrey};
+  background-color: transparent;
+  cursor: pointer;
+
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      border-bottom: 1px solid ${({ theme }) => theme.colors.white} !important;
+      color: ${({ theme }) => theme.colors.white};
+    `}
+
+  &:hover,
+  &:focus {
+    color: ${({ theme }) => theme.colors.white};
   }
 `;

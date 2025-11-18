@@ -2,12 +2,12 @@ import { ADDRESS_ZERO } from "@airswap/utils";
 
 import { ethers } from "ethers";
 
-import { AppTokenInfo } from "../../../../../../entities/AppTokenInfo/AppTokenInfo";
-import { DelegateRule } from "../../../../../../entities/DelegateRule/DelegateRule";
-import { routes } from "../../../../../../routes";
-import { OrderStatus } from "../../../../../../types/orderStatus";
-import { MyOrder } from "../../../../MyOrdersWidget/entities/MyOrder";
-import { findTokenInfo } from "../../../../MyOtcOrdersWidget/subcomponents/MyOtcOrdersList/helpers";
+import { AppTokenInfo } from "../../../../entities/AppTokenInfo/AppTokenInfo";
+import { DelegateRule } from "../../../../entities/DelegateRule/DelegateRule";
+import { routes } from "../../../../routes";
+import { OrderStatus } from "../../../../types/orderStatus";
+import { MyOrder } from "../../MyOrdersWidget/entities/MyOrder";
+import { findTokenInfo } from "../../MyOtcOrdersWidget/subcomponents/MyOtcOrdersList/helpers";
 
 const getOrderStatus = (delegateRule: DelegateRule): OrderStatus => {
   if (delegateRule.senderFilledAmount === delegateRule.senderAmount) {

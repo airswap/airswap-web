@@ -1,8 +1,21 @@
-import { FC, PropsWithChildren, useMemo, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
+import { useMouse, useToggle } from "react-use";
 
 import { ADDRESS_ZERO } from "@airswap/utils";
 
+import { useClickAnyWhere } from "usehooks-ts";
+
+import { useAppDispatch } from "../../../../../app/hooks";
+import { InterfaceContext } from "../../../../../contexts/interface/Interface";
 import {
   getTokenDecimals,
   getTokenImage,
@@ -10,60 +23,102 @@ import {
 } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
 import { getExpiryTranslation } from "../../../../../helpers/getExpiryTranslation";
 import { getHumanReadableNumber } from "../../../../../helpers/getHumanReadableNumber";
+import writeTextToClipboard from "../../../../../helpers/writeTextToClipboard";
+import useAddressOrEnsName from "../../../../../hooks/useAddressOrEnsName";
 import { OrderStatus } from "../../../../../types/orderStatus";
-import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
+import Dropdown, { SelectOption } from "../../../../Dropdown/Dropdown";
+import Icon from "../../../../Icon/Icon";
 import { MyOrder as MyOrderInterface } from "../../../MyOrdersWidget/entities/MyOrder";
 import {
   getOrderStatusTranslation,
   getTokenAmountWithDecimals,
 } from "../../../MyOrdersWidget/helpers";
-import useFormattedTokenAmount from "../../../OrderDetailWidget/hooks/useFormattedTokenAmount";
 import {
-  ActionButton,
   ActionButtonContainer,
+  AmountContainer,
   Circle,
   Container,
+  Divider,
   FilledAmount,
+  MetaItemContainer,
+  MetaItems,
+  OrderStatusAndIndicator,
   OrderStatusLabel,
   SenderAmount,
   SignerAmount,
   StatusIndicator,
   StyledNavLink,
   StyledTooltip,
+  Text,
+  TokenAndAmount,
   TokenIcon,
-  Tokens,
+  TokensAndAmountContainer,
+  MetaLabel,
   Warning,
+  ActionMenuButton,
+  ActionMenu,
+  NewActionMenuButton,
+  NewActionMenuButtonIcon,
+  ActionButtonLoader,
+  StyledDropdown,
 } from "./Order.styles";
 
 interface OrderProps {
-  hasFilledColumn?: boolean;
-  hasForColumn?: boolean;
   isCancelInProgress: boolean;
   order: MyOrderInterface;
   index: number;
   onDeleteOrderButtonClick: (order: MyOrderInterface) => void;
-  onDeleteOrderButtonMouseEnter: (index: number, orderIsOpen: boolean) => void;
-  onDeleteOrderButtonMouseLeave: () => void;
   onStatusIndicatorMouseEnter: (index: number, status: OrderStatus) => void;
   onStatusIndicatorMouseLeave: () => void;
   className?: string;
 }
 
 const Order: FC<PropsWithChildren<OrderProps>> = ({
-  hasFilledColumn,
-  hasForColumn,
   isCancelInProgress,
   order,
   index,
   onDeleteOrderButtonClick,
-  onDeleteOrderButtonMouseEnter,
-  onDeleteOrderButtonMouseLeave,
   onStatusIndicatorMouseEnter,
   onStatusIndicatorMouseLeave,
   className,
 }) => {
   const { t } = useTranslation();
-  const [isHoveredActionButton, setIsHoveredActionButton] = useState(false);
+  const ref = useRef<HTMLAnchorElement>(null);
+  const [hasEnteredElement, setHasEnteredElement] = useState(false);
+  const [isActionMenuOpen, toggleIsActionMenuOpen] = useToggle(false);
+  const [writeAddressToClipboardSuccess, setWriteAddressToClipboardSuccess] =
+    useState(false);
+  const { elX, elY, elW, elH } = useMouse(ref);
+  const addressOrName = useAddressOrEnsName(order.for);
+  const { setTransactionsTabIsOpen } = useContext(InterfaceContext);
+
+  const buttonOptions: SelectOption[] = [
+    {
+      label: (
+        <NewActionMenuButton>
+          <NewActionMenuButtonIcon>
+            <Icon name={writeAddressToClipboardSuccess ? "check" : "copy"} />
+          </NewActionMenuButtonIcon>
+          Copy link
+        </NewActionMenuButton>
+      ),
+      value: "copy-link",
+    },
+    {
+      label: (
+        <NewActionMenuButton>
+          <NewActionMenuButtonIcon>
+            <Icon
+              name={order.status !== OrderStatus.open ? "bin" : "button-x"}
+              iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
+            />
+          </NewActionMenuButtonIcon>
+          {order.status !== OrderStatus.open ? "Delete order" : "Cancel order"}
+        </NewActionMenuButton>
+      ),
+      value: "delete-order",
+    },
+  ];
 
   const senderTokenDecimals = order.senderToken
     ? getTokenDecimals(order.senderToken)
@@ -119,82 +174,146 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
     [order.status]
   );
 
-  const filledAmount = useFormattedTokenAmount(
-    order.senderFilledAmount,
-    senderTokenDecimals
-  );
-
   const handleDeleteOrderButtonClick = () => {
     onDeleteOrderButtonClick(order);
-    setIsHoveredActionButton(false);
+    toggleIsActionMenuOpen(false);
   };
 
-  const handleActionButtonMouseEnter = () => {
-    setIsHoveredActionButton(true);
-    onDeleteOrderButtonMouseEnter(index, order.status === OrderStatus.open);
+  const handleCopyLinkButtonClick = async () => {
+    const link = window.location.origin + order.link;
+    const isCopySuccess = await writeTextToClipboard(link);
+
+    if (isCopySuccess) {
+      setWriteAddressToClipboardSuccess(true);
+    }
   };
 
-  const handleActionButtonMouseLeave = () => {
-    setIsHoveredActionButton(false);
-    onDeleteOrderButtonMouseLeave();
+  const handleButtonClick = (option: SelectOption) => {
+    if (option.value === "copy-link") {
+      handleCopyLinkButtonClick();
+    } else if (option.value === "delete-order") {
+      handleDeleteOrderButtonClick();
+    }
   };
+  useEffect(() => {
+    if (elX > 0 && elY > 0 && elX < elW && elY < elH) {
+      setHasEnteredElement(true);
+    } else {
+      setHasEnteredElement(false);
+    }
+  }, [elX, elY]);
+
+  useClickAnyWhere(() => {
+    if (!hasEnteredElement) {
+      toggleIsActionMenuOpen(false);
+      setWriteAddressToClipboardSuccess(false);
+    }
+  });
 
   return (
-    <Container orderStatus={order.status} className={className}>
+    <Container
+      className={className}
+      orderStatus={order.status}
+      $hasEnteredElement={hasEnteredElement}
+    >
       {order.hasAllowanceWarning && (
         <>
           <Warning />
           <StyledTooltip>{t("orders.allowanceWarning")}</StyledTooltip>
         </>
       )}
-      <StatusIndicator
-        onMouseEnter={() => onStatusIndicatorMouseEnter(index, order.status)}
-        onMouseLeave={onStatusIndicatorMouseLeave}
-      >
-        <Circle />
-      </StatusIndicator>
-      <Tokens>
-        <TokenIcon logoURI={signerTokenImage} />
-        <TokenIcon logoURI={senderTokenImage} />
-      </Tokens>
-      {hasFilledColumn && (
-        <FilledAmount>
-          {`${filledAmount} ${signerTokenSymbol || ""}`}
-        </FilledAmount>
-      )}
-      {hasForColumn && (
-        <FilledAmount>
-          {order.for === ADDRESS_ZERO ? t("orders.anyone") : order.for}
-        </FilledAmount>
-      )}
-      <SignerAmount>{`${signerAmount} ${
-        signerTokenSymbol || ""
-      }`}</SignerAmount>
-      <SenderAmount>{`${senderAmount} ${
-        senderTokenSymbol || ""
-      }`}</SenderAmount>
-      <OrderStatusLabel>
-        {order.status === OrderStatus.open ? timeLeft : orderStatusTranslation}
-      </OrderStatusLabel>
+      <TokensAndAmountContainer>
+        <TokenAndAmount>
+          <TokenIcon logoURI={signerTokenImage} />
+
+          <AmountContainer>
+            <Text>{t("orders.from")}</Text>
+            <SignerAmount>
+              {`${signerAmount} ${signerTokenSymbol || ""}`}
+            </SignerAmount>
+          </AmountContainer>
+        </TokenAndAmount>
+
+        <TokenAndAmount>
+          <TokenIcon
+            $invisible={hasEnteredElement}
+            logoURI={senderTokenImage}
+          />
+
+          <AmountContainer>
+            <Text>{t("orders.to")}</Text>
+            <SenderAmount>
+              {`${senderAmount} ${senderTokenSymbol || ""}`}
+            </SenderAmount>
+          </AmountContainer>
+        </TokenAndAmount>
+      </TokensAndAmountContainer>
+
+      <Divider />
+
+      <MetaItems>
+        <MetaItemContainer>
+          <MetaLabel>{t("common.status")}</MetaLabel>
+          <OrderStatusAndIndicator>
+            <StatusIndicator
+              onMouseEnter={() =>
+                onStatusIndicatorMouseEnter(index, order.status)
+              }
+              onMouseLeave={onStatusIndicatorMouseLeave}
+            >
+              <Circle />
+            </StatusIndicator>
+
+            <OrderStatusLabel>
+              {order.status === OrderStatus.open
+                ? timeLeft
+                : orderStatusTranslation}
+            </OrderStatusLabel>
+          </OrderStatusAndIndicator>
+        </MetaItemContainer>
+
+        <MetaItemContainer>
+          <MetaLabel>{t("common.for")}</MetaLabel>
+          <OrderStatusAndIndicator>
+            <FilledAmount>
+              {order.for === ADDRESS_ZERO ? t("orders.anyone") : addressOrName}
+            </FilledAmount>
+          </OrderStatusAndIndicator>
+        </MetaItemContainer>
+      </MetaItems>
+
       <StyledNavLink
-        $isHovered={isHoveredActionButton}
+        $isHovered={hasEnteredElement}
         $hasWarning={order.hasAllowanceWarning}
+        ref={ref}
         to={order.link}
+        onClick={() => {
+          setTransactionsTabIsOpen(false);
+        }}
       />
 
-      <ActionButtonContainer>
+      <ActionButtonContainer isActive={hasEnteredElement}>
         {isCancelInProgress ? (
-          <LoadingSpinner />
+          <ActionButtonLoader />
         ) : (
-          <ActionButton
-            icon={order.status !== OrderStatus.open ? "bin" : "button-x"}
-            iconSize={order.status === OrderStatus.open ? 0.5625 : 0.675}
-            onClick={handleDeleteOrderButtonClick}
-            onMouseEnter={handleActionButtonMouseEnter}
-            onMouseLeave={handleActionButtonMouseLeave}
-          />
+          hasEnteredElement && (
+            <ActionMenuButton
+              icon="dots"
+              iconSize={0.6875}
+              onClick={toggleIsActionMenuOpen}
+            />
+          )
         )}
       </ActionButtonContainer>
+
+      {isActionMenuOpen && (
+        <StyledDropdown
+          isMenuOpen
+          selectedOption={buttonOptions[0]}
+          options={buttonOptions}
+          onChange={handleButtonClick}
+        />
+      )}
     </Container>
   );
 };

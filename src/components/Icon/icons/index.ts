@@ -20,6 +20,7 @@ import IconCopy2 from "./IconCopy2";
 import IconDarkModeSwitch from "./IconDarkModeSwitch";
 import IconDeny from "./IconDeny";
 import IconDiscord from "./IconDiscord";
+import IconDots from "./IconDots";
 import IconEdit from "./IconEdit";
 import IconForbidden from "./IconForbidden";
 import IconGithub from "./IconGithub";
@@ -62,6 +63,7 @@ export {
   IconDarkModeSwitch,
   IconDeny,
   IconDiscord,
+  IconDots,
   IconEdit,
   IconForbidden,
   IconGithub,

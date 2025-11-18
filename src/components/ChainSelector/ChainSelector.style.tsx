@@ -20,13 +20,10 @@ export const Container = styled.div<ContainerProps>`
 export const ChainSelectButton = styled.button`
   ${BorderedPill}
   ${InputOrButtonBorderStyle}
-
+  
   align-items: center;
   padding: 0 1rem;
-
-  @media ${breakPoints.tabletPortraitUp} {
-    padding: 0 1.5rem;
-  }
+  padding-right: 0.75rem;
 
   @media ${breakPoints.phoneOnly} {
     ${IconButtonStyle};
@@ -36,11 +33,8 @@ export const ChainSelectButton = styled.button`
 `;
 
 export const ChainIcon = styled.img`
+  margin-right: 0.25rem;
   width: 1rem;
-
-  @media ${breakPoints.tabletPortraitUp} {
-    margin-right: 0.75rem;
-  }
 `;
 
 export const ChainNameText = styled.span`
@@ -56,7 +50,6 @@ export const ChainNameText = styled.span`
 
 export const ArrowIcon = styled.div<ArrowIconProps>`
   margin-top: 0.125rem;
-  margin-left: 0.25rem;
   transition: transform 0.3s ease-in-out;
 
   svg {

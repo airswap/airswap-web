@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from "react";
 
-import { ChainIds } from "@airswap/utils";
+import { ADDRESS_ZERO, ChainIds } from "@airswap/utils";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -25,7 +25,7 @@ const useAddressOrEnsName = (address: string | null, truncate = true) => {
   const [result, setResult] = useState<string | null>(fallback);
 
   useLayoutEffect(() => {
-    if (!address || !chainId || !library) {
+    if (!address || !chainId || !library || address === ADDRESS_ZERO) {
       setResult(fallback);
       return;
     }

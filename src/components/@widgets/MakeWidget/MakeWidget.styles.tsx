@@ -17,6 +17,7 @@ import {
 } from "./subcomponents/ExpirySelector/ExpirySelector.styles";
 import InfoSection from "./subcomponents/InfoSection/InfoSection";
 import OrderTypeSelector from "./subcomponents/OrderTypeSelector/OrderTypeSelector";
+import { PartialFillSwitch } from "./subcomponents/PartialFillSwitch/PartialFillSwitch";
 import { RateField } from "./subcomponents/RateField/RateField";
 
 export const Container = styled.div<{ hidePageNavigation: boolean }>`
@@ -78,6 +79,10 @@ export const StyledExpirySelector = styled(ExpirySelector)<{
 export const StyledAddressInput = styled(AddressInput)`
   margin-bottom: ${sizes.widgetGutter};
   height: 3.5rem;
+`;
+
+export const StyledPartialFillSwitch = styled(PartialFillSwitch)`
+  margin-bottom: ${sizes.widgetGutter};
 `;
 
 export const StyledActionButtons = styled(ActionButtons)`

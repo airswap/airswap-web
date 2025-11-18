@@ -16,10 +16,23 @@ export interface UserTokenPair {
   tokenTo?: UserToken;
 }
 
+export interface UserTokenAmounts {
+  tokenFrom?: string;
+  tokenTo?: string;
+}
+
+export interface UserOrderExpiry {
+  expiry: number;
+  unitIndex: number;
+  unitAmount: number;
+}
+
 export interface UserSettingsState {
   theme: ThemeType | "system";
   tokens: UserTokenPair;
+  amounts: UserTokenAmounts;
   customServerUrl: string | null;
+  expiry: UserOrderExpiry;
 }
 
 export const THEME_LOCAL_STORAGE_KEY = "airswap/theme";
@@ -29,6 +42,15 @@ const initialState: UserSettingsState = {
   tokens: {
     tokenFrom: undefined,
     tokenTo: undefined,
+  },
+  amounts: {
+    tokenFrom: undefined,
+    tokenTo: undefined,
+  },
+  expiry: {
+    expiry: 3600000,
+    unitIndex: 1,
+    unitAmount: 1,
   },
   customServerUrl: null,
 };
@@ -58,6 +80,39 @@ const userSettingsSlice = createSlice({
         tokens,
       };
     },
+    setTokenFromAmount: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        amounts: {
+          ...state.amounts,
+          tokenFrom: action.payload,
+        },
+      };
+    },
+    setTokenToAmount: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        amounts: {
+          ...state.amounts,
+          tokenTo: action.payload,
+        },
+      };
+    },
+    setAmounts: (
+      state,
+      action: PayloadAction<{ tokenFrom?: string; tokenTo?: string }>
+    ) => {
+      return {
+        ...state,
+        amounts: action.payload,
+      };
+    },
+    setExpiry: (state, action: PayloadAction<UserOrderExpiry>) => {
+      return {
+        ...state,
+        expiry: action.payload,
+      };
+    },
     setCustomServerUrl: (state, action: PayloadAction<string | null>) => {
       state.customServerUrl = action.payload;
     },
@@ -68,10 +123,22 @@ export const selectTheme = (state: RootState) => state.userSettings.theme;
 
 export const selectUserTokens = (state: RootState) => state.userSettings.tokens;
 
+export const selectUserTokenAmounts = (state: RootState) =>
+  state.userSettings.amounts;
+
 export const selectCustomServerUrl = (state: RootState) =>
   state.userSettings.customServerUrl;
 
-export const { setTheme, setUserTokens, setCustomServerUrl } =
-  userSettingsSlice.actions;
+export const selectExpiry = (state: RootState) => state.userSettings.expiry;
+
+export const {
+  setExpiry,
+  setTheme,
+  setUserTokens,
+  setCustomServerUrl,
+  setTokenFromAmount,
+  setTokenToAmount,
+  setAmounts,
+} = userSettingsSlice.actions;
 
 export default userSettingsSlice.reducer;

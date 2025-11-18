@@ -1,18 +1,30 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { useAtomValue } from "jotai";
 
 import { useAppSelector } from "../../app/hooks";
+import { TransactionsTabMenu } from "../../contexts/interface/Interface";
 import { SubmittedTransaction } from "../../entities/SubmittedTransaction/SubmittedTransaction";
 import { getSubmittedTransactionKey } from "../../entities/SubmittedTransaction/SubmittedTransactionHelpers";
+import { useActiveOrdersCount } from "../../hooks/useActiveOrdersCount";
+import useElementSize from "../../hooks/useElementSize";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import useWindowSize from "../../hooks/useWindowSize";
 import breakPoints from "../../style/breakpoints";
+import {
+  StyledChainSelector,
+  StyledMenuButton,
+  StyledSettingsButton,
+  StyledToggleSidebarButton,
+  StyledWalletButton,
+} from "../../styled-components/TopBar/Topbar";
 import { ClearOrderType } from "../../types/clearOrderType";
 import { TransactionStatusType } from "../../types/transactionTypes";
-import Icon from "../Icon/Icon";
+import { myOrdersListLoadingAtom } from "../@widgets/MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
+import MyOtcOrdersWidget from "../@widgets/MyOtcOrdersWidget/MyOtcOrdersWidget";
 import {
   Container,
   Legend,
@@ -20,38 +32,45 @@ import {
   TransactionsContainer,
   BottomButtonContainer,
   DisconnectButton,
-  NoTransactions,
-  IconContainer,
   LegendContainer,
   MobileBackButton,
   BackdropFilter,
   ConnectButton,
+  TransactionsTabNavigation,
+  TransactionsTabNavigationButton,
+  TopBar,
 } from "./TransactionsTab.styles";
-import useClickOutsideTransactionsTab from "./hooks/useClickOutsideTransactionsTab";
 import AnimatedWalletTransaction from "./subcomponents/AnimatedWalletTransaction/AnimatedWalletTransaction";
 import ClearTransactionsSelector from "./subcomponents/ClearTransactionsSelector/ClearTransactionsSelector";
+import { EmptyList } from "./subcomponents/EmptyList/EmptyList";
 
 interface TransactionsTabProps {
   account: string;
+  activeTab: TransactionsTabMenu;
   chainId: number;
   open: boolean;
   protocolFee: number;
   setTransactionsTabOpen: (x: boolean) => void;
+  setTransactionsTabMenu: (x: TransactionsTabMenu) => void;
   onClearTransactionsChange: (value: ClearOrderType) => void;
   onConnectButtonClick: () => void;
   onDisconnectButtonClick: () => void;
+  onMobileMenuButtonClick: () => void;
   transactions: SubmittedTransaction[];
 }
 
 const TransactionsTab = ({
   account = "",
+  activeTab,
   chainId,
   open,
   protocolFee,
   setTransactionsTabOpen,
+  setTransactionsTabMenu,
   onClearTransactionsChange,
   onConnectButtonClick,
   onDisconnectButtonClick,
+  onMobileMenuButtonClick,
   transactions,
 }: TransactionsTabProps) => {
   const { width, height } = useWindowSize();
@@ -64,12 +83,17 @@ const TransactionsTab = ({
   const [overflow, setOverflow] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
+  const isLoadingOtcOrders = useAtomValue(myOrdersListLoadingAtom);
   const containerRef = useRef<HTMLDivElement>(null);
   const transactionsScrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const activeOrdersCount = useActiveOrdersCount();
+
+  // Local component state
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [chainsOpen, setChainsOpen] = useState<boolean>(false);
 
   useKeyPress(() => setTransactionsTabOpen(false), ["Escape"]);
-  useClickOutsideTransactionsTab(() => setTransactionsTabOpen(false));
 
   const toggleWalletMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
@@ -101,6 +125,8 @@ const TransactionsTab = ({
     height,
     open,
     transactions,
+    activeTab,
+    isLoadingOtcOrders,
   ]);
 
   // Every time a new transactions is added, scroll to top.
@@ -128,57 +154,112 @@ const TransactionsTab = ({
     <AnimatePresence initial={false}>
       {open && (
         <Container
-          ref={containerRef}
           animate={{ x: 0 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          initial={{ x: isMobile ? "100%" : "27.75rem" }}
-          exit={{ x: isMobile ? "100%" : "27.75rem" }}
+          initial={{ x: isMobile ? "100%" : "28.25rem" }}
+          exit={{ x: isMobile ? "100%" : "28.25rem" }}
         >
+          <TopBar>
+            <StyledToggleSidebarButton
+              isOpen
+              ariaLabel={t("common.close")}
+              icon="double-arrow"
+              iconSize={1.5625}
+              onClick={() => setTransactionsTabOpen(false)}
+            />
+            {chainId && (
+              <StyledChainSelector
+                chainId={chainId}
+                chainSelectionOpen={chainsOpen}
+                setChainSelectionOpen={setChainsOpen}
+              />
+            )}
+            <StyledWalletButton
+              isConnected={isActive}
+              isUnsupportedNetwork={false}
+              address={account}
+              glow={!!pendingTransactions.length}
+              setTransactionsTabOpen={() => setTransactionsTabOpen(!open)}
+              setShowWalletList={() => {}}
+            />
+            <StyledSettingsButton
+              settingsOpen={settingsOpen}
+              setSettingsOpen={setSettingsOpen}
+            />
+            <StyledMenuButton
+              ariaLabel={t("common.select")}
+              icon="menu"
+              iconSize={1.5625}
+              onClick={onMobileMenuButtonClick}
+            />
+          </TopBar>
+          <TransactionsTabNavigation>
+            <TransactionsTabNavigationButton
+              isActive={activeTab === "myActivity"}
+              onClick={() => setTransactionsTabMenu("myActivity")}
+            >
+              My activity
+            </TransactionsTabNavigationButton>
+            <TransactionsTabNavigationButton
+              isActive={activeTab === "myOrders"}
+              onClick={() => setTransactionsTabMenu("myOrders")}
+            >
+              {`My orders ${activeOrdersCount ? `(${activeOrdersCount})` : ""}`}
+            </TransactionsTabNavigationButton>
+          </TransactionsTabNavigation>
+
           <TransactionsContainer
             ref={transactionsScrollRef}
             hasOverflow={overflow}
           >
-            <LegendContainer $isVisible={!!pendingTransactions.length}>
-              <Legend>{t("wallet.activeTransactions").toUpperCase()}</Legend>
-            </LegendContainer>
-            <TransactionContainer $isEmpty={!pendingTransactions.length}>
-              <AnimatePresence initial={false}>
-                {pendingTransactions.map((transaction) => (
-                  <AnimatedWalletTransaction
-                    key={getSubmittedTransactionKey(transaction)}
-                    protocolFee={protocolFee}
-                    transaction={transaction}
-                    chainId={chainId!}
-                    account={account}
+            {activeTab === "myActivity" ? (
+              <>
+                <LegendContainer $isVisible={!!pendingTransactions.length}>
+                  <Legend>
+                    {t("wallet.activeTransactions").toUpperCase()}
+                  </Legend>
+                </LegendContainer>
+                <TransactionContainer $isEmpty={!pendingTransactions.length}>
+                  <AnimatePresence initial={false}>
+                    {pendingTransactions.map((transaction) => (
+                      <AnimatedWalletTransaction
+                        key={getSubmittedTransactionKey(transaction)}
+                        protocolFee={protocolFee}
+                        transaction={transaction}
+                        chainId={chainId!}
+                        account={account}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </TransactionContainer>
+                <LegendContainer
+                  $isVisible={isActive && !!completedTransactions.length}
+                >
+                  <Legend>{t("wallet.completedTransactions")}</Legend>
+                  <ClearTransactionsSelector
+                    onChange={onClearTransactionsChange}
                   />
-                ))}
-              </AnimatePresence>
-            </TransactionContainer>
-            <LegendContainer $isVisible={isActive}>
-              <Legend>{t("wallet.completedTransactions")}</Legend>
-              <ClearTransactionsSelector onChange={onClearTransactionsChange} />
-            </LegendContainer>
-            <TransactionContainer>
-              <AnimatePresence initial={false}>
-                {completedTransactions.map((transaction) => (
-                  <AnimatedWalletTransaction
-                    key={getSubmittedTransactionKey(transaction)}
-                    protocolFee={protocolFee}
-                    transaction={transaction}
-                    chainId={chainId!}
-                    account={account}
-                  />
-                ))}
-              </AnimatePresence>
-              {isActive && !completedTransactions.length && (
-                <NoTransactions>
-                  <IconContainer>
-                    <Icon name="transaction" />
-                  </IconContainer>
-                  {t("wallet.noCompletedTransactions")}
-                </NoTransactions>
-              )}
-            </TransactionContainer>
+                </LegendContainer>
+                <TransactionContainer>
+                  <AnimatePresence initial={false}>
+                    {completedTransactions.map((transaction) => (
+                      <AnimatedWalletTransaction
+                        key={getSubmittedTransactionKey(transaction)}
+                        protocolFee={protocolFee}
+                        transaction={transaction}
+                        chainId={chainId!}
+                        account={account}
+                      />
+                    ))}
+                  </AnimatePresence>
+                  {isActive && !completedTransactions.length && (
+                    <EmptyList>{t("wallet.noCompletedTransactions")}</EmptyList>
+                  )}
+                </TransactionContainer>
+              </>
+            ) : (
+              <MyOtcOrdersWidget />
+            )}
           </TransactionsContainer>
           <BottomButtonContainer ref={buttonRef}>
             {isActive ? (

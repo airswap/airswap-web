@@ -45,8 +45,7 @@ const Page: FC<PageProps> = ({ children, className }): ReactElement => {
     setShowMobileToolbar,
   } = useContext(InterfaceContext);
 
-  const showBlurOverlay =
-    showModalOverlay || showTransactionOverlay || transactionsTabIsOpen;
+  const showBlurOverlay = showModalOverlay || showTransactionOverlay;
 
   useKeyPress(() => setShowMobileToolbar(false), ["Escape"]);
 

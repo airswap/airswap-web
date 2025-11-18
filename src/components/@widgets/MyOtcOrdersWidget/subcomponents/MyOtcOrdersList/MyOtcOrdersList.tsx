@@ -7,12 +7,14 @@ import * as ethers from "ethers";
 import { useAppSelector } from "../../../../../app/hooks";
 import { AppTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfo";
 import { isTokenInfo } from "../../../../../entities/AppTokenInfo/AppTokenInfoHelpers";
+import { DelegateRule } from "../../../../../entities/DelegateRule/DelegateRule";
 import { Allowances } from "../../../../../features/balances/balancesTypes";
 import {
   selectAllTokenInfo,
   selectProtocolFee,
 } from "../../../../../features/metadata/metadataSlice";
 import { OrdersSortType } from "../../../../../types/ordersSortType";
+import { getDelegateRuleDataAndTransformToMyOrder } from "../../../LimitOrderDetailWidget/helpers/getDelegateRuleDataAndTransformToMyOrder";
 import { MyOrder } from "../../../MyOrdersWidget/entities/MyOrder";
 import { getOrdersWithApprovalWarnings } from "../../../MyOrdersWidget/helpers";
 import MyOrdersList from "../../../MyOrdersWidget/subcomponents/MyOrdersList/MyOrdersList";
@@ -24,11 +26,18 @@ interface MyOtcOrdersListProps {
   activeSortType: OrdersSortType;
   activeTokens: AppTokenInfo[];
   allowances: Allowances;
+  delegateRules: DelegateRule[];
   fullOrders: (FullOrder | FullOrderERC20)[];
   sortTypeDirection: Record<OrdersSortType, boolean>;
   library: ethers.providers.BaseProvider;
-  onDeleteOrderButtonClick: (order: FullOrder | FullOrderERC20) => void;
-  onSortButtonClick: (type: OrdersSortType) => void;
+  onDeleteDelegateRuleOrderButtonClick: (
+    order: DelegateRule,
+    myOrder: MyOrder
+  ) => void;
+  onDeleteOrderButtonClick: (
+    order: FullOrder | FullOrderERC20,
+    myOrder: MyOrder
+  ) => void;
   className?: string;
 }
 
@@ -37,11 +46,12 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   activeCancellationId,
   activeSortType,
   allowances,
+  delegateRules,
   fullOrders,
   library,
   sortTypeDirection,
+  onDeleteDelegateRuleOrderButtonClick,
   onDeleteOrderButtonClick,
-  onSortButtonClick,
   className,
 }) => {
   const [orders, setOrders] = useState<MyOrder[]>([]);
@@ -49,30 +59,43 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
 
   const activeTokens = useAppSelector(selectAllTokenInfo);
   const protocolFee = useAppSelector(selectProtocolFee);
+
   const callGetOrders = useCallback(async () => {
-    const newOrders = await Promise.all(
+    const newOtcOrders = await Promise.all(
       fullOrders.map((order) =>
         getFullOrderDataAndTransformToOrder(order, activeTokens, library)
       )
     );
 
+    const newDelegateRuleOrders = await Promise.all(
+      delegateRules.map((order) =>
+        getDelegateRuleDataAndTransformToMyOrder(order, activeTokens, library)
+      )
+    );
+
     const erc20OrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
-      newOrders.filter(
+      newOtcOrders.filter(
         (order) => order.signerToken && isTokenInfo(order.signerToken)
       ),
       allowances.swapERC20.values,
       protocolFee
     );
     const fullOrdersWithApprovalWarnings = getOrdersWithApprovalWarnings(
-      newOrders.filter(
+      newOtcOrders.filter(
         (order) => !order.signerToken || !isTokenInfo(order.signerToken)
       ),
       allowances.swap.values
     );
+    const delegateRuleOrdersWithApprovalWarnings =
+      getOrdersWithApprovalWarnings(
+        newDelegateRuleOrders.filter((order) => order.senderToken),
+        allowances.delegate.values
+      );
 
     const ordersWithApprovalWarnings = [
       ...erc20OrdersWithApprovalWarnings,
       ...fullOrdersWithApprovalWarnings,
+      ...delegateRuleOrdersWithApprovalWarnings,
     ];
 
     setOrders(ordersWithApprovalWarnings);
@@ -80,10 +103,20 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
   }, [fullOrders, activeTokens]);
 
   const handleDeleteOrderButtonClick = (order: MyOrder): void => {
-    const orderToDelete = fullOrders.find((o) => o.nonce === order.id);
+    if (order.type === "delegate") {
+      const delegateRuleToDelete = delegateRules.find((o) => o.id === order.id);
 
-    if (orderToDelete) {
-      onDeleteOrderButtonClick(orderToDelete);
+      if (delegateRuleToDelete) {
+        onDeleteDelegateRuleOrderButtonClick(delegateRuleToDelete, order);
+      }
+
+      return;
+    }
+
+    const otcOrderToDelete = fullOrders.find((o) => o.nonce === order.id);
+
+    if (otcOrderToDelete) {
+      onDeleteOrderButtonClick(otcOrderToDelete, order);
     }
   };
 
@@ -118,7 +151,6 @@ const MyOtcOrdersList: FC<MyOtcOrdersListProps> = ({
       sortTypeDirection={sortTypeDirection}
       className={className}
       onDeleteOrderButtonClick={handleDeleteOrderButtonClick}
-      onSortButtonClick={onSortButtonClick}
     />
   );
 };

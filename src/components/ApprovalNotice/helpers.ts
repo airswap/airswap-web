@@ -193,6 +193,7 @@ export const getTotalTokenAllowanceFromOrders = async (
 
     return new BigNumber(acc)
       .plus(shouldPayProtocolFee ? signerAmountPlusFee : signerAmount)
+      .decimalPlaces(0, BigNumber.ROUND_CEIL)
       .toString();
   }, "0");
 };

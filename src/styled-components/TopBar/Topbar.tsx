@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import ChainSelector from "../../components/ChainSelector/ChainSelector";
 import IconButton from "../../components/IconButton/IconButton";
@@ -110,27 +110,36 @@ export const StyledMenuButton = styled(IconButton)`
   }
 `;
 
+export const StyledToggleSidebarButton = styled(IconButton)<{
+  isOpen?: boolean;
+}>`
+  ${BorderedPill};
+  ${InputOrButtonBorderStyle};
+
+  width: 3rem;
+  height: 3rem;
+
+  ${({ isOpen }) =>
+    !isOpen &&
+    css`
+      transform: rotate(180deg);
+    `}
+`;
+
 export const StyledWalletButton = styled(WalletButton)`
   @media ${breakPoints.tabletPortraitUp} {
     order: 2;
-    margin-right: 1rem;
   }
 `;
 
 export const StyledSettingsButton = styled(SettingsButton)`
-  margin-right: 0.5rem;
-
   @media ${breakPoints.tabletPortraitUp} {
     order: 3;
-    margin-right: 0;
   }
 `;
 
 export const StyledChainSelector = styled(ChainSelector)`
-  margin-right: 0.5rem;
-
   @media ${breakPoints.tabletPortraitUp} {
     order: 1;
-    margin-right: 1rem;
   }
 `;

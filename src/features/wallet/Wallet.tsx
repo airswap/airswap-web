@@ -12,6 +12,7 @@ import {
   StyledMenuButton,
   StyledSettingsButton,
   StyledSiteNavigation,
+  StyledToggleSidebarButton,
   StyledWalletButton,
   TopBar,
 } from "../../styled-components/TopBar/Topbar";
@@ -47,8 +48,13 @@ export const Wallet: FC<WalletProps> = ({
   const protocolFee = useAppSelector(selectProtocolFee);
 
   // Interface context
-  const { transactionsTabIsOpen, setShowWalletList, setTransactionsTabIsOpen } =
-    useContext(InterfaceContext);
+  const {
+    transactionsTabMenu,
+    transactionsTabIsOpen,
+    setShowWalletList,
+    setTransactionsTabIsOpen,
+    setTransactionsTabMenu,
+  } = useContext(InterfaceContext);
 
   // Local component state
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
@@ -89,43 +95,26 @@ export const Wallet: FC<WalletProps> = ({
           />
           <StyledSiteNavigation />
         </AirswapButtonAndNavigationContainer>
-        {chainId && (
-          <StyledChainSelector
-            chainId={chainId}
-            chainSelectionOpen={chainsOpen}
-            setChainSelectionOpen={setChainsOpen}
-          />
-        )}
-        <StyledWalletButton
-          isConnected={isActive}
-          isUnsupportedNetwork={false}
-          address={account}
-          glow={!!pendingTransactions.length}
-          setTransactionsTabOpen={() =>
-            setTransactionsTabIsOpen(!transactionsTabIsOpen)
-          }
-          setShowWalletList={setShowWalletList}
-        />
-        <StyledSettingsButton
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-        />
-        <StyledMenuButton
-          onClick={onMobileMenuButtonClick}
-          ariaLabel={t("common.select")}
-          icon="menu"
+
+        <StyledToggleSidebarButton
+          ariaLabel={t("common.close")}
+          icon="double-arrow"
           iconSize={1.5625}
+          onClick={() => setTransactionsTabIsOpen(true)}
         />
       </TopBar>
       <TransactionsTab
         account={account!}
+        activeTab={transactionsTabMenu}
         chainId={chainId!}
         open={transactionsTabIsOpen}
         protocolFee={protocolFee}
         setTransactionsTabOpen={setTransactionsTabIsOpen}
+        setTransactionsTabMenu={setTransactionsTabMenu}
         onClearTransactionsChange={handleClearTransactionsChange}
         onConnectButtonClick={handleConnectWalletClicked}
         onDisconnectButtonClick={handleDisconnectWalletClicked}
+        onMobileMenuButtonClick={onMobileMenuButtonClick}
         transactions={transactions}
       />
     </>

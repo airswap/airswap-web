@@ -1,6 +1,7 @@
 import styled from "styled-components/macro";
 
 import breakPoints from "../../../../style/breakpoints";
+import { fontLoos } from "../../../../style/themes";
 import BorderedButton from "../../../../styled-components/BorderedButton/BorderedButton";
 import { InfoHeading } from "../../../Typography/Typography";
 
@@ -13,7 +14,7 @@ export const Button = styled.div`
 `;
 
 export const StyledBorderedButton = styled(BorderedButton)`
-  padding-inline: 1.5rem;
+  padding-inline: 2rem;
 
   @media ${breakPoints.phoneOnly} {
     padding-inline: 1rem;
@@ -27,6 +28,7 @@ export const WalletAddressText = styled(InfoHeading)`
   text-overflow: ellipsis;
   font-weight: 700;
   font-size: 0.9375rem;
+  font-family: ${fontLoos};
 
   @media ${breakPoints.phoneOnly} {
     font-size: 0.875rem;

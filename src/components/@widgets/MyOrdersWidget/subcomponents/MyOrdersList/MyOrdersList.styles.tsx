@@ -1,37 +1,40 @@
 import styled from "styled-components/macro";
 
-import breakpoints from "../../../../../style/breakpoints";
 import Tooltip from "../../../../ExpiryIndicator/subcomponents/Tooltip";
 import { FadedScrollContainer } from "../../../../FadedScrollContainer/FadedScrollContainer";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 import MyOrdersListSortButtons from "../MyOrdersListSortButtons/MyOrdersListSortButtons";
 
 export const Container = styled.div`
-  display: grid;
-  grid-template-columns: 1rem 3rem 3fr 6fr 6fr 3fr 4rem;
-  grid-column-gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
   width: 100%;
-  padding-left: 2rem;
+  height: 100%;
+  padding-left: 1.375rem;
+  padding-right: 0.5rem;
 `;
 
 export const StyledMyOrdersListSortButtons = styled(MyOrdersListSortButtons)``;
 
 export const StyledFadedScrollContainer = styled(FadedScrollContainer)`
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  align-items: flex-start;
-  margin-top: 1rem;
-  min-height: 15rem;
-  max-height: 20rem;
-  margin-inline-start: -2.5rem;
-  padding-inline-start: 2.5rem;
+  margin-block-start: 0;
+  margin-inline-start: -2.25rem;
+  height: 100%;
+  max-height: inherit;
+  padding-block: 0;
+  padding-inline-start: 2.25rem;
 `;
 
 export const OrdersContainer = styled.div`
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  > div:last-child {
+    margin-bottom: 2rem;
+  }
 `;
 
 export const TooltipContainer = styled.div`

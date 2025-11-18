@@ -64,13 +64,13 @@ import SwapInputs from "../../SwapInputs/SwapInputs";
 import TransactionOverlay from "../../TransactionOverlay/TransactionOverlay";
 import UnsetRuleSubmittedScreen from "../../UnsetRuleScreen/UnsetRuleScreen";
 import WalletSignScreen from "../../WalletSignScreen/WalletSignScreen";
-import { useFilledStatus } from "../MyLimitOrdersWidget/hooks/useFilledStatus";
-import { useLimitOrderStatus } from "../MyLimitOrdersWidget/hooks/useLimitOrderStatus";
 import {
   Container,
   StyledActionButtons,
-  StyledFilledAndStatus,
+  StyledRecipientAndStatus,
   StyledInfoSection,
+  StyledRecipientAndStatusBar,
+  StyledFilledBar,
 } from "../OrderDetailWidget/OrderDetailWidget.styles";
 import useTakerTokenInfo from "../OrderDetailWidget/hooks/useTakerTokenInfo";
 import { ButtonActions } from "../OrderDetailWidget/subcomponents/ActionButtons/ActionButtons";
@@ -82,6 +82,8 @@ import {
 } from "./helpers";
 import { useAvailableSenderAndSignerAmount } from "./hooks/useAvailableSenderAndSignerAmount";
 import useCustomSignerAmountPlusFee from "./hooks/useCustomSignerAmountPlusFee";
+import { useFilledStatus } from "./hooks/useFilledStatus";
+import { useLimitOrderStatus } from "./hooks/useLimitOrderStatus";
 import useSessionDelegateSwapTransaction from "./hooks/useSessionDelegateSwapTransaction";
 import useSessionUnsetRuleTransaction from "./hooks/useSessionUnsetRuleTransaction";
 
@@ -517,15 +519,16 @@ const LimitOrderDetailWidget: FC<LimitOrderDetailWidgetProps> = ({
           onMaxButtonClick={handleMaxButtonClick}
         />
 
-        <StyledFilledAndStatus
+        <StyledRecipientAndStatusBar
           expiry={parsedExpiry}
-          isOwner={userIsMakerOfSwap}
+          status={orderStatus}
+          link={orderTransactionLink}
+        />
+
+        <StyledFilledBar
           filledAmount={filledAmount}
           filledPercentage={filledPercentage}
-          orderType={orderType}
-          status={orderStatus}
           tokenSymbol={senderTokenSymbol}
-          link={orderTransactionLink}
         />
 
         <StyledInfoSection

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Route as ReactRouterDomRoute, Switch } from "react-router-dom";
 
 import * as Sentry from "@sentry/react";
@@ -13,8 +13,6 @@ import Approvals from "../../pages/Approvals/Approvals";
 import Cancel from "../../pages/Cancel/Cancel";
 import LimitOrderDetail from "../../pages/LimitOrderDetail/LimitOrderDetail";
 import MakePage from "../../pages/Make/Make";
-import MyLimitOrdersPage from "../../pages/MyLimitOrders/MyLimitOrders";
-import MyOtcOrdersPage from "../../pages/MyOtcOrders/MyOtcOrders";
 import OtcOrderDetail from "../../pages/OtcOrderDetail/OtcOrderDetail";
 import SwapPage from "../../pages/Swap/Swap";
 import { AppRoutes } from "../../routes";
@@ -40,16 +38,6 @@ const Routes: FC = () => {
         path={`/${AppRoutes.makeLimitOrder}`}
         render={() => <MakePage isLimitOrder={true} />}
         key="make-limit-order"
-      />
-      <Route
-        path={`/${AppRoutes.myOtcOrders}`}
-        component={MyOtcOrdersPage}
-        key="my-otc-orders"
-      />
-      <Route
-        path={`/${AppRoutes.myLimitOrders}`}
-        component={MyLimitOrdersPage}
-        key="my-limit-orders"
       />
       <Route
         exact
