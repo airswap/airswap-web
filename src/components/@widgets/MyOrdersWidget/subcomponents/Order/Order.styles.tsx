@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-import styled, { DefaultTheme } from "styled-components/macro";
+import styled, { css, DefaultTheme } from "styled-components/macro";
 
 import {
   InputOrButtonBorderStyle,
@@ -152,11 +152,39 @@ export const ActionButtonLoader = styled(LoadingSpinner)`
   height: 2rem;
 `;
 
-export const ActionButtonContainer = styled.div`
+export const ActionButtonContainer = styled.div<{ isActive?: boolean }>`
   position: absolute;
-  top: 0.9375rem;
+  top: 0.5rem;
   right: 0rem;
   z-index: 22;
+
+  &:before {
+    content: "";
+    display: none;
+    position: absolute;
+    top: -0.5rem;
+    right: 0;
+    width: 7rem;
+    height: 3.25rem;
+    background: #14213f;
+    // background: red;
+
+    -webkit-mask-image: -webkit-gradient(
+      linear,
+      90 50%,
+      0 100%,
+      from(rgba(0, 0, 0, 1)),
+      to(rgba(0, 0, 0, 0))
+    );
+  }
+
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      &:before {
+        display: block;
+      }
+    `}
 `;
 
 export const StyledNavLink = styled(NavLink)<{

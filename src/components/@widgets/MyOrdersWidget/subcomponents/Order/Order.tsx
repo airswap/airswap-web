@@ -292,7 +292,7 @@ const Order: FC<PropsWithChildren<OrderProps>> = ({
         }}
       />
 
-      <ActionButtonContainer>
+      <ActionButtonContainer isActive={hasEnteredElement}>
         {isCancelInProgress ? (
           <ActionButtonLoader />
         ) : (
